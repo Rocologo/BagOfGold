@@ -74,6 +74,12 @@ public class Config extends AutoConfig
 	@ConfigField(name="by-the-book", category="special")
 	public double specialByTheBook = 20;
 	
+	@ConfigField(name="enable-grinding-penalty", category="penalty", comment="Enabling this prevents a player from earning too much money from using a mob grinder")
+	public boolean penaltyGrindingEnable = true;
+	
+	@ConfigField(name="flyingPenalty", category="penalty", comment="If a player flies at any point in a fight, this penalty will be applied")
+	public double penaltyFlying = 0.5;
+	
 	@ConfigField(name="disabled-in-worlds", category="general", comment="Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
 	public String[] disabledInWorlds = new String[0];
 }

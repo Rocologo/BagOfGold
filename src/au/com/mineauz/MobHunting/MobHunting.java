@@ -2,7 +2,9 @@ package au.com.mineauz.MobHunting;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.milkbowl.vault.economy.Economy;
@@ -29,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
+import au.com.mineauz.MobHunting.modifier.*;
 
 public class MobHunting extends JavaPlugin implements Listener
 {
@@ -40,6 +43,8 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	private AchievementManager mAchievements;
 	private double cDampnerRange = 15;
+	
+	private Set<IModifier> mModifiers;
 	
 	// Compatability classes
 	@SuppressWarnings( "unused" )
@@ -70,7 +75,14 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(Bukkit.getPluginManager().isPluginEnabled("Minigames"))
 			mMinigames = new MinigamesCompat();
 		
-		// Load all the achievements
+		registerAchievements();
+		registerModifiers();
+		
+		getServer().getPluginManager().registerEvents(this, this);
+	}
+	
+	private void registerAchievements()
+	{
 		mAchievements = new AchievementManager();
 		
 		mAchievements.registerAchievement(new AxeMurderer());
@@ -81,8 +93,20 @@ public class MobHunting extends JavaPlugin implements Listener
 		mAchievements.registerAchievement(new ByTheBook());
 		
 		mAchievements.initialize();
+	}
+	
+	private void registerModifiers()
+	{
+		mModifiers = new HashSet<IModifier>();
+		mModifiers.add(new BrawlerBonus());
+		mModifiers.add(new ProSniperBonus());
+		mModifiers.add(new SniperBonus());
+		mModifiers.add(new ReturnToSenderBonus());
+		mModifiers.add(new ShoveBonus());
+		mModifiers.add(new SneakyBonus());
 		
-		getServer().getPluginManager().registerEvents(this, this);
+		mModifiers.add(new FlyingPenalty());
+		mModifiers.add(new GrindingPenalty());
 	}
 	
 	public static Economy getEconomy()
@@ -309,7 +333,8 @@ public class MobHunting extends JavaPlugin implements Listener
 			else if(killer == null)
 				killer = info.attacker;
 		}
-		else if(killer != null)
+		
+		if(killer != null && info == null)
 		{
 			info = new DamageInformation();
 			info.time = System.currentTimeMillis();
@@ -318,19 +343,15 @@ public class MobHunting extends JavaPlugin implements Listener
 			info.usedWeapon = true;
 		}
 		
+		if(info.weapon == null)
+			info.weapon = new ItemStack(Material.AIR);
+		
 		if(killer == null || killer.getGameMode() == GameMode.CREATIVE || !isHuntEnabled(killer))
 			return;
 		
 		HuntData data = getHuntData(killer);
 		int lastKillstreakLevel = data.getKillstreakLevel();
 		data.killStreak++;
-		
-		// If its a charged creeper, give the award
-		if(event.getEntity() instanceof Creeper)
-		{
-			if(((Creeper)event.getEntity()).isPowered())
-				mAchievements.awardAchievement("electrifying", killer);
-		}
 		
 		// Give a message notifying of killstreak increase
 		if(data.getKillstreakLevel() != lastKillstreakLevel)
@@ -354,11 +375,18 @@ public class MobHunting extends JavaPlugin implements Listener
 			killer.sendMessage(ChatColor.GRAY + String.format("x%.1f Activated", data.getKillstreakMultiplier()));
 		}
 		
+		// If its a charged creeper, give the award
+		if(event.getEntity() instanceof Creeper)
+		{
+			if(((Creeper)event.getEntity()).isPowered())
+				mAchievements.awardAchievement("electrifying", killer);
+		}
+		
 		// Record kills that are still within a small area
 		Location loc = event.getEntity().getLocation();
 		
 		// Slimes are except from grinding due to their splitting nature
-		if(!(event.getEntity() instanceof Slime))
+		if(!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable)
 		{
 			if(data.lastKillAreaCenter != null)
 			{
@@ -395,95 +423,23 @@ public class MobHunting extends JavaPlugin implements Listener
 		double cash = getBaseKillPrize(event.getEntity());
 		double multiplier = 1.0;
 		
-		ArrayList<String> bonuses = new ArrayList<String>();
 		
-		Location attackLocation = killer.getLocation();
-		
-		ItemStack weapon = null;
-		LivingEntity ent = event.getEntity();
-		
-		if(ent.getLastDamageCause() instanceof EntityDamageByEntityEvent)
+		// Apply the modifiers
+		ArrayList<String> modifiers = new ArrayList<String>();
+		for(IModifier mod : mModifiers)
 		{
-			weapon = info.weapon;
-			
-			attackLocation = info.attackerPosition;
-
-			Entity cause = ((EntityDamageByEntityEvent)ent.getLastDamageCause()).getDamager();
-			if(cause instanceof Arrow && weapon == null)
-				weapon = new ItemStack(Material.BOW);
-			else if(cause instanceof ThrownPotion)
-				weapon = ((ThrownPotion)cause).getItem();
-			else if(cause instanceof LargeFireball && event.getEntity() instanceof Ghast)
+			if(mod.doesApply(event.getEntity(), killer, data, info))
 			{
-				// Return to sender bonus
-				multiplier *= mConfig.bonusReturnToSender;
-				bonuses.add(ChatColor.GOLD + "Return To Sender!");
-			}
-			else if(cause instanceof Player && ent instanceof Creature)
-			{
-				// If they werent targeting anything, you get a sneaky bonus
-				if(((Creature)ent).getTarget() == null)
-				{
-					multiplier *= mConfig.bonusSneaky;
-					bonuses.add(ChatColor.BLUE + "Sneaky!");
-				}
-			}
-		}
-		else if(info.attacker == killer)
-		{
-			switch(ent.getLastDamageCause().getCause())
-			{
-			case FALL:
-				multiplier *= mConfig.bonusSendFalling;
-				bonuses.add(ChatColor.AQUA + "A Shove");
-				break;
-			case FALLING_BLOCK:
-				// TODO: Give the player a special kill for this 
-				break;
-				
-			case SUFFOCATION:
-				// TODO: Give the player a special kill for this
-				break;
-			default:
-				return;
+				modifiers.add(mod.getName());
+				multiplier *= mod.getMultiplier(event.getEntity(), killer, data, info);
 			}
 		}
 		
-		if(weapon == null)
-			weapon = new ItemStack(Material.AIR);
-
 		// This achievement only cares about the death blow
-		if(weapon.getType() == Material.BOOK || weapon.getType() == Material.WRITTEN_BOOK || weapon.getType() == Material.BOOK_AND_QUILL)
+		if(info.weapon.getType() == Material.BOOK || info.weapon.getType() == Material.WRITTEN_BOOK || info.weapon.getType() == Material.BOOK_AND_QUILL)
 			mAchievements.awardAchievement("bythebook", killer);
 		
-		if(!info.usedWeapon)
-		{
-			multiplier *= mConfig.bonusNoWeapon;
-			bonuses.add(ChatColor.RED + "Brawler");
-			
-			if(event.getEntity() instanceof Creeper)
-				mAchievements.awardAchievement("creeperboxing", killer);
-		}
-		else if(weapon.getType() == Material.BOW && !info.mele)
-		{
-			double dist = attackLocation.distance(event.getEntity().getLocation());
-			// TODO: Make sure target was moving at the time
-			if(dist > 50)
-			{
-				multiplier *= mConfig.bonusFarShot;
-				bonuses.add(ChatColor.GRAY + "Pro Sniper");
-			}
-			else if(dist > 20)
-			{
-				multiplier *= mConfig.bonusFarShot / 2;
-				bonuses.add(ChatColor.GRAY + "Sniper");
-			}
-		}
-		else if(isSword(weapon))
-		{
-			// Do nothing different?
-		}
-		else if(isAxe(weapon))
+		if(isAxe(info.weapon))
 			mAchievements.awardAchievement("axemurderer", killer);
 		
 		multiplier *= data.getKillstreakMultiplier();
@@ -494,29 +450,16 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(Math.abs(multiplier - 1) > 0.05)
 			extraString += String.format("x%.1f", multiplier);
 		
-		// Add on bonuses
-		for(String bonus : bonuses)
-			extraString += ChatColor.WHITE + " + " + bonus;
-		
-		// Add on penalties
-		if(data.getDampnerMultiplier() < 1)
-		{
-			extraString += ChatColor.WHITE + " - " + ChatColor.RED + "Grinding Penalty";
-			cash *= data.getDampnerMultiplier();
-		}
-		
-		if(info.wasFlying)
-		{
-			extraString += ChatColor.WHITE + " - " + ChatColor.RED + "Flying Penalty";
-			cash *= 0.5;
-		}
+		// Add on modifiers
+		for(String modifier : modifiers)
+			extraString += ChatColor.WHITE + " * " + modifier;
 		
 		cash *= multiplier;
 		
-		if(!extraString.isEmpty())
-			extraString = "With: " + extraString;
+		if(!extraString.trim().isEmpty())
+			extraString = "With: " + extraString.trim();
 		
-		if(cash > 0.01)
+		if(cash >= 0.01)
 		{
 			mEconomy.depositPlayer(killer.getName(), cash);
 			killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + String.format("You gained $%.2f! %s", cash, extraString));
