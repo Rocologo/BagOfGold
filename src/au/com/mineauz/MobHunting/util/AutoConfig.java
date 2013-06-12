@@ -19,10 +19,19 @@ import org.bukkit.inventory.ItemStack;
 public abstract class AutoConfig
 {
 	private File mFile;
+	private HashMap<String, String> mCategoryComments;
+	
 	protected AutoConfig(File file)
 	{
 		mFile = file;
+		mCategoryComments = new HashMap<String, String>();
 	}
+	
+	protected void setCategoryComment(String category, String comment)
+	{
+		mCategoryComments.put(category, comment);
+	}
+	
 	protected void onPostLoad() throws InvalidConfigurationException {};
 	protected void onPreSave(){};
 	public boolean load()
@@ -168,6 +177,9 @@ public abstract class AutoConfig
 			
 			YamlConfiguration config = new YamlConfiguration();
 			Map<String, String> comments = new HashMap<String, String>();
+			
+			// Add all the category comments
+			comments.putAll(mCategoryComments);
 			
 			// Add all the values
 			for(Field field : getClass().getDeclaredFields())

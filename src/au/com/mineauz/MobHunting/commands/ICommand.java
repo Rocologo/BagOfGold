@@ -1,4 +1,4 @@
-package au.com.mineauz.MobHunting.util;
+package au.com.mineauz.MobHunting.commands;
 
 import java.util.List;
 

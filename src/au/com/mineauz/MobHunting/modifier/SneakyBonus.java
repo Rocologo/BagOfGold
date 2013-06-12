@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting.modifier;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,6 +29,9 @@ public class SneakyBonus implements IModifier
 	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo )
 	{
 		if(!(deadEntity instanceof Creature))
+			return false;
+		
+		if(!extraInfo.mele || extraInfo.weapon.getType() != Material.BOW)
 			return false;
 		
 		return ((Creature)deadEntity).getTarget() == null;

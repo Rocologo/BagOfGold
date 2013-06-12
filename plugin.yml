@@ -1,5 +1,5 @@
 name: Mob Hunting
-version: 1.0
+version: 1.0.1
 
 main: au.com.mineauz.MobHunting.MobHunting
 
@@ -8,7 +8,22 @@ author: Schmoller
 depend: [Vault]
 softdepend: [Minigames]
 
+commands:
+  mobhunt:
+    description: Allows you to configure mob hunt
+    permission: mobhunting.config
+    aliases: [mob,mh,hunt]
+    usage: /<command> reload
+
 permissions:
   mobhunting.enable:
     description: Allows mobhunting to be enabled for a player
     default: true
+  mobhunting.config:
+    description: Allows a player to use the mobhunt command
+    default: op
+  mobhunting.reload:
+    description: Allows a player to reload the config
+    default: op
+    children:
+      mobhunting.config: true

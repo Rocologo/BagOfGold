@@ -22,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -30,6 +31,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import au.com.mineauz.MobHunting.achievements.*;
+import au.com.mineauz.MobHunting.commands.CommandDispatcher;
+import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.modifier.*;
 
@@ -74,6 +77,12 @@ public class MobHunting extends JavaPlugin implements Listener
 		// Handle compatability stuff
 		if(Bukkit.getPluginManager().isPluginEnabled("Minigames"))
 			mMinigames = new MinigamesCompat();
+		
+		CommandDispatcher cmd = new CommandDispatcher("mobhunt", "Allows you to configure Mob Hunting");
+		getCommand("mobhunt").setExecutor(cmd);
+		getCommand("mobhunt").setTabCompleter(cmd);
+		
+		cmd.registerCommand(new ReloadCommand());
 		
 		registerAchievements();
 		registerModifiers();
@@ -175,11 +184,6 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	public static void setHuntEnabled(Player player, boolean enabled)
 	{
-		if(enabled)
-			instance.getLogger().info("Enabling MobHunt for " + player.getName());
-		else
-			instance.getLogger().info("Disabling MobHunt for " + player.getName());
-		
 		player.setMetadata("MH:enabled", new FixedMetadataValue(instance, enabled));
 	}
 	
@@ -216,15 +220,39 @@ public class MobHunting extends JavaPlugin implements Listener
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void onSkeletonShoot(ProjectileLaunchEvent event)
+	{
+		if(!(event.getEntity() instanceof Arrow) || !(event.getEntity().getShooter() instanceof Skeleton) || !isHuntEnabledInWorld(event.getEntity().getWorld()))
+			return;
+		
+		Skeleton shooter = (Skeleton)event.getEntity().getShooter();
+		
+		if(shooter.getTarget() instanceof Player && isHuntEnabled((Player)shooter.getTarget()) && ((Player)shooter.getTarget()).getGameMode() != GameMode.CREATIVE)
+		{
+			DamageInformation info = null;
+			info = mDamageHistory.get(shooter);
+			
+			if(info == null)
+				info = new DamageInformation();
+			
+			info.time = System.currentTimeMillis();
+			
+			info.attacker = (Player)shooter.getTarget();
+			
+			info.attackerPosition = shooter.getTarget().getLocation().clone();
+			mDamageHistory.put(shooter, info);
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	private void onMobDamage(EntityDamageByEntityEvent event)
 	{
 		if(!(event.getEntity() instanceof Creature) || !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 		
 		DamageInformation info = null;
-		if(mDamageHistory.containsKey(event.getEntity()))
-			info = mDamageHistory.get(event.getEntity());
-		else
+		info = mDamageHistory.get(event.getEntity());
+		if(info == null)
 			info = new DamageInformation();
 		
 		info.time = System.currentTimeMillis();
@@ -256,14 +284,13 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(weapon != null)
 			info.weapon = weapon;
 		
-		info.attacker = cause;
-		
 		// Take note that a weapon has been used at all
 		if(info.weapon != null && (isSword(info.weapon) || isAxe(info.weapon) || projectile))
 			info.usedWeapon = true;
 		
 		if(cause != null)
 		{
+			info.attacker = cause;
 			if(cause.isFlying())
 				info.wasFlying = true;
 			
@@ -302,22 +329,20 @@ public class MobHunting extends JavaPlugin implements Listener
 				{
 					if(((Skeleton)event.getEntity()).getTarget() == skele)
 					{
-						// Unfortunatly there is no way of finding who caused the fight, so just use who ever the closest player is
-						Player closest = null;
-						for(Player player : Bukkit.getOnlinePlayers())
-						{
-							if(player.getWorld() != event.getEntity().getWorld())
-								continue;
-							
-							if(player.getGameMode() == GameMode.CREATIVE)
-								continue;
-							
-							if(closest == null || closest.getLocation().distanceSquared(event.getEntity().getLocation()) > player.getLocation().distanceSquared(event.getEntity().getLocation()))
-								closest = player;
-						}
+						DamageInformation a,b;
+						a = mDamageHistory.get(event.getEntity());
+						b = mDamageHistory.get(((Skeleton)event.getEntity()).getTarget());
 						
-						if(closest != null && closest.getLocation().distance(event.getEntity().getLocation()) < 50 && isHuntEnabled(closest))
-							mAchievements.awardAchievement("infighting", closest);
+						Player initiator = null;
+						if(a != null)
+							initiator = a.attacker;
+						
+						if(b != null && initiator == null)
+							initiator = b.attacker;
+						
+						
+						if(initiator != null && isHuntEnabled(initiator))
+							mAchievements.awardAchievement("infighting", initiator);
 					}
 				}
 			}
@@ -334,7 +359,10 @@ public class MobHunting extends JavaPlugin implements Listener
 				killer = info.attacker;
 		}
 		
-		if(killer != null && info == null)
+		if(killer == null || killer.getGameMode() == GameMode.CREATIVE || !isHuntEnabled(killer))
+			return;
+		
+		if(info == null)
 		{
 			info = new DamageInformation();
 			info.time = System.currentTimeMillis();
@@ -345,9 +373,6 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		if(info.weapon == null)
 			info.weapon = new ItemStack(Material.AIR);
-		
-		if(killer == null || killer.getGameMode() == GameMode.CREATIVE || !isHuntEnabled(killer))
-			return;
 		
 		HuntData data = getHuntData(killer);
 		int lastKillstreakLevel = data.getKillstreakLevel();
@@ -430,8 +455,13 @@ public class MobHunting extends JavaPlugin implements Listener
 		{
 			if(mod.doesApply(event.getEntity(), killer, data, info))
 			{
-				modifiers.add(mod.getName());
-				multiplier *= mod.getMultiplier(event.getEntity(), killer, data, info);
+				double amt = mod.getMultiplier(event.getEntity(), killer, data, info);
+				
+				if(amt != 1.0)
+				{
+					modifiers.add(mod.getName());
+					multiplier *= amt;
+				}
 			}
 		}
 		
@@ -510,6 +540,8 @@ public class MobHunting extends JavaPlugin implements Listener
 			return mConfig.enderdragonPrize;
 		if(mob instanceof Wither)
 			return mConfig.witherPrize;
+		if(mob instanceof PigZombie)
+			return mConfig.pigMan;
 		
 		return 0;
 	}

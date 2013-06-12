@@ -10,6 +10,14 @@ public class Config extends AutoConfig
 	public Config( File file )
 	{
 		super(file);
+		
+		setCategoryComment("mobs", "Here is where you set the base prize in $ for killing a mob of each type");
+		setCategoryComment("boss", "Here is where you set the base prize in $ for killing the bosses");
+		setCategoryComment("bonus", "These are bonus multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them.");
+		setCategoryComment("penalty", "These are penalty multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them.");
+		
+		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill");
+		
 	}
 	
 	@ConfigField(name="blaze", category="mobs")
@@ -18,7 +26,8 @@ public class Config extends AutoConfig
 	public double creeperPrize = 1.0;
 	@ConfigField(name="silverfish", category="mobs")
 	public double silverfishPrize = 0.1;
-	
+	@ConfigField(name="pigman", category="mobs")
+	public double pigMan = 0.5;
 	@ConfigField(name="endermen", category="mobs")
 	public double endermenPrize = 1.0;
 	@ConfigField(name="giant", category="mobs")
