@@ -1,0 +1,14 @@
+name: Mob Hunting
+version: 1.0
+
+main: au.com.mineauz.MobHunting.MobHunting
+
+author: Schmoller
+
+depend: [Vault]
+softdepend: [Minigames]
+
+permissions:
+  mobhunting.enable:
+    description: Allows mobhunting to be enabled for a player
+    default: true
