@@ -100,6 +100,10 @@ public class MobHunting extends JavaPlugin implements Listener
 		mAchievements.registerAchievement(new RecordHungry());
 		mAchievements.registerAchievement(new InFighting());
 		mAchievements.registerAchievement(new ByTheBook());
+		mAchievements.registerAchievement(new Creepercide());
+		mAchievements.registerAchievement(new TheHuntBegins());
+		mAchievements.registerAchievement(new ItsMagic());
+		mAchievements.registerAchievement(new FancyPants());
 		
 		mAchievements.initialize();
 	}
@@ -310,10 +314,11 @@ public class MobHunting extends JavaPlugin implements Listener
 		// Handle special case of skele kill creeper, and skeke kills a skele
 		if(event.getEntity() instanceof Monster && killer == null && event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
 		{
-			if(((EntityDamageByEntityEvent)event.getEntity().getLastDamageCause()).getDamager() instanceof Arrow && 
-					((Arrow)((EntityDamageByEntityEvent)event.getEntity().getLastDamageCause()).getDamager()).getShooter() instanceof Skeleton)
+			EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent)event.getEntity().getLastDamageCause();
+			
+			if(dmg.getDamager() instanceof Arrow && ((Arrow)dmg.getDamager()).getShooter() instanceof Skeleton)
 			{
-				Skeleton skele = (Skeleton)((Arrow)((EntityDamageByEntityEvent)event.getEntity().getLastDamageCause()).getDamager()).getShooter();
+				Skeleton skele = (Skeleton)((Arrow)dmg.getDamager()).getShooter();
 				
 				if(event.getEntity() instanceof Creeper)
 				{
@@ -346,6 +351,28 @@ public class MobHunting extends JavaPlugin implements Listener
 					}
 				}
 			}
+			else if(event.getEntity() instanceof Creeper && dmg.getDamager() instanceof Creeper)
+			{
+				Player initiator = null;
+				
+				if(((Creeper)event.getEntity()).getTarget() instanceof Player)
+					initiator = (Player)((Creeper)event.getEntity()).getTarget();
+				else
+				{
+					DamageInformation a,b;
+					a = mDamageHistory.get(event.getEntity());
+					b = mDamageHistory.get(dmg.getDamager());
+					
+					if(a != null)
+						initiator = a.attacker;
+					
+					if(b != null && initiator == null)
+						initiator = b.attacker;
+				}
+				
+				if(initiator != null && isHuntEnabled(initiator))
+					mAchievements.awardAchievement("creepercide", initiator);
+			}
 		}
 		
 		DamageInformation info = null;
@@ -361,6 +388,8 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		if(killer == null || killer.getGameMode() == GameMode.CREATIVE || !isHuntEnabled(killer))
 			return;
+		
+		mAchievements.awardAchievement("huntbegins", killer);
 		
 		if(info == null)
 		{
@@ -405,6 +434,18 @@ public class MobHunting extends JavaPlugin implements Listener
 		{
 			if(((Creeper)event.getEntity()).isPowered())
 				mAchievements.awardAchievement("electrifying", killer);
+		}
+		
+		if(info.weapon.getType() == Material.POTION)
+			mAchievements.awardAchievement("itsmagic", killer);
+		
+		if(info.weapon.getType() == Material.DIAMOND_SWORD && !info.weapon.getEnchantments().isEmpty() && 
+		   killer.getInventory().getHelmet().getType() == Material.DIAMOND_HELMET && !killer.getInventory().getHelmet().getEnchantments().isEmpty() &&
+		   killer.getInventory().getChestplate().getType() == Material.DIAMOND_CHESTPLATE && !killer.getInventory().getChestplate().getEnchantments().isEmpty() &&
+		   killer.getInventory().getLeggings().getType() == Material.DIAMOND_LEGGINGS && !killer.getInventory().getLeggings().getEnchantments().isEmpty() &&
+		   killer.getInventory().getBoots().getType() == Material.DIAMOND_BOOTS && !killer.getInventory().getBoots().getEnchantments().isEmpty())
+		{
+			mAchievements.awardAchievement("fancypants", killer);
 		}
 		
 		// Record kills that are still within a small area

@@ -31,10 +31,10 @@ public class SneakyBonus implements IModifier
 		if(!(deadEntity instanceof Creature))
 			return false;
 		
-		if(!extraInfo.mele || extraInfo.weapon.getType() != Material.BOW)
-			return false;
+		if(extraInfo.mele || extraInfo.weapon.getType() == Material.POTION)
+			return ((Creature)deadEntity).getTarget() == null;
 		
-		return ((Creature)deadEntity).getTarget() == null;
+		return false;
 	}
 
 }
