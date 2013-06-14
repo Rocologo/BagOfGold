@@ -31,7 +31,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import au.com.mineauz.MobHunting.achievements.*;
+import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.CommandDispatcher;
+import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.modifier.*;
@@ -45,9 +47,11 @@ public class MobHunting extends JavaPlugin implements Listener
 	private Config mConfig;
 	
 	private AchievementManager mAchievements;
-	private double cDampnerRange = 15;
+	public static double cDampnerRange = 15;
 	
 	private Set<IModifier> mModifiers;
+	
+	private ArrayList<Area> mKnownGrindingSpots = new ArrayList<Area>();
 	
 	// Compatability classes
 	@SuppressWarnings( "unused" )
@@ -83,6 +87,8 @@ public class MobHunting extends JavaPlugin implements Listener
 		getCommand("mobhunt").setTabCompleter(cmd);
 		
 		cmd.registerCommand(new ReloadCommand());
+		cmd.registerCommand(new ListAchievementsCommand());
+		cmd.registerCommand(new CheckGrindingCommand());
 		
 		registerAchievements();
 		registerModifiers();
@@ -122,6 +128,47 @@ public class MobHunting extends JavaPlugin implements Listener
 		mModifiers.add(new GrindingPenalty());
 	}
 	
+	void registerKnownGrindingSpot(Area newArea)
+	{
+		for(Area area : mKnownGrindingSpots)
+		{
+			if(newArea.center.getWorld().equals(area.center.getWorld()))
+			{
+				double dist = newArea.center.distance(area.center);
+				
+				double remaining = dist;
+				remaining -= area.range;
+				remaining -= newArea.range;
+				
+				if(remaining < 0)
+				{
+					if(dist > area.range)
+						area.range = dist;
+					
+					area.count += newArea.count;
+					
+					return;
+				}
+			}
+		}
+		
+		mKnownGrindingSpots.add(newArea);
+	}
+	
+	public Area getGrindingArea(Location location)
+	{
+		for(Area area : mKnownGrindingSpots)
+		{
+			if(area.center.getWorld().equals(location.getWorld()))
+			{
+				if(area.center.distance(location) < area.range)
+					return area;
+			}
+		}
+		
+		return null;
+	}
+	
 	public static Economy getEconomy()
 	{
 		return instance.mEconomy;
@@ -132,7 +179,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		return instance.mConfig;
 	}
 	
-	private HuntData getHuntData(Player player)
+	public HuntData getHuntData(Player player)
 	{
 		HuntData data = null;
 		if(!player.hasMetadata("MobHuntData"))
@@ -194,6 +241,11 @@ public class MobHunting extends JavaPlugin implements Listener
 	private boolean isSword(ItemStack item)
 	{
 		return (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.GOLD_SWORD || item.getType() == Material.IRON_SWORD || item.getType() == Material.STONE_SWORD || item.getType() == Material.WOOD_SWORD);
+	}
+	
+	private boolean isPick(ItemStack item)
+	{
+		return (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.GOLD_PICKAXE || item.getType() == Material.IRON_PICKAXE || item.getType() == Material.STONE_PICKAXE || item.getType() == Material.WOOD_PICKAXE);
 	}
 	
 	private boolean isAxe(ItemStack item)
@@ -289,7 +341,7 @@ public class MobHunting extends JavaPlugin implements Listener
 			info.weapon = weapon;
 		
 		// Take note that a weapon has been used at all
-		if(info.weapon != null && (isSword(info.weapon) || isAxe(info.weapon) || projectile))
+		if(info.weapon != null && (isSword(info.weapon) || isAxe(info.weapon) || isPick(info.weapon) || projectile))
 			info.usedWeapon = true;
 		
 		if(cause != null)
@@ -440,10 +492,10 @@ public class MobHunting extends JavaPlugin implements Listener
 			mAchievements.awardAchievement("itsmagic", killer);
 		
 		if(info.weapon.getType() == Material.DIAMOND_SWORD && !info.weapon.getEnchantments().isEmpty() && 
-		   killer.getInventory().getHelmet().getType() == Material.DIAMOND_HELMET && !killer.getInventory().getHelmet().getEnchantments().isEmpty() &&
-		   killer.getInventory().getChestplate().getType() == Material.DIAMOND_CHESTPLATE && !killer.getInventory().getChestplate().getEnchantments().isEmpty() &&
-		   killer.getInventory().getLeggings().getType() == Material.DIAMOND_LEGGINGS && !killer.getInventory().getLeggings().getEnchantments().isEmpty() &&
-		   killer.getInventory().getBoots().getType() == Material.DIAMOND_BOOTS && !killer.getInventory().getBoots().getEnchantments().isEmpty())
+		   killer.getInventory().getHelmet() != null && killer.getInventory().getHelmet().getType() == Material.DIAMOND_HELMET && !killer.getInventory().getHelmet().getEnchantments().isEmpty() &&
+		   killer.getInventory().getChestplate() != null && killer.getInventory().getChestplate().getType() == Material.DIAMOND_CHESTPLATE && !killer.getInventory().getChestplate().getEnchantments().isEmpty() &&
+		   killer.getInventory().getLeggings() != null && killer.getInventory().getLeggings().getType() == Material.DIAMOND_LEGGINGS && !killer.getInventory().getLeggings().getEnchantments().isEmpty() &&
+		   killer.getInventory().getBoots() != null && killer.getInventory().getBoots().getType() == Material.DIAMOND_BOOTS && !killer.getInventory().getBoots().getEnchantments().isEmpty())
 		{
 			mAchievements.awardAchievement("fancypants", killer);
 		}
@@ -451,15 +503,41 @@ public class MobHunting extends JavaPlugin implements Listener
 		// Record kills that are still within a small area
 		Location loc = event.getEntity().getLocation();
 		
+		Area detectedGrindingArea = getGrindingArea(loc);
+		
+		if(detectedGrindingArea == null)
+			detectedGrindingArea = data.getGrindingArea(loc);
+		
+		
 		// Slimes are except from grinding due to their splitting nature
 		if(!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable)
 		{
-			if(data.lastKillAreaCenter != null)
+			if(detectedGrindingArea != null)
 			{
-				if(loc.getWorld().equals(data.lastKillAreaCenter.getWorld()))
+				data.lastKillAreaCenter = null;
+				data.dampenedKills = detectedGrindingArea.count++;
+				
+				if(data.dampenedKills == 20)
+					registerKnownGrindingSpot(detectedGrindingArea);
+			}
+			else
+			{
+				if(data.lastKillAreaCenter != null)
 				{
-					if(loc.distance(data.lastKillAreaCenter) < cDampnerRange)
-						data.dampenedKills++;
+					if(loc.getWorld().equals(data.lastKillAreaCenter.getWorld()))
+					{
+						if(loc.distance(data.lastKillAreaCenter) < cDampnerRange)
+						{
+							data.dampenedKills++;
+							if(data.dampenedKills == 10)
+								data.recordGrindingArea();
+						}
+						else
+						{
+							data.lastKillAreaCenter = loc.clone();
+							data.dampenedKills = 0;
+						}
+					}
 					else
 					{
 						data.lastKillAreaCenter = loc.clone();
@@ -471,11 +549,6 @@ public class MobHunting extends JavaPlugin implements Listener
 					data.lastKillAreaCenter = loc.clone();
 					data.dampenedKills = 0;
 				}
-			}
-			else
-			{
-				data.lastKillAreaCenter = loc.clone();
-				data.dampenedKills = 0;
 			}
 			
 			if(data.dampenedKills > 14)
@@ -585,5 +658,10 @@ public class MobHunting extends JavaPlugin implements Listener
 			return mConfig.pigMan;
 		
 		return 0;
+	}
+	
+	public AchievementManager getAchievements()
+	{
+		return mAchievements;
 	}
 }

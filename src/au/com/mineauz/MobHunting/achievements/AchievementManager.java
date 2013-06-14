@@ -3,6 +3,8 @@ package au.com.mineauz.MobHunting.achievements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -55,6 +58,37 @@ public class AchievementManager implements Listener
 		return player.hasMetadata("MH:achievement-" + achievement.getID());
 	}
 	
+	public List<Achievement> getCompletedAchievements(OfflinePlayer player)
+	{
+		List<Achievement> achievements = new ArrayList<Achievement>();
+		
+		if(player.isOnline())
+		{
+			for(Achievement achievement : mAchievements.values())
+			{
+				if(hasAchievement(achievement, player.getPlayer()))
+					achievements.add(achievement);
+			}
+		}
+		else
+		{
+			Set<String> ids = loadAchievements(player);
+			
+			for(String id : ids)
+			{
+				if(mAchievements.containsKey(id))
+					achievements.add(mAchievements.get(id));
+			}
+		}
+		
+		return achievements;
+	}
+	
+	public Collection<Achievement> getAllAchievements()
+	{
+		return Collections.unmodifiableCollection(mAchievements.values());
+	}
+	
 	public void awardAchievement(String achievement, Player player)
 	{
 		awardAchievement(getAchievement(achievement), player);
@@ -73,7 +107,7 @@ public class AchievementManager implements Listener
 	}
 	
 	@SuppressWarnings( "unchecked" )
-	private Set<String> loadAchievements(Player player)
+	private Set<String> loadAchievements(OfflinePlayer player)
 	{
 		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml");
 
@@ -103,7 +137,7 @@ public class AchievementManager implements Listener
 			e.printStackTrace();
 		}
 		
-		return new HashSet<String>();
+		return Collections.EMPTY_SET;
 	}
 	
 	private void addAchievement(Player player, Achievement achievement)

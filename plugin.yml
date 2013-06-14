@@ -1,5 +1,5 @@
 name: Mob Hunting
-version: 1.1
+version: 1.2
 
 main: au.com.mineauz.MobHunting.MobHunting
 
@@ -19,11 +19,26 @@ permissions:
   mobhunting.enable:
     description: Allows mobhunting to be enabled for a player
     default: true
-  mobhunting.config:
+  mobhunting.cmd:
     description: Allows a player to use the mobhunt command
-    default: op
+    default: true
   mobhunting.reload:
     description: Allows a player to reload the config
     default: op
     children:
-      mobhunting.config: true
+      mobhunting.cmd: true
+  mobhunting.listachievements:
+    description: Allows a player to see all their achievements
+    default: true
+    children:
+      mobhunting.cmd: true    
+  mobhunting.listachievements.other:
+    description: Allows a player to see another players achievements
+    default: op
+    children:
+      mobhunting.listachievements: true
+  mobhunting.checkgrinding:
+    description: Allows a player to check whether the region they are in is a known grinding area 
+    default: op
+    children:
+      mobhunting.cmd: true

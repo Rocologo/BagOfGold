@@ -1,5 +1,7 @@
 package au.com.mineauz.MobHunting;
 
+import java.util.ArrayList;
+
 import org.bukkit.Location;
 
 public class HuntData
@@ -9,7 +11,53 @@ public class HuntData
 	
 	public Location lastKillAreaCenter;
 	
+	public ArrayList<Area> lastGridingAreas = new ArrayList<Area>(); 
+	
 	public boolean enabled = true;
+	
+	public Area getGrindingArea(Location location)
+	{
+		for(Area area : lastGridingAreas)
+		{
+			if(area.center.getWorld().equals(location.getWorld()))
+			{
+				if(area.center.distance(location) < area.range)
+					return area;
+			}
+		}
+		
+		return null;
+	}
+	public void recordGrindingArea()
+	{
+		for(Area area : lastGridingAreas)
+		{
+			if(lastKillAreaCenter.getWorld().equals(area.center.getWorld()))
+			{
+				double dist = lastKillAreaCenter.distance(area.center);
+				
+				double remaining = dist;
+				remaining -= area.range;
+				remaining -= MobHunting.cDampnerRange;
+				
+				if(remaining < 0)
+				{
+					if(dist > area.range)
+						area.range = dist;
+					
+					area.count += dampenedKills;
+					
+					return;
+				}
+			}
+		}
+		
+		Area area = new Area();
+		area.center = lastKillAreaCenter;
+		area.range = MobHunting.cDampnerRange;
+		area.count = dampenedKills;
+		lastGridingAreas.add(area);
+	}
 	
 	public int getKillstreakLevel()
 	{
