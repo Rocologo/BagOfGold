@@ -1,6 +1,9 @@
 package au.com.mineauz.MobHunting;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,6 +73,20 @@ public class MobHunting extends JavaPlugin implements Listener
 		}
 		
 		mEconomy = economyProvider.getProvider();
+		
+		// Move the old data folder
+		File oldData = new File(getDataFolder().getParentFile(), "Mob Hunting");
+		if(oldData.exists())
+		{
+			try
+			{
+				Files.move(oldData.toPath(), getDataFolder().toPath(), StandardCopyOption.ATOMIC_MOVE);
+			}
+			catch ( IOException e )
+			{
+				e.printStackTrace();
+			}
+		}
 		
 		mConfig = new Config(new File(getDataFolder(), "config.yml"));
 		
