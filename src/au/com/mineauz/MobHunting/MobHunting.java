@@ -40,6 +40,7 @@ import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.modifier.*;
+import au.com.mineauz.MobHunting.util.Misc;
 
 public class MobHunting extends JavaPlugin implements Listener
 {
@@ -69,7 +70,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(economyProvider == null)
 		{
 			instance = null;
-			throw new RuntimeException("Unable to hook into an economy! Make sure you have one available that Vault accepts.");
+			getLogger().severe("Unable to hook into an economy! Make sure you have one available that Vault accepts.");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
 		}
 		
 		mEconomy = economyProvider.getProvider();
@@ -143,6 +146,14 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		mModifiers.add(new FlyingPenalty());
 		mModifiers.add(new GrindingPenalty());
+		
+		// Check if horses exist
+		try
+		{
+			Class.forName("org.bukkit.entity.Horse");
+			mModifiers.add(new MountedBonus());
+		}
+		catch(ClassNotFoundException e) {}
 	}
 	
 	void registerKnownGrindingSpot(Area newArea)
@@ -265,14 +276,12 @@ public class MobHunting extends JavaPlugin implements Listener
 		return (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.GOLD_PICKAXE || item.getType() == Material.IRON_PICKAXE || item.getType() == Material.STONE_PICKAXE || item.getType() == Material.WOOD_PICKAXE);
 	}
 	
-	private boolean isAxe(ItemStack item)
-	{
-		return (item.getType() == Material.DIAMOND_AXE || item.getType() == Material.GOLD_AXE || item.getType() == Material.IRON_AXE || item.getType() == Material.STONE_AXE || item.getType() == Material.WOOD_AXE);
-	}
-	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	private void onPlayerDeath(PlayerDeathEvent event)
 	{
+		if(!isHuntEnabledInWorld(event.getEntity().getWorld()) || !isHuntEnabled(event.getEntity()))
+			return;
+		
 		HuntData data = getHuntData(event.getEntity());
 		if(data.getKillstreakLevel() != 0)
 			event.getEntity().sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "Killstreak ended");
@@ -283,6 +292,9 @@ public class MobHunting extends JavaPlugin implements Listener
 	private void onPlayerDamage(EntityDamageByEntityEvent event)
 	{
 		if(!(event.getEntity() instanceof Player))
+			return;
+		
+		if(!isHuntEnabledInWorld(event.getEntity().getWorld()) || !isHuntEnabled((Player)event.getEntity()))
 			return;
 		
 		Player player = (Player)event.getEntity();
@@ -358,7 +370,7 @@ public class MobHunting extends JavaPlugin implements Listener
 			info.weapon = weapon;
 		
 		// Take note that a weapon has been used at all
-		if(info.weapon != null && (isSword(info.weapon) || isAxe(info.weapon) || isPick(info.weapon) || projectile))
+		if(info.weapon != null && (isSword(info.weapon) || Misc.isAxe(info.weapon) || isPick(info.weapon) || projectile))
 			info.usedWeapon = true;
 		
 		if(cause != null)
@@ -380,70 +392,6 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		Player killer = event.getEntity().getKiller();
 		
-		// Handle special case of skele kill creeper, and skeke kills a skele
-		if(event.getEntity() instanceof Monster && killer == null && event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
-		{
-			EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent)event.getEntity().getLastDamageCause();
-			
-			if(dmg.getDamager() instanceof Arrow && ((Arrow)dmg.getDamager()).getShooter() instanceof Skeleton)
-			{
-				Skeleton skele = (Skeleton)((Arrow)dmg.getDamager()).getShooter();
-				
-				if(event.getEntity() instanceof Creeper)
-				{
-					if(((Creeper)event.getEntity()).getTarget() instanceof Player)
-					{
-						Player target = (Player)((Creeper)event.getEntity()).getTarget();
-						
-						if(skele.getTarget() == target && target.getGameMode() != GameMode.CREATIVE && isHuntEnabled(target))
-							mAchievements.awardAchievement("recordhungry", target);
-					}
-				}
-				else if(event.getEntity() instanceof Skeleton)
-				{
-					if(((Skeleton)event.getEntity()).getTarget() == skele)
-					{
-						DamageInformation a,b;
-						a = mDamageHistory.get(event.getEntity());
-						b = mDamageHistory.get(((Skeleton)event.getEntity()).getTarget());
-						
-						Player initiator = null;
-						if(a != null)
-							initiator = a.attacker;
-						
-						if(b != null && initiator == null)
-							initiator = b.attacker;
-						
-						
-						if(initiator != null && isHuntEnabled(initiator))
-							mAchievements.awardAchievement("infighting", initiator);
-					}
-				}
-			}
-			else if(event.getEntity() instanceof Creeper && dmg.getDamager() instanceof Creeper)
-			{
-				Player initiator = null;
-				
-				if(((Creeper)event.getEntity()).getTarget() instanceof Player)
-					initiator = (Player)((Creeper)event.getEntity()).getTarget();
-				else
-				{
-					DamageInformation a,b;
-					a = mDamageHistory.get(event.getEntity());
-					b = mDamageHistory.get(dmg.getDamager());
-					
-					if(a != null)
-						initiator = a.attacker;
-					
-					if(b != null && initiator == null)
-						initiator = b.attacker;
-				}
-				
-				if(initiator != null && isHuntEnabled(initiator))
-					mAchievements.awardAchievement("creepercide", initiator);
-			}
-		}
-		
 		DamageInformation info = null;
 		if(event.getEntity() instanceof Creature && mDamageHistory.containsKey((Creature)event.getEntity()))
 		{
@@ -458,8 +406,6 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(killer == null || killer.getGameMode() == GameMode.CREATIVE || !isHuntEnabled(killer))
 			return;
 		
-		mAchievements.awardAchievement("huntbegins", killer);
-		
 		if(info == null)
 		{
 			info = new DamageInformation();
@@ -473,6 +419,9 @@ public class MobHunting extends JavaPlugin implements Listener
 			info.weapon = new ItemStack(Material.AIR);
 		
 		HuntData data = getHuntData(killer);
+		
+		Bukkit.getPluginManager().callEvent(new MobHuntKillEvent(data, info, event.getEntity(), killer));
+		
 		int lastKillstreakLevel = data.getKillstreakLevel();
 		data.killStreak++;
 		
@@ -496,25 +445,6 @@ public class MobHunting extends JavaPlugin implements Listener
 			}
 			
 			killer.sendMessage(ChatColor.GRAY + String.format("x%.1f Activated", data.getKillstreakMultiplier()));
-		}
-		
-		// If its a charged creeper, give the award
-		if(event.getEntity() instanceof Creeper)
-		{
-			if(((Creeper)event.getEntity()).isPowered())
-				mAchievements.awardAchievement("electrifying", killer);
-		}
-		
-		if(info.weapon.getType() == Material.POTION)
-			mAchievements.awardAchievement("itsmagic", killer);
-		
-		if(info.weapon.getType() == Material.DIAMOND_SWORD && !info.weapon.getEnchantments().isEmpty() && 
-		   killer.getInventory().getHelmet() != null && killer.getInventory().getHelmet().getType() == Material.DIAMOND_HELMET && !killer.getInventory().getHelmet().getEnchantments().isEmpty() &&
-		   killer.getInventory().getChestplate() != null && killer.getInventory().getChestplate().getType() == Material.DIAMOND_CHESTPLATE && !killer.getInventory().getChestplate().getEnchantments().isEmpty() &&
-		   killer.getInventory().getLeggings() != null && killer.getInventory().getLeggings().getType() == Material.DIAMOND_LEGGINGS && !killer.getInventory().getLeggings().getEnchantments().isEmpty() &&
-		   killer.getInventory().getBoots() != null && killer.getInventory().getBoots().getType() == Material.DIAMOND_BOOTS && !killer.getInventory().getBoots().getEnchantments().isEmpty())
-		{
-			mAchievements.awardAchievement("fancypants", killer);
 		}
 		
 		// Record kills that are still within a small area
@@ -596,13 +526,6 @@ public class MobHunting extends JavaPlugin implements Listener
 			}
 		}
 		
-		// This achievement only cares about the death blow
-		if(info.weapon.getType() == Material.BOOK || info.weapon.getType() == Material.WRITTEN_BOOK || info.weapon.getType() == Material.BOOK_AND_QUILL)
-			mAchievements.awardAchievement("bythebook", killer);
-		
-		if(isAxe(info.weapon))
-			mAchievements.awardAchievement("axemurderer", killer);
-		
 		multiplier *= data.getKillstreakMultiplier();
 		
 		String extraString = "";
@@ -631,6 +554,11 @@ public class MobHunting extends JavaPlugin implements Listener
 	private void onPlayerJoin(PlayerJoinEvent event)
 	{
 		setHuntEnabled(event.getPlayer(), true);
+	}
+	
+	public DamageInformation getDamageInformation(Creature entity)
+	{
+		return mDamageHistory.get(entity);
 	}
 	
 	public double getBaseKillPrize(LivingEntity mob)

@@ -66,6 +66,8 @@ public class Config extends AutoConfig
 	public double bonusNoWeapon = 2.0;
 	@ConfigField(name="far-shot", category="bonus")
 	public double bonusFarShot = 4.0;
+	@ConfigField(name="mounted", category="bonus")
+	public double bonusMounted = 1.5;
 	
 	@ConfigField(name="charged-kill", category="special")
 	public double specialCharged = 100;

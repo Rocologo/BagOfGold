@@ -1,8 +1,13 @@
 package au.com.mineauz.MobHunting.achievements;
 
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
-public class ItsMagic implements Achievement
+public class ItsMagic implements Achievement, Listener
 {
 
 	@Override
@@ -29,4 +34,10 @@ public class ItsMagic implements Achievement
 		return MobHunting.config().specialItsMagic;
 	}
 
+	@EventHandler
+	private void onKill(MobHuntKillEvent event)
+	{
+		if(event.getDamageInfo().weapon.getType() == Material.POTION)
+			MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
+	}
 }

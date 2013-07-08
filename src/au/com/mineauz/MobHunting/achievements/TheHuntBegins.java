@@ -1,10 +1,13 @@
 package au.com.mineauz.MobHunting.achievements;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
-public class TheHuntBegins implements Achievement
+public class TheHuntBegins implements Achievement, Listener
 {
-
 	@Override
 	public String getName()
 	{
@@ -29,4 +32,9 @@ public class TheHuntBegins implements Achievement
 		return MobHunting.config().specialHuntBegins;
 	}
 
+	@EventHandler
+	private void onKill(MobHuntKillEvent event)
+	{
+		MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
+	}
 }

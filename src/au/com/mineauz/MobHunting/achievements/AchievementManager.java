@@ -47,6 +47,9 @@ public class AchievementManager implements Listener
 		Validate.notNull(achievement);
 		
 		mAchievements.put(achievement.getID(), achievement);
+		
+		if(achievement instanceof Listener)
+			Bukkit.getPluginManager().registerEvents((Listener)achievement, MobHunting.instance);
 	}
 	
 	public boolean hasAchievement(String achievement, Player player)

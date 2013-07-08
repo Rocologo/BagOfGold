@@ -1,8 +1,13 @@
 package au.com.mineauz.MobHunting.achievements;
 
-import au.com.mineauz.MobHunting.MobHunting;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
-public class AxeMurderer implements Achievement
+import au.com.mineauz.MobHunting.MobHuntKillEvent;
+import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.util.Misc;
+
+public class AxeMurderer implements Achievement, Listener
 {
 
 	@Override
@@ -29,4 +34,10 @@ public class AxeMurderer implements Achievement
 		return MobHunting.config().specialAxeMurderer;
 	}
 
+	@EventHandler
+	private void onKill(MobHuntKillEvent event)
+	{
+		if(Misc.isAxe(event.getDamageInfo().weapon))
+			MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
+	}
 }
