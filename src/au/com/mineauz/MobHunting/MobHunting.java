@@ -114,6 +114,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		registerModifiers();
 		
 		getServer().getPluginManager().registerEvents(this, this);
+		
+		for(Player player : Bukkit.getOnlinePlayers())
+			mAchievements.load(player);
 	}
 	
 	private void registerAchievements()
@@ -130,6 +133,14 @@ public class MobHunting extends JavaPlugin implements Listener
 		mAchievements.registerAchievement(new TheHuntBegins());
 		mAchievements.registerAchievement(new ItsMagic());
 		mAchievements.registerAchievement(new FancyPants());
+		
+		for(ExtendedMobType type : ExtendedMobType.values())
+		{
+			mAchievements.registerAchievement(new BasicHuntAchievement(type));
+			mAchievements.registerAchievement(new SecondHuntAchievement(type));
+			mAchievements.registerAchievement(new ThirdHuntAchievement(type));
+			mAchievements.registerAchievement(new FourthHuntAchievement(type));
+		}
 		
 		mAchievements.initialize();
 	}
@@ -420,8 +431,6 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		HuntData data = getHuntData(killer);
 		
-		Bukkit.getPluginManager().callEvent(new MobHuntKillEvent(data, info, event.getEntity(), killer));
-		
 		int lastKillstreakLevel = data.getKillstreakLevel();
 		data.killStreak++;
 		
@@ -526,6 +535,7 @@ public class MobHunting extends JavaPlugin implements Listener
 			}
 		}
 		
+		
 		multiplier *= data.getKillstreakMultiplier();
 		
 		String extraString = "";
@@ -545,6 +555,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		if(cash >= 0.01)
 		{
+			Bukkit.getPluginManager().callEvent(new MobHuntKillEvent(data, info, event.getEntity(), killer));
 			mEconomy.depositPlayer(killer.getName(), cash);
 			killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + String.format("You gained $%.2f! %s", cash, extraString));
 		}

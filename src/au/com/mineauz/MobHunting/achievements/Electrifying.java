@@ -40,5 +40,4 @@ public class Electrifying implements Achievement, Listener
 		if(event.getEntity() instanceof Creeper && ((Creeper)event.getEntity()).isPowered())
 			MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
 	}
-
 }

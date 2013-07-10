@@ -2,6 +2,7 @@ package au.com.mineauz.MobHunting.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.achievements.Achievement;
+import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
 
 public class ListAchievementsCommand implements ICommand
 {
@@ -100,20 +102,60 @@ public class ListAchievementsCommand implements ICommand
 			return true;
 		}
 		
-		List<Achievement> achievements = MobHunting.instance.getAchievements().getCompletedAchievements(player);
-		int outOf = MobHunting.instance.getAchievements().getAllAchievements().size();
+		List<Map.Entry<Achievement, Integer>> achievements = MobHunting.instance.getAchievements().getCompletedAchievements(player);
+		int outOf = 0;
+		
+		for(Achievement achievement : MobHunting.instance.getAchievements().getAllAchievements())
+		{
+			if(achievement instanceof ProgressAchievement)
+			{
+				if(((ProgressAchievement)achievement).inheritFrom() == null)
+					++outOf;
+			}
+			else
+				++outOf;
+		}
 
+		int count = 0;
+		for(Map.Entry<Achievement, Integer> achievement : achievements)
+		{
+			if(achievement.getValue() == -1)
+				++count;
+		}
 		
 		// Build the output
 		ArrayList<String> lines = new ArrayList<String>();
 		
 		if(sender instanceof Player && ((Player)sender).getName().equals(playerName))
-			lines.add(String.format(ChatColor.GRAY + "You have completed " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " out of " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " special kills:", achievements.size(), outOf));
+			lines.add(String.format(ChatColor.GRAY + "You have completed " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " out of " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " special kills:", count, outOf));
 		else
-			lines.add(String.format(ChatColor.GRAY + "%s has completed " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " out of " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " special kills:", playerName, achievements.size(), outOf));
+			lines.add(String.format(ChatColor.GRAY + "%s has completed " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " out of " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " special kills:", playerName, count, outOf));
 		
-		for(Achievement achievement : achievements)
-			lines.add(ChatColor.YELLOW + " " + achievement.getName());
+		boolean inProgress = false;
+		for(Map.Entry<Achievement, Integer> achievement : achievements)
+		{
+			if(achievement.getValue() == -1)
+			{
+				lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
+				lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC + achievement.getKey().getDescription());
+			}
+			else
+				inProgress = true;
+		}
+		
+		if(inProgress)
+		{
+			lines.add("");
+			lines.add(ChatColor.YELLOW + "In progress:");
+			
+			for(Map.Entry<Achievement, Integer> achievement : achievements)
+			{
+				if(achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement)
+					lines.add(ChatColor.GRAY + " " + achievement.getKey().getName() + ChatColor.WHITE + "  " + achievement.getValue() + " / " + ((ProgressAchievement)achievement.getKey()).getMaxProgress());
+				else
+					inProgress = true;
+			}
+		}
 		
 		sender.sendMessage(lines.toArray(new String[lines.size()]));
 		
