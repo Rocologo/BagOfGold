@@ -37,7 +37,7 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener
 	@Override
 	public double getPrize()
 	{
-		return 1000;
+		return MobHunting.config().specialHunter4;
 	}
 
 	@Override

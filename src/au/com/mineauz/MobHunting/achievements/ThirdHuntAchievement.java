@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting.achievements;
 
 import au.com.mineauz.MobHunting.ExtendedMobType;
+import au.com.mineauz.MobHunting.MobHunting;
 
 public class ThirdHuntAchievement implements ProgressAchievement
 {
@@ -31,7 +32,7 @@ public class ThirdHuntAchievement implements ProgressAchievement
 	@Override
 	public double getPrize()
 	{
-		return 1000;
+		return MobHunting.config().specialHunter3;
 	}
 
 	@Override

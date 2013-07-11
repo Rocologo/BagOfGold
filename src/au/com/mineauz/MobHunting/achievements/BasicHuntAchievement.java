@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting.achievements;
 
 import au.com.mineauz.MobHunting.ExtendedMobType;
+import au.com.mineauz.MobHunting.MobHunting;
 
 public class BasicHuntAchievement implements ProgressAchievement
 {
@@ -31,7 +32,7 @@ public class BasicHuntAchievement implements ProgressAchievement
 	@Override
 	public double getPrize()
 	{
-		return 1000;
+		return MobHunting.config().specialHunter1;
 	}
 
 	@Override

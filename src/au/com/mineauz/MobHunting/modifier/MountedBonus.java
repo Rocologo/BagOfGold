@@ -1,5 +1,6 @@
 package au.com.mineauz.MobHunting.modifier;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public class MountedBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return "Mounted";
+		return ChatColor.GOLD + "Mounted";
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
@@ -172,9 +173,12 @@ public class AchievementManager implements Listener
 		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + "You have been awarded $" + String.format("%.2f", achievement.getPrize()));
 		
 		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
-		FireworkEffect effect = FireworkEffect.builder().withColor(Color.BLUE, Color.YELLOW, Color.GREEN).flicker(true).trail(true).build();
+		FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
 		Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
-		firework.getFireworkMeta().addEffect(effect);
+		FireworkMeta meta = firework.getFireworkMeta();
+		meta.setPower(1);
+		meta.addEffect(effect);
+		firework.setFireworkMeta(meta);
 		
 	}
 	
@@ -222,9 +226,12 @@ public class AchievementManager implements Listener
 			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + "You have been awarded $" + String.format("%.2f", achievement.getPrize()));
 			
 			player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
-			FireworkEffect effect = FireworkEffect.builder().withColor(Color.BLUE, Color.YELLOW, Color.GREEN).flicker(true).trail(true).build();
+			FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
 			Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
-			firework.getFireworkMeta().addEffect(effect);
+			FireworkMeta meta = firework.getFireworkMeta();
+			meta.setPower(1);
+			meta.addEffect(effect);
+			firework.setFireworkMeta(meta);
 		}
 		else
 		{

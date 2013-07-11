@@ -133,6 +133,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		mAchievements.registerAchievement(new TheHuntBegins());
 		mAchievements.registerAchievement(new ItsMagic());
 		mAchievements.registerAchievement(new FancyPants());
+		mAchievements.registerAchievement(new MasterSniper());
 		
 		for(ExtendedMobType type : ExtendedMobType.values())
 		{
@@ -387,7 +388,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(cause != null)
 		{
 			info.attacker = cause;
-			if(cause.isFlying())
+			if(cause.isFlying() && !cause.isInsideVehicle())
 				info.wasFlying = true;
 			
 			info.attackerPosition = cause.getLocation().clone();

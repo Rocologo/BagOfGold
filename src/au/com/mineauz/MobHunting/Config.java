@@ -89,6 +89,17 @@ public class Config extends AutoConfig
 	public double specialItsMagic = 20;
 	@ConfigField(name="fancypants", category="special")
 	public double specialFancyPants = 50;
+	@ConfigField(name="master-sniper", category="special")
+	public double specialMasterSniper = 200;
+	
+	@ConfigField(name="hunter1", category="special")
+	public double specialHunter1 = 100;
+	@ConfigField(name="hunter2", category="special")
+	public double specialHunter2 = 250;
+	@ConfigField(name="hunter3", category="special")
+	public double specialHunter3 = 500;
+	@ConfigField(name="hunter4", category="special")
+	public double specialHunter4 = 1000;
 	
 	@ConfigField(name="enable-grinding-penalty", category="penalty", comment="Enabling this prevents a player from earning too much money from using a mob grinder")
 	public boolean penaltyGrindingEnable = true;
