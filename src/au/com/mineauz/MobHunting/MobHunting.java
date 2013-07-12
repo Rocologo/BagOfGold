@@ -134,6 +134,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		mAchievements.registerAchievement(new ItsMagic());
 		mAchievements.registerAchievement(new FancyPants());
 		mAchievements.registerAchievement(new MasterSniper());
+		mAchievements.registerAchievement(new WolfKillAchievement());
 		
 		for(ExtendedMobType type : ExtendedMobType.values())
 		{
@@ -155,6 +156,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		mModifiers.add(new ReturnToSenderBonus());
 		mModifiers.add(new ShoveBonus());
 		mModifiers.add(new SneakyBonus());
+		mModifiers.add(new FriendleFireBonus());
 		
 		mModifiers.add(new FlyingPenalty());
 		mModifiers.add(new GrindingPenalty());
@@ -415,6 +417,11 @@ public class MobHunting extends JavaPlugin implements Listener
 				killer = info.attacker;
 		}
 		
+		EntityDamageByEntityEvent lastDamageCause = null;
+		
+		if(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
+			lastDamageCause = (EntityDamageByEntityEvent)event.getEntity().getLastDamageCause();
+		
 		if(killer == null || killer.getGameMode() == GameMode.CREATIVE || !isHuntEnabled(killer))
 			return;
 		
@@ -524,9 +531,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		ArrayList<String> modifiers = new ArrayList<String>();
 		for(IModifier mod : mModifiers)
 		{
-			if(mod.doesApply(event.getEntity(), killer, data, info))
+			if(mod.doesApply(event.getEntity(), killer, data, info, lastDamageCause))
 			{
-				double amt = mod.getMultiplier(event.getEntity(), killer, data, info);
+				double amt = mod.getMultiplier(event.getEntity(), killer, data, info, lastDamageCause);
 				
 				if(amt != 1.0)
 				{

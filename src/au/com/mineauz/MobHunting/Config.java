@@ -68,6 +68,8 @@ public class Config extends AutoConfig
 	public double bonusFarShot = 4.0;
 	@ConfigField(name="mounted", category="bonus")
 	public double bonusMounted = 1.5;
+	@ConfigField(name="friendly-fire", category="bonus")
+	public double bonusFriendlyFire = 4;
 	
 	@ConfigField(name="charged-kill", category="special")
 	public double specialCharged = 100;
@@ -91,6 +93,8 @@ public class Config extends AutoConfig
 	public double specialFancyPants = 50;
 	@ConfigField(name="master-sniper", category="special")
 	public double specialMasterSniper = 200;
+	@ConfigField(name="fangmaster", category="special")
+	public double specialFangMaster = 50;
 	
 	@ConfigField(name="hunter1", category="special")
 	public double specialHunter1 = 100;

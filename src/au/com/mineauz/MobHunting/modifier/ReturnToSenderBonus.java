@@ -21,13 +21,13 @@ public class ReturnToSenderBonus implements IModifier
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo)
+	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause)
 	{
 		return MobHunting.config().bonusReturnToSender;
 	}
 
 	@Override
-	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo )
+	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
 		if(!(deadEntity instanceof Ghast))
 			return false;

@@ -124,13 +124,20 @@ public class AchievementManager implements Listener
 	public List<Map.Entry<Achievement, Integer>> getCompletedAchievements(OfflinePlayer player)
 	{
 		List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
+		ArrayList<Map.Entry<Achievement, Integer>> toRemove = new ArrayList<Map.Entry<Achievement,Integer>>();
 		
 		if(player.isOnline())
 		{
 			for(Achievement achievement : mAchievements.values())
 			{
 				if(hasAchievement(achievement, player.getPlayer()))
+				{
 					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, -1));
+					
+					// If the achievement is a higher level, remove the lower level from the list
+					if(achievement instanceof ProgressAchievement && ((ProgressAchievement)achievement).inheritFrom() != null)
+						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(getAchievement(((ProgressAchievement)achievement).inheritFrom()), -1));
+				}
 				else if(achievement instanceof ProgressAchievement && getProgress((ProgressAchievement)achievement, player.getPlayer()) > 0)
 					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, getProgress((ProgressAchievement)achievement, player.getPlayer())));
 			}
@@ -142,10 +149,18 @@ public class AchievementManager implements Listener
 			for(Map.Entry<String, Integer> id : ids)
 			{
 				if(mAchievements.containsKey(id.getKey()))
-					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(mAchievements.get(id.getKey()), id.getValue()));
+				{
+					Achievement achievement = mAchievements.get(id.getKey());
+					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, id.getValue()));
+					
+					// If the achievement is a higher level, remove the lower level from the list
+					if(id.getValue() == -1 && achievement instanceof ProgressAchievement && ((ProgressAchievement)achievement).inheritFrom() != null)
+						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(getAchievement(((ProgressAchievement)achievement).inheritFrom()), -1));
+				}
 			}
 		}
 		
+		achievements.removeAll(toRemove);
 		return achievements;
 	}
 	
@@ -157,6 +172,16 @@ public class AchievementManager implements Listener
 	public void awardAchievement(String achievement, Player player)
 	{
 		awardAchievement(getAchievement(achievement), player);
+	}
+	private void broadcast(String message, Player except)
+	{
+		for(Player player : Bukkit.getOnlinePlayers())
+		{
+			if(player.equals(except))
+				continue;
+			
+			player.sendMessage(message);
+		}
 	}
 	public void awardAchievement(Achievement achievement, Player player)
 	{
@@ -171,6 +196,8 @@ public class AchievementManager implements Listener
 		player.sendMessage(ChatColor.GOLD + "Special Kill Awarded!" + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName());
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription());
 		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + "You have been awarded $" + String.format("%.2f", achievement.getPrize()));
+		
+		broadcast(ChatColor.GOLD + "" + player.getName() + " completed a Special Kill! " + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName(), player);
 		
 		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
 		FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
@@ -224,6 +251,8 @@ public class AchievementManager implements Listener
 			player.sendMessage(ChatColor.GOLD + "Special Kill Complete!" + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName());
 			player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription());
 			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + "You have been awarded $" + String.format("%.2f", achievement.getPrize()));
+			
+			broadcast(ChatColor.GOLD + "" + player.getName() + " completed a Special Kill! " + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName(), player);
 			
 			player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
 			FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
