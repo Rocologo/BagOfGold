@@ -29,7 +29,9 @@ public class FriendleFireBonus implements IModifier
 	@Override
 	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
-		if(lastDamageCause != null && lastDamageCause.getDamager() instanceof Creature || (lastDamageCause.getDamager() instanceof Projectile && (((Projectile)lastDamageCause.getDamager()).getShooter() instanceof Creature || ((Projectile)lastDamageCause.getDamager()).getShooter() instanceof Ghast)))
+		if(lastDamageCause == null)
+			return false;
+		if(lastDamageCause.getDamager() instanceof Creature || (lastDamageCause.getDamager() instanceof Projectile && (((Projectile)lastDamageCause.getDamager()).getShooter() instanceof Creature || ((Projectile)lastDamageCause.getDamager()).getShooter() instanceof Ghast)))
 			return true;
 		return false;
 	}
