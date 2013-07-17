@@ -7,6 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -14,6 +15,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,16 +24,20 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
@@ -57,6 +63,9 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	private ArrayList<Area> mKnownGrindingSpots = new ArrayList<Area>();
 	
+	private ParticleManager mParticles = new ParticleManager();
+	private Random mRand = new Random();
+
 	// Compatability classes
 	@SuppressWarnings( "unused" )
 	private MinigamesCompat mMinigames;
@@ -157,6 +166,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		mModifiers.add(new ShoveBonus());
 		mModifiers.add(new SneakyBonus());
 		mModifiers.add(new FriendleFireBonus());
+		mModifiers.add(new BonusMobBonus());
 		
 		mModifiers.add(new FlyingPenalty());
 		mModifiers.add(new GrindingPenalty());
@@ -622,6 +632,24 @@ public class MobHunting extends JavaPlugin implements Listener
 			return mConfig.pigMan;
 		
 		return 0;
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void onCreatureSpawn(CreatureSpawnEvent event)
+	{
+		if(!isHuntEnabledInWorld(event.getLocation().getWorld()) || getBaseKillPrize(event.getEntity()) <= 0 || event.getSpawnReason() != SpawnReason.NATURAL)
+			return;
+		
+		if(mRand.nextDouble() * 100 < mConfig.bonusMobChance)
+		{
+			mParticles.attachEffect(event.getEntity(), Effect.MOBSPAWNER_FLAMES);
+			if(mRand.nextBoolean())
+				event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 3));
+			else
+				event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
+			
+			event.getEntity().setMetadata("MH:hasBonus", new FixedMetadataValue(this, true));
+		}
 	}
 	
 	public AchievementManager getAchievements()

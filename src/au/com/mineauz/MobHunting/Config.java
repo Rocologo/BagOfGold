@@ -70,6 +70,11 @@ public class Config extends AutoConfig
 	public double bonusMounted = 1.5;
 	@ConfigField(name="friendly-fire", category="bonus")
 	public double bonusFriendlyFire = 4;
+	@ConfigField(name="bonus-mob", category="bonus")
+	public double bonusBonusMob = 10;
+	
+	@ConfigField(name="bonus-mob-chance", category="bonus", comment="This is the chance (% chance 0-100) that a bonus mob will spawn.")
+	public double bonusMobChance = 0.2;
 	
 	@ConfigField(name="charged-kill", category="special")
 	public double specialCharged = 100;
