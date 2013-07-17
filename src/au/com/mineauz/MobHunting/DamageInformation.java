@@ -13,6 +13,7 @@ public class DamageInformation
 	public boolean mele;
 	public Player attacker;
 	public Location attackerPosition;
+	public boolean wolfAssist;
 	
 	public boolean wasFlying;
 }
