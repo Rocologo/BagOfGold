@@ -21,7 +21,8 @@ public enum ExtendedMobType
 	Witch(EntityType.WITCH, 800),
 	Wither(EntityType.WITHER, 200),
 	Zombie(EntityType.ZOMBIE, 1000),
-	ZombiePigman(EntityType.PIG_ZOMBIE, 1000);
+	ZombiePigman(EntityType.PIG_ZOMBIE, 1000),
+	BonusMob(EntityType.UNKNOWN, 200);
 	
 	private EntityType mType;
 	private int mMax;
@@ -48,6 +49,8 @@ public enum ExtendedMobType
 			return ent instanceof Skeleton && ((Skeleton)ent).getSkeletonType() == SkeletonType.WITHER;
 		else if(this == Skeleton)
 			return ent instanceof Skeleton && ((Skeleton)ent).getSkeletonType() == SkeletonType.NORMAL;
+		else if(this == BonusMob)
+			return ent.hasMetadata("MH:hasBonus");
 		else
 			return ent.getType() == mType;
 	}

@@ -53,7 +53,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	private Economy mEconomy;
 	public static MobHunting instance;
 	
-	private WeakHashMap<Creature, DamageInformation> mDamageHistory = new WeakHashMap<Creature, DamageInformation>();
+	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Config mConfig;
 	
 	private AchievementManager mAchievements;
@@ -356,7 +356,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	private void onMobDamage(EntityDamageByEntityEvent event)
 	{
-		if(!(event.getEntity() instanceof Creature) || !isHuntEnabledInWorld(event.getEntity().getWorld()))
+		if(!(event.getEntity() instanceof LivingEntity) || !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 		
 		DamageInformation info = null;
@@ -404,7 +404,7 @@ public class MobHunting extends JavaPlugin implements Listener
 				info.wasFlying = true;
 			
 			info.attackerPosition = cause.getLocation().clone();
-			mDamageHistory.put((Creature)event.getEntity(), info);
+			mDamageHistory.put((LivingEntity)event.getEntity(), info);
 		}
 	}
 	
@@ -417,7 +417,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		Player killer = event.getEntity().getKiller();
 		
 		DamageInformation info = null;
-		if(event.getEntity() instanceof Creature && mDamageHistory.containsKey((Creature)event.getEntity()))
+		if(event.getEntity() instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity)event.getEntity()))
 		{
 			info = mDamageHistory.get(event.getEntity());
 			
@@ -585,7 +585,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		setHuntEnabled(event.getPlayer(), true);
 	}
 	
-	public DamageInformation getDamageInformation(Creature entity)
+	public DamageInformation getDamageInformation(LivingEntity entity)
 	{
 		return mDamageHistory.get(entity);
 	}
