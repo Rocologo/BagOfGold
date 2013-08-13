@@ -110,6 +110,23 @@ public class Config extends AutoConfig
 	@ConfigField(name="hunter4", category="special")
 	public double specialHunter4 = 1000;
 	
+	@ConfigField(name="level1", category="killstreak")
+	public int killstreakLevel1 = 5;
+	@ConfigField(name="level1-multiplier", category="killstreak")
+	public double killstreakLevel1Mult = 1.5;
+	@ConfigField(name="level2", category="killstreak")
+	public int killstreakLevel2 = 10;
+	@ConfigField(name="level2-multiplier", category="killstreak")
+	public double killstreakLevel2Mult = 2;
+	@ConfigField(name="level3", category="killstreak")
+	public int killstreakLevel3 = 20;
+	@ConfigField(name="level3-multiplier", category="killstreak")
+	public double killstreakLevel3Mult = 3;
+	@ConfigField(name="level4", category="killstreak")
+	public int killstreakLevel4 = 40;
+	@ConfigField(name="level4-multiplier", category="killstreak")
+	public double killstreakLevel4Mult = 4;
+	
 	@ConfigField(name="enable-grinding-penalty", category="penalty", comment="Enabling this prevents a player from earning too much money from using a mob grinder")
 	public boolean penaltyGrindingEnable = true;
 	

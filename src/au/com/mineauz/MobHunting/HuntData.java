@@ -61,13 +61,13 @@ public class HuntData
 	
 	public int getKillstreakLevel()
 	{
-		if(killStreak < 5)
+		if(killStreak < MobHunting.config().killstreakLevel1)
 			return 0;
-		else if(killStreak < 10)
+		else if(killStreak < MobHunting.config().killstreakLevel2)
 			return 1;
-		else if(killStreak < 20)
+		else if(killStreak < MobHunting.config().killstreakLevel3)
 			return 2;
-		else if(killStreak < 40)
+		else if(killStreak < MobHunting.config().killstreakLevel4)
 			return 3;
 		else
 			return 4;
@@ -81,13 +81,13 @@ public class HuntData
 		case 0:
 			return 1.0;
 		case 1:
-			return 1.5;
+			return MobHunting.config().killstreakLevel1Mult;
 		case 2:
-			return 2.0;
+			return MobHunting.config().killstreakLevel2Mult;
 		case 3:
-			return 3.0;
+			return MobHunting.config().killstreakLevel3Mult;
 		default:
-			return 4.0;
+			return MobHunting.config().killstreakLevel4Mult;
 		}
 	}
 	

@@ -111,7 +111,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(Bukkit.getPluginManager().isPluginEnabled("Minigames"))
 			mMinigames = new MinigamesCompat();
 		
-		CommandDispatcher cmd = new CommandDispatcher("mobhunt", "Allows you to configure Mob Hunting");
+		CommandDispatcher cmd = new CommandDispatcher("mobhunt", "Mob Hunting Version " + getDescription().getVersion());
 		getCommand("mobhunt").setExecutor(cmd);
 		getCommand("mobhunt").setTabCompleter(cmd);
 		
@@ -423,6 +423,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(event.getEntity() instanceof Player || getBaseKillPrize(event.getEntity()) == 0 || !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 		
+		if(event.getEntity().hasMetadata("MH:blocked"))
+			return;
+		
 		Player killer = event.getEntity().getKiller();
 		
 		DamageInformation info = null;
@@ -644,7 +647,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	private void onCreatureSpawn(CreatureSpawnEvent event)
+	private void bonusMobSpawn(CreatureSpawnEvent event)
 	{
 		if(!isHuntEnabledInWorld(event.getLocation().getWorld()) || getBaseKillPrize(event.getEntity()) <= 0 || event.getSpawnReason() != SpawnReason.NATURAL)
 			return;
@@ -659,6 +662,17 @@ public class MobHunting extends JavaPlugin implements Listener
 			
 			event.getEntity().setMetadata("MH:hasBonus", new FixedMetadataValue(this, true));
 		}
+	}
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void spawnerMobSpawn(CreatureSpawnEvent event)
+	{
+		if(!isHuntEnabledInWorld(event.getLocation().getWorld()) || getBaseKillPrize(event.getEntity()) <= 0)
+			return;
+		
+		if(event.getSpawnReason() != SpawnReason.SPAWNER && event.getSpawnReason() == SpawnReason.SPAWNER_EGG)
+			return;
+		
+		event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(this, true));
 	}
 	
 	public AchievementManager getAchievements()

@@ -15,7 +15,7 @@ public class BrawlerBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.RED + "Brawler";
+		return ChatColor.LIGHT_PURPLE + "Brawler";
 	}
 
 	@Override
