@@ -652,6 +652,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(!isHuntEnabledInWorld(event.getLocation().getWorld()) || getBaseKillPrize(event.getEntity()) <= 0 || event.getSpawnReason() != SpawnReason.NATURAL)
 			return;
 		
+		if(event.getEntityType() == EntityType.ENDER_DRAGON)
+			return;
+		
 		if(mRand.nextDouble() * 100 < mConfig.bonusMobChance)
 		{
 			mParticles.attachEffect(event.getEntity(), Effect.MOBSPAWNER_FLAMES);
@@ -669,7 +672,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(!isHuntEnabledInWorld(event.getLocation().getWorld()) || getBaseKillPrize(event.getEntity()) <= 0)
 			return;
 		
-		if(event.getSpawnReason() != SpawnReason.SPAWNER && event.getSpawnReason() == SpawnReason.SPAWNER_EGG)
+		if(event.getSpawnReason() != SpawnReason.SPAWNER && event.getSpawnReason() != SpawnReason.SPAWNER_EGG)
 			return;
 		
 		event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(this, true));
