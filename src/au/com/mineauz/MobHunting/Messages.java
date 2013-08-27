@@ -1,22 +1,77 @@
 package au.com.mineauz.MobHunting;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Messages
 {
-	private static final String			BUNDLE_NAME		= "au.com.mineauz.MobHunting.messages"; //$NON-NLS-1$
-
-	private static final ResourceBundle	RESOURCE_BUNDLE	= ResourceBundle
-																.getBundle(BUNDLE_NAME);
-
-	private Messages()
+	private static HashMap<String, String> mTranslationTable;
+	
+	public static void exportDefaultLanguages()
 	{
+		File folder = new File(MobHunting.instance.getDataFolder(), "lang");
+		if(!folder.exists())
+			folder.mkdirs();
+		
+		String[] sources = new String[] {"en_US.lang"};
+		
+		for(String source : sources)
+			MobHunting.instance.saveResource("lang/" + source, false);
 	}
-
+	
+	public static void setLanguage(String lang)
+	{
+		File file = new File(MobHunting.instance.getDataFolder(), "lang/" + lang + ".lang");
+		if(!file.exists())
+			file = new File(MobHunting.instance.getDataFolder(), "lang/en_US.lang");
+		
+		mTranslationTable = new HashMap<String, String>();
+		
+		// We tried
+		if(!file.exists())
+			return;
+		
+		try
+		{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			while(reader.ready())
+			{
+				String line = reader.readLine();
+				int index = line.indexOf('=');
+				if(index == -1)
+					continue;
+				
+				String key = line.substring(0, index);
+				String value = line.substring(index + 1);
+				
+				mTranslationTable.put(key, value);
+			}
+			reader.close();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private static String getStringInternal(String key)
+	{
+		String value = mTranslationTable.get(key);
+		
+		if(value == null)
+			throw new MissingResourceException("", "", key);
+		
+		return value;
+	}
+	
 	private static Pattern mPattern;
 	
 	/**
@@ -46,7 +101,7 @@ public class Messages
 			}
 			
 
-			String str = RESOURCE_BUNDLE.getString(key);
+			String str = getStringInternal(key);
 			Matcher m = mPattern.matcher(str);
 			
 			String output = str;
@@ -71,7 +126,7 @@ public class Messages
 	{
 		try
 		{
-			return RESOURCE_BUNDLE.getString(key);
+			return getStringInternal(key);
 		}
 		catch ( MissingResourceException e )
 		{

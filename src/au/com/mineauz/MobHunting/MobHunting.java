@@ -100,6 +100,8 @@ public class MobHunting extends JavaPlugin implements Listener
 			}
 		}
 		
+		Messages.exportDefaultLanguages();
+		
 		mConfig = new Config(new File(getDataFolder(), "config.yml")); //$NON-NLS-1$
 		
 		if(mConfig.load())

@@ -2,6 +2,8 @@ package au.com.mineauz.MobHunting;
 
 import java.io.File;
 
+import org.bukkit.configuration.InvalidConfigurationException;
+
 import au.com.mineauz.MobHunting.util.AutoConfig;
 import au.com.mineauz.MobHunting.util.ConfigField;
 
@@ -135,4 +137,13 @@ public class Config extends AutoConfig
 	
 	@ConfigField(name="disabled-in-worlds", category="general", comment="Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
 	public String[] disabledInWorlds = new String[0];
+	
+	@ConfigField(name="language", category="general", comment="The language (file) to use. You can put the name of the language file as the language code (eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
+	public String language = "en_US";
+	
+	@Override
+	protected void onPostLoad() throws InvalidConfigurationException
+	{
+		Messages.setLanguage(language);
+	}
 }
