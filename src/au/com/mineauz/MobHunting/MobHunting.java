@@ -71,6 +71,13 @@ public class MobHunting extends JavaPlugin implements Listener
 	private MinigamesCompat mMinigames;
 	
 	@Override
+	public void onLoad()
+	{
+		mAchievements = new AchievementManager();
+		mModifiers = new HashSet<IModifier>();
+	}
+	
+	@Override
 	public void onEnable()
 	{
 		instance = this;
@@ -132,8 +139,6 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	private void registerAchievements()
 	{
-		mAchievements = new AchievementManager();
-		
 		mAchievements.registerAchievement(new AxeMurderer());
 		mAchievements.registerAchievement(new CreeperBoxing());
 		mAchievements.registerAchievement(new Electrifying());
@@ -160,7 +165,6 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	private void registerModifiers()
 	{
-		mModifiers = new HashSet<IModifier>();
 		mModifiers.add(new BrawlerBonus());
 		mModifiers.add(new ProSniperBonus());
 		mModifiers.add(new SniperBonus());
@@ -231,6 +235,11 @@ public class MobHunting extends JavaPlugin implements Listener
 	public static Config config()
 	{
 		return instance.mConfig;
+	}
+	
+	public void registerModifier(IModifier modifier)
+	{
+		mModifiers.add(modifier);
 	}
 	
 	public HuntData getHuntData(Player player)
