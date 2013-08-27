@@ -3,6 +3,7 @@ package au.com.mineauz.MobHunting.achievements;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.util.Misc;
@@ -13,19 +14,19 @@ public class AxeMurderer implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Axe Murderer";
+		return Messages.getString("achievements.axemurderer.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "axemurderer";
+		return "axemurderer"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Kill a mob with an axe";
+		return Messages.getString("achievements.axemurderer.description"); //$NON-NLS-1$
 	}
 
 	@Override

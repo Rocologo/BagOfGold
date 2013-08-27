@@ -14,6 +14,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 
+import au.com.mineauz.MobHunting.Messages;
+
 /**
  * This allows sub commands to be handled in a clean easily expandable way.
  * Just create a new command that implements ICommand
@@ -96,42 +98,36 @@ AliasCheck:	for(Entry<String, ICommand> ent : mCommands.entrySet())
 		// Check that the sender is correct
 		if(!com.canBeConsole() && (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender))
 		{
-			sender.sendMessage(ChatColor.RED + "/" + label + " " + subCommand + " cannot be called from the console.");
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.noconsole", "command", "/" + label + " " + subCommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return true;
 		}
 		if(!com.canBeCommandBlock() && sender instanceof BlockCommandSender)
 		{
-			sender.sendMessage(ChatColor.RED + "/" + label + " " + subCommand + " cannot be called from a command block.");
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nocommandblock", "command", "/" + label + " " + subCommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return true;
 		}
 		
 		// Check that they have permission
 		if(com.getPermission() != null && !sender.hasPermission(com.getPermission()))
 		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission to use /" + label + " " + subCommand);
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "command", "/" + label + " " + subCommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return true;
 		}
 		
 		if(!com.onCommand(sender, subCommand, subArgs))
 		{
 			String[] lines = com.getUsageString(subCommand, sender);
-			String usageString = "";
+			String usageString = ""; //$NON-NLS-1$
 			
-			if(lines.length > 1)
-				usageString = ChatColor.RED + "Usage:\n    ";
-			else
-				usageString = ChatColor.RED + "Usage: ";
-			
-			boolean first = true;
 			for(String line : lines)
 			{
-				if(!first)
-					usageString += "\n    ";
-				first = false;
+				if(lines.length > 1)
+					usageString += "\n    "; //$NON-NLS-1$
 				
-				usageString += ChatColor.GRAY + "/" + label + " " + line;
+				usageString += ChatColor.GRAY + "/" + label + " " + line; //$NON-NLS-1$ //$NON-NLS-2$
 			}
-				
+
+			usageString = ChatColor.RED + Messages.getString("mobhunting.commands.base.usage", "usage", usageString); //$NON-NLS-1$ //$NON-NLS-2$
 			sender.sendMessage(usageString);
 		}
 		
@@ -139,17 +135,17 @@ AliasCheck:	for(Entry<String, ICommand> ent : mCommands.entrySet())
 	}
 	private void displayUsage(CommandSender sender, String label, String subcommand)
 	{
-		String usage = "";
+		String usage = ""; //$NON-NLS-1$
 		
 		if(subcommand != null)
 		{
-			sender.sendMessage(ChatColor.RED + "Unknown command: " + ChatColor.RESET + "/" + label + " " + ChatColor.GOLD + subcommand);
-			sender.sendMessage("Valid commands are:");
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.unknowncommand", "command", ChatColor.RESET + "/" + label + " " + ChatColor.GOLD + subcommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			sender.sendMessage(Messages.getString("mobhunting.commands.base.validcommands")); //$NON-NLS-1$
 		}
 		else
 		{
-			sender.sendMessage(ChatColor.RED + "No command specified: " + ChatColor.RESET + "/" + label + ChatColor.GOLD + " <command>");
-			sender.sendMessage("Valid commands are:");;
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nocommand", "command", ChatColor.RESET + "/" + label + ChatColor.GOLD + " <command>")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			sender.sendMessage(Messages.getString("mobhunting.commands.base.validcommands")); //$NON-NLS-1$
 		}
 		
 		boolean first = true;
@@ -166,7 +162,7 @@ AliasCheck:	for(Entry<String, ICommand> ent : mCommands.entrySet())
 			if(first)
 				usage += ent.getKey();
 			else
-				usage += ", " + ent.getKey();
+				usage += ", " + ent.getKey(); //$NON-NLS-1$
 			
 			first = false;
 		}
@@ -248,7 +244,7 @@ AliasCheck:	for(Entry<String, ICommand> ent : mCommands.entrySet())
 		@Override
 		public String getName()
 		{
-			return "help";
+			return "help"; //$NON-NLS-1$
 		}
 
 		@Override
@@ -272,7 +268,7 @@ AliasCheck:	for(Entry<String, ICommand> ent : mCommands.entrySet())
 		@Override
 		public String getDescription()
 		{
-			return "Displays this screen.";
+			return Messages.getString("mobhunting.commands.base.help.description"); //$NON-NLS-1$
 		}
 
 		@Override
@@ -294,7 +290,7 @@ AliasCheck:	for(Entry<String, ICommand> ent : mCommands.entrySet())
 				return false;
 			
 			sender.sendMessage(ChatColor.GOLD + mRootCommandDescription);
-			sender.sendMessage(ChatColor.GOLD + "Commands: \n");
+			sender.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.commands.base.help.commands")); //$NON-NLS-1$
 			
 			for(ICommand command : mCommands.values())
 			{
@@ -308,19 +304,19 @@ AliasCheck:	for(Entry<String, ICommand> ent : mCommands.entrySet())
 					continue;
 				
 				
-				String usageString = "";
+				String usageString = ""; //$NON-NLS-1$
 				boolean first = true;
 				for(String line : command.getUsageString(command.getName(), sender))
 				{
 					if(!first)
-						usageString += "\n";
+						usageString += "\n"; //$NON-NLS-1$
 					
 					first = false;
 					
-					usageString += ChatColor.GOLD + "/" + mRootCommandName + " " + line;
+					usageString += ChatColor.GOLD + "/" + mRootCommandName + " " + line; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
-				sender.sendMessage(usageString + "\n  " + ChatColor.WHITE + command.getDescription());
+				sender.sendMessage(usageString + "\n  " + ChatColor.WHITE + command.getDescription()); //$NON-NLS-1$
 			}
 			return true;
 		}

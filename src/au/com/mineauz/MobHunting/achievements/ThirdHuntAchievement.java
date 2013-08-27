@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting.achievements;
 
 import au.com.mineauz.MobHunting.ExtendedMobType;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class ThirdHuntAchievement implements ProgressAchievement
@@ -14,19 +15,19 @@ public class ThirdHuntAchievement implements ProgressAchievement
 	@Override
 	public String getName()
 	{
-		return "Apprentice " + mType.getName() + " Hunter";
+		return Messages.getString("achievements.hunter.3.name", "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "hunting-level3-" + mType.getName().toLowerCase();
+		return "hunting-level3-" + mType.getName().toLowerCase(); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Hunt " + getMaxProgress() + " " + mType.getName() + "s";
+		return Messages.getString("achievements.hunter.3.description", "count", getMaxProgress(), "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Override
@@ -42,5 +43,5 @@ public class ThirdHuntAchievement implements ProgressAchievement
 	}
 
 	@Override
-	public String inheritFrom() { return "hunting-level2-" + mType.getName().toLowerCase(); }
+	public String inheritFrom() { return "hunting-level2-" + mType.getName().toLowerCase(); } //$NON-NLS-1$
 }

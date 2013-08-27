@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class ReloadCommand implements ICommand
@@ -12,7 +13,7 @@ public class ReloadCommand implements ICommand
 	@Override
 	public String getName()
 	{
-		return "reload";
+		return "reload"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -24,7 +25,7 @@ public class ReloadCommand implements ICommand
 	@Override
 	public String getPermission()
 	{
-		return "mobhunting.reload";
+		return "mobhunting.reload"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class ReloadCommand implements ICommand
 	@Override
 	public String getDescription()
 	{
-		return "Reloads the configuration";
+		return Messages.getString("mobhunting.commands.reload.description"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -55,9 +56,9 @@ public class ReloadCommand implements ICommand
 	public boolean onCommand( CommandSender sender, String label, String[] args )
 	{
 		if(MobHunting.config().load())
-			sender.sendMessage(ChatColor.GREEN + "Configuration Reloaded");
+			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.reload.reload-complete")); //$NON-NLS-1$
 		else
-			sender.sendMessage(ChatColor.RED + "There is a problem with the config. Please check any changes you made");
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.reload.reload-error")); //$NON-NLS-1$
 		
 		return true;
 	}

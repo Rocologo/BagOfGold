@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class BrawlerBonus implements IModifier
@@ -15,7 +16,7 @@ public class BrawlerBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.LIGHT_PURPLE + "Brawler";
+		return ChatColor.LIGHT_PURPLE + Messages.getString("bonus.brawler.name"); //$NON-NLS-1$
 	}
 
 	@Override

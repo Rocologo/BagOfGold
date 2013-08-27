@@ -1,5 +1,6 @@
 package au.com.mineauz.MobHunting.achievements;
 import au.com.mineauz.MobHunting.ExtendedMobType;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class SecondHuntAchievement implements ProgressAchievement
@@ -13,19 +14,19 @@ public class SecondHuntAchievement implements ProgressAchievement
 	@Override
 	public String getName()
 	{
-		return "Amature " + mType.getName() + " Hunter";
+		return Messages.getString("achievements.hunter.2.name", "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "hunting-level2-" + mType.getName().toLowerCase();
+		return "hunting-level2-" + mType.getName().toLowerCase(); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Hunt " + getMaxProgress() + " " + mType.getName() + "s";
+		return Messages.getString("achievements.hunter.2.description", "count", getMaxProgress(), "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Override
@@ -41,5 +42,5 @@ public class SecondHuntAchievement implements ProgressAchievement
 	}
 
 	@Override
-	public String inheritFrom() { return "hunting-level1-" + mType.getName().toLowerCase(); }
+	public String inheritFrom() { return "hunting-level1-" + mType.getName().toLowerCase(); } //$NON-NLS-1$
 }

@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class WolfKillAchievement implements ProgressAchievement, Listener
@@ -17,19 +18,19 @@ public class WolfKillAchievement implements ProgressAchievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Master of the Fang";
+		return Messages.getString("achievements.fangmaster.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "fangmaster";
+		return "fangmaster"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Use your tamed wolves to kill 500 mobs";
+		return Messages.getString("achievements.fangmaster.description"); //$NON-NLS-1$
 	}
 
 	@Override

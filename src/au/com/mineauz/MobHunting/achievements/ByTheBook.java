@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
@@ -13,19 +14,19 @@ public class ByTheBook implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "By the Book";
+		return Messages.getString("achievements.bythebook.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "bythebook";
+		return "bythebook"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Kill an enemy using a book";
+		return Messages.getString("achievements.bythebook.description"); //$NON-NLS-1$
 	}
 
 	@Override

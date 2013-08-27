@@ -79,7 +79,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(economyProvider == null)
 		{
 			instance = null;
-			getLogger().severe("Unable to hook into an economy! Make sure you have one available that Vault accepts.");
+			getLogger().severe(Messages.getString("mobhunting.hook.econ")); //$NON-NLS-1$
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -87,7 +87,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		mEconomy = economyProvider.getProvider();
 		
 		// Move the old data folder
-		File oldData = new File(getDataFolder().getParentFile(), "Mob Hunting");
+		File oldData = new File(getDataFolder().getParentFile(), "Mob Hunting"); //$NON-NLS-1$
 		if(oldData.exists())
 		{
 			try
@@ -100,20 +100,20 @@ public class MobHunting extends JavaPlugin implements Listener
 			}
 		}
 		
-		mConfig = new Config(new File(getDataFolder(), "config.yml"));
+		mConfig = new Config(new File(getDataFolder(), "config.yml")); //$NON-NLS-1$
 		
 		if(mConfig.load())
 			mConfig.save();
 		else
-			throw new RuntimeException("There was a problem loading the MobHunting config");
+			throw new RuntimeException(Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
 		
 		// Handle compatability stuff
-		if(Bukkit.getPluginManager().isPluginEnabled("Minigames"))
+		if(Bukkit.getPluginManager().isPluginEnabled("Minigames")) //$NON-NLS-1$
 			mMinigames = new MinigamesCompat();
 		
-		CommandDispatcher cmd = new CommandDispatcher("mobhunt", "Mob Hunting Version " + getDescription().getVersion());
-		getCommand("mobhunt").setExecutor(cmd);
-		getCommand("mobhunt").setTabCompleter(cmd);
+		CommandDispatcher cmd = new CommandDispatcher("mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
+		getCommand("mobhunt").setExecutor(cmd); //$NON-NLS-1$
+		getCommand("mobhunt").setTabCompleter(cmd); //$NON-NLS-1$
 		
 		cmd.registerCommand(new ReloadCommand());
 		cmd.registerCommand(new ListAchievementsCommand());
@@ -174,7 +174,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		// Check if horses exist
 		try
 		{
-			Class.forName("org.bukkit.entity.Horse");
+			Class.forName("org.bukkit.entity.Horse"); //$NON-NLS-1$
 			mModifiers.add(new MountedBonus());
 		}
 		catch(ClassNotFoundException e) {}
@@ -234,20 +234,20 @@ public class MobHunting extends JavaPlugin implements Listener
 	public HuntData getHuntData(Player player)
 	{
 		HuntData data = null;
-		if(!player.hasMetadata("MobHuntData"))
+		if(!player.hasMetadata("MobHuntData")) //$NON-NLS-1$
 		{
 			data = new HuntData();
-			player.setMetadata("MobHuntData", new FixedMetadataValue(this, data));
+			player.setMetadata("MobHuntData", new FixedMetadataValue(this, data)); //$NON-NLS-1$
 		}
 		else
 		{
-			if(!(player.getMetadata("MobHuntData").get(0).value() instanceof HuntData))
+			if(!(player.getMetadata("MobHuntData").get(0).value() instanceof HuntData)) //$NON-NLS-1$
 			{
-				player.getMetadata("MobHuntData").get(0).invalidate();
-				player.setMetadata("MobHuntData", new FixedMetadataValue(this, new HuntData()));
+				player.getMetadata("MobHuntData").get(0).invalidate(); //$NON-NLS-1$
+				player.setMetadata("MobHuntData", new FixedMetadataValue(this, new HuntData())); //$NON-NLS-1$
 			}
 			
-			data = (HuntData)player.getMetadata("MobHuntData").get(0).value();
+			data = (HuntData)player.getMetadata("MobHuntData").get(0).value(); //$NON-NLS-1$
 		}
 
 		return data;
@@ -255,10 +255,10 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	public static boolean isHuntEnabled(Player player)
 	{
-		if(!player.hasMetadata("MH:enabled"))
+		if(!player.hasMetadata("MH:enabled")) //$NON-NLS-1$
 			return false;
 		
-		List<MetadataValue> values = player.getMetadata("MH:enabled");
+		List<MetadataValue> values = player.getMetadata("MH:enabled"); //$NON-NLS-1$
 		
 		// Use the first value that matches the required type
 		boolean enabled = false;
@@ -268,7 +268,7 @@ public class MobHunting extends JavaPlugin implements Listener
 				enabled = value.asBoolean();
 		}
 		
-		if(enabled && !player.hasPermission("mobhunting.enable"))
+		if(enabled && !player.hasPermission("mobhunting.enable")) //$NON-NLS-1$
 			return false;
 		
 		return enabled;
@@ -287,7 +287,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	public static void setHuntEnabled(Player player, boolean enabled)
 	{
-		player.setMetadata("MH:enabled", new FixedMetadataValue(instance, enabled));
+		player.setMetadata("MH:enabled", new FixedMetadataValue(instance, enabled)); //$NON-NLS-1$
 	}
 	
 	private boolean isSword(ItemStack item)
@@ -308,7 +308,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		HuntData data = getHuntData(event.getEntity());
 		if(data.getKillstreakLevel() != 0)
-			event.getEntity().sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "Killstreak ended");
+			event.getEntity().sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended")); //$NON-NLS-1$ //$NON-NLS-2$
 		data.killStreak = 0;
 	}
 	
@@ -324,7 +324,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		Player player = (Player)event.getEntity();
 		HuntData data = getHuntData(player);
 		if(data.getKillstreakLevel() != 0)
-			player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + "Killstreak ended");
+			player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended")); //$NON-NLS-1$ //$NON-NLS-2$
 		data.killStreak = 0;
 	}
 	
@@ -423,7 +423,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(event.getEntity() instanceof Player || getBaseKillPrize(event.getEntity()) == 0 || !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 		
-		if(event.getEntity().hasMetadata("MH:blocked"))
+		if(event.getEntity().hasMetadata("MH:blocked")) //$NON-NLS-1$
 			return;
 		
 		Player killer = event.getEntity().getKiller();
@@ -470,20 +470,20 @@ public class MobHunting extends JavaPlugin implements Listener
 			switch(data.getKillstreakLevel())
 			{
 			case 1:
-				killer.sendMessage(ChatColor.BLUE + "Nice!");
+				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1")); //$NON-NLS-1$
 				break;
 			case 2:
-				killer.sendMessage(ChatColor.BLUE + "Super!");
+				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2")); //$NON-NLS-1$
 				break;
 			case 3:
-				killer.sendMessage(ChatColor.BLUE + "Killing Machine!");
+				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3")); //$NON-NLS-1$
 				break;
 			default:
-				killer.sendMessage(ChatColor.BLUE + "Unstoppable!");
+				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4")); //$NON-NLS-1$
 				break;
 			}
 			
-			killer.sendMessage(ChatColor.GRAY + String.format("x%.1f Activated", data.getKillstreakMultiplier()));
+			killer.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier", String.format("%.1f",data.getKillstreakMultiplier()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		
 		// Record kills that are still within a small area
@@ -540,7 +540,7 @@ public class MobHunting extends JavaPlugin implements Listener
 			if(data.dampenedKills > 14)
 			{
 				if(data.getKillstreakLevel() != 0)
-					killer.sendMessage(ChatColor.RED + "Killstreak Lost");
+					killer.sendMessage(ChatColor.RED + Messages.getString("mobhunting.killstreak.lost")); //$NON-NLS-1$
 				data.killStreak = 0;
 			}
 		}
@@ -568,26 +568,27 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		multiplier *= data.getKillstreakMultiplier();
 		
-		String extraString = "";
+		String extraString = ""; //$NON-NLS-1$
 		
 		// Only display the multiplier if its not 1
 		if(Math.abs(multiplier - 1) > 0.05)
-			extraString += String.format("x%.1f", multiplier);
+			extraString += String.format("x%.1f", multiplier); //$NON-NLS-1$
 		
 		// Add on modifiers
 		for(String modifier : modifiers)
-			extraString += ChatColor.WHITE + " * " + modifier;
+			extraString += ChatColor.WHITE + " * " + modifier; //$NON-NLS-1$
 		
 		cash *= multiplier;
-		
-		if(!extraString.trim().isEmpty())
-			extraString = "With: " + extraString.trim();
 		
 		if(cash >= 0.01)
 		{
 			Bukkit.getPluginManager().callEvent(new MobHuntKillEvent(data, info, event.getEntity(), killer));
 			mEconomy.depositPlayer(killer.getName(), cash);
-			killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + String.format("You gained $%.2f! %s", cash, extraString));
+			
+			if(extraString.trim().isEmpty())
+				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$
+			else
+				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses", "prize", mEconomy.format(cash), "bonuses", extraString.trim())); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -663,7 +664,7 @@ public class MobHunting extends JavaPlugin implements Listener
 			else
 				event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
 			
-			event.getEntity().setMetadata("MH:hasBonus", new FixedMetadataValue(this, true));
+			event.getEntity().setMetadata("MH:hasBonus", new FixedMetadataValue(this, true)); //$NON-NLS-1$
 		}
 	}
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
@@ -675,7 +676,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(event.getSpawnReason() != SpawnReason.SPAWNER && event.getSpawnReason() != SpawnReason.SPAWNER_EGG)
 			return;
 		
-		event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(this, true));
+		event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(this, true)); //$NON-NLS-1$
 	}
 	
 	public AchievementManager getAchievements()

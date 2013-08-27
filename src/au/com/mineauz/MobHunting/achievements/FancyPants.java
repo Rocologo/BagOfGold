@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
@@ -13,19 +14,19 @@ public class FancyPants implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Fancy Pants";
+		return Messages.getString("achievements.fancypants.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "fancypants";
+		return "fancypants"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Complete a kill with complete set of diamond armour, and a diamond sword, all enchanted";
+		return Messages.getString("achievements.fancypants.description"); //$NON-NLS-1$
 	}
 
 	@Override

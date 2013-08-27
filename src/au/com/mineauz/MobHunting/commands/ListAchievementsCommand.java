@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.achievements.Achievement;
 import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
@@ -21,30 +22,30 @@ public class ListAchievementsCommand implements ICommand
 	@Override
 	public String getName()
 	{
-		return "achievements";
+		return "achievements"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String[] getAliases()
 	{
-		return new String[] {"listachievements", "specialkills", "kills"};
+		return new String[] {"listachievements", "specialkills", "kills"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Override
 	public String getPermission()
 	{
-		return "mobhunting.listachievements";
+		return "mobhunting.listachievements"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String[] getUsageString( String label, CommandSender sender )
 	{
 		if(sender instanceof ConsoleCommandSender)
-			return new String[] { label + ChatColor.GOLD + " <player>" };
+			return new String[] { label + ChatColor.GOLD + " <player>" }; //$NON-NLS-1$
 		else
 		{
-			if(sender.hasPermission("mobhunting.listachievements.other"))
-				return new String[] { label + ChatColor.GREEN + " [<player>]" };
+			if(sender.hasPermission("mobhunting.listachievements.other")) //$NON-NLS-1$
+				return new String[] { label + ChatColor.GREEN + " [<player>]" }; //$NON-NLS-1$
 			else
 				return new String[] { label };
 		}
@@ -53,7 +54,7 @@ public class ListAchievementsCommand implements ICommand
 	@Override
 	public String getDescription()
 	{
-		return "Lists all your special kills.";
+		return Messages.getString("mobhunting.commands.listachievements.description"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class ListAchievementsCommand implements ICommand
 		
 		if(args.length == 1)
 		{
-			if(!sender.hasPermission("mobhunting.listachievements.other"))
+			if(!sender.hasPermission("mobhunting.listachievements.other")) //$NON-NLS-1$
 				return false;
 			
 			playerName = args[0];
@@ -98,7 +99,7 @@ public class ListAchievementsCommand implements ICommand
 		
 		if(!player.hasPlayedBefore())
 		{
-			sender.sendMessage(ChatColor.RED + "That player doesnt exist");
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.listachievements.player-not-exist")); //$NON-NLS-1$
 			return true;
 		}
 		
@@ -127,17 +128,17 @@ public class ListAchievementsCommand implements ICommand
 		ArrayList<String> lines = new ArrayList<String>();
 		
 		if(sender instanceof Player && ((Player)sender).getName().equals(playerName))
-			lines.add(String.format(ChatColor.GRAY + "You have completed " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " out of " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " special kills:", count, outOf));
+			lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.completed.self", "num", ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		else
-			lines.add(String.format(ChatColor.GRAY + "%s has completed " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " out of " + ChatColor.YELLOW + "%d" + ChatColor.GRAY + " special kills:", playerName, count, outOf));
+			lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.completed.other", "player", playerName, "num", ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 		
 		boolean inProgress = false;
 		for(Map.Entry<Achievement, Integer> achievement : achievements)
 		{
 			if(achievement.getValue() == -1)
 			{
-				lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
-				lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC + achievement.getKey().getDescription());
+				lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName()); //$NON-NLS-1$
+				lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC + achievement.getKey().getDescription()); //$NON-NLS-1$
 			}
 			else
 				inProgress = true;
@@ -145,13 +146,13 @@ public class ListAchievementsCommand implements ICommand
 		
 		if(inProgress)
 		{
-			lines.add("");
-			lines.add(ChatColor.YELLOW + "In progress:");
+			lines.add(""); //$NON-NLS-1$
+			lines.add(ChatColor.YELLOW + Messages.getString("mobhunting.commands.listachievements.progress")); //$NON-NLS-1$
 			
 			for(Map.Entry<Achievement, Integer> achievement : achievements)
 			{
 				if(achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement)
-					lines.add(ChatColor.GRAY + " " + achievement.getKey().getName() + ChatColor.WHITE + "  " + achievement.getValue() + " / " + ((ProgressAchievement)achievement.getKey()).getMaxProgress());
+					lines.add(ChatColor.GRAY + " " + achievement.getKey().getName() + ChatColor.WHITE + "  " + achievement.getValue() + " / " + ((ProgressAchievement)achievement.getKey()).getMaxProgress()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				else
 					inProgress = true;
 			}
@@ -165,7 +166,7 @@ public class ListAchievementsCommand implements ICommand
 	@Override
 	public List<String> onTabComplete( CommandSender sender, String label, String[] args )
 	{
-		if(!sender.hasPermission("mobhunting.listachievements.other"))
+		if(!sender.hasPermission("mobhunting.listachievements.other")) //$NON-NLS-1$
 			return null;
 		
 		if(args.length == 0)

@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class InFighting implements Achievement, Listener
@@ -18,19 +19,19 @@ public class InFighting implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Infighting";
+		return Messages.getString("achievements.infighting.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "infighting";
+		return "infighting"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Get a seleton to kill another skeleton";
+		return Messages.getString("achievements.infighting.description"); //$NON-NLS-1$
 	}
 
 	@Override

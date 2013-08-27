@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class SniperBonus implements IModifier
@@ -16,7 +17,7 @@ public class SniperBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.GRAY + "Sniper";
+		return ChatColor.GRAY + Messages.getString("bonus.sniper.name"); //$NON-NLS-1$
 	}
 
 	@Override

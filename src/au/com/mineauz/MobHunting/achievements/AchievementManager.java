@@ -31,6 +31,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class AchievementManager implements Listener
@@ -45,7 +46,7 @@ public class AchievementManager implements Listener
 	public Achievement getAchievement(String id)
 	{
 		if(!mAchievements.containsKey(id))
-			throw new IllegalArgumentException("There is no achievement by the id: " + id);
+			throw new IllegalArgumentException("There is no achievement by the id: " + id); //$NON-NLS-1$
 		
 		return mAchievements.get(id);
 	}
@@ -75,10 +76,10 @@ public class AchievementManager implements Listener
 	}
 	public boolean hasAchievement(Achievement achievement, Player player)
 	{
-		if(!player.hasMetadata("MH:achievement-" + achievement.getID()))
+		if(!player.hasMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
 			return false;
 		
-		for(MetadataValue value : player.getMetadata("MH:achievement-" + achievement.getID()))
+		for(MetadataValue value : player.getMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
 		{
 			if(value.getOwningPlugin() == MobHunting.instance)
 			{
@@ -95,17 +96,17 @@ public class AchievementManager implements Listener
 	public int getProgress(String achievement, Player player)
 	{
 		Achievement a = getAchievement(achievement);
-		Validate.isTrue(a instanceof ProgressAchievement, "This achievement does not have progress");
+		Validate.isTrue(a instanceof ProgressAchievement, "This achievement does not have progress"); //$NON-NLS-1$
 		
 		return getProgress((ProgressAchievement)a, player);
 	}
 	
 	public int getProgress(ProgressAchievement achievement, Player player)
 	{
-		if(!player.hasMetadata("MH:achievement-" + achievement.getID()))
+		if(!player.hasMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
 			return 0;
 		
-		for(MetadataValue value : player.getMetadata("MH:achievement-" + achievement.getID()))
+		for(MetadataValue value : player.getMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
 		{
 			if(value.getOwningPlugin() == MobHunting.instance)
 			{
@@ -185,19 +186,19 @@ public class AchievementManager implements Listener
 	}
 	public void awardAchievement(Achievement achievement, Player player)
 	{
-		Validate.isTrue(!(achievement instanceof ProgressAchievement), "You need to award achievements with progress using awardAchievementProgress()");
+		Validate.isTrue(!(achievement instanceof ProgressAchievement), "You need to award achievements with progress using awardAchievementProgress()"); //$NON-NLS-1$
 		
 		if(hasAchievement(achievement, player))
 			return;
 		
 		addAchievement(player, achievement, -1);
-		player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true));
+		player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
 		
-		player.sendMessage(ChatColor.GOLD + "Special Kill Awarded!" + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName());
-		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription());
-		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + "You have been awarded $" + String.format("%.2f", achievement.getPrize()));
+		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
+		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		broadcast(ChatColor.GOLD + "" + player.getName() + " completed a Special Kill! " + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName(), player);
+		broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		
 		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
 		FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
@@ -212,7 +213,7 @@ public class AchievementManager implements Listener
 	public void awardAchievementProgress(String achievement, Player player, int amount)
 	{
 		Achievement a = getAchievement(achievement);
-		Validate.isTrue(a instanceof ProgressAchievement, "You need to award normal achievements with awardAchievement()");
+		Validate.isTrue(a instanceof ProgressAchievement, "You need to award normal achievements with awardAchievement()"); //$NON-NLS-1$
 		
 		awardAchievementProgress((ProgressAchievement)a, player, amount);
 	}
@@ -245,14 +246,14 @@ public class AchievementManager implements Listener
 		
 		if(nextProgress == maxProgress)
 		{
-			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true));
+			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
 			addAchievement(player, achievement, -1);
 			
-			player.sendMessage(ChatColor.GOLD + "Special Kill Complete!" + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName());
-			player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription());
-			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + "You have been awarded $" + String.format("%.2f", achievement.getPrize()));
+			player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
+			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
-			broadcast(ChatColor.GOLD + "" + player.getName() + " completed a Special Kill! " + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName(), player);
+			broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			
 			player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
 			FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
@@ -264,15 +265,15 @@ public class AchievementManager implements Listener
 		}
 		else
 		{
-			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, nextProgress));
+			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, nextProgress)); //$NON-NLS-1$
 			addAchievement(player, achievement, nextProgress);
 			
 			int segment = Math.min(25, maxProgress / 2);
 			
 			if(curProgress / segment < nextProgress / segment || curProgress == 0 && nextProgress > 0)
 			{
-				player.sendMessage(ChatColor.BLUE + "Special Kill Progress: " + ChatColor.WHITE + ChatColor.ITALIC + " " + achievement.getName());
-				player.sendMessage(ChatColor.GRAY + "" + nextProgress + " / " + maxProgress);
+				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.achievement.progress", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				player.sendMessage(ChatColor.GRAY + "" + nextProgress + " / " + maxProgress); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 	}
@@ -280,7 +281,7 @@ public class AchievementManager implements Listener
 	@SuppressWarnings( "unchecked" )
 	private Set<Map.Entry<String, Integer>> loadAchievements(OfflinePlayer player)
 	{
-		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml");
+		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml"); //$NON-NLS-1$
 
 		YamlConfiguration config = new YamlConfiguration();
 		try
@@ -322,7 +323,7 @@ public class AchievementManager implements Listener
 	
 	private void addAchievement(Player player, Achievement achievement, int progress)
 	{
-		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml");
+		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml"); //$NON-NLS-1$
 
 		YamlConfiguration config = new YamlConfiguration();
 		try
@@ -401,9 +402,9 @@ public class AchievementManager implements Listener
 		for(Map.Entry<String, Integer> id : achievements)
 		{
 			if(id.getValue() == -1)
-				player.setMetadata("MH:achievement-" + id.getKey(), new FixedMetadataValue(MobHunting.instance, true));
+				player.setMetadata("MH:achievement-" + id.getKey(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
 			else
-				player.setMetadata("MH:achievement-" + id.getKey(), new FixedMetadataValue(MobHunting.instance, id.getValue()));
+				player.setMetadata("MH:achievement-" + id.getKey(), new FixedMetadataValue(MobHunting.instance, id.getValue())); //$NON-NLS-1$
 		}
 	}
 	

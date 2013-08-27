@@ -3,6 +3,7 @@ package au.com.mineauz.MobHunting.achievements;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
@@ -11,19 +12,19 @@ public class TheHuntBegins implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "The Hunt Begins";
+		return Messages.getString("achievements.huntbegins.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "huntbegins";
+		return "huntbegins"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Make your first hunt. There are more achievments to get all to do with interesting or unique ways to kill mobs.";
+		return Messages.getString("achievements.huntbegins.description"); //$NON-NLS-1$
 	}
 
 	@Override

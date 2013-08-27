@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class MountedBonus implements IModifier
@@ -16,7 +17,7 @@ public class MountedBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.GOLD + "Mounted";
+		return ChatColor.GOLD + Messages.getString("bonus.mounted.name"); //$NON-NLS-1$
 	}
 
 	@Override

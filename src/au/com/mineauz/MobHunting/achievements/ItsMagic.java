@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
@@ -13,19 +14,19 @@ public class ItsMagic implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Its Magic!";
+		return Messages.getString("achievements.itsmagic.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "itsmagic";
+		return "itsmagic"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Kill a mob with a potion";
+		return Messages.getString("achievements.itsmagic.description"); //$NON-NLS-1$
 	}
 
 	@Override

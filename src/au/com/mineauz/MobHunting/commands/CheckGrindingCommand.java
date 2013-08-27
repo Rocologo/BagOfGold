@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import au.com.mineauz.MobHunting.Area;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class CheckGrindingCommand implements ICommand
@@ -19,19 +20,19 @@ public class CheckGrindingCommand implements ICommand
 	@Override
 	public String getName()
 	{
-		return "checkgrinding";
+		return "checkgrinding"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String[] getAliases()
 	{
-		return new String[] { "isgrinding", "grinding" };
+		return new String[] { "isgrinding", "grinding" }; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
 	public String getPermission()
 	{
-		return "mobhunting.checkgrinding";
+		return "mobhunting.checkgrinding"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class CheckGrindingCommand implements ICommand
 	@Override
 	public String getDescription()
 	{
-		return "Checks if the area you are in is a known grinding spot";
+		return Messages.getString("mobhunting.commands.grinding.description"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class CheckGrindingCommand implements ICommand
 		Area area = MobHunting.instance.getGrindingArea(loc);
 		
 		if(area != null)
-			sender.sendMessage(ChatColor.RED + "This location is a sever-wide known grinding spot");
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.server-wide")); //$NON-NLS-1$
 		else
 		{
 			ArrayList<Player> players = new ArrayList<Player>();
@@ -81,20 +82,20 @@ public class CheckGrindingCommand implements ICommand
 			}
 			
 			if(players.isEmpty())
-				sender.sendMessage(ChatColor.GREEN + "This location is not a grinding spot");
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.grinding.not-grinding")); //$NON-NLS-1$
 			else
 			{
-				String playerList = "";
+				String playerList = ""; //$NON-NLS-1$
 				
 				for(Player player : players)
 				{
 					if(!playerList.isEmpty())
-						playerList += ", ";
+						playerList += ", "; //$NON-NLS-1$
 					
 					playerList += player.getName();
 				}
 				
-				sender.sendMessage(ChatColor.RED + "This location is a known grinding spot for the following players: " + playerList);
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.player-grinding", "players", playerList)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		

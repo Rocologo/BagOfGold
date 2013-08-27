@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class FriendleFireBonus implements IModifier
@@ -17,7 +18,7 @@ public class FriendleFireBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.DARK_GREEN + "Friendly Fire";
+		return ChatColor.DARK_GREEN + Messages.getString("bonus.friendlyfire.name"); //$NON-NLS-1$
 	}
 
 	@Override

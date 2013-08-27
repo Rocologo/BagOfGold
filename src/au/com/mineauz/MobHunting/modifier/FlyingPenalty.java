@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class FlyingPenalty implements IModifier
@@ -15,7 +16,7 @@ public class FlyingPenalty implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.RED + "Flying Penalty";
+		return ChatColor.RED + Messages.getString("penalty.flying.name"); //$NON-NLS-1$
 	}
 
 	@Override

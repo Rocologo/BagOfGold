@@ -50,7 +50,7 @@ public enum ExtendedMobType
 		else if(this == Skeleton)
 			return ent instanceof Skeleton && ((Skeleton)ent).getSkeletonType() == SkeletonType.NORMAL;
 		else if(this == BonusMob)
-			return ent.hasMetadata("MH:hasBonus");
+			return ent.hasMetadata("MH:hasBonus"); //$NON-NLS-1$
 		else
 			return ent.getType() == mType;
 	}

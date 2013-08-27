@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class Creepercide implements Achievement, Listener
@@ -17,19 +18,19 @@ public class Creepercide implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Creepercide";
+		return Messages.getString("achievements.creepercide.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "creepercide";
+		return "creepercide"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Kill a creeper with another creeper";
+		return Messages.getString("achievements.creepercide.description"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class Creepercide implements Achievement, Listener
 			}
 			
 			if(initiator != null && MobHunting.isHuntEnabled(initiator))
-				MobHunting.instance.getAchievements().awardAchievement("creepercide", initiator);
+				MobHunting.instance.getAchievements().awardAchievement("creepercide", initiator); //$NON-NLS-1$
 		}
 	}
 }

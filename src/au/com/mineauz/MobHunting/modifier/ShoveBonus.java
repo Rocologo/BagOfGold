@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class ShoveBonus implements IModifier
@@ -16,7 +17,7 @@ public class ShoveBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.AQUA + "A Shove";
+		return ChatColor.AQUA + Messages.getString("bonus.ashove.name"); //$NON-NLS-1$
 	}
 
 	@Override

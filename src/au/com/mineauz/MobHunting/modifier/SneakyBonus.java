@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class SneakyBonus implements IModifier
@@ -17,7 +18,7 @@ public class SneakyBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.BLUE + "Sneaky!";
+		return ChatColor.BLUE + Messages.getString("bonus.sneaky.name"); //$NON-NLS-1$
 	}
 
 	@Override

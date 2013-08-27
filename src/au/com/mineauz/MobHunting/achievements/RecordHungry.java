@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class RecordHungry implements Achievement, Listener
@@ -19,19 +20,19 @@ public class RecordHungry implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Record Hungry";
+		return Messages.getString("achievements.recordhungry.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "recordhungry";
+		return "recordhungry"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Get a seleton to kill a creeper";
+		return Messages.getString("achievements.recordhungry.description"); //$NON-NLS-1$
 	}
 
 	@Override

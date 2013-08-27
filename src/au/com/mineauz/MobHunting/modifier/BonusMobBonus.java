@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class BonusMobBonus implements IModifier
@@ -15,7 +16,7 @@ public class BonusMobBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.translateAlternateColorCodes('&', "&9B&2O&3N&4U&5S &6M&eO&bB");
+		return ChatColor.translateAlternateColorCodes('&', Messages.getString("bonus.bonusmob.name")); //$NON-NLS-1$
 	}
 
 	@Override
@@ -27,7 +28,7 @@ public class BonusMobBonus implements IModifier
 	@Override
 	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
-		return deadEntity.hasMetadata("MH:hasBonus");
+		return deadEntity.hasMetadata("MH:hasBonus"); //$NON-NLS-1$
 	}
 
 }

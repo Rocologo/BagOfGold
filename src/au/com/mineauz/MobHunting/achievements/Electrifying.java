@@ -4,6 +4,7 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
@@ -13,19 +14,19 @@ public class Electrifying implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Electrifying";
+		return Messages.getString("achievements.electrifying.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "electrifying";
+		return "electrifying"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Kill a charged creeper";
+		return Messages.getString("achievements.electrifying.description"); //$NON-NLS-1$
 	}
 
 	@Override

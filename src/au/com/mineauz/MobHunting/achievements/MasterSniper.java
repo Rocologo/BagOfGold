@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
@@ -14,19 +15,19 @@ public class MasterSniper implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return "Master Sniper";
+		return Messages.getString("achievements.master-sniper.name"); //$NON-NLS-1$
 	}
 
 	@Override
 	public String getID()
 	{
-		return "master-sniper";
+		return "master-sniper"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Snipe a mob over 40 blocks away while in a moving vehicle or on a moving horse.";
+		return Messages.getString("achievements.master-sniper.description"); //$NON-NLS-1$
 	}
 
 	@Override
