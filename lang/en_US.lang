@@ -1,6 +1,9 @@
 mobhunting.command.base.description=Mob Hunting Version 
 mobhunting.config.fail=There was a problem loading the MobHunting config
 mobhunting.hook.econ=Unable to hook into an economy! Make sure you have one available that Vault accepts.
+mobhunting.moneygain.bonuses=You gained ${prize}! With: ${bonuses}
+mobhunting.moneygain=You gained ${prize}!
+
 mobhunting.killstreak.activated=x${multiplier} Activated
 mobhunting.killstreak.ended=Killstreak ended
 mobhunting.killstreak.level.1=Nice!
@@ -8,8 +11,7 @@ mobhunting.killstreak.level.2=Super!
 mobhunting.killstreak.level.3=Killing Machine!
 mobhunting.killstreak.level.4=Unstoppable!
 mobhunting.killstreak.lost=Killstreak Lost
-mobhunting.moneygain.bonuses=You gained ${prize}! With: ${bonuses}
-mobhunting.moneygain=You gained ${prize}!
+
 achievements.axemurderer.description=Kill a mob with an axe
 achievements.axemurderer.name=Axe Murderer
 achievements.bythebook.description=Kill an enemy using a book
@@ -42,10 +44,12 @@ achievements.master-sniper.description=Snipe a mob over 40 blocks away while in 
 achievements.master-sniper.name=Master Sniper
 achievements.recordhungry.description=Get a skeleton to kill a creeper
 achievements.recordhungry.name=Record Hungry
+
 mobhunting.achievement.awarded=Special Kill Awarded! ${name} 
 mobhunting.achievement.awarded.broadcast=${player} completed a Special Kill! ${name} 
 mobhunting.achievement.awarded.prize=You have been awarded ${prize}
 mobhunting.achievement.progress=Special Kill Progress: ${name}
+
 mobhunting.commands.base.help.commands=Commands:
 mobhunting.commands.base.help.description=Displays this screen.
 mobhunting.commands.base.nocommand=No command specified: ${command}
@@ -67,6 +71,7 @@ mobhunting.commands.listachievements.progress=In progress:
 mobhunting.commands.reload.description=Reloads the configuration
 mobhunting.commands.reload.reload-complete=Configuration Reloaded
 mobhunting.commands.reload.reload-error=There is a problem with the config. Please check any changes you made
+
 bonus.ashove.name=A Shove
 bonus.bonusmob.name=&9B&2O&3N&4U&5S &6M&eO&bB
 bonus.brawler.name=Brawler
@@ -76,6 +81,23 @@ bonus.prosniper.name=Pro Sniper
 bonus.returntosender.name=Return To Sender!
 bonus.sneaky.name=Sneaky!
 bonus.sniper.name=Sniper
+
 penalty.flying.name=Flying Penalty
 penalty.grinding.name=Grinding Penalty
 
+mobs.Slime.name=Slime
+mobs.MagmaCube.name=Magma Cube
+mobs.Ghast.name=Ghast
+mobs.Blaze.name=Blaze
+mobs.Creeper.name=Creeper
+mobs.Enderman.name=Enderman
+mobs.Silverfish.name=Silverfish
+mobs.Skeleton.name=Skeleton
+mobs.WitherSkeleton.name=Wither Skeleton
+mobs.Spider.name=Spider
+mobs.CaveSpider.name=Cave Spider
+mobs.Witch.name=Witch
+mobs.Wither.name=Wither
+mobs.Zombie.name=Zombie
+mobs.ZombiePigman.name=Zombie Pigman
+mobs.BonusMob.name=Bonus Mob

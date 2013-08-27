@@ -57,6 +57,6 @@ public enum ExtendedMobType
 	
 	public String getName()
 	{
-		return toString();
+		return Messages.getString("mobs." + name() + ".name");
 	}
 }

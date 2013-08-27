@@ -21,7 +21,7 @@ public class BasicHuntAchievement implements ProgressAchievement
 	@Override
 	public String getID()
 	{
-		return "hunting-level1-" + mType.getName().toLowerCase(); //$NON-NLS-1$
+		return "hunting-level1-" + mType.name().toLowerCase(); //$NON-NLS-1$
 	}
 
 	@Override

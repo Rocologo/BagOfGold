@@ -21,7 +21,7 @@ public class ThirdHuntAchievement implements ProgressAchievement
 	@Override
 	public String getID()
 	{
-		return "hunting-level3-" + mType.getName().toLowerCase(); //$NON-NLS-1$
+		return "hunting-level3-" + mType.name().toLowerCase(); //$NON-NLS-1$
 	}
 
 	@Override
@@ -43,5 +43,5 @@ public class ThirdHuntAchievement implements ProgressAchievement
 	}
 
 	@Override
-	public String inheritFrom() { return "hunting-level2-" + mType.getName().toLowerCase(); } //$NON-NLS-1$
+	public String inheritFrom() { return "hunting-level2-" + mType.name().toLowerCase(); } //$NON-NLS-1$
 }
