@@ -44,6 +44,7 @@ import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.CommandDispatcher;
 import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
+import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.modifier.*;
@@ -67,12 +68,6 @@ public class MobHunting extends JavaPlugin implements Listener
 	private ParticleManager mParticles = new ParticleManager();
 	private Random mRand = new Random();
 
-	// Compatability classes
-	@SuppressWarnings( "unused" )
-	private MinigamesCompat mMinigames;
-	@SuppressWarnings( "unused" )
-	private MyPetCompat mMyPet;
-	
 	@Override
 	public void onLoad()
 	{
@@ -119,11 +114,8 @@ public class MobHunting extends JavaPlugin implements Listener
 			throw new RuntimeException(Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
 		
 		// Handle compatability stuff
-		if(Bukkit.getPluginManager().isPluginEnabled("Minigames")) //$NON-NLS-1$
-			mMinigames = new MinigamesCompat();
-		
-		if(Bukkit.getPluginManager().isPluginEnabled("MyPet")) //$NON-NLS-1$
-			mMyPet = new MyPetCompat();
+		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
+		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
 		
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
 		getCommand("mobhunt").setExecutor(cmd); //$NON-NLS-1$
