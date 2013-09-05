@@ -141,6 +141,20 @@ public class Config extends AutoConfig
 	@ConfigField(name="language", category="general", comment="The language (file) to use. You can put the name of the language file as the language code (eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
 	
+	@ConfigField(name="type", category="database", comment="Type of database to use. Valid values are: sqlite, mysql")
+	public String databaseType = "sqlite";
+	@ConfigField(name="enabled", category="database")
+	public boolean databaseEnabled = true;
+	@ConfigField(name="username", category="database")
+	public String databaseUsername = "user";
+	@ConfigField(name="password", category="database")
+	public String databasePassword = "password";
+	
+	@ConfigField(name="host", category="database")
+	public String databaseHost = "localhost:3306";
+	@ConfigField(name="database", category="database")
+	public String databaseName = "mobhunting";
+	
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException
 	{

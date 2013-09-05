@@ -48,6 +48,9 @@ import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.modifier.*;
+import au.com.mineauz.MobHunting.storage.DataStore;
+import au.com.mineauz.MobHunting.storage.DataStoreException;
+import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
 
 public class MobHunting extends JavaPlugin implements Listener
@@ -67,6 +70,10 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	private ParticleManager mParticles = new ParticleManager();
 	private Random mRand = new Random();
+	
+	private DataStore mStore;
+	
+	private boolean mInitialized = false;
 
 	@Override
 	public void onLoad()
@@ -77,6 +84,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	@Override
 	public void onEnable()
 	{
+		mInitialized = false;
 		instance = this;
 		
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
@@ -113,6 +121,40 @@ public class MobHunting extends JavaPlugin implements Listener
 		else
 			throw new RuntimeException(Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
 		
+		if(mConfig.databaseEnabled)
+		{
+			if(mConfig.databaseType.equalsIgnoreCase("mysql"))
+			{
+				//mStore = new MySQLDataStore();
+			}
+			else 
+				mStore = new SQLiteDataStore();
+		}
+		else
+		{
+			// mStore = new YAMLDataStore();
+		}
+		
+		try
+		{
+			mStore.initialize();
+		}
+		catch(DataStoreException e)
+		{
+			e.printStackTrace();
+			
+			try
+			{
+				mStore.shutdown();
+			}
+			catch ( DataStoreException e1 )
+			{
+				e1.printStackTrace();
+			}
+			setEnabled(false);
+			return;
+		}
+		
 		// Handle compatability stuff
 		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
 		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
@@ -128,17 +170,32 @@ public class MobHunting extends JavaPlugin implements Listener
 		registerAchievements();
 		registerModifiers();
 		
+		
 		getServer().getPluginManager().registerEvents(this, this);
 		
 		for(Player player : Bukkit.getOnlinePlayers())
 			mAchievements.load(player);
+		
+		mInitialized = true;
 	}
 	
 	@Override
 	public void onDisable()
 	{
+		if(!mInitialized)
+			return;
+		
 		mAchievements = new AchievementManager();
 		mModifiers.clear();
+		
+		try
+		{
+			mStore.shutdown();
+		}
+		catch(DataStoreException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	private void registerAchievements()
@@ -697,5 +754,10 @@ public class MobHunting extends JavaPlugin implements Listener
 	public AchievementManager getAchievements()
 	{
 		return mAchievements;
+	}
+	
+	public DataStore getDataStore()
+	{
+		return mStore;
 	}
 }
