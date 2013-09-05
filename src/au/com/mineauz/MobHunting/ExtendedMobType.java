@@ -59,4 +59,15 @@ public enum ExtendedMobType
 	{
 		return Messages.getString("mobs." + name() + ".name");
 	}
+	
+	public static ExtendedMobType fromEntity(Entity entity)
+	{
+		for(ExtendedMobType type : values())
+		{
+			if(type.matches(entity))
+				return type;
+		}
+		
+		return null;
+	}
 }

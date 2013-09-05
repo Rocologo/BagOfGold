@@ -657,6 +657,15 @@ public class MobHunting extends JavaPlugin implements Listener
 			Bukkit.getPluginManager().callEvent(new MobHuntKillEvent(data, info, event.getEntity(), killer));
 			mEconomy.depositPlayer(killer.getName(), cash);
 			
+			try
+			{
+				getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
+			}
+			catch(DataStoreException e)
+			{
+				e.printStackTrace();
+			}
+			
 			if(extraString.trim().isEmpty())
 				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$
 			else
