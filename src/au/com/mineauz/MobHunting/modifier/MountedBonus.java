@@ -1,7 +1,7 @@
 package au.com.mineauz.MobHunting.modifier;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -29,7 +29,7 @@ public class MountedBonus implements IModifier
 	@Override
 	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
-		if(killer.isInsideVehicle() && killer.getVehicle() instanceof Horse)
+		if(killer.isInsideVehicle() && killer.getVehicle() instanceof Creature)
 			return true;
 		
 		return false;

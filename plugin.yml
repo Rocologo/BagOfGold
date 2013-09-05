@@ -1,12 +1,12 @@
 name: MobHunting
-version: 1.6.0
+version: 1.6.1
 
 main: au.com.mineauz.MobHunting.MobHunting
 
 author: Schmoller
 
 depend: [Vault]
-softdepend: [Minigames]
+softdepend: [Minigames, MyPet]
 
 commands:
   mobhunt:

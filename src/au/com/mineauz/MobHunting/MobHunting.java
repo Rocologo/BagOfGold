@@ -45,6 +45,7 @@ import au.com.mineauz.MobHunting.commands.CommandDispatcher;
 import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
+import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.modifier.*;
 import au.com.mineauz.MobHunting.util.Misc;
 
@@ -56,10 +57,10 @@ public class MobHunting extends JavaPlugin implements Listener
 	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Config mConfig;
 	
-	private AchievementManager mAchievements;
+	private AchievementManager mAchievements = new AchievementManager();
 	public static double cDampnerRange = 15;
 	
-	private Set<IModifier> mModifiers;
+	private Set<IModifier> mModifiers = new HashSet<IModifier>();
 	
 	private ArrayList<Area> mKnownGrindingSpots = new ArrayList<Area>();
 	
@@ -69,12 +70,13 @@ public class MobHunting extends JavaPlugin implements Listener
 	// Compatability classes
 	@SuppressWarnings( "unused" )
 	private MinigamesCompat mMinigames;
+	@SuppressWarnings( "unused" )
+	private MyPetCompat mMyPet;
 	
 	@Override
 	public void onLoad()
 	{
-		mAchievements = new AchievementManager();
-		mModifiers = new HashSet<IModifier>();
+		
 	}
 	
 	@Override
@@ -120,6 +122,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(Bukkit.getPluginManager().isPluginEnabled("Minigames")) //$NON-NLS-1$
 			mMinigames = new MinigamesCompat();
 		
+		if(Bukkit.getPluginManager().isPluginEnabled("MyPet")) //$NON-NLS-1$
+			mMyPet = new MyPetCompat();
+		
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
 		getCommand("mobhunt").setExecutor(cmd); //$NON-NLS-1$
 		getCommand("mobhunt").setTabCompleter(cmd); //$NON-NLS-1$
@@ -135,6 +140,13 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		for(Player player : Bukkit.getOnlinePlayers())
 			mAchievements.load(player);
+	}
+	
+	@Override
+	public void onDisable()
+	{
+		mAchievements = new AchievementManager();
+		mModifiers.clear();
 	}
 	
 	private void registerAchievements()

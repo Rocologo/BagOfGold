@@ -23,7 +23,11 @@ public class Messages
 		String[] sources = new String[] {"en_US.lang"};
 		
 		for(String source : sources)
-			MobHunting.instance.saveResource("lang/" + source, false);
+		{
+			File dest = new File(folder, source);
+			if(!dest.exists())
+				MobHunting.instance.saveResource("lang/" + source, false);
+		}
 	}
 	
 	public static void setLanguage(String lang)
