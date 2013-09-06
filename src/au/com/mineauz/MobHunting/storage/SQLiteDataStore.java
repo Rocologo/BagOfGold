@@ -129,15 +129,29 @@ public class SQLiteDataStore extends DatabaseDataStore
 			
 			Map<String, Integer> ids = getPlayerIds(names);
 			
+			// Make sure the stats are available for each player
+			mAddPlayerStatsStatement.clearBatch();
+			for(String name : names)
+			{
+				mAddPlayerStatsStatement.setInt(1, ids.get(name));
+				mAddPlayerStatsStatement.addBatch();
+			}
+
+			mAddPlayerStatsStatement.executeBatch();
+			
+			// Now add each of the stats
 			for(StatStore stat : stats)
 				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;", stat.statName, ids.get(stat.playerName)));
 
 			statement.executeBatch();
 			
 			statement.close();
+			
+			mConnection.commit();
 		}
 		catch(SQLException e)
 		{
+			rollback();
 			throw new DataStoreException(e);
 		}
 	}

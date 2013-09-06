@@ -128,8 +128,10 @@ public abstract class DatabaseDataStore implements DataStore
 				statement = mGetPlayerStatement[0];
 			}
 			
+			left -= size;
+			
 			for(int i = 0; i < size; ++i)
-				statement.setString(i, it.next());
+				statement.setString(i + 1, it.next());
 
 			ResultSet results = statement.executeQuery();
 			
@@ -219,9 +221,12 @@ public abstract class DatabaseDataStore implements DataStore
 			}
 
 			mRecordAchievementStatement.executeBatch();
+			
+			mConnection.commit();
 		}
 		catch(SQLException e)
 		{
+			rollback();
 			throw new DataStoreException(e);
 		}
 	}
