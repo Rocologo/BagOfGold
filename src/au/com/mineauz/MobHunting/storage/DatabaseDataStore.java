@@ -1,14 +1,15 @@
 package au.com.mineauz.MobHunting.storage;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
 
 import au.com.mineauz.MobHunting.ExtendedMobType;
-import au.com.mineauz.MobHunting.achievements.Achievement;
-import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
 
 public abstract class DatabaseDataStore implements DataStore
 {
@@ -31,7 +32,7 @@ public abstract class DatabaseDataStore implements DataStore
 	/**
 	 * Args: player name
 	 */
-	protected PreparedStatement mGetPlayerStatement;
+	protected PreparedStatement[] mGetPlayerStatement;
 	
 	/**
 	 * Args: player id
@@ -43,11 +44,13 @@ public abstract class DatabaseDataStore implements DataStore
 	{
 		try
 		{
+			
 			mConnection = setupConnection();
 			mConnection.setAutoCommit(false);
 			
 			setupTables(mConnection);
 			
+			mGetPlayerStatement = new PreparedStatement[4];
 			setupStatements(mConnection);
 		}
 		catch(SQLException e)
@@ -85,33 +88,67 @@ public abstract class DatabaseDataStore implements DataStore
 		}
 	}
 	
-	private int getOrAddPlayerId(Player player) throws SQLException, DataStoreException
+	protected Map<String, Integer> getPlayerIds(Set<String> players) throws SQLException
 	{
-		mGetPlayerStatement.setString(1, player.getName());
+		mAddPlayerStatement.clearBatch();
 		
-		ResultSet set = mGetPlayerStatement.executeQuery();
-		if(set.next())
-			return set.getInt(1);
+		for(String player : players)
+		{
+			mAddPlayerStatement.setString(1, player);
+			mAddPlayerStatement.addBatch();
+		}
+		mAddPlayerStatement.executeBatch();
 		
-		mAddPlayerStatement.setString(1, player.getName());
-		mAddPlayerStatement.executeUpdate();
+		int left = players.size();
+		Iterator<String> it = players.iterator();
+		HashMap<String, Integer> ids = new HashMap<String, Integer>();
 		
-		set = mGetPlayerStatement.executeQuery();
-		if(set.next())
-			return set.getInt(1);
+		while(left > 0)
+		{
+			PreparedStatement statement;
+			int size = 0;
+			if(left >= 10)
+			{
+				size = 10;
+				statement = mGetPlayerStatement[3];
+			}
+			else if(left >= 5)
+			{
+				size = 5;
+				statement = mGetPlayerStatement[2];
+			}
+			else if(left >= 2)
+			{
+				size = 2;
+				statement = mGetPlayerStatement[1];
+			}
+			else
+			{
+				size = 1;
+				statement = mGetPlayerStatement[0];
+			}
+			
+			for(int i = 0; i < size; ++i)
+				statement.setString(i, it.next());
+
+			ResultSet results = statement.executeQuery();
+			
+			while(results.next())
+				ids.put(results.getString(1), results.getInt(2));
+		}
 		
-		throw new DataStoreException("Somehow player add failed");
+		return ids;
 	}
 	
-	private int getPlayerId(Player player) throws SQLException, DataStoreException
+	protected int getPlayerId(String playerName) throws SQLException, DataStoreException
 	{
-		mGetPlayerStatement.setString(1, player.getName());
+		mGetPlayerStatement[0].setString(1, playerName);
+		ResultSet result = mGetPlayerStatement[0].executeQuery();
 		
-		ResultSet set = mGetPlayerStatement.executeQuery();
-		if(set.next())
-			return set.getInt(1);
+		if(result.next())
+			return result.getInt(2);
 		
-		throw new DataStoreException("No data for " + player.getName());
+		throw new DataStoreException("User " + playerName + " is not present in database");
 	}
 	
 	protected String[] getColumnNames()
@@ -132,107 +169,11 @@ public abstract class DatabaseDataStore implements DataStore
 	protected abstract void increaseStat(String statName, int playerId) throws SQLException;
 
 	@Override
-	public void recordKill( Player player, ExtendedMobType type, boolean bonusMob ) throws DataStoreException
-	{
-		try
-		{
-			int playerId = getOrAddPlayerId(player);
-			
-			mAddPlayerStatsStatement.setInt(1, playerId);
-			mAddPlayerStatsStatement.executeUpdate();
-			
-			increaseStat(type.name() + "_kill", playerId);
-			increaseStat("total_kill", playerId);
-			
-			if(bonusMob)
-				increaseStat("BonusMob_kill", playerId);
-			
-			mConnection.commit();
-		}
-		catch(SQLException e)
-		{
-			rollback();
-			throw new DataStoreException(e);
-		}
-	}
-
-	@Override
-	public void recordAssist( Player player, Player killer, ExtendedMobType type, boolean bonusMob ) throws DataStoreException
-	{
-		try
-		{
-			int playerId = getOrAddPlayerId(player);
-			
-			mAddPlayerStatsStatement.setInt(1, playerId);
-			mAddPlayerStatsStatement.executeUpdate();
-			
-			increaseStat(type.name() + "_assist", playerId);
-			increaseStat("total_assist", playerId);
-			
-			if(bonusMob)
-				increaseStat("BonusMob_assist", playerId);
-			
-			mConnection.commit();
-		}
-		catch(SQLException e)
-		{
-			rollback();
-			throw new DataStoreException(e);
-		}
-	}
-
-	@Override
-	public void recordAchievement( Player player, Achievement achievement ) throws DataStoreException
-	{
-		try
-		{
-			int playerId = getOrAddPlayerId(player);
-			
-			mRecordAchievementStatement.setInt(1, playerId);
-			mRecordAchievementStatement.setString(2, achievement.getID());
-			mRecordAchievementStatement.setDate(3, new Date(System.currentTimeMillis()));
-			mRecordAchievementStatement.setInt(4, -1);
-			
-			mRecordAchievementStatement.executeUpdate();
-			
-			mConnection.commit();
-		}
-		catch(SQLException e)
-		{
-			rollback();
-			throw new DataStoreException(e);
-		}
-	}
-
-	@Override
-	public void recordAchievementProgress( Player player, ProgressAchievement achievement, int progress ) throws DataStoreException
-	{
-		try
-		{
-			int playerId = getOrAddPlayerId(player);
-			
-			mRecordAchievementStatement.setInt(1, playerId);
-			mRecordAchievementStatement.setString(2, achievement.getID());
-			mRecordAchievementStatement.setDate(3, new Date(System.currentTimeMillis()));
-			mRecordAchievementStatement.setInt(4, progress);
-			
-			mRecordAchievementStatement.executeUpdate();
-			
-			mConnection.commit();
-		}
-		catch(SQLException e)
-		{
-			rollback();
-			throw new DataStoreException(e);
-		}
-	}
-
-	@Override
 	public Set<AchievementRecord> loadAchievements( Player player ) throws DataStoreException
 	{
 		try
 		{
-			int playerId = getPlayerId(player);
+			int playerId = getPlayerId(player.getName());
 			
 			mLoadAchievementsStatement.setInt(1, playerId);
 			
@@ -249,6 +190,35 @@ public abstract class DatabaseDataStore implements DataStore
 			}
 			
 			return achievements;
+		}
+		catch(SQLException e)
+		{
+			throw new DataStoreException(e);
+		}
+	}
+	
+	@Override
+	public void saveAchievements( Set<AchievementStore> achievements ) throws DataStoreException
+	{
+		try
+		{
+			HashSet<String> names = new HashSet<String>();
+			for(AchievementStore achievement : achievements)
+				names.add(achievement.playerName);
+			
+			Map<String, Integer> ids = getPlayerIds(names);
+			
+			for(AchievementStore achievement : achievements)
+			{
+				mRecordAchievementStatement.setInt(1, ids.get(achievement.playerName));
+				mRecordAchievementStatement.setString(2, achievement.id);
+				mRecordAchievementStatement.setDate(3, new Date(System.currentTimeMillis()));
+				mRecordAchievementStatement.setInt(4, achievement.progress);
+				
+				mRecordAchievementStatement.addBatch();
+			}
+
+			mRecordAchievementStatement.executeBatch();
 		}
 		catch(SQLException e)
 		{

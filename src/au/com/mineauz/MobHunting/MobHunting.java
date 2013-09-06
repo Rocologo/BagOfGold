@@ -50,6 +50,7 @@ import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.modifier.*;
 import au.com.mineauz.MobHunting.storage.DataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
+import au.com.mineauz.MobHunting.storage.DataStoreManager;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
 
@@ -72,6 +73,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	private Random mRand = new Random();
 	
 	private DataStore mStore;
+	private DataStoreManager mStoreManager;
 	
 	private boolean mInitialized = false;
 
@@ -154,6 +156,8 @@ public class MobHunting extends JavaPlugin implements Listener
 			setEnabled(false);
 			return;
 		}
+		
+		mStoreManager = new DataStoreManager(mStore);
 		
 		// Handle compatability stuff
 		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
@@ -657,14 +661,7 @@ public class MobHunting extends JavaPlugin implements Listener
 			Bukkit.getPluginManager().callEvent(new MobHuntKillEvent(data, info, event.getEntity(), killer));
 			mEconomy.depositPlayer(killer.getName(), cash);
 			
-			try
-			{
-				getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
-			}
-			catch(DataStoreException e)
-			{
-				e.printStackTrace();
-			}
+			getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
 			
 			if(extraString.trim().isEmpty())
 				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -765,8 +762,8 @@ public class MobHunting extends JavaPlugin implements Listener
 		return mAchievements;
 	}
 	
-	public DataStore getDataStore()
+	public DataStoreManager getDataStore()
 	{
-		return mStore;
+		return mStoreManager;
 	}
 }

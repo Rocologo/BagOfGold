@@ -147,6 +147,9 @@ public class Config extends AutoConfig
 	@ConfigField(name="broadcast-first-achievement", category="general", comment="Should the hunt begins achievement be broadcasted?")
 	public boolean broadcastFirstAchievement = true;
 	
+	@ConfigField(name="save-period", category="general", comment="Time between saves in ticks")
+	public int savePeriod = 1200;
+	
 	@ConfigField(name="type", category="database", comment="Type of database to use. Valid values are: sqlite, mysql")
 	public String databaseType = "sqlite";
 	@ConfigField(name="enabled", category="database")

@@ -33,7 +33,6 @@ import org.bukkit.metadata.MetadataValue;
 
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
-import au.com.mineauz.MobHunting.storage.DataStoreException;
 
 public class AchievementManager implements Listener
 {
@@ -190,14 +189,7 @@ public class AchievementManager implements Listener
 		if(hasAchievement(achievement, player))
 			return;
 	
-		try
-		{
-			MobHunting.instance.getDataStore().recordAchievement(player, achievement);
-		}
-		catch(DataStoreException e)
-		{
-			e.printStackTrace();
-		}
+		MobHunting.instance.getDataStore().recordAchievement(player, achievement);
 
 		player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
 		
@@ -260,14 +252,7 @@ public class AchievementManager implements Listener
 		{
 			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, nextProgress)); //$NON-NLS-1$
 			
-			try
-			{
-				MobHunting.instance.getDataStore().recordAchievementProgress(player, achievement, nextProgress);
-			}
-			catch(DataStoreException e)
-			{
-				e.printStackTrace();
-			}
+			MobHunting.instance.getDataStore().recordAchievementProgress(player, achievement, nextProgress);
 			
 			int segment = Math.min(25, maxProgress / 2);
 			
