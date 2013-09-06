@@ -33,6 +33,7 @@ import org.bukkit.metadata.MetadataValue;
 
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.storage.DataStoreException;
 
 public class AchievementManager implements Listener
 {
@@ -186,19 +187,28 @@ public class AchievementManager implements Listener
 	}
 	public void awardAchievement(Achievement achievement, Player player)
 	{
-		Validate.isTrue(!(achievement instanceof ProgressAchievement), "You need to award achievements with progress using awardAchievementProgress()"); //$NON-NLS-1$
-		
 		if(hasAchievement(achievement, player))
 			return;
-		
-		addAchievement(player, achievement, -1);
+	
+		try
+		{
+			MobHunting.instance.getDataStore().recordAchievement(player, achievement);
+		}
+		catch(DataStoreException e)
+		{
+			e.printStackTrace();
+		}
+
 		player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
 		
-		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
-		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		
-		broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		if(MobHunting.config().broadcastAchievement && (!(achievement instanceof TheHuntBegins) || MobHunting.config().broadcastFirstAchievement))
+		{
+			player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
+			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			
+			broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		}
 		
 		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
 		FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
@@ -245,28 +255,19 @@ public class AchievementManager implements Listener
 		int nextProgress = Math.min(maxProgress, curProgress + amount);
 		
 		if(nextProgress == maxProgress)
-		{
-			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
-			addAchievement(player, achievement, -1);
-			
-			player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
-			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			
-			broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			
-			player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
-			FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();
-			Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
-			FireworkMeta meta = firework.getFireworkMeta();
-			meta.setPower(1);
-			meta.addEffect(effect);
-			firework.setFireworkMeta(meta);
-		}
+			awardAchievement(achievement, player);
 		else
 		{
 			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, nextProgress)); //$NON-NLS-1$
-			addAchievement(player, achievement, nextProgress);
+			
+			try
+			{
+				MobHunting.instance.getDataStore().recordAchievementProgress(player, achievement, nextProgress);
+			}
+			catch(DataStoreException e)
+			{
+				e.printStackTrace();
+			}
 			
 			int segment = Math.min(25, maxProgress / 2);
 			
@@ -319,79 +320,6 @@ public class AchievementManager implements Listener
 		}
 		
 		return Collections.EMPTY_SET;
-	}
-	
-	private void addAchievement(Player player, Achievement achievement, int progress)
-	{
-		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml"); //$NON-NLS-1$
-
-		YamlConfiguration config = new YamlConfiguration();
-		try
-		{
-			if(!file.exists())
-				file.createNewFile();
-			
-			config.load(file);
-			
-			if(!config.isList(player.getName()))
-			{
-				ArrayList<Object> list = new ArrayList<Object>();
-				
-				if(progress == -1)
-					list.add(achievement.getID());
-				else
-				{
-					Map<String, Integer> obj = new HashMap<String, Integer>();
-					obj.put(achievement.getID(), progress);
-					list.add(obj);
-				}
-				
-				config.set(player.getName(), list);
-			}
-			else
-			{
-				@SuppressWarnings( "unchecked" )
-				List<Object> list = (List<Object>)config.getList(player.getName());
-				
-				ArrayList<Object> modList = new ArrayList<Object>(list);
-				
-				// Remove partial progress version
-				for(Object obj : modList)
-				{
-					if(obj instanceof Map)
-					{
-						@SuppressWarnings( "unchecked" )
-						Map<String, Integer> map = (Map<String, Integer>)obj;
-						if(map.containsKey(achievement.getID()))
-						{
-							modList.remove(obj);
-							break;
-						}
-					}
-				}
-				
-				if(progress == -1)
-					modList.add(achievement.getID());
-				else
-				{
-					Map<String, Integer> obj = new HashMap<String, Integer>();
-					obj.put(achievement.getID(), progress);
-					modList.add(obj);
-				}
-				
-				config.set(player.getName(), modList);
-			}
-			
-			config.save(file);
-		}
-		catch ( IOException e )
-		{
-			e.printStackTrace();
-		}
-		catch ( InvalidConfigurationException e )
-		{
-			e.printStackTrace();
-		}
 	}
 	
 	public void load(Player player)

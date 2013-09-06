@@ -12,16 +12,13 @@ import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
 
 public abstract class DatabaseDataStore implements DataStore
 {
-	private Connection mConnection;
+	protected Connection mConnection;
 	
 	/**
-	 * Args: date, player id, mobtype
+	 * Args: player id
 	 */
-	protected PreparedStatement mRecordKillStatement;
-	/**
-	 * Args: date, player id, mobtype, killed id
-	 */
-	protected PreparedStatement mRecordAssistStatement;
+	protected PreparedStatement mAddPlayerStatsStatement;
+
 	/**
 	 * Args: player id, achievement, date, progress
 	 */
@@ -116,6 +113,23 @@ public abstract class DatabaseDataStore implements DataStore
 		
 		throw new DataStoreException("No data for " + player.getName());
 	}
+	
+	protected String[] getColumnNames()
+	{
+		String[] names = new String[ExtendedMobType.values().length * 2 + 2];
+		for(int i = 0; i < ExtendedMobType.values().length; ++i)
+			names[i] = ExtendedMobType.values()[i].name() + "_kill";
+		
+		for(int i = 0; i < ExtendedMobType.values().length; ++i)
+			names[i + ExtendedMobType.values().length] = ExtendedMobType.values()[i].name() + "_assist";
+		
+		names[ExtendedMobType.values().length * 2] = "total_kill";
+		names[ExtendedMobType.values().length * 2 + 1] = "total_assist";
+		
+		return names;
+	}
+	
+	protected abstract void increaseStat(String statName, int playerId) throws SQLException;
 
 	@Override
 	public void recordKill( Player player, ExtendedMobType type, boolean bonusMob ) throws DataStoreException
@@ -124,12 +138,14 @@ public abstract class DatabaseDataStore implements DataStore
 		{
 			int playerId = getOrAddPlayerId(player);
 			
-			mRecordKillStatement.setDate(1, new Date(System.currentTimeMillis()));
-			mRecordKillStatement.setInt(2, playerId);
-			mRecordKillStatement.setString(3, type.name());
-			mRecordKillStatement.setInt(4, bonusMob ? 1 : 0);
+			mAddPlayerStatsStatement.setInt(1, playerId);
+			mAddPlayerStatsStatement.executeUpdate();
 			
-			mRecordKillStatement.executeUpdate();
+			increaseStat(type.name() + "_kill", playerId);
+			increaseStat("total_kill", playerId);
+			
+			if(bonusMob)
+				increaseStat("BonusMob_kill", playerId);
 			
 			mConnection.commit();
 		}
@@ -146,16 +162,15 @@ public abstract class DatabaseDataStore implements DataStore
 		try
 		{
 			int playerId = getOrAddPlayerId(player);
-			int assistedPlayerId = getPlayerId(killer);
 			
-			mRecordAssistStatement.setDate(1, new Date(System.currentTimeMillis()));
-			mRecordAssistStatement.setInt(2, playerId);
-			mRecordAssistStatement.setString(3, type.name());
-			mRecordAssistStatement.setInt(4, bonusMob ? 1 : 0);
-			mRecordAssistStatement.setInt(5, assistedPlayerId);
+			mAddPlayerStatsStatement.setInt(1, playerId);
+			mAddPlayerStatsStatement.executeUpdate();
 			
+			increaseStat(type.name() + "_assist", playerId);
+			increaseStat("total_assist", playerId);
 			
-			mRecordAssistStatement.executeUpdate();
+			if(bonusMob)
+				increaseStat("BonusMob_assist", playerId);
 			
 			mConnection.commit();
 		}
