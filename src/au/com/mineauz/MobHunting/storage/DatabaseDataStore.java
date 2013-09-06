@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.MobHunting.ExtendedMobType;
 
 public abstract class DatabaseDataStore implements DataStore
@@ -150,7 +148,7 @@ public abstract class DatabaseDataStore implements DataStore
 		if(result.next())
 			return result.getInt(2);
 		
-		throw new DataStoreException("User " + playerName + " is not present in database");
+		throw new UserNotFoundException("User " + playerName + " is not present in database");
 	}
 	
 	protected String[] getColumnNames()
@@ -168,27 +166,22 @@ public abstract class DatabaseDataStore implements DataStore
 		return names;
 	}
 	
-	protected abstract void increaseStat(String statName, int playerId) throws SQLException;
-
 	@Override
-	public Set<AchievementRecord> loadAchievements( Player player ) throws DataStoreException
+	public Set<AchievementStore> loadAchievements( String player ) throws DataStoreException
 	{
 		try
 		{
-			int playerId = getPlayerId(player.getName());
+			int playerId = getPlayerId(player);
 			
 			mLoadAchievementsStatement.setInt(1, playerId);
 			
 			ResultSet set = mLoadAchievementsStatement.executeQuery();
-			HashSet<AchievementRecord> achievements = new HashSet<AchievementRecord>();
+			HashSet<AchievementStore> achievements = new HashSet<AchievementStore>();
 			
 			while(set.next())
 			{
-				AchievementRecord record = new AchievementRecord();
-				record.id = set.getString(1);
-				record.date = set.getLong(2);
-				record.progress = set.getInt(3);
-				achievements.add(record);
+				// TODO: Date is not used. col 2
+				achievements.add(new AchievementStore(set.getString(1), player, set.getInt(3)));
 			}
 			
 			return achievements;

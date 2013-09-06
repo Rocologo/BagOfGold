@@ -194,7 +194,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		try
 		{
-			mStoreManager.waitForFinish();
+			mStoreManager.shutdown();
 			mStore.shutdown();
 		}
 		catch(DataStoreException e)

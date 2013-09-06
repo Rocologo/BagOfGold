@@ -33,6 +33,8 @@ import org.bukkit.metadata.MetadataValue;
 
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.storage.AchievementStore;
+import au.com.mineauz.MobHunting.storage.DataCallback;
 
 public class AchievementManager implements Listener
 {
@@ -93,6 +95,25 @@ public class AchievementManager implements Listener
 		return false;
 	}
 	
+	public boolean achievementsEnabledFor(Player player)
+	{
+		if(!player.hasMetadata("MH:achievements")) //$NON-NLS-1$
+			return true;
+		
+		for(MetadataValue value : player.getMetadata("MH:achievements")) //$NON-NLS-1$
+		{
+			if(value.getOwningPlugin() == MobHunting.instance)
+			{
+				if(value.value() instanceof Boolean)
+					return value.asBoolean();
+				
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public int getProgress(String achievement, Player player)
 	{
 		Achievement a = getAchievement(achievement);
@@ -122,6 +143,71 @@ public class AchievementManager implements Listener
 		return 0;
 	}
 	
+	public void requestCompletedAchievements(OfflinePlayer player, final DataCallback<List<Map.Entry<Achievement, Integer>>> callback)
+	{
+		// Look through the metadata for online players
+		if(player.isOnline())
+		{
+			List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
+			ArrayList<Map.Entry<Achievement, Integer>> toRemove = new ArrayList<Map.Entry<Achievement,Integer>>();
+			
+			for(Achievement achievement : mAchievements.values())
+			{
+				if(hasAchievement(achievement, player.getPlayer()))
+				{
+					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, -1));
+					
+					// If the achievement is a higher level, remove the lower level from the list
+					if(achievement instanceof ProgressAchievement && ((ProgressAchievement)achievement).inheritFrom() != null)
+						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(getAchievement(((ProgressAchievement)achievement).inheritFrom()), -1));
+				}
+				else if(achievement instanceof ProgressAchievement && getProgress((ProgressAchievement)achievement, player.getPlayer()) > 0)
+					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, getProgress((ProgressAchievement)achievement, player.getPlayer())));
+			}
+			
+			achievements.removeAll(toRemove);
+			
+			callback.onCompleted(achievements);
+			return;
+		}
+		
+		// Look through the data store for offline players
+		MobHunting.instance.getDataStore().requestAllAchievements(player, new DataCallback<Set<AchievementStore>>()
+		{
+			@Override
+			public void onError( Throwable error )
+			{
+				callback.onError(error);
+			}
+			
+			@Override
+			public void onCompleted( Set<AchievementStore> data )
+			{
+				List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
+				ArrayList<Map.Entry<Achievement, Integer>> toRemove = new ArrayList<Map.Entry<Achievement,Integer>>();
+				
+				
+				for(AchievementStore stored : data)
+				{
+					if(mAchievements.containsKey(stored.id))
+					{
+						Achievement achievement = mAchievements.get(stored.id);
+						achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, stored.progress));
+						
+						// If the achievement is a higher level, remove the lower level from the list
+						if(stored.progress == -1 && achievement instanceof ProgressAchievement && ((ProgressAchievement)achievement).inheritFrom() != null)
+							toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(getAchievement(((ProgressAchievement)achievement).inheritFrom()), -1));
+					}
+				}
+				
+				achievements.removeAll(toRemove);
+				
+				callback.onCompleted(achievements);
+			}
+		});
+	}
+	
+	@Deprecated
 	public List<Map.Entry<Achievement, Integer>> getCompletedAchievements(OfflinePlayer player)
 	{
 		List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
@@ -186,7 +272,7 @@ public class AchievementManager implements Listener
 	}
 	public void awardAchievement(Achievement achievement, Player player)
 	{
-		if(hasAchievement(achievement, player))
+		if(!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
 	
 		MobHunting.instance.getDataStore().recordAchievement(player, achievement);
@@ -222,7 +308,7 @@ public class AchievementManager implements Listener
 	
 	public void awardAchievementProgress(ProgressAchievement achievement, Player player, int amount)
 	{
-		if(hasAchievement(achievement, player))
+		if(!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
 		
 		Validate.isTrue(amount > 0);
@@ -265,6 +351,7 @@ public class AchievementManager implements Listener
 	}
 	
 	@SuppressWarnings( "unchecked" )
+	// TODO: Deprecate this, it will be used to upgrade old files only
 	private Set<Map.Entry<String, Integer>> loadAchievements(OfflinePlayer player)
 	{
 		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml"); //$NON-NLS-1$
@@ -307,18 +394,34 @@ public class AchievementManager implements Listener
 		return Collections.EMPTY_SET;
 	}
 	
-	public void load(Player player)
+	public void load(final Player player)
 	{
-		Set<Map.Entry<String, Integer>> achievements = loadAchievements(player);
-		
-		// Load them up into metadata
-		for(Map.Entry<String, Integer> id : achievements)
+		player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false));
+		MobHunting.instance.getDataStore().requestAllAchievements(player, new DataCallback<Set<AchievementStore>>()
 		{
-			if(id.getValue() == -1)
-				player.setMetadata("MH:achievement-" + id.getKey(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
-			else
-				player.setMetadata("MH:achievement-" + id.getKey(), new FixedMetadataValue(MobHunting.instance, id.getValue())); //$NON-NLS-1$
-		}
+			@Override
+			public void onError( Throwable error )
+			{
+				error.printStackTrace();
+				player.sendMessage(ChatColor.RED + "[WARNING] " + ChatColor.WHITE + "Your achievements failed to load. You will be unabled to get any until this is fixed.");
+				player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false));
+			}
+			
+			@Override
+			public void onCompleted( Set<AchievementStore> data )
+			{
+				// Load them up into metadata
+				for(AchievementStore achievement : data)
+				{
+					if(achievement.progress == -1)
+						player.setMetadata("MH:achievement-" + achievement.id, new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
+					else
+						player.setMetadata("MH:achievement-" + achievement.id, new FixedMetadataValue(MobHunting.instance, achievement.progress)); //$NON-NLS-1$
+				}
+				
+				player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true));
+			}
+		});
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)

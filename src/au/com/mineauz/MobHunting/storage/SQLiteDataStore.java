@@ -109,14 +109,6 @@ public class SQLiteDataStore extends DatabaseDataStore
 	}
 
 	@Override
-	protected void increaseStat( String statName, int playerId ) throws SQLException
-	{
-		Statement statement = mConnection.createStatement();
-		statement.executeUpdate(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;", statName, playerId));
-		statement.close();
-	}
-	
-	@Override
 	public void saveStats( Set<StatStore> stats ) throws DataStoreException
 	{
 		try
