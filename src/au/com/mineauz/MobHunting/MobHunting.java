@@ -177,6 +177,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		getServer().getPluginManager().registerEvents(this, this);
 		
+		if(mAchievements.upgradeAchievements())
+			mStoreManager.waitForUpdates();
+		
 		for(Player player : Bukkit.getOnlinePlayers())
 			mAchievements.load(player);
 		

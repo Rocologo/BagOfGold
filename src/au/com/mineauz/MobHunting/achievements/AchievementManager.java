@@ -2,12 +2,12 @@ package au.com.mineauz.MobHunting.achievements;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -207,50 +207,6 @@ public class AchievementManager implements Listener
 		});
 	}
 	
-	@Deprecated
-	public List<Map.Entry<Achievement, Integer>> getCompletedAchievements(OfflinePlayer player)
-	{
-		List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
-		ArrayList<Map.Entry<Achievement, Integer>> toRemove = new ArrayList<Map.Entry<Achievement,Integer>>();
-		
-		if(player.isOnline())
-		{
-			for(Achievement achievement : mAchievements.values())
-			{
-				if(hasAchievement(achievement, player.getPlayer()))
-				{
-					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, -1));
-					
-					// If the achievement is a higher level, remove the lower level from the list
-					if(achievement instanceof ProgressAchievement && ((ProgressAchievement)achievement).inheritFrom() != null)
-						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(getAchievement(((ProgressAchievement)achievement).inheritFrom()), -1));
-				}
-				else if(achievement instanceof ProgressAchievement && getProgress((ProgressAchievement)achievement, player.getPlayer()) > 0)
-					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, getProgress((ProgressAchievement)achievement, player.getPlayer())));
-			}
-		}
-		else
-		{
-			Set<Map.Entry<String, Integer>> ids = loadAchievements(player);
-			
-			for(Map.Entry<String, Integer> id : ids)
-			{
-				if(mAchievements.containsKey(id.getKey()))
-				{
-					Achievement achievement = mAchievements.get(id.getKey());
-					achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement, id.getValue()));
-					
-					// If the achievement is a higher level, remove the lower level from the list
-					if(id.getValue() == -1 && achievement instanceof ProgressAchievement && ((ProgressAchievement)achievement).inheritFrom() != null)
-						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(getAchievement(((ProgressAchievement)achievement).inheritFrom()), -1));
-				}
-			}
-		}
-		
-		achievements.removeAll(toRemove);
-		return achievements;
-	}
-	
 	public Collection<Achievement> getAllAchievements()
 	{
 		return Collections.unmodifiableCollection(mAchievements.values());
@@ -351,36 +307,43 @@ public class AchievementManager implements Listener
 	}
 	
 	@SuppressWarnings( "unchecked" )
-	// TODO: Deprecate this, it will be used to upgrade old files only
-	private Set<Map.Entry<String, Integer>> loadAchievements(OfflinePlayer player)
+	public boolean upgradeAchievements()
 	{
 		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml"); //$NON-NLS-1$
 
+		if(!file.exists())
+			return false;
+		
+		MobHunting.instance.getLogger().info("Upgrading old awards.yml file");
+		
 		YamlConfiguration config = new YamlConfiguration();
 		try
 		{
-			if(!file.exists())
-				file.createNewFile();
-			
 			config.load(file);
-			
-			if(config.isList(player.getName()))
+
+			for(String player : config.getKeys(false))
 			{
-				HashSet<Map.Entry<String, Integer>> ids = new HashSet<Map.Entry<String, Integer>>();
-				for(Object obj : (List<Object>)config.getList(player.getName()))
+				if(config.isList(player))
 				{
-					if(obj instanceof String)
-						ids.add(new AbstractMap.SimpleImmutableEntry<String, Integer>((String)obj, -1));
-					else if(obj instanceof Map)
+					for(Object obj : (List<Object>)config.getList(player))
 					{
-						Map<String, Integer> map = (Map<String, Integer>)obj;
-						String id = map.keySet().iterator().next();
-						ids.add(new AbstractMap.SimpleImmutableEntry<String, Integer>(id, (Integer)map.get(id)));
+						if(obj instanceof String)
+						{
+							MobHunting.instance.getDataStore().recordAchievement(Bukkit.getOfflinePlayer(player), getAchievement((String)obj));
+						}
+						else if(obj instanceof Map)
+						{
+							Map<String, Integer> map = (Map<String, Integer>)obj;
+							String id = map.keySet().iterator().next();
+							MobHunting.instance.getDataStore().recordAchievementProgress(Bukkit.getOfflinePlayer(player), (ProgressAchievement)getAchievement(id), (Integer)map.get(id));
+						}
 					}
 				}
-				
-				return ids;
 			}
+			
+			Files.delete(file.toPath());
+			
+			return true;
 		}
 		catch ( IOException e )
 		{
@@ -390,8 +353,8 @@ public class AchievementManager implements Listener
 		{
 			e.printStackTrace();
 		}
-		
-		return Collections.EMPTY_SET;
+
+		return false;
 	}
 	
 	public void load(final Player player)

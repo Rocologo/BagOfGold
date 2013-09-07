@@ -1,19 +1,20 @@
 package au.com.mineauz.MobHunting.storage;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.MobHunting.ExtendedMobType;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.achievements.Achievement;
 import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
+import au.com.mineauz.MobHunting.storage.asynch.AchievementRetrieverTask;
+import au.com.mineauz.MobHunting.storage.asynch.AchievementRetrieverTask.Mode;
+import au.com.mineauz.MobHunting.storage.asynch.DataStoreTask;
+import au.com.mineauz.MobHunting.storage.asynch.StoreTask;
 
 public class DataStoreManager
 {
@@ -25,23 +26,21 @@ public class DataStoreManager
 	private boolean mExit = false;
 	
 	// Accessed only from store thread
-	private boolean mFlush = false;
-	
 	private StoreThread mStoreThread;
 	
 	// Accessed only from retreive thread
-	private RetrieveThread mRetrieveThread;
+	private TaskThread mTaskThread;
 	
 	
 	public DataStoreManager(DataStore store)
 	{
 		mStore = store;
 		
+		mTaskThread = new TaskThread();
 		mStoreThread = new StoreThread(MobHunting.config().savePeriod);
-		mRetrieveThread = new RetrieveThread();
 	}
 	
-	public void recordKill(Player player, ExtendedMobType type, boolean bonusMob)
+	public void recordKill(OfflinePlayer player, ExtendedMobType type, boolean bonusMob)
 	{
 		synchronized(mWaiting)
 		{
@@ -53,7 +52,7 @@ public class DataStoreManager
 		}
 	}
 	
-	public void recordAssist(Player player, Player killer, ExtendedMobType type, boolean bonusMob)
+	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, ExtendedMobType type, boolean bonusMob)
 	{
 		synchronized(mWaiting)
 		{
@@ -65,7 +64,7 @@ public class DataStoreManager
 		}
 	}
 	
-	public void recordAchievement(Player player, Achievement achievement)
+	public void recordAchievement(OfflinePlayer player, Achievement achievement)
 	{
 		synchronized(mWaiting)
 		{
@@ -73,7 +72,7 @@ public class DataStoreManager
 		}
 	}
 	
-	public void recordAchievementProgress(Player player, ProgressAchievement achievement, int progress)
+	public void recordAchievementProgress(OfflinePlayer player, ProgressAchievement achievement, int progress)
 	{
 		synchronized(mWaiting)
 		{
@@ -83,40 +82,48 @@ public class DataStoreManager
 	
 	public void requestAllAchievements(OfflinePlayer player, DataCallback<Set<AchievementStore>> callback)
 	{
-		mRetrieveThread.addTask(new RetrieveTask(RetrieveTask.ACHIEVEMENT_ALL, player.getName(), callback));
+		mTaskThread.addTask(new AchievementRetrieverTask(Mode.All, player), callback);
 	}
 	
 	public void requestCompletedAchievements(OfflinePlayer player, DataCallback<Set<AchievementStore>> callback)
 	{
-		mRetrieveThread.addTask(new RetrieveTask(RetrieveTask.ACHIEVEMENT_COMPLETED, player.getName(), callback));
+		mTaskThread.addTask(new AchievementRetrieverTask(Mode.Completed, player), callback);
 	}
 	
 	public void requestInProgressAchievements(OfflinePlayer player, DataCallback<Set<AchievementStore>> callback)
 	{
-		mRetrieveThread.addTask(new RetrieveTask(RetrieveTask.ACHIEVEMENT_PROGRESS, player.getName(), callback));
+		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress, player), callback);
 	}
 	
 	public void flush()
 	{
-		synchronized(this)
-		{
-			mFlush = true;
-			mStoreThread.interrupt();
-		}
+		mTaskThread.addTask(new StoreTask(mWaiting), null);
 	}
 	
 	public void shutdown()
 	{
-		synchronized(this)
-		{
-			flush();
-			mExit = true;
-		}
+		mExit = true;
+		flush();
+		mTaskThread.setWriteOnlyMode(true);
 		
 		try
 		{
-			mStoreThread.join();
-			mRetrieveThread.interrupt();
+			mStoreThread.interrupt();
+			mTaskThread.join();
+		}
+		catch ( InterruptedException e )
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void waitForUpdates()
+	{
+		flush();
+		
+		try
+		{
+			mTaskThread.waitForEmptyQueue();
 		}
 		catch ( InterruptedException e )
 		{
@@ -126,8 +133,6 @@ public class DataStoreManager
 	
 	private class StoreThread extends Thread
 	{
-		private HashSet<StatStore> mWaitingStats = new HashSet<StatStore>();
-		private HashSet<AchievementStore> mWaitingAchievements = new HashSet<AchievementStore>();
 		private int mSaveInterval;
 		
 		public StoreThread(int interval)
@@ -137,95 +142,42 @@ public class DataStoreManager
 			mSaveInterval = interval;
 		}
 		
-		private void queueWaiting()
-		{
-			synchronized(mWaiting)
-			{
-				mWaitingStats.clear();
-				mWaitingAchievements.clear();
-				
-				for(Object obj : mWaiting)
-				{
-					if(obj instanceof StatStore)
-						mWaitingStats.add((StatStore)obj);
-					if(obj instanceof AchievementStore)
-						mWaitingAchievements.add((AchievementStore)obj);
-				}
-				
-				mWaiting.clear();
-			}
-		}
-		
 		@Override
 		public void run()
 		{
-			while (true)
+			try
 			{
-				synchronized(this)
-				{
-					if(mExit)
-						break;
-				}
-
-				
-				queueWaiting();
-				
-				try
-				{
-					if(!mWaitingStats.isEmpty())
-						mStore.saveStats(mWaitingStats);
-					
-					if(!mWaitingAchievements.isEmpty())
-						mStore.saveAchievements(mWaitingAchievements);
-					
-					Thread.sleep(mSaveInterval * 50);
-				}
-				catch(DataStoreException e)
-				{
-					e.printStackTrace();
-				}
-				catch(InterruptedException e)
+				while (true)
 				{
 					synchronized(this)
 					{
-						if(mFlush)
-						{
-							mFlush = false;
-							continue;
-						}
-						else
+						if(mExit)
 							break;
 					}
+	
+					mTaskThread.addTask(new StoreTask(mWaiting), null);
+					
+					Thread.sleep(mSaveInterval * 50);
 				}
+			}
+			catch(InterruptedException e)
+			{
+				
 			}
 		}
 	}
 	
-	private static class RetrieveTask
+	private static class Task
 	{
-		public static final int ACHIEVEMENT_ALL = 0;
-		public static final int ACHIEVEMENT_COMPLETED = 1;
-		public static final int ACHIEVEMENT_PROGRESS = 2;
-		
-		@SuppressWarnings( "unused" )
-		public RetrieveTask(int type, DataCallback<?> callback)
+		public Task(DataStoreTask<?> task, DataCallback<?> callback)
 		{
-			this.type = type;
+			this.task = task;
 			this.callback = callback;
 		}
 		
-		public RetrieveTask(int type, String player, DataCallback<?> callback)
-		{
-			this.type = type;
-			this.callback = callback;
-			playerName = player;
-		}
-		
-		public int type;
+		public DataStoreTask<?> task;
 		
 		public DataCallback<?> callback;
-		
-		public String playerName;
 	}
 	
 	private static class CallbackCaller implements Runnable
@@ -252,24 +204,43 @@ public class DataStoreManager
 		
 	}
 	
-	private class RetrieveThread extends Thread
+	private class TaskThread extends Thread
 	{
-		private BlockingQueue<RetrieveTask> mQueue;
+		private BlockingQueue<Task> mQueue;
+		private boolean mWritesOnly = false;
 		
-		RetrieveThread()
+		private Object mSignal = new Object();
+		
+		public TaskThread()
 		{
 			super("MH Data Retriever");
 			
-			mQueue = new LinkedBlockingQueue<RetrieveTask>();
+			mQueue = new LinkedBlockingQueue<Task>();
 			
 			start();
 		}
 		
-		public void addTask(RetrieveTask task)
+		public void waitForEmptyQueue() throws InterruptedException
+		{
+			if(mQueue.isEmpty())
+				return;
+			
+			synchronized ( mSignal )
+			{
+				mSignal.wait();
+			}
+		}
+
+		public void setWriteOnlyMode(boolean writes)
+		{
+			mWritesOnly = writes;
+		}
+		
+		public <T> void addTask(DataStoreTask<T> task, DataCallback<T> callback)
 		{
 			try
 			{
-				mQueue.put(task);
+				mQueue.put(new Task(task, callback));
 			}
 			catch(InterruptedException e)
 			{
@@ -285,72 +256,31 @@ public class DataStoreManager
 			{
 				while(true)
 				{
-					RetrieveTask task = mQueue.take();
-					
-					switch(task.type)
+					if(mQueue.isEmpty())
 					{
-					case RetrieveTask.ACHIEVEMENT_ALL:
-					{
-						try
+						synchronized(mSignal)
 						{
-							Set<AchievementStore> achievements = mStore.loadAchievements(task.playerName);
-							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, achievements, true));
+							mSignal.notifyAll();
 						}
-						catch(DataStoreException e)
-						{
-							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, e, false));
-						}
-						
-						break;
-					}
-					case RetrieveTask.ACHIEVEMENT_COMPLETED:
-					{
-						try
-						{
-							Set<AchievementStore> achievements = mStore.loadAchievements(task.playerName);
-							
-							Iterator<AchievementStore> it = achievements.iterator();
-							while(it.hasNext())
-							{
-								AchievementStore achievement = it.next();
-								if(achievement.progress != -1)
-									it.remove();
-							}
-							
-							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, achievements, true));
-						}
-						catch(DataStoreException e)
-						{
-							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, e, false));
-						}
-						
-						break;
-					}
-					case RetrieveTask.ACHIEVEMENT_PROGRESS:
-					{
-						try
-						{
-							Set<AchievementStore> achievements = mStore.loadAchievements(task.playerName);
-							
-							Iterator<AchievementStore> it = achievements.iterator();
-							while(it.hasNext())
-							{
-								AchievementStore achievement = it.next();
-								if(achievement.progress == -1)
-									it.remove();
-							}
-							
-							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, achievements, true));
-						}
-						catch(DataStoreException e)
-						{
-							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, e, false));
-						}
-						
-						break;
-					}
 					}
 					
+					Task task = mQueue.take();
+					
+					if(mWritesOnly && task.task.readOnly())
+						continue;
+					
+					try
+					{
+						Object result = task.task.run(mStore);
+						
+						if(task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, result, true));
+					}
+					catch(DataStoreException e)
+					{
+						if(task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, e, false));
+					}
 				}
 			}
 			catch(InterruptedException e)
@@ -359,4 +289,6 @@ public class DataStoreManager
 			}
 		}
 	}
+
+	
 }	
