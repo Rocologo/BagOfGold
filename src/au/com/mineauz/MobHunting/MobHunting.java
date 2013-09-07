@@ -124,19 +124,10 @@ public class MobHunting extends JavaPlugin implements Listener
 		else
 			throw new RuntimeException(Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
 		
-		if(mConfig.databaseEnabled)
-		{
-			if(mConfig.databaseType.equalsIgnoreCase("mysql"))
-			{
-				mStore = new MySQLDataStore();
-			}
-			else 
-				mStore = new SQLiteDataStore();
-		}
-		else
-		{
-			// mStore = new YAMLDataStore();
-		}
+		if(mConfig.databaseType.equalsIgnoreCase("mysql"))
+			mStore = new MySQLDataStore();
+		else 
+			mStore = new SQLiteDataStore();
 		
 		try
 		{

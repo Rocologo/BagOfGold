@@ -152,8 +152,6 @@ public class Config extends AutoConfig
 	
 	@ConfigField(name="type", category="database", comment="Type of database to use. Valid values are: sqlite, mysql")
 	public String databaseType = "sqlite";
-	@ConfigField(name="enabled", category="database")
-	public boolean databaseEnabled = true;
 	@ConfigField(name="username", category="database")
 	public String databaseUsername = "user";
 	@ConfigField(name="password", category="database")
