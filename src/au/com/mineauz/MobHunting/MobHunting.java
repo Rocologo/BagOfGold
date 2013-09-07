@@ -51,6 +51,7 @@ import au.com.mineauz.MobHunting.modifier.*;
 import au.com.mineauz.MobHunting.storage.DataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
 import au.com.mineauz.MobHunting.storage.DataStoreManager;
+import au.com.mineauz.MobHunting.storage.MySQLDataStore;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
 
@@ -127,7 +128,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		{
 			if(mConfig.databaseType.equalsIgnoreCase("mysql"))
 			{
-				//mStore = new MySQLDataStore();
+				mStore = new MySQLDataStore();
 			}
 			else 
 				mStore = new SQLiteDataStore();

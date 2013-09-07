@@ -35,6 +35,7 @@ import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.storage.AchievementStore;
 import au.com.mineauz.MobHunting.storage.DataCallback;
+import au.com.mineauz.MobHunting.storage.UserNotFoundException;
 
 public class AchievementManager implements Listener
 {
@@ -365,9 +366,16 @@ public class AchievementManager implements Listener
 			@Override
 			public void onError( Throwable error )
 			{
-				error.printStackTrace();
-				player.sendMessage(ChatColor.RED + "[WARNING] " + ChatColor.WHITE + "Your achievements failed to load. You will be unabled to get any until this is fixed.");
-				player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false));
+				if(error instanceof UserNotFoundException)
+				{
+					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true));
+				}
+				else
+				{
+					error.printStackTrace();
+					player.sendMessage(ChatColor.RED + "[WARNING] " + ChatColor.WHITE + "Your achievements failed to load. You will be unabled to get any until this is fixed.");
+					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false));
+				}
 			}
 			
 			@Override

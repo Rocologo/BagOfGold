@@ -109,7 +109,8 @@ public class DataStoreManager
 		try
 		{
 			mStoreThread.interrupt();
-			mTaskThread.join();
+			mTaskThread.waitForEmptyQueue();
+			mStoreThread.interrupt();
 		}
 		catch ( InterruptedException e )
 		{
@@ -280,6 +281,8 @@ public class DataStoreManager
 					{
 						if(task.callback != null)
 							Bukkit.getScheduler().runTask(MobHunting.instance, new CallbackCaller((DataCallback<Object>) task.callback, e, false));
+						else
+							e.printStackTrace();
 					}
 				}
 			}
