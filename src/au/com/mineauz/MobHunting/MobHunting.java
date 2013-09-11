@@ -44,6 +44,7 @@ import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.CommandDispatcher;
 import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
+import au.com.mineauz.MobHunting.commands.TopCommand;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
@@ -162,6 +163,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		cmd.registerCommand(new ReloadCommand());
 		cmd.registerCommand(new ListAchievementsCommand());
 		cmd.registerCommand(new CheckGrindingCommand());
+		cmd.registerCommand(new TopCommand());
 		
 		registerAchievements();
 		registerModifiers();

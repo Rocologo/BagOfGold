@@ -163,8 +163,28 @@ public class SQLiteDataStore extends DatabaseDataStore
 			else
 				colName = type.name() + "_assist";
 			
+			String id;
+			switch(period)
+			{
+			case Day:
+				id = "strftime('%Y%j','now')";
+				break;
+			case Week:
+				id = "strftime('%Y%W','now')";
+				break;
+			case Month:
+				id = "strftime('%Y%m','now')";
+				break;
+			case Year:
+				id = "strftime('%Y','now')";
+				break;
+			default:
+				id = null;
+				break;
+			}
+			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " order by " + colName + " asc limit " + count + " join Players on PLAYER_ID");
+			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + colName + " asc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())
@@ -189,8 +209,28 @@ public class SQLiteDataStore extends DatabaseDataStore
 			else
 				colName = type.name() + "_kill";
 			
+			String id;
+			switch(period)
+			{
+			case Day:
+				id = "strftime('%Y%j','now')";
+				break;
+			case Week:
+				id = "strftime('%Y%W','now')";
+				break;
+			case Month:
+				id = "strftime('%Y%m','now')";
+				break;
+			case Year:
+				id = "strftime('%Y','now')";
+				break;
+			default:
+				id = null;
+				break;
+			}
+			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " order by " + colName + " asc limit " + count + " join Players on PLAYER_ID");
+			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + colName + " asc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())

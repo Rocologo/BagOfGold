@@ -16,12 +16,15 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>>
 	private boolean mKills;
 	private boolean mAssists;
 	
-	public StatRetrieverTask(ExtendedMobType type, boolean kills, boolean assists, TimePeriod period)
+	private int mCount;
+	
+	public StatRetrieverTask(ExtendedMobType type, boolean kills, boolean assists, TimePeriod period, int count)
 	{
 		mType = type;
 		mPeriod = period;
 		mKills = kills;
 		mAssists = assists;
+		mCount = count;
 	}
 	
 	@Override
@@ -30,10 +33,10 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>>
 		ArrayList<StatStore> results = new ArrayList<StatStore>();
 		
 		if(mKills)
-			results.addAll(store.loadKills(mType, mPeriod, 100));
+			results.addAll(store.loadKills(mType, mPeriod, mCount));
 		
 		if(mAssists)
-			results.addAll(store.loadAssists(mType, mPeriod, 100));
+			results.addAll(store.loadAssists(mType, mPeriod, mCount));
 		
 		return results;
 	}

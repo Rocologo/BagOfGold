@@ -174,8 +174,28 @@ public class MySQLDataStore extends DatabaseDataStore
 			else
 				colName = type.name() + "_assist";
 			
+			String id;
+			switch(period)
+			{
+			case Day:
+				id = "DATE_FORMAT(NOW(), '%Y%j')";
+				break;
+			case Week:
+				id = "DATE_FORMAT(NOW(), '%Y%U')";
+				break;
+			case Month:
+				id = "DATE_FORMAT(NOW(), '%Y%c')";
+				break;
+			case Year:
+				id = "DATE_FORMAT(NOW(), '%Y')";
+				break;
+			default:
+				id = null;
+				break;
+			}
+			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " order by " + colName + " asc limit " + count + " join Players on PLAYER_ID");
+			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " inner join Players on Players.PLAYER_ID=" + period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : "") + " order by " + colName + " asc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())
@@ -200,8 +220,28 @@ public class MySQLDataStore extends DatabaseDataStore
 			else
 				colName = type.name() + "_kill";
 			
+			String id;
+			switch(period)
+			{
+			case Day:
+				id = "DATE_FORMAT(NOW(), '%Y%j')";
+				break;
+			case Week:
+				id = "DATE_FORMAT(NOW(), '%Y%U')";
+				break;
+			case Month:
+				id = "DATE_FORMAT(NOW(), '%Y%c')";
+				break;
+			case Year:
+				id = "DATE_FORMAT(NOW(), '%Y')";
+				break;
+			default:
+				id = null;
+				break;
+			}
+			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " order by " + colName + " asc limit " + count + " join Players on PLAYER_ID");
+			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " inner join Players on Players.PLAYER_ID=" + period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : "") + " order by " + colName + " asc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())

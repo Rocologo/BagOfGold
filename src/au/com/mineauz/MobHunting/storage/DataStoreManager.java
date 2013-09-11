@@ -97,9 +97,9 @@ public class DataStoreManager
 		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress, player), callback);
 	}
 	
-	public void requestStats( ExtendedMobType type, boolean kills, boolean assists, TimePeriod period, DataCallback<List<StatStore>> callback )
+	public void requestStats( ExtendedMobType type, boolean kills, boolean assists, TimePeriod period, int count, DataCallback<List<StatStore>> callback )
 	{
-		mTaskThread.addTask(new StatRetrieverTask(type, kills, assists, period), callback);
+		mTaskThread.addTask(new StatRetrieverTask(type, kills, assists, period, count), callback);
 	}
 	
 	public void flush()

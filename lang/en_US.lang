@@ -76,16 +76,32 @@ mobhunting.commands.reload.reload-error=There is a problem with the config. Plea
 mobhunting.commands.top.description=Shows the top achievers for whatever stat
 mobhunting.commands.top.unknown-stat=Unknown stat: ${stat}
 mobhunting.commands.top.unknown-period=Unknown period: ${period}
+mobhunting.commands.top.invalid-range=Count must be within the range of 1-100
+mobhunting.commands.top.invalid-number=Count must be a whole number with the range of 1-100
+mobhunting.commands.top.results.header=Top ${count} players for ${statname} ${period}
+mobhunting.commands.top.results.empty=No results for ${period}
 
 stats.total=Total
 stats.assist=Assist
+stats.assists=Assists
 stats.kill=Kill
+stats.kills=Kills
 stats.both=Both
+
 stats.day=Day
 stats.week=Week
 stats.month=Month
 stats.year=Year
 stats.alltime=AllTime
+
+stats.day.friendly=Today
+stats.week.friendly=This Week
+stats.month.friendly=This Month
+stats.year.friendly=This Year
+stats.alltime.friendly=All Time
+
+
+stats.name-format=${mob} ${stattype}
 
 bonus.ashove.name=A Shove
 bonus.bonusmob.name=&9B&2O&3N&4U&5S &6M&eO&bB

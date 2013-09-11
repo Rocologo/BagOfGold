@@ -1,5 +1,7 @@
 package au.com.mineauz.MobHunting.storage;
 
+import au.com.mineauz.MobHunting.Messages;
+
 public enum TimePeriod
 {
 	Day("Daily"),
@@ -18,5 +20,15 @@ public enum TimePeriod
 	public String getTable()
 	{
 		return mTable;
+	}
+	
+	public String translateName()
+	{
+		return Messages.getString("stats." + name().toLowerCase());
+	}
+	
+	public String translateNameFriendly()
+	{
+		return Messages.getString("stats." + name().toLowerCase() + ".friendly");
 	}
 }
