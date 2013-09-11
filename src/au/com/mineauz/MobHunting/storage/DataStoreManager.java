@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting.storage;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,6 +15,7 @@ import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
 import au.com.mineauz.MobHunting.storage.asynch.AchievementRetrieverTask;
 import au.com.mineauz.MobHunting.storage.asynch.AchievementRetrieverTask.Mode;
 import au.com.mineauz.MobHunting.storage.asynch.DataStoreTask;
+import au.com.mineauz.MobHunting.storage.asynch.StatRetrieverTask;
 import au.com.mineauz.MobHunting.storage.asynch.StoreTask;
 
 public class DataStoreManager
@@ -93,6 +95,11 @@ public class DataStoreManager
 	public void requestInProgressAchievements(OfflinePlayer player, DataCallback<Set<AchievementStore>> callback)
 	{
 		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress, player), callback);
+	}
+	
+	public void requestStats( ExtendedMobType type, boolean kills, boolean assists, TimePeriod period, DataCallback<List<StatStore>> callback )
+	{
+		mTaskThread.addTask(new StatRetrieverTask(type, kills, assists, period), callback);
 	}
 	
 	public void flush()
@@ -293,5 +300,4 @@ public class DataStoreManager
 		}
 	}
 
-	
 }	

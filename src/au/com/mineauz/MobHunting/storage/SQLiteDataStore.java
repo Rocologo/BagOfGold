@@ -2,12 +2,16 @@ package au.com.mineauz.MobHunting.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.mineauz.MobHunting.ExtendedMobType;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class SQLiteDataStore extends DatabaseDataStore
@@ -144,6 +148,58 @@ public class SQLiteDataStore extends DatabaseDataStore
 		catch(SQLException e)
 		{
 			rollback();
+			throw new DataStoreException(e);
+		}
+	}
+	
+	@Override
+	public List<StatStore> loadAssists( ExtendedMobType type, TimePeriod period, int count ) throws DataStoreException
+	{
+		try
+		{
+			String colName;
+			if(type == null)
+				colName = "total_assist";
+			else
+				colName = type.name() + "_assist";
+			
+			Statement statement = mConnection.createStatement();
+			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " order by " + colName + " asc limit " + count + " join Players on PLAYER_ID");
+			ArrayList<StatStore> list = new ArrayList<StatStore>();
+			
+			while(results.next())
+				list.add(new StatStore(colName, results.getString(2), results.getInt(1)));
+			
+			return list;
+		}
+		catch(SQLException e)
+		{
+			throw new DataStoreException(e);
+		}
+	}
+	
+	@Override
+	public List<StatStore> loadKills( ExtendedMobType type, TimePeriod period, int count ) throws DataStoreException
+	{
+		try
+		{
+			String colName;
+			if(type == null)
+				colName = "total_kill";
+			else
+				colName = type.name() + "_kill";
+			
+			Statement statement = mConnection.createStatement();
+			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " order by " + colName + " asc limit " + count + " join Players on PLAYER_ID");
+			ArrayList<StatStore> list = new ArrayList<StatStore>();
+			
+			while(results.next())
+				list.add(new StatStore(colName, results.getString(2), results.getInt(1)));
+			
+			return list;
+		}
+		catch(SQLException e)
+		{
 			throw new DataStoreException(e);
 		}
 	}

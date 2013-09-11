@@ -32,7 +32,9 @@ public class ShoveBonus implements IModifier
 		if(extraInfo.attacker != killer)
 			return false;
 		
-		return deadEntity.getLastDamageCause().getCause() == DamageCause.FALL;
+		if(deadEntity.getLastDamageCause() != null)
+			return deadEntity.getLastDamageCause().getCause() == DamageCause.FALL;
+		return false;
 	}
 
 }

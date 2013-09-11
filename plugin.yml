@@ -42,3 +42,8 @@ permissions:
     default: op
     children:
       mobhunting.cmd: true
+  mobhunting.top:
+    description: Allows a player to check the top player stats
+    default: op
+    children:
+      mobhunting.cmd: true

@@ -1,6 +1,9 @@
 package au.com.mineauz.MobHunting.storage;
 
+import java.util.List;
 import java.util.Set;
+
+import au.com.mineauz.MobHunting.ExtendedMobType;
 
 public interface DataStore
 {
@@ -12,4 +15,7 @@ public interface DataStore
 	public void saveAchievements(Set<AchievementStore> achievements) throws DataStoreException;
 	
 	public Set<AchievementStore> loadAchievements(String player) throws DataStoreException;
+
+	public List<StatStore> loadKills( ExtendedMobType type, TimePeriod period, int count ) throws DataStoreException;
+	public List<StatStore> loadAssists( ExtendedMobType type, TimePeriod period, int count ) throws DataStoreException;
 }

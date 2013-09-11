@@ -59,6 +59,7 @@ mobhunting.commands.base.nopermission=You do not have permission to use ${comman
 mobhunting.commands.base.unknowncommand=Unknown command: ${command}
 mobhunting.commands.base.usage=Usage: ${usage}
 mobhunting.commands.base.validcommands=Valid commands are:
+mobhunting.commands.base.error=An internal error occurred while executing that command.
 mobhunting.commands.grinding.description=Checks if the area you are in is a known grinding spot
 mobhunting.commands.grinding.not-grinding=This location is not a grinding spot
 mobhunting.commands.grinding.player-grinding=This location is a known grinding spot for the following players: ${players}
@@ -72,6 +73,19 @@ mobhunting.commands.listachievements.player-empty=${player} has not completed an
 mobhunting.commands.reload.description=Reloads the configuration
 mobhunting.commands.reload.reload-complete=Configuration Reloaded
 mobhunting.commands.reload.reload-error=There is a problem with the config. Please check any changes you made
+mobhunting.commands.top.description=Shows the top achievers for whatever stat
+mobhunting.commands.top.unknown-stat=Unknown stat: ${stat}
+mobhunting.commands.top.unknown-period=Unknown period: ${period}
+
+stats.total=Total
+stats.assist=Assist
+stats.kill=Kill
+stats.both=Both
+stats.day=Day
+stats.week=Week
+stats.month=Month
+stats.year=Year
+stats.alltime=AllTime
 
 bonus.ashove.name=A Shove
 bonus.bonusmob.name=&9B&2O&3N&4U&5S &6M&eO&bB

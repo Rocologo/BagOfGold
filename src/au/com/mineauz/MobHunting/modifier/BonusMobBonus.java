@@ -1,6 +1,5 @@
 package au.com.mineauz.MobHunting.modifier;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -16,7 +15,7 @@ public class BonusMobBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.translateAlternateColorCodes('&', Messages.getString("bonus.bonusmob.name")); //$NON-NLS-1$
+		return Messages.getString("bonus.bonusmob.name"); //$NON-NLS-1$
 	}
 
 	@Override

@@ -10,6 +10,8 @@ import java.util.MissingResourceException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.ChatColor;
+
 public class Messages
 {
 	private static HashMap<String, String> mTranslationTable;
@@ -118,7 +120,7 @@ public class Messages
 					output = output.replaceAll("\\$\\{" + name + "\\}", Matcher.quoteReplacement(replace.toString()));
 			}
 			
-			return output;
+			return ChatColor.translateAlternateColorCodes('&', output);
 		}
 		catch ( MissingResourceException e )
 		{
@@ -130,7 +132,7 @@ public class Messages
 	{
 		try
 		{
-			return getStringInternal(key);
+			return ChatColor.translateAlternateColorCodes('&', getStringInternal(key));
 		}
 		catch ( MissingResourceException e )
 		{
