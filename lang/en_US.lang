@@ -81,7 +81,10 @@ mobhunting.commands.top.invalid-number=Count must be a whole number with the ran
 mobhunting.commands.top.results.header=Top ${count} players for ${statname} ${period}
 mobhunting.commands.top.results.empty=No results for ${period}
 
+stats.achievement_count=Achievement Count
 stats.total=Total
+stats.total_kill=Total Kills
+stats.total_assist=Total Assist
 stats.assist=Assist
 stats.assists=Assists
 stats.kill=Kill

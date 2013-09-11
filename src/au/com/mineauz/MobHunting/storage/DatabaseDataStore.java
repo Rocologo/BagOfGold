@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import au.com.mineauz.MobHunting.ExtendedMobType;
-
 public abstract class DatabaseDataStore implements DataStore
 {
 	protected Connection mConnection;
@@ -149,21 +147,6 @@ public abstract class DatabaseDataStore implements DataStore
 			return result.getInt(2);
 		
 		throw new UserNotFoundException("User " + playerName + " is not present in database");
-	}
-	
-	protected String[] getColumnNames()
-	{
-		String[] names = new String[ExtendedMobType.values().length * 2 + 2];
-		for(int i = 0; i < ExtendedMobType.values().length; ++i)
-			names[i] = ExtendedMobType.values()[i].name() + "_kill";
-		
-		for(int i = 0; i < ExtendedMobType.values().length; ++i)
-			names[i + ExtendedMobType.values().length] = ExtendedMobType.values()[i].name() + "_assist";
-		
-		names[ExtendedMobType.values().length * 2] = "total_kill";
-		names[ExtendedMobType.values().length * 2 + 1] = "total_assist";
-		
-		return names;
 	}
 	
 	@Override

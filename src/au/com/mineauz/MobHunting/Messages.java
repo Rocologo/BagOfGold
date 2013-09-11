@@ -180,7 +180,7 @@ public class Messages
 		}
 		catch ( MissingResourceException e )
 		{
-			return '!' + key + '!';
+			return key;
 		}
 	}
 	
@@ -192,7 +192,7 @@ public class Messages
 		}
 		catch ( MissingResourceException e )
 		{
-			return '!' + key + '!';
+			return key;
 		}
 	}
 }

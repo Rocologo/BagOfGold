@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import au.com.mineauz.MobHunting.ExtendedMobType;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.StatType;
 import au.com.mineauz.MobHunting.achievements.Achievement;
 import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
 import au.com.mineauz.MobHunting.storage.asynch.AchievementRetrieverTask;
@@ -46,11 +47,11 @@ public class DataStoreManager
 	{
 		synchronized(mWaiting)
 		{
-			mWaiting.add(new StatStore(type.getName() + "_kill", player.getName()));
-			mWaiting.add(new StatStore("total_kill", player.getName()));
+			mWaiting.add(new StatStore(StatType.fromMobType(type, true), player.getName()));
+			mWaiting.add(new StatStore(StatType.KillsTotal, player.getName()));
 			
 			if(bonusMob)
-				mWaiting.add(new StatStore("BonusMob_kill", player.getName()));
+				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, true), player.getName()));
 		}
 	}
 	
@@ -58,11 +59,11 @@ public class DataStoreManager
 	{
 		synchronized(mWaiting)
 		{
-			mWaiting.add(new StatStore(type.getName() + "_assist", player.getName()));
-			mWaiting.add(new StatStore("total_assist", player.getName()));
+			mWaiting.add(new StatStore(StatType.fromMobType(type, false), player.getName()));
+			mWaiting.add(new StatStore(StatType.AssistsTotal, player.getName()));
 			
 			if(bonusMob)
-				mWaiting.add(new StatStore("BonusMob_assist", player.getName()));
+				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, false), player.getName()));
 		}
 	}
 	
@@ -71,6 +72,7 @@ public class DataStoreManager
 		synchronized(mWaiting)
 		{
 			mWaiting.add(new AchievementStore(achievement.getID(), player.getName(), -1));
+			mWaiting.add(new StatStore(StatType.AchievementCount, player.getName()));
 		}
 	}
 	
@@ -97,9 +99,9 @@ public class DataStoreManager
 		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress, player), callback);
 	}
 	
-	public void requestStats( ExtendedMobType type, boolean kills, boolean assists, TimePeriod period, int count, DataCallback<List<StatStore>> callback )
+	public void requestStats( StatType type, TimePeriod period, int count, DataCallback<List<StatStore>> callback )
 	{
-		mTaskThread.addTask(new StatRetrieverTask(type, kills, assists, period, count), callback);
+		mTaskThread.addTask(new StatRetrieverTask(type, period, count), callback);
 	}
 	
 	public void flush()

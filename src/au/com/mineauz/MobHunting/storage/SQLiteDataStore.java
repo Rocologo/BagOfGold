@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import au.com.mineauz.MobHunting.ExtendedMobType;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.StatType;
 
 public class SQLiteDataStore extends DatabaseDataStore
 {
@@ -37,10 +37,9 @@ public class SQLiteDataStore extends DatabaseDataStore
 		
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (NAME TEXT PRIMARY KEY, PLAYER_ID INTEGER NOT NULL)");
 		
-		String[] names = getColumnNames();
 		String dataString = "";
-		for(String name : names)
-			dataString += ", " + name + " INTEGER NOT NULL DEFAULT 0";
+		for(StatType type : StatType.values())
+			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0";
 		
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))");
@@ -55,12 +54,12 @@ public class SQLiteDataStore extends DatabaseDataStore
 		// Create the cascade update trigger. It will allow us to only modify the Daily table, and the rest will happen automatically
 		StringBuilder updateStringBuilder = new StringBuilder();
 		
-		for(String name : names)
+		for(StatType type : StatType.values())
 		{
 			if(updateStringBuilder.length() != 0)
 				updateStringBuilder.append(", ");
 			
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", name));
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
 		}
 		
 		String updateString = updateStringBuilder.toString();
@@ -137,7 +136,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 			
 			// Now add each of the stats
 			for(StatStore stat : stats)
-				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;", stat.statName, ids.get(stat.playerName)));
+				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.playerName)));
 
 			statement.executeBatch();
 			
@@ -153,16 +152,10 @@ public class SQLiteDataStore extends DatabaseDataStore
 	}
 	
 	@Override
-	public List<StatStore> loadAssists( ExtendedMobType type, TimePeriod period, int count ) throws DataStoreException
+	public List<StatStore> loadStats( StatType type, TimePeriod period, int count ) throws DataStoreException
 	{
 		try
 		{
-			String colName;
-			if(type == null)
-				colName = "total_assist";
-			else
-				colName = type.name() + "_assist";
-			
 			String id;
 			switch(period)
 			{
@@ -184,57 +177,11 @@ public class SQLiteDataStore extends DatabaseDataStore
 			}
 			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + colName + " asc limit " + count);
+			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.NAME from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " asc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())
-				list.add(new StatStore(colName, results.getString(2), results.getInt(1)));
-			
-			return list;
-		}
-		catch(SQLException e)
-		{
-			throw new DataStoreException(e);
-		}
-	}
-	
-	@Override
-	public List<StatStore> loadKills( ExtendedMobType type, TimePeriod period, int count ) throws DataStoreException
-	{
-		try
-		{
-			String colName;
-			if(type == null)
-				colName = "total_kill";
-			else
-				colName = type.name() + "_kill";
-			
-			String id;
-			switch(period)
-			{
-			case Day:
-				id = "strftime('%Y%j','now')";
-				break;
-			case Week:
-				id = "strftime('%Y%W','now')";
-				break;
-			case Month:
-				id = "strftime('%Y%m','now')";
-				break;
-			case Year:
-				id = "strftime('%Y','now')";
-				break;
-			default:
-				id = null;
-				break;
-			}
-			
-			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + colName + ", Players.NAME from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + colName + " asc limit " + count);
-			ArrayList<StatStore> list = new ArrayList<StatStore>();
-			
-			while(results.next())
-				list.add(new StatStore(colName, results.getString(2), results.getInt(1)));
+				list.add(new StatStore(type, results.getString(2), results.getInt(1)));
 			
 			return list;
 		}

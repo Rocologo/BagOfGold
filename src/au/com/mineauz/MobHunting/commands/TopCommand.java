@@ -1,15 +1,14 @@
 package au.com.mineauz.MobHunting.commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.MobHunting.ExtendedMobType;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.StatType;
 import au.com.mineauz.MobHunting.storage.DataCallback;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
@@ -41,7 +40,7 @@ public class TopCommand implements ICommand
 	@Override
 	public String[] getUsageString( String label, CommandSender sender )
 	{
-		return new String[] { label + ChatColor.GOLD + "<type> (kill|assist|both) (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" };
+		return new String[] { label + ChatColor.GOLD + "<type> (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" };
 	}
 
 	@Override
@@ -62,95 +61,53 @@ public class TopCommand implements ICommand
 		return true;
 	}
 	
-	private String[] generateTypes()
-	{
-		String[] types = new String[ExtendedMobType.values().length + 1];
-		for(int i = 0; i < ExtendedMobType.values().length; ++i)
-			types[i] = Messages.getString("mobs." + ExtendedMobType.values()[i].name() + ".name").replaceAll(" ", "_");
-		
-		types[types.length -1] = Messages.getString("stats.total");
-		
-		return types;
-	}
-	
-	private String[] generateExtTypes()
-	{
-		String[] types = new String[2];
-		types[0] = Messages.getString("stats.assist");
-		types[1] = Messages.getString("stats.kill");
-		//types[2] = Messages.getString("stats.both");
-		
-		return types;
-	}
-	
-	private String[] generatePeriods()
-	{
-		String[] periods = new String[5];
-		periods[0] = Messages.getString("stats.day");
-		periods[1] = Messages.getString("stats.week");
-		periods[2] = Messages.getString("stats.month");
-		periods[3] = Messages.getString("stats.year");
-		periods[4] = Messages.getString("stats.alltime");
-		
-		return periods;
-	}
-
 	@Override
 	public boolean onCommand( CommandSender sender, String label, String[] args )
 	{
-		if(args.length != 3 && args.length != 4)
+		if(args.length != 2 && args.length != 3)
 			return false;
 		
-		String[] types = generateTypes();
-		ExtendedMobType type = null;
-		// Verify it
-		boolean ok = false;
-		for(int i = 0; i < types.length; ++i)
+		StatType selectedType = null;
+		
+		for(StatType type : StatType.values())
 		{
-			if(types[i].equalsIgnoreCase(args[0]))
+			if(args[0].equalsIgnoreCase(type.translateName().replaceAll(" ", "_")))
 			{
-				if(i != types.length - 1)
-					type = ExtendedMobType.values()[i];
-				
-				ok = true;
+				selectedType = type;
 				break;
 			}
 		}
 		
-		if(!ok)
+		if(selectedType == null)
 		{
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[0] + ChatColor.RED));
 			return true;
 		}
 		
 		// Check the time period
-		String[] periods = generatePeriods();
-		TimePeriod period = null;
+		TimePeriod selectedPeriod = null;
 		
-		ok = false;
-		for(int i = 0; i < periods.length; ++i)
+		for(TimePeriod period : TimePeriod.values())
 		{
-			if(periods[i].equalsIgnoreCase(args[2]))
+			if(args[1].equalsIgnoreCase(period.translateName().replaceAll(" ", "_")))
 			{
-				period = TimePeriod.values()[i];
-				
-				ok = true;
+				selectedPeriod = period;
 				break;
 			}
 		}
 		
-		if(!ok)
+		if(selectedPeriod == null)
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[2] + ChatColor.RED));
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[1] + ChatColor.RED));
 			return true;
 		}
 		
 		int count = 10;
-		if(args.length >= 4)
+		if(args.length >= 3)
 		{
 			try
 			{
-				count = Integer.parseInt(args[3]);
+				count = Integer.parseInt(args[2]);
 				if(count <= 0 || count > 100)
 				{
 					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.invalid-range"));
@@ -164,20 +121,7 @@ public class TopCommand implements ICommand
 			}
 		}
 		
-		String[] extendedTypes = generateExtTypes();
-		
-		
-		LeaderboardDisplay callback = new LeaderboardDisplay(sender, count, period);
-		
-		
-		if(args[1].equalsIgnoreCase(extendedTypes[0]))
-			MobHunting.instance.getDataStore().requestStats(type, false, true, period, count, callback);
-		else if(args[1].equalsIgnoreCase(extendedTypes[1]))
-			MobHunting.instance.getDataStore().requestStats(type, true, false, period, count, callback);
-//		else if(args[1].equalsIgnoreCase(extendedTypes[2]))
-//			MobHunting.instance.getDataStore().requestStats(type, true, true, period, count, callback);
-		else
-			return false;
+		MobHunting.instance.getDataStore().requestStats(selectedType, selectedPeriod, count, new LeaderboardDisplay(sender, count, selectedPeriod));
 		
 		return true;
 	}
@@ -185,14 +129,18 @@ public class TopCommand implements ICommand
 	@Override
 	public List<String> onTabComplete( CommandSender sender, String label, String[] args )
 	{
-		ArrayList<String> items;
+		ArrayList<String> items = new ArrayList<String>();
 		
 		if(args.length == 1)
-			items = new ArrayList<String>(Arrays.asList(generateTypes()));
+		{
+			for(StatType type : StatType.values())
+				items.add(type.translateName().replaceAll(" ", "_"));
+		}
 		else if(args.length == 2)
-			items = new ArrayList<String>(Arrays.asList(generateExtTypes()));
-		else if(args.length == 3)
-			items = new ArrayList<String>(Arrays.asList(generatePeriods()));
+		{
+			for(TimePeriod period : TimePeriod.values())
+				items.add(period.translateName().replaceAll(" ", "_"));
+		}
 		else
 			return null;
 
@@ -230,7 +178,7 @@ public class TopCommand implements ICommand
 			ArrayList<String> lines = new ArrayList<String>();
 			String name = "";
 			if(!data.isEmpty())
-				name = data.get(0).translateName();
+				name = data.get(0).type.translateName();
 			else
 			{
 				mSender.sendMessage(Messages.getString("mobhunting.commands.top.results.empty", "period", mPeriod.translateNameFriendly()));
