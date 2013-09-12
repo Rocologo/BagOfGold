@@ -75,4 +75,15 @@ public class StatType
 	{
 		return mValues;
 	}
+	
+	public static StatType parseStat(String typeName)
+	{
+		for(StatType type : mValues)
+		{
+			if(typeName.equalsIgnoreCase(type.translateName().replaceAll(" ", "_")))
+				return type;
+		}
+		
+		return null;
+	}
 }

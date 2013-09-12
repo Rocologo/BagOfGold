@@ -42,12 +42,15 @@ import org.bukkit.potion.PotionEffectType;
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.CommandDispatcher;
+import au.com.mineauz.MobHunting.commands.LeaderboardCommand;
 import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.commands.TopCommand;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
+import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
+import au.com.mineauz.MobHunting.leaderboard.LeaderboardManager;
 import au.com.mineauz.MobHunting.modifier.*;
 import au.com.mineauz.MobHunting.storage.DataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
@@ -76,6 +79,8 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	private DataStore mStore;
 	private DataStoreManager mStoreManager;
+	
+	private LeaderboardManager mLeaderboards;
 	
 	private boolean mInitialized = false;
 
@@ -155,6 +160,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		// Handle compatability stuff
 		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
 		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
+		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit"); //$NON-NLS-1$
 		
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
 		getCommand("mobhunt").setExecutor(cmd); //$NON-NLS-1$
@@ -164,6 +170,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		cmd.registerCommand(new ListAchievementsCommand());
 		cmd.registerCommand(new CheckGrindingCommand());
 		cmd.registerCommand(new TopCommand());
+		cmd.registerCommand(new LeaderboardCommand());
 		
 		registerAchievements();
 		registerModifiers();
@@ -177,6 +184,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		for(Player player : Bukkit.getOnlinePlayers())
 			mAchievements.load(player);
 		
+		mLeaderboards = new LeaderboardManager();
+		mLeaderboards.initialize();
+		
 		mInitialized = true;
 	}
 	
@@ -185,6 +195,8 @@ public class MobHunting extends JavaPlugin implements Listener
 	{
 		if(!mInitialized)
 			return;
+		
+		mLeaderboards.shutdown();
 		
 		mAchievements = new AchievementManager();
 		mModifiers.clear();
@@ -763,5 +775,10 @@ public class MobHunting extends JavaPlugin implements Listener
 	public DataStoreManager getDataStore()
 	{
 		return mStoreManager;
+	}
+	
+	public LeaderboardManager getLeaderboards()
+	{
+		return mLeaderboards;
 	}
 }

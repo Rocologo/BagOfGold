@@ -67,17 +67,7 @@ public class TopCommand implements ICommand
 		if(args.length != 2 && args.length != 3)
 			return false;
 		
-		StatType selectedType = null;
-		
-		for(StatType type : StatType.values())
-		{
-			if(args[0].equalsIgnoreCase(type.translateName().replaceAll(" ", "_")))
-			{
-				selectedType = type;
-				break;
-			}
-		}
-		
+		StatType selectedType = StatType.parseStat(args[0]);
 		if(selectedType == null)
 		{
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[0] + ChatColor.RED));
@@ -85,17 +75,7 @@ public class TopCommand implements ICommand
 		}
 		
 		// Check the time period
-		TimePeriod selectedPeriod = null;
-		
-		for(TimePeriod period : TimePeriod.values())
-		{
-			if(args[1].equalsIgnoreCase(period.translateName().replaceAll(" ", "_")))
-			{
-				selectedPeriod = period;
-				break;
-			}
-		}
-		
+		TimePeriod selectedPeriod = TimePeriod.parsePeriod(args[1]);
 		if(selectedPeriod == null)
 		{
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[1] + ChatColor.RED));

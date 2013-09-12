@@ -31,4 +31,15 @@ public enum TimePeriod
 	{
 		return Messages.getString("stats." + name().toLowerCase() + ".friendly");
 	}
+
+	public static TimePeriod parsePeriod( String period )
+	{
+		for(TimePeriod p : values())
+		{
+			if(period.equalsIgnoreCase(p.translateName().replaceAll(" ", "_")))
+				return p;
+		}
+		
+		return null;
+	}
 }

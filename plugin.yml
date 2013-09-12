@@ -6,7 +6,7 @@ main: au.com.mineauz.MobHunting.MobHunting
 author: Schmoller
 
 depend: [Vault]
-softdepend: [Minigames, MyPet]
+softdepend: [Minigames, MyPet, WorldEdit]
 
 commands:
   mobhunt:
@@ -44,6 +44,11 @@ permissions:
       mobhunting.cmd: true
   mobhunting.top:
     description: Allows a player to check the top player stats
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.leaderboard:
+    description: Allows a player to create, edit, and delete leaderboards
     default: op
     children:
       mobhunting.cmd: true
