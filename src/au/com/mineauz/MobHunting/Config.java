@@ -165,6 +165,18 @@ public class Config extends AutoConfig
 	@ConfigField(name="database", category="database")
 	public String databaseName = "mobhunting";
 	
+	@ConfigField(name="enable", category="assists", comment="Enabling assist allows the second last player to attack a mob to get some money from it")
+	public boolean enableAssists = true;
+	@ConfigField(name="multiplier", category="assists", comment="This should be a value that is multiplied against the mobs base kill value. This is used to determine how much money an assister gets.")
+	public double assistMultiplier = 0.25;
+	@ConfigField(name="allow-killstreak", category="assists", comment="Should killstreak be applied to assists")
+	public boolean assistAllowKillstreak = false;
+	@ConfigField(name="timeout", category="assists", comment="Time in seconds after attacking a mob that can be counted as an assist")
+	public int assistTimeout = 4;
+	
+	@ConfigField(name="kill-timeout", category="general", comment="Time in seconds after attacking a mob that can be counted as a kill")
+	public int killTimeout = 4;
+	
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException
 	{

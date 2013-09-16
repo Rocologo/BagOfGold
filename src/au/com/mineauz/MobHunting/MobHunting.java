@@ -376,16 +376,6 @@ public class MobHunting extends JavaPlugin implements Listener
 		player.setMetadata("MH:enabled", new FixedMetadataValue(instance, enabled)); //$NON-NLS-1$
 	}
 	
-	private boolean isSword(ItemStack item)
-	{
-		return (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.GOLD_SWORD || item.getType() == Material.IRON_SWORD || item.getType() == Material.STONE_SWORD || item.getType() == Material.WOOD_SWORD);
-	}
-	
-	private boolean isPick(ItemStack item)
-	{
-		return (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.GOLD_PICKAXE || item.getType() == Material.IRON_PICKAXE || item.getType() == Material.STONE_PICKAXE || item.getType() == Material.WOOD_PICKAXE);
-	}
-	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	private void onPlayerDeath(PlayerDeathEvent event)
 	{
@@ -489,13 +479,18 @@ public class MobHunting extends JavaPlugin implements Listener
 			info.weapon = weapon;
 		
 		// Take note that a weapon has been used at all
-		if(info.weapon != null && (isSword(info.weapon) || Misc.isAxe(info.weapon) || isPick(info.weapon) || projectile))
+		if(info.weapon != null && (Misc.isSword(info.weapon) || Misc.isAxe(info.weapon) || Misc.isPick(info.weapon) || projectile))
 			info.usedWeapon = true;
 		
 		if(cause != null)
 		{
 			if(cause != info.attacker)
+			{
 				info.assister = info.attacker;
+				info.lastAssistTime = info.lastAttackTime;
+			}
+			
+			info.lastAttackTime = System.currentTimeMillis();
 			
 			info.attacker = cause;
 			if(cause.isFlying() && !cause.isInsideVehicle())
@@ -545,35 +540,15 @@ public class MobHunting extends JavaPlugin implements Listener
 			info.usedWeapon = true;
 		}
 		
+		if((System.currentTimeMillis() - info.lastAttackTime > mConfig.killTimeout))
+			return;
+		
 		if(info.weapon == null)
 			info.weapon = new ItemStack(Material.AIR);
 		
 		HuntData data = getHuntData(killer);
 		
-		int lastKillstreakLevel = data.getKillstreakLevel();
-		data.killStreak++;
-		
-		// Give a message notifying of killstreak increase
-		if(data.getKillstreakLevel() != lastKillstreakLevel)
-		{
-			switch(data.getKillstreakLevel())
-			{
-			case 1:
-				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1")); //$NON-NLS-1$
-				break;
-			case 2:
-				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2")); //$NON-NLS-1$
-				break;
-			case 3:
-				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3")); //$NON-NLS-1$
-				break;
-			default:
-				killer.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4")); //$NON-NLS-1$
-				break;
-			}
-			
-			killer.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier", String.format("%.1f",data.getKillstreakMultiplier()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
+		Misc.handleKillstreak(killer);
 		
 		// Record kills that are still within a small area
 		Location loc = event.getEntity().getLocation();
@@ -671,26 +646,47 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		if(cash >= 0.01)
 		{
-			Bukkit.getPluginManager().callEvent(new MobHuntKillEvent(data, info, event.getEntity(), killer));
+			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, event.getEntity(), killer);
+			Bukkit.getPluginManager().callEvent(event2);
+			
+			if(event2.isCancelled())
+				return;
+			
 			mEconomy.depositPlayer(killer.getName(), cash);
 			
 			getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
-			if(info.assister != null && !info.assister.equals(killer))
-			{
-				double amount = cash / 4;
-				if(amount > 0.01)
-				{
-					getDataStore().recordAssist(info.assister, killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
-					info.assister.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(amount))); //$NON-NLS-1$ //$NON-NLS-2$
-					mEconomy.depositPlayer(info.assister.getName(), amount);
-				}
-				
-			}
+			if(info.assister != null)
+				onAssist(info.assister, killer, event.getEntity(), info.lastAssistTime);
 			
 			if(extraString.trim().isEmpty())
 				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$
 			else
 				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses", "prize", mEconomy.format(cash), "bonuses", extraString.trim())); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+	}
+	
+	private void onAssist(Player player, Player killer, LivingEntity killed, long time)
+	{
+		if(!mConfig.enableAssists || (System.currentTimeMillis() - time) > mConfig.assistTimeout)
+			return;
+		
+		double multiplier = mConfig.assistMultiplier;
+		double ks = 1.0;
+		if(mConfig.assistAllowKillstreak)
+			ks =  Misc.handleKillstreak(player);
+		
+		multiplier *= ks;
+		double cash = getBaseKillPrize(killed) * multiplier;
+		
+		if(cash >= 0.01)
+		{
+			getDataStore().recordAssist(player, killer, ExtendedMobType.fromEntity(killed), killed.hasMetadata("MH:hasBonus"));
+			mEconomy.depositPlayer(player.getName(), cash);
+
+			if(ks != 1.0)
+				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$
+			else
+				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist.bonuses", "prize", mEconomy.format(cash), "bonuses", String.format("x%.1f", ks))); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	

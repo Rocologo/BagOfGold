@@ -218,9 +218,8 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 			int y = signs.get(0).getY();
 			int returnSign = 0;
 			
-			for(int i = data.size() - 1; i >= 0; --i)
+			for(StatStore stat : data)
 			{
-				StatStore stat = data.get(i);
 				if(stat.amount == 0)
 					continue;
 				
@@ -251,9 +250,8 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		{
 			int sign = 0;
 			int line = 0;
-			for(int i = data.size() - 1; i >= 0; --i)
+			for(StatStore stat : data)
 			{
-				StatStore stat = data.get(i);
 				if(stat.amount == 0)
 					continue;
 				

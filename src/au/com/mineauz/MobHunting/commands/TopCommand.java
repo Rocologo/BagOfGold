@@ -40,7 +40,7 @@ public class TopCommand implements ICommand
 	@Override
 	public String[] getUsageString( String label, CommandSender sender )
 	{
-		return new String[] { label + ChatColor.GOLD + "<type> (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" };
+		return new String[] { label + ChatColor.GOLD + " <type> (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" };
 	}
 
 	@Override
@@ -165,12 +165,17 @@ public class TopCommand implements ICommand
 				return;
 			}
 			
-			lines.add(Messages.getString("mobhunting.commands.top.results.header", "count", mCount, "period", mPeriod.translateNameFriendly(), "statname", name));
-			lines.add("");
+			lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.top.results.header", "count", ChatColor.YELLOW + "" + mCount + ChatColor.GRAY, "period", ChatColor.YELLOW + mPeriod.translateNameFriendly() + ChatColor.GRAY, "statname", ChatColor.YELLOW + name + ChatColor.GRAY));
 			
 			int index = 1;
 			for(StatStore stat : data)
-				lines.add(index + ": " + ChatColor.YELLOW + stat.playerName + ChatColor.RESET + " - " + ChatColor.YELLOW + stat.amount);
+			{
+				if(stat.amount == 0)
+					continue;
+				
+				lines.add(ChatColor.GRAY + "" + index + ": " + ChatColor.GOLD + stat.playerName + ChatColor.GRAY + " - " + ChatColor.GOLD + stat.amount);
+				++index;
+			}
 
 			mSender.sendMessage(lines.toArray(new String[lines.size()]));
 		}

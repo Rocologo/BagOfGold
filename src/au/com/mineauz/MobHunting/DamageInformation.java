@@ -12,7 +12,10 @@ public class DamageInformation
 	public boolean usedWeapon;
 	public boolean mele;
 	public Player attacker;
+	public long lastAttackTime = 0;
 	public Player assister;
+	public long lastAssistTime = 0;
+	
 	public Location attackerPosition;
 	public boolean wolfAssist;
 	
