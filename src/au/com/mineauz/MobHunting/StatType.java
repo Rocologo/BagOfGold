@@ -22,7 +22,7 @@ public class StatType
 			mValues[3 + i] = new StatType(ExtendedMobType.values()[i] + "_kill", "stats.name-format", "mob", "mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.kills");
 		
 		for(int i = 0; i < ExtendedMobType.values().length; ++i)
-			mValues[3 + i + ExtendedMobType.values().length] = new StatType(ExtendedMobType.values()[i] + "_assist", "stats.name-format", "mob", "mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.kills");
+			mValues[3 + i + ExtendedMobType.values().length] = new StatType(ExtendedMobType.values()[i] + "_assist", "stats.name-format", "mob", "mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.assists");
 		
 		for(int i = 0; i < mValues.length; ++i)
 			mNameLookup.put(mValues[i].mColumnName, mValues[i]);

@@ -1,8 +1,12 @@
 package au.com.mineauz.MobHunting.leaderboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,6 +23,7 @@ import au.com.mineauz.MobHunting.storage.TimePeriod;
 
 public class Leaderboard implements DataCallback<List<StatStore>>
 {
+	private String mId;
 	private World mWorld;
 	private BlockVector mMinCorner;
 	private BlockVector mMaxCorner;
@@ -28,8 +33,9 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	private TimePeriod mPeriod;
 	private StatType mType;
 	
-	public Leaderboard(StatType type, TimePeriod period, Location pointA, Location pointB, boolean horizontal) throws IllegalArgumentException
+	public Leaderboard(String id, StatType type, TimePeriod period, Location pointA, Location pointB, boolean horizontal) throws IllegalArgumentException
 	{
+		mId = id;
 		mType = type;
 		mPeriod = period;
 		mWorld = pointA.getWorld();
@@ -42,6 +48,8 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		
 		mHorizontal = horizontal;
 	}
+	
+	Leaderboard() {}
 	
 	private List<Sign> getSigns()
 	{
@@ -106,6 +114,88 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		MobHunting.instance.getDataStore().requestStats(mType, mPeriod, countSigns() * 4, this);
 	}
 	
+	public String getId()
+	{
+		return mId;
+	}
+	
+	public World getWorld()
+	{
+		return mWorld;
+	}
+	
+	public BlockVector getMin()
+	{
+		return mMinCorner;
+	}
+	
+	public BlockVector getMax()
+	{
+		return mMaxCorner;
+	}
+	
+	public Map<String, Object> write()
+	{
+		HashMap<String, Object> objects = new HashMap<String, Object>();
+		objects.put("id", mId);
+		objects.put("world-l", mWorld.getUID().getLeastSignificantBits());
+		objects.put("world-h", mWorld.getUID().getMostSignificantBits());
+		objects.put("mi-x", mMinCorner.getBlockX());
+		objects.put("mi-y", mMinCorner.getBlockY());
+		objects.put("mi-z", mMinCorner.getBlockZ());
+		
+		objects.put("ma-x", mMaxCorner.getBlockX());
+		objects.put("ma-y", mMaxCorner.getBlockY());
+		objects.put("ma-z", mMaxCorner.getBlockZ());
+		
+		objects.put("hor", mHorizontal);
+		
+		objects.put("period", mPeriod.ordinal());
+		objects.put("type", mType.getDBColumn());
+		
+		return objects;
+	}
+	
+	private long toLong(Object obj)
+	{
+		if(obj instanceof Long)
+			return (Long)obj;
+		else if(obj instanceof Integer)
+			return (int)(Integer)obj;
+		
+		throw new IllegalArgumentException("Not a number");
+	}
+	private int toInt(Object obj)
+	{
+		if(obj instanceof Integer)
+			return (int)(Integer)obj;
+		
+		throw new IllegalArgumentException("Not a number");
+	}
+	private boolean toBool(Object obj)
+	{
+		if(obj instanceof Boolean)
+			return (Boolean)obj;
+		
+		return Boolean.parseBoolean(obj.toString());
+	}
+	
+	public void read(Map<String, Object> data)
+	{
+		UUID worldId = new UUID(toLong(data.get("world-h")), toLong(data.get("world-l")));
+		mWorld = Bukkit.getWorld(worldId);
+		
+		mMinCorner = new BlockVector(toInt(data.get("mi-x")), toInt(data.get("mi-y")), toInt(data.get("mi-z")));
+		mMaxCorner = new BlockVector(toInt(data.get("ma-x")), toInt(data.get("ma-y")), toInt(data.get("ma-z")));
+		
+		mHorizontal = toBool(data.get("hor"));
+		
+		mPeriod = TimePeriod.values()[toInt(data.get("period"))];
+		mType = StatType.fromColumnName((String)data.get("type"));
+		
+		mId = (String)data.get("id");
+	}
+	
 	@Override
 	public void onCompleted( List<StatStore> data )
 	{
@@ -128,8 +218,12 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 			int y = signs.get(0).getY();
 			int returnSign = 0;
 			
-			for(StatStore stat : data)
+			for(int i = data.size() - 1; i >= 0; --i)
 			{
+				StatStore stat = data.get(i);
+				if(stat.amount == 0)
+					continue;
+				
 				if(sign >= signs.size() || signs.get(sign).getY() != y)
 				{
 					returnSign = sign;
@@ -157,8 +251,12 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		{
 			int sign = 0;
 			int line = 0;
-			for(StatStore stat : data)
+			for(int i = data.size() - 1; i >= 0; --i)
 			{
+				StatStore stat = data.get(i);
+				if(stat.amount == 0)
+					continue;
+				
 				if(line >= 4)
 				{
 					line = 0;
@@ -182,5 +280,35 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	public void onError( Throwable error )
 	{
 		error.printStackTrace();
+	}
+
+	public void setType( StatType type )
+	{
+		mType = type;
+	}
+	
+	public void setPeriod( TimePeriod period)
+	{
+		mPeriod = period;
+	}
+	
+	public void setHorizontal( boolean horizontal )
+	{
+		mHorizontal = horizontal;
+	}
+	
+	public StatType getType()
+	{
+		return mType;
+	}
+	
+	public TimePeriod getPeriod()
+	{
+		return mPeriod;
+	}
+	
+	public boolean getHorizontal()
+	{
+		return mHorizontal;
 	}
 }

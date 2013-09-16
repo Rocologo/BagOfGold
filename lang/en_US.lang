@@ -3,6 +3,7 @@ mobhunting.config.fail=There was a problem loading the MobHunting config
 mobhunting.hook.econ=Unable to hook into an economy! Make sure you have one available that Vault accepts.
 mobhunting.moneygain.bonuses=You gained ${prize}! With: ${bonuses}
 mobhunting.moneygain=You gained ${prize}!
+mobhunting.moneygain.assist=Assist! You got ${prize} 
 
 mobhunting.killstreak.activated=x${multiplier} Activated
 mobhunting.killstreak.ended=Killstreak ended
@@ -80,6 +81,15 @@ mobhunting.commands.top.invalid-range=Count must be within the range of 1-100
 mobhunting.commands.top.invalid-number=Count must be a whole number with the range of 1-100
 mobhunting.commands.top.results.header=Top ${count} players for ${statname} ${period}
 mobhunting.commands.top.results.empty=No results for ${period}
+mobhunting.commands.leaderboard.description=Creates, edits and deletes leaderboards
+mobhunting.commands.leaderboard.list.header= &7----- ${count} &aLeaderboards: &7-----
+mobhunting.commands.leaderboard.list.format= ${id}&7: ${type} &7for ${period}
+mobhunting.commands.leaderboard.delete=Leaderboard ${id} was deleted
+mobhunting.commands.leaderboard.edit.noboard=Leaderboard ${id} does not exist
+mobhunting.commands.leaderboard.edit.set-type=Updated ${id} setting type to ${type}
+mobhunting.commands.leaderboard.edit.set-period=Updated ${id} setting period to ${period}
+mobhunting.commands.leaderboard.edit.set-horizontal=Updated ${id} setting horizontal to ${horizontal}
+mobhunting.commands.leaderboard.create=Leaderboard ${id} was created
 
 stats.achievement_count=Achievement Count
 stats.total=Total

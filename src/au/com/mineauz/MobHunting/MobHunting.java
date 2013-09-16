@@ -494,6 +494,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		if(cause != null)
 		{
+			if(cause != info.attacker)
+				info.assister = info.attacker;
+			
 			info.attacker = cause;
 			if(cause.isFlying() && !cause.isInsideVehicle())
 				info.wasFlying = true;
@@ -672,6 +675,17 @@ public class MobHunting extends JavaPlugin implements Listener
 			mEconomy.depositPlayer(killer.getName(), cash);
 			
 			getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
+			if(info.assister != null && !info.assister.equals(killer))
+			{
+				double amount = cash / 4;
+				if(amount > 0.01)
+				{
+					getDataStore().recordAssist(info.assister, killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
+					info.assister.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(amount))); //$NON-NLS-1$ //$NON-NLS-2$
+					mEconomy.depositPlayer(info.assister.getName(), amount);
+				}
+				
+			}
 			
 			if(extraString.trim().isEmpty())
 				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$

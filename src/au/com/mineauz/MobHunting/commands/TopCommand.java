@@ -126,7 +126,7 @@ public class TopCommand implements ICommand
 
 		if(!args[args.length-1].trim().isEmpty())
 		{
-			String match = args[0].trim().toLowerCase();
+			String match = args[args.length-1].trim().toLowerCase();
 			
 			Iterator<String> it = items.iterator();
 			while(it.hasNext())

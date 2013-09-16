@@ -150,6 +150,9 @@ public class Config extends AutoConfig
 	@ConfigField(name="save-period", category="general", comment="Time between saves in ticks")
 	public int savePeriod = 1200;
 	
+	@ConfigField(name="leaderboard-update-period", category="general", comment="Time between leaderboard updates in ticks")
+	public int leaderboardUpdatePeriod = 1200;
+	
 	@ConfigField(name="type", category="database", comment="Type of database to use. Valid values are: sqlite, mysql")
 	public String databaseType = "sqlite";
 	@ConfigField(name="username", category="database")
