@@ -26,7 +26,7 @@ public class LeaderboardCommand implements ICommand
 	@Override
 	public String[] getAliases()
 	{
-		return null;
+		return new String[] { "lb", "board" }; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
