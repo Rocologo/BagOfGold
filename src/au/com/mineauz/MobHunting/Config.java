@@ -13,12 +13,12 @@ public class Config extends AutoConfig
 	{
 		super(file);
 		
-		setCategoryComment("mobs", "Here is where you set the base prize in $ for killing a mob of each type");
-		setCategoryComment("boss", "Here is where you set the base prize in $ for killing the bosses");
-		setCategoryComment("bonus", "These are bonus multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them.");
-		setCategoryComment("penalty", "These are penalty multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them.");
+		setCategoryComment("mobs", "Here is where you set the base prize in $ for killing a mob of each type"); //$NON-NLS-1$ //$NON-NLS-2$
+		setCategoryComment("boss", "Here is where you set the base prize in $ for killing the bosses"); //$NON-NLS-1$ //$NON-NLS-2$
+		setCategoryComment("bonus", "These are bonus multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them."); //$NON-NLS-1$ //$NON-NLS-2$
+		setCategoryComment("penalty", "These are penalty multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them."); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill");
+		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 	}
 	
@@ -139,7 +139,7 @@ public class Config extends AutoConfig
 	public String[] disabledInWorlds = new String[0];
 	
 	@ConfigField(name="language", category="general", comment="The language (file) to use. You can put the name of the language file as the language code (eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
-	public String language = "en_US";
+	public String language = "en_US"; //$NON-NLS-1$
 	
 	@ConfigField(name="broadcast-achievement", category="general", comment="Should achievements be broadcasted?")
 	public boolean broadcastAchievement = true;
@@ -154,16 +154,16 @@ public class Config extends AutoConfig
 	public int leaderboardUpdatePeriod = 1200;
 	
 	@ConfigField(name="type", category="database", comment="Type of database to use. Valid values are: sqlite, mysql")
-	public String databaseType = "sqlite";
+	public String databaseType = "sqlite"; //$NON-NLS-1$
 	@ConfigField(name="username", category="database")
-	public String databaseUsername = "user";
+	public String databaseUsername = "user"; //$NON-NLS-1$
 	@ConfigField(name="password", category="database")
-	public String databasePassword = "password";
+	public String databasePassword = "password"; //$NON-NLS-1$
 	
 	@ConfigField(name="host", category="database")
-	public String databaseHost = "localhost:3306";
+	public String databaseHost = "localhost:3306"; //$NON-NLS-1$
 	@ConfigField(name="database", category="database")
-	public String databaseName = "mobhunting";
+	public String databaseName = "mobhunting"; //$NON-NLS-1$
 	
 	@ConfigField(name="enable", category="assists", comment="Enabling assist allows the second last player to attack a mob to get some money from it")
 	public boolean enableAssists = true;

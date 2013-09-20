@@ -15,6 +15,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.util.BlockVector;
 
+import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
 import au.com.mineauz.MobHunting.storage.DataCallback;
@@ -44,7 +45,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		mMaxCorner = new BlockVector(Math.max(pointA.getBlockX(), pointB.getBlockX()), Math.max(pointA.getBlockY(), pointB.getBlockY()), Math.max(pointA.getBlockZ(), pointB.getBlockZ()));
 		
 		if(mMaxCorner.getBlockX() - mMinCorner.getBlockX() > 1 && mMaxCorner.getBlockZ() - mMaxCorner.getBlockZ() > 1)
-			throw new IllegalArgumentException("The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick");
+			throw new IllegalArgumentException(Messages.getString("leaderboard.thick")); //$NON-NLS-1$
 		
 		mHorizontal = horizontal;
 	}
@@ -137,21 +138,21 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	public Map<String, Object> write()
 	{
 		HashMap<String, Object> objects = new HashMap<String, Object>();
-		objects.put("id", mId);
-		objects.put("world-l", mWorld.getUID().getLeastSignificantBits());
-		objects.put("world-h", mWorld.getUID().getMostSignificantBits());
-		objects.put("mi-x", mMinCorner.getBlockX());
-		objects.put("mi-y", mMinCorner.getBlockY());
-		objects.put("mi-z", mMinCorner.getBlockZ());
+		objects.put("id", mId); //$NON-NLS-1$
+		objects.put("world-l", mWorld.getUID().getLeastSignificantBits()); //$NON-NLS-1$
+		objects.put("world-h", mWorld.getUID().getMostSignificantBits()); //$NON-NLS-1$
+		objects.put("mi-x", mMinCorner.getBlockX()); //$NON-NLS-1$
+		objects.put("mi-y", mMinCorner.getBlockY()); //$NON-NLS-1$
+		objects.put("mi-z", mMinCorner.getBlockZ()); //$NON-NLS-1$
 		
-		objects.put("ma-x", mMaxCorner.getBlockX());
-		objects.put("ma-y", mMaxCorner.getBlockY());
-		objects.put("ma-z", mMaxCorner.getBlockZ());
+		objects.put("ma-x", mMaxCorner.getBlockX()); //$NON-NLS-1$
+		objects.put("ma-y", mMaxCorner.getBlockY()); //$NON-NLS-1$
+		objects.put("ma-z", mMaxCorner.getBlockZ()); //$NON-NLS-1$
 		
-		objects.put("hor", mHorizontal);
+		objects.put("hor", mHorizontal); //$NON-NLS-1$
 		
-		objects.put("period", mPeriod.ordinal());
-		objects.put("type", mType.getDBColumn());
+		objects.put("period", mPeriod.ordinal()); //$NON-NLS-1$
+		objects.put("type", mType.getDBColumn()); //$NON-NLS-1$
 		
 		return objects;
 	}
@@ -163,14 +164,14 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		else if(obj instanceof Integer)
 			return (int)(Integer)obj;
 		
-		throw new IllegalArgumentException("Not a number");
+		throw new IllegalArgumentException("Not a number"); //$NON-NLS-1$
 	}
 	private int toInt(Object obj)
 	{
 		if(obj instanceof Integer)
 			return (int)(Integer)obj;
 		
-		throw new IllegalArgumentException("Not a number");
+		throw new IllegalArgumentException("Not a number"); //$NON-NLS-1$
 	}
 	private boolean toBool(Object obj)
 	{
@@ -182,18 +183,18 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	
 	public void read(Map<String, Object> data)
 	{
-		UUID worldId = new UUID(toLong(data.get("world-h")), toLong(data.get("world-l")));
+		UUID worldId = new UUID(toLong(data.get("world-h")), toLong(data.get("world-l"))); //$NON-NLS-1$ //$NON-NLS-2$
 		mWorld = Bukkit.getWorld(worldId);
 		
-		mMinCorner = new BlockVector(toInt(data.get("mi-x")), toInt(data.get("mi-y")), toInt(data.get("mi-z")));
-		mMaxCorner = new BlockVector(toInt(data.get("ma-x")), toInt(data.get("ma-y")), toInt(data.get("ma-z")));
+		mMinCorner = new BlockVector(toInt(data.get("mi-x")), toInt(data.get("mi-y")), toInt(data.get("mi-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		mMaxCorner = new BlockVector(toInt(data.get("ma-x")), toInt(data.get("ma-y")), toInt(data.get("ma-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		mHorizontal = toBool(data.get("hor"));
+		mHorizontal = toBool(data.get("hor")); //$NON-NLS-1$
 		
-		mPeriod = TimePeriod.values()[toInt(data.get("period"))];
-		mType = StatType.fromColumnName((String)data.get("type"));
+		mPeriod = TimePeriod.values()[toInt(data.get("period"))]; //$NON-NLS-1$
+		mType = StatType.fromColumnName((String)data.get("type")); //$NON-NLS-1$
 		
-		mId = (String)data.get("id");
+		mId = (String)data.get("id"); //$NON-NLS-1$
 	}
 	
 	@Override
@@ -204,10 +205,10 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		// Clear the signs
 		for(Sign sign : signs)
 		{
-			sign.setLine(0, "");
-			sign.setLine(1, "");
-			sign.setLine(2, "");
-			sign.setLine(3, "");
+			sign.setLine(0, ""); //$NON-NLS-1$
+			sign.setLine(1, ""); //$NON-NLS-1$
+			sign.setLine(2, ""); //$NON-NLS-1$
+			sign.setLine(3, ""); //$NON-NLS-1$
 		}
 		
 		if(mHorizontal)
@@ -241,7 +242,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 					}
 				}
 				
-				signs.get(sign).setLine(line, stat.amount + " " + stat.playerName);
+				signs.get(sign).setLine(line, stat.amount + " " + stat.playerName); //$NON-NLS-1$
 				
 				++sign;
 			}
@@ -264,7 +265,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 				if(sign >= signs.size())
 					break;
 				
-				signs.get(sign).setLine(line, stat.amount + " " + stat.playerName);
+				signs.get(sign).setLine(line, stat.amount + " " + stat.playerName); //$NON-NLS-1$
 				
 				++line;
 			}

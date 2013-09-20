@@ -42,7 +42,7 @@ public class MySQLDataStore extends DatabaseDataStore
 			
 			// Now add each of the stats
 			for(StatStore stat : stats)
-				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.playerName)));
+				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.playerName))); //$NON-NLS-1$
 
 			statement.executeBatch();
 			
@@ -62,12 +62,12 @@ public class MySQLDataStore extends DatabaseDataStore
 	{
 		try
 		{
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection("jdbc:mysql://" + MobHunting.config().databaseHost + "/" + MobHunting.config().databaseName, MobHunting.config().databaseUsername, MobHunting.config().databasePassword);
+			Class.forName("com.mysql.jdbc.Driver"); //$NON-NLS-1$
+			return DriverManager.getConnection("jdbc:mysql://" + MobHunting.config().databaseHost + "/" + MobHunting.config().databaseName, MobHunting.config().databaseUsername, MobHunting.config().databasePassword); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		catch(ClassNotFoundException e)
 		{
-			throw new DataStoreException("MySQL not present on the classpath");
+			throw new DataStoreException("MySQL not present on the classpath"); //$NON-NLS-1$
 		}
 	}
 
@@ -76,28 +76,28 @@ public class MySQLDataStore extends DatabaseDataStore
 	{
 		Statement create = connection.createStatement();
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (NAME CHAR(20) PRIMARY KEY, PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, KEY PLAYER_ID (PLAYER_ID))");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (NAME CHAR(20) PRIMARY KEY, PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, KEY PLAYER_ID (PLAYER_ID))"); //$NON-NLS-1$
 		
-		String dataString = "";
+		String dataString = ""; //$NON-NLS-1$
 		for(StatType type : StatType.values())
-			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0";
+			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; //$NON-NLS-1$ //$NON-NLS-2$
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Daily (ID CHAR(7) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))");
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))");
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))");
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Yearly (ID CHAR(4) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))");
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS AllTime (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(PLAYER_ID))");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Daily (ID CHAR(7) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Yearly (ID CHAR(4) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS AllTime (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Achievements (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE, ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Achievements (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE, ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))"); //$NON-NLS-1$
 		
 		
 		// Workaround for no create trigger if not exists
-		ResultSet set = create.executeQuery(String.format("select TRIGGER_NAME from information_schema.triggers where TRIGGER_SCHEMA = '%s' and TRIGGER_NAME = '%s'", MobHunting.config().databaseName, "DailyInsert"));
+		ResultSet set = create.executeQuery(String.format("select TRIGGER_NAME from information_schema.triggers where TRIGGER_SCHEMA = '%s' and TRIGGER_NAME = '%s'", MobHunting.config().databaseName, "DailyInsert")); //$NON-NLS-1$ //$NON-NLS-2$
 		if(!set.next())
-			create.executeUpdate("create trigger DailyInsert after insert on Daily for each row begin insert ignore into Weekly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%U'), NEW.PLAYER_ID); insert ignore into Monthly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%c'), NEW.PLAYER_ID); insert ignore into Yearly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y'), NEW.PLAYER_ID); insert ignore into AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end");
+			create.executeUpdate("create trigger DailyInsert after insert on Daily for each row begin insert ignore into Weekly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%U'), NEW.PLAYER_ID); insert ignore into Monthly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%c'), NEW.PLAYER_ID); insert ignore into Yearly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y'), NEW.PLAYER_ID); insert ignore into AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end"); //$NON-NLS-1$
 		
 		
-		set = create.executeQuery(String.format("select TRIGGER_NAME from information_schema.triggers where TRIGGER_SCHEMA = '%s' and TRIGGER_NAME = '%s'", MobHunting.config().databaseName, "DailyUpdate"));
+		set = create.executeQuery(String.format("select TRIGGER_NAME from information_schema.triggers where TRIGGER_SCHEMA = '%s' and TRIGGER_NAME = '%s'", MobHunting.config().databaseName, "DailyUpdate")); //$NON-NLS-1$ //$NON-NLS-2$
 		if(!set.next())
 		{
 			// Create the cascade update trigger. It will allow us to only modify the Daily table, and the rest will happen automatically
@@ -106,37 +106,37 @@ public class MySQLDataStore extends DatabaseDataStore
 			for(StatType type : StatType.values())
 			{
 				if(updateStringBuilder.length() != 0)
-					updateStringBuilder.append(", ");
+					updateStringBuilder.append(", "); //$NON-NLS-1$
 				
-				updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
+				updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn())); //$NON-NLS-1$
 			}
 			
 			String updateString = updateStringBuilder.toString();
 			
 			StringBuilder updateTrigger = new StringBuilder();
-			updateTrigger.append("create trigger DailyUpdate after update on Daily for each row begin ");
+			updateTrigger.append("create trigger DailyUpdate after update on Daily for each row begin "); //$NON-NLS-1$
 			
 			// Weekly
-			updateTrigger.append("update Weekly set ");
+			updateTrigger.append("update Weekly set "); //$NON-NLS-1$
 			updateTrigger.append(updateString);
-			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y%U') AND PLAYER_ID=New.PLAYER_ID;");
+			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y%U') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
 			
 			// Monthly
-			updateTrigger.append(" update Monthly set ");
+			updateTrigger.append(" update Monthly set "); //$NON-NLS-1$
 			updateTrigger.append(updateString);
-			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y%c') AND PLAYER_ID=New.PLAYER_ID;");
+			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y%c') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
 			
 			// Yearly
-			updateTrigger.append(" update Yearly set ");
+			updateTrigger.append(" update Yearly set "); //$NON-NLS-1$
 			updateTrigger.append(updateString);
-			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y') AND PLAYER_ID=New.PLAYER_ID;");
+			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
 			
 			// AllTime
-			updateTrigger.append("update AllTime set ");
+			updateTrigger.append("update AllTime set "); //$NON-NLS-1$
 			updateTrigger.append(updateString);
-			updateTrigger.append(" where PLAYER_ID=New.PLAYER_ID;");
+			updateTrigger.append(" where PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
 			
-			updateTrigger.append("END");
+			updateTrigger.append("END"); //$NON-NLS-1$
 			
 			create.executeUpdate(updateTrigger.toString());
 		}
@@ -149,17 +149,17 @@ public class MySQLDataStore extends DatabaseDataStore
 	@Override
 	protected void setupStatements( Connection connection ) throws SQLException
 	{
-		mAddPlayerStatement = connection.prepareStatement("INSERT IGNORE INTO Players(NAME) VALUES(?);");
-		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM Players WHERE NAME=?;");
-		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?);");
-		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?);");
-		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?,?,?,?,?,?);");
+		mAddPlayerStatement = connection.prepareStatement("INSERT IGNORE INTO Players(NAME) VALUES(?);"); //$NON-NLS-1$
+		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM Players WHERE NAME=?;"); //$NON-NLS-1$
+		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
 		
-		mRecordAchievementStatement = connection.prepareStatement("REPLACE INTO Achievements VALUES(?,?,?,?);");
+		mRecordAchievementStatement = connection.prepareStatement("REPLACE INTO Achievements VALUES(?,?,?,?);"); //$NON-NLS-1$
 		
-		mAddPlayerStatsStatement = connection.prepareStatement("INSERT IGNORE INTO Daily(ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?);");
+		mAddPlayerStatsStatement = connection.prepareStatement("INSERT IGNORE INTO Daily(ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?);"); //$NON-NLS-1$
 		
-		mLoadAchievementsStatement = connection.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM Achievements WHERE PLAYER_ID = ?;");
+		mLoadAchievementsStatement = connection.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM Achievements WHERE PLAYER_ID = ?;"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -171,16 +171,16 @@ public class MySQLDataStore extends DatabaseDataStore
 			switch(period)
 			{
 			case Day:
-				id = "DATE_FORMAT(NOW(), '%Y%j')";
+				id = "DATE_FORMAT(NOW(), '%Y%j')"; //$NON-NLS-1$
 				break;
 			case Week:
-				id = "DATE_FORMAT(NOW(), '%Y%U')";
+				id = "DATE_FORMAT(NOW(), '%Y%U')"; //$NON-NLS-1$
 				break;
 			case Month:
-				id = "DATE_FORMAT(NOW(), '%Y%c')";
+				id = "DATE_FORMAT(NOW(), '%Y%c')"; //$NON-NLS-1$
 				break;
 			case Year:
-				id = "DATE_FORMAT(NOW(), '%Y')";
+				id = "DATE_FORMAT(NOW(), '%Y')"; //$NON-NLS-1$
 				break;
 			default:
 				id = null;
@@ -188,7 +188,7 @@ public class MySQLDataStore extends DatabaseDataStore
 			}
 			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.NAME from " + period.getTable() + " inner join Players on Players.PLAYER_ID=" + period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count);
+			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.NAME from " + period.getTable() + " inner join Players on Players.PLAYER_ID=" + period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())

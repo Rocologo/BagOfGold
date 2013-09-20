@@ -147,7 +147,7 @@ public class DataStoreManager
 		
 		public StoreThread(int interval)
 		{
-			super("MH Data Storer");
+			super("MH Data Storer"); //$NON-NLS-1$
 			start();
 			mSaveInterval = interval;
 		}
@@ -223,7 +223,7 @@ public class DataStoreManager
 		
 		public TaskThread()
 		{
-			super("MH Data Retriever");
+			super("MH Data Retriever"); //$NON-NLS-1$
 			
 			mQueue = new LinkedBlockingQueue<Task>();
 			
@@ -297,7 +297,7 @@ public class DataStoreManager
 			}
 			catch(InterruptedException e)
 			{
-				System.out.println("MH Data Retriever thread was interrupted");
+				System.out.println("MH Data Retriever thread was interrupted"); //$NON-NLS-1$
 			}
 		}
 	}

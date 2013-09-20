@@ -24,19 +24,19 @@ public class Messages
 	
 	public static void exportDefaultLanguages()
 	{
-		File folder = new File(MobHunting.instance.getDataFolder(), "lang");
+		File folder = new File(MobHunting.instance.getDataFolder(), "lang"); //$NON-NLS-1$
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		String[] sources = new String[] {"en_US.lang"};
+		String[] sources = new String[] {"en_US.lang"}; //$NON-NLS-1$
 		
 		for(String source : sources)
 		{
 			File dest = new File(folder, source);
 			if(!dest.exists())
-				MobHunting.instance.saveResource("lang/" + source, false);
+				MobHunting.instance.saveResource("lang/" + source, false); //$NON-NLS-1$
 			else
-				injectChanges(MobHunting.instance.getResource("lang/" + source), new File(MobHunting.instance.getDataFolder(), "lang/" + source));
+				injectChanges(MobHunting.instance.getResource("lang/" + source), new File(MobHunting.instance.getDataFolder(), "lang/" + source)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -58,11 +58,11 @@ public class Messages
 			{
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
 				for(Entry<String, String> entry : newEntries.entrySet())
-					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
+					writer.append("\n" + entry.getKey() + "=" + entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
 
 				writer.close();
 				
-				MobHunting.instance.getLogger().info("Updated " + onDisk.getName() + " translation");
+				MobHunting.instance.getLogger().info("Updated " + onDisk.getName() + " translation"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		catch(IOException e)
@@ -113,9 +113,9 @@ public class Messages
 	
 	public static void setLanguage(String lang)
 	{
-		File file = new File(MobHunting.instance.getDataFolder(), "lang/" + lang + ".lang");
+		File file = new File(MobHunting.instance.getDataFolder(), "lang/" + lang + ".lang"); //$NON-NLS-1$ //$NON-NLS-2$
 		if(!file.exists())
-			file = new File(MobHunting.instance.getDataFolder(), "lang/en_US.lang");
+			file = new File(MobHunting.instance.getDataFolder(), "lang/en_US.lang"); //$NON-NLS-1$
 		
 		if(file.exists())
 			mTranslationTable = loadLang(file);
@@ -129,7 +129,7 @@ public class Messages
 		String value = mTranslationTable.get(key);
 		
 		if(value == null)
-			throw new MissingResourceException("", "", key);
+			throw new MissingResourceException("", "", key); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return value;
 	}
@@ -146,7 +146,7 @@ public class Messages
 		try
 		{
 			if(mPattern == null)
-				mPattern = Pattern.compile("\\$\\{([\\w\\.\\-]+)\\}");
+				mPattern = Pattern.compile("\\$\\{([\\w\\.\\-]+)\\}"); //$NON-NLS-1$
 
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			
@@ -173,7 +173,7 @@ public class Messages
 				name = m.group(1);
 				Object replace = map.get(name);
 				if(replace != null)
-					output = output.replaceAll("\\$\\{" + name + "\\}", Matcher.quoteReplacement(replace.toString()));
+					output = output.replaceAll("\\$\\{" + name + "\\}", Matcher.quoteReplacement(replace.toString())); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			
 			return ChatColor.translateAlternateColorCodes('&', output);

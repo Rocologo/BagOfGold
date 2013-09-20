@@ -315,7 +315,7 @@ public class AchievementManager implements Listener
 		if(!file.exists())
 			return false;
 		
-		MobHunting.instance.getLogger().info("Upgrading old awards.yml file");
+		MobHunting.instance.getLogger().info("Upgrading old awards.yml file"); //$NON-NLS-1$
 		
 		YamlConfiguration config = new YamlConfiguration();
 		try
@@ -360,7 +360,7 @@ public class AchievementManager implements Listener
 	
 	public void load(final Player player)
 	{
-		player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false));
+		player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false)); //$NON-NLS-1$
 		MobHunting.instance.getDataStore().requestAllAchievements(player, new DataCallback<Set<AchievementStore>>()
 		{
 			@Override
@@ -368,13 +368,13 @@ public class AchievementManager implements Listener
 			{
 				if(error instanceof UserNotFoundException)
 				{
-					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true));
+					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
 				}
 				else
 				{
 					error.printStackTrace();
-					player.sendMessage(ChatColor.RED + "[WARNING] " + ChatColor.WHITE + "Your achievements failed to load. You will be unabled to get any until this is fixed.");
-					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false));
+					player.sendMessage(Messages.getString("achievements.load-fail")); //$NON-NLS-1$
+					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false)); //$NON-NLS-1$
 				}
 			}
 			
@@ -390,7 +390,7 @@ public class AchievementManager implements Listener
 						player.setMetadata("MH:achievement-" + achievement.id, new FixedMetadataValue(MobHunting.instance, achievement.progress)); //$NON-NLS-1$
 				}
 				
-				player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true));
+				player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
 			}
 		});
 	}

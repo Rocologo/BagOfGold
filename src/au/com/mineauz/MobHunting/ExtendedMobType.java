@@ -57,7 +57,7 @@ public enum ExtendedMobType
 	
 	public String getName()
 	{
-		return Messages.getString("mobs." + name() + ".name");
+		return Messages.getString("mobs." + name() + ".name"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public static ExtendedMobType fromEntity(Entity entity)

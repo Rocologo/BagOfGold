@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import au.com.mineauz.MobHunting.Messages;
+
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -14,21 +16,21 @@ public class WorldEditCompat
 	
 	public WorldEditCompat()
 	{
-		mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
+		mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit"); //$NON-NLS-1$
 	}
 	
 	public static Location getPointA(Player player) throws IllegalArgumentException
 	{
 		if(mPlugin == null)
-			throw new IllegalArgumentException("WorldEdit is not present");
+			throw new IllegalArgumentException("WorldEdit is not present"); //$NON-NLS-1$
 		
 		Selection sel = mPlugin.getSelection(player);
 		
 		if(sel == null)
-			throw new IllegalArgumentException("You have nothing selected");
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.no-select")); //$NON-NLS-1$
 		
 		if(!(sel instanceof CuboidSelection))
-			throw new IllegalArgumentException("Only cuboid selections can be used for leaderboards");
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.select-type")); //$NON-NLS-1$
 		
 		return sel.getMinimumPoint();
 	}
@@ -36,15 +38,15 @@ public class WorldEditCompat
 	public static Location getPointB(Player player) throws IllegalArgumentException
 	{
 		if(mPlugin == null)
-			throw new IllegalArgumentException("WorldEdit is not present");
+			throw new IllegalArgumentException("WorldEdit is not present"); //$NON-NLS-1$
 		
 		Selection sel = mPlugin.getSelection(player);
 		
 		if(sel == null)
-			throw new IllegalArgumentException("You have nothing selected");
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.no-select")); //$NON-NLS-1$
 		
 		if(!(sel instanceof CuboidSelection))
-			throw new IllegalArgumentException("Only cuboid selections can be used for leaderboards");
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.select-type")); //$NON-NLS-1$
 		
 		return sel.getMaximumPoint();
 	}

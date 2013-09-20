@@ -22,7 +22,7 @@ public class TopCommand implements ICommand
 	@Override
 	public String getName()
 	{
-		return "top";
+		return "top"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -34,19 +34,19 @@ public class TopCommand implements ICommand
 	@Override
 	public String getPermission()
 	{
-		return "mobhunting.top";
+		return "mobhunting.top"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String[] getUsageString( String label, CommandSender sender )
 	{
-		return new String[] { label + ChatColor.GOLD + " <type> (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" };
+		return new String[] { label + ChatColor.GOLD + " <type> (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" }; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Messages.getString("mobhunting.commands.top.description");
+		return Messages.getString("mobhunting.commands.top.description"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class TopCommand implements ICommand
 		StatType selectedType = StatType.parseStat(args[0]);
 		if(selectedType == null)
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[0] + ChatColor.RED));
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[0] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
@@ -78,7 +78,7 @@ public class TopCommand implements ICommand
 		TimePeriod selectedPeriod = TimePeriod.parsePeriod(args[1]);
 		if(selectedPeriod == null)
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[1] + ChatColor.RED));
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[1] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
@@ -90,13 +90,13 @@ public class TopCommand implements ICommand
 				count = Integer.parseInt(args[2]);
 				if(count <= 0 || count > 100)
 				{
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.invalid-range"));
+					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.invalid-range")); //$NON-NLS-1$
 					return true;
 				}
 			}
 			catch(NumberFormatException e)
 			{
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.invalid-number"));
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.invalid-number")); //$NON-NLS-1$
 				return true;
 			}
 		}
@@ -114,12 +114,12 @@ public class TopCommand implements ICommand
 		if(args.length == 1)
 		{
 			for(StatType type : StatType.values())
-				items.add(type.translateName().replaceAll(" ", "_"));
+				items.add(type.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else if(args.length == 2)
 		{
 			for(TimePeriod period : TimePeriod.values())
-				items.add(period.translateName().replaceAll(" ", "_"));
+				items.add(period.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else
 			return null;
@@ -156,16 +156,16 @@ public class TopCommand implements ICommand
 		public void onCompleted( List<StatStore> data )
 		{
 			ArrayList<String> lines = new ArrayList<String>();
-			String name = "";
+			String name = ""; //$NON-NLS-1$
 			if(!data.isEmpty())
 				name = data.get(0).type.translateName();
 			else
 			{
-				mSender.sendMessage(Messages.getString("mobhunting.commands.top.results.empty", "period", mPeriod.translateNameFriendly()));
+				mSender.sendMessage(Messages.getString("mobhunting.commands.top.results.empty", "period", mPeriod.translateNameFriendly())); //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
 			
-			lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.top.results.header", "count", ChatColor.YELLOW + "" + mCount + ChatColor.GRAY, "period", ChatColor.YELLOW + mPeriod.translateNameFriendly() + ChatColor.GRAY, "statname", ChatColor.YELLOW + name + ChatColor.GRAY));
+			lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.top.results.header", "count", ChatColor.YELLOW + "" + mCount + ChatColor.GRAY, "period", ChatColor.YELLOW + mPeriod.translateNameFriendly() + ChatColor.GRAY, "statname", ChatColor.YELLOW + name + ChatColor.GRAY)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 			
 			int index = 1;
 			for(StatStore stat : data)
@@ -173,7 +173,7 @@ public class TopCommand implements ICommand
 				if(stat.amount == 0)
 					continue;
 				
-				lines.add(ChatColor.GRAY + "" + index + ": " + ChatColor.GOLD + stat.playerName + ChatColor.GRAY + " - " + ChatColor.GOLD + stat.amount);
+				lines.add(ChatColor.GRAY + "" + index + ": " + ChatColor.GOLD + stat.playerName + ChatColor.GRAY + " - " + ChatColor.GOLD + stat.amount); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				++index;
 			}
 
@@ -183,7 +183,7 @@ public class TopCommand implements ICommand
 		@Override
 		public void onError( Throwable error )
 		{
-			mSender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.error"));
+			mSender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.error")); //$NON-NLS-1$
 			error.printStackTrace();
 		}
 		

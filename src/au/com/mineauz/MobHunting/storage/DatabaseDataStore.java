@@ -146,7 +146,7 @@ public abstract class DatabaseDataStore implements DataStore
 		if(result.next())
 			return result.getInt(2);
 		
-		throw new UserNotFoundException("User " + playerName + " is not present in database");
+		throw new UserNotFoundException("User " + playerName + " is not present in database"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	@Override

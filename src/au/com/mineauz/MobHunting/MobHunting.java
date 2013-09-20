@@ -45,6 +45,7 @@ import au.com.mineauz.MobHunting.commands.CommandDispatcher;
 import au.com.mineauz.MobHunting.commands.LeaderboardCommand;
 import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
+import au.com.mineauz.MobHunting.commands.SelectCommand;
 import au.com.mineauz.MobHunting.commands.TopCommand;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
@@ -130,7 +131,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		else
 			throw new RuntimeException(Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
 		
-		if(mConfig.databaseType.equalsIgnoreCase("mysql"))
+		if(mConfig.databaseType.equalsIgnoreCase("mysql")) //$NON-NLS-1$
 			mStore = new MySQLDataStore();
 		else 
 			mStore = new SQLiteDataStore();
@@ -171,6 +172,8 @@ public class MobHunting extends JavaPlugin implements Listener
 		cmd.registerCommand(new CheckGrindingCommand());
 		cmd.registerCommand(new TopCommand());
 		cmd.registerCommand(new LeaderboardCommand());
+		if(!getServer().getPluginManager().isPluginEnabled("WorldEdit")) //$NON-NLS-1$
+			cmd.registerCommand(new SelectCommand());
 		
 		registerAchievements();
 		registerModifiers();
@@ -654,14 +657,14 @@ public class MobHunting extends JavaPlugin implements Listener
 			
 			mEconomy.depositPlayer(killer.getName(), cash);
 			
-			getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus"));
+			getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus")); //$NON-NLS-1$
 			if(info.assister != null)
 				onAssist(info.assister, killer, event.getEntity(), info.lastAssistTime);
 			
 			if(extraString.trim().isEmpty())
-				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$
+				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			else
-				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses", "prize", mEconomy.format(cash), "bonuses", extraString.trim())); //$NON-NLS-1$ //$NON-NLS-2$
+				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses", "prize", mEconomy.format(cash), "bonuses", extraString.trim())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 	}
 	
@@ -680,13 +683,13 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		if(cash >= 0.01)
 		{
-			getDataStore().recordAssist(player, killer, ExtendedMobType.fromEntity(killed), killed.hasMetadata("MH:hasBonus"));
+			getDataStore().recordAssist(player, killer, ExtendedMobType.fromEntity(killed), killed.hasMetadata("MH:hasBonus")); //$NON-NLS-1$
 			mEconomy.depositPlayer(player.getName(), cash);
 
 			if(ks != 1.0)
-				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$
+				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			else
-				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist.bonuses", "prize", mEconomy.format(cash), "bonuses", String.format("x%.1f", ks))); //$NON-NLS-1$ //$NON-NLS-2$
+				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist.bonuses", "prize", mEconomy.format(cash), "bonuses", String.format("x%.1f", ks))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		}
 	}
 	

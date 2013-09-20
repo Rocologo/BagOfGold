@@ -20,7 +20,7 @@ public class LeaderboardCommand implements ICommand
 	@Override
 	public String getName()
 	{
-		return "leaderboard";
+		return "leaderboard"; //$NON-NLS-1$
 	}
 
 	@Override
@@ -32,24 +32,24 @@ public class LeaderboardCommand implements ICommand
 	@Override
 	public String getPermission()
 	{
-		return "mobhunting.leaderboard";
+		return "mobhunting.leaderboard"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String[] getUsageString( String label, CommandSender sender )
 	{
 		return new String[] {
-			label + ChatColor.GOLD + " create <id> <type> <period> <isHorizonal?>",
-			label + ChatColor.GOLD + " delete <id>",
-			label + ChatColor.GOLD + " edit <id> (type|period|horizontal) <value>",
-			label + ChatColor.GOLD + " list"
+			label + ChatColor.GOLD + " create <id> <type> <period> <isHorizonal?>", //$NON-NLS-1$
+			label + ChatColor.GOLD + " delete <id>", //$NON-NLS-1$
+			label + ChatColor.GOLD + " edit <id> (type|period|horizontal) <value>", //$NON-NLS-1$
+			label + ChatColor.GOLD + " list" //$NON-NLS-1$
 		};
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Messages.getString("mobhunting.commands.leaderboard.description");
+		return Messages.getString("mobhunting.commands.leaderboard.description"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class LeaderboardCommand implements ICommand
 		try
 		{
 			MobHunting.instance.getLeaderboards().deleteLeaderboard(id);
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.delete", "id", id));
+			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.delete", "id", id)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		catch(IllegalArgumentException e)
 		{
@@ -93,43 +93,43 @@ public class LeaderboardCommand implements ICommand
 		Leaderboard leaderboard = MobHunting.instance.getLeaderboards().getLeaderboard(id);
 		if(leaderboard == null)
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.leaderboard.edit.noboard", "id", id));
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.leaderboard.edit.noboard", "id", id)); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
 		
-		if(args[2].equalsIgnoreCase("type"))
+		if(args[2].equalsIgnoreCase("type")) //$NON-NLS-1$
 		{
 			StatType type = StatType.parseStat(args[3]);
 			if(type == null)
 			{
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[3] + ChatColor.RED));
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[3] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
 			
 			leaderboard.setType(type);
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.edit.set-type", "id", id, "type", type.translateName()));
+			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.edit.set-type", "id", id, "type", type.translateName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
-		else if(args[2].equalsIgnoreCase("period"))
+		else if(args[2].equalsIgnoreCase("period")) //$NON-NLS-1$
 		{
 			TimePeriod period = TimePeriod.parsePeriod(args[3]);
 			if(period == null)
 			{
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[3] + ChatColor.RED));
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[3] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
 			
 			leaderboard.setPeriod(period);
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.edit.set-period", "id", id, "period", period.translateNameFriendly()));
+			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.edit.set-period", "id", id, "period", period.translateNameFriendly())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
-		else if(args[2].equalsIgnoreCase("horizontal"))
+		else if(args[2].equalsIgnoreCase("horizontal")) //$NON-NLS-1$
 		{
 			leaderboard.setHorizontal(Boolean.parseBoolean(args[3]));
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.edit.set-horizontal", "id", id, "horizontal", leaderboard.getHorizontal()));
+			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.edit.set-horizontal", "id", id, "horizontal", leaderboard.getHorizontal())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		else
 		{
-			sender.sendMessage(ChatColor.RED + "Unknown setting " + args[2] + ". Valid values: type, period, horizontal");
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.leaderboard.edit.unknown", "setting", args[2])); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
@@ -145,10 +145,10 @@ public class LeaderboardCommand implements ICommand
 		
 		int count = MobHunting.instance.getLeaderboards().getAllBoards().size();
 		ArrayList<String> lines = new ArrayList<String>();
-		lines.add(Messages.getString("mobhunting.commands.leaderboard.list.header", "count", count));
+		lines.add(Messages.getString("mobhunting.commands.leaderboard.list.header", "count", count)); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		for(Leaderboard board : MobHunting.instance.getLeaderboards().getAllBoards())
-			lines.add(Messages.getString("mobhunting.commands.leaderboard.list.format", "id", ChatColor.YELLOW + board.getId(), "type", ChatColor.GREEN + board.getType().translateName(), "period", ChatColor.GREEN + board.getPeriod().translateNameFriendly()));
+			lines.add(Messages.getString("mobhunting.commands.leaderboard.list.format", "id", ChatColor.YELLOW + board.getId(), "type", ChatColor.GREEN + board.getType().translateName(), "period", ChatColor.GREEN + board.getPeriod().translateNameFriendly())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		
 		sender.sendMessage(lines.toArray(new String[lines.size()]));
 		
@@ -164,14 +164,14 @@ public class LeaderboardCommand implements ICommand
 		StatType type = StatType.parseStat(args[2]);
 		if(type == null)
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[2] + ChatColor.RED));
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[2] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
 		TimePeriod period = TimePeriod.parsePeriod(args[3]);
 		if(period == null)
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[3] + ChatColor.RED));
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[3] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
@@ -187,7 +187,7 @@ public class LeaderboardCommand implements ICommand
 			return true;
 		}
 		
-		sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.create", "id", id));
+		sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.create", "id", id)); //$NON-NLS-1$ //$NON-NLS-2$
 		return true;
 	}
 	@Override
@@ -196,13 +196,13 @@ public class LeaderboardCommand implements ICommand
 		if(args.length == 0)
 			return false;
 		
-		if(args[0].equalsIgnoreCase("create"))
+		if(args[0].equalsIgnoreCase("create")) //$NON-NLS-1$
 			return onCreate(sender, args);
-		else if(args[0].equalsIgnoreCase("delete"))
+		else if(args[0].equalsIgnoreCase("delete")) //$NON-NLS-1$
 			return onDelete(sender, args);
-		else if(args[0].equalsIgnoreCase("edit"))
+		else if(args[0].equalsIgnoreCase("edit")) //$NON-NLS-1$
 			return onEdit(sender, args);
-		else if(args[0].equalsIgnoreCase("list"))
+		else if(args[0].equalsIgnoreCase("list")) //$NON-NLS-1$
 			return onList(sender, args);
 		
 		return false;
@@ -215,55 +215,55 @@ public class LeaderboardCommand implements ICommand
 		
 		if(args.length == 1)
 		{
-			items.add("create");
-			items.add("delete");
-			items.add("edit");
-			items.add("list");
+			items.add("create"); //$NON-NLS-1$
+			items.add("delete"); //$NON-NLS-1$
+			items.add("edit"); //$NON-NLS-1$
+			items.add("list"); //$NON-NLS-1$
 		}
 		else if(args.length > 1)
 		{
-			if(args[0].equalsIgnoreCase("create"))
+			if(args[0].equalsIgnoreCase("create")) //$NON-NLS-1$
 			{
 				if(args.length == 3)
 				{
 					for(StatType type : StatType.values())
-						items.add(type.translateName().replaceAll(" ", "_"));
+						items.add(type.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else if(args.length == 4)
 				{
 					for(TimePeriod period : TimePeriod.values())
-						items.add(period.translateName().replaceAll(" ", "_"));
+						items.add(period.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else if(args.length == 5)
 				{
-					items.add("true");
-					items.add("false");
+					items.add("true"); //$NON-NLS-1$
+					items.add("false"); //$NON-NLS-1$
 				}
 			}
-			else if(args[0].equalsIgnoreCase("edit"))
+			else if(args[0].equalsIgnoreCase("edit")) //$NON-NLS-1$
 			{
 				if(args.length == 3)
 				{
-					items.add("type");
-					items.add("period");
-					items.add("horizontal");
+					items.add("type"); //$NON-NLS-1$
+					items.add("period"); //$NON-NLS-1$
+					items.add("horizontal"); //$NON-NLS-1$
 				}
 				else if(args.length == 4)
 				{
-					if(args[2].equalsIgnoreCase("type"))
+					if(args[2].equalsIgnoreCase("type")) //$NON-NLS-1$
 					{
 						for(StatType type : StatType.values())
-							items.add(type.translateName().replaceAll(" ", "_"));
+							items.add(type.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 					}
-					else if(args[2].equalsIgnoreCase("period"))
+					else if(args[2].equalsIgnoreCase("period")) //$NON-NLS-1$
 					{
 						for(TimePeriod period : TimePeriod.values())
-							items.add(period.translateName().replaceAll(" ", "_"));
+							items.add(period.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 					}
-					else if(args[2].equalsIgnoreCase("horizontal"))
+					else if(args[2].equalsIgnoreCase("horizontal")) //$NON-NLS-1$
 					{
-						items.add("true");
-						items.add("false");
+						items.add("true"); //$NON-NLS-1$
+						items.add("false"); //$NON-NLS-1$
 					}
 				}
 			}

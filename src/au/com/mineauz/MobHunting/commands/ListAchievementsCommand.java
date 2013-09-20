@@ -114,7 +114,7 @@ public class ListAchievementsCommand implements ICommand
 			{
 				if(error instanceof UserNotFoundException)
 				{
-					sender.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.player-empty", "player", name)); //$NON-NLS-1$
+					sender.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.player-empty", "player", name)); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else
 				{

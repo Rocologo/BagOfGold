@@ -52,3 +52,8 @@ permissions:
     default: op
     children:
       mobhunting.cmd: true
+  mobhunting.select:
+    description: Allows you to select points for leaderboards if WorldEdit is not installed
+    default: op
+    children:
+      mobhunting.cmd: true
