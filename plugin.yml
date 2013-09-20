@@ -1,5 +1,5 @@
 name: MobHunting
-version: 1.6.1
+version: ${pom.version}
 
 main: au.com.mineauz.MobHunting.MobHunting
 
