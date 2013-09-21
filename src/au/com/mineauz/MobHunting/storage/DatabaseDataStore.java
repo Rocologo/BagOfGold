@@ -76,7 +76,8 @@ public abstract class DatabaseDataStore implements DataStore
 	{
 		try
 		{
-			mConnection.close();
+			if(mConnection != null)
+				mConnection.close();
 		}
 		catch ( SQLException e )
 		{

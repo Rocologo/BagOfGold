@@ -211,6 +211,9 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 			sign.setLine(3, ""); //$NON-NLS-1$
 		}
 		
+		if(signs.isEmpty())
+			return;
+		
 		if(mHorizontal)
 		{
 			int startSign = 0;

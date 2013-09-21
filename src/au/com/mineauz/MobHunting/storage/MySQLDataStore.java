@@ -92,14 +92,10 @@ public class MySQLDataStore extends DatabaseDataStore
 		
 		
 		// Workaround for no create trigger if not exists
-		ResultSet set = create.executeQuery(String.format("select TRIGGER_NAME from information_schema.triggers where TRIGGER_SCHEMA = '%s' and TRIGGER_NAME = '%s'", MobHunting.config().databaseName, "DailyInsert")); //$NON-NLS-1$ //$NON-NLS-2$
-		if(!set.next())
-			create.executeUpdate("create trigger DailyInsert after insert on Daily for each row begin insert ignore into Weekly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%U'), NEW.PLAYER_ID); insert ignore into Monthly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%c'), NEW.PLAYER_ID); insert ignore into Yearly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y'), NEW.PLAYER_ID); insert ignore into AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end"); //$NON-NLS-1$
-		
-		
-		set = create.executeQuery(String.format("select TRIGGER_NAME from information_schema.triggers where TRIGGER_SCHEMA = '%s' and TRIGGER_NAME = '%s'", MobHunting.config().databaseName, "DailyUpdate")); //$NON-NLS-1$ //$NON-NLS-2$
-		if(!set.next())
+		try
 		{
+			create.executeUpdate("create trigger DailyInsert after insert on Daily for each row begin insert ignore into Weekly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%U'), NEW.PLAYER_ID); insert ignore into Monthly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%c'), NEW.PLAYER_ID); insert ignore into Yearly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y'), NEW.PLAYER_ID); insert ignore into AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end"); //$NON-NLS-1$
+			
 			// Create the cascade update trigger. It will allow us to only modify the Daily table, and the rest will happen automatically
 			StringBuilder updateStringBuilder = new StringBuilder();
 			
@@ -139,6 +135,10 @@ public class MySQLDataStore extends DatabaseDataStore
 			updateTrigger.append("END"); //$NON-NLS-1$
 			
 			create.executeUpdate(updateTrigger.toString());
+		}
+		catch(SQLException e)
+		{
+			// Do Nothing
 		}
 		
 		create.close();
