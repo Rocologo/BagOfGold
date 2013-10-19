@@ -21,6 +21,7 @@ import org.bukkit.ChatColor;
 public class Messages
 {
 	private static Map<String, String> mTranslationTable;
+	private static String[] mValidEncodings = new String[] {"UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US"};
 	
 	public static void exportDefaultLanguages()
 	{
@@ -28,7 +29,7 @@ public class Messages
 		if(!folder.exists())
 			folder.mkdirs();
 		
-		String[] sources = new String[] {"en_US.lang"}; //$NON-NLS-1$
+		String[] sources = new String[] {"en_US.lang", "zh_CN.lang"}; //$NON-NLS-1$ //$NON-NLS-2$
 		
 		for(String source : sources)
 		{
@@ -44,9 +45,14 @@ public class Messages
 	{
 		try
 		{
-			Map<String, String> source = loadLang(inJar);
+			Map<String, String> source = loadLang(inJar, "UTF-8"); //$NON-NLS-1$
 			Map<String, String> dest = loadLang(onDisk);
 			
+			if(dest == null)
+			{
+				// TODO: Replace it
+				return;
+			}
 			HashMap<String, String> newEntries = new HashMap<String, String>();
 			for(String key : source.keySet())
 			{
@@ -71,10 +77,11 @@ public class Messages
 		}
 	}
 	
-	private static Map<String, String> loadLang(InputStream stream) throws IOException
+	private static Map<String, String> loadLang(InputStream stream, String encoding) throws IOException
 	{
 		Map<String, String> map = new HashMap<String, String>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, encoding));
+		
 		while(reader.ready())
 		{
 			String line = reader.readLine();
@@ -92,14 +99,50 @@ public class Messages
 		return map;
 	}
 	
+	private static Pattern mDetectEncodingPattern = Pattern.compile("^[a-zA-Z\\.\\-0-9_]+=.+$");
+	
+	private static String detectEncoding(File file) throws IOException
+	{
+		for(String charset : mValidEncodings)
+		{
+			FileInputStream input = new FileInputStream(file);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input, charset));
+			String line = null;
+			boolean ok = true;
+			
+			while(reader.ready())
+			{
+				line = reader.readLine();
+				if(line.trim().isEmpty())
+					continue;
+				
+				if(!mDetectEncodingPattern.matcher(line.trim()).matches())
+					ok = false;
+			}
+			
+			reader.close();
+			
+			if(ok)
+				return charset;
+		}
+		
+		return null;
+	}
+	
 	private static Map<String, String> loadLang(File file)
 	{
 		Map<String, String> map;
 		
 		try
 		{
+			String encoding = detectEncoding(file);
+			if(encoding == null)
+				return null;
+			
+			System.out.println("Encoding: " + file.getName() + " - " + encoding);
+			
 			FileInputStream input = new FileInputStream(file);
-			map = loadLang(input);
+			map = loadLang(input, encoding);
 			input.close();
 		}
 		catch(IOException e)
