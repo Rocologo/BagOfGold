@@ -5,10 +5,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.milkbowl.vault.economy.Economy;
@@ -41,6 +45,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
+import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
 import au.com.mineauz.MobHunting.commands.CommandDispatcher;
 import au.com.mineauz.MobHunting.commands.LeaderboardCommand;
 import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
@@ -74,6 +79,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	private Set<IModifier> mModifiers = new HashSet<IModifier>();
 	
 	private ArrayList<Area> mKnownGrindingSpots = new ArrayList<Area>();
+	private HashMap<UUID, LinkedList<Area>> mWhitelistedAreas = new HashMap<UUID, LinkedList<Area>>();
 	
 	private ParticleManager mParticles = new ParticleManager();
 	private Random mRand = new Random();
@@ -172,6 +178,8 @@ public class MobHunting extends JavaPlugin implements Listener
 		cmd.registerCommand(new CheckGrindingCommand());
 		cmd.registerCommand(new TopCommand());
 		cmd.registerCommand(new LeaderboardCommand());
+		cmd.registerCommand(new ClearGrindingCommand());
+		
 		if(!getServer().getPluginManager().isPluginEnabled("WorldEdit")) //$NON-NLS-1$
 			cmd.registerCommand(new SelectCommand());
 		
@@ -305,6 +313,21 @@ public class MobHunting extends JavaPlugin implements Listener
 		return null;
 	}
 	
+	public void clearGrindingArea(Location location)
+	{
+		Iterator<Area> it = mKnownGrindingSpots.iterator();
+		while(it.hasNext())
+		{
+			Area area = it.next();
+			
+			if(area.center.getWorld().equals(location.getWorld()))
+			{
+				if(area.center.distance(location) < area.range)
+					it.remove();
+			}
+		}
+	}
+	
 	public static Economy getEconomy()
 	{
 		return instance.mEconomy;
@@ -377,6 +400,80 @@ public class MobHunting extends JavaPlugin implements Listener
 	public static void setHuntEnabled(Player player, boolean enabled)
 	{
 		player.setMetadata("MH:enabled", new FixedMetadataValue(instance, enabled)); //$NON-NLS-1$
+	}
+	
+	public static boolean isWhitelisted(Location location)
+	{
+		LinkedList<Area> areas = instance.mWhitelistedAreas.get(location.getWorld().getUID());
+		
+		if(areas == null)
+			return false;
+		
+		for(Area area : areas)
+		{
+			if(area.center.distance(location) < area.range)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public void whitelistArea(Area newArea)
+	{
+		LinkedList<Area> areas = mWhitelistedAreas.get(newArea.center.getWorld().getUID());
+		
+		if(areas == null)
+		{
+			areas = new LinkedList<Area>();
+			mWhitelistedAreas.put(newArea.center.getWorld().getUID(), areas);
+		}
+		
+		for(Area area : areas)
+		{
+			if(newArea.center.getWorld().equals(area.center.getWorld()))
+			{
+				double dist = newArea.center.distance(area.center);
+				
+				double remaining = dist;
+				remaining -= area.range;
+				remaining -= newArea.range;
+				
+				if(remaining < 0)
+				{
+					if(dist > area.range)
+						area.range = dist;
+					
+					area.count += newArea.count;
+					
+					return;
+				}
+			}
+		}
+		
+		areas.add(newArea);
+	}
+	
+	public void unWhitelistArea(Location location)
+	{
+		LinkedList<Area> areas = mWhitelistedAreas.get(location.getWorld().getUID());
+		
+		if(areas == null)
+			return;
+		
+		Iterator<Area> it = areas.iterator();
+		while(it.hasNext())
+		{
+			Area area = it.next();
+			
+			if(area.center.getWorld().equals(location.getWorld()))
+			{
+				if(area.center.distance(location) < area.range)
+					it.remove();
+			}
+		}
+		
+		if(areas.isEmpty())
+			mWhitelistedAreas.remove(location.getWorld().getUID());
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
@@ -563,7 +660,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		
 		// Slimes are except from grinding due to their splitting nature
-		if(!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable)
+		if(!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable && !event.getEntity().hasMetadata("MH:reinforcement") && !isWhitelisted(event.getEntity().getLocation()))
 		{
 			if(detectedGrindingArea != null)
 			{
@@ -778,6 +875,16 @@ public class MobHunting extends JavaPlugin implements Listener
 			return;
 		
 		event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(this, true)); //$NON-NLS-1$
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void reinforcementMobSpawn(CreatureSpawnEvent event)
+	{
+		if(!isHuntEnabledInWorld(event.getLocation().getWorld()) || getBaseKillPrize(event.getEntity()) <= 0)
+			return;
+		
+		if(event.getSpawnReason() == SpawnReason.REINFORCEMENTS)
+			event.getEntity().setMetadata("MH:reinforcement", new FixedMetadataValue(this, true)); //$NON-NLS-1$
 	}
 	
 	public AchievementManager getAchievements()

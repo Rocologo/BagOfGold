@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.bukkit.Location;
 
@@ -28,6 +29,22 @@ public class HuntData
 		
 		return null;
 	}
+	
+	public void clearGrindingArea(Location location)
+	{
+		Iterator<Area> it = lastGridingAreas.iterator();
+		while(it.hasNext())
+		{
+			Area area = it.next();
+			
+			if(area.center.getWorld().equals(location.getWorld()))
+			{
+				if(area.center.distance(location) < area.range)
+					it.remove();
+			}
+		}
+	}
+	
 	public void recordGrindingArea()
 	{
 		for(Area area : lastGridingAreas)

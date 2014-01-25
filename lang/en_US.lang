@@ -101,6 +101,11 @@ mobhunting.commands.select.point1-unset=Point 1 is not set. Use '/mobhunt select
 mobhunting.commands.select.point2-unset=Point 2 is not set. Use '/mobhunt select 2' to set the point
 mobhunting.commands.select.no-select=You have nothing selected
 mobhunting.commands.select.select-type=Only cuboid selection can be used for leaderboards
+mobhunting.commands.cleargrinding.description=Removes grinding zones where you are standing
+mobhunting.commands.cleargrinding.done=Cleared all grinding areas at this location
+mobhunting.commands.whitelistarea.description=Adds or removes an area to the grinding whitelist.
+mobhunting.commands.whitelistarea.done=Area is now whitelisted
+mobhunting.commands.whitelistarea.remove.done=Area is no longer whitelisted
 
 stats.achievement_count=Achievement Count
 stats.total=Total

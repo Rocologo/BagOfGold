@@ -42,6 +42,11 @@ permissions:
     default: op
     children:
       mobhunting.cmd: true
+  mobhunting.cleargrinding:
+    description: Allows a player to remove grinding areas 
+    default: op
+    children:
+      mobhunting.cmd: true
   mobhunting.top:
     description: Allows a player to check the top player stats
     default: op
