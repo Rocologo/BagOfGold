@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -235,15 +237,16 @@ public class AchievementManager implements Listener
 		MobHunting.instance.getDataStore().recordAchievement(player, achievement);
 
 		player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
+		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
+		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		EconomyResponse result = MobHunting.getEconomy().depositPlayer(player.getName(), achievement.getPrize());
+		if(!result.transactionSuccess())
+			player.sendMessage(ChatColor.RED + "Unable to add prize money: " + result.errorMessage);
 		
 		if(MobHunting.config().broadcastAchievement && (!(achievement instanceof TheHuntBegins) || MobHunting.config().broadcastFirstAchievement))
-		{
-			player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
-			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			
 			broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		}
 		
 		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
 		FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();

@@ -52,6 +52,7 @@ import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.commands.SelectCommand;
 import au.com.mineauz.MobHunting.commands.TopCommand;
+import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
@@ -179,6 +180,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		cmd.registerCommand(new TopCommand());
 		cmd.registerCommand(new LeaderboardCommand());
 		cmd.registerCommand(new ClearGrindingCommand());
+		cmd.registerCommand(new WhitelistAreaCommand());
 		
 		if(!getServer().getPluginManager().isPluginEnabled("WorldEdit")) //$NON-NLS-1$
 			cmd.registerCommand(new SelectCommand());
