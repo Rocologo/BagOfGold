@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -24,6 +26,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,6 +39,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -137,6 +143,9 @@ public class MobHunting extends JavaPlugin implements Listener
 			mConfig.save();
 		else
 			throw new RuntimeException(Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
+		
+		if(!loadWhitelist())
+			throw new RuntimeException();
 		
 		if(mConfig.databaseType.equalsIgnoreCase("mysql")) //$NON-NLS-1$
 			mStore = new MySQLDataStore();
@@ -404,6 +413,86 @@ public class MobHunting extends JavaPlugin implements Listener
 		player.setMetadata("MH:enabled", new FixedMetadataValue(instance, enabled)); //$NON-NLS-1$
 	}
 	
+	private boolean saveWhitelist()
+	{
+		YamlConfiguration whitelist = new YamlConfiguration();
+		File file = new File(getDataFolder(), "whitelist.yml");
+		
+		for(Entry<UUID, LinkedList<Area>> entry : mWhitelistedAreas.entrySet())
+		{
+			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+			for(Area area : entry.getValue())
+			{
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("Center", Misc.toMap(area.center));
+				map.put("Radius", area.range);
+				list.add(map);
+			}
+			
+			whitelist.set(entry.getKey().toString(), list);
+		}
+		
+		try
+		{
+			whitelist.save(file);
+			return true;
+		}
+		catch ( IOException e )
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	@SuppressWarnings( "unchecked" )
+	private boolean loadWhitelist()
+	{
+		YamlConfiguration whitelist = new YamlConfiguration();
+		File file = new File(getDataFolder(), "whitelist.yml");
+		
+		if(!file.exists())
+			return true;
+		
+		try
+		{
+			whitelist.load(file);
+		}
+		catch ( IOException e )
+		{
+			e.printStackTrace();
+			return false;
+		}
+		catch ( InvalidConfigurationException e )
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+		mWhitelistedAreas.clear();
+		
+		for(String worldId : whitelist.getKeys(false))
+		{
+			UUID world = UUID.fromString(worldId);
+			List<Map<String, Object>> list = (List<Map<String, Object>>) whitelist.getList(worldId);
+			LinkedList<Area> areas = new LinkedList<Area>();
+			
+			if(list == null)
+				continue;
+			
+			for(Map<String, Object> map : list)
+			{
+				Area area = new Area();
+				area.center = Misc.fromMap((Map<String,Object>)map.get("Center"));
+				area.range = (Double)map.get("Radius");
+				areas.add(area);
+			}
+			
+			mWhitelistedAreas.put(world, areas);
+		}
+		
+		return true;
+	}
+	
 	public static boolean isWhitelisted(Location location)
 	{
 		LinkedList<Area> areas = instance.mWhitelistedAreas.get(location.getWorld().getUID());
@@ -453,6 +542,8 @@ public class MobHunting extends JavaPlugin implements Listener
 		}
 		
 		areas.add(newArea);
+		
+		saveWhitelist();
 	}
 	
 	public void unWhitelistArea(Location location)
@@ -476,6 +567,30 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		if(areas.isEmpty())
 			mWhitelistedAreas.remove(location.getWorld().getUID());
+		
+		saveWhitelist();
+	}
+	
+	@EventHandler
+	private void onWorldLoad(WorldLoadEvent event)
+	{
+		List<Area> areas = mWhitelistedAreas.get(event.getWorld().getUID());
+		if(areas != null)
+		{
+			for(Area area : areas)
+				area.center.setWorld(event.getWorld());
+		}
+	}
+	
+	@EventHandler
+	private void onWorldUnLoad(WorldUnloadEvent event)
+	{
+		List<Area> areas = mWhitelistedAreas.get(event.getWorld().getUID());
+		if(areas != null)
+		{
+			for(Area area : areas)
+				area.center.setWorld(null);
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)

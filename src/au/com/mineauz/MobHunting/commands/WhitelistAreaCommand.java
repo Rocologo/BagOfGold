@@ -35,7 +35,7 @@ public class WhitelistAreaCommand implements ICommand
 	@Override
 	public String[] getUsageString( String label, CommandSender sender )
 	{
-		return new String[] { label + ChatColor.GREEN + " [remove]"};
+		return new String[] { label + ChatColor.GREEN + " [add|remove]"};
 	}
 
 	@Override
@@ -63,20 +63,29 @@ public class WhitelistAreaCommand implements ICommand
 		
 		if(args.length == 0)
 		{
-			Area area = new Area();
-			area.center = loc;
-			area.range = 15;
-			MobHunting.instance.whitelistArea(area);
-			
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.done")); //$NON-NLS-1$
+			if(MobHunting.isWhitelisted(loc))
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.iswhitelisted")); //$NON-NLS-1$
+			else
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.whitelistarea.notwhitelisted")); //$NON-NLS-1$
 		}
 		else if(args.length == 1)
 		{
-			if(!args[0].equalsIgnoreCase("remove"))
+			if(args[0].equalsIgnoreCase("remove"))
+			{
+				MobHunting.instance.unWhitelistArea(loc);
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.remove.done")); //$NON-NLS-1$
+			}
+			else if(args[0].equalsIgnoreCase("add"))
+			{
+				Area area = new Area();
+				area.center = loc;
+				area.range = 15;
+				MobHunting.instance.whitelistArea(area);
+				
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.done")); //$NON-NLS-1$
+			}
+			else
 				return false;
-			MobHunting.instance.unWhitelistArea(loc);
-			
-			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.remove.done")); //$NON-NLS-1$
 		}
 		else
 			return false;

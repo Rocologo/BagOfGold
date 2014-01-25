@@ -106,6 +106,8 @@ mobhunting.commands.cleargrinding.done=Cleared all grinding areas at this locati
 mobhunting.commands.whitelistarea.description=Adds or removes an area to the grinding whitelist.
 mobhunting.commands.whitelistarea.done=Area is now whitelisted
 mobhunting.commands.whitelistarea.remove.done=Area is no longer whitelisted
+mobhunting.commands.whitelistarea.iswhitelisted=Area is whitelisted
+mobhunting.commands.whitelistarea.notwhitelisted=Area is not whitelisted
 
 stats.achievement_count=Achievement Count
 stats.total=Total
