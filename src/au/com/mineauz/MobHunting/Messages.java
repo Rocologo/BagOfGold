@@ -37,11 +37,14 @@ public class Messages
 			if(!dest.exists())
 				MobHunting.instance.saveResource("lang/" + source, false); //$NON-NLS-1$
 			else
-				injectChanges(MobHunting.instance.getResource("lang/" + source), new File(MobHunting.instance.getDataFolder(), "lang/" + source)); //$NON-NLS-1$ //$NON-NLS-2$
+			{
+				if(!injectChanges(MobHunting.instance.getResource("lang/" + source), new File(MobHunting.instance.getDataFolder(), "lang/" + source))) //$NON-NLS-1$ //$NON-NLS-2$
+					MobHunting.instance.saveResource("lang/" + source, true); //$NON-NLS-1$
+			}
 		}
 	}
 	
-	private static void injectChanges(InputStream inJar, File onDisk)
+	private static boolean injectChanges(InputStream inJar, File onDisk)
 	{
 		try
 		{
@@ -49,10 +52,8 @@ public class Messages
 			Map<String, String> dest = loadLang(onDisk);
 			
 			if(dest == null)
-			{
-				// TODO: Replace it
-				return;
-			}
+				return false;
+
 			HashMap<String, String> newEntries = new HashMap<String, String>();
 			for(String key : source.keySet())
 			{
@@ -70,10 +71,13 @@ public class Messages
 				
 				MobHunting.instance.getLogger().info("Updated " + onDisk.getName() + " translation"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
+			
+			return true;
 		}
 		catch(IOException e)
 		{
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
@@ -138,8 +142,6 @@ public class Messages
 			String encoding = detectEncoding(file);
 			if(encoding == null)
 				return null;
-			
-			System.out.println("Encoding: " + file.getName() + " - " + encoding);
 			
 			FileInputStream input = new FileInputStream(file);
 			map = loadLang(input, encoding);
