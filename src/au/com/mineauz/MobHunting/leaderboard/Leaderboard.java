@@ -59,6 +59,13 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	
 	Leaderboard() {}
 	
+	List<StatStore> getCurrentStats()
+	{
+		if(mData == null)
+			return Collections.emptyList();
+		return mData;
+	}
+	
 	List<Block> getSignBlocks()
 	{
 		BlockFace horizontal;
@@ -175,7 +182,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 			
 			org.bukkit.block.Sign sign = (org.bukkit.block.Sign)labelSign.getState();
 			
-			sign.setLine(0, ChatColor.BLUE + "MobHunting");
+			sign.setLine(0, ChatColor.BLUE + ChatColor.BOLD.toString() + "MobHunting");
 			
 			String statName = mType.translateName();
 			if(statName.length() > 15)
@@ -184,13 +191,13 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 				
 				if(splitPos == -1 || splitPos >= 15)
 				{
-					sign.setLine(1, statName.substring(0, 15));
-					sign.setLine(2, statName.substring(15));
+					sign.setLine(1, statName.substring(0, 15).trim());
+					sign.setLine(2, statName.substring(15).trim());
 				}
 				else
 				{
-					sign.setLine(1, statName.substring(0,splitPos));
-					sign.setLine(2, statName.substring(splitPos));
+					sign.setLine(1, statName.substring(0,splitPos).trim());
+					sign.setLine(2, statName.substring(splitPos).trim());
 				}
 			}
 			else

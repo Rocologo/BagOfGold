@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -39,6 +40,7 @@ import com.google.common.collect.HashMultimap;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
+import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
 public class LeaderboardManager implements Listener
@@ -246,7 +248,51 @@ public class LeaderboardManager implements Listener
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=false)
 	private void onLeaderboardClick(PlayerInteractEvent event)
 	{
+		if(!event.hasBlock())
+			return;
 		
+		Block block = event.getClickedBlock();
+		
+		if(block.getType() != Material.WALL_SIGN)
+			return;
+		
+		for(Leaderboard board : mLeaderboards.get(block.getWorld()))
+		{
+			if(board.isInBounds(block.getLocation()))
+			{
+				if(block.getLocation().equals(board.getLocation()))
+				{
+					// Main sign
+					return;
+				}
+				else
+				{
+					int place = 1;
+					
+					for(Block sign : board.getSignBlocks())
+					{
+						if(sign.equals(block))
+						{
+							if(place <= board.getCurrentStats().size())
+							{
+								StatStore stat = board.getCurrentStats().get(place-1);
+								event.getPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + String.valueOf(place) + ". " + ChatColor.YELLOW + stat.playerName);
+								event.getPlayer().sendMessage(ChatColor.WHITE + " " + String.valueOf(stat.amount) + " " + ChatColor.GRAY + stat.type.translateName());
+							}
+							
+							if(place + 1 <= board.getCurrentStats().size())
+							{
+								StatStore stat = board.getCurrentStats().get(place);
+								event.getPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + String.valueOf(place+1) + ". " + ChatColor.YELLOW + stat.playerName);
+								event.getPlayer().sendMessage(ChatColor.WHITE + " " + String.valueOf(stat.amount) + " " + ChatColor.GRAY + stat.type.translateName());
+							}
+							return;
+						}
+						place += 2;
+					}
+				}
+			}
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
