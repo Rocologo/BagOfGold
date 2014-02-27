@@ -428,7 +428,14 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	@Override
 	public void onCompleted( List<StatStore> data )
 	{
-		mData = data;
+		ArrayList<StatStore> altData = new ArrayList<StatStore>(data.size());
+		for(StatStore stat : data)
+		{
+			if(stat.amount != 0)
+				altData.add(stat);
+		}
+		
+		mData = altData;
 		refresh();
 	}
 	
