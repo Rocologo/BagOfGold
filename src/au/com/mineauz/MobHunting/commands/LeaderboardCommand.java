@@ -12,7 +12,7 @@ import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.SelectionHelper;
 import au.com.mineauz.MobHunting.StatType;
-import au.com.mineauz.MobHunting.leaderboard.Leaderboard;
+import au.com.mineauz.MobHunting.leaderboard.LegacyLeaderboard;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
 public class LeaderboardCommand implements ICommand
@@ -73,7 +73,7 @@ public class LeaderboardCommand implements ICommand
 		
 		try
 		{
-			MobHunting.instance.getLeaderboards().deleteLeaderboard(id);
+			MobHunting.instance.getLeaderboards().deleteLegacyLeaderboard(id);
 			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.leaderboard.delete", "id", id)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		catch(IllegalArgumentException e)
@@ -90,7 +90,7 @@ public class LeaderboardCommand implements ICommand
 		
 		String id = args[1];
 		
-		Leaderboard leaderboard = MobHunting.instance.getLeaderboards().getLeaderboard(id);
+		LegacyLeaderboard leaderboard = MobHunting.instance.getLeaderboards().getLeaderboard(id);
 		if(leaderboard == null)
 		{
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.leaderboard.edit.noboard", "id", id)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -143,11 +143,11 @@ public class LeaderboardCommand implements ICommand
 		if(args.length != 1)
 			return false;
 		
-		int count = MobHunting.instance.getLeaderboards().getAllBoards().size();
+		int count = MobHunting.instance.getLeaderboards().getAllLegacyBoards().size();
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add(Messages.getString("mobhunting.commands.leaderboard.list.header", "count", count)); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		for(Leaderboard board : MobHunting.instance.getLeaderboards().getAllBoards())
+		for(LegacyLeaderboard board : MobHunting.instance.getLeaderboards().getAllLegacyBoards())
 			lines.add(Messages.getString("mobhunting.commands.leaderboard.list.format", "id", ChatColor.YELLOW + board.getId(), "type", ChatColor.GREEN + board.getType().translateName(), "period", ChatColor.GREEN + board.getPeriod().translateNameFriendly())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		
 		sender.sendMessage(lines.toArray(new String[lines.size()]));
@@ -179,7 +179,7 @@ public class LeaderboardCommand implements ICommand
 		
 		try
 		{
-			MobHunting.instance.getLeaderboards().createLeaderboard(id, type, period, SelectionHelper.getPointA((Player)sender), SelectionHelper.getPointB((Player)sender), horizontal);
+			MobHunting.instance.getLeaderboards().createLegacyLeaderboard(id, type, period, SelectionHelper.getPointA((Player)sender), SelectionHelper.getPointB((Player)sender), horizontal);
 		}
 		catch(IllegalArgumentException e)
 		{

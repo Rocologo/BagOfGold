@@ -22,7 +22,7 @@ import au.com.mineauz.MobHunting.storage.DataCallback;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
-public class Leaderboard implements DataCallback<List<StatStore>>
+public class LegacyLeaderboard implements DataCallback<List<StatStore>>
 {
 	private String mId;
 	private World mWorld;
@@ -34,7 +34,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	private TimePeriod mPeriod;
 	private StatType mType;
 	
-	public Leaderboard(String id, StatType type, TimePeriod period, Location pointA, Location pointB, boolean horizontal) throws IllegalArgumentException
+	public LegacyLeaderboard(String id, StatType type, TimePeriod period, Location pointA, Location pointB, boolean horizontal) throws IllegalArgumentException
 	{
 		mId = id;
 		mType = type;
@@ -50,7 +50,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		mHorizontal = horizontal;
 	}
 	
-	Leaderboard() {}
+	LegacyLeaderboard() {}
 	
 	private List<Sign> getSigns()
 	{

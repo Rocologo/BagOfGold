@@ -23,8 +23,8 @@ import au.com.mineauz.MobHunting.storage.TimePeriod;
 
 public class LeaderboardManager
 {
-	private Set<Leaderboard> mLeaderboards = new HashSet<Leaderboard>();
-	private HashMap<String, Leaderboard> mNameMap = new HashMap<String, Leaderboard>();
+	private Set<LegacyLeaderboard> mLegacyLeaderboards = new HashSet<LegacyLeaderboard>();
+	private HashMap<String, LegacyLeaderboard> mLegacyNameMap = new HashMap<String, LegacyLeaderboard>();
 	
 	private BukkitTask mUpdater = null;
 	
@@ -39,30 +39,30 @@ public class LeaderboardManager
 		mUpdater.cancel();
 	}
 	
-	public void createLeaderboard(String id, StatType type, TimePeriod period, Location pointA, Location pointB, boolean horizontal) throws IllegalArgumentException
+	public void createLegacyLeaderboard(String id, StatType type, TimePeriod period, Location pointA, Location pointB, boolean horizontal) throws IllegalArgumentException
 	{
-		if(mNameMap.containsKey(id.toLowerCase()))
+		if(mLegacyNameMap.containsKey(id.toLowerCase()))
 			throw new IllegalArgumentException(Messages.getString("leaderboard.exists", "id", id)); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		Leaderboard board = new Leaderboard(id, type, period, pointA, pointB, horizontal);
-		mLeaderboards.add(board);
-		mNameMap.put(id.toLowerCase(), board);
+		LegacyLeaderboard board = new LegacyLeaderboard(id, type, period, pointA, pointB, horizontal);
+		mLegacyLeaderboards.add(board);
+		mLegacyNameMap.put(id.toLowerCase(), board);
 		board.updateBoard();
 		save();
 	}
 	
-	public void deleteLeaderboard(String id) throws IllegalArgumentException
+	public void deleteLegacyLeaderboard(String id) throws IllegalArgumentException
 	{
-		if(!mNameMap.containsKey(id.toLowerCase()))
+		if(!mLegacyNameMap.containsKey(id.toLowerCase()))
 			throw new IllegalArgumentException(Messages.getString("leaderboard.notexists", "id", id)); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		mLeaderboards.remove(mNameMap.remove(id.toLowerCase()));
+		mLegacyLeaderboards.remove(mLegacyNameMap.remove(id.toLowerCase()));
 		save();
 	}
 	
-	public Set<Leaderboard> getAllBoards()
+	public Set<LegacyLeaderboard> getAllLegacyBoards()
 	{
-		return Collections.unmodifiableSet(mLeaderboards);
+		return Collections.unmodifiableSet(mLegacyLeaderboards);
 	}
 	
 	public void save()
@@ -74,7 +74,7 @@ public class LeaderboardManager
 			
 			ArrayList<Object> key = new ArrayList<Object>();
 			
-			for(Leaderboard leaderboard : mLeaderboards)
+			for(LegacyLeaderboard leaderboard : mLegacyLeaderboards)
 			{
 				key.add(leaderboard.write());
 			}
@@ -107,17 +107,17 @@ public class LeaderboardManager
 			if(boards == null)
 				return;
 			
-			mLeaderboards.clear();
+			mLegacyLeaderboards.clear();
 			
 			for(Object board : boards)
 			{
 				if(!(board instanceof Map))
 					continue;
 				
-				Leaderboard leaderboard = new Leaderboard();
+				LegacyLeaderboard leaderboard = new LegacyLeaderboard();
 				leaderboard.read((Map<String, Object>)board);
-				mLeaderboards.add(leaderboard);
-				mNameMap.put(leaderboard.getId(), leaderboard);
+				mLegacyLeaderboards.add(leaderboard);
+				mLegacyNameMap.put(leaderboard.getId(), leaderboard);
 			}
 		}
 		catch(IOException e)
@@ -135,13 +135,13 @@ public class LeaderboardManager
 		@Override
 		public void run()
 		{
-			for(Leaderboard board : mLeaderboards)
+			for(LegacyLeaderboard board : mLegacyLeaderboards)
 				board.updateBoard();
 		}
 	}
 
-	public Leaderboard getLeaderboard( String id )
+	public LegacyLeaderboard getLeaderboard( String id )
 	{
-		return mNameMap.get(id.toLowerCase());
+		return mLegacyNameMap.get(id.toLowerCase());
 	}
 }
