@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
@@ -242,6 +243,12 @@ public class LeaderboardManager implements Listener
 		}
 	}
 	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=false)
+	private void onLeaderboardClick(PlayerInteractEvent event)
+	{
+		
+	}
+	
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
 	private void onBlockBreak(BlockBreakEvent event)
 	{
@@ -261,7 +268,7 @@ public class LeaderboardManager implements Listener
 			if(board.isInBounds(block.getLocation()))
 			{
 				// Allow the block to be broken
-				if(block.getLocation().equals(board.getLocation()))
+				if(event.getPlayer().hasPermission("mobhunting.leaderboard") && block.getLocation().equals(board.getLocation()))
 					return;
 				
 				if(block.getType() == Material.WALL_SIGN)
@@ -411,7 +418,7 @@ public class LeaderboardManager implements Listener
 	private void onBlockBreakFinal(BlockBreakEvent event)
 	{
 		Block block = event.getBlock();
-		if(block.getType() != Material.WALL_SIGN)
+		if(block.getType() != Material.WALL_SIGN || !event.getPlayer().hasPermission("mobhunting.leaderboard"))
 			return;
 		
 		for(Leaderboard board : mLeaderboards.get(block.getWorld()))

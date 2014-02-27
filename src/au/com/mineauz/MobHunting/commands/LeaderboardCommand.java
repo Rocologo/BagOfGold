@@ -309,7 +309,7 @@ public class LeaderboardCommand implements ICommand, Listener
 		return items;
 	}
 	
-	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=false)
+	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=false)
 	private void onClickSign(PlayerInteractEvent event)
 	{
 		if(!event.hasBlock())
@@ -366,6 +366,7 @@ public class LeaderboardCommand implements ICommand, Listener
 				event.getPlayer().sendMessage(ChatColor.RED + "That is not a leaderboard. Edit cancelled.");
 		}
 		
+		event.setCancelled(true);
 	}
 	
 	private static class BoardState
