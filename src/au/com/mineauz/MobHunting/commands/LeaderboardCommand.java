@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -56,7 +57,7 @@ public class LeaderboardCommand implements ICommand, Listener
 		return new String[] {
 			label + ChatColor.GOLD + " create <type> <period> [isHorizonal?] [<width> <height>]", //$NON-NLS-1$
 			label + ChatColor.GOLD + " delete <id>", //$NON-NLS-1$
-			label + ChatColor.GOLD + " edit (type|period|horizontal) <value>" //$NON-NLS-1$
+			label + ChatColor.GOLD + " edit (type|period|horizontal|addtype|addperiod) <value>" //$NON-NLS-1$
 		};
 	}
 
@@ -76,6 +77,33 @@ public class LeaderboardCommand implements ICommand, Listener
 	public boolean canBeCommandBlock()
 	{
 		return false;
+	}
+	
+	private StatType[] parseTypes(String typeString) throws IllegalArgumentException
+	{
+		String[] parts = typeString.split(",");
+		StatType[] types = new StatType[parts.length];
+		for(int i = 0; i < parts.length; ++i)
+		{
+			types[i] = StatType.parseStat(parts[i]);
+			if(types[i] == null)
+				throw new IllegalArgumentException(parts[i]);
+		}
+		
+		return types;
+	}
+	private TimePeriod[] parsePeriods(String periodString) throws IllegalArgumentException
+	{
+		String[] parts = periodString.split(",");
+		TimePeriod[] periods = new TimePeriod[parts.length];
+		for(int i = 0; i < parts.length; ++i)
+		{
+			periods[i] = TimePeriod.parsePeriod(parts[i]);
+			if(periods[i] == null)
+				throw new IllegalArgumentException(parts[i]);
+		}
+		
+		return periods;
 	}
 
 	private boolean onDelete(CommandSender sender, String[] args)
@@ -108,25 +136,51 @@ public class LeaderboardCommand implements ICommand, Listener
 		
 		if(args[1].equalsIgnoreCase("type")) //$NON-NLS-1$
 		{
-			StatType type = StatType.parseStat(args[2]);
-			if(type == null)
+			try
 			{
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[2] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+				state.type = parseTypes(args[2]);
+			}
+			catch(IllegalArgumentException e)
+			{
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + e.getMessage() + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
-			
-			state.type = type;
+		}
+		else if(args[1].equalsIgnoreCase("addtype"))
+		{
+			try
+			{
+				state.addType = parseTypes(args[2]);
+			}
+			catch(IllegalArgumentException e)
+			{
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + e.getMessage() + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+				return true;
+			}
 		}
 		else if(args[1].equalsIgnoreCase("period")) //$NON-NLS-1$
 		{
-			TimePeriod period = TimePeriod.parsePeriod(args[2]);
-			if(period == null)
+			try
 			{
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[2] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+				state.period = parsePeriods(args[2]);
+			}
+			catch(IllegalArgumentException e)
+			{
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + e.getMessage() + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
-			
-			state.period = period;
+		}
+		else if(args[1].equalsIgnoreCase("addperiod")) //$NON-NLS-1$
+		{
+			try
+			{
+				state.addPeriod = parsePeriods(args[2]);
+			}
+			catch(IllegalArgumentException e)
+			{
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + e.getMessage() + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+				return true;
+			}
 		}
 		else if(args[1].equalsIgnoreCase("horizontal")) //$NON-NLS-1$
 		{
@@ -152,17 +206,26 @@ public class LeaderboardCommand implements ICommand, Listener
 		if(args.length < 3 || args.length > 6)
 			return false;
 		
-		StatType type = StatType.parseStat(args[1]);
-		if(type == null)
+		StatType[] types;
+		try
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[1] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+			types = parseTypes(args[1]);
+		}
+		catch(IllegalArgumentException e)
+		{
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + e.getMessage() + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
-		TimePeriod period = TimePeriod.parsePeriod(args[2]);
-		if(period == null)
+		TimePeriod[] periods;
+		
+		try
 		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[2] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+			periods = parsePeriods(args[2]);
+		}
+		catch(IllegalArgumentException e)
+		{
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + e.getMessage() + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
 		
@@ -213,8 +276,8 @@ public class LeaderboardCommand implements ICommand, Listener
 		state.height = height;
 		state.width = width;
 		state.horizontal = horizontal;
-		state.period = period;
-		state.type = type;
+		state.period = periods;
+		state.type = types;
 		
 		mWaitingStates.put((Player)sender, state);
 		
@@ -270,16 +333,18 @@ public class LeaderboardCommand implements ICommand, Listener
 				{
 					items.add("type"); //$NON-NLS-1$
 					items.add("period"); //$NON-NLS-1$
+					items.add("addtype"); //$NON-NLS-1$
+					items.add("addperiod"); //$NON-NLS-1$
 					items.add("horizontal"); //$NON-NLS-1$
 				}
 				else if(args.length == 3)
 				{
-					if(args[1].equalsIgnoreCase("type")) //$NON-NLS-1$
+					if(args[1].equalsIgnoreCase("type") || args[1].equalsIgnoreCase("addtype")) //$NON-NLS-1$
 					{
 						for(StatType type : StatType.values())
 							items.add(type.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 					}
-					else if(args[1].equalsIgnoreCase("period")) //$NON-NLS-1$
+					else if(args[1].equalsIgnoreCase("period") || args[1].equalsIgnoreCase("addperiod")) //$NON-NLS-1$
 					{
 						for(TimePeriod period : TimePeriod.values())
 							items.add(period.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -351,8 +416,26 @@ public class LeaderboardCommand implements ICommand, Listener
 				if(state.type != null)
 					board.setType(state.type);
 				
+				if(state.addType != null)
+				{
+					StatType[] original = board.getTypes();
+					StatType[] types = Arrays.copyOf(original, original.length + state.addType.length);
+					for(int i = 0; i < state.addType.length; ++i)
+						types[i + original.length] = state.addType[i];
+					board.setType(types);
+				}
+				
 				if(state.period != null)
 					board.setPeriod(state.period);
+				
+				if(state.addPeriod != null)
+				{
+					TimePeriod[] original = board.getPeriods();
+					TimePeriod[] types = Arrays.copyOf(original, original.length + state.addPeriod.length);
+					for(int i = 0; i < state.addPeriod.length; ++i)
+						types[i + original.length] = state.addPeriod[i];
+					board.setPeriod(types);
+				}
 				
 				if(state.horizontal != null)
 					board.setHorizontal(state.horizontal);
@@ -374,8 +457,10 @@ public class LeaderboardCommand implements ICommand, Listener
 		public Integer width;
 		public Integer height;
 		public Boolean horizontal;
-		public StatType type;
-		public TimePeriod period;
+		public StatType[] type;
+		public TimePeriod[] period;
+		public StatType[] addType;
+		public TimePeriod[] addPeriod;
 		public boolean create;
 	}
 }

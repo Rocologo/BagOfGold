@@ -38,12 +38,14 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	
 	private boolean mHorizontal;
 
-	private TimePeriod mPeriod;
-	private StatType mType;
+	private TimePeriod[] mPeriod;
+	private int mPeriodIndex = 0;
+	private StatType[] mType;
+	private int mTypeIndex = 0;
 	
 	private List<StatStore> mData;
 	
-	public Leaderboard(Location location, BlockFace facing, int width, int height, boolean horizontal, StatType stat, TimePeriod period)
+	public Leaderboard(Location location, BlockFace facing, int width, int height, boolean horizontal, StatType[] stat, TimePeriod[] period)
 	{
 		Validate.isTrue(facing == BlockFace.NORTH || facing == BlockFace.EAST || facing == BlockFace.SOUTH || facing == BlockFace.WEST);
 		
@@ -55,6 +57,8 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		mHorizontal = horizontal;
 		mType = stat;
 		mPeriod = period;
+		mPeriodIndex = 0;
+		mTypeIndex = 0;
 	}
 	
 	Leaderboard() {}
@@ -172,7 +176,16 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	
 	public void update()
 	{
-		MobHunting.instance.getDataStore().requestStats(mType, mPeriod, mWidth * mHeight * 2, this);
+		++mTypeIndex;
+		if(mTypeIndex >= mType.length)
+		{
+			mTypeIndex = 0;
+			++mPeriodIndex;
+			if(mPeriodIndex >= mPeriod.length)
+				mPeriodIndex = 0;
+		}
+		
+		MobHunting.instance.getDataStore().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
 	}
 	
 	public void refresh()
@@ -197,7 +210,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 			
 			sign.setLine(0, ChatColor.BLUE + ChatColor.BOLD.toString() + "MobHunting");
 			
-			String statName = mType.translateName();
+			String statName = getType().translateName();
 			if(statName.length() > 15)
 			{
 				int splitPos = statName.indexOf(' ');
@@ -219,7 +232,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 				sign.setLine(2, EMPTY_STRING);
 			}
 			
-			sign.setLine(3, ChatColor.YELLOW + mPeriod.translateNameFriendly());
+			sign.setLine(3, ChatColor.YELLOW + getPeriod().translateNameFriendly());
 			
 			sign.update(true, false);
 		}
@@ -329,14 +342,16 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		return mLocation.getWorld();
 	}
 	
-	public void setType( StatType type )
+	public void setType( StatType[] type )
 	{
 		mType = type;
+		mTypeIndex = 0;
 	}
 	
-	public void setPeriod( TimePeriod period)
+	public void setPeriod( TimePeriod[] period)
 	{
 		mPeriod = period;
+		mPeriodIndex = 0;
 	}
 	
 	public void setHorizontal( boolean horizontal )
@@ -346,10 +361,18 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 	
 	public StatType getType()
 	{
+		return mType[mTypeIndex];
+	}
+	public StatType[] getTypes()
+	{
 		return mType;
 	}
 	
 	public TimePeriod getPeriod()
+	{
+		return mPeriod[mPeriodIndex];
+	}
+	public TimePeriod[] getPeriods()
 	{
 		return mPeriod;
 	}
@@ -452,8 +475,17 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		section.set("facing", mFacing.name());
 		
 		section.set("horizontal", mHorizontal);
-		section.set("period", mPeriod.name());
-		section.set("stat", mType.getDBColumn());
+		ArrayList<String> periods = new ArrayList<String>(mPeriod.length);
+		for(TimePeriod period : mPeriod)
+			periods.add(period.name());
+		
+		section.set("periods", periods);
+		
+		ArrayList<String> stats = new ArrayList<String>(mPeriod.length);
+		for(StatType type : mType)
+			stats.add(type.getDBColumn());
+		
+		section.set("stats", stats);
 		section.set("width", mWidth);
 		section.set("height", mHeight);
 	}
@@ -469,23 +501,43 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		mFacing = BlockFace.valueOf(section.getString("facing"));
 		
 		mHorizontal = section.getBoolean("horizontal");
-		mPeriod = TimePeriod.valueOf(section.getString("period"));
-		mType = StatType.fromColumnName(section.getString("stat"));
+		List<String> periods = section.getStringList("periods");
+		List<String> stats = section.getStringList("stats");
 		mWidth = section.getInt("width");
 		mHeight = section.getInt("height");
 		
 		if(mFacing != BlockFace.NORTH && mFacing != BlockFace.SOUTH && mFacing != BlockFace.WEST && mFacing != BlockFace.EAST)
 			throw new InvalidConfigurationException("Invalid leaderboard facing " + section.getString("facing"));
-		if(mPeriod == null)
-			throw new InvalidConfigurationException("Unknown time period " + section.getString("period"));
-		if(mType == null)
-			throw new InvalidConfigurationException("Unknown stat type " + section.getString("stat"));
+		if(periods == null)
+			throw new InvalidConfigurationException("Error in time period list");
+		if(stats == null)
+			throw new InvalidConfigurationException("Error in stat type list");
 		if(pos == null)
 			throw new InvalidConfigurationException("Error in position");
+		
 		if(mWidth < 1)
 			throw new InvalidConfigurationException("Invalid width");
 		if(mHeight < 1)
 			throw new InvalidConfigurationException("Invalid height");
+		
+		mPeriod = new TimePeriod[periods.size()];
+		for(int i = 0; i < periods.size(); ++i)
+		{
+			mPeriod[i] = TimePeriod.valueOf(periods.get(i));
+			if(mPeriod[i] == null)
+				throw new InvalidConfigurationException("Invalid time period " + periods.get(i));
+		}
+		
+		mType = new StatType[stats.size()];
+		for(int i = 0; i < stats.size(); ++i)
+		{
+			mType[i] = StatType.fromColumnName(stats.get(i));
+			if(mType[i] == null)
+				throw new InvalidConfigurationException("Invalid stat type " + stats.get(i));
+		}
+		
+		mPeriodIndex = 0;
+		mTypeIndex = 0;
 		
 		mLocation = pos.toLocation(world);
 	}
