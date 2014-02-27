@@ -124,6 +124,19 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 		{
 			if(!block.isEmpty())
 			{
+				switch(block.getType())
+				{
+				case SNOW:
+				case LONG_GRASS:
+				case FIRE:
+				case VINE:
+				case DEAD_BUSH:
+				case DOUBLE_PLANT:
+					continue;
+				default:
+					break;
+				}
+				
 				if(block.getType() != Material.WALL_SIGN || ((Sign)block.getState().getData()).getFacing() != mFacing) 
 					return false;
 			}
