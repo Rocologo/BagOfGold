@@ -394,7 +394,13 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(enabled && !player.hasPermission("mobhunting.enable")) //$NON-NLS-1$
 			return false;
 		
-		return enabled;
+		if(!enabled)
+			return false;
+		
+		MobHuntEnableCheckEvent event = new MobHuntEnableCheckEvent(player);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		return event.isEnabled();
 	}
 	
 	public static boolean isHuntEnabledInWorld(World world)
