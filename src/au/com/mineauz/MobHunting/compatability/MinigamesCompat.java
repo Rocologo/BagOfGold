@@ -23,7 +23,7 @@ public class MinigamesCompat implements Listener
 	private void onPlayerJoinMinigame(MobHuntEnableCheckEvent event)
 	{
 		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer());
-		if(player.isInMinigame())
+		if(player != null && player.isInMinigame())
 			event.setEnabled(false);
 	}
 }
