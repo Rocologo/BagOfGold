@@ -86,22 +86,22 @@ public class DataStoreManager
 	
 	public void requestAllAchievements(OfflinePlayer player, DataCallback<Set<AchievementStore>> callback)
 	{
-		mTaskThread.addTask(new AchievementRetrieverTask(Mode.All, player), callback);
+		mTaskThread.addTask(new AchievementRetrieverTask(Mode.All, player, mWaiting), callback);
 	}
 	
 	public void requestCompletedAchievements(OfflinePlayer player, DataCallback<Set<AchievementStore>> callback)
 	{
-		mTaskThread.addTask(new AchievementRetrieverTask(Mode.Completed, player), callback);
+		mTaskThread.addTask(new AchievementRetrieverTask(Mode.Completed, player, mWaiting), callback);
 	}
 	
 	public void requestInProgressAchievements(OfflinePlayer player, DataCallback<Set<AchievementStore>> callback)
 	{
-		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress, player), callback);
+		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress, player, mWaiting), callback);
 	}
 	
 	public void requestStats( StatType type, TimePeriod period, int count, DataCallback<List<StatStore>> callback )
 	{
-		mTaskThread.addTask(new StatRetrieverTask(type, period, count), callback);
+		mTaskThread.addTask(new StatRetrieverTask(type, period, count, mWaiting), callback);
 	}
 	
 	public void flush()

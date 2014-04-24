@@ -1,5 +1,7 @@
 package au.com.mineauz.MobHunting.storage.asynch;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import au.com.mineauz.MobHunting.StatType;
 import au.com.mineauz.MobHunting.storage.DataStore;
@@ -13,18 +15,54 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>>
 	private TimePeriod mPeriod;
 	
 	private int mCount;
+	private HashSet<Object> mWaiting;
 	
-	public StatRetrieverTask(StatType type, TimePeriod period, int count)
+	public StatRetrieverTask(StatType type, TimePeriod period, int count, HashSet<Object> waiting)
 	{
 		mType = type;
 		mPeriod = period;
 		mCount = count;
 	}
 	
+	private void updateUsingCache(List<StatStore> stats)
+	{
+		for(Object obj : mWaiting)
+		{
+			if(obj instanceof StatStore)
+			{
+				StatStore cached = (StatStore)obj;
+				
+				Iterator<StatStore> it = stats.iterator();
+				boolean found = false;
+				while(it.hasNext())
+				{
+					StatStore stat = it.next();
+					
+					if(cached.player.getUniqueId().equals(stat.player.getUniqueId()) && cached.type == stat.type)
+					{
+						if(cached.amount > stat.amount)
+							stat.amount = cached.amount;
+						
+						found = true;
+						break;
+					}
+				}
+				
+				if(!found)
+					stats.add(cached);
+			}
+		}
+	}
+	
 	@Override
 	public List<StatStore> run( DataStore store ) throws DataStoreException
 	{
-		return store.loadStats(mType, mPeriod, mCount);
+		synchronized(mWaiting)
+		{
+			List<StatStore> stats = store.loadStats(mType, mPeriod, mCount);
+			updateUsingCache(stats);
+			return stats;
+		}
 	}
 
 	@Override

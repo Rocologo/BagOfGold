@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -30,9 +31,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.storage.AchievementStore;
@@ -42,6 +40,8 @@ import au.com.mineauz.MobHunting.storage.UserNotFoundException;
 public class AchievementManager implements Listener
 {
 	private HashMap<String, Achievement> mAchievements = new HashMap<String, Achievement>();
+	
+	private WeakHashMap<Player, PlayerStorage> mStorage = new WeakHashMap<Player, PlayerStorage>();
 	
 	public void initialize()
 	{
@@ -81,40 +81,20 @@ public class AchievementManager implements Listener
 	}
 	public boolean hasAchievement(Achievement achievement, Player player)
 	{
-		if(!player.hasMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
+		PlayerStorage storage = mStorage.get(player);
+		if(storage == null)
 			return false;
 		
-		for(MetadataValue value : player.getMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
-		{
-			if(value.getOwningPlugin() == MobHunting.instance)
-			{
-				if(value.value() instanceof Boolean)
-					return value.asBoolean();
-				
-				return false;
-			}
-		}
-		
-		return false;
+		return storage.gainedAchievements.contains(achievement.getID());
 	}
 	
 	public boolean achievementsEnabledFor(Player player)
 	{
-		if(!player.hasMetadata("MH:achievements")) //$NON-NLS-1$
-			return true;
+		PlayerStorage storage = mStorage.get(player);
+		if(storage == null)
+			return false;
 		
-		for(MetadataValue value : player.getMetadata("MH:achievements")) //$NON-NLS-1$
-		{
-			if(value.getOwningPlugin() == MobHunting.instance)
-			{
-				if(value.value() instanceof Boolean)
-					return value.asBoolean();
-				
-				return false;
-			}
-		}
-		
-		return true;
+		return storage.enableAchievements;
 	}
 	
 	public int getProgress(String achievement, Player player)
@@ -127,28 +107,19 @@ public class AchievementManager implements Listener
 	
 	public int getProgress(ProgressAchievement achievement, Player player)
 	{
-		if(!player.hasMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
+		PlayerStorage storage = mStorage.get(player);
+		if(storage == null)
 			return 0;
 		
-		for(MetadataValue value : player.getMetadata("MH:achievement-" + achievement.getID())) //$NON-NLS-1$
-		{
-			if(value.getOwningPlugin() == MobHunting.instance)
-			{
-				if(value.value() instanceof Boolean)
-					return (value.asBoolean() ? achievement.getMaxProgress() : 0);
-				else if(value.value() instanceof Integer)
-					return value.asInt();
-				
-				return 0;
-			}
-		}
+		Integer progress = storage.progressAchievements.get(achievement.getID());
 		
-		return 0;
+		if(progress == null)
+			return (storage.gainedAchievements.contains(achievement.getID()) ? achievement.getMaxProgress() : 0);
+		return progress;
 	}
 	
 	public void requestCompletedAchievements(OfflinePlayer player, final DataCallback<List<Map.Entry<Achievement, Integer>>> callback)
 	{
-		// Look through the metadata for online players
 		if(player.isOnline())
 		{
 			List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
@@ -233,10 +204,14 @@ public class AchievementManager implements Listener
 	{
 		if(!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
+		
+		PlayerStorage storage = mStorage.get(player);
+		if(storage == null)
+			return;
 	
 		MobHunting.instance.getDataStore().recordAchievement(player, achievement);
 
-		player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
+		storage.gainedAchievements.add(achievement.getID());
 		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
 		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -272,6 +247,9 @@ public class AchievementManager implements Listener
 			return;
 		
 		Validate.isTrue(amount > 0);
+		PlayerStorage storage = mStorage.get(player);
+		if(storage == null)
+			return;
 		
 		int curProgress = getProgress(achievement, player);
 		
@@ -296,7 +274,7 @@ public class AchievementManager implements Listener
 			awardAchievement(achievement, player);
 		else
 		{
-			player.setMetadata("MH:achievement-" + achievement.getID(), new FixedMetadataValue(MobHunting.instance, nextProgress)); //$NON-NLS-1$
+			storage.progressAchievements.put(achievement.getID(), nextProgress);
 			
 			MobHunting.instance.getDataStore().recordAchievementProgress(player, achievement, nextProgress);
 			
@@ -363,37 +341,36 @@ public class AchievementManager implements Listener
 	
 	public void load(final Player player)
 	{
-		player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false)); //$NON-NLS-1$
+		final PlayerStorage storage = new PlayerStorage();
+		mStorage.put(player, storage);
+		
 		MobHunting.instance.getDataStore().requestAllAchievements(player, new DataCallback<Set<AchievementStore>>()
 		{
 			@Override
 			public void onError( Throwable error )
 			{
 				if(error instanceof UserNotFoundException)
-				{
-					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
-				}
+					storage.enableAchievements=true;
 				else
 				{
 					error.printStackTrace();
 					player.sendMessage(Messages.getString("achievements.load-fail")); //$NON-NLS-1$
-					player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, false)); //$NON-NLS-1$
+					storage.enableAchievements = false;
 				}
 			}
 			
 			@Override
 			public void onCompleted( Set<AchievementStore> data )
 			{
-				// Load them up into metadata
 				for(AchievementStore achievement : data)
 				{
 					if(achievement.progress == -1)
-						player.setMetadata("MH:achievement-" + achievement.id, new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
+						storage.gainedAchievements.add(achievement.id);
 					else
-						player.setMetadata("MH:achievement-" + achievement.id, new FixedMetadataValue(MobHunting.instance, achievement.progress)); //$NON-NLS-1$
+						storage.progressAchievements.put(achievement.id, achievement.progress);
 				}
 				
-				player.setMetadata("MH:achievements", new FixedMetadataValue(MobHunting.instance, true)); //$NON-NLS-1$
+				storage.enableAchievements=true;
 			}
 		});
 	}
