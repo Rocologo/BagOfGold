@@ -47,11 +47,11 @@ public class DataStoreManager
 	{
 		synchronized(mWaiting)
 		{
-			mWaiting.add(new StatStore(StatType.fromMobType(type, true), player.getName()));
-			mWaiting.add(new StatStore(StatType.KillsTotal, player.getName()));
+			mWaiting.add(new StatStore(StatType.fromMobType(type, true), player));
+			mWaiting.add(new StatStore(StatType.KillsTotal, player));
 			
 			if(bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, true), player.getName()));
+				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, true), player));
 		}
 	}
 	
@@ -59,11 +59,11 @@ public class DataStoreManager
 	{
 		synchronized(mWaiting)
 		{
-			mWaiting.add(new StatStore(StatType.fromMobType(type, false), player.getName()));
-			mWaiting.add(new StatStore(StatType.AssistsTotal, player.getName()));
+			mWaiting.add(new StatStore(StatType.fromMobType(type, false), player));
+			mWaiting.add(new StatStore(StatType.AssistsTotal, player));
 			
 			if(bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, false), player.getName()));
+				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, false), player));
 		}
 	}
 	
@@ -71,8 +71,8 @@ public class DataStoreManager
 	{
 		synchronized(mWaiting)
 		{
-			mWaiting.add(new AchievementStore(achievement.getID(), player.getName(), -1));
-			mWaiting.add(new StatStore(StatType.AchievementCount, player.getName()));
+			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
+			mWaiting.add(new StatStore(StatType.AchievementCount, player));
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class DataStoreManager
 	{
 		synchronized(mWaiting)
 		{
-			mWaiting.add(new AchievementStore(achievement.getID(), player.getName(), progress));
+			mWaiting.add(new AchievementStore(achievement.getID(), player, progress));
 		}
 	}
 	

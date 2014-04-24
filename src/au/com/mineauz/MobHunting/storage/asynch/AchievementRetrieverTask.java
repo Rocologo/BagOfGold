@@ -29,7 +29,7 @@ public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementSt
 	
 	public Set<AchievementStore> run(DataStore store) throws DataStoreException
 	{
-		Set<AchievementStore> achievements = store.loadAchievements(mPlayer.getName());
+		Set<AchievementStore> achievements = store.loadAchievements(mPlayer);
 		switch(mMode)
 		{
 		case All:

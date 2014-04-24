@@ -310,7 +310,7 @@ public class AchievementManager implements Listener
 		}
 	}
 	
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings( { "unchecked", "deprecation" } )
 	public boolean upgradeAchievements()
 	{
 		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml"); //$NON-NLS-1$

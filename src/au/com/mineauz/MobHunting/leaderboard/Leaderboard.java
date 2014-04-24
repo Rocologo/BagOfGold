@@ -274,7 +274,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 				
 				if(stat1 != null)
 				{
-					sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + " " + ChatColor.BLACK + stat1.playerName);
+					sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + " " + ChatColor.BLACK + stat1.player.getName());
 					sign.setLine(1, ChatColor.BLUE + String.valueOf(stat1.amount));
 				}
 				else
@@ -285,7 +285,7 @@ public class Leaderboard implements DataCallback<List<StatStore>>
 				
 				if(stat2 != null)
 				{
-					sign.setLine(2, ChatColor.GREEN + String.valueOf(place+1) + " " + ChatColor.BLACK + stat2.playerName);
+					sign.setLine(2, ChatColor.GREEN + String.valueOf(place+1) + " " + ChatColor.BLACK + stat2.player.getName());
 					sign.setLine(3, ChatColor.BLUE + String.valueOf(stat2.amount));
 				}
 				else

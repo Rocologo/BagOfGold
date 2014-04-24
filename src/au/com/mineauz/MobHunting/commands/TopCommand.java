@@ -173,7 +173,7 @@ public class TopCommand implements ICommand
 				if(stat.amount == 0)
 					continue;
 				
-				lines.add(ChatColor.GRAY + "" + index + ": " + ChatColor.GOLD + stat.playerName + ChatColor.GRAY + " - " + ChatColor.GOLD + stat.amount); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				lines.add(ChatColor.GRAY + "" + index + ": " + ChatColor.GOLD + stat.player.getName() + ChatColor.GRAY + " - " + ChatColor.GOLD + stat.amount); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				++index;
 			}
 

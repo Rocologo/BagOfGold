@@ -10,6 +10,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
@@ -35,7 +39,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 	{
 		Statement create = connection.createStatement();
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (NAME TEXT PRIMARY KEY, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
 		
 		String dataString = ""; //$NON-NLS-1$
 		for(StatType type : StatType.values())
@@ -98,11 +102,11 @@ public class SQLiteDataStore extends DatabaseDataStore
 	@Override
 	protected void setupStatements(Connection connection) throws SQLException
 	{
-		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO Players VALUES(?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM Players));"); //$NON-NLS-1$
-		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM Players WHERE NAME=?;"); //$NON-NLS-1$
-		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
+		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO Players VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM Players));"); //$NON-NLS-1$
+		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM Players WHERE UUID=?;"); //$NON-NLS-1$
+		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?,?,?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
 		
 		mRecordAchievementStatement = connection.prepareStatement("INSERT OR REPLACE INTO Achievements VALUES(?,?,?,?);"); //$NON-NLS-1$
 		
@@ -118,17 +122,17 @@ public class SQLiteDataStore extends DatabaseDataStore
 		{
 			Statement statement = mConnection.createStatement();
 			
-			HashSet<String> names = new HashSet<String>();
+			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
 			for(StatStore stat : stats)
-				names.add(stat.playerName);
+				names.add(stat.player);
 			
-			Map<String, Integer> ids = getPlayerIds(names);
+			Map<UUID, Integer> ids = getPlayerIds(names);
 			
 			// Make sure the stats are available for each player
 			mAddPlayerStatsStatement.clearBatch();
-			for(String name : names)
+			for(OfflinePlayer player : names)
 			{
-				mAddPlayerStatsStatement.setInt(1, ids.get(name));
+				mAddPlayerStatsStatement.setInt(1, ids.get(player.getUniqueId()));
 				mAddPlayerStatsStatement.addBatch();
 			}
 
@@ -136,7 +140,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 			
 			// Now add each of the stats
 			for(StatStore stat : stats)
-				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.playerName))); //$NON-NLS-1$
+				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()))); //$NON-NLS-1$
 
 			statement.executeBatch();
 			
@@ -177,11 +181,11 @@ public class SQLiteDataStore extends DatabaseDataStore
 			}
 			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.NAME from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.UUID from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())
-				list.add(new StatStore(type, results.getString(2), results.getInt(1)));
+				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2))), results.getInt(1)));
 			
 			return list;
 		}

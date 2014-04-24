@@ -1,6 +1,6 @@
 package au.com.mineauz.MobHunting.achievements;
 
-import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
@@ -61,9 +61,9 @@ public class WolfKillAchievement implements ProgressAchievement, Listener
 		
 		Wolf killer = (Wolf)dmg.getDamager();
 		
-		if(killer.isTamed() && killer.getOwner() != null)
+		if(killer.isTamed() && killer.getOwner() instanceof OfflinePlayer)
 		{
-			Player owner = Bukkit.getPlayerExact(killer.getOwner().getName());
+			Player owner = ((OfflinePlayer)killer.getOwner()).getPlayer();
 			
 			if(owner != null && MobHunting.isHuntEnabled(owner))
 			{

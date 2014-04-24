@@ -1,15 +1,17 @@
 package au.com.mineauz.MobHunting.storage;
 
+import org.bukkit.OfflinePlayer;
+
 public class AchievementStore
 {
-	public AchievementStore(String id, String player, int progress)
+	public AchievementStore(String id, OfflinePlayer player, int progress)
 	{
 		this.id = id;
-		playerName = player;
+		this.player = player;
 		this.progress = progress;
 	}
 	
 	public String id;
-	public String playerName;
+	public OfflinePlayer player;
 	public int progress;
 }

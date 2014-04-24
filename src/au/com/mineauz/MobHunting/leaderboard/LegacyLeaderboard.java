@@ -245,7 +245,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>>
 					}
 				}
 				
-				signs.get(sign).setLine(line, stat.amount + " " + stat.playerName); //$NON-NLS-1$
+				signs.get(sign).setLine(line, stat.amount + " " + stat.player.getName()); //$NON-NLS-1$
 				
 				++sign;
 			}
@@ -268,7 +268,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>>
 				if(sign >= signs.size())
 					break;
 				
-				signs.get(sign).setLine(line, stat.amount + " " + stat.playerName); //$NON-NLS-1$
+				signs.get(sign).setLine(line, stat.amount + " " + stat.player.getName()); //$NON-NLS-1$
 				
 				++line;
 			}

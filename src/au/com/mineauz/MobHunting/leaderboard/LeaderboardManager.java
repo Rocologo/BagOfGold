@@ -277,14 +277,14 @@ public class LeaderboardManager implements Listener
 							if(place <= board.getCurrentStats().size())
 							{
 								StatStore stat = board.getCurrentStats().get(place-1);
-								event.getPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + String.valueOf(place) + ". " + ChatColor.YELLOW + stat.playerName);
+								event.getPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + String.valueOf(place) + ". " + ChatColor.YELLOW + stat.player.getName());
 								event.getPlayer().sendMessage(ChatColor.WHITE + " " + String.valueOf(stat.amount) + " " + ChatColor.GRAY + stat.type.translateName());
 							}
 							
 							if(place + 1 <= board.getCurrentStats().size())
 							{
 								StatStore stat = board.getCurrentStats().get(place);
-								event.getPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + String.valueOf(place+1) + ". " + ChatColor.YELLOW + stat.playerName);
+								event.getPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + String.valueOf(place+1) + ". " + ChatColor.YELLOW + stat.player.getName());
 								event.getPlayer().sendMessage(ChatColor.WHITE + " " + String.valueOf(stat.amount) + " " + ChatColor.GRAY + stat.type.translateName());
 							}
 							return;

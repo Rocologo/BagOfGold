@@ -686,10 +686,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		else
 			info.mele = true;
 		
-		if(event.getDamager() instanceof Wolf && ((Wolf)event.getDamager()).isTamed())
+		if(event.getDamager() instanceof Wolf && ((Wolf)event.getDamager()).isTamed() && ((Wolf)event.getDamager()).getOwner() instanceof Player)
 		{
-			if(cause == null)
-				cause = Bukkit.getPlayerExact(((Wolf)event.getDamager()).getOwner().getName());
+			cause = (Player)((Wolf)event.getDamager()).getOwner();
 
 			info.mele = false;
 			info.wolfAssist = true;

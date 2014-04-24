@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,6 +19,7 @@ import au.com.mineauz.MobHunting.achievements.Achievement;
 import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
 import au.com.mineauz.MobHunting.storage.DataCallback;
 import au.com.mineauz.MobHunting.storage.UserNotFoundException;
+import au.com.mineauz.MobHunting.util.UUIDHelper;
 
 public class ListAchievementsCommand implements ICommand
 {
@@ -81,32 +83,37 @@ public class ListAchievementsCommand implements ICommand
 		if(sender instanceof ConsoleCommandSender && args.length != 1)
 			return false;
 		
-		String playerName = null;
+		OfflinePlayer player = null;
 		
 		if(sender instanceof Player)
-			playerName = ((Player)sender).getName();
+			player = (Player)sender;
 		
 		if(args.length == 1)
 		{
 			if(!sender.hasPermission("mobhunting.listachievements.other")) //$NON-NLS-1$
 				return false;
 			
-			playerName = args[0];
+			String name = args[0];
 			
-			Player player = Bukkit.getPlayer(playerName);
-			if(player != null)
-				playerName = player.getName();
+			player = Bukkit.getPlayer(name);
+			if(player == null)
+			{
+				UUIDHelper.initialize();
+				UUID id = UUIDHelper.getKnown(name);
+				if(id != null)
+					player = Bukkit.getOfflinePlayer(id);
+			}
 		}
 		
-		OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
-		
-		if(!player.hasPlayedBefore())
+		if(player == null)
 		{
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.listachievements.player-not-exist")); //$NON-NLS-1$
 			return true;
 		}
 		
-		final String name = playerName;
+		final String playerName = (player instanceof Player ? ((Player)player).getDisplayName() : player.getName());
+		final boolean self = (player == sender);
+		
 		MobHunting.instance.getAchievements().requestCompletedAchievements(player, new DataCallback<List<Entry<Achievement,Integer>>>()
 		{
 			@Override
@@ -114,7 +121,7 @@ public class ListAchievementsCommand implements ICommand
 			{
 				if(error instanceof UserNotFoundException)
 				{
-					sender.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.player-empty", "player", name)); //$NON-NLS-1$ //$NON-NLS-2$
+					sender.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.player-empty", "player", playerName)); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				else
 				{
@@ -149,10 +156,10 @@ public class ListAchievementsCommand implements ICommand
 				// Build the output
 				ArrayList<String> lines = new ArrayList<String>();
 				
-				if(sender instanceof Player && ((Player)sender).getName().equals(name))
+				if(self)
 					lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.completed.self", "num", ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 				else
-					lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.completed.other", "player", name, "num", ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+					lines.add(ChatColor.GRAY + Messages.getString("mobhunting.commands.listachievements.completed.other", "player", playerName, "num", ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 				
 				boolean inProgress = false;
 				for(Map.Entry<Achievement, Integer> achievement : data)

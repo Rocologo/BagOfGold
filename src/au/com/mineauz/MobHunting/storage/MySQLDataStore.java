@@ -2,6 +2,7 @@ package au.com.mineauz.MobHunting.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,9 +11,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
+import au.com.mineauz.MobHunting.util.UUIDHelper;
 
 public class MySQLDataStore extends DatabaseDataStore
 {
@@ -24,17 +30,17 @@ public class MySQLDataStore extends DatabaseDataStore
 		{
 			Statement statement = mConnection.createStatement();
 			
-			HashSet<String> names = new HashSet<String>();
+			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
 			for(StatStore stat : stats)
-				names.add(stat.playerName);
+				names.add(stat.player);
 			
-			Map<String, Integer> ids = getPlayerIds(names);
+			Map<UUID, Integer> ids = getPlayerIds(names);
 			
 			// Make sure the stats are available for each player
 			mAddPlayerStatsStatement.clearBatch();
-			for(String name : names)
+			for(OfflinePlayer player : names)
 			{
-				mAddPlayerStatsStatement.setInt(1, ids.get(name));
+				mAddPlayerStatsStatement.setInt(1, ids.get(player.getUniqueId()));
 				mAddPlayerStatsStatement.addBatch();
 			}
 
@@ -42,7 +48,7 @@ public class MySQLDataStore extends DatabaseDataStore
 			
 			// Now add each of the stats
 			for(StatStore stat : stats)
-				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.playerName))); //$NON-NLS-1$
+				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()))); //$NON-NLS-1$
 
 			statement.executeBatch();
 			
@@ -76,7 +82,7 @@ public class MySQLDataStore extends DatabaseDataStore
 	{
 		Statement create = connection.createStatement();
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (NAME CHAR(20) PRIMARY KEY, PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, KEY PLAYER_ID (PLAYER_ID))"); //$NON-NLS-1$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (UUID CHAR(40) PRIMARY KEY, NAME CHAR(20), PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, KEY PLAYER_ID (PLAYER_ID))"); //$NON-NLS-1$
 		
 		String dataString = ""; //$NON-NLS-1$
 		for(StatType type : StatType.values())
@@ -144,16 +150,18 @@ public class MySQLDataStore extends DatabaseDataStore
 		create.close();
 		
 		connection.commit();
+		
+		performUUIDMigrate(connection);
 	}
 
 	@Override
 	protected void setupStatements( Connection connection ) throws SQLException
 	{
-		mAddPlayerStatement = connection.prepareStatement("INSERT IGNORE INTO Players(NAME) VALUES(?);"); //$NON-NLS-1$
-		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM Players WHERE NAME=?;"); //$NON-NLS-1$
-		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM Players WHERE NAME IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
+		mAddPlayerStatement = connection.prepareStatement("INSERT IGNORE INTO Players(UUID,NAME) VALUES(?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM Players WHERE UUID=?;"); //$NON-NLS-1$
+		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?,?,?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
 		
 		mRecordAchievementStatement = connection.prepareStatement("REPLACE INTO Achievements VALUES(?,?,?,?);"); //$NON-NLS-1$
 		
@@ -188,11 +196,11 @@ public class MySQLDataStore extends DatabaseDataStore
 			}
 			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.NAME from " + period.getTable() + " inner join Players on Players.PLAYER_ID=" + period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.UUID from " + period.getTable() + " inner join Players on Players.PLAYER_ID=" + period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())
-				list.add(new StatStore(type, results.getString(2), results.getInt(1)));
+				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2))), results.getInt(1)));
 			
 			return list;
 		}
@@ -200,5 +208,70 @@ public class MySQLDataStore extends DatabaseDataStore
 		{
 			throw new DataStoreException(e);
 		}
+	}
+	
+	private void performUUIDMigrate(Connection connection) throws SQLException
+	{
+		try
+		{
+			Statement statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT UUID from `players` LIMIT 0");
+			rs.close();
+			statement.close();
+			return; // UUIDs are in place
+		}
+		catch(SQLException e)
+		{
+		}
+		
+		System.out.println("*** Migrating MobHunting Database to UUIDs ***");
+		Statement statement = connection.createStatement();
+		statement.executeUpdate("alter table `players` add column `UUID` CHAR(40) default '**UNSPEC**' NOT NULL first");
+		
+		ResultSet rs = statement.executeQuery("select `NAME` from `players`");
+		UUIDHelper.initialize();
+		
+		PreparedStatement insert = connection.prepareStatement("update `players` set `UUID`=? where `NAME`=?");
+		StringBuilder failString = new StringBuilder();
+		int failCount = 0;
+		while(rs.next())
+		{
+			String player = rs.getString(1);
+			UUID id = UUIDHelper.getKnown(player);
+			if(id != null)
+			{
+				insert.setString(1, id.toString());
+				insert.setString(2, player);
+				insert.addBatch();
+			}
+			else
+			{
+				if(failString.length() != 0)
+					failString.append(", ");
+				failString.append(player);
+				++failCount;
+			}
+		}
+		
+		rs.close();
+		
+		if(failCount > 0)
+		{
+			System.err.println("* " + failCount + " accounts failed to convert:");
+			System.err.println("** " + failString.toString());
+		}
+		
+		insert.executeBatch();
+		insert.close();
+		
+		int modified = statement.executeUpdate("delete from `players` where `UUID`='**UNSPEC**'");
+		System.out.println(modified + " players were removed due to missing UUIDs");
+		
+		statement.executeUpdate("alter table `players` drop primary key");
+		statement.executeUpdate("alter table `players` modify `UUID` CHAR(40) NOT NULL PRIMARY KEY first");
+		
+		System.out.println("Player UUID migration complete");
+		
+		connection.commit();
 	}
 }
