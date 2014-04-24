@@ -2,6 +2,7 @@ package au.com.mineauz.MobHunting.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,6 +18,7 @@ import org.bukkit.OfflinePlayer;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
+import au.com.mineauz.MobHunting.util.UUIDHelper;
 
 public class SQLiteDataStore extends DatabaseDataStore
 {
@@ -39,7 +41,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 	{
 		Statement create = connection.createStatement();
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Players (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS PlayersNew (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
 		
 		String dataString = ""; //$NON-NLS-1$
 		for(StatType type : StatType.values())
@@ -97,16 +99,18 @@ public class SQLiteDataStore extends DatabaseDataStore
 		create.close();
 		
 		connection.commit();
+		
+		performUUIDMigrate(connection);
 	}
 
 	@Override
 	protected void setupStatements(Connection connection) throws SQLException
 	{
-		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO Players VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM Players));"); //$NON-NLS-1$
-		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM Players WHERE UUID=?;"); //$NON-NLS-1$
-		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?,?,?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
+		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO PlayersNew VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM PlayersNew));"); //$NON-NLS-1$
+		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM PlayersNew WHERE UUID=?;"); //$NON-NLS-1$
+		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM PlayersNew WHERE UUID IN (?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM PlayersNew WHERE UUID IN (?,?,?,?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM PlayersNew WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
 		
 		mRecordAchievementStatement = connection.prepareStatement("INSERT OR REPLACE INTO Achievements VALUES(?,?,?,?);"); //$NON-NLS-1$
 		
@@ -181,7 +185,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 			}
 			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", Players.UUID from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", PlayersNew.UUID from " + period.getTable() + " inner join PlayersNew using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())
@@ -193,5 +197,67 @@ public class SQLiteDataStore extends DatabaseDataStore
 		{
 			throw new DataStoreException(e);
 		}
+	}
+	
+	private void performUUIDMigrate(Connection connection) throws SQLException
+	{
+		Statement statement = connection.createStatement();
+		try
+		{
+			ResultSet rs = statement.executeQuery("SELECT * from Players LIMIT 0");
+			rs.close();
+		}
+		catch(SQLException e)
+		{
+			statement.close();
+			return; // UUIDs are in place
+		}
+		
+		System.out.println("*** Migrating MobHunting Database to UUIDs ***");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS PlayersNew (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)");
+		
+		ResultSet rs = statement.executeQuery("select `NAME`,`PLAYER_ID` from `players`");
+		UUIDHelper.initialize();
+		
+		PreparedStatement insert = connection.prepareStatement("INSERT INTO PlayersNew VALUES(?,?,?)");
+		StringBuilder failString = new StringBuilder();
+		int failCount = 0;
+		while(rs.next())
+		{
+			String player = rs.getString(1);
+			int pId = rs.getInt(2);
+			UUID id = UUIDHelper.getKnown(player);
+			if(id != null)
+			{
+				insert.setString(1, id.toString());
+				insert.setString(2, player);
+				insert.setInt(3, pId);
+				insert.addBatch();
+			}
+			else
+			{
+				if(failString.length() != 0)
+					failString.append(", ");
+				failString.append(player);
+				++failCount;
+			}
+		}
+		
+		rs.close();
+		
+		if(failCount > 0)
+		{
+			System.err.println("* " + failCount + " accounts failed to convert:");
+			System.err.println("** " + failString.toString());
+		}
+		
+		insert.executeBatch();
+		insert.close();
+		
+		statement.executeUpdate("drop table Players");
+		
+		System.out.println("Player UUID migration complete");
+		
+		connection.commit();
 	}
 }
