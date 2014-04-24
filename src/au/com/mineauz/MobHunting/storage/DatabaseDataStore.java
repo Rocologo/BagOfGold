@@ -151,7 +151,7 @@ public abstract class DatabaseDataStore implements DataStore
 		ResultSet result = mGetPlayerStatement[0].executeQuery();
 		
 		if(result.next())
-			return result.getInt(2);
+			return result.getInt(3);
 		
 		throw new UserNotFoundException("User " + player.toString() + " is not present in database"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
