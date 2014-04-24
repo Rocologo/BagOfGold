@@ -39,6 +39,8 @@ public class SQLiteDataStore extends DatabaseDataStore
 	@Override
 	protected void setupTables(Connection connection) throws SQLException
 	{
+		performTableMigrate(connection);
+		
 		Statement create = connection.createStatement();
 		
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS PlayersNew (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
@@ -47,13 +49,13 @@ public class SQLiteDataStore extends DatabaseDataStore
 		for(StatType type : StatType.values())
 			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; //$NON-NLS-1$ //$NON-NLS-2$
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS AllTime (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS AllTime (PLAYER_ID INTEGER REFERENCES PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS Achievements (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES Players(PLAYER_ID))"); //$NON-NLS-1$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS Achievements (PLAYER_ID INTEGER REFERENCES PlayersNew(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES PlayersNew(PLAYER_ID))"); //$NON-NLS-1$
 		
 		create.executeUpdate("create trigger if not exists DailyInsert after insert on Daily begin insert or ignore into Weekly(ID, PLAYER_ID) values(strftime(\"%Y%W\",\"now\"), NEW.PLAYER_ID); insert or ignore into Monthly(ID, PLAYER_ID) values(strftime(\"%Y%m\",\"now\"), NEW.PLAYER_ID); insert or ignore into Yearly(ID, PLAYER_ID) values(strftime(\"%Y\",\"now\"), NEW.PLAYER_ID); insert or ignore into AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end"); //$NON-NLS-1$
 		
@@ -199,6 +201,45 @@ public class SQLiteDataStore extends DatabaseDataStore
 		}
 	}
 	
+	private void performTableMigrate(Connection connection) throws SQLException
+	{
+		Statement statement = connection.createStatement();
+		try
+		{
+			ResultSet rs = statement.executeQuery("SELECT * from Players LIMIT 0");
+			rs.close();
+		}
+		catch(SQLException e)
+		{
+			statement.close();
+			return; // Tables will be fine
+		}
+		
+		statement.executeUpdate("ALTER TABLE Achievements RENAME TO AchievementsOLD");
+		statement.executeUpdate("ALTER TABLE Daily RENAME TO DailyOLD");
+		statement.executeUpdate("ALTER TABLE Weekly RENAME TO WeeklyOLD");
+		statement.executeUpdate("ALTER TABLE Monthly RENAME TO MonthlyOLD");
+		statement.executeUpdate("ALTER TABLE Yearly RENAME TO YearlyOLD");
+		statement.executeUpdate("ALTER TABLE AllTime RENAME TO AllTimeOLD");
+	}
+	
+	private void finishTableMigrate(Statement statement) throws SQLException
+	{
+		statement.executeUpdate("INSERT INTO Achievements SELECT * FROM AchievementsOLD");
+		statement.executeUpdate("INSERT INTO Daily SELECT * FROM DailyOLD");
+		statement.executeUpdate("INSERT INTO Weekly SELECT * FROM WeeklyOLD");
+		statement.executeUpdate("INSERT INTO Monthly SELECT * FROM MonthlyOLD");
+		statement.executeUpdate("INSERT INTO Yearly SELECT * FROM YearlyOLD");
+		statement.executeUpdate("INSERT INTO AllTime SELECT * FROM AllTimeOLD");
+		
+		statement.executeUpdate("DROP TABLE AchievementsOLD");
+		statement.executeUpdate("DROP TABLE DailyOLD");
+		statement.executeUpdate("DROP TABLE WeeklyOLD");
+		statement.executeUpdate("DROP TABLE MonthlyOLD");
+		statement.executeUpdate("DROP TABLE YearlyOLD");
+		statement.executeUpdate("DROP TABLE AllTimeOLD");
+	}
+	
 	private void performUUIDMigrate(Connection connection) throws SQLException
 	{
 		Statement statement = connection.createStatement();
@@ -256,8 +297,11 @@ public class SQLiteDataStore extends DatabaseDataStore
 		
 		statement.executeUpdate("drop table Players");
 		
+		finishTableMigrate(statement);
+		
 		System.out.println("Player UUID migration complete");
 		
+		statement.close();
 		connection.commit();
 	}
 }
