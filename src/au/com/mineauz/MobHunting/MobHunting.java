@@ -379,7 +379,10 @@ public class MobHunting extends JavaPlugin implements Listener
 	public static boolean isHuntEnabled(Player player)
 	{
 		if(!player.hasMetadata("MH:enabled")) //$NON-NLS-1$
+		{
+			debug("KillBlocked %s: Player doesnt have MH:enabled", player.getName());
 			return false;
+		}
 		
 		List<MetadataValue> values = player.getMetadata("MH:enabled"); //$NON-NLS-1$
 		
@@ -392,14 +395,22 @@ public class MobHunting extends JavaPlugin implements Listener
 		}
 		
 		if(enabled && !player.hasPermission("mobhunting.enable")) //$NON-NLS-1$
+		{
+			debug("KillBlocked %s: Player doesnt have permission", player.getName());
 			return false;
+		}
 		
 		if(!enabled)
+		{
+			debug("KillBlocked %s: MH:enabled is false", player.getName());
 			return false;
+		}
 		
 		MobHuntEnableCheckEvent event = new MobHuntEnableCheckEvent(player);
 		Bukkit.getPluginManager().callEvent(event);
 		
+		if(!event.isEnabled())
+			debug("KillBlocked %s: Plugin cancelled check", player.getName());
 		return event.isEnabled();
 	}
 	
@@ -577,6 +588,12 @@ public class MobHunting extends JavaPlugin implements Listener
 		saveWhitelist();
 	}
 	
+	private static void debug(String text, Object... args)
+	{
+		if(instance.mConfig.killDebug)
+			instance.getLogger().info("[Debug] " + String.format(text, args));
+	}
+	
 	@EventHandler
 	private void onWorldLoad(WorldLoadEvent event)
 	{
@@ -726,13 +743,27 @@ public class MobHunting extends JavaPlugin implements Listener
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	private void onMobDeath(EntityDeathEvent event)
 	{
-		if(event.getEntity() instanceof Player || getBaseKillPrize(event.getEntity()) == 0 || !isHuntEnabledInWorld(event.getEntity().getWorld()))
+		if(event.getEntity() instanceof Player)
 			return;
 		
-		if(event.getEntity().hasMetadata("MH:blocked")) //$NON-NLS-1$
+		if(getBaseKillPrize(event.getEntity()) == 0)
+		{
+			debug("KillBlocked %s(%d): Mob has no prize money", event.getEntity().getType(), event.getEntity().getEntityId());
 			return;
+		}
 		
+		if(!isHuntEnabledInWorld(event.getEntity().getWorld()))
+		{
+			debug("KillBlocked %s(%d): Mobhunting disabled in world %s", event.getEntity().getType(), event.getEntity().getEntityId(), event.getEntity().getWorld().getName());
+			return;
+		}
+
 		Player killer = event.getEntity().getKiller();
+		if(event.getEntity().hasMetadata("MH:blocked")) //$NON-NLS-1$
+		{
+			debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)", event.getEntity().getType(), event.getEntity().getEntityId());
+			return;
+		}
 		
 		DamageInformation info = null;
 		if(event.getEntity() instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity)event.getEntity()))
@@ -751,7 +782,11 @@ public class MobHunting extends JavaPlugin implements Listener
 			lastDamageCause = (EntityDamageByEntityEvent)event.getEntity().getLastDamageCause();
 		
 		if(killer == null || killer.getGameMode() == GameMode.CREATIVE || !isHuntEnabled(killer))
+		{
+			if(killer != null && killer.getGameMode() == GameMode.CREATIVE)
+				debug("KillBlocked %s: In creative mode", killer.getName());
 			return;
+		}
 		
 		if(info == null)
 		{
@@ -763,7 +798,10 @@ public class MobHunting extends JavaPlugin implements Listener
 		}
 		
 		if((System.currentTimeMillis() - info.lastAttackTime > mConfig.killTimeout))
+		{
+			debug("KillBlocked %s: Last damage was too long ago", killer.getName());
 			return;
+		}
 		
 		if(info.weapon == null)
 			info.weapon = new ItemStack(Material.AIR);
@@ -872,7 +910,10 @@ public class MobHunting extends JavaPlugin implements Listener
 			Bukkit.getPluginManager().callEvent(event2);
 			
 			if(event2.isCancelled())
+			{
+				debug("KillBlocked %s: MobHuntKillEvent was cancelled", killer.getName());
 				return;
+			}
 			
 			mEconomy.depositPlayer(killer.getName(), cash);
 			
@@ -885,6 +926,8 @@ public class MobHunting extends JavaPlugin implements Listener
 			else
 				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses", "prize", mEconomy.format(cash), "bonuses", extraString.trim())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
+		else
+			debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)", killer.getName(), extraString);
 	}
 	
 	private void onAssist(Player player, Player killer, LivingEntity killed, long time)

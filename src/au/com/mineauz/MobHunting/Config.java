@@ -177,6 +177,9 @@ public class Config extends AutoConfig
 	@ConfigField(name="kill-timeout", category="general", comment="Time in seconds after attacking a mob that can be counted as a kill")
 	public int killTimeout = 4;
 	
+	@ConfigField(name="kill-debug", category="general", comment="If kills are not being registered in mob hunting. Enable this to see why they arent")
+	public boolean killDebug = false;
+	
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException
 	{
