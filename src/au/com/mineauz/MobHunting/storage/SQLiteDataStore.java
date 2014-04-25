@@ -119,6 +119,9 @@ public class SQLiteDataStore extends DatabaseDataStore
 		mAddPlayerStatsStatement = connection.prepareStatement("INSERT OR IGNORE INTO Daily(ID, PLAYER_ID) VALUES(strftime(\"%Y%j\",\"now\"),?);"); //$NON-NLS-1$
 		
 		mLoadAchievementsStatement = connection.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM Achievements WHERE PLAYER_ID = ?;"); //$NON-NLS-1$
+		
+		mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM PlayersNew WHERE NAME LIKE ?"); //$NON-NLS-1$
+		mUpdatePlayerName = connection.prepareStatement("UPDATE PlayersNew SET NAME=? WHERE UUID=?"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -285,6 +288,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 		}
 		
 		rs.close();
+		UUIDHelper.clearCache();
 		
 		if(failCount > 0)
 		{

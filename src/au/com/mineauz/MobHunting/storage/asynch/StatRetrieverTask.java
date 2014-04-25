@@ -22,6 +22,8 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>>
 		mType = type;
 		mPeriod = period;
 		mCount = count;
+		
+		mWaiting = waiting;
 	}
 	
 	private void updateUsingCache(List<StatStore> stats)

@@ -24,4 +24,10 @@ public class UUIDHelper
 	{
 		return mKnown.get(name.toLowerCase());
 	}
+	
+	public static void clearCache()
+	{
+		mKnown.clear();
+	}
+	
 }

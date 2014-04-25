@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting.storage;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 public abstract class DatabaseDataStore implements DataStore
@@ -25,11 +27,11 @@ public abstract class DatabaseDataStore implements DataStore
 	protected PreparedStatement mRecordAchievementStatement;
 
 	/**
-	 * Args: player name
+	 * Args: player uuid
 	 */
 	protected PreparedStatement mAddPlayerStatement;
 	/**
-	 * Args: player name
+	 * Args: player uuid
 	 */
 	protected PreparedStatement[] mGetPlayerStatement;
 	
@@ -37,6 +39,16 @@ public abstract class DatabaseDataStore implements DataStore
 	 * Args: player id
 	 */
 	protected PreparedStatement mLoadAchievementsStatement;
+	
+	/**
+	 * Args: player name
+	 */
+	protected PreparedStatement mGetPlayerUUID;
+	
+	/**
+	 * Args: player name, player uuid
+	 */
+	protected PreparedStatement mUpdatePlayerName;
 	
 	@Override
 	public void initialize() throws DataStoreException
@@ -131,29 +143,73 @@ public abstract class DatabaseDataStore implements DataStore
 			
 			left -= size;
 			
+			ArrayList<OfflinePlayer> temp = new ArrayList<OfflinePlayer>(size);
 			for(int i = 0; i < size; ++i)
 			{
-				statement.setString(i + 1, it.next().getUniqueId().toString());
+				OfflinePlayer player = it.next();
+				temp.add(player);
+				statement.setString(i + 1, player.getUniqueId().toString());
 			}
 
 			ResultSet results = statement.executeQuery();
 			
+			int index = 0;
 			while(results.next())
-				ids.put(UUID.fromString(results.getString(1)), results.getInt(2));
+			{
+				OfflinePlayer player = temp.get(index++);
+				if(!results.getString(2).equals(player.getName()))
+					updatePlayerName(player);
+				
+				ids.put(UUID.fromString(results.getString(1)), results.getInt(3));
+			}
 		}
 		
 		return ids;
 	}
 	
-	protected int getPlayerId(UUID player) throws SQLException, DataStoreException
+	protected int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException
 	{
-		mGetPlayerStatement[0].setString(1, player.toString());
+		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerStatement[0].executeQuery();
 		
 		if(result.next())
+		{
+			String name = result.getString(2);
+			if(!player.getName().equals(name))
+				updatePlayerName(player);
+			
 			return result.getInt(3);
+		}
 		
 		throw new UserNotFoundException("User " + player.toString() + " is not present in database"); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	protected void updatePlayerName(OfflinePlayer player) throws SQLException
+	{
+		mUpdatePlayerName.setString(1, player.getName());
+		mUpdatePlayerName.setString(2, player.getUniqueId().toString());
+		mUpdatePlayerName.executeUpdate();
+	}
+	
+	@Override
+	public OfflinePlayer getPlayerByName( String name ) throws DataStoreException
+	{
+		try
+		{
+			mGetPlayerUUID.setString(1, name);
+			ResultSet set = mGetPlayerUUID.executeQuery();
+			
+			if(set.next())
+			{
+				UUID uid = UUID.fromString(set.getString(1));
+				return Bukkit.getOfflinePlayer(uid);
+			}
+			throw new UserNotFoundException("User " + name + " is not present in database"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		catch(SQLException e)
+		{
+			throw new DataStoreException(e);
+		}
 	}
 	
 	@Override
@@ -161,7 +217,7 @@ public abstract class DatabaseDataStore implements DataStore
 	{
 		try
 		{
-			int playerId = getPlayerId(player.getUniqueId());
+			int playerId = getPlayerId(player);
 			
 			mLoadAchievementsStatement.setInt(1, playerId);
 			
@@ -170,7 +226,6 @@ public abstract class DatabaseDataStore implements DataStore
 			
 			while(set.next())
 			{
-				// TODO: Date is not used. col 2
 				achievements.add(new AchievementStore(set.getString(1), player, set.getInt(3)));
 			}
 			

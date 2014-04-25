@@ -168,6 +168,9 @@ public class MySQLDataStore extends DatabaseDataStore
 		mAddPlayerStatsStatement = connection.prepareStatement("INSERT IGNORE INTO Daily(ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?);"); //$NON-NLS-1$
 		
 		mLoadAchievementsStatement = connection.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM Achievements WHERE PLAYER_ID = ?;"); //$NON-NLS-1$
+		
+		mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM Players WHERE NAME=?"); //$NON-NLS-1$
+		mUpdatePlayerName = connection.prepareStatement("UPDATE Players SET NAME=? WHERE UUID=?"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -252,6 +255,8 @@ public class MySQLDataStore extends DatabaseDataStore
 				++failCount;
 			}
 		}
+		
+		UUIDHelper.clearCache();
 		
 		rs.close();
 		

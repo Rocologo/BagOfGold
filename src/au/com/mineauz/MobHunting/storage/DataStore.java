@@ -19,4 +19,6 @@ public interface DataStore
 	public Set<AchievementStore> loadAchievements(OfflinePlayer player) throws DataStoreException;
 
 	public List<StatStore> loadStats( StatType type, TimePeriod period, int count ) throws DataStoreException;
+	
+	public OfflinePlayer getPlayerByName(String name) throws DataStoreException;
 }

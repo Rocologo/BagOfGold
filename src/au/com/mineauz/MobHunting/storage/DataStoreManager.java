@@ -302,4 +302,25 @@ public class DataStoreManager
 		}
 	}
 
+	/**
+	 * Gets an offline player using the last known name.
+	 * WARNING: This does a database lookup directly. This will block waiting for a reply
+	 */
+	public OfflinePlayer getPlayerByName( String name )
+	{
+		try
+		{
+			return mStore.getPlayerByName(name);
+		}
+		catch (UserNotFoundException e)
+		{
+			return null;
+		}
+		catch ( DataStoreException e )
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }	

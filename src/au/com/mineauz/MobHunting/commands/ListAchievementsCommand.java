@@ -97,12 +97,8 @@ public class ListAchievementsCommand implements ICommand
 			
 			player = Bukkit.getPlayer(name);
 			if(player == null)
-			{
-				UUIDHelper.initialize();
-				UUID id = UUIDHelper.getKnown(name);
-				if(id != null)
-					player = Bukkit.getOfflinePlayer(id);
-			}
+				player = MobHunting.instance.getDataStore().getPlayerByName(name);
+			
 		}
 		
 		if(player == null)
