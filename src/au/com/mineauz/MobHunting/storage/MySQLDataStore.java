@@ -218,7 +218,7 @@ public class MySQLDataStore extends DatabaseDataStore
 		try
 		{
 			Statement statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("SELECT UUID from `players` LIMIT 0");
+			ResultSet rs = statement.executeQuery("SELECT UUID from `Players` LIMIT 0");
 			rs.close();
 			statement.close();
 			return; // UUIDs are in place
@@ -229,12 +229,12 @@ public class MySQLDataStore extends DatabaseDataStore
 		
 		System.out.println("*** Migrating MobHunting Database to UUIDs ***");
 		Statement statement = connection.createStatement();
-		statement.executeUpdate("alter table `players` add column `UUID` CHAR(40) default '**UNSPEC**' NOT NULL first");
+		statement.executeUpdate("alter table `Players` add column `UUID` CHAR(40) default '**UNSPEC**' NOT NULL first");
 		
-		ResultSet rs = statement.executeQuery("select `NAME` from `players`");
+		ResultSet rs = statement.executeQuery("select `NAME` from `Players`");
 		UUIDHelper.initialize();
 		
-		PreparedStatement insert = connection.prepareStatement("update `players` set `UUID`=? where `NAME`=?");
+		PreparedStatement insert = connection.prepareStatement("update `Players` set `UUID`=? where `NAME`=?");
 		StringBuilder failString = new StringBuilder();
 		int failCount = 0;
 		while(rs.next())
@@ -269,13 +269,13 @@ public class MySQLDataStore extends DatabaseDataStore
 		insert.executeBatch();
 		insert.close();
 		
-		int modified = statement.executeUpdate("delete from `players` where `UUID`='**UNSPEC**'");
+		int modified = statement.executeUpdate("delete from `Players` where `UUID`='**UNSPEC**'");
 		System.out.println(modified + " players were removed due to missing UUIDs");
 		
-		statement.executeUpdate("alter table `players` drop primary key");
-		statement.executeUpdate("alter table `players` modify `UUID` CHAR(40) NOT NULL PRIMARY KEY first");
+		statement.executeUpdate("alter table `Players` drop primary key");
+		statement.executeUpdate("alter table `Players` modify `UUID` CHAR(40) NOT NULL PRIMARY KEY first");
 		
-		System.out.println("Player UUID migration complete");
+		System.out.println("*** Player UUID migration complete ***");
 		
 		connection.commit();
 	}

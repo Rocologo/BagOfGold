@@ -303,7 +303,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 		
 		finishTableMigrate(statement);
 		
-		System.out.println("Player UUID migration complete");
+		System.out.println("*** Player UUID migration complete ***");
 		
 		statement.close();
 		connection.commit();
