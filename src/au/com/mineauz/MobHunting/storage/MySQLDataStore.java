@@ -48,7 +48,7 @@ public class MySQLDataStore extends DatabaseDataStore
 			
 			// Now add each of the stats
 			for(StatStore stat : stats)
-				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + 1 WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()))); //$NON-NLS-1$
+				statement.addBatch(String.format("UPDATE Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()), stat.amount)); //$NON-NLS-1$
 
 			statement.executeBatch();
 			

@@ -42,13 +42,18 @@ public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementSt
 				
 				switch(mMode)
 				{
-				case All:
-					achievements.add(cached);
-					break;
 				case Completed:
 					if(cached.progress == -1)
 						achievements.add(cached);
 					break;
+				case All:
+				{
+					if(cached.progress == -1)
+					{
+						achievements.add(cached);
+						break;
+					}
+				}
 				case InProgress:
 				{
 					if(cached.progress != -1)

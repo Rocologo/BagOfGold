@@ -36,7 +36,7 @@ public class StoreTask implements DataStoreTask<Void>
 	{
 		if(!mWaitingStats.isEmpty())
 			store.saveStats(mWaitingStats);
-		
+
 		if(!mWaitingAchievements.isEmpty())
 			store.saveAchievements(mWaitingAchievements);
 

@@ -31,4 +31,10 @@ public class AchievementStore
 		
 		return id.equals(other.id) && player.getUniqueId().equals(other.player.getUniqueId()) && progress == other.progress;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("AchievementStore: {player: %s id: %s progress: %d}", player.getName(), id, progress);
+	}
 }

@@ -24,4 +24,10 @@ public class StatStore
 	public OfflinePlayer player;
 	
 	public int amount;
+	
+	@Override
+	public String toString()
+	{
+		return String.format("StatStore: {player: %s type: %s amount: %d}", player.getName(), type.getDBColumn(), amount);  
+	}
 }
