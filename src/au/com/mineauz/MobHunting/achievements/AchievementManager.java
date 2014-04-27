@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -368,6 +370,32 @@ public class AchievementManager implements Listener
 						storage.gainedAchievements.add(achievement.id);
 					else
 						storage.progressAchievements.put(achievement.id, achievement.progress);
+				}
+				
+				// Fix achievement errors where an upper level progress achievement is in progress/complete, but a lower level one is not
+				HashSet<String> toRemove = new HashSet<String>();
+				for(Entry<String, Integer> prog : storage.progressAchievements.entrySet())
+				{
+					Achievement raw = getAchievement(prog.getKey());
+					if(raw instanceof ProgressAchievement)
+					{
+						ProgressAchievement achievement = (ProgressAchievement)raw;
+						while(achievement.inheritFrom() != null)
+						{
+							String parent = achievement.inheritFrom();
+							
+							if(storage.progressAchievements.containsKey(parent))
+								toRemove.add(parent);
+							achievement = (ProgressAchievement)getAchievement(parent);
+						}
+					}
+				}
+				
+				storage.gainedAchievements.addAll(toRemove);
+				for(String id : toRemove)
+				{
+					storage.progressAchievements.remove(id);
+					MobHunting.instance.getDataStore().recordAchievement(player, getAchievement(id));
 				}
 				
 				storage.enableAchievements=true;
