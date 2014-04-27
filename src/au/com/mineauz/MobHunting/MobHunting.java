@@ -104,10 +104,39 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 	}
 	
+	private boolean versionCheck()
+	{
+		String version = Bukkit.getBukkitVersion();
+		if(version == null)
+			return true; // custom bukkit, whatever
+		
+		String[] parts = version.split("\\-");
+		String[] verPart = parts[0].split("\\.");
+		int major = Integer.valueOf(verPart[0]);
+		int minor = Integer.valueOf(verPart[1]);
+		int revision = 0;
+		if(verPart.length == 3)
+			revision = Integer.valueOf(verPart[2]);
+		
+		if(major >= 1 && minor >= 7 && revision >= 8)
+			return true;
+		
+		getLogger().severe("This version of MobHunting is for Bukkit 1.7.8 and up. Please update your bukkit.");
+		return false;
+	}
+	
 	@Override
 	public void onEnable()
 	{
 		mInitialized = false;
+		
+		if(!versionCheck())
+		{
+			instance = null;
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		
 		instance = this;
 		
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
