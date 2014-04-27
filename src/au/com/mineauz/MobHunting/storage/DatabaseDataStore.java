@@ -12,6 +12,8 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import au.com.mineauz.MobHunting.MobHunting;
+
 public abstract class DatabaseDataStore implements DataStore
 {
 	protected Connection mConnection;
@@ -158,7 +160,10 @@ public abstract class DatabaseDataStore implements DataStore
 			{
 				OfflinePlayer player = temp.get(index++);
 				if(!results.getString(2).equals(player.getName()))
+				{
+					MobHunting.instance.getLogger().info("Name change detected: " + results.getString(2) + " -> " + player.getName());
 					updatePlayerName(player);
+				}
 				
 				ids.put(UUID.fromString(results.getString(1)), results.getInt(3));
 			}
@@ -176,7 +181,10 @@ public abstract class DatabaseDataStore implements DataStore
 		{
 			String name = result.getString(2);
 			if(!player.getName().equals(name))
+			{
+				MobHunting.instance.getLogger().info("Name change detected: " + name + " -> " + player.getName());
 				updatePlayerName(player);
+			}
 			
 			return result.getInt(3);
 		}
@@ -186,9 +194,18 @@ public abstract class DatabaseDataStore implements DataStore
 	
 	protected void updatePlayerName(OfflinePlayer player) throws SQLException
 	{
-		mUpdatePlayerName.setString(1, player.getName());
-		mUpdatePlayerName.setString(2, player.getUniqueId().toString());
-		mUpdatePlayerName.executeUpdate();
+		try
+		{
+			mUpdatePlayerName.setString(1, player.getName());
+			mUpdatePlayerName.setString(2, player.getUniqueId().toString());
+			mUpdatePlayerName.executeUpdate();
+			
+			mConnection.commit();
+		}
+		finally
+		{
+			mConnection.rollback();
+		}
 	}
 	
 	@Override

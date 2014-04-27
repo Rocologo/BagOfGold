@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -19,7 +17,6 @@ import au.com.mineauz.MobHunting.achievements.Achievement;
 import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
 import au.com.mineauz.MobHunting.storage.DataCallback;
 import au.com.mineauz.MobHunting.storage.UserNotFoundException;
-import au.com.mineauz.MobHunting.util.UUIDHelper;
 
 public class ListAchievementsCommand implements ICommand
 {
