@@ -13,7 +13,6 @@ import au.com.mineauz.MobHunting.DamageInformation;
 import au.com.mineauz.MobHunting.HuntData;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
-import au.com.mineauz.MobHunting.util.Misc;
 
 public class CriticalModifier implements IModifier
 {
@@ -50,7 +49,7 @@ public class CriticalModifier implements IModifier
 	@Override
 	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
-		return (canCriticalHit(killer) && extraInfo.usedWeapon && Misc.isSword(extraInfo.weapon));
+		return (canCriticalHit(killer) && extraInfo.mele);
 	}
 
 }
