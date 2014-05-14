@@ -299,6 +299,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		mModifiers.add(new SneakyBonus());
 		mModifiers.add(new FriendleFireBonus());
 		mModifiers.add(new BonusMobBonus());
+		mModifiers.add(new CriticalModifier());
 		
 		mModifiers.add(new FlyingPenalty());
 		mModifiers.add(new GrindingPenalty());

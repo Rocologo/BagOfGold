@@ -12,9 +12,9 @@ public class DamageInformation
 	public boolean usedWeapon;
 	public boolean mele;
 	public Player attacker;
-	public long lastAttackTime = 0;
+	public long lastAttackTime = System.currentTimeMillis();
 	public Player assister;
-	public long lastAssistTime = 0;
+	public long lastAssistTime = System.currentTimeMillis();
 	
 	public Location attackerPosition;
 	public boolean wolfAssist;
