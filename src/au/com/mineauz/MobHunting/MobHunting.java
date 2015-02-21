@@ -110,19 +110,20 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(version == null)
 			return true; // custom bukkit, whatever
 		
-		String[] parts = version.split("\\-");
-		String[] verPart = parts[0].split("\\.");
-		int major = Integer.valueOf(verPart[0]);
-		int minor = Integer.valueOf(verPart[1]);
-		int revision = 0;
-		if(verPart.length == 3)
-			revision = Integer.valueOf(verPart[2]);
+		//String[] parts = version.split("\\-");
+		//String[] verPart = parts[0].split("\\.");
+		//int major = Integer.valueOf(verPart[0]);
+		//int minor = Integer.valueOf(verPart[1]);
+		//int revision = 0;
+		//if(verPart.length == 3)
+		//	revision = Integer.valueOf(verPart[2]);
 		
-		if(major >= 1 && minor >= 7 && revision >= 8)
-			return true;
-		
-		getLogger().severe("This version of MobHunting is for Bukkit 1.7.8 and up. Please update your bukkit.");
-		return false;
+		//if(major >= 1 && minor >= 7 && revision >= 8)
+		//	return true;
+		//
+		//getLogger().severe("This version of MobHunting is for Bukkit 1.7.8 and up. Please update your bukkit.");
+		//return false;
+		return true;
 	}
 	
 	@Override
@@ -139,17 +140,6 @@ public class MobHunting extends JavaPlugin implements Listener
 		
 		instance = this;
 		
-		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-		if(economyProvider == null)
-		{
-			instance = null;
-			getLogger().severe(Messages.getString("mobhunting.hook.econ")); //$NON-NLS-1$
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-		
-		mEconomy = economyProvider.getProvider();
-		
 		// Move the old data folder
 		File oldData = new File(getDataFolder().getParentFile(), "Mob Hunting"); //$NON-NLS-1$
 		if(oldData.exists())
@@ -164,14 +154,25 @@ public class MobHunting extends JavaPlugin implements Listener
 			}
 		}
 		
-		Messages.exportDefaultLanguages();
-		
 		mConfig = new Config(new File(getDataFolder(), "config.yml")); //$NON-NLS-1$
 		
 		if(mConfig.load())
 			mConfig.save();
 		else
 			throw new RuntimeException(Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
+
+		Messages.exportDefaultLanguages();
+				
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+		if(economyProvider == null)
+		{
+			instance = null;
+			getLogger().severe(Messages.getString("mobhunting.hook.econ")); //$NON-NLS-1$
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		
+		mEconomy = economyProvider.getProvider();
 		
 		if(!loadWhitelist())
 			throw new RuntimeException();
@@ -944,8 +945,11 @@ public class MobHunting extends JavaPlugin implements Listener
 				debug("KillBlocked %s: MobHuntKillEvent was cancelled", killer.getName());
 				return;
 			}
-			
-			mEconomy.depositPlayer(killer.getName(), cash);
+			//debug("before new depositPlayer");
+			mEconomy.depositPlayer(killer, cash);
+			//TODO: depreciated, can be removed when tested
+			//mEconomy.depositPlayer(killer.getName(), cash);
+			//debug("after new depositPlayer");
 			
 			getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus")); //$NON-NLS-1$
 			if(info.assister != null)
@@ -976,7 +980,9 @@ public class MobHunting extends JavaPlugin implements Listener
 		if(cash >= 0.01)
 		{
 			getDataStore().recordAssist(player, killer, ExtendedMobType.fromEntity(killed), killed.hasMetadata("MH:hasBonus")); //$NON-NLS-1$
-			mEconomy.depositPlayer(player.getName(), cash);
+			mEconomy.depositPlayer(player, cash);
+			//TODO: depreciated, can be removed when tested
+			//mEconomy.depositPlayer(player.getName(), cash);
 
 			if(ks != 1.0)
 				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -1036,6 +1042,12 @@ public class MobHunting extends JavaPlugin implements Listener
 			return mConfig.witherPrize;
 		if(mob instanceof PigZombie)
 			return mConfig.pigMan;
+		if(mob instanceof Guardian)
+			return mConfig.guardianPrize;
+		if(mob instanceof Endermite)
+			return mConfig.endermitePrize;
+		if(mob instanceof Rabbit && (((Rabbit) mob).getRabbitType())== Rabbit.Type.THE_KILLER_BUNNY)
+			return mConfig.killerrabbitPrize;
 		
 		return 0;
 	}

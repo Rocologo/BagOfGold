@@ -46,9 +46,14 @@ public class Config extends AutoConfig
 	public double witchPrize = 1.0;
 	@ConfigField(name="zombie", category="mobs")
 	public double zombiePrize = 0.5;
-	
 	@ConfigField(name="ghast", category="mobs")
 	public double ghastPrize = 2.0;
+	@ConfigField(name="endermite", category="mobs")
+	public double endermitePrize = 1.0;
+	@ConfigField(name="guardian", category="mobs")
+	public double guardianPrize = 1.0;
+	@ConfigField(name="killerrabbit", category="mobs")
+	public double killerrabbitPrize = 0.5;
 	
 	@ConfigField(name="slime-base", category="mobs", comment="This is multiplied by the size of the slime. So a big natural slime is 4x this value")
 	public double slimeTinyPrize = 0.25;

@@ -163,6 +163,10 @@ mobs.Witch.name=Witch
 mobs.Wither.name=Wither
 mobs.Zombie.name=Zombie
 mobs.ZombiePigman.name=Zombie Pigman
+mobs.Endermite.name=Endermite
+mobs.Giant.name.Giant
+mobs.Guardian.name=Guardian
+mobs.KillerRabbit.name=Killer Rabbit
 mobs.BonusMob.name=Bonus Mob
 
 leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick

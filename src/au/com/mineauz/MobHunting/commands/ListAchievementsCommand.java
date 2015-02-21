@@ -92,7 +92,9 @@ public class ListAchievementsCommand implements ICommand
 			
 			String name = args[0];
 			
-			player = Bukkit.getPlayer(name);
+			player = Bukkit.getPlayer(player.getUniqueId());
+			//TODO: depreciated, can be removed when tested
+			//player = Bukkit.getPlayer(name);
 			if(player == null)
 				player = MobHunting.instance.getDataStore().getPlayerByName(name);
 			

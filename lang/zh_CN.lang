@@ -155,6 +155,10 @@ mobs.Witch.name=巫师
 mobs.Wither.name=凋零
 mobs.Zombie.name=僵尸
 mobs.ZombiePigman.name=僵尸猪人
+mobs.Endermite.name=Endermite
+mobs.Giant.name.Giant
+mobs.Guardian.name=Guardian
+mobs.KillerRabbit.name=Killer Rabbit
 mobs.BonusMob.name=奖励生物
 
 leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick

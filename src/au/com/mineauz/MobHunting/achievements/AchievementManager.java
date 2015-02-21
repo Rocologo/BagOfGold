@@ -218,7 +218,9 @@ public class AchievementManager implements Listener
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
 		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		EconomyResponse result = MobHunting.getEconomy().depositPlayer(player.getName(), achievement.getPrize());
+		EconomyResponse result = MobHunting.getEconomy().depositPlayer(player, achievement.getPrize());
+		//TODO: depreciated, can be removed when tested.
+		//EconomyResponse result = MobHunting.getEconomy().depositPlayer(player.getName(), achievement.getPrize());
 		if(!result.transactionSuccess())
 			player.sendMessage(ChatColor.RED + "Unable to add prize money: " + result.errorMessage);
 		

@@ -2,6 +2,7 @@ package au.com.mineauz.MobHunting;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
 
@@ -22,6 +23,11 @@ public enum ExtendedMobType
 	Wither(EntityType.WITHER, 200),
 	Zombie(EntityType.ZOMBIE, 1000),
 	ZombiePigman(EntityType.PIG_ZOMBIE, 1000),
+	Endermite(EntityType.ENDERMITE,1000),
+	// Giant is unsupported by in the original game and Giants can only be spawnwed through plugins.
+	Giant(EntityType.GIANT, 1000),
+	Guardian(EntityType.GUARDIAN,1000),
+	KillerRabbit(EntityType.RABBIT,200),
 	BonusMob(EntityType.UNKNOWN, 200);
 	
 	private EntityType mType;
@@ -51,6 +57,8 @@ public enum ExtendedMobType
 			return ent instanceof Skeleton && ((Skeleton)ent).getSkeletonType() == SkeletonType.NORMAL;
 		else if(this == BonusMob)
 			return ent.hasMetadata("MH:hasBonus"); //$NON-NLS-1$
+		else if(this == KillerRabbit)
+			return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType())== Rabbit.Type.THE_KILLER_BUNNY;
 		else
 			return ent.getType() == mType;
 	}

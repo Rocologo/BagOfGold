@@ -8,8 +8,8 @@ import org.bukkit.event.Listener;
 import au.com.mineauz.MobHunting.MobHuntEnableCheckEvent;
 import au.com.mineauz.MobHunting.MobHunting;
 
-import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
-import com.pauldavdesign.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
 
 public class MinigamesCompat implements Listener
 {
