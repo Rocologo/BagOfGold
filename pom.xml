@@ -10,7 +10,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<plugin.version>1.8.4</plugin.version>
+		<plugin.version>1.8.5</plugin.version>
 		<bukkit.version>1.8-R0.1-SNAPSHOT</bukkit.version>
 		<spigotmc.version>1.8-R0.1-SNAPSHOT</spigotmc.version>
 		<metrics-lite.version>R7</metrics-lite.version>
