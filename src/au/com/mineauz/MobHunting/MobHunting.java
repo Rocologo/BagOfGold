@@ -1046,9 +1046,10 @@ public class MobHunting extends JavaPlugin implements Listener
 			return mConfig.guardianPrize;
 		if(mob instanceof Endermite)
 			return mConfig.endermitePrize;
+		if(mob instanceof Rabbit) 
+			debug("RabbitType="+((Rabbit)mob).getRabbitType());
 		if(mob instanceof Rabbit && (((Rabbit) mob).getRabbitType())== Rabbit.Type.THE_KILLER_BUNNY)
 			return mConfig.killerrabbitPrize;
-		
 		return 0;
 	}
 	

@@ -27,7 +27,7 @@ public enum ExtendedMobType
 	// Giant is unsupported by in the original game and Giants can only be spawnwed through plugins.
 	Giant(EntityType.GIANT, 1000),
 	Guardian(EntityType.GUARDIAN,1000),
-	KillerRabbit(EntityType.RABBIT,200),
+	KillerRabbit(EntityType.RABBIT,1000),
 	BonusMob(EntityType.UNKNOWN, 200);
 	
 	private EntityType mType;
@@ -55,10 +55,11 @@ public enum ExtendedMobType
 			return ent instanceof Skeleton && ((Skeleton)ent).getSkeletonType() == SkeletonType.WITHER;
 		else if(this == Skeleton)
 			return ent instanceof Skeleton && ((Skeleton)ent).getSkeletonType() == SkeletonType.NORMAL;
+		else if(this == KillerRabbit)
+			//return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType().equals(Rabbit.Type.THE_KILLER_BUNNY));
+			return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType())== Rabbit.Type.THE_KILLER_BUNNY;
 		else if(this == BonusMob)
 			return ent.hasMetadata("MH:hasBonus"); //$NON-NLS-1$
-		else if(this == KillerRabbit)
-			return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType())== Rabbit.Type.THE_KILLER_BUNNY;
 		else
 			return ent.getType() == mType;
 	}

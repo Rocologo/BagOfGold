@@ -137,7 +137,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 	@Override
 	protected void setupStatements(Connection connection) throws SQLException
 	{
-		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO mh_PlayersNew VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM PlayersNew));"); //$NON-NLS-1$
+		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO mh_PlayersNew VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_PlayersNew));"); //$NON-NLS-1$
 		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM mh_PlayersNew WHERE UUID=?;"); //$NON-NLS-1$
 		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM mh_PlayersNew WHERE UUID IN (?,?);"); //$NON-NLS-1$
 		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM mh_PlayersNew WHERE UUID IN (?,?,?,?,?);"); //$NON-NLS-1$
@@ -238,7 +238,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 		Statement statement = connection.createStatement();
 		try
 		{
-			ResultSet rs = statement.executeQuery("SELECT * from Players LIMIT 0");
+			ResultSet rs = statement.executeQuery("SELECT * from mh_Players LIMIT 0");
 			rs.close();
 
 		}
@@ -254,10 +254,24 @@ public class SQLiteDataStore extends DatabaseDataStore
 		statement.executeUpdate("ALTER TABLE mh_Monthly RENAME TO mh_MonthlyOLD");
 		statement.executeUpdate("ALTER TABLE mh_Yearly RENAME TO mh_YearlyOLD");
 		statement.executeUpdate("ALTER TABLE mh_AllTime RENAME TO mh_AllTimeOLD");
+		statement.close();
 	}
 	
 	private void finishTableMigrate(Statement statement) throws SQLException
 	{
+		//Statement statement = connection.createStatement();
+		try
+		{
+			ResultSet rs = statement.executeQuery("SELECT * from mh_Players LIMIT 0");
+			rs.close();
+
+		}
+		catch(SQLException e)
+		{
+			statement.close();
+			return; // Tables will be fine
+		}
+		
 		statement.executeUpdate("INSERT INTO mh_Achievements SELECT * FROM mh_AchievementsOLD");
 		statement.executeUpdate("INSERT INTO mh_Daily SELECT * FROM mh_DailyOLD");
 		statement.executeUpdate("INSERT INTO mh_Weekly SELECT * FROM mh_WeeklyOLD");
@@ -288,9 +302,9 @@ public class SQLiteDataStore extends DatabaseDataStore
 		}
 		
 		System.out.println("*** Migrating MobHunting Database to UUIDs ***");
-		statement.executeUpdate("CREATE TABLE IF NOT EXISTS hm_PlayersNew (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayersNew (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)");
 		
-		ResultSet rs = statement.executeQuery("select `NAME`,`PLAYER_ID` from `mh_players`");
+		ResultSet rs = statement.executeQuery("select `NAME`,`PLAYER_ID` from `mh_Players`");
 		UUIDHelper.initialize();
 		
 		PreparedStatement insert = connection.prepareStatement("INSERT INTO mh_PlayersNew VALUES(?,?,?)");
@@ -329,7 +343,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 		insert.executeBatch();
 		insert.close();
 		
-		statement.executeUpdate("drop table mh_Players");
+		statement.executeUpdate("drop table mh_PlayersNew");
 		
 		finishTableMigrate(statement);
 		
