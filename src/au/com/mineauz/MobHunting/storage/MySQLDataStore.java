@@ -121,7 +121,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 	private void setupTrigger(Connection connection) throws SQLException {
 		Statement create = connection.createStatement();
 		
-		
 		// Workaround for no create trigger if not exists
 		try {
 			create.executeUpdate("create trigger mh_DailyInsert after insert on mh_Daily for each row begin insert ignore into mh_Weekly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%U'), NEW.PLAYER_ID); insert ignore into mh_Monthly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y%c'), NEW.PLAYER_ID); insert ignore into mh_Yearly(ID, PLAYER_ID) values(DATE_FORMAT(NOW(), '%Y'), NEW.PLAYER_ID); insert ignore into mh_AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end"); //$NON-NLS-1$
@@ -240,6 +239,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID
 						.fromString(results.getString(2))), results.getInt(1)));
 
+			results.close();
 			return list;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -309,6 +309,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		System.out.println("*** Player UUID migration complete ***");
 
+		statement.close();
 		connection.commit();
 	}
 

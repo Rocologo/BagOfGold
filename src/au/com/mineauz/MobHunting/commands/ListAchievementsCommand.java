@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -71,6 +72,7 @@ public class ListAchievementsCommand implements ICommand
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand( final CommandSender sender, String label, String[] args )
 	{
@@ -92,9 +94,7 @@ public class ListAchievementsCommand implements ICommand
 			
 			String name = args[0];
 			
-			player = Bukkit.getPlayer(player.getUniqueId());
-			//TODO: depreciated, can be removed when tested
-			//player = Bukkit.getPlayer(name);
+			player = Bukkit.getPlayer(name);
 			if(player == null)
 				player = MobHunting.instance.getDataStore().getPlayerByName(name);
 			

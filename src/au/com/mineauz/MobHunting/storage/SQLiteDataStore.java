@@ -225,6 +225,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 			while(results.next())
 				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2))), results.getInt(1)));
 			
+			results.close();
 			return list;
 		}
 		catch(SQLException e)
@@ -254,7 +255,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 		statement.executeUpdate("ALTER TABLE mh_Monthly RENAME TO mh_MonthlyOLD");
 		statement.executeUpdate("ALTER TABLE mh_Yearly RENAME TO mh_YearlyOLD");
 		statement.executeUpdate("ALTER TABLE mh_AllTime RENAME TO mh_AllTimeOLD");
-		statement.close();
+		//statement.close();
 	}
 	
 	private void finishTableMigrate(Statement statement) throws SQLException
