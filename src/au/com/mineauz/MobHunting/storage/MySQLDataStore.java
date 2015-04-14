@@ -25,7 +25,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public void saveStats(Set<StatStore> stats) throws DataStoreException {
 		try {
-			System.out.println("*** MobHunting saving stats to Database ***");
+			//System.out.println("*** MobHunting saving stats to Database ***");
 			Statement statement = mConnection.createStatement();
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();

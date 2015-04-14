@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
-	<version>1.8.7</version>
+	<version>1.8.8</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/bukkit-plugins/mobhunting/</url>
 	<description> Here is the description....</description>
