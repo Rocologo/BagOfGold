@@ -25,6 +25,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public void saveStats(Set<StatStore> stats) throws DataStoreException {
 		try {
+			System.out.println("*** MobHunting saving stats to Database ***");
 			Statement statement = mConnection.createStatement();
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
@@ -51,7 +52,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 			statement.executeBatch();
 
-			statement.close();
+			//statement.close();
 
 			mConnection.commit();
 		} catch (SQLException e) {
@@ -67,7 +68,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			Class.forName("com.mysql.jdbc.Driver"); //$NON-NLS-1$
 			return DriverManager
 					.getConnection(
-							"jdbc:mysql://" + MobHunting.config().databaseHost + "/" + MobHunting.config().databaseName, MobHunting.config().databaseUsername, MobHunting.config().databasePassword); //$NON-NLS-1$ //$NON-NLS-2$
+							"jdbc:mysql://" + MobHunting.config().databaseHost + "/" + MobHunting.config().databaseName+"?autoReconnect=true", MobHunting.config().databaseUsername, MobHunting.config().databasePassword); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (ClassNotFoundException e) {
 			throw new DataStoreException("MySQL not present on the classpath"); //$NON-NLS-1$
 		}
