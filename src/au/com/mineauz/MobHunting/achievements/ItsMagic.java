@@ -41,4 +41,14 @@ public class ItsMagic implements Achievement, Listener
 		if(event.getDamageInfo().weapon.getType() == Material.POTION)
 			MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialItsMagicCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialItsMagicCmdDesc;
+	}
 }

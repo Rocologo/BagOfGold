@@ -41,4 +41,14 @@ public class AxeMurderer implements Achievement, Listener
 		if(Misc.isAxe(event.getDamageInfo().weapon))
 			MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialAxeMurdererCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialAxeMurdererCmdDesc;
+	}
 }

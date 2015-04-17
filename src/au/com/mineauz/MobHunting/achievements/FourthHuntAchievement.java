@@ -56,4 +56,12 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener
 		if(mType.matches(event.getEntity()))
 			MobHunting.instance.getAchievements().awardAchievementProgress(this, event.getPlayer(), 1);
 	}
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialHunter4Cmd;
+	}
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialHunter4CmdDesc;
+	}
 }

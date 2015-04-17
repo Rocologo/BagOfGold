@@ -18,7 +18,7 @@ public class Config extends AutoConfig
 		setCategoryComment("bonus", "These are bonus multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them."); //$NON-NLS-1$ //$NON-NLS-2$
 		setCategoryComment("penalty", "These are penalty multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them."); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill"); //$NON-NLS-1$ //$NON-NLS-2$
+		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill. \nFor each achievment you can run a console command to give the player a reward. \nYou can you the following variables {player},{world}.\nAn example could be to give the player permission to fly \nfor 1 hour or use give command to the player items.\nYou can also specify the message send to the player."); //$NON-NLS-1$ //$NON-NLS-2$
 		
 	}
 	
@@ -87,37 +87,101 @@ public class Config extends AutoConfig
 	
 	@ConfigField(name="charged-kill", category="special")
 	public double specialCharged = 100;
+	@ConfigField(name="charged-kill-cmd", category="special")
+	public String specialChargedCmd = "";
+	@ConfigField(name="charged-kill-cmd-desc", category="special")
+	public String specialChargedCmdDesc = "";
 	@ConfigField(name="creeper-punch", category="special")
 	public double specialCreeperPunch = 100;
+	@ConfigField(name="creeper-punch-cmd", category="special")
+	public String specialCreeperPunchCmd = "";
+	@ConfigField(name="creeper-punch-cmd-desc", category="special")
+	public String specialCreeperPunchCmdDesc = "";
 	@ConfigField(name="axe-murderer", category="special")
 	public double specialAxeMurderer = 20;
+	@ConfigField(name="axe-murderer-cmd", category="special")
+	public String specialAxeMurdererCmd = "";
+	@ConfigField(name="axe-murderer-cmd-desc", category="special")
+	public String specialAxeMurdererCmdDesc = "";
 	@ConfigField(name="recordhungry", category="special")
 	public double specialRecordHungry = 50;
+	@ConfigField(name="recordhungry-cmd", category="special")
+	public String specialRecordHungryCmd = "";
+	@ConfigField(name="recordhungry-cmd-desc", category="special")
+	public String specialRecordHungryCmdDesc = "";
 	@ConfigField(name="infighting", category="special")
 	public double specialInfighting = 50;
+	@ConfigField(name="infighting-cmd", category="special")
+	public String specialInfightingCmd = "";
+	@ConfigField(name="infighting-cmd-desc", category="special")
+	public String specialInfightingCmdDesc = "";
 	@ConfigField(name="by-the-book", category="special")
 	public double specialByTheBook = 20;
+	@ConfigField(name="by-the-book-cmd", category="special")
+	public String specialByTheBookCmd = "";
+	@ConfigField(name="by-the-book-cmd-desc", category="special")
+	public String specialByTheBookCmdDesc = "";
 	@ConfigField(name="creepercide", category="special")
 	public double specialCreepercide = 50;
+	@ConfigField(name="creepercide-cmd", category="special")
+	public String specialCreepercideCmd = "";
+	@ConfigField(name="creepercide-cmd-desc", category="special")
+	public String specialCreepercideCmdDesc = "";
 	@ConfigField(name="hunt-begins", category="special")
 	public double specialHuntBegins = 10;
+	@ConfigField(name="hunt-begins-cmd", category="special")
+	public String specialHuntBeginsCmd = "";
+	@ConfigField(name="hunt-begins-cmd-desc", category="special")
+	public String specialHuntBeginsCmdDesc = "";
 	@ConfigField(name="itsmagic", category="special")
 	public double specialItsMagic = 20;
+	@ConfigField(name="itsmagic-cmd", category="special")
+	public String specialItsMagicCmd = "";
+	@ConfigField(name="itsmagic-cmd-desc", category="special")
+	public String specialItsMagicCmdDesc = "";
 	@ConfigField(name="fancypants", category="special")
 	public double specialFancyPants = 50;
+	@ConfigField(name="fancypants-cmd", category="special")
+	public String specialFancyPantsCmd = "";
+	@ConfigField(name="fancypants-cmd-desc", category="special")
+	public String specialFancyPantsCmdDesc = "";
 	@ConfigField(name="master-sniper", category="special")
 	public double specialMasterSniper = 200;
+	@ConfigField(name="master-sniper-cmd", category="special")
+	public String specialMasterSniperCmd = "";
+	@ConfigField(name="master-sniper-cmd-desc", category="special")
+	public String specialMasterSniperCmdDesc = "";
 	@ConfigField(name="fangmaster", category="special")
 	public double specialFangMaster = 50;
+	@ConfigField(name="fangmaster-cmd", category="special")
+	public String specialFangMasterCmd = "";
+	@ConfigField(name="fangmaster-cmd-desc", category="special")
+	public String specialFangMasterCmdDesc = "";
 	
 	@ConfigField(name="hunter1", category="special")
 	public double specialHunter1 = 100;
+	@ConfigField(name="hunter1-cmd", category="special")
+	public String specialHunter1Cmd = "";
+	@ConfigField(name="hunter1-cmd-desc", category="special")
+	public String specialHunter1CmdDesc = "";
 	@ConfigField(name="hunter2", category="special")
 	public double specialHunter2 = 250;
+	@ConfigField(name="hunter2-cmd", category="special")
+	public String specialHunter2Cmd = "";
+	@ConfigField(name="hunter2-cmd-desc", category="special")
+	public String specialHunter2CmdDesc = "";
 	@ConfigField(name="hunter3", category="special")
 	public double specialHunter3 = 500;
+	@ConfigField(name="hunter3-cmd", category="special")
+	public String specialHunter3Cmd = "";
+	@ConfigField(name="hunter3-cmd-desc", category="special")
+	public String specialHunter3CmdDesc = "";
 	@ConfigField(name="hunter4", category="special")
 	public double specialHunter4 = 1000;
+	@ConfigField(name="hunter4-cmd", category="special")
+	public String specialHunter4Cmd = "";
+	@ConfigField(name="hunter4-cmd-desc", category="special")
+	public String specialHunter4CmdDesc = "";
 	
 	@ConfigField(name="level1", category="killstreak")
 	public int killstreakLevel1 = 5;

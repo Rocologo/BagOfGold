@@ -43,4 +43,12 @@ public class SecondHuntAchievement implements ProgressAchievement
 
 	@Override
 	public String inheritFrom() { return "hunting-level1-" + mType.name().toLowerCase(); } //$NON-NLS-1$
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialHunter2Cmd;
+	}
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialHunter2CmdDesc;
+	}
 }

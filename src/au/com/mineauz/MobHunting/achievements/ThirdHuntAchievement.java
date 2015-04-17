@@ -44,4 +44,12 @@ public class ThirdHuntAchievement implements ProgressAchievement
 
 	@Override
 	public String inheritFrom() { return "hunting-level2-" + mType.name().toLowerCase(); } //$NON-NLS-1$
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialHunter3Cmd;
+	}
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialHunter3CmdDesc;
+	}
 }

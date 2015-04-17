@@ -75,4 +75,14 @@ public class InFighting implements Achievement, Listener
 			}
 		}
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialInfightingCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialInfightingCmdDesc;
+	}
 }

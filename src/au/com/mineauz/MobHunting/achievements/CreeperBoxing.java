@@ -41,4 +41,14 @@ public class CreeperBoxing implements Achievement, Listener
 		if(event.getEntity() instanceof Creeper && !event.getDamageInfo().usedWeapon)
 			MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialCreeperPunchCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialCreeperPunchCmdDesc;
+	}
 }

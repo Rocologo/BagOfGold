@@ -75,4 +75,14 @@ public class Creepercide implements Achievement, Listener
 				MobHunting.instance.getAchievements().awardAchievement("creepercide", initiator); //$NON-NLS-1$
 		}
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialCreepercideCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialCreepercideCmdDesc;
+	}
 }

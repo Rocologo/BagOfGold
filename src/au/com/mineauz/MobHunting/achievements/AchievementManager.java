@@ -215,7 +215,7 @@ public class AchievementManager implements Listener
 
 		storage.gainedAchievements.add(achievement.getID());
 		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
+		player.sendMessage(ChatColor.BLUE + "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
 		player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		EconomyResponse result = MobHunting.getEconomy().depositPlayer(player, achievement.getPrize());
@@ -226,6 +226,20 @@ public class AchievementManager implements Listener
 		
 		if(MobHunting.config().broadcastAchievement && (!(achievement instanceof TheHuntBegins) || MobHunting.config().broadcastFirstAchievement))
 			broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		
+		//TODO: Run command
+		//get command and description from config
+		//change {player} - playername
+		//change {world} - worldname
+		//TODO: broadcast Message
+		//Execute command
+		String playername=player.getName();
+		String worldname=player.getWorld().getName();
+		String prizeCommand=achievement.getPrizeCmd().replaceAll("\\{player\\}", playername).replaceAll("\\{world\\}", worldname);
+		if (!achievement.getPrizeCmdDescription().equals("")){
+			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + achievement.getPrizeCmdDescription()); 
+		}
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), prizeCommand);
 		
 		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
 		FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true).trail(false).build();

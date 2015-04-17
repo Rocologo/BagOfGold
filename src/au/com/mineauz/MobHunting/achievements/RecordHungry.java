@@ -67,4 +67,14 @@ public class RecordHungry implements Achievement, Listener
 			}
 		}
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialRecordHungryCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialRecordHungryCmdDesc;
+	}
 }

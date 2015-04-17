@@ -48,4 +48,14 @@ public class MasterSniper implements Achievement, Listener
 			}
 		}
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialMasterSniperCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialMasterSniperCmdDesc;
+	}
 }

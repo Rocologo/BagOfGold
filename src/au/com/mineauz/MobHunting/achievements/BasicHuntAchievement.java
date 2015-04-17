@@ -44,4 +44,12 @@ public class BasicHuntAchievement implements ProgressAchievement
 
 	@Override
 	public String inheritFrom() { return null; }
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialHunter1Cmd;
+	}
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialHunter1CmdDesc;
+	}
 }

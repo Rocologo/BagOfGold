@@ -8,4 +8,7 @@ public interface Achievement
 	public String getDescription();
 	
 	public double getPrize();
+	
+	public String getPrizeCmd();
+	public String getPrizeCmdDescription();
 }

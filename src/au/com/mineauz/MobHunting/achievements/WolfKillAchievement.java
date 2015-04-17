@@ -72,4 +72,14 @@ public class WolfKillAchievement implements ProgressAchievement, Listener
 		}
 		
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialFangMasterCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialFangMasterCmdDesc;
+	}
 }

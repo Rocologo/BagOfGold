@@ -38,4 +38,14 @@ public class TheHuntBegins implements Achievement, Listener
 	{
 		MobHunting.instance.getAchievements().awardAchievement(this, event.getPlayer());
 	}
+
+	@Override
+	public String getPrizeCmd() {
+		return MobHunting.config().specialHuntBeginsCmd;
+	}
+
+	@Override
+	public String getPrizeCmdDescription() {
+		return MobHunting.config().specialHuntBeginsCmdDesc;
+	}
 }
