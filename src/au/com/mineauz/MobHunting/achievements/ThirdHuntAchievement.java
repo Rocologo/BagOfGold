@@ -39,7 +39,7 @@ public class ThirdHuntAchievement implements ProgressAchievement
 	@Override
 	public int getMaxProgress()
 	{
-		return mType.getMax() / 2;
+		return mType.getMax() * 5;
 	}
 
 	@Override

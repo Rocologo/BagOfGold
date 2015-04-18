@@ -130,7 +130,7 @@ public class Messages
 				return charset;
 		}
 		
-		return null;
+		return "UTF-8";
 	}
 	
 	private static Map<String, String> loadLang(File file)
@@ -140,8 +140,12 @@ public class Messages
 		try
 		{
 			String encoding = detectEncoding(file);
-			if(encoding == null)
-				return null;
+			if(encoding == null) {
+				FileInputStream input = new FileInputStream(file);
+				MobHunting.instance.getLogger().warning("Could not detect encoding of lang file. Defaulting to UTF-8");
+				map = loadLang(input, "UTF-8");
+				input.close();	
+			}
 			
 			FileInputStream input = new FileInputStream(file);
 			map = loadLang(input, encoding);
@@ -159,22 +163,31 @@ public class Messages
 	public static void setLanguage(String lang)
 	{
 		File file = new File(MobHunting.instance.getDataFolder(), "lang/" + lang + ".lang"); //$NON-NLS-1$ //$NON-NLS-2$
-		if(!file.exists())
+		if(!file.exists()) {
+			MobHunting.instance.getLogger().severe("Language file does not exist.");
 			file = new File(MobHunting.instance.getDataFolder(), "lang/en_US.lang"); //$NON-NLS-1$
+		}
 		
-		if(file.exists())
+		if(file.exists()){
 			mTranslationTable = loadLang(file);
+		} else {
+			MobHunting.instance.getLogger().warning("Could not read the translation file:"+file.getName());
+		}
 
-		if(mTranslationTable == null)
+		if(mTranslationTable == null) {
 			mTranslationTable = new HashMap<String, String>();
+			MobHunting.instance.getLogger().warning("Creating new translation table.");
+		}
 	}
 	
 	private static String getStringInternal(String key)
 	{
 		String value = mTranslationTable.get(key);
 		
-		if(value == null)
+		if(value == null) {
+			MobHunting.instance.getLogger().warning("mTranslationTable has not key: "+key.toString());
 			throw new MissingResourceException("", "", key); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		
 		return value;
 	}
@@ -225,6 +238,8 @@ public class Messages
 		}
 		catch ( MissingResourceException e )
 		{
+			MobHunting.instance.getLogger().warning("Mobhunt could not find key: "+key.toString()
+					);
 			return key;
 		}
 	}

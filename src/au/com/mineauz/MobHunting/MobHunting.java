@@ -285,6 +285,9 @@ public class MobHunting extends JavaPlugin implements Listener
 			mAchievements.registerAchievement(new SecondHuntAchievement(type));
 			mAchievements.registerAchievement(new ThirdHuntAchievement(type));
 			mAchievements.registerAchievement(new FourthHuntAchievement(type));
+			mAchievements.registerAchievement(new FifthHuntAchievement(type));
+			mAchievements.registerAchievement(new SixthHuntAchievement(type));
+			mAchievements.registerAchievement(new SeventhHuntAchievement(type));
 		}
 		
 		mAchievements.initialize();
@@ -774,8 +777,11 @@ public class MobHunting extends JavaPlugin implements Listener
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	private void onMobDeath(EntityDeathEvent event)
 	{
-		if(event.getEntity() instanceof Player)
+
+		if(event.getEntity() instanceof Player) {
+			debug("Entity is instanceof player");
 			return;
+		}
 		
 		if(getBaseKillPrize(event.getEntity()) == 0)
 		{
@@ -807,6 +813,8 @@ public class MobHunting extends JavaPlugin implements Listener
 				killer = info.attacker;
 		}
 		
+		
+		
 		EntityDamageByEntityEvent lastDamageCause = null;
 		
 		if(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
@@ -823,12 +831,13 @@ public class MobHunting extends JavaPlugin implements Listener
 		{
 			info = new DamageInformation();
 			info.time = System.currentTimeMillis();
+			info.lastAttackTime=info.time;
 			info.attacker = killer;
 			info.attackerPosition = killer.getLocation();
 			info.usedWeapon = true;
 		}
 		
-		if((System.currentTimeMillis() - info.lastAttackTime > mConfig.killTimeout))
+		if((System.currentTimeMillis() - info.lastAttackTime) > mConfig.killTimeout*1000)
 		{
 			debug("KillBlocked %s: Last damage was too long ago", killer.getName());
 			return;
@@ -945,16 +954,12 @@ public class MobHunting extends JavaPlugin implements Listener
 				debug("KillBlocked %s: MobHuntKillEvent was cancelled", killer.getName());
 				return;
 			}
-			//debug("before new depositPlayer");
 			mEconomy.depositPlayer(killer, cash);
-			//TODO: depreciated, can be removed when tested
-			//mEconomy.depositPlayer(killer.getName(), cash);
-			//debug("after new depositPlayer");
 			
 			getDataStore().recordKill(killer, ExtendedMobType.fromEntity(event.getEntity()), event.getEntity().hasMetadata("MH:hasBonus")); //$NON-NLS-1$
 			if(info.assister != null)
 				onAssist(info.assister, killer, event.getEntity(), info.lastAssistTime);
-			
+			debug("Message: "+Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash)));
 			if(extraString.trim().isEmpty())
 				killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			else
@@ -966,7 +971,7 @@ public class MobHunting extends JavaPlugin implements Listener
 	
 	private void onAssist(Player player, Player killer, LivingEntity killed, long time)
 	{
-		if(!mConfig.enableAssists || (System.currentTimeMillis() - time) > mConfig.assistTimeout)
+		if(!mConfig.enableAssists || (System.currentTimeMillis() - time) > mConfig.assistTimeout*1000)
 			return;
 		
 		double multiplier = mConfig.assistMultiplier;
@@ -981,9 +986,6 @@ public class MobHunting extends JavaPlugin implements Listener
 		{
 			getDataStore().recordAssist(player, killer, ExtendedMobType.fromEntity(killed), killed.hasMetadata("MH:hasBonus")); //$NON-NLS-1$
 			mEconomy.depositPlayer(player, cash);
-			//TODO: depreciated, can be removed when tested
-			//mEconomy.depositPlayer(player.getName(), cash);
-
 			if(ks != 1.0)
 				player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			else
@@ -1046,6 +1048,7 @@ public class MobHunting extends JavaPlugin implements Listener
 			return mConfig.guardianPrize;
 		if(mob instanceof Endermite)
 			return mConfig.endermitePrize;
+		//TODO: can be removed
 		if(mob instanceof Rabbit) 
 			debug("RabbitType="+((Rabbit)mob).getRabbitType());
 		if(mob instanceof Rabbit && (((Rabbit) mob).getRabbitType())== Rabbit.Type.THE_KILLER_BUNNY)

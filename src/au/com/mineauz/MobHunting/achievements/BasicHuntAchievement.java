@@ -39,7 +39,7 @@ public class BasicHuntAchievement implements ProgressAchievement
 	@Override
 	public int getMaxProgress()
 	{
-		return mType.getMax() / 10;
+		return mType.getMax();
 	}
 
 	@Override

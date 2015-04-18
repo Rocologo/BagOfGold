@@ -1,9 +1,9 @@
 name: MobHunting
-version: 1.9.0
+version: 1.9.1
 
 main: au.com.mineauz.MobHunting.MobHunting
 
-author: Schmoller
+author: Rocologo
 
 depend: [Vault]
 softdepend: [Minigames, MyPet, WorldEdit]

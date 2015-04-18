@@ -38,7 +38,7 @@ public class SecondHuntAchievement implements ProgressAchievement
 	@Override
 	public int getMaxProgress()
 	{
-		return mType.getMax() / 4;
+		return (int) Math.round(mType.getMax() * 2.5);
 	}
 
 	@Override

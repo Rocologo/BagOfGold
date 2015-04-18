@@ -37,7 +37,14 @@ achievements.hunter.2.name=Amature ${mob} Hunter
 achievements.hunter.3.description=Hunt ${count} ${mob}s
 achievements.hunter.3.name=Apprentice ${mob} Hunter
 achievements.hunter.4.description=Hunt ${count} ${mob}s
-achievements.hunter.4.name=Master ${mob} Hunter
+achievements.hunter.4.name=Expert ${mob} Hunter
+achievements.hunter.5.description=Hunt ${count} ${mob}s
+achievements.hunter.5.name=Master ${mob} Hunter
+achievements.hunter.6.description=Hunt ${count} ${mob}s
+achievements.hunter.6.name=Grand Master ${mob} Hunter
+achievements.hunter.7.description=Hunt ${count} ${mob}s
+achievements.hunter.7.name=President Master ${mob} Hunter
+
 achievements.infighting.description=Get a skeleton to kill another skeleton
 achievements.infighting.name=Infighting
 achievements.itsmagic.description=Kill a mob with a potion

@@ -44,7 +44,7 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener
 	@Override
 	public int getMaxProgress()
 	{
-		return mType.getMax();
+		return mType.getMax()*10;
 	}
 
 	@Override

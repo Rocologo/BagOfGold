@@ -58,25 +58,24 @@ public class SQLiteDataStore extends DatabaseDataStore
 		} catch (SQLException e) {
 		}
 		
-		performTableMigrate(connection);
-		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayersNew (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
-		
+		// Create new empty tables if they do not exist
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
 		String dataString = ""; //$NON-NLS-1$
 		for(StatType type : StatType.values())
 			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))"); //$NON-NLS-1$
 		
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_PlayersNew(PLAYER_ID)" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_PlayersNew(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_PlayersNew(PLAYER_ID))"); //$NON-NLS-1$
-		
+		// Setup Database triggers
 		setupTrigger(connection);
 		
+		//performTableMigrate(connection);
+				
 		create.close();
-		
 		connection.commit();
 		
 		performUUIDMigrate(connection);
@@ -137,11 +136,11 @@ public class SQLiteDataStore extends DatabaseDataStore
 	@Override
 	protected void setupStatements(Connection connection) throws SQLException
 	{
-		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO mh_PlayersNew VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_PlayersNew));"); //$NON-NLS-1$
-		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM mh_PlayersNew WHERE UUID=?;"); //$NON-NLS-1$
-		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM mh_PlayersNew WHERE UUID IN (?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM mh_PlayersNew WHERE UUID IN (?,?,?,?,?);"); //$NON-NLS-1$
-		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM mh_PlayersNew WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
+		mAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO mh_Players VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players));"); //$NON-NLS-1$
+		mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;"); //$NON-NLS-1$
+		mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);"); //$NON-NLS-1$
+		mGetPlayerStatement[3] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);"); //$NON-NLS-1$
 		
 		mRecordAchievementStatement = connection.prepareStatement("INSERT OR REPLACE INTO mh_Achievements VALUES(?,?,?,?);"); //$NON-NLS-1$
 		
@@ -149,8 +148,8 @@ public class SQLiteDataStore extends DatabaseDataStore
 		
 		mLoadAchievementsStatement = connection.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;"); //$NON-NLS-1$
 		
-		mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_PlayersNew WHERE NAME LIKE ?"); //$NON-NLS-1$
-		mUpdatePlayerName = connection.prepareStatement("UPDATE mh_PlayersNew SET NAME=? WHERE UUID=?"); //$NON-NLS-1$
+		mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME LIKE ?"); //$NON-NLS-1$
+		mUpdatePlayerName = connection.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -219,7 +218,7 @@ public class SQLiteDataStore extends DatabaseDataStore
 			}
 			
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", mh_PlayersNew.UUID from " + period.getTable() + " inner join PlayersNew using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", mh_Players.UUID from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 			
 			while(results.next())
@@ -239,40 +238,36 @@ public class SQLiteDataStore extends DatabaseDataStore
 		Statement statement = connection.createStatement();
 		try
 		{
-			ResultSet rs = statement.executeQuery("SELECT * from mh_Players LIMIT 0");
+			ResultSet rs = statement.executeQuery("SELECT UUID from mh_Players LIMIT 0");
 			rs.close();
-
-		}
-		catch(SQLException e)
-		{
 			statement.close();
 			return; // Tables will be fine
 		}
+		catch(SQLException e)
+		{
+		}
 		
+		statement.executeUpdate("ALTER TABLE mh_Players RENAME TO mh_PlayersOLD");
 		statement.executeUpdate("ALTER TABLE mh_Achievements RENAME TO mh_AchievementsOLD");
 		statement.executeUpdate("ALTER TABLE mh_Daily RENAME TO mh_DailyOLD");
 		statement.executeUpdate("ALTER TABLE mh_Weekly RENAME TO mh_WeeklyOLD");
 		statement.executeUpdate("ALTER TABLE mh_Monthly RENAME TO mh_MonthlyOLD");
 		statement.executeUpdate("ALTER TABLE mh_Yearly RENAME TO mh_YearlyOLD");
 		statement.executeUpdate("ALTER TABLE mh_AllTime RENAME TO mh_AllTimeOLD");
-		//statement.close();
-	}
-	
-	private void finishTableMigrate(Statement statement) throws SQLException
-	{
-		//Statement statement = connection.createStatement();
-		try
-		{
-			ResultSet rs = statement.executeQuery("SELECT * from mh_Players LIMIT 0");
-			rs.close();
-
-		}
-		catch(SQLException e)
-		{
-			statement.close();
-			return; // Tables will be fine
-		}
 		
+		// Create new empty tables if they do not exist
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
+		String dataString = ""; //$NON-NLS-1$
+		for(StatType type : StatType.values())
+			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; //$NON-NLS-1$ //$NON-NLS-2$
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))"); //$NON-NLS-1$
+		
+		statement.executeUpdate("INSERT INTO mh_Players SELECT * FROM mh_PlayersOLD");
 		statement.executeUpdate("INSERT INTO mh_Achievements SELECT * FROM mh_AchievementsOLD");
 		statement.executeUpdate("INSERT INTO mh_Daily SELECT * FROM mh_DailyOLD");
 		statement.executeUpdate("INSERT INTO mh_Weekly SELECT * FROM mh_WeeklyOLD");
@@ -280,12 +275,14 @@ public class SQLiteDataStore extends DatabaseDataStore
 		statement.executeUpdate("INSERT INTO mh_Yearly SELECT * FROM mh_YearlyOLD");
 		statement.executeUpdate("INSERT INTO mh_AllTime SELECT * FROM mh_AllTimeOLD");
 		
+		statement.executeUpdate("DROP TABLE mh_Players");
 		statement.executeUpdate("DROP TABLE mh_AchievementsOLD");
 		statement.executeUpdate("DROP TABLE mh_DailyOLD");
 		statement.executeUpdate("DROP TABLE mh_WeeklyOLD");
 		statement.executeUpdate("DROP TABLE mh_MonthlyOLD");
 		statement.executeUpdate("DROP TABLE mh_YearlyOLD");
 		statement.executeUpdate("DROP TABLE mh_AllTimeOLD");
+		statement.close();
 	}
 	
 	private void performUUIDMigrate(Connection connection) throws SQLException
@@ -293,22 +290,26 @@ public class SQLiteDataStore extends DatabaseDataStore
 		Statement statement = connection.createStatement();
 		try
 		{
-			ResultSet rs = statement.executeQuery("SELECT * from mh_Players LIMIT 0");
+			ResultSet rs = statement.executeQuery("SELECT UUID from mh_Players LIMIT 0");
 			rs.close();
-		}
-		catch(SQLException e)
-		{
 			statement.close();
 			return; // UUIDs are in place
 		}
+		catch(SQLException e)
+		{
+			performTableMigrate(connection);
+		}
 		
 		System.out.println("*** Migrating MobHunting Database to UUIDs ***");
-		statement.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayersNew (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)");
 		
+		// Add missing columns
+		performTableMigrate(connection);
+		
+		// Get UUID and update table
 		ResultSet rs = statement.executeQuery("select `NAME`,`PLAYER_ID` from `mh_Players`");
 		UUIDHelper.initialize();
 		
-		PreparedStatement insert = connection.prepareStatement("INSERT INTO mh_PlayersNew VALUES(?,?,?)");
+		PreparedStatement insert = connection.prepareStatement("INSERT INTO mh_Players VALUES(?,?,?)");
 		StringBuilder failString = new StringBuilder();
 		int failCount = 0;
 		while(rs.next())
@@ -343,10 +344,6 @@ public class SQLiteDataStore extends DatabaseDataStore
 		
 		insert.executeBatch();
 		insert.close();
-		
-		statement.executeUpdate("drop table mh_PlayersNew");
-		
-		finishTableMigrate(statement);
 		
 		System.out.println("*** Player UUID migration complete ***");
 		

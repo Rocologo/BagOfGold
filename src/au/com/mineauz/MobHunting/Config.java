@@ -18,7 +18,7 @@ public class Config extends AutoConfig
 		setCategoryComment("bonus", "These are bonus multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them."); //$NON-NLS-1$ //$NON-NLS-2$
 		setCategoryComment("penalty", "These are penalty multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them."); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill. \nFor each achievment you can run a console command to give the player a reward. \nYou can you the following variables {player},{world}.\nAn example could be to give the player permission to fly \nfor 1 hour or use give command to the player items.\nYou can also specify the message send to the player."); //$NON-NLS-1$ //$NON-NLS-2$
+		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill. \nFor each achievment you can run a console command to give the player a reward. \nYou can you the following variables {player},{world}.\nAn example could be to give the player permission to fly \nfor 1 hour or use give command to the player items.\nYou can also specify the message send to the player.\nYou can run many console commands on each line, each command\nmust be separated by |"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 	}
 	
@@ -182,6 +182,25 @@ public class Config extends AutoConfig
 	public String specialHunter4Cmd = "";
 	@ConfigField(name="hunter4-cmd-desc", category="special")
 	public String specialHunter4CmdDesc = "";
+	@ConfigField(name="hunter5", category="special")
+	public double specialHunter5 = 2000;
+	@ConfigField(name="hunter5-cmd", category="special")
+	public String specialHunter5Cmd = "";
+	@ConfigField(name="hunter5-cmd-desc", category="special")
+	public String specialHunter5CmdDesc = "";
+	@ConfigField(name="hunter6", category="special")
+	public double specialHunter6 = 4000;
+	@ConfigField(name="hunter6-cmd", category="special")
+	public String specialHunter6Cmd = "";
+	@ConfigField(name="hunter6-cmd-desc", category="special")
+	public String specialHunter6CmdDesc = "";
+	@ConfigField(name="hunter7", category="special")
+	public double specialHunter7 = 8000;
+	@ConfigField(name="hunter7-cmd", category="special")
+	public String specialHunter7Cmd = "";
+	@ConfigField(name="hunter7-cmd-desc", category="special")
+	public String specialHunter7CmdDesc = "";
+
 	
 	@ConfigField(name="level1", category="killstreak")
 	public int killstreakLevel1 = 5;

@@ -96,21 +96,22 @@ public class MySQLDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 		}
 
+		// Create new empty tables if they do not exist
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID CHAR(40) PRIMARY KEY, NAME CHAR(20), PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, KEY PLAYER_ID (PLAYER_ID))"); //$NON-NLS-1$
-		
 		String dataString = ""; //$NON-NLS-1$
 		for (StatType type : StatType.values())
 			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; //$NON-NLS-1$ //$NON-NLS-2$
-
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(7) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly (ID CHAR(4) NOT NULL, PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES Players(PLAYER_ID) ON DELETE CASCADE, ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))"); //$NON-NLS-1$
 		
+		// Setup Database triggers
 		setupTrigger(connection);
+		
+		//performTableMigrate(connection);
 
 		create.close();
 		connection.commit();
@@ -260,10 +261,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 
 		System.out.println("*** Migrating MobHunting Database to UUIDs ***");
+
+		// Add missing columns
 		Statement statement = connection.createStatement();
 		statement
 				.executeUpdate("alter table `mh_Players` add column `UUID` CHAR(40) default '**UNSPEC**' NOT NULL first");
 
+		// Get UUID and update table
 		ResultSet rs = statement.executeQuery("select `NAME` from `mh_Players`");
 		UUIDHelper.initialize();
 

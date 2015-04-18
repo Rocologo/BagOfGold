@@ -8,27 +8,27 @@ import org.bukkit.entity.Skeleton.SkeletonType;
 
 public enum ExtendedMobType
 {
-	Slime(EntityType.SLIME, 1000),
-	MagmaCube(EntityType.MAGMA_CUBE, 1000),
-	Ghast(EntityType.GHAST, 800),
-	Blaze(EntityType.BLAZE, 800),
-	Creeper(EntityType.CREEPER, 1000),
-	Enderman(EntityType.ENDERMAN, 1000),
-	Silverfish(EntityType.SILVERFISH, 1000),
-	Skeleton(EntityType.SKELETON, 1000),
-	WitherSkeleton(EntityType.SKELETON, 800),
-	Spider(EntityType.SPIDER, 1000),
-	CaveSpider(EntityType.CAVE_SPIDER, 1000),
-	Witch(EntityType.WITCH, 800),
-	Wither(EntityType.WITHER, 200),
-	Zombie(EntityType.ZOMBIE, 1000),
-	ZombiePigman(EntityType.PIG_ZOMBIE, 1000),
-	Endermite(EntityType.ENDERMITE,1000),
+	Slime(EntityType.SLIME, 100),
+	MagmaCube(EntityType.MAGMA_CUBE, 100),
+	Ghast(EntityType.GHAST, 80),
+	Blaze(EntityType.BLAZE, 80),
+	Creeper(EntityType.CREEPER, 100),
+	Enderman(EntityType.ENDERMAN, 100),
+	Silverfish(EntityType.SILVERFISH, 100),
+	Skeleton(EntityType.SKELETON, 100),
+	WitherSkeleton(EntityType.SKELETON, 80),
+	Spider(EntityType.SPIDER, 100),
+	CaveSpider(EntityType.CAVE_SPIDER, 100),
+	Witch(EntityType.WITCH, 80),
+	Wither(EntityType.WITHER, 20),
+	Zombie(EntityType.ZOMBIE, 100),
+	ZombiePigman(EntityType.PIG_ZOMBIE, 100),
+	Endermite(EntityType.ENDERMITE,100),
 	// Giant is unsupported by in the original game and Giants can only be spawnwed through plugins.
-	Giant(EntityType.GIANT, 1000),
-	Guardian(EntityType.GUARDIAN,1000),
-	KillerRabbit(EntityType.RABBIT,1000),
-	BonusMob(EntityType.UNKNOWN, 200);
+	Giant(EntityType.GIANT, 100),
+	Guardian(EntityType.GUARDIAN,100),
+	KillerRabbit(EntityType.RABBIT,100),
+	BonusMob(EntityType.UNKNOWN, 20);
 	
 	private EntityType mType;
 	private int mMax;
