@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
-	<version>1.9.1</version>
+	<version>1.9.2</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/bukkit-plugins/mobhunting/</url>
 	<description> Here is the description....</description>
@@ -102,7 +102,8 @@
 		<!-- citizens repository -->
 		<repository>
 			<id>citizens-repo</id>
-			<url>http://repo.citizensnpcs.co/</url>
+			<url>https://github.com/CitizensDev/CitizensAPI</url>
+			<!--  <url>http://repo.citizensnpcs.co/</url>   -->
 		</repository>
 
 		<!-- minigames repository 
@@ -122,18 +123,24 @@
 			<url>http://ci.milkbowl.net/plugin/repository/everything/</url>
 		</repository>
 
-		<!-- MCStats Repository -->
-		<repository>
+  		<!-- MCStats Repository -->
+<!-- 		<repository>
 			<id>metrics-repo</id>
 			<url>http://repo.mcstats.org/content/repositories/releases/</url>
 		</repository>
-
+ -->
 		<!-- minigamesAPI repository -->
 		<repository>
 			<id>MinigamesAPI-Repo</id>
 			<name>MinigamesAPI Repository</name>
 			<url>http://www.instancedev.com/bukkitdev/MinigamesAPI/maven/</url>
 		</repository>
+		
+		<!-- MCStats  -->
+        <repository>
+            <id>Plugin Metrics</id>
+            <url>http://repo.mcstats.org/content/repositories/public</url>
+        </repository>
 
 		<!-- other repositories -->
 		<repository>
@@ -203,14 +210,21 @@
 			<artifactId>worldedit</artifactId>
 			<version>${worldedit.version}</version>
 		</dependency>
-
-		<dependency>
+<!-- 		
+        <dependency>
 			<groupId>org.mcstats.bukkit</groupId>
 			<artifactId>metrics-lite</artifactId>
 			<version>${metrics-lite.version}</version>
 			<scope>compile</scope>
 		</dependency>
-
+-->
+        <dependency>
+            <groupId>org.mcstats.bukkit</groupId>
+            <artifactId>metrics</artifactId>
+            <version>R7</version>
+            <scope>compile</scope>
+        </dependency>
+		
 		<dependency>
 			<groupId>de.keyle</groupId>
 			<artifactId>mypet</artifactId>
@@ -218,6 +232,9 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+		
+		
+        
 	</dependencies>
 
 	<build>
@@ -238,6 +255,7 @@
 		</resources>
 
 		<sourceDirectory>src</sourceDirectory>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -248,6 +266,32 @@
 					<target>${javacompiler.version}</target>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.5</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>org.mcstats.*:*</include>
+                        </includes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.mcstats</pattern>
+                            <shadedPattern>me.author.pluginname</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 

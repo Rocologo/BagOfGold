@@ -48,6 +48,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.mcstats.Metrics;
 
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
@@ -208,6 +209,7 @@ public class MobHunting extends JavaPlugin implements Listener
 		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
 		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
 		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit"); //$NON-NLS-1$
+		//TODO: Add compatability to Citizens or MythicMob 
 		
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
 		getCommand("mobhunt").setExecutor(cmd); //$NON-NLS-1$
@@ -240,6 +242,17 @@ public class MobHunting extends JavaPlugin implements Listener
 		mLeaderboards.initialize();
 		
 		mInitialized = true;
+		
+		try {
+	        Metrics metrics = new Metrics(this);
+	        metrics.start();
+	        debug("[MH] Metrics started");
+	    } catch (IOException e) {
+	    	debug("[MH] Failed to start Metrics!");
+	        // Failed to submit the stats :-(
+	    }
+		
+		
 	}
 	
 	@Override
