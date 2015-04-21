@@ -270,6 +270,9 @@ public class Config extends AutoConfig
 	@ConfigField(name="kill-debug", category="general", comment="If kills are not being registered in mob hunting. Enable this to see why they arent")
 	public boolean killDebug = false;
 	
+	@ConfigField(name="update-check", category="general", comment="Check if there is a new version of the plugin available.")
+	public boolean updateCheck = true;
+	
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException
 	{

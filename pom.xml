@@ -3,17 +3,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
-	<version>1.9.2</version>
+	<packaging>jar</packaging>
+	<version>1.9.3</version>
 	<name>MobHunting</name>
-	<url>http://dev.bukkit.org/bukkit-plugins/mobhunting/</url>
-	<description> Here is the description....</description>
+	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
+	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
 		<bukkit.version>1.8.3-R0.1-SNAPSHOT</bukkit.version>
 		<spigotmc.version>1.8.3-R0.1-SNAPSHOT</spigotmc.version>
-		<metrics-lite.version>R7</metrics-lite.version>
-		<mypet.version>1.2.0</mypet.version>
+		<metrics.version>R7</metrics.version>
+		<mypet.version>1.2.2-SNAPSHOT</mypet.version>
 		<vault.version>1.5.3</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
 		<worldedit.version>6.0.0-SNAPSHOT</worldedit.version>
@@ -25,11 +26,6 @@
 		<url>https://www.lindegaard.tk</url>
 	</organization>
 
-	<!-- <distributionManagement> <repository> <id>pub-repo</id> <name>Public 
-		Releases</name> <url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url> 
-		</repository> <snapshotRepository> <id>pub-repo</id> <name>Public Snapshots</name> 
-		<url>http://nexus.theyeticave.net/content/repositories/pub_snapshots/</url> 
-		</snapshotRepository> </distributionManagement> -->
 	<repositories>
 		<repository>
 			<id>pub-repo</id>
@@ -53,7 +49,6 @@
 		<repository>
 			<id>addstar-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
-			
 		</repository>
 		<repository>
 			<id>addstar-snapshot-repo</id>
@@ -80,6 +75,10 @@
 
 		<!-- mypet repository -->
 		<repository>
+			<id>mypet-repo1</id>
+			<url>http://nexus.keyle.de/content/repositories/</url>
+		</repository>
+		<repository>
 			<id>mypet-repo</id>
 			<url>http://nexus.keyle.de/content/groups/public/</url>
 			<snapshots>
@@ -103,67 +102,31 @@
 		<repository>
 			<id>citizens-repo</id>
 			<url>https://github.com/CitizensDev/CitizensAPI</url>
-			<!--  <url>http://repo.citizensnpcs.co/</url>   -->
+			<!-- <url>http://repo.citizensnpcs.co/</url> -->
 		</repository>
 
-		<!-- minigames repository 
-		<repository>
-			<id>minigames-repo</id>
-			<url>https:github.com/Razz0991/Minigames/</url>
-		</repository>
-		-->
-		
 		<!-- vault repository -->
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
 		</repository>
-		<repository>
-			<id>milkbowl-repo</id>
-			<url>http://ci.milkbowl.net/plugin/repository/everything/</url>
-		</repository>
 
-  		<!-- MCStats Repository -->
-<!-- 		<repository>
-			<id>metrics-repo</id>
-			<url>http://repo.mcstats.org/content/repositories/releases/</url>
-		</repository>
- -->
 		<!-- minigamesAPI repository -->
 		<repository>
 			<id>MinigamesAPI-Repo</id>
 			<name>MinigamesAPI Repository</name>
 			<url>http://www.instancedev.com/bukkitdev/MinigamesAPI/maven/</url>
 		</repository>
-		
-		<!-- MCStats  -->
-        <repository>
-            <id>Plugin Metrics</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
 
-		<!-- other repositories -->
+		<!-- MCStats -->
 		<repository>
-			<id>oss-sonartype-repo</id>
-			<url>https://oss.sonatype.org/content/groups/public/</url>
-		</repository>
-
-		<!-- Outdated -->
-		<repository>
-			<id>zml-repo</id>
-			<url>http://files.zachsthings.com/repo/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
+			<id>Plugin Metrics</id>
+			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
 
 	</repositories>
 
 	<dependencies>
-		<!-- Bukkit -->
 
 		<!-- CraftBukkit Dependency for experimental features -->
 		<dependency>
@@ -172,6 +135,7 @@
 			<version>${bukkit.version}</version>
 		</dependency>
 
+		<!-- SpigotMC -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
@@ -203,28 +167,23 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
 
+		<!-- WorldEdit -->
 		<dependency>
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldedit</artifactId>
 			<version>${worldedit.version}</version>
 		</dependency>
-<!-- 		
-        <dependency>
+
+		<!-- MCStats / Plugin Metrics -->
+		<dependency>
 			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics-lite</artifactId>
-			<version>${metrics-lite.version}</version>
+			<artifactId>metrics</artifactId>
+			<version>${metrics.version}</version>
 			<scope>compile</scope>
 		</dependency>
--->
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics</artifactId>
-            <version>R7</version>
-            <scope>compile</scope>
-        </dependency>
-		
+
+		<!-- MyPet -->
 		<dependency>
 			<groupId>de.keyle</groupId>
 			<artifactId>mypet</artifactId>
@@ -232,9 +191,6 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		
-		
-        
 	</dependencies>
 
 	<build>
@@ -255,7 +211,7 @@
 		</resources>
 
 		<sourceDirectory>src</sourceDirectory>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -267,31 +223,31 @@
 				</configuration>
 			</plugin>
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
-                <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>org.mcstats.*:*</include>
-                        </includes>
-                    </artifactSet>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.mcstats</pattern>
-                            <shadedPattern>me.author.pluginname</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<artifactSet>
+						<includes>
+							<include>org.mcstats.*:*</include>
+						</includes>
+					</artifactSet>
+					<relocations>
+						<relocation>
+							<pattern>org.mcstats</pattern>
+							<shadedPattern>au.com.mineauz.MobHunting</shadedPattern>
+						</relocation>
+					</relocations>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
