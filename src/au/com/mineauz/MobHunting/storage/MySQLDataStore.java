@@ -25,7 +25,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public void saveStats(Set<StatStore> stats) throws DataStoreException {
 		try {
-			//System.out.println("*** MobHunting saving stats to Database ***");
+			MobHunting.debug("*** MobHunting saving stats to Database ***","");
 			Statement statement = mConnection.createStatement();
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
@@ -51,8 +51,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()), stat.amount)); //$NON-NLS-1$
 
 			statement.executeBatch();
-
-			//statement.close();
+			statement.close();
 
 			mConnection.commit();
 		} catch (SQLException e) {
@@ -212,6 +211,17 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
+		MobHunting.debug("Testing if database connection is open.", "");
+		try {
+			if (mConnection.isClosed()){
+				MobHunting.debug("ERROR - the connection was  closed, trying to reestablish connection", "");
+				mConnection=null;
+				mConnection = setupConnection();
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			String id;
 			switch (period) {
@@ -242,6 +252,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 						.fromString(results.getString(2))), results.getInt(1)));
 
 			results.close();
+			statement.close();
 			return list;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);

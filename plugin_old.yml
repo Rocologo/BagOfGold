@@ -1,6 +1,6 @@
 name: MobHunting
 main: au.com.mineauz.MobHunting.MobHunting
-version: 1.9.3
+version: 1.9.4
 description: A Mobhunting plugin
 author: Rocologo
 depend: [Vault]

@@ -232,6 +232,16 @@ public abstract class DatabaseDataStore implements DataStore
 	@Override
 	public Set<AchievementStore> loadAchievements( OfflinePlayer player ) throws DataStoreException
 	{
+		try {
+			if (mConnection.isClosed()){
+				mConnection = setupConnection();
+			}
+		} catch (SQLException e1) {
+			MobHunting.debug("ERROR in loadAchievements! This should not happen!", "");
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		try
 		{
 			int playerId = getPlayerId(player);

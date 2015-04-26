@@ -1,0 +1,62 @@
+name: MobHunting
+main: au.com.mineauz.MobHunting.MobHunting
+version: ${version}
+description: A Mobhunting plugin
+author: Rocologo
+depend: [Vault]
+softdepend: [Minigames, MyPet, WorldEdit]
+
+commands:
+  mobhunt:
+    description: Allows you to configure mob hunt
+    permission: mobhunting.cmd
+    aliases: [mob,mh,hunt]
+    usage: /<command> reload
+
+permissions:
+  mobhunting.enable:
+    description: Allows mobhunting to be enabled for a player
+    default: true
+  mobhunting.cmd:
+    description: Allows a player to use the mobhunt command
+    default: true
+  mobhunting.reload:
+    description: Allows a player to reload the config
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.listachievements:
+    description: Allows a player to see all their achievements
+    default: true
+    children:
+      mobhunting.cmd: true    
+  mobhunting.listachievements.other:
+    description: Allows a player to see another players achievements
+    default: op
+    children:
+      mobhunting.listachievements: true
+  mobhunting.checkgrinding:
+    description: Allows a player to check whether the region they are in is a known grinding area 
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.cleargrinding:
+    description: Allows a player to remove grinding areas 
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.top:
+    description: Allows a player to check the top player stats
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.leaderboard:
+    description: Allows a player to create, edit, and delete leaderboards
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.select:
+    description: Allows you to select points for leaderboards if WorldEdit is not installed
+    default: op
+    children:
+      mobhunting.cmd: true

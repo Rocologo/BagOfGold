@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9.3</version>
+	<version>1.9.4</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -25,6 +25,73 @@
 		<name>Rocologo</name>
 		<url>https://www.lindegaard.tk</url>
 	</organization>
+
+	<build>
+		<defaultGoal>clean package install</defaultGoal>
+		<finalName>${project.name}-${project.version}</finalName>
+		<sourceDirectory>${basedir}/src</sourceDirectory>
+		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>plugin.yml</include>
+				</includes>
+			</resource>
+			<resource>
+				<targetPath>lang</targetPath>
+				<filtering>true</filtering>
+				<directory>lang</directory>
+			</resource>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/resources</directory>
+				<includes>
+					<include>*.yml</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- <version>2.3.2</version> -->
+				<configuration>
+					<source>${javacompiler.version}</source>
+					<target>${javacompiler.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<artifactSet>
+						<includes>
+							<include>org.mcstats.*:*</include>
+						</includes>
+					</artifactSet>
+					<relocations>
+						<relocation>
+							<pattern>org.mcstats</pattern>
+							<shadedPattern>au.com.mineauz.MobHunting</shadedPattern>
+						</relocation>
+					</relocations>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<repositories>
 		<repository>
@@ -144,7 +211,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Used for Economy interop -->
+		<!-- Used for Vault / -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
@@ -192,63 +259,5 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<resources>
-			<resource>
-				<targetPath>.</targetPath>
-				<filtering>true</filtering>
-				<directory>${basedir}/.</directory>
-				<includes>
-					<include>plugin.yml</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>lang</directory>
-				<filtering>true</filtering>
-				<targetPath>lang</targetPath>
-			</resource>
-		</resources>
-
-		<sourceDirectory>src</sourceDirectory>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<!-- <version>2.3.2</version> -->
-				<configuration>
-					<source>${javacompiler.version}</source>
-					<target>${javacompiler.version}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.5</version>
-				<configuration>
-					<artifactSet>
-						<includes>
-							<include>org.mcstats.*:*</include>
-						</includes>
-					</artifactSet>
-					<relocations>
-						<relocation>
-							<pattern>org.mcstats</pattern>
-							<shadedPattern>au.com.mineauz.MobHunting</shadedPattern>
-						</relocation>
-					</relocations>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>
