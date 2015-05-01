@@ -8,6 +8,9 @@ import org.bukkit.entity.Skeleton.SkeletonType;
 
 public enum ExtendedMobType
 {
+	// Giant is unsupported by in the original game and Giants can only be spawnwed through plugins.
+	Giant(EntityType.GIANT, 100),
+	// Minecraft 1.7
 	Slime(EntityType.SLIME, 100),
 	MagmaCube(EntityType.MAGMA_CUBE, 100),
 	Ghast(EntityType.GHAST, 80),
@@ -23,12 +26,12 @@ public enum ExtendedMobType
 	Wither(EntityType.WITHER, 20),
 	Zombie(EntityType.ZOMBIE, 100),
 	ZombiePigman(EntityType.PIG_ZOMBIE, 100),
+	BonusMob(EntityType.UNKNOWN, 20),
+	// Minecraft 1.8 Entity's
 	Endermite(EntityType.ENDERMITE,100),
-	// Giant is unsupported by in the original game and Giants can only be spawnwed through plugins.
-	Giant(EntityType.GIANT, 100),
 	Guardian(EntityType.GUARDIAN,100),
 	KillerRabbit(EntityType.RABBIT,100),
-	BonusMob(EntityType.UNKNOWN, 20);
+	PvpPlayer(EntityType.PLAYER,100);
 	
 	private EntityType mType;
 	private int mMax;

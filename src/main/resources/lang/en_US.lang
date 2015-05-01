@@ -175,6 +175,7 @@ mobs.Giant.name.Giant
 mobs.Guardian.name=Guardian
 mobs.KillerRabbit.name=Killer Rabbit
 mobs.BonusMob.name=Bonus Mob
+mobs.PvpPlayer.name=PvP Player
 
 leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick
 leaderboard.exists=The leaderboard ${id} already exists

@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9.4</version>
+	<version>1.9.5</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -34,7 +34,7 @@
 			<resource>
 				<targetPath>.</targetPath>
 				<filtering>true</filtering>
-				<directory>${basedir}</directory>
+				<directory>${basedir}/src/main/resources</directory>
 				<includes>
 					<include>plugin.yml</include>
 				</includes>
@@ -44,21 +44,13 @@
 				<filtering>true</filtering>
 				<directory>lang</directory>
 			</resource>
-			<resource>
-				<targetPath>.</targetPath>
-				<filtering>true</filtering>
-				<directory>${basedir}/src/resources</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-			</resource>
 		</resources>
 
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<!-- <version>2.3.2</version> -->
+				<version>2.3.2</version>
 				<configuration>
 					<source>${javacompiler.version}</source>
 					<target>${javacompiler.version}</target>
@@ -94,12 +86,6 @@
 	</build>
 
 	<repositories>
-		<repository>
-			<id>pub-repo</id>
-			<name>Public Releases</name>
-			<url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
-		</repository>
-
 		<!-- Repository for Bukkit -->
 		<repository>
 			<id>bukkit-repo</id>
@@ -110,6 +96,12 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+
+		<!-- Vault repository -->
+		<repository>
+			<id>vault-repo</id>
+			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
 		</repository>
 
 		<!-- Addstar repo -->
@@ -172,12 +164,6 @@
 			<!-- <url>http://repo.citizensnpcs.co/</url> -->
 		</repository>
 
-		<!-- vault repository -->
-		<repository>
-			<id>vault-repo</id>
-			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-		</repository>
-
 		<!-- minigamesAPI repository -->
 		<repository>
 			<id>MinigamesAPI-Repo</id>
@@ -190,11 +176,9 @@
 			<id>Plugin Metrics</id>
 			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
-
 	</repositories>
 
 	<dependencies>
-
 		<!-- CraftBukkit Dependency for experimental features -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -211,7 +195,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Used for Vault / -->
+		<!-- Vault / -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
@@ -258,6 +242,7 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
 
 </project>

@@ -25,13 +25,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public void saveStats(Set<StatStore> stats) throws DataStoreException {
 		try {
-			MobHunting.debug("*** MobHunting saving stats to Database ***","");
+			MobHunting.debug("Saving stats to Database.","");
 			Statement statement = mConnection.createStatement();
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
 			for (StatStore stat : stats)
 				names.add(stat.player);
-
 			Map<UUID, Integer> ids = getPlayerIds(names);
 
 			// Make sure the stats are available for each player
@@ -41,7 +40,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 						ids.get(player.getUniqueId()));
 				mAddPlayerStatsStatement.addBatch();
 			}
-
 			mAddPlayerStatsStatement.executeBatch();
 
 			// Now add each of the stats
@@ -49,12 +47,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 				statement
 						.addBatch(String
 								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()), stat.amount)); //$NON-NLS-1$
-
 			statement.executeBatch();
 			statement.close();
-
 			mConnection.commit();
+			MobHunting.debug("Saved.","");
 		} catch (SQLException e) {
+			MobHunting.debug("Performing Rollback", "");
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -211,17 +209,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
-		MobHunting.debug("Testing if database connection is open.", "");
-		try {
-			if (mConnection.isClosed()){
-				MobHunting.debug("ERROR - the connection was  closed, trying to reestablish connection", "");
-				mConnection=null;
-				mConnection = setupConnection();
-			}
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		try {
 			String id;
 			switch (period) {
@@ -334,13 +321,37 @@ public class MySQLDataStore extends DatabaseDataStore {
 		Statement statement = connection.createStatement();
 		try {
 			ResultSet rs = statement
+					.executeQuery("SELECT PvpPlayer_kill from `mh_Daily` LIMIT 0");
+			rs.close();
+			statement.close();
+			return; // PvpPlayer row exits
+
+		} catch (SQLException e) {
+
+		System.out.println("*** Adding new PvpPlayer to MobHunting Database ***");
+		
+		statement.executeUpdate("alter table `mh_Daily` add column `PvpPlayer_kill`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_Daily` add column `PvpPlayer_assist`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_Weekly` add column `PvpPlayer_kill`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_Weekly` add column `PvpPlayer_assist`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_Monthly` add column `PvpPlayer_kill`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_Monthly` add column `PvpPlayer_assist`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_Yearly` add column `PvpPlayer_kill`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_Yearly` add column `PvpPlayer_assist`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_AllTime` add column `PvpPlayer_kill`  INTEGER NOT NULL DEFAULT 0");
+		statement.executeUpdate("alter table `mh_AllTime` add column `PvpPlayer_assist`  INTEGER NOT NULL DEFAULT 0");
+		
+		System.out.println("*** Adding new PvpPlayer complete ***");
+		
+		}
+		try {
+			ResultSet rs = statement
 					.executeQuery("SELECT Giant_kill from `mh_Daily` LIMIT 0");
 			rs.close();
 			statement.close();
 			return; // Giant_Kill row exits
 
 		} catch (SQLException e) {
-		}
 
 		System.out.println("*** Adding new Mobs to MobHunting Database ***");
 		
@@ -393,6 +404,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 		setupTrigger(connection);
 
 		System.out.println("*** Adding new Mobs complete ***");
+		
+		}
+
 
 		statement.close();
 		connection.commit();

@@ -51,6 +51,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 
+import com.sk89q.worldedit.internal.expression.runtime.Return;
+
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
@@ -105,8 +107,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@Override
 	public void onLoad() {
-		
-		
 
 	}
 
@@ -264,7 +264,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 							if (updateCheck.isSuccess()) {
 								checkUpdatesNotify(null);
 							} else {
-								instance.getLogger().info("[MobHunting]No update.");
+								instance.getLogger().info(
+										"[MobHunting]No update.");
 							}
 							this.cancel();
 						}
@@ -292,7 +293,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void registerAchievements() {
 		mAchievements.registerAchievement(new AxeMurderer());
 		mAchievements.registerAchievement(new CreeperBoxing());
@@ -613,7 +614,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public static void debug(String text, Object... args) {
 		if (instance.mConfig.killDebug)
-			instance.getLogger().info("[MH][Debug] " + String.format(text, args));
+			instance.getLogger().info("[Debug] " + String.format(text, args));
 	}
 
 	@EventHandler
@@ -767,12 +768,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void onMobDeath(EntityDeathEvent event) {
 
 		if (event.getEntity() instanceof Player) {
-			debug("Entity is instanceof player");
-			return;
+			debug("Player: %s died.", event.getEntity().getName());
+			if (!mConfig.pvpAllowed)
+				return;
 		}
 
 		if (getBaseKillPrize(event.getEntity()) == 0) {
-			debug("KillBlocked %s(%d): Mob has no prize money", event
+			debug("KillBlocked %s(%d): Mob/Player has no prize money", event
 					.getEntity().getType(), event.getEntity().getEntityId());
 			return;
 		}
@@ -990,6 +992,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	public double getBaseKillPrize(LivingEntity mob) {
+		if (mob instanceof Player)
+			return mConfig.pvpKillPrize;
 		if (mob instanceof Blaze)
 			return mConfig.blazePrize;
 		if (mob instanceof Creeper)
@@ -1103,10 +1107,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return mLeaderboards;
 	}
 
-	//***************************************************************************
-	// UPDATECHECK - Check if there is a new version available at 
+	// ***************************************************************************
+	// UPDATECHECK - Check if there is a new version available at
 	// https://api.curseforge.com/servermods/files?projectIds=63718
-	//***************************************************************************
+	// ***************************************************************************
 	/**
 	 * @return the updateCheck
 	 */
@@ -1120,11 +1124,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 */
 	public void checkUpdates() {
 		// Version checker
-		getLogger().info("[MobHunting]Checking for new updates...");
+		getLogger().info("Checking for new updates...");
 		getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				updateCheck = new Update(63718); // Mobhunting
+				updateCheck = new Update(63718); // MobHunting
 				if (!updateCheck.isSuccess()) {
 					updateCheck = null;
 				}
@@ -1136,18 +1140,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 		boolean update = false;
 		final String pluginVersion = instance.getDescription().getVersion();
 		// Check to see if the latest file is newer that this one
-		//getLogger().info("DEBUG:"+pluginVersion);
-		//getLogger().info("DEBUG:"+instance.getUpdateCheck().getVersionName());
+		// getLogger().info("DEBUG:"+pluginVersion);
+		// getLogger().info("DEBUG:"+instance.getUpdateCheck().getVersionName());
 		String[] split = instance.getUpdateCheck().getVersionName().split(" V");
 		// Only do this if the format is what we expect
 		if (split.length == 2) {
-			//getLogger().info("DEBUG: " + split[1]);
+			// getLogger().info("DEBUG: " + split[1]);
 			// Need to escape the period in the regex expression
 			String[] updateVer = split[1].split("\\.");
-			//getLogger().info("DEBUG: split length = " + updateVer.length);
+			// getLogger().info("DEBUG: split length = " + updateVer.length);
 			// CHeck the version #'s
 			String[] pluginVer = pluginVersion.split("\\.");
-			//getLogger().info("DEBUG: split length = " + pluginVer.length);
+			// getLogger().info("DEBUG: split length = " + pluginVer.length);
 			// Run through major, minor, sub
 			for (int i = 0; i < Math.max(updateVer.length, pluginVer.length); i++) {
 				try {
@@ -1159,7 +1163,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (i < pluginVer.length) {
 						pluginCheck = Integer.valueOf(pluginVer[i]);
 					}
-					//getLogger().info("DEBUG: update is " + updateCheck +
+					// getLogger().info("DEBUG: update is " + updateCheck +
 					// " plugin is " + pluginCheck);
 					if (updateCheck < pluginCheck) {
 						// getLogger().info("DEBUG: plugin is newer!");
@@ -1173,10 +1177,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 					}
 				} catch (Exception e) {
 					getLogger().warning(
-							"[MobHunting]Could not determine update's version # ");
-					getLogger().warning("[MobHunting]Plugin version: " + pluginVersion);
+							"Could not determine update's version # ");
+					getLogger().warning("Plugin version: " + pluginVersion);
 					getLogger().warning(
-							"[MobHunting]Update version: "
+							"Update version: "
 									+ instance.getUpdateCheck()
 											.getVersionName());
 					return;
@@ -1189,7 +1193,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return;
 			} else {
 				// Player login
-				p.sendMessage(ChatColor.GOLD 
+				p.sendMessage(ChatColor.GOLD
 						+ instance.getUpdateCheck().getVersionName()
 						+ " is available! You are running " + pluginVersion);
 				p.sendMessage(ChatColor.RED
@@ -1198,15 +1202,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} else {
 			// Console
 			if (!update) {
-				getLogger().info("[MobHunting]No updates available.");
+				getLogger().info("No updates available.");
 				return;
 			} else {
-				getLogger().info("[MobHunting]"+
+				getLogger().info(
 						instance.getUpdateCheck().getVersionName()
 								+ " is available! You are running "
 								+ pluginVersion);
 				getLogger()
-						.info("[MobHunting]Update at: http://dev.bukkit.org/server-mods/mobhunting/");
+						.info("Update at: http://dev.bukkit.org/server-mods/mobhunting/");
 			}
 		}
 	}

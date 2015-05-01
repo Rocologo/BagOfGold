@@ -19,6 +19,7 @@ public class Config extends AutoConfig
 		setCategoryComment("penalty", "These are penalty multipliers that can modify the base prize. \nREMEMBER: These are not in $ but they are a multiplier. Setting to 1 will disable them."); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		setCategoryComment("special", "Here is where you set the prize in $ for achieving a special kill. \nFor each achievment you can run a console command to give the player a reward. \nYou can you the following variables {player},{world}.\nAn example could be to give the player permission to fly \nfor 1 hour or use give command to the player items.\nYou can also specify the message send to the player.\nYou can run many console commands on each line, each command\nmust be separated by |"); //$NON-NLS-1$ //$NON-NLS-2$
+		setCategoryComment("pvp", "Pvp configuration. Set pvp-allowed = true if you want give the players a reward when they kill eachother. \n You can alsp run a console command when this happens to give the player a reward or punish him. \nYou can you the following variables {player},{world}.\nAn example could be to give the player permission to fly \nfor 1 hour or use give command to the player items.\nYou can also specify the message send to the player.\nYou can run many console commands on each line, each command\nmust be separated by |"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 	}
 	
@@ -272,6 +273,15 @@ public class Config extends AutoConfig
 	
 	@ConfigField(name="update-check", category="general", comment="Check if there is a new version of the plugin available.")
 	public boolean updateCheck = true;
+	
+	@ConfigField(name="pvp-allowed", category="pvp")
+	public boolean pvpAllowed = true;
+	@ConfigField(name="pvp-kill-prize", category="pvp")
+	public double pvpKillPrize = 10;
+	@ConfigField(name="pvp-kill-cmd", category="pvp")
+	public String pvpKillCmd = "";
+	@ConfigField(name="pvp-kill-cmd-desc", category="pvp")
+	public String pvpKillCmdDesc = "";
 	
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException
