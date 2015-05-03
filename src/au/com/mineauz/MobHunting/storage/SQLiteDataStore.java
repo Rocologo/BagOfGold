@@ -315,7 +315,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			performTableMigrate(connection);
 		}
 
-		System.out.println("*** Migrating MobHunting Database to UUIDs ***");
+		System.out.println("[MobHunting]*** Migrating MobHunting Database to UUIDs ***");
 
 		// Add missing columns
 		performTableMigrate(connection);
@@ -358,7 +358,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		insert.executeBatch();
 		insert.close();
 
-		System.out.println("*** Player UUID migration complete ***");
+		System.out.println("[MobHunting]*** Player UUID migration complete ***");
 
 		statement.close();
 		connection.commit();
@@ -375,7 +375,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("*** Adding new PvpPlayer to MobHunting Database ***");
+					.println("[MobHunting]*** Adding new PvpPlayer to MobHunting Database ***");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `PvpPlayer_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -402,7 +402,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 			setupTrigger(connection);
 
-			System.out.println("*** Adding new PvpPlayer complete ***");
+			System.out.println("[MobHunting]*** Adding new PvpPlayer complete ***");
 		}
 
 		try {
@@ -414,7 +414,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("*** Adding new Mobs to MobHunting Database ***");
+					.println("[MobHunting]*** Adding new Mobs to MobHunting Database ***");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `Endermite_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -504,7 +504,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 			setupTrigger(connection);
 
-			System.out.println("*** Adding new Mobs complete ***");
+			System.out.println("[MobHunting]*** Adding new Mobs complete ***");
 		}
 
 		statement.close();
