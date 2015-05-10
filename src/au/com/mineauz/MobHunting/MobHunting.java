@@ -78,6 +78,11 @@ import au.com.mineauz.MobHunting.util.Misc;
 import au.com.mineauz.MobHunting.util.Update;
 
 public class MobHunting extends JavaPlugin implements Listener {
+
+	// Constants
+	public final static String pluginName = "MobHunting";
+	public final static String tablePrefix = "mh_";
+	
 	private Economy mEconomy;
 	public static MobHunting instance;
 
@@ -160,7 +165,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			mConfig.save();
 		else
 			throw new RuntimeException(
-					Messages.getString("mobhunting.config.fail")); //$NON-NLS-1$
+					Messages.getString(pluginName+".config.fail")); //$NON-NLS-1$
 
 		Messages.exportDefaultLanguages();
 
@@ -168,7 +173,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				.getServicesManager().getRegistration(Economy.class);
 		if (economyProvider == null) {
 			instance = null;
-			getLogger().severe(Messages.getString("mobhunting.hook.econ")); //$NON-NLS-1$
+			getLogger().severe(Messages.getString(pluginName+".hook.econ")); //$NON-NLS-1$
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -614,7 +619,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public static void debug(String text, Object... args) {
 		if (instance.mConfig.killDebug)
-			instance.getLogger().info("[Debug] " + String.format(text, args));
+			instance.getLogger().info("[HobHunting][Debug] " + String.format(text, args));
 	}
 
 	@EventHandler
@@ -1140,18 +1145,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 		boolean update = false;
 		final String pluginVersion = instance.getDescription().getVersion();
 		// Check to see if the latest file is newer that this one
-		// getLogger().info("DEBUG:"+pluginVersion);
-		// getLogger().info("DEBUG:"+instance.getUpdateCheck().getVersionName());
 		String[] split = instance.getUpdateCheck().getVersionName().split(" V");
 		// Only do this if the format is what we expect
 		if (split.length == 2) {
-			// getLogger().info("DEBUG: " + split[1]);
 			// Need to escape the period in the regex expression
 			String[] updateVer = split[1].split("\\.");
-			// getLogger().info("DEBUG: split length = " + updateVer.length);
 			// CHeck the version #'s
 			String[] pluginVer = pluginVersion.split("\\.");
-			// getLogger().info("DEBUG: split length = " + pluginVer.length);
 			// Run through major, minor, sub
 			for (int i = 0; i < Math.max(updateVer.length, pluginVer.length); i++) {
 				try {
@@ -1163,7 +1163,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (i < pluginVer.length) {
 						pluginCheck = Integer.valueOf(pluginVer[i]);
 					}
-					// getLogger().info("DEBUG: update is " + updateCheck +
 					// " plugin is " + pluginCheck);
 					if (updateCheck < pluginCheck) {
 						// getLogger().info("DEBUG: plugin is newer!");
@@ -1171,7 +1170,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 						update = false;
 						break;
 					} else if (updateCheck > pluginCheck) {
-						// getLogger().info("DEBUG: update is newer!");
 						update = true;
 						break;
 					}

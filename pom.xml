@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9.6</version>
+	<version>1.9.7</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -19,6 +19,9 @@
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
 		<worldedit.version>6.0.0-SNAPSHOT</worldedit.version>
 		<javacompiler.version>1.7</javacompiler.version>
+		<mavenCompilerPlugin.version>3.1</mavenCompilerPlugin.version>
+		<mavenShadePlugin.version>1.5</mavenShadePlugin.version>
+		<mcstats.pluginname>${groupId}.${artifactId}</mcstats.pluginname>
 	</properties>
 
 	<organization>
@@ -26,6 +29,9 @@
 		<url>https://www.lindegaard.tk</url>
 	</organization>
 
+	<!-- ********************************************************************** -->
+	<!-- ******************************** Build ******************************* -->
+	<!-- ********************************************************************** -->
 	<build>
 		<defaultGoal>clean package install</defaultGoal>
 		<finalName>${project.name}-${project.version}</finalName>
@@ -50,7 +56,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<!-- <version>2.3.2</version>  -->
+				<version>${mavenCompilerPlugin.version}</version>
 				<configuration>
 					<source>${javacompiler.version}</source>
 					<target>${javacompiler.version}</target>
@@ -59,7 +66,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.5</version>
+				<version>${mavenShadePlugin}</version>
 				<configuration>
 					<artifactSet>
 						<includes>
@@ -69,7 +76,7 @@
 					<relocations>
 						<relocation>
 							<pattern>org.mcstats</pattern>
-							<shadedPattern>au.com.mineauz.MobHunting</shadedPattern>
+							<shadedPattern>${mcstats.pluginname}</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -84,9 +91,81 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<!-- ********************************************************************** -->
+	<!-- **************************** Dependencies **************************** -->
+	<!-- ********************************************************************** -->
+		<dependencies>
+		<!-- CraftBukkit Dependency for experimental features -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>${bukkit.version}</version>
+		</dependency>
 
+		<!-- SpigotMC -->
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigotmc.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Vault / -->
+		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>${vault.version}</version>
+		</dependency>
+
+		<!-- Minigames -->
+		<dependency>
+			<groupId>au.com.mineauz</groupId>
+			<artifactId>Minigames</artifactId>
+			<version>${minigames.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>bukkit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>craftbukkit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- WorldEdit -->
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldedit</artifactId>
+			<version>${worldedit.version}</version>
+		</dependency>
+
+		<!-- MCStats / Plugin Metrics -->
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics</artifactId>
+			<version>${metrics.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- MyPet -->
+		<dependency>
+			<groupId>de.keyle</groupId>
+			<artifactId>mypet</artifactId>
+			<version>${mypet.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	
+	<!-- ********************************************************************** -->
+	<!-- **************************** Repositories **************************** -->
+	<!-- ********************************************************************** -->
 	<repositories>
-		<!-- Repository for Bukkit -->
+		<!-- Bukkit Repository -->
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
@@ -177,72 +256,5 @@
 			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
 	</repositories>
-
-	<dependencies>
-		<!-- CraftBukkit Dependency for experimental features -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkit.version}</version>
-		</dependency>
-
-		<!-- SpigotMC -->
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Vault / -->
-		<dependency>
-			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>Vault</artifactId>
-			<version>${vault.version}</version>
-		</dependency>
-
-		<!-- Minigames -->
-		<dependency>
-			<groupId>au.com.mineauz</groupId>
-			<artifactId>Minigames</artifactId>
-			<version>${minigames.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.bukkit</groupId>
-					<artifactId>bukkit</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.bukkit</groupId>
-					<artifactId>craftbukkit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- WorldEdit -->
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldedit</artifactId>
-			<version>${worldedit.version}</version>
-		</dependency>
-
-		<!-- MCStats / Plugin Metrics -->
-		<dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics</artifactId>
-			<version>${metrics.version}</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<!-- MyPet -->
-		<dependency>
-			<groupId>de.keyle</groupId>
-			<artifactId>mypet</artifactId>
-			<version>${mypet.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-
-	</dependencies>
 
 </project>

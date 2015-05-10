@@ -34,7 +34,7 @@ public class TopCommand implements ICommand
 	@Override
 	public String getPermission()
 	{
-		return "mobhunting.top"; //$NON-NLS-1$
+		return "mobhunting.top"; 
 	}
 
 	@Override
