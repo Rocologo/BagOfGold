@@ -22,121 +22,119 @@ import au.com.mineauz.MobHunting.storage.DataCallback;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
-public class LegacyLeaderboard implements DataCallback<List<StatStore>>
-{
+public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 	private String mId;
 	private World mWorld;
 	private BlockVector mMinCorner;
 	private BlockVector mMaxCorner;
-	
+
 	private boolean mHorizontal;
 
 	private TimePeriod mPeriod;
 	private StatType mType;
-	
-	public LegacyLeaderboard(String id, StatType type, TimePeriod period, Location pointA, Location pointB, boolean horizontal) throws IllegalArgumentException
-	{
+
+	public LegacyLeaderboard(String id, StatType type, TimePeriod period,
+			Location pointA, Location pointB, boolean horizontal)
+			throws IllegalArgumentException {
 		mId = id;
 		mType = type;
 		mPeriod = period;
 		mWorld = pointA.getWorld();
-		
-		mMinCorner = new BlockVector(Math.min(pointA.getBlockX(), pointB.getBlockX()), Math.min(pointA.getBlockY(), pointB.getBlockY()), Math.min(pointA.getBlockZ(), pointB.getBlockZ()));
-		mMaxCorner = new BlockVector(Math.max(pointA.getBlockX(), pointB.getBlockX()), Math.max(pointA.getBlockY(), pointB.getBlockY()), Math.max(pointA.getBlockZ(), pointB.getBlockZ()));
-		
-		if(mMaxCorner.getBlockX() - mMinCorner.getBlockX() > 1 && mMaxCorner.getBlockZ() - mMaxCorner.getBlockZ() > 1)
-			throw new IllegalArgumentException(Messages.getString("leaderboard.thick")); //$NON-NLS-1$
-		
+
+		mMinCorner = new BlockVector(Math.min(pointA.getBlockX(),
+				pointB.getBlockX()), Math.min(pointA.getBlockY(),
+				pointB.getBlockY()), Math.min(pointA.getBlockZ(),
+				pointB.getBlockZ()));
+		mMaxCorner = new BlockVector(Math.max(pointA.getBlockX(),
+				pointB.getBlockX()), Math.max(pointA.getBlockY(),
+				pointB.getBlockY()), Math.max(pointA.getBlockZ(),
+				pointB.getBlockZ()));
+
+		if (mMaxCorner.getBlockX() - mMinCorner.getBlockX() > 1
+				&& mMaxCorner.getBlockZ() - mMaxCorner.getBlockZ() > 1)
+			throw new IllegalArgumentException(
+					Messages.getString("leaderboard.thick")); //$NON-NLS-1$
+
 		mHorizontal = horizontal;
 	}
-	
-	LegacyLeaderboard() {}
-	
-	private List<Sign> getSigns()
-	{
+
+	LegacyLeaderboard() {
+	}
+
+	private List<Sign> getSigns() {
 		ArrayList<Sign> signs = new ArrayList<Sign>();
-		if(mHorizontal)
-		{
-			for(int y = mMaxCorner.getBlockY(); y >= mMinCorner.getBlockY(); --y)
-			{
-				for(int x = mMinCorner.getBlockX(); x <= mMaxCorner.getBlockX(); ++x)
-				{
-					for(int z = mMinCorner.getBlockZ(); z <= mMaxCorner.getBlockZ(); ++z)
-					{
-						BlockState state = mWorld.getBlockAt(x,y,z).getState();
-						
-						if(state instanceof Sign)
-							signs.add((Sign)state);
+		if (mHorizontal) {
+			for (int y = mMaxCorner.getBlockY(); y >= mMinCorner.getBlockY(); --y) {
+				for (int x = mMinCorner.getBlockX(); x <= mMaxCorner
+						.getBlockX(); ++x) {
+					for (int z = mMinCorner.getBlockZ(); z <= mMaxCorner
+							.getBlockZ(); ++z) {
+						BlockState state = mWorld.getBlockAt(x, y, z)
+								.getState();
+
+						if (state instanceof Sign)
+							signs.add((Sign) state);
+					}
+				}
+			}
+		} else {
+			for (int z = mMinCorner.getBlockZ(); z <= mMaxCorner.getBlockZ(); ++z) {
+				for (int x = mMinCorner.getBlockX(); x <= mMaxCorner
+						.getBlockX(); ++x) {
+					for (int y = mMaxCorner.getBlockY(); y >= mMinCorner
+							.getBlockY(); --y) {
+						BlockState state = mWorld.getBlockAt(x, y, z)
+								.getState();
+
+						if (state instanceof Sign)
+							signs.add((Sign) state);
 					}
 				}
 			}
 		}
-		else
-		{
-			for(int z = mMinCorner.getBlockZ(); z <= mMaxCorner.getBlockZ(); ++z)
-			{
-				for(int x = mMinCorner.getBlockX(); x <= mMaxCorner.getBlockX(); ++x)
-				{
-					for(int y = mMaxCorner.getBlockY(); y >= mMinCorner.getBlockY(); --y)
-					{
-						BlockState state = mWorld.getBlockAt(x,y,z).getState();
-						
-						if(state instanceof Sign)
-							signs.add((Sign)state);
-					}
-				}
-			}
-		}
-		
+
 		return signs;
 	}
-	
-	private int countSigns()
-	{
+
+	private int countSigns() {
 		int count = 0;
-		for(int x = mMinCorner.getBlockX(); x <= mMaxCorner.getBlockX(); ++x)
-		{
-			for(int y = mMinCorner.getBlockY(); y <= mMaxCorner.getBlockY(); ++y)
-			{
-				for(int z = mMinCorner.getBlockZ(); z <= mMaxCorner.getBlockZ(); ++z)
-				{
-					Block block = mWorld.getBlockAt(x,y,z); 
-					if(block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST)
+		for (int x = mMinCorner.getBlockX(); x <= mMaxCorner.getBlockX(); ++x) {
+			for (int y = mMinCorner.getBlockY(); y <= mMaxCorner.getBlockY(); ++y) {
+				for (int z = mMinCorner.getBlockZ(); z <= mMaxCorner
+						.getBlockZ(); ++z) {
+					Block block = mWorld.getBlockAt(x, y, z);
+					if (block.getType() == Material.WALL_SIGN
+							|| block.getType() == Material.SIGN_POST)
 						++count;
 				}
 			}
 		}
-		
+
 		return count;
 	}
-	
-	public void updateBoard()
-	{
-		MobHunting.instance.getDataStore().requestStats(mType, mPeriod, countSigns() * 4, this);
+
+	public void updateBoard() {
+		MobHunting.instance.getDataStore().requestStats(mType, mPeriod,
+				countSigns() * 4, this);
 	}
-	
-	public String getId()
-	{
+
+	public String getId() {
 		return mId;
 	}
-	
-	public World getWorld()
-	{
+
+	public World getWorld() {
 		return mWorld;
 	}
-	
-	public BlockVector getMin()
-	{
+
+	public BlockVector getMin() {
 		return mMinCorner;
 	}
-	
-	public BlockVector getMax()
-	{
+
+	public BlockVector getMax() {
 		return mMaxCorner;
 	}
-	
-	public Map<String, Object> write()
-	{
+
+	public Map<String, Object> write() {
 		HashMap<String, Object> objects = new HashMap<String, Object>();
 		objects.put("id", mId); //$NON-NLS-1$
 		objects.put("world-l", mWorld.getUID().getLeastSignificantBits()); //$NON-NLS-1$
@@ -144,173 +142,159 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>>
 		objects.put("mi-x", mMinCorner.getBlockX()); //$NON-NLS-1$
 		objects.put("mi-y", mMinCorner.getBlockY()); //$NON-NLS-1$
 		objects.put("mi-z", mMinCorner.getBlockZ()); //$NON-NLS-1$
-		
+
 		objects.put("ma-x", mMaxCorner.getBlockX()); //$NON-NLS-1$
 		objects.put("ma-y", mMaxCorner.getBlockY()); //$NON-NLS-1$
 		objects.put("ma-z", mMaxCorner.getBlockZ()); //$NON-NLS-1$
-		
+
 		objects.put("hor", mHorizontal); //$NON-NLS-1$
-		
+
 		objects.put("period", mPeriod.ordinal()); //$NON-NLS-1$
 		objects.put("type", mType.getDBColumn()); //$NON-NLS-1$
-		
+
 		return objects;
 	}
-	
-	private long toLong(Object obj)
-	{
-		if(obj instanceof Long)
-			return (Long)obj;
-		else if(obj instanceof Integer)
-			return (int)(Integer)obj;
-		
+
+	private long toLong(Object obj) {
+		if (obj instanceof Long)
+			return (Long) obj;
+		else if (obj instanceof Integer)
+			return (int) (Integer) obj;
+
 		throw new IllegalArgumentException("Not a number"); //$NON-NLS-1$
 	}
-	private int toInt(Object obj)
-	{
-		if(obj instanceof Integer)
-			return (int)(Integer)obj;
-		
+
+	private int toInt(Object obj) {
+		if (obj instanceof Integer)
+			return (int) (Integer) obj;
+
 		throw new IllegalArgumentException("Not a number"); //$NON-NLS-1$
 	}
-	private boolean toBool(Object obj)
-	{
-		if(obj instanceof Boolean)
-			return (Boolean)obj;
-		
+
+	private boolean toBool(Object obj) {
+		if (obj instanceof Boolean)
+			return (Boolean) obj;
+
 		return Boolean.parseBoolean(obj.toString());
 	}
-	
-	public void read(Map<String, Object> data)
-	{
-		UUID worldId = new UUID(toLong(data.get("world-h")), toLong(data.get("world-l"))); //$NON-NLS-1$ //$NON-NLS-2$
+
+	public void read(Map<String, Object> data) {
+		UUID worldId = new UUID(
+				toLong(data.get("world-h")), toLong(data.get("world-l"))); //$NON-NLS-1$ //$NON-NLS-2$
 		mWorld = Bukkit.getWorld(worldId);
-		
-		mMinCorner = new BlockVector(toInt(data.get("mi-x")), toInt(data.get("mi-y")), toInt(data.get("mi-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		mMaxCorner = new BlockVector(toInt(data.get("ma-x")), toInt(data.get("ma-y")), toInt(data.get("ma-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		
+
+		mMinCorner = new BlockVector(
+				toInt(data.get("mi-x")), toInt(data.get("mi-y")), toInt(data.get("mi-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		mMaxCorner = new BlockVector(
+				toInt(data.get("ma-x")), toInt(data.get("ma-y")), toInt(data.get("ma-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
 		mHorizontal = toBool(data.get("hor")); //$NON-NLS-1$
-		
+
 		mPeriod = TimePeriod.values()[toInt(data.get("period"))]; //$NON-NLS-1$
-		mType = StatType.fromColumnName((String)data.get("type")); //$NON-NLS-1$
-		
-		mId = (String)data.get("id"); //$NON-NLS-1$
+		mType = StatType.fromColumnName((String) data.get("type")); //$NON-NLS-1$
+
+		mId = (String) data.get("id"); //$NON-NLS-1$
 	}
-	
+
 	@Override
-	public void onCompleted( List<StatStore> data )
-	{
+	public void onCompleted(List<StatStore> data) {
 		List<Sign> signs = getSigns();
-		
+
 		// Clear the signs
-		for(Sign sign : signs)
-		{
+		for (Sign sign : signs) {
 			sign.setLine(0, ""); //$NON-NLS-1$
 			sign.setLine(1, ""); //$NON-NLS-1$
 			sign.setLine(2, ""); //$NON-NLS-1$
 			sign.setLine(3, ""); //$NON-NLS-1$
 		}
-		
-		if(signs.isEmpty())
+
+		if (signs.isEmpty())
 			return;
-		
-		if(mHorizontal)
-		{
+
+		if (mHorizontal) {
 			int startSign = 0;
 			int sign = 0;
 			int line = 0;
 			int y = signs.get(0).getY();
 			int returnSign = 0;
-			
-			for(StatStore stat : data)
-			{
-				if(stat.amount == 0)
+
+			for (StatStore stat : data) {
+				if (stat.amount == 0)
 					continue;
-				
-				if(sign >= signs.size() || signs.get(sign).getY() != y)
-				{
+
+				if (sign >= signs.size() || signs.get(sign).getY() != y) {
 					returnSign = sign;
 					sign = startSign;
-					
+
 					++line;
-					
-					if(line >= 4)
-					{
+
+					if (line >= 4) {
 						sign = startSign = returnSign;
-						
-						if(sign >= signs.size())
+
+						if (sign >= signs.size())
 							break;
 						else
 							y = signs.get(sign).getY();
 					}
 				}
-				
-				signs.get(sign).setLine(line, stat.amount + " " + stat.player.getName()); //$NON-NLS-1$
-				
+
+				signs.get(sign).setLine(line,
+						stat.amount + " " + stat.player.getName());
+
 				++sign;
 			}
-		}
-		else
-		{
+		} else {
 			int sign = 0;
 			int line = 0;
-			for(StatStore stat : data)
-			{
-				if(stat.amount == 0)
+			for (StatStore stat : data) {
+				if (stat.amount == 0)
 					continue;
-				
-				if(line >= 4)
-				{
+
+				if (line >= 4) {
 					line = 0;
 					++sign;
 				}
-				
-				if(sign >= signs.size())
+
+				if (sign >= signs.size())
 					break;
-				
-				signs.get(sign).setLine(line, stat.amount + " " + stat.player.getName()); //$NON-NLS-1$
-				
+
+				signs.get(sign).setLine(line,
+						stat.amount + " " + stat.player.getName()); //$NON-NLS-1$
+
 				++line;
 			}
 		}
-		
-		for(Sign sign : signs)
+
+		for (Sign sign : signs)
 			sign.update(true, false);
 	}
-	
+
 	@Override
-	public void onError( Throwable error )
-	{
+	public void onError(Throwable error) {
 		error.printStackTrace();
 	}
 
-	public void setType( StatType type )
-	{
+	public void setType(StatType type) {
 		mType = type;
 	}
-	
-	public void setPeriod( TimePeriod period)
-	{
+
+	public void setPeriod(TimePeriod period) {
 		mPeriod = period;
 	}
-	
-	public void setHorizontal( boolean horizontal )
-	{
+
+	public void setHorizontal(boolean horizontal) {
 		mHorizontal = horizontal;
 	}
-	
-	public StatType getType()
-	{
+
+	public StatType getType() {
 		return mType;
 	}
-	
-	public TimePeriod getPeriod()
-	{
+
+	public TimePeriod getPeriod() {
 		return mPeriod;
 	}
-	
-	public boolean getHorizontal()
-	{
+
+	public boolean getHorizontal() {
 		return mHorizontal;
 	}
 }

@@ -192,6 +192,7 @@ public class LeaderboardCommand implements ICommand, Listener
 			return true;
 		}
 		
+		//TODO: Create new strings in Message
 		mWaitingStates.put((Player)sender, state);
 		if(state.create)
 			sender.sendMessage(ChatColor.GOLD + "Changes saved, right click a wall sign to create the board.");
@@ -242,12 +243,14 @@ public class LeaderboardCommand implements ICommand, Listener
 				width = Integer.parseInt(args[args.length-2]);
 				if(width < 1)
 				{
+					//TODO: Create new strings in Message
 					sender.sendMessage(ChatColor.RED + "Width is too small. Must be at least 1");
 					return true;
 				}
 			}
 			catch(NumberFormatException e)
 			{
+				//TODO: Create new strings in Message
 				sender.sendMessage(ChatColor.RED + "Width must be a whole number of at least 1");
 				return true;
 			}
@@ -257,12 +260,14 @@ public class LeaderboardCommand implements ICommand, Listener
 				height = Integer.parseInt(args[args.length-1]);
 				if(height < 1)
 				{
+					//TODO: Create new strings in Message
 					sender.sendMessage(ChatColor.RED + "Height is too small. Must be at least 1");
 					return true;
 				}
 			}
 			catch(NumberFormatException e)
 			{
+				//TODO: Create new strings in Message
 				sender.sendMessage(ChatColor.RED + "Height must be a whole number of at least 1");
 				return true;
 			}
@@ -281,6 +286,7 @@ public class LeaderboardCommand implements ICommand, Listener
 		
 		mWaitingStates.put((Player)sender, state);
 		
+		//TODO: create string in messages.
 		sender.sendMessage(ChatColor.GOLD + "Click a wall sign to create the leaderboard");
 
 		return true;
@@ -386,6 +392,7 @@ public class LeaderboardCommand implements ICommand, Listener
 		
 		if(event.getClickedBlock().getType() != Material.WALL_SIGN)
 		{
+			//TODO: Create new strings in Messages.
 			if(state.create)
 				event.getPlayer().sendMessage(ChatColor.RED + "Leaderboard creation cancelled.");
 			else
@@ -400,6 +407,7 @@ public class LeaderboardCommand implements ICommand, Listener
 			try
 			{
 				MobHunting.instance.getLeaderboards().createLeaderboard(event.getClickedBlock().getLocation(), face, state.type, state.period, state.horizontal, state.width, state.height);
+				//TODO: Create new strings in Message
 				event.getPlayer().sendMessage(ChatColor.GREEN + "Leaderboard created");
 			}
 			catch(IllegalArgumentException e)
@@ -441,6 +449,7 @@ public class LeaderboardCommand implements ICommand, Listener
 					board.setHorizontal(state.horizontal);
 				
 				board.update();
+				//TODO: Create new strings in Message
 				event.getPlayer().sendMessage(ChatColor.GREEN + "Leaderboard edited");
 
 				MobHunting.instance.getLeaderboards().saveWorld(board.getWorld());

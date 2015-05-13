@@ -2,6 +2,7 @@ package au.com.mineauz.MobHunting.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -245,8 +246,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 		try {
 			statement = mConnection.createStatement();
-			ResultSet results = statement
-					.executeQuery("SELECT " + type.getDBColumn() + ", Players.UUID from mh_" + period.getTable() + " inner join mh_Players on mh_Players.PLAYER_ID=" + period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+			ResultSet results = statement.executeQuery("SELECT "
+					+ type.getDBColumn() + ", mh_Players.UUID from mh_"
+					+ period.getTable()
+					+ " inner join mh_Players on mh_Players.PLAYER_ID=mh_"
+					+ period.getTable() + ".PLAYER_ID"
+					+ (id != null ? " where ID=" + id : " ") + " order by "
+					+ type.getDBColumn() + " desc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 
 			while (results.next())

@@ -82,7 +82,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	// Constants
 	public final static String pluginName = "MobHunting";
 	public final static String tablePrefix = "mh_";
-	
+
 	private Economy mEconomy;
 	public static MobHunting instance;
 
@@ -164,8 +164,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (mConfig.load())
 			mConfig.save();
 		else
-			throw new RuntimeException(
-					Messages.getString(pluginName+".config.fail")); //$NON-NLS-1$
+			throw new RuntimeException(Messages.getString(pluginName
+					+ ".config.fail")); //$NON-NLS-1$
 
 		Messages.exportDefaultLanguages();
 
@@ -173,7 +173,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				.getServicesManager().getRegistration(Economy.class);
 		if (economyProvider == null) {
 			instance = null;
-			getLogger().severe(Messages.getString(pluginName+".hook.econ")); //$NON-NLS-1$
+			getLogger().severe(Messages.getString(pluginName + ".hook.econ")); //$NON-NLS-1$
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -209,6 +209,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
 		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit"); //$NON-NLS-1$
 		// TODO: Add compatability to Citizens or MythicMob
+		// TODO: Test with MobArena
 
 		CommandDispatcher cmd = new CommandDispatcher(
 				"mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -261,7 +262,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 				public void run() {
 					if (count++ > 10) {
 						instance.getLogger()
-								.info("[MobHunting]No updates found. (No response from server after 10s)");
+								.info("["
+										+ pluginName
+										+ "]No updates found. (No response from server after 10s)");
 						this.cancel();
 					} else {
 						// Wait for the response
@@ -270,7 +273,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 								checkUpdatesNotify(null);
 							} else {
 								instance.getLogger().info(
-										"[MobHunting]No update.");
+										"[" + pluginName + "]No update.");
 							}
 							this.cancel();
 						}
@@ -619,7 +622,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public static void debug(String text, Object... args) {
 		if (instance.mConfig.killDebug)
-			instance.getLogger().info("[HobHunting][Debug] " + String.format(text, args));
+			instance.getLogger().info("[Debug] " + String.format(text, args));
 	}
 
 	@EventHandler
@@ -651,7 +654,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			event.getEntity()
 					.sendMessage(
 							ChatColor.RED
-									+ "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended")); //$NON-NLS-1$ //$NON-NLS-2$
+									+ ""
+									+ ChatColor.ITALIC
+									+ Messages
+											.getString("mobhunting.killstreak.ended"));
 		data.killStreak = 0;
 	}
 
@@ -667,8 +673,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Player player = (Player) event.getEntity();
 		HuntData data = getHuntData(player);
 		if (data.getKillstreakLevel() != 0)
-			player.sendMessage(ChatColor.RED
-					+ "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended")); //$NON-NLS-1$ //$NON-NLS-2$
+			player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
+					+ Messages.getString("mobhunting.killstreak.ended"));
 		data.killStreak = 0;
 	}
 
@@ -772,38 +778,39 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 
-		if (event.getEntity() instanceof Player) {
-			debug("Player: %s died.", event.getEntity().getName());
+		LivingEntity killed = event.getEntity();
+
+		if (!isHuntEnabledInWorld(killed.getWorld())) {
+			debug("KillBlocked %s(%d): Mobhunting disabled in world %s",
+					killed.getType(), killed.getEntityId(), killed.getWorld()
+							.getName());
+			return;
+		}
+
+		if (killed instanceof Player) {
+			debug("Player: %s died.", killed.getName());
 			if (!mConfig.pvpAllowed)
 				return;
 		}
 
 		if (getBaseKillPrize(event.getEntity()) == 0) {
-			debug("KillBlocked %s(%d): Mob/Player has no prize money", event
-					.getEntity().getType(), event.getEntity().getEntityId());
+			debug("KillBlocked %s(%d): Mob/Player has no prize money",
+					killed.getType(), killed.getEntityId());
 			return;
 		}
 
-		if (!isHuntEnabledInWorld(event.getEntity().getWorld())) {
-			debug("KillBlocked %s(%d): Mobhunting disabled in world %s", event
-					.getEntity().getType(), event.getEntity().getEntityId(),
-					event.getEntity().getWorld().getName());
-			return;
-		}
-
-		Player killer = event.getEntity().getKiller();
-		if (event.getEntity().hasMetadata("MH:blocked")) //$NON-NLS-1$
+		Player killer = killed.getKiller();
+		if (killed.hasMetadata("MH:blocked")) //$NON-NLS-1$
 		{
 			debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
-					event.getEntity().getType(), event.getEntity()
-							.getEntityId());
+					killed.getType(), killed.getEntityId());
 			return;
 		}
 
 		DamageInformation info = null;
-		if (event.getEntity() instanceof LivingEntity
-				&& mDamageHistory.containsKey((LivingEntity) event.getEntity())) {
-			info = mDamageHistory.get(event.getEntity());
+		if (killed instanceof LivingEntity
+				&& mDamageHistory.containsKey((LivingEntity) killed)) {
+			info = mDamageHistory.get(killed);
 
 			if (System.currentTimeMillis() - info.time > 4000)
 				info = null;
@@ -813,8 +820,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		EntityDamageByEntityEvent lastDamageCause = null;
 
-		if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
-			lastDamageCause = (EntityDamageByEntityEvent) event.getEntity()
+		if (killed.getLastDamageCause() instanceof EntityDamageByEntityEvent)
+			lastDamageCause = (EntityDamageByEntityEvent) killed
 					.getLastDamageCause();
 
 		if (killer == null || killer.getGameMode() == GameMode.CREATIVE
@@ -847,7 +854,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Misc.handleKillstreak(killer);
 
 		// Record kills that are still within a small area
-		Location loc = event.getEntity().getLocation();
+		Location loc = killed.getLocation();
 
 		Area detectedGrindingArea = getGrindingArea(loc);
 
@@ -857,8 +864,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Slimes are except from grinding due to their splitting nature
 		if (!(event.getEntity() instanceof Slime)
 				&& mConfig.penaltyGrindingEnable
-				&& !event.getEntity().hasMetadata("MH:reinforcement")
-				&& !isWhitelisted(event.getEntity().getLocation())) {
+				&& !killed.hasMetadata("MH:reinforcement")
+				&& !isWhitelisted(killed.getLocation())) {
 			if (detectedGrindingArea != null) {
 				data.lastKillAreaCenter = null;
 				data.dampenedKills = detectedGrindingArea.count++;
@@ -895,16 +902,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		double cash = getBaseKillPrize(event.getEntity());
+		double cash = getBaseKillPrize(killed);
 		double multiplier = 1.0;
 
 		// Apply the modifiers
 		ArrayList<String> modifiers = new ArrayList<String>();
 		for (IModifier mod : mModifiers) {
-			if (mod.doesApply(event.getEntity(), killer, data, info,
-					lastDamageCause)) {
-				double amt = mod.getMultiplier(event.getEntity(), killer, data,
-						info, lastDamageCause);
+			if (mod.doesApply(killed, killer, data, info, lastDamageCause)) {
+				double amt = mod.getMultiplier(killed, killer, data, info,
+						lastDamageCause);
 
 				if (amt != 1.0) {
 					modifiers.add(mod.getName());
@@ -919,17 +925,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Only display the multiplier if its not 1
 		if (Math.abs(multiplier - 1) > 0.05)
-			extraString += String.format("x%.1f", multiplier); //$NON-NLS-1$
+			extraString += String.format("x%.1f", multiplier);
 
 		// Add on modifiers
 		for (String modifier : modifiers)
-			extraString += ChatColor.WHITE + " * " + modifier; //$NON-NLS-1$
+			extraString += ChatColor.WHITE + " * " + modifier;
 
 		cash *= multiplier;
 
 		if (cash >= 0.01) {
-			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info,
-					event.getEntity(), killer);
+			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed,
+					killer);
 			Bukkit.getPluginManager().callEvent(event2);
 
 			if (event2.isCancelled()) {
@@ -937,23 +943,45 @@ public class MobHunting extends JavaPlugin implements Listener {
 						killer.getName());
 				return;
 			}
-			mEconomy.depositPlayer(killer, cash);
+
+			if (killed instanceof Player) {
+				mEconomy.withdrawPlayer((Player) killed, cash);
+				killed.sendMessage(ChatColor.GREEN
+						+ ""
+						+ ChatColor.ITALIC
+						+ Messages.getString("mobhunting.moneylost",
+								mEconomy.format(cash)));
+				debug("%s lost %s", killed.getName(),
+						mEconomy.format(cash));
+			}
+			if (info.assister == null) {
+				mEconomy.depositPlayer(killer, cash);
+				debug("%s got a reward (%s)", killer.getName(),
+						mEconomy.format(cash));
+			} else {
+				mEconomy.depositPlayer(killer, cash / 2);
+				onAssist(info.assister, killer, killed, info.lastAssistTime);
+				debug("%s got a ½ reward (%s)", killer.getName(),
+						mEconomy.format(cash / 2));
+			}
 
 			getDataStore().recordKill(killer,
-					ExtendedMobType.fromEntity(event.getEntity()),
-					event.getEntity().hasMetadata("MH:hasBonus")); //$NON-NLS-1$
-			if (info.assister != null)
-				onAssist(info.assister, killer, event.getEntity(),
-						info.lastAssistTime);
-			debug("Message: "
-					+ Messages.getString("mobhunting.moneygain", "prize",
-							mEconomy.format(cash)));
-			if (extraString.trim().isEmpty())
+					ExtendedMobType.fromEntity(killed),
+					killed.hasMetadata("MH:hasBonus"));
+
+			if (extraString.trim().isEmpty()) {
 				killer.sendMessage(ChatColor.GREEN
-						+ "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			else
+						+ ""
+						+ ChatColor.ITALIC
+						+ Messages.getString("mobhunting.moneygain", "prize",
+								mEconomy.format(cash)));
+			} else
 				killer.sendMessage(ChatColor.GREEN
-						+ "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses", "prize", mEconomy.format(cash), "bonuses", extraString.trim())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						+ ""
+						+ ChatColor.ITALIC
+						+ Messages.getString("mobhunting.moneygain.bonuses",
+								"prize", mEconomy.format(cash), "bonuses",
+								extraString.trim()));
 		} else
 			debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)",
 					killer.getName(), extraString);
@@ -971,19 +999,34 @@ public class MobHunting extends JavaPlugin implements Listener {
 			ks = Misc.handleKillstreak(player);
 
 		multiplier *= ks;
-		double cash = getBaseKillPrize(killed) * multiplier;
+		double cash = 0;
+		if (killed instanceof Player)
+			cash = getBaseKillPrize(killed) * multiplier / 2;
+		else
+			cash = getBaseKillPrize(killed) * multiplier;
 
 		if (cash >= 0.01) {
 			getDataStore().recordAssist(player, killer,
 					ExtendedMobType.fromEntity(killed),
 					killed.hasMetadata("MH:hasBonus")); //$NON-NLS-1$
 			mEconomy.depositPlayer(player, cash);
+			debug("%s got a on assist reward (%s)", player.getName(),
+					mEconomy.format(cash));
+
 			if (ks != 1.0)
 				player.sendMessage(ChatColor.GREEN
-						+ "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						+ ""
+						+ ChatColor.ITALIC
+						+ Messages.getString("mobhunting.moneygain.assist",
+								"prize", mEconomy.format(cash)));
 			else
 				player.sendMessage(ChatColor.GREEN
-						+ "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.assist.bonuses", "prize", mEconomy.format(cash), "bonuses", String.format("x%.1f", ks))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+						+ ""
+						+ ChatColor.ITALIC
+						+ Messages.getString(
+								"mobhunting.moneygain.assist.bonuses", "prize",
+								mEconomy.format(cash), "bonuses",
+								String.format("x%.1f", ks)));
 		}
 	}
 
@@ -998,7 +1041,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public double getBaseKillPrize(LivingEntity mob) {
 		if (mob instanceof Player)
-			return mConfig.pvpKillPrize;
+			if (mConfig.pvpKillPrize.endsWith("%")) {
+				double balance = mEconomy.getBalance((Player) mob);
+				debug("Player %s had %s in his pocket!", mob.getName(), balance);
+				return Double.valueOf(mConfig.pvpKillPrize.substring(0,
+						mConfig.pvpKillPrize.length() - 1)) * balance / 100;
+			} else
+				return Double.valueOf(mConfig.pvpKillPrize);
 		if (mob instanceof Blaze)
 			return mConfig.blazePrize;
 		if (mob instanceof Creeper)
@@ -1165,7 +1214,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					}
 					// " plugin is " + pluginCheck);
 					if (updateCheck < pluginCheck) {
-						// getLogger().info("DEBUG: plugin is newer!");
+						// getLogger().info("["+pluginName+"]DEBUG: plugin is newer!");
 						// plugin is newer
 						update = false;
 						break;
@@ -1204,7 +1253,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return;
 			} else {
 				getLogger().info(
-						instance.getUpdateCheck().getVersionName()
+						"Version " + instance.getUpdateCheck().getVersionName()
 								+ " is available! You are running "
 								+ pluginVersion);
 				getLogger()

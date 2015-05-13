@@ -3,6 +3,7 @@ mobhunting.config.fail=There was a problem loading the MobHunting config
 mobhunting.hook.econ=Unable to hook into an economy! Make sure you have one available that Vault accepts.
 mobhunting.moneygain.bonuses=你获得了 ${prize}! 奖励: ${bonuses}
 mobhunting.moneygain=你获得了 ${prize}!
+mobhunting.moneylost=You lost ${prize}!
 mobhunting.moneygain.assist=助攻! 你获得了 ${prize}
 mobhunting.moneygain.assist.bonuses=助攻! 你获得了 ${prize} 奖励: ${bonuses}
 
@@ -162,7 +163,7 @@ mobs.Wither.name=凋零
 mobs.Zombie.name=僵尸
 mobs.ZombiePigman.name=僵尸猪人
 mobs.Endermite.name=Endermite
-mobs.Giant.name.Giant
+mobs.Giant.name=Giant
 mobs.Guardian.name=Guardian
 mobs.KillerRabbit.name=Killer Rabbit
 mobs.BonusMob.name=奖励生物

@@ -186,7 +186,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			for (StatStore stat : stats)
 				statement
 						.addBatch(String
-								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()), stat.amount)); //$NON-NLS-1$
+								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;",
+										stat.type.getDBColumn(),
+										ids.get(stat.player.getUniqueId()),
+										stat.amount));
 			statement.executeBatch();
 			statement.close();
 			mConnection.commit();
@@ -221,8 +224,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		}
 		try {
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement
-					.executeQuery("SELECT " + type.getDBColumn() + ", mh_Players.UUID from " + period.getTable() + " inner join Players using (PLAYER_ID)" + (id != null ? " where ID=" + id : "") + " order by " + type.getDBColumn() + " desc limit " + count); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+			ResultSet results = statement.executeQuery("SELECT "
+					+ type.getDBColumn() + ", mh_Players.UUID from mh_"
+					+ period.getTable()
+					+ " inner join mh_Players using (PLAYER_ID)"
+					+ (id != null ? " where ID=" + id : "") + " order by "
+					+ type.getDBColumn() + " desc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 
 			while (results.next())
@@ -315,7 +322,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			performTableMigrate(connection);
 		}
 
-		System.out.println("[MobHunting]*** Migrating MobHunting Database to UUIDs ***");
+		System.out
+				.println("[MobHunting]*** Migrating MobHunting Database to UUIDs ***");
 
 		// Add missing columns
 		performTableMigrate(connection);
@@ -358,7 +366,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		insert.executeBatch();
 		insert.close();
 
-		System.out.println("[MobHunting]*** Player UUID migration complete ***");
+		System.out
+				.println("[MobHunting]*** Player UUID migration complete ***");
 
 		statement.close();
 		connection.commit();
@@ -402,7 +411,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 			setupTrigger(connection);
 
-			System.out.println("[MobHunting]*** Adding new PvpPlayer complete ***");
+			System.out
+					.println("[MobHunting]*** Adding new PvpPlayer complete ***");
 		}
 
 		try {
