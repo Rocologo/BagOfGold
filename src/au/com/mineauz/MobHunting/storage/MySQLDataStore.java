@@ -47,7 +47,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 			for (StatStore stat : stats)
 				statement
 						.addBatch(String
-								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;", stat.type.getDBColumn(), ids.get(stat.player.getUniqueId()), stat.amount)); //$NON-NLS-1$
+								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
+										stat.type.getDBColumn(),
+										ids.get(stat.player.getUniqueId()),
+										stat.amount));
 			statement.executeBatch();
 			statement.close();
 			mConnection.commit();
@@ -64,9 +67,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 			DataStoreException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver"); //$NON-NLS-1$
-			return DriverManager
-					.getConnection(
-							"jdbc:mysql://" + MobHunting.config().databaseHost + "/" + MobHunting.config().databaseName + "?autoReconnect=true", MobHunting.config().databaseUsername, MobHunting.config().databasePassword); //$NON-NLS-1$ //$NON-NLS-2$
+			return DriverManager.getConnection(
+					"jdbc:mysql://" + MobHunting.config().databaseHost + "/"
+							+ MobHunting.config().databaseName
+							+ "?autoReconnect=true",
+					MobHunting.config().databaseUsername,
+					MobHunting.config().databasePassword);
 		} catch (ClassNotFoundException e) {
 			throw new DataStoreException("MySQL not present on the classpath"); //$NON-NLS-1$
 		}

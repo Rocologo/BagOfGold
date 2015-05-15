@@ -51,7 +51,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 
-import com.sk89q.worldedit.internal.expression.runtime.Return;
+import com.garbagemule.MobArena.MobArena;
 
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
@@ -65,6 +65,8 @@ import au.com.mineauz.MobHunting.commands.TopCommand;
 import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
+import au.com.mineauz.MobHunting.compatability.MobArenaCompat;
+import au.com.mineauz.MobHunting.compatability.MobArenaHelper;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
 import au.com.mineauz.MobHunting.leaderboard.LeaderboardManager;
@@ -208,13 +210,20 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
 		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
 		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit"); //$NON-NLS-1$
+		CompatibilityManager.register(MobArenaCompat.class, "MobArena");
+		// CompatibilityManager.register(HeroesCompat.class, "Heroes");
+		// CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
+		// CompatibilityManager.register(MobDungeonMainCompat.class,
+		// "MobDungeon");
+		// CompatibilityManager.register(WarCompat.class, "War");
+
 		// TODO: Add compatability to Citizens or MythicMob
 		// TODO: Test with MobArena
 
 		CommandDispatcher cmd = new CommandDispatcher(
 				"mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
-		getCommand("mobhunt").setExecutor(cmd); //$NON-NLS-1$
-		getCommand("mobhunt").setTabCompleter(cmd); //$NON-NLS-1$
+		getCommand("mobhunt").setExecutor(cmd); 
+		getCommand("mobhunt").setTabCompleter(cmd); 
 
 		cmd.registerCommand(new ReloadCommand());
 		cmd.registerCommand(new ListAchievementsCommand());
@@ -227,10 +236,20 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!getServer().getPluginManager().isPluginEnabled("WorldEdit")) //$NON-NLS-1$
 			cmd.registerCommand(new SelectCommand());
 
+		if (!getServer().getPluginManager().isPluginEnabled("MobArena")) {
+
+		}
+
 		registerAchievements();
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
+
+		boolean maPlugin = getServer().getPluginManager().isPluginEnabled(
+				"MobArena");
+		debug("MobArenaCompat is enabled: %s", maPlugin);
+		// Plugin mPlugin =
+		// getServer().getPluginManager().getPlugin("MobArena");
 
 		if (mAchievements.upgradeAchievements())
 			mStoreManager.waitForUpdates();
@@ -779,6 +798,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void onMobDeath(EntityDeathEvent event) {
 
 		LivingEntity killed = event.getEntity();
+		Player killer = killed.getKiller();
 
 		if (!isHuntEnabledInWorld(killed.getWorld())) {
 			debug("KillBlocked %s(%d): Mobhunting disabled in world %s",
@@ -788,9 +808,22 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (killed instanceof Player) {
-			debug("Player: %s died.", killed.getName());
-			if (!mConfig.pvpAllowed)
+			if (MobArenaHelper.isPlayingMobArena((Player) killed)) {
+				debug("KillBlocked: %s was killed while playing MobArena.",
+						killed.getName());
 				return;
+			} else if (killer instanceof Player && !mConfig.pvpAllowed) {
+				debug("KillBlocked: PVP not allowed. %s killed %s.",
+						killer.getName(), killed.getName());
+				return;
+			}
+		}
+
+		if (killer instanceof Player
+				&& MobArenaHelper.isPlayingMobArena(killer)) {
+			debug("KillBlocked: %s is currently playing MobArena.",
+					killer.getName());
+			return;
 		}
 
 		if (getBaseKillPrize(event.getEntity()) == 0) {
@@ -799,9 +832,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		Player killer = killed.getKiller();
-		if (killed.hasMetadata("MH:blocked")) //$NON-NLS-1$
-		{
+		if (killed.hasMetadata("MH:blocked")) {
 			debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
 					killed.getType(), killed.getEntityId());
 			return;
@@ -944,15 +975,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return;
 			}
 
-			if (killed instanceof Player) {
+			if (killed instanceof Player && killer instanceof Player) {
 				mEconomy.withdrawPlayer((Player) killed, cash);
 				killed.sendMessage(ChatColor.GREEN
 						+ ""
 						+ ChatColor.ITALIC
 						+ Messages.getString("mobhunting.moneylost",
 								mEconomy.format(cash)));
-				debug("%s lost %s", killed.getName(),
-						mEconomy.format(cash));
+				debug("%s lost %s", killed.getName(), mEconomy.format(cash));
 			}
 			if (info.assister == null) {
 				mEconomy.depositPlayer(killer, cash);
@@ -1042,10 +1072,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 	public double getBaseKillPrize(LivingEntity mob) {
 		if (mob instanceof Player)
 			if (mConfig.pvpKillPrize.endsWith("%")) {
-				double balance = mEconomy.getBalance((Player) mob);
-				debug("Player %s had %s in his pocket!", mob.getName(), balance);
-				return Double.valueOf(mConfig.pvpKillPrize.substring(0,
-						mConfig.pvpKillPrize.length() - 1)) * balance / 100;
+				double prize = Math.floor(Double.valueOf(mConfig.pvpKillPrize
+						.substring(0, mConfig.pvpKillPrize.length() - 1))
+						* mEconomy.getBalance((Player) mob) / 100);
+				return prize;
 			} else
 				return Double.valueOf(mConfig.pvpKillPrize);
 		if (mob instanceof Blaze)

@@ -14,9 +14,10 @@
 		<bukkit.version>1.8.3-R0.1-SNAPSHOT</bukkit.version>
 		<spigotmc.version>1.8.3-R0.1-SNAPSHOT</spigotmc.version>
 		<metrics.version>R7</metrics.version>
-		<mypet.version>1.2.2-SNAPSHOT</mypet.version>
 		<vault.version>1.5.3</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
+		<mypet.version>1.2.2-SNAPSHOT</mypet.version>
+		<mobarena.version>0.96.9</mobarena.version>
 		<worldedit.version>6.0.0-SNAPSHOT</worldedit.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.1</mavenCompilerPlugin.version>
@@ -159,6 +160,24 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- MobArena -->
+		<!-- 
+		  <dependency>
+			<groupId>com.garbagemule.mobarena</groupId>
+			<artifactId>mobarena</artifactId>
+			<version>${mobarena.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		 -->
+		<dependency>
+			<groupId>com.garbagemule.mobarena</groupId>
+			<artifactId>mobarena</artifactId>
+			<version>${mobarena.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/MobArena.jar</systemPath>
+		</dependency>
 	</dependencies>
 	
 	<!-- ********************************************************************** -->
@@ -224,6 +243,12 @@
 			</snapshots>
 		</repository>
 
+		<!-- MobArena repository -->
+		<repository>
+			<id>mobarena-repo</id>
+			<url>https://github.com/garbagemule/MobArena</url>
+		</repository>
+		
 		<!-- Spout Repository -->
 		<repository>
 			<id>spout-repo</id>

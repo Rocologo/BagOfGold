@@ -280,7 +280,7 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment="Set pvpAllowed=false to disable rewards on killing other players.")
 	public boolean pvpAllowed = true;
 	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize kan be a number to stel x dollars from the killed player, or it kan be a cut in percent of his balance.")
-	public String pvpKillPrize = "1%";
+	public String pvpKillPrize = "1.5%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
 	public String pvpKillCmd = "";
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
