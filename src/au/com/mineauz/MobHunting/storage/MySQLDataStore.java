@@ -2,7 +2,6 @@ package au.com.mineauz.MobHunting.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -246,7 +245,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 			try {
 				mConnection = setupConnection();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

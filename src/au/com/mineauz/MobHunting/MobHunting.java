@@ -51,8 +51,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 
-import com.garbagemule.MobArena.MobArena;
-
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
@@ -68,6 +66,8 @@ import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaHelper;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
+import au.com.mineauz.MobHunting.compatability.PVPArenaCompat;
+import au.com.mineauz.MobHunting.compatability.PVPArenaHelper;
 import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
 import au.com.mineauz.MobHunting.leaderboard.LeaderboardManager;
 import au.com.mineauz.MobHunting.modifier.*;
@@ -211,8 +211,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
 		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit"); //$NON-NLS-1$
 		CompatibilityManager.register(MobArenaCompat.class, "MobArena");
+		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
 		// CompatibilityManager.register(HeroesCompat.class, "Heroes");
-		// CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
 		// CompatibilityManager.register(MobDungeonMainCompat.class,
 		// "MobDungeon");
 		// CompatibilityManager.register(WarCompat.class, "War");
@@ -222,8 +222,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		CommandDispatcher cmd = new CommandDispatcher(
 				"mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
-		getCommand("mobhunt").setExecutor(cmd); 
-		getCommand("mobhunt").setTabCompleter(cmd); 
+		getCommand("mobhunt").setExecutor(cmd);
+		getCommand("mobhunt").setTabCompleter(cmd);
 
 		cmd.registerCommand(new ReloadCommand());
 		cmd.registerCommand(new ListAchievementsCommand());
@@ -812,6 +812,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 				debug("KillBlocked: %s was killed while playing MobArena.",
 						killed.getName());
 				return;
+			} else if (PVPArenaHelper.isPlayingPVPArena((Player) killed)) {
+				debug("KillBlocked: %s was killed while playing PvpArena.",
+						killed.getName());
+				return;
 			} else if (killer instanceof Player && !mConfig.pvpAllowed) {
 				debug("KillBlocked: PVP not allowed. %s killed %s.",
 						killer.getName(), killed.getName());
@@ -819,11 +823,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		if (killer instanceof Player
-				&& MobArenaHelper.isPlayingMobArena(killer)) {
-			debug("KillBlocked: %s is currently playing MobArena.",
-					killer.getName());
-			return;
+		if (killer instanceof Player) {
+			if (MobArenaHelper.isPlayingMobArena(killer)
+					&& !mConfig.mobarenaGetRewards) {
+				debug("KillBlocked: %s is currently playing MobArena.",
+						killer.getName());
+				return;
+			} else if (PVPArenaHelper.isPlayingPVPArena(killer)
+					&& !mConfig.pvparenaGetRewards) {
+				debug("KillBlocked: %s is currently playing PvpArena.",
+						killer.getName());
+				return;
+			}
 		}
 
 		if (getBaseKillPrize(event.getEntity()) == 0) {

@@ -2,6 +2,7 @@ package au.com.mineauz.MobHunting.compatability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
@@ -12,25 +13,33 @@ public class MobArenaHelper {
 	// ***************************************************************************
 	// Integration to MobArena
 	// ***************************************************************************
-	private static List<Player> playersPlayingMobArena = new ArrayList<Player>();
+	private static List<UUID> playersPlayingMobArena = new ArrayList<UUID>();
 
 	/**
-	 * Determine if the player p is currently playing MobArena
+	 * Determine if the player is currently playing MobArena
 	 * 
-	 * @param p
-	 * @return
+	 * @param player 
+	 * @return Returns true when the player is in game.
 	 */
-	public static boolean isPlayingMobArena(Player p) {
-		return playersPlayingMobArena.contains(p);
+	public static boolean isPlayingMobArena(Player player) {
+		return playersPlayingMobArena.contains(player.getUniqueId());
 	}
 
-	public static void startPlayingMobArena(Player p) {
-		playersPlayingMobArena.add(p);
+	/**
+	 * Add the player to the list of active MobArena players.
+	 * @param player 
+	 */
+	public static void startPlayingMobArena(Player player) {
+		playersPlayingMobArena.add(player.getUniqueId());
 	}
 
-	public static void stopPlayingMobArena(Player p) {
-		if(!playersPlayingMobArena.remove(p)){
-			MobHunting.debug("Player: %s is not a the MobArena", p.getName());
+	/**
+	 * Remove the player from list of active MobArena players  
+	 * @param player 
+	 */
+	public static void stopPlayingMobArena(Player player) {
+		if(!playersPlayingMobArena.remove(player.getUniqueId())){
+			MobHunting.debug("Player: %s is not a the MobArena", player.getName());
 		}
 	}
 

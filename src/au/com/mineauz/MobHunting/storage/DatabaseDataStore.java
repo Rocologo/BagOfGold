@@ -221,7 +221,10 @@ public abstract class DatabaseDataStore implements DataStore {
 			return achievements;
 		} catch (SQLException e) {
 			try {
-				mConnection = null;
+				if (mConnection != null) {
+					mConnection.close();
+					mConnection = null;
+				}
 				initialize();
 
 				int playerId = getPlayerId(player);
@@ -237,7 +240,6 @@ public abstract class DatabaseDataStore implements DataStore {
 				MobHunting.debug(
 						"ERROR in loadAchievements! This should not happen!",
 						"");
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			throw new DataStoreException(e);

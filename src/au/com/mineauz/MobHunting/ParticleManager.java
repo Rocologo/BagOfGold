@@ -8,38 +8,35 @@ import org.bukkit.Effect;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitTask;
 
-public class ParticleManager
-{
+public class ParticleManager {
 	private WeakHashMap<LivingEntity, Effect> mEffects = new WeakHashMap<LivingEntity, Effect>();
-	
+
 	private BukkitTask mTask;
-	
-	public void attachEffect(LivingEntity entity, Effect effect)
-	{
+
+	public void attachEffect(LivingEntity entity, Effect effect) {
 		mEffects.put(entity, effect);
-		
-		if(mTask == null)
-			mTask = Bukkit.getScheduler().runTaskTimer(MobHunting.instance, new EffectApplyTask(), 10L, 10L);
+
+		if (mTask == null)
+			mTask = Bukkit.getScheduler().runTaskTimer(MobHunting.instance,
+					new EffectApplyTask(), 10L, 10L);
 	}
-	
-	public void removeEffect(LivingEntity entity)
-	{
+
+	public void removeEffect(LivingEntity entity) {
 		mEffects.remove(entity);
 	}
-	
-	private class EffectApplyTask implements Runnable
-	{
+
+	private class EffectApplyTask implements Runnable {
 		@Override
-		public void run()
-		{
-			for(Entry<LivingEntity, Effect> entry : mEffects.entrySet())
-			{
-				if(entry.getKey().isValid())
-					entry.getKey().getWorld().playEffect(entry.getKey().getLocation(), entry.getValue(), 0);
+		public void run() {
+			for (Entry<LivingEntity, Effect> entry : mEffects.entrySet()) {
+				if (entry.getKey().isValid())
+					entry.getKey()
+							.getWorld()
+							.playEffect(entry.getKey().getLocation(),
+									entry.getValue(), 0);
 			}
-			
-			if(mEffects.isEmpty())
-			{
+
+			if (mEffects.isEmpty()) {
 				mTask.cancel();
 				mTask = null;
 			}
