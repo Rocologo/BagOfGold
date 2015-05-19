@@ -55,6 +55,7 @@ public abstract class DatabaseDataStore implements DataStore {
 	public void initialize() throws DataStoreException {
 		try {
 
+			MobHunting.debug("DBDS - Initialize connection");
 			mConnection = setupConnection();
 			mConnection.setAutoCommit(false);
 
@@ -77,6 +78,7 @@ public abstract class DatabaseDataStore implements DataStore {
 			throws SQLException;
 
 	protected void rollback() throws DataStoreException {
+		//TODO: Rollback disabled in v2.0.0
 		try {
 			mConnection.rollback();
 		} catch (SQLException e) {
@@ -87,8 +89,8 @@ public abstract class DatabaseDataStore implements DataStore {
 	@Override
 	public void shutdown() throws DataStoreException {
 		try {
-			if (mConnection != null)
-				mConnection.close();
+			if (mConnection != null){
+				mConnection.close(); MobHunting.debug("DBDS - shutdown connection");}
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
 		}
@@ -184,6 +186,7 @@ public abstract class DatabaseDataStore implements DataStore {
 
 			mConnection.commit();
 		} finally {
+			//TODO: rollback disabled in v2.0.0
 			mConnection.rollback();
 		}
 	}
@@ -220,28 +223,6 @@ public abstract class DatabaseDataStore implements DataStore {
 			}
 			return achievements;
 		} catch (SQLException e) {
-			try {
-				if (mConnection != null) {
-					mConnection.close();
-					mConnection = null;
-				}
-				initialize();
-
-				int playerId = getPlayerId(player);
-				mLoadAchievementsStatement.setInt(1, playerId);
-				ResultSet set = mLoadAchievementsStatement.executeQuery();
-				HashSet<AchievementStore> achievements = new HashSet<AchievementStore>();
-				while (set.next()) {
-					achievements.add(new AchievementStore(set.getString(1),
-							player, set.getInt(3)));
-				}
-				return achievements;
-			} catch (SQLException e1) {
-				MobHunting.debug(
-						"ERROR in loadAchievements! This should not happen!",
-						"");
-				e1.printStackTrace();
-			}
 			throw new DataStoreException(e);
 		}
 	}
@@ -269,8 +250,9 @@ public abstract class DatabaseDataStore implements DataStore {
 
 			mRecordAchievementStatement.executeBatch();
 
-			mConnection.commit();
+			//mConnection.commit();
 		} catch (SQLException e) {
+			// TODO: rollback disabled in v2.0.0 because of recurring error.
 			rollback();
 			throw new DataStoreException(e);
 		}

@@ -6,8 +6,8 @@ import org.bukkit.event.Listener;
 
 import au.com.mineauz.MobHunting.ExtendedMobType;
 import au.com.mineauz.MobHunting.Messages;
-import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 
 public class FourthHuntAchievement implements ProgressAchievement, Listener
 {

@@ -195,7 +195,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			mConnection.commit();
 			MobHunting.debug("Saved.", "");
 		} catch (SQLException e) {
-			MobHunting.debug("Performing Rollback", "");
+			//MobHunting.debug("Performing Rollback", "");
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -204,6 +204,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
+		MobHunting.debug("Loading %s stats from database.",period);
 		String id;
 		switch (period) {
 		case Day:

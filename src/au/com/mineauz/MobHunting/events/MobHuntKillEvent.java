@@ -1,10 +1,13 @@
-package au.com.mineauz.MobHunting;
+package au.com.mineauz.MobHunting.events;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import au.com.mineauz.MobHunting.DamageInformation;
+import au.com.mineauz.MobHunting.HuntData;
 
 public class MobHuntKillEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();

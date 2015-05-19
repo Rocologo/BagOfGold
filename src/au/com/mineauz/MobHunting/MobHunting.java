@@ -69,6 +69,8 @@ import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaHelper;
 import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
+import au.com.mineauz.MobHunting.events.MobHuntEnableCheckEvent;
+import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.leaderboard.LeaderboardManager;
 import au.com.mineauz.MobHunting.modifier.*;
 import au.com.mineauz.MobHunting.storage.DataStore;

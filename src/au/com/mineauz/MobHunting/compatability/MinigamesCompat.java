@@ -5,9 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import au.com.mineauz.MobHunting.MobHuntEnableCheckEvent;
 import au.com.mineauz.MobHunting.MobHunting;
-
+import au.com.mineauz.MobHunting.events.MobHuntEnableCheckEvent;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 

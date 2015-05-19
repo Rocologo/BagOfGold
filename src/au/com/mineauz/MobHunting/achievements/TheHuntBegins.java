@@ -4,8 +4,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import au.com.mineauz.MobHunting.Messages;
-import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 
 public class TheHuntBegins implements Achievement, Listener
 {

@@ -9,28 +9,50 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-
 public abstract class AutoConfig
 {
 	private File mFile;
 	private HashMap<String, String> mCategoryComments;
+	private List<String> mCategories;
+	private HashMap<String, String> mCategoryNodes;
 	
 	protected AutoConfig(File file)
 	{
 		mFile = file;
+		mCategories = new ArrayList<String>();
 		mCategoryComments = new HashMap<String, String>();
+		mCategoryNodes = new HashMap<String, String>();
 	}
 	
 	protected void setCategoryComment(String category, String comment)
 	{
 		mCategoryComments.put(category, comment);
 	}
+	
+	protected List<String> getCategories(String category, String[] list)
+	{
+		return mCategories;
+	}
+	
+	protected List<String> getNodes(String category) {
+		List<String> nodes = new ArrayList<String>();
+		for(Entry<String, String> e : mCategoryNodes.entrySet()) {
+	        String key = e.getKey();
+	        if (key.equals(category)){
+	        	String value = e.getValue();
+	        	nodes.add(value);
+	        }
+	    }
+		return nodes; 
+	}
+	
 	
 	protected void onPostLoad() throws InvalidConfigurationException {};
 	protected void onPreSave(){};
@@ -57,10 +79,16 @@ public abstract class AutoConfig
 				String optionName = configField.name();
 				if(optionName.isEmpty())
 					optionName = field.getName();
+				if (!mCategories.contains(configField.category())){
+					//InfoSigns.debug("Category found: %s", configField.category());
+					mCategories.add(configField.category());
+				}
+				
 				
 				field.setAccessible(true);
 				
 				String path = (configField.category().isEmpty() ? "" : configField.category() + ".") + optionName; //$NON-NLS-1$ //$NON-NLS-2$
+				mCategoryNodes.put(path, optionName);
 				if(!yml.contains(path))
 				{
 					if(field.get(this) == null)

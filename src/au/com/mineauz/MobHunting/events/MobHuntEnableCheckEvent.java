@@ -1,4 +1,4 @@
-package au.com.mineauz.MobHunting;
+package au.com.mineauz.MobHunting.events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
