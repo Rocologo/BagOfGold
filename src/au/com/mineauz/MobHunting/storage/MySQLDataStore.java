@@ -221,7 +221,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
-		MobHunting.debug("Loading % stats from database.",period);
+		MobHunting.debug("Loading %s stats from database.",period);
 		String id;
 		switch (period) {
 		case Day:
