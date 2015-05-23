@@ -78,7 +78,7 @@ public abstract class DatabaseDataStore implements DataStore {
 			throws SQLException;
 
 	protected void rollback() throws DataStoreException {
-		//TODO: Rollback disabled in v2.0.0
+
 		try {
 			mConnection.rollback();
 		} catch (SQLException e) {
@@ -89,8 +89,10 @@ public abstract class DatabaseDataStore implements DataStore {
 	@Override
 	public void shutdown() throws DataStoreException {
 		try {
-			if (mConnection != null){
-				mConnection.close(); MobHunting.debug("DBDS - shutdown connection");}
+			if (mConnection != null) {
+				mConnection.close();
+				MobHunting.debug("DBDS - shutdown connection");
+			}
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
 		}
@@ -174,8 +176,8 @@ public abstract class DatabaseDataStore implements DataStore {
 			return result.getInt(3);
 		}
 
-		throw new UserNotFoundException(
-				"User " + player.toString() + " is not present in database"); //$NON-NLS-1$ //$NON-NLS-2$
+		throw new UserNotFoundException("User " + player.toString()
+				+ " is not present in database");
 	}
 
 	protected void updatePlayerName(OfflinePlayer player) throws SQLException {
@@ -186,7 +188,6 @@ public abstract class DatabaseDataStore implements DataStore {
 
 			mConnection.commit();
 		} finally {
-			//TODO: rollback disabled in v2.0.0
 			mConnection.rollback();
 		}
 	}
@@ -250,9 +251,9 @@ public abstract class DatabaseDataStore implements DataStore {
 
 			mRecordAchievementStatement.executeBatch();
 
-			//mConnection.commit();
+			mConnection.commit();
 		} catch (SQLException e) {
-			// TODO: rollback disabled in v2.0.0 because of recurring error.
+
 			rollback();
 			throw new DataStoreException(e);
 		}

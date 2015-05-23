@@ -51,6 +51,15 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+
+import de.Keyle.MyPet.entity.types.MyPet;
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
@@ -69,6 +78,7 @@ import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaHelper;
 import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
+import au.com.mineauz.MobHunting.compatability.WorldGuardCompat;
 import au.com.mineauz.MobHunting.events.MobHuntEnableCheckEvent;
 import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.leaderboard.LeaderboardManager;
@@ -89,6 +99,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	private Economy mEconomy;
 	public static MobHunting instance;
+	private WorldGuardPlugin worldGuard;
 
 	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Config mConfig;
@@ -212,6 +223,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
 		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
 		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit"); //$NON-NLS-1$
+		CompatibilityManager.register(WorldGuardCompat.class, "WorldGuard");
 		CompatibilityManager.register(MobArenaCompat.class, "MobArena");
 		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
 		// CompatibilityManager.register(HeroesCompat.class, "Heroes");
@@ -235,10 +247,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new ClearGrindingCommand());
 		cmd.registerCommand(new WhitelistAreaCommand());
 
-		if (!getServer().getPluginManager().isPluginEnabled("WorldEdit")) //$NON-NLS-1$
+		if (getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
 			cmd.registerCommand(new SelectCommand());
+		}
 
-		if (!getServer().getPluginManager().isPluginEnabled("MobArena")) {
+		if (getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+			worldGuard = (WorldGuardPlugin) getServer().getPluginManager()
+					.getPlugin("WorldGuard");
+
+		}
+
+		if (getServer().getPluginManager().isPluginEnabled("MobArena")) {
 
 		}
 
@@ -246,12 +265,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
-
-		boolean maPlugin = getServer().getPluginManager().isPluginEnabled(
-				"MobArena");
-		debug("MobArenaCompat is enabled: %s", maPlugin);
-		// Plugin mPlugin =
-		// getServer().getPluginManager().getPlugin("MobArena");
 
 		if (mAchievements.upgradeAchievements())
 			mStoreManager.waitForUpdates();
@@ -726,11 +739,33 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDamage(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity)
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
+
+		if (worldGuard.isEnabled()) {
+			if (event.getDamager() instanceof Player
+					|| event.getDamager() instanceof MyPet) {
+				RegionManager regionManager = worldGuard.getRegionManager(event
+						.getDamager().getWorld());
+				ApplicableRegionSet set = regionManager
+						.getApplicableRegions(event.getDamager().getLocation());
+				if (set != null) {
+					debug("Found %s worldguard region: flag is %s", set
+							.getRegions().size(),
+							!set.allows(DefaultFlag.MOB_DAMAGE));
+					if (!set.allows(DefaultFlag.MOB_DAMAGE)) {
+						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s",
+								event.getDamager().getName(),
+								set.allows(DefaultFlag.MOB_DAMAGE));
+						return;
+					}
+				}
+			}
+		}
 
 		DamageInformation info = null;
 		info = mDamageHistory.get(event.getEntity());
@@ -796,6 +831,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 
@@ -807,6 +843,27 @@ public class MobHunting extends JavaPlugin implements Listener {
 					killed.getType(), killed.getEntityId(), killed.getWorld()
 							.getName());
 			return;
+		}
+
+		if (worldGuard.isEnabled()) {
+			if (killer instanceof Player || killer instanceof MyPet) {
+				RegionManager regionManager = worldGuard
+						.getRegionManager(killer.getWorld());
+				ApplicableRegionSet set = regionManager
+						.getApplicableRegions(killer.getLocation());
+				if (set != null) {
+					debug("Found %s worldguard region: flag is %s", set
+							.getRegions().size(),
+							!set.allows(DefaultFlag.MOB_DAMAGE));
+					if (killer instanceof Player
+							&& !set.allows(DefaultFlag.MOB_DAMAGE)) {
+						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s",
+								killer.getName(),
+								set.allows(DefaultFlag.MOB_DAMAGE));
+						return;
+					}
+				}
+			}
 		}
 
 		if (killed instanceof Player) {
@@ -1304,4 +1361,5 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 	}
+
 }

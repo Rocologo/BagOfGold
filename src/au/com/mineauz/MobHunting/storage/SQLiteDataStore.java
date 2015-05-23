@@ -204,7 +204,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
-		MobHunting.debug("Loading %s stats from database.",period);
+		//MobHunting.debug("Loading %s stats from database.",period);
 		String id;
 		switch (period) {
 		case Day:
@@ -270,9 +270,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// Create new empty tables if they do not exist
 		statement
 				.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
-		String dataString = ""; //$NON-NLS-1$
+		String dataString = ""; 
 		for (StatType type : StatType.values())
-			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; //$NON-NLS-1$ //$NON-NLS-2$
+			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; 
 		statement
 				.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		statement
