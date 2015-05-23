@@ -51,12 +51,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 
 import de.Keyle.MyPet.entity.types.MyPet;
@@ -100,6 +97,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private Economy mEconomy;
 	public static MobHunting instance;
 	private WorldGuardPlugin worldGuard;
+	private boolean worldGuardPresent=false;
 
 	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Config mConfig;
@@ -174,13 +172,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		mConfig = new Config(new File(getDataFolder(), "config.yml")); //$NON-NLS-1$
+		mConfig = new Config(new File(getDataFolder(), "config.yml"));
 
 		if (mConfig.load())
 			mConfig.save();
 		else
 			throw new RuntimeException(Messages.getString(pluginName
-					+ ".config.fail")); //$NON-NLS-1$
+					+ ".config.fail"));
 
 		Messages.exportDefaultLanguages();
 
@@ -188,7 +186,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				.getServicesManager().getRegistration(Economy.class);
 		if (economyProvider == null) {
 			instance = null;
-			getLogger().severe(Messages.getString(pluginName + ".hook.econ")); //$NON-NLS-1$
+			getLogger().severe(Messages.getString(pluginName + ".hook.econ"));
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -198,7 +196,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!loadWhitelist())
 			throw new RuntimeException();
 
-		if (mConfig.databaseType.equalsIgnoreCase("mysql")) //$NON-NLS-1$
+		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
 			mStore = new MySQLDataStore();
 		else
 			mStore = new SQLiteDataStore();
@@ -220,9 +218,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mStoreManager = new DataStoreManager(mStore);
 
 		// Handle compatability stuff
-		CompatibilityManager.register(MinigamesCompat.class, "Minigames"); //$NON-NLS-1$
-		CompatibilityManager.register(MyPetCompat.class, "MyPet"); //$NON-NLS-1$
-		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit"); //$NON-NLS-1$
+		CompatibilityManager.register(MinigamesCompat.class, "Minigames");
+		CompatibilityManager.register(MyPetCompat.class, "MyPet");
+		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit");
 		CompatibilityManager.register(WorldGuardCompat.class, "WorldGuard");
 		CompatibilityManager.register(MobArenaCompat.class, "MobArena");
 		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
@@ -232,10 +230,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// CompatibilityManager.register(WarCompat.class, "War");
 
 		// TODO: Add compatability to Citizens or MythicMob
-		// TODO: Test with MobArena
 
-		CommandDispatcher cmd = new CommandDispatcher(
-				"mobhunt", Messages.getString("mobhunting.command.base.description") + getDescription().getVersion()); //$NON-NLS-1$ //$NON-NLS-2$
+		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
+				Messages.getString("mobhunting.command.base.description")
+						+ getDescription().getVersion());
 		getCommand("mobhunt").setExecutor(cmd);
 		getCommand("mobhunt").setTabCompleter(cmd);
 
@@ -254,7 +252,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
 			worldGuard = (WorldGuardPlugin) getServer().getPluginManager()
 					.getPlugin("WorldGuard");
-
+			worldGuardPresent=true;
 		}
 
 		if (getServer().getPluginManager().isPluginEnabled("MobArena")) {
@@ -379,7 +377,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Check if horses exist
 		try {
-			Class.forName("org.bukkit.entity.Horse"); //$NON-NLS-1$
+			Class.forName("org.bukkit.entity.Horse"); 
 			mModifiers.add(new MountedBonus());
 		} catch (ClassNotFoundException e) {
 		}
@@ -445,34 +443,31 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public HuntData getHuntData(Player player) {
 		HuntData data = null;
-		if (!player.hasMetadata("MobHuntData")) //$NON-NLS-1$
-		{
+		if (!player.hasMetadata("MobHuntData")) {
 			data = new HuntData();
-			player.setMetadata(
-					"MobHuntData", new FixedMetadataValue(this, data)); //$NON-NLS-1$
+			player.setMetadata("MobHuntData",
+					new FixedMetadataValue(this, data));
 		} else {
-			if (!(player.getMetadata("MobHuntData").get(0).value() instanceof HuntData)) //$NON-NLS-1$
-			{
-				player.getMetadata("MobHuntData").get(0).invalidate(); //$NON-NLS-1$
-				player.setMetadata(
-						"MobHuntData", new FixedMetadataValue(this, new HuntData())); //$NON-NLS-1$
+			if (!(player.getMetadata("MobHuntData").get(0).value() instanceof HuntData)) {
+				player.getMetadata("MobHuntData").get(0).invalidate();
+				player.setMetadata("MobHuntData", new FixedMetadataValue(this,
+						new HuntData()));
 			}
 
-			data = (HuntData) player.getMetadata("MobHuntData").get(0).value(); //$NON-NLS-1$
+			data = (HuntData) player.getMetadata("MobHuntData").get(0).value();
 		}
 
 		return data;
 	}
 
 	public static boolean isHuntEnabled(Player player) {
-		if (!player.hasMetadata("MH:enabled")) //$NON-NLS-1$
-		{
+		if (!player.hasMetadata("MH:enabled")) {
 			debug("KillBlocked %s: Player doesnt have MH:enabled",
 					player.getName());
 			return false;
 		}
 
-		List<MetadataValue> values = player.getMetadata("MH:enabled"); //$NON-NLS-1$
+		List<MetadataValue> values = player.getMetadata("MH:enabled");
 
 		// Use the first value that matches the required type
 		boolean enabled = false;
@@ -481,8 +476,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				enabled = value.asBoolean();
 		}
 
-		if (enabled && !player.hasPermission("mobhunting.enable")) //$NON-NLS-1$
-		{
+		if (enabled && !player.hasPermission("mobhunting.enable")) {
 			debug("KillBlocked %s: Player doesnt have permission",
 					player.getName());
 			return false;
@@ -511,8 +505,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	public static void setHuntEnabled(Player player, boolean enabled) {
-		player.setMetadata(
-				"MH:enabled", new FixedMetadataValue(instance, enabled)); //$NON-NLS-1$
+		player.setMetadata("MH:enabled", new FixedMetadataValue(instance,
+				enabled));
 	}
 
 	private boolean saveWhitelist() {
@@ -746,7 +740,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
-		if (worldGuard.isEnabled()) {
+		if (worldGuardPresent) {
 			if (event.getDamager() instanceof Player
 					|| event.getDamager() instanceof MyPet) {
 				RegionManager regionManager = worldGuard.getRegionManager(event
@@ -845,7 +839,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (worldGuard.isEnabled()) {
+		if (worldGuardPresent) {
 			if (killer instanceof Player || killer instanceof MyPet) {
 				RegionManager regionManager = worldGuard
 						.getRegionManager(killer.getWorld());
@@ -998,7 +992,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (data.dampenedKills > 14) {
 				if (data.getKillstreakLevel() != 0)
 					killer.sendMessage(ChatColor.RED
-							+ Messages.getString("mobhunting.killstreak.lost")); //$NON-NLS-1$
+							+ Messages.getString("mobhunting.killstreak.lost"));
 				data.killStreak = 0;
 			}
 		}
@@ -1022,7 +1016,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		multiplier *= data.getKillstreakMultiplier();
 
-		String extraString = ""; //$NON-NLS-1$
+		String extraString = "";
 
 		// Only display the multiplier if its not 1
 		if (Math.abs(multiplier - 1) > 0.05)
@@ -1108,7 +1102,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (cash >= 0.01) {
 			getDataStore().recordAssist(player, killer,
 					ExtendedMobType.fromEntity(killed),
-					killed.hasMetadata("MH:hasBonus")); //$NON-NLS-1$
+					killed.hasMetadata("MH:hasBonus"));
 			mEconomy.depositPlayer(player, cash);
 			debug("%s got a on assist reward (%s)", player.getName(),
 					mEconomy.format(cash));
@@ -1219,8 +1213,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 						new PotionEffect(PotionEffectType.SPEED,
 								Integer.MAX_VALUE, 2));
 
-			event.getEntity().setMetadata(
-					"MH:hasBonus", new FixedMetadataValue(this, true)); //$NON-NLS-1$
+			event.getEntity().setMetadata("MH:hasBonus",
+					new FixedMetadataValue(this, true));
 		}
 	}
 
@@ -1234,8 +1228,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& event.getSpawnReason() != SpawnReason.SPAWNER_EGG)
 			return;
 
-		event.getEntity().setMetadata(
-				"MH:blocked", new FixedMetadataValue(this, true)); //$NON-NLS-1$
+		event.getEntity().setMetadata("MH:blocked",
+				new FixedMetadataValue(this, true));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -1245,8 +1239,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.REINFORCEMENTS)
-			event.getEntity().setMetadata(
-					"MH:reinforcement", new FixedMetadataValue(this, true)); //$NON-NLS-1$
+			event.getEntity().setMetadata("MH:reinforcement",
+					new FixedMetadataValue(this, true));
 	}
 
 	public AchievementManager getAchievements() {

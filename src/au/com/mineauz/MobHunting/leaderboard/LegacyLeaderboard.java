@@ -219,7 +219,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 			int returnSign = 0;
 
 			for (StatStore stat : data) {
-				if (stat.amount == 0)
+				if (stat.getAmount() == 0)
 					continue;
 
 				if (sign >= signs.size() || signs.get(sign).getY() != y) {
@@ -239,7 +239,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 				}
 
 				signs.get(sign).setLine(line,
-						stat.amount + " " + stat.player.getName());
+						stat.getAmount() + " " + stat.getPlayer().getName());
 
 				++sign;
 			}
@@ -247,7 +247,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 			int sign = 0;
 			int line = 0;
 			for (StatStore stat : data) {
-				if (stat.amount == 0)
+				if (stat.getAmount() == 0)
 					continue;
 
 				if (line >= 4) {
@@ -259,7 +259,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 					break;
 
 				signs.get(sign).setLine(line,
-						stat.amount + " " + stat.player.getName()); //$NON-NLS-1$
+						stat.getAmount() + " " + stat.getPlayer().getName()); //$NON-NLS-1$
 
 				++line;
 			}

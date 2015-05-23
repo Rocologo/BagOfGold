@@ -40,16 +40,17 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>>
 				{
 					StatStore stat = it.next();
 					
-					if(cached.player.getUniqueId().equals(stat.player.getUniqueId()) && cached.type.equals(stat.type))
+					if(cached.getPlayer().getUniqueId().equals(stat.getPlayer().getUniqueId()) && cached.getType().equals(stat.getType()))
 					{
-						stat.amount += cached.amount;
+						stat.setAmount(stat.getAmount()+cached.getAmount());
+						//stat.amount += cached.amount;
 						
 						found = true;
 						break;
 					}
 				}
 				
-				if(!found && cached.type.equals(mType))
+				if(!found && cached.getType().equals(mType))
 					stats.add(cached);
 			}
 		}

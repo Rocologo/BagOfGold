@@ -170,7 +170,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
 			for (StatStore stat : stats)
-				names.add(stat.player);
+				names.add(stat.getPlayer());
 			Map<UUID, Integer> ids = getPlayerIds(names);
 
 			// Make sure the stats are available for each player
@@ -187,9 +187,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				statement
 						.addBatch(String
 								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = strftime(\"%%Y%%j\",\"now\") AND PLAYER_ID = %2$d;",
-										stat.type.getDBColumn(),
-										ids.get(stat.player.getUniqueId()),
-										stat.amount));
+										stat.getType().getDBColumn(),
+										ids.get(stat.getPlayer().getUniqueId()),
+										stat.getAmount()));
 			statement.executeBatch();
 			statement.close();
 			mConnection.commit();

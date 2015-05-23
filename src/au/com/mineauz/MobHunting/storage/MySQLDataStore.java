@@ -22,19 +22,15 @@ import au.com.mineauz.MobHunting.util.UUIDHelper;
 
 public class MySQLDataStore extends DatabaseDataStore {
 
-	//int n = 0; // Numbe rof connections
-
 	@Override
 	public void saveStats(Set<StatStore> stats) throws DataStoreException {
 		try {
 			MobHunting.debug("Saving stats to Database.", "");
-			//n++;
-			//MobHunting.debug("MySQLDS - create connection (30) n=(%s)", n);
 			Statement statement = mConnection.createStatement();
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
 			for (StatStore stat : stats)
-				names.add(stat.player);
+				names.add(stat.getPlayer());
 			Map<UUID, Integer> ids = getPlayerIds(names);
 
 			// Make sure the stats are available for each player
@@ -51,17 +47,14 @@ public class MySQLDataStore extends DatabaseDataStore {
 				statement
 						.addBatch(String
 								.format("UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
-										stat.type.getDBColumn(),
-										ids.get(stat.player.getUniqueId()),
-										stat.amount));
+										stat.getType().getDBColumn(),
+										ids.get(stat.getPlayer().getUniqueId()),
+										stat.getAmount()));
 			statement.executeBatch();
-			//n--;
-			//MobHunting.debug("MySQLDS - close connection (56) n=(%s)", n);
 			statement.close();
 			mConnection.commit();
 			MobHunting.debug("Saved.", "");
 		} catch (SQLException e) {
-			// MobHunting.debug("Performing Rollback", "");
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -85,8 +78,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	@Override
 	protected void setupTables(Connection connection) throws SQLException {
-		//n++;
-		//MobHunting.debug("MySQLDS - create connection (85) n=(%s)", n);
 		Statement create = connection.createStatement();
 
 		// Prefix tables to mh_
@@ -127,10 +118,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		// Setup Database triggers
 		setupTrigger(connection);
 
-		// performTableMigrate(connection);
-
-		//n--;
-		//MobHunting.debug("MySQLDS - close connection (123) n=(%s)", n);
 		create.close();
 		connection.commit();
 
@@ -139,8 +126,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 	}
 
 	private void setupTrigger(Connection connection) throws SQLException {
-		//n++;
-		//MobHunting.debug("MySQLDS - create connection (132) n=(%s)", n);
 		Statement create = connection.createStatement();
 
 		// Workaround for no create trigger if not exists
@@ -196,8 +181,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// Do Nothing
 		}
 
-		//n--;
-		//MobHunting.debug("MySQLDS - close connection (188) n=(%s)", n);
 		create.close();
 		connection.commit();
 	}
@@ -233,7 +216,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
-		//MobHunting.debug("Loading %s stats from database.", period);
 		String id;
 		switch (period) {
 		case Day:
@@ -255,14 +237,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 		Statement statement;
 		try {
 			// test if connection to MySql works properly
-			//n++;
-			//MobHunting.debug("MySQLDS - create connection (245) n=(%s)", n);
 			statement = mConnection.createStatement();
 			ResultSet rs = statement
 					.executeQuery("SELECT PLAYER_ID from `mh_Players` LIMIT 0");
 			rs.close();
-			//n--;
-			//MobHunting.debug("MySQLDS - close connection (250) n=(%s)", n);
 			statement.close();
 		} catch (SQLException e) {
 			// The connection did not work, try to initialiaze again.
@@ -274,11 +252,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			}
 		}
 		try {
-			//n++;
-			//MobHunting.debug("MySQLDS - create connection (262) n=(%s)", n);
 			statement = mConnection.createStatement();
 			ResultSet results = statement.executeQuery("SELECT "
-					+ type.getDBColumn() + ", mh_Players.UUID from mh_"
+					+ type.getDBColumn() + ", mh_Players.UUID, mh_Players.NAME from mh_"
 					+ period.getTable()
 					+ " inner join mh_Players on mh_Players.PLAYER_ID=mh_"
 					+ period.getTable() + ".PLAYER_ID"
@@ -289,10 +265,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 			while (results.next())
 				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID
 						.fromString(results.getString(2))), results.getInt(1)));
+				//list.add(new StatStore(type, results.getString(3), results.getInt(1)));
+
 
 			results.close();
-			//n--;
-			//MobHunting.debug("MySQLDS - close connection (278) n=(%s)", n);
 			statement.close();
 			return list;
 		} catch (SQLException e) {
@@ -302,14 +278,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	private void performUUIDMigrate(Connection connection) throws SQLException {
 		try {
-			//n++;
-			//MobHunting.debug("MySQLDS - create connection (288) n=(%s)", n);
 			Statement statement = connection.createStatement();
 			ResultSet rs = statement
 					.executeQuery("SELECT UUID from `mh_Players` LIMIT 0");
 			rs.close();
-			//n--;
-			//MobHunting.debug("MySQLDS - close connection (293) n=(%s)", n);
 			statement.close();
 			return; // UUIDs are in place
 
@@ -320,8 +292,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 				.println("[MobHunting]*** Migrating MobHunting Database to UUIDs ***");
 
 		// Add missing columns
-		//n++;
-		//MobHunting.debug("MySQLDS - create connection (304) n=(%s)", n);
 		Statement statement = connection.createStatement();
 		statement
 				.executeUpdate("alter table `mh_Players` add column `UUID` CHAR(40) default '**UNSPEC**' NOT NULL first");
@@ -331,8 +301,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 				.executeQuery("select `NAME` from `mh_Players`");
 		UUIDHelper.initialize();
 
-		//n++;
-		//MobHunting.debug("MySQLDS - Prepare connection (314) n=(%s)", n);
 		PreparedStatement insert = connection
 				.prepareStatement("update `mh_Players` set `UUID`=? where `NAME`=?");
 		StringBuilder failString = new StringBuilder();
@@ -363,8 +331,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 
 		insert.executeBatch();
-		//n--;
-		//MobHunting.debug("MySQLDS - close connection (345) n=(%s)", n);
 		insert.close();
 
 		int modified = statement
@@ -379,23 +345,17 @@ public class MySQLDataStore extends DatabaseDataStore {
 		System.out
 				.println("[MobHunting]*** Player UUID migration complete ***");
 
-		//n--;
-		//MobHunting.debug("MySQLDS - close connection (360) n=(%s)", n);
 		statement.close();
 		connection.commit();
 	}
 
 	private void performAddNewMobs(Connection connection) throws SQLException {
 
-		//n++;
-		//MobHunting.debug("MySQLDS - create connection (367) n=(%s)", n);
 		Statement statement = connection.createStatement();
 		try {
 			ResultSet rs = statement
 					.executeQuery("SELECT PvpPlayer_kill from `mh_Daily` LIMIT 0");
 			rs.close();
-			//n--;
-			//MobHunting.debug("MySQLDS - close connection (373) n=(%s)", n);
 			statement.close();
 			return; // PvpPlayer row exits
 
@@ -433,8 +393,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 			ResultSet rs = statement
 					.executeQuery("SELECT Giant_kill from `mh_Daily` LIMIT 0");
 			rs.close();
-			//n--;
-			//MobHunting.debug("MySQLDS - close connection (411) n=(%s)", n);
 			statement.close();
 			return; // Giant_Kill row exits
 
@@ -535,8 +493,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		}
 
-		//n--;
-		//MobHunting.debug("MySQLDS - close connection (512) n=(%s)", n);
 		statement.close();
 		connection.commit();
 	}

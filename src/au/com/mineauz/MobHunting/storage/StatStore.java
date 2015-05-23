@@ -6,12 +6,9 @@ import au.com.mineauz.MobHunting.StatType;
 
 public class StatStore
 {
-	public StatStore(StatType type, OfflinePlayer player)
-	{
-		this.type = type;
-		this.player = player;
-		amount = 1;
-	}
+	private StatType type;
+	private OfflinePlayer player;
+	private int amount;
 	
 	public StatStore(StatType type, OfflinePlayer player, int amount)
 	{
@@ -20,11 +17,55 @@ public class StatStore
 		this.amount = amount;
 	}
 	
-	public StatType type;
-	public OfflinePlayer player;
-	
-	public int amount;
-	
+	public StatStore(StatType type, OfflinePlayer player)
+	{
+		this.type = type;
+		this.player = player;
+		amount = 1;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public StatType getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(StatType type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the player
+	 */
+	public OfflinePlayer getPlayer() {
+		return player;
+	}
+
+	/**
+	 * @param player the player to set
+	 */
+	public void setPlayer(OfflinePlayer player) {
+		this.player = player;
+	}
+
+	/**
+	 * @return the amount
+	 */
+	public int getAmount() {
+		return amount;
+	}
+
+	/**
+	 * @param amount the amount to set
+	 */
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
 	@Override
 	public String toString()
 	{
