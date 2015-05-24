@@ -98,6 +98,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	public static MobHunting instance;
 	private WorldGuardPlugin worldGuard;
 	private boolean worldGuardPresent=false;
+	private MyPet myPet;
+	private boolean myPetPresent=false;
 
 	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Config mConfig;
@@ -253,6 +255,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 			worldGuard = (WorldGuardPlugin) getServer().getPluginManager()
 					.getPlugin("WorldGuard");
 			worldGuardPresent=true;
+		}
+		
+		if (getServer().getPluginManager().isPluginEnabled("MyPet")) {
+			myPet = (MyPet) getServer().getPluginManager()
+					.getPlugin("MyPet");
+			myPetPresent=true;
 		}
 
 		if (getServer().getPluginManager().isPluginEnabled("MobArena")) {
@@ -741,8 +749,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 
 		if (worldGuardPresent) {
-			if (event.getDamager() instanceof Player
-					|| event.getDamager() instanceof MyPet) {
+			if ((event.getDamager() instanceof Player)
+					|| (myPetPresent && event.getDamager() instanceof MyPet)) {
+				debug("Damager is %s", event.getDamager());
 				RegionManager regionManager = worldGuard.getRegionManager(event
 						.getDamager().getWorld());
 				ApplicableRegionSet set = regionManager
@@ -840,7 +849,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (worldGuardPresent) {
-			if (killer instanceof Player || killer instanceof MyPet) {
+			if (killer instanceof Player || (myPetPresent && killer instanceof MyPet)) {
 				RegionManager regionManager = worldGuard
 						.getRegionManager(killer.getWorld());
 				ApplicableRegionSet set = regionManager
