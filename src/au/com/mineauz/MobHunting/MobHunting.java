@@ -44,6 +44,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -98,7 +99,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	public static MobHunting instance;
 	private WorldGuardPlugin worldGuard;
 	private boolean worldGuardPresent=false;
-	private MyPet myPet;
+	private Plugin myPet;
 	private boolean myPetPresent=false;
 
 	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
@@ -258,7 +259,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 		
 		if (getServer().getPluginManager().isPluginEnabled("MyPet")) {
-			myPet = (MyPet) getServer().getPluginManager()
+			myPet = getServer().getPluginManager()
 					.getPlugin("MyPet");
 			myPetPresent=true;
 		}
