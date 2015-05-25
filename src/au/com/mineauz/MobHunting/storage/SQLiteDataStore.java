@@ -157,9 +157,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;"); //$NON-NLS-1$
 
 		mGetPlayerUUID = connection
-				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME LIKE ?"); //$NON-NLS-1$
+				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;"); 
 		mUpdatePlayerName = connection
-				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?"); //$NON-NLS-1$
+				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;"); 
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 										stat.getAmount()));
 			statement.executeBatch();
 			statement.close();
-			mConnection.commit();
+			//mConnection.commit();
 			MobHunting.debug("Saved.", "");
 		} catch (SQLException e) {
 			//MobHunting.debug("Performing Rollback", "");

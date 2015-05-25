@@ -57,6 +57,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 
+import de.Keyle.MyPet.api.entity.MyPetEntity;
 import de.Keyle.MyPet.entity.types.MyPet;
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
@@ -751,7 +752,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		if (worldGuardPresent) {
 			if ((event.getDamager() instanceof Player)
-					|| (myPetPresent && event.getDamager() instanceof MyPet)) {
+					|| (myPetPresent && event.getDamager() instanceof MyPetEntity)) {
 				debug("Damager is %s", event.getDamager());
 				RegionManager regionManager = worldGuard.getRegionManager(event
 						.getDamager().getWorld());
@@ -850,7 +851,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (worldGuardPresent) {
-			if (killer instanceof Player || (myPetPresent && killer instanceof MyPet)) {
+			if (killer instanceof Player || (myPetPresent && killer instanceof MyPetEntity)) {
 				RegionManager regionManager = worldGuard
 						.getRegionManager(killer.getWorld());
 				ApplicableRegionSet set = regionManager

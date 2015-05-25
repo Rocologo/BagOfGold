@@ -169,7 +169,7 @@ public abstract class DatabaseDataStore implements DataStore {
 			if (!player.getName().equals(name)) {
 				MobHunting.instance.getLogger().info(
 						"Name change detected: " + name + " -> "
-								+ player.getName());
+								+ player.getName()+" UUID="+player.getUniqueId().toString());
 				updatePlayerName(player);
 			}
 
