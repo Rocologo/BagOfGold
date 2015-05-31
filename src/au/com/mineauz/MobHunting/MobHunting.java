@@ -1095,32 +1095,34 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Run console commands as a reward
 		if (!getCmdKillPrize(killed).equals("")) {
-			String worldname = killer.getWorld().getName();
-			String prizeCommand = getCmdKillPrize(killed).replaceAll(
-					"\\{player\\}", killer.getName()).replaceAll("\\{world\\}",
-					worldname);
-			if (!getCmdKillPrize(killed).equals("")) {
-				String str = prizeCommand;
-				do {
-					if (str.contains("|")) {
-						int n = str.indexOf("|");
-						Bukkit.getServer().dispatchCommand(
-								Bukkit.getServer().getConsoleSender(),
-								str.substring(0, n));
-						str = str.substring(n + 1, str.length()).toString();
-					}
-				} while (str.contains("|"));
-				Bukkit.getServer().dispatchCommand(
-						Bukkit.getServer().getConsoleSender(), str);
-			}
-			// send a message to the player
-			if (!getCmdDescKillPrize(killed).equals("")) {
-				killer.sendMessage(ChatColor.GREEN
-						+ ""
-						+ ChatColor.ITALIC
-						+ getCmdDescKillPrize(killed).replaceAll(
-								"\\{player\\}", killer.getName()).replaceAll(
-								"\\{world\\}", worldname));
+			if (mRand.nextInt(100) < getCmdRunFrequency(killed)) {
+				String worldname = killer.getWorld().getName();
+				String prizeCommand = getCmdKillPrize(killed).replaceAll(
+						"\\{player\\}", killer.getName()).replaceAll(
+						"\\{world\\}", worldname);
+				if (!getCmdKillPrize(killed).equals("")) {
+					String str = prizeCommand;
+					do {
+						if (str.contains("|")) {
+							int n = str.indexOf("|");
+							Bukkit.getServer().dispatchCommand(
+									Bukkit.getServer().getConsoleSender(),
+									str.substring(0, n));
+							str = str.substring(n + 1, str.length()).toString();
+						}
+					} while (str.contains("|"));
+					Bukkit.getServer().dispatchCommand(
+							Bukkit.getServer().getConsoleSender(), str);
+				}
+				// send a message to the player
+				if (!getCmdDescKillPrize(killed).equals("")) {
+					killer.sendMessage(ChatColor.GREEN
+							+ ""
+							+ ChatColor.ITALIC
+							+ getCmdDescKillPrize(killed).replaceAll(
+									"\\{player\\}", killer.getName())
+									.replaceAll("\\{world\\}", worldname));
+				}
 			}
 		}
 	}
@@ -1364,6 +1366,65 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		return "";
+	}
+
+	public int getCmdRunFrequency(LivingEntity mob) {
+		if (mob instanceof Player)
+			return 100;
+		else if (mob instanceof Blaze)
+			return mConfig.blazeFrequency;
+		else if (mob instanceof Creeper)
+			return mConfig.creeperFrequency;
+		else if (mob instanceof Silverfish)
+			return mConfig.silverfishFrequency;
+		else if (mob instanceof Enderman)
+			return mConfig.endermanFrequency;
+		else if (mob instanceof Giant)
+			return mConfig.giantFrequency;
+		else if (mob instanceof Skeleton) {
+			switch (((Skeleton) mob).getSkeletonType()) {
+			case NORMAL:
+				return mConfig.skeletonFrequency;
+			case WITHER:
+				return mConfig.witherSkeletonFrequency;
+			}
+		} else if (mob instanceof CaveSpider)
+			return mConfig.caveSpiderFrequency;
+		else if (mob instanceof Spider)
+			return mConfig.spiderFrequency;
+		else if (mob instanceof Witch)
+			return mConfig.witchFrequency;
+		else if (mob instanceof PigZombie)
+			// PigZombie is a subclass of Zombie. PigZombie must be checked
+			// before Zombie
+			return mConfig.zombiePigmanFrequency;
+		else if (mob instanceof Zombie)
+			return mConfig.zombieFrequency;
+		else if (mob instanceof Ghast)
+			return mConfig.ghastFrequency;
+		else if (mob instanceof Slime)
+			return mConfig.slimeFrequency;
+		else if (mob instanceof EnderDragon)
+			return mConfig.enderdragonFrequency;
+		else if (mob instanceof Wither)
+			return mConfig.witherFrequency;
+
+		// Test if Minecraft 1.8 Mob Classes exists
+		try {
+			Class cls = Class.forName("org.bukkit.entity.Guardian");
+			if (mob instanceof Guardian)
+				return mConfig.guardianFrequency;
+			else if (mob instanceof Endermite)
+				return mConfig.endermiteFrequency;
+			else if (mob instanceof Rabbit
+					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+				return mConfig.killerrabbitFrequency;
+
+		} catch (ClassNotFoundException e) {
+			// This is not MC 1.8
+		}
+
+		return 100;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
