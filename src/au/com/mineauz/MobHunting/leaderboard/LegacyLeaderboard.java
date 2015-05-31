@@ -259,7 +259,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 					break;
 
 				signs.get(sign).setLine(line,
-						stat.getAmount() + " " + stat.getPlayer().getName()); //$NON-NLS-1$
+						stat.getAmount() + " " + stat.getPlayer().getName()); 
 
 				++line;
 			}

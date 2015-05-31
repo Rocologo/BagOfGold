@@ -11,8 +11,16 @@ public class Config extends AutoConfig {
 	public Config(File file) {
 		super(file);
 
-		setCategoryComment("mobs",
-				"Here is where you set the base prize in $ for killing a mob of each type");
+		setCategoryComment(
+				"mobs",
+				"Here is where you set the base prize in $ for killing a mob of each type"
+						+ "\nFor each kill you can run a console command to give the player a reward."
+						+ "\nYou can use the following variables {player},{world}."
+						+ "\nAn example could be to give the player permission to fly"
+						+ "\nfor 1 hour or use give command to the player items."
+						+ "\nYou can also specify the message send to the player."
+						+ "\nYou can run many console commands on each line, each command"
+						+ "\nmust be separated by |");
 		setCategoryComment("boss",
 				"Here is where you set the base prize in $ for killing the bosses");
 		setCategoryComment(
@@ -29,7 +37,7 @@ public class Config extends AutoConfig {
 				"special",
 				"Here is where you set the prize in $ for achieving a special kill. "
 						+ "\nFor each achievment you can run a console command to give the player a reward. "
-						+ "\nYou can you the following variables {player},{world}."
+						+ "\nYou can use the following variables {player},{world}."
 						+ "\nAn example could be to give the player permission to fly "
 						+ "\nfor 1 hour or use give command to the player items."
 						+ "\nYou can also specify the message send to the player."
@@ -58,43 +66,136 @@ public class Config extends AutoConfig {
 
 	@ConfigField(name = "blaze", category = "mobs")
 	public double blazePrize = 1.0;
+	@ConfigField(name = "blaze-cmd", category = "mobs")
+	public String blazeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Blaze\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "blaze-cmd-desc", category = "mobs")
+	public String blazeCmdDesc = "You got a Blaze skull and an Iron ingot.";
+
 	@ConfigField(name = "creeper", category = "mobs")
 	public double creeperPrize = 1.0;
+	@ConfigField(name = "creeper-cmd", category = "mobs")
+	public String creeperCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Creeper\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "creeper-cmd-desc", category = "mobs")
+	public String creeperCmdDesc = "You got a Creeper skull and an Iron ingot.";
+
 	@ConfigField(name = "silverfish", category = "mobs")
 	public double silverfishPrize = 0.1;
-	@ConfigField(name = "pigman", category = "mobs")
-	public double pigMan = 0.5;
-	@ConfigField(name = "endermen", category = "mobs")
-	public double endermenPrize = 1.0;
+	@ConfigField(name = "silverfish-cmd", category = "mobs")
+	public String silverfishCmd = "";
+	@ConfigField(name = "silver-cmd-desc", category = "mobs")
+	public String silverfishCmdDesc = "";
+	
+	@ConfigField(name = "zombie-pigman", category = "mobs")
+	public double zombiePigman = 0.5;
+	@ConfigField(name = "zombie-pigman-cmd", category = "mobs")
+	public String zombiePigmanCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_PigZombie\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "zombie-pigman-cmd-desc", category = "mobs")
+	public String zombiePigmanCmdDesc = "You got a Zombie Pigman skull and an Iron ingot.";
+
+	@ConfigField(name = "enderman", category = "mobs")
+	public double endermanPrize = 1.0;
+	@ConfigField(name = "enderman-cmd", category = "mobs")
+	public String endermanCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Enderman\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "enderman-cmd-desc", category = "mobs")
+	public String endermanCmdDesc = "You got a Enderman skull and an Iron ingot.";
+
 	@ConfigField(name = "giant", category = "mobs")
 	public double giantPrize = 2.0;
+	@ConfigField(name = "giant-cmd", category = "mobs")
+	public String giantCmd = "give {player} iron_ingot 1";
+	@ConfigField(name = "giant-cmd-desc", category = "mobs")
+	public String giantCmdDesc = "You got an Iron ingot.";
+
 	@ConfigField(name = "skeleton", category = "mobs")
 	public double skeletonPrize = 0.5;
+	@ConfigField(name = "skeleton-cmd", category = "mobs")
+	public String skeletonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Skeleton\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "skeleton-cmd-desc", category = "mobs")
+	public String skeletonCmdDesc = "You got a Skeleton skull and an Iron ingot.";
+
 	@ConfigField(name = "wither-skeleton", category = "mobs")
 	public double witherSkeletonPrize = 1.0;
+	@ConfigField(name = "wither-skeleton-cmd", category = "mobs")
+	public String witherSkeletonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_WSkeleton\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "wither-skeleton-cmd-desc", category = "mobs")
+	public String witherSkeletonCmdDesc = "You got a Wither Skeleton skull and an Iron ingot.";
+
 	@ConfigField(name = "spider", category = "mobs")
 	public double spiderPrize = 0.5;
+	@ConfigField(name = "spider-cmd", category = "mobs")
+	public String spiderCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Spider\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "spider-cmd-desc", category = "mobs")
+	public String spiderCmdDesc = "You got a Spider skull and an Iron ingot.";
+
 	@ConfigField(name = "cave-spider", category = "mobs")
 	public double caveSpiderPrize = 0.8;
+	@ConfigField(name = "cave-spider-cmd", category = "mobs")
+	public String caveSpiderCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_CaveSpider\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "cave-spider-cmd-desc", category = "mobs")
+	public String caveSpiderCmdDesc = "You got a Cave Spider skull and an Iron ingot.";
+
 	@ConfigField(name = "witch", category = "mobs")
 	public double witchPrize = 1.0;
+	@ConfigField(name = "witch-cmd", category = "mobs")
+	public String witchCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Witch\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "witch-cmd-desc", category = "mobs")
+	public String witchCmdDesc = "You got a Witch skull and an Iron ingot.";
+
 	@ConfigField(name = "zombie", category = "mobs")
 	public double zombiePrize = 0.5;
+	@ConfigField(name = "zombie-cmd", category = "mobs")
+	public String zombieCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Zombie\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "zombie-cmd-desc", category = "mobs")
+	public String zombieCmdDesc = "You got a Zombie skull and an Iron ingot.";
+
 	@ConfigField(name = "ghast", category = "mobs")
 	public double ghastPrize = 2.0;
+	@ConfigField(name = "ghast-cmd", category = "mobs")
+	public String ghastCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Ghast\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "ghast-cmd-desc", category = "mobs")
+	public String ghastCmdDesc = "You got a Ghast skull and an Iron ingot.";
+
 	@ConfigField(name = "endermite", category = "mobs")
 	public double endermitePrize = 1.0;
+	@ConfigField(name = "endermite-cmd", category = "mobs")
+	public String endermiteCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Endermite\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "endermite-cmd-desc", category = "mobs")
+	public String endermiteCmdDesc = "You got a Endermite skull and an Iron ingot.";
+
 	@ConfigField(name = "guardian", category = "mobs")
 	public double guardianPrize = 1.0;
+	@ConfigField(name = "guardian-cmd", category = "mobs")
+	public String guardianCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Guardian\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "guardian-cmd-desc", category = "mobs")
+	public String guardianCmdDesc = "You got a Guardian skull and an Iron ingot.";
+
 	@ConfigField(name = "killerrabbit", category = "mobs")
 	public double killerrabbitPrize = 0.5;
+	@ConfigField(name = "killerrabbit-cmd", category = "mobs")
+	public String killerrabbitCmd = "";
+	@ConfigField(name = "killerrabbit-cmd-desc", category = "mobs")
+	public String killerrabbitCmdDesc = "";
+
 	@ConfigField(name = "slime-base", category = "mobs", comment = "This is multiplied by the size of the slime. So a big natural slime is 4x this value")
 	public double slimeTinyPrize = 0.25;
+	@ConfigField(name = "slime-cmd", category = "mobs")
+	public String slimeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Slime\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "slime-cmd-desc", category = "mobs")
+	public String slimeCmdDesc = "You got a Slime skull and an Iron ingot.";
 
 	@ConfigField(name = "wither", category = "boss")
 	public double witherPrize = 500.0;
+	@ConfigField(name = "wither-cmd", category = "boss")
+	public String witherCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Wither\"}|give {player} diamond 2";
+	@ConfigField(name = "wither-cmd-desc", category = "boss")
+	public String witherCmdDesc = "You got a Wither skull and two Diamonds.";
+
 	@ConfigField(name = "enderdragon", category = "boss")
 	public double enderdragonPrize = 1000.0;
+	@ConfigField(name = "enderdragon-cmd", category = "boss")
+	public String enderdragonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Enderdragon\"}|give {player} diamond 2";
+	@ConfigField(name = "enderdragon-cmd-desc", category = "boss")
+	public String enderdragonCmdDesc = "You got a Enderdragon skull and two Diamonds.";
 
 	@ConfigField(name = "sneaky", category = "bonus")
 	public double bonusSneaky = 2.0;
@@ -299,9 +400,9 @@ public class Config extends AutoConfig {
 	public boolean broadcastAchievement = true;
 	@ConfigField(name = "broadcast-first-achievement", category = "general", comment = "Should the hunt begins achievement be broadcasted?")
 	public boolean broadcastFirstAchievement = true;
-	@ConfigField(name = "save-period", category = "general", comment = "Time between saves in ticks")
-	public int savePeriod = 1200;
-	@ConfigField(name = "leaderboard-update-period", category = "general", comment = "Time between leaderboard updates in ticks")
+	@ConfigField(name = "save-period", category = "general", comment = "Time between saves in ticks (20 ticks ~ 1 sec)")
+	public int savePeriod = 6000;
+	@ConfigField(name = "leaderboard-update-period", category = "general", comment = "Time between leaderboard updates in ticks (20 ticks ~ 1 sec)")
 	public int leaderboardUpdatePeriod = 1200;
 	@ConfigField(name = "kill-timeout", category = "general", comment = "Time in seconds after attacking a mob that can be counted as a kill")
 	public int killTimeout = 4;

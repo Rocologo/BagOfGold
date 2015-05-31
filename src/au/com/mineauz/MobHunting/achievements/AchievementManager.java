@@ -269,8 +269,12 @@ public class AchievementManager implements Listener {
 					Bukkit.getServer().getConsoleSender(), str);
 		}
 		if (!achievement.getPrizeCmdDescription().equals("")) {
-			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC
-					+ achievement.getPrizeCmdDescription());
+			player.sendMessage(ChatColor.WHITE
+					+ ""
+					+ ChatColor.ITALIC
+					+ achievement.getPrizeCmdDescription()
+							.replaceAll("\\{player\\}", playername)
+							.replaceAll("\\{world\\}", worldname));
 		}
 
 		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f,

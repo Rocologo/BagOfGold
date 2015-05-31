@@ -136,10 +136,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	@Override
 	protected void setupStatements(Connection connection) throws SQLException {
-		mAddPlayerStatement = connection
-				.prepareStatement("INSERT OR IGNORE INTO mh_Players VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players));"); //$NON-NLS-1$
+		// myAddPlayerStatement = connection
+		//		.prepareStatement("INSERT OR IGNORE INTO mh_Players VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players));"); //$NON-NLS-1$
 		mGetPlayerStatement[0] = connection
-				.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;"); //$NON-NLS-1$
+				.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
 		mGetPlayerStatement[1] = connection
 				.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);"); //$NON-NLS-1$
 		mGetPlayerStatement[2] = connection
@@ -157,9 +157,15 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;"); //$NON-NLS-1$
 
 		mGetPlayerUUID = connection
-				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;"); 
+				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
 		mUpdatePlayerName = connection
-				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;"); 
+				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
+	}
+
+	@Override
+	protected void setupStatement_1(Connection connection) throws SQLException {
+		myAddPlayerStatement = connection
+				.prepareStatement("INSERT OR IGNORE INTO mh_Players VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players));");
 	}
 
 	@Override
@@ -192,10 +198,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 										stat.getAmount()));
 			statement.executeBatch();
 			statement.close();
-			//mConnection.commit();
+			// mConnection.commit();
 			MobHunting.debug("Saved.", "");
 		} catch (SQLException e) {
-			//MobHunting.debug("Performing Rollback", "");
+			// MobHunting.debug("Performing Rollback", "");
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -204,7 +210,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
-		//MobHunting.debug("Loading %s stats from database.",period);
+		// MobHunting.debug("Loading %s stats from database.",period);
 		String id;
 		switch (period) {
 		case Day:
@@ -270,9 +276,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// Create new empty tables if they do not exist
 		statement
 				.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
-		String dataString = ""; 
+		String dataString = "";
 		for (StatType type : StatType.values())
-			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; 
+			dataString += ", " + type.getDBColumn()
+					+ " INTEGER NOT NULL DEFAULT 0";
 		statement
 				.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
 		statement

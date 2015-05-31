@@ -99,9 +99,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private Economy mEconomy;
 	public static MobHunting instance;
 	private WorldGuardPlugin worldGuard;
-	private boolean worldGuardPresent=false;
+	private boolean worldGuardPresent = false;
 	private Plugin myPet;
-	private boolean myPetPresent=false;
+	private boolean myPetPresent = false;
 
 	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Config mConfig;
@@ -256,13 +256,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
 			worldGuard = (WorldGuardPlugin) getServer().getPluginManager()
 					.getPlugin("WorldGuard");
-			worldGuardPresent=true;
+			worldGuardPresent = true;
 		}
-		
+
 		if (getServer().getPluginManager().isPluginEnabled("MyPet")) {
-			myPet = getServer().getPluginManager()
-					.getPlugin("MyPet");
-			myPetPresent=true;
+			myPet = getServer().getPluginManager().getPlugin("MyPet");
+			myPetPresent = true;
 		}
 
 		if (getServer().getPluginManager().isPluginEnabled("MobArena")) {
@@ -387,7 +386,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Check if horses exist
 		try {
-			Class.forName("org.bukkit.entity.Horse"); 
+			Class.forName("org.bukkit.entity.Horse");
 			mModifiers.add(new MountedBonus());
 		} catch (ClassNotFoundException e) {
 		}
@@ -836,7 +835,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "unused" })
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 
@@ -851,7 +850,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (worldGuardPresent) {
-			if (killer instanceof Player || (myPetPresent && killer instanceof MyPetEntity)) {
+			if (killer instanceof Player
+					|| (myPetPresent && killer instanceof MyPetEntity)) {
 				RegionManager regionManager = worldGuard
 						.getRegionManager(killer.getWorld());
 				ApplicableRegionSet set = regionManager
@@ -901,8 +901,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		if (getBaseKillPrize(event.getEntity()) == 0) {
-			debug("KillBlocked %s(%d): Mob/Player has no prize money",
+		if (getBaseKillPrize(event.getEntity()) == 0
+				&& getCmdKillPrize(killed).equals("")) {
+			debug("KillBlocked %s(%d): There is no reward for this Mob/Player",
 					killed.getType(), killed.getEntityId());
 			return;
 		}
@@ -910,6 +911,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killed.hasMetadata("MH:blocked")) {
 			debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
 					killed.getType(), killed.getEntityId());
+			return;
+		}
+
+		if (killer == null || killer.getGameMode() == GameMode.CREATIVE
+				|| !isHuntEnabled(killer)) {
+			if (killer != null && killer.getGameMode() == GameMode.CREATIVE)
+				debug("KillBlocked %s: In creative mode", killer.getName());
 			return;
 		}
 
@@ -929,13 +937,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killed.getLastDamageCause() instanceof EntityDamageByEntityEvent)
 			lastDamageCause = (EntityDamageByEntityEvent) killed
 					.getLastDamageCause();
-
-		if (killer == null || killer.getGameMode() == GameMode.CREATIVE
-				|| !isHuntEnabled(killer)) {
-			if (killer != null && killer.getGameMode() == GameMode.CREATIVE)
-				debug("KillBlocked %s: In creative mode", killer.getName());
-			return;
-		}
 
 		if (info == null) {
 			info = new DamageInformation();
@@ -1090,6 +1091,37 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} else
 			debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)",
 					killer.getName(), extraString);
+
+		// Run console commands as a reward
+		if (!getCmdKillPrize(killed).equals("")) {
+			String worldname = killer.getWorld().getName();
+			String prizeCommand = getCmdKillPrize(killed).replaceAll(
+					"\\{player\\}", killer.getName()).replaceAll("\\{world\\}",
+					worldname);
+			if (!getCmdKillPrize(killed).equals("")) {
+				String str = prizeCommand;
+				do {
+					if (str.contains("|")) {
+						int n = str.indexOf("|");
+						Bukkit.getServer().dispatchCommand(
+								Bukkit.getServer().getConsoleSender(),
+								str.substring(0, n));
+						str = str.substring(n + 1, str.length()).toString();
+					}
+				} while (str.contains("|"));
+				Bukkit.getServer().dispatchCommand(
+						Bukkit.getServer().getConsoleSender(), str);
+			}
+			// send a message to the player
+			if (!getCmdDescKillPrize(killed).equals("")) {
+				killer.sendMessage(ChatColor.GREEN
+						+ ""
+						+ ChatColor.ITALIC
+						+ getCmdDescKillPrize(killed).replaceAll(
+								"\\{player\\}", killer.getName()).replaceAll(
+								"\\{world\\}", worldname));
+			}
+		}
 	}
 
 	private void onAssist(Player player, Player killer, LivingEntity killed,
@@ -1144,6 +1176,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return mDamageHistory.get(entity);
 	}
 
+	/**
+	 * Return the reward money for a given mob
+	 * 
+	 * @param mob
+	 * @return value
+	 */
 	public double getBaseKillPrize(LivingEntity mob) {
 		if (mob instanceof Player)
 			if (mConfig.pvpKillPrize.endsWith("%")) {
@@ -1153,53 +1191,172 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return prize;
 			} else
 				return Double.valueOf(mConfig.pvpKillPrize);
-		if (mob instanceof Blaze)
+		else if (mob instanceof Blaze)
 			return mConfig.blazePrize;
-		if (mob instanceof Creeper)
+		else if (mob instanceof Creeper)
 			return mConfig.creeperPrize;
-		if (mob instanceof Silverfish)
+		else if (mob instanceof Silverfish)
 			return mConfig.silverfishPrize;
-		if (mob instanceof Enderman)
-			return mConfig.endermenPrize;
-		if (mob instanceof Giant)
+		else if (mob instanceof Enderman)
+			return mConfig.endermanPrize;
+		else if (mob instanceof Giant)
 			return mConfig.giantPrize;
-		if (mob instanceof Skeleton) {
+		else if (mob instanceof Skeleton) {
 			switch (((Skeleton) mob).getSkeletonType()) {
 			case NORMAL:
 				return mConfig.skeletonPrize;
 			case WITHER:
 				return mConfig.witherSkeletonPrize;
 			}
-		}
-		if (mob instanceof CaveSpider)
+		} else if (mob instanceof CaveSpider)
 			return mConfig.caveSpiderPrize;
-		if (mob instanceof Spider)
+		else if (mob instanceof Spider)
 			return mConfig.spiderPrize;
-		if (mob instanceof Witch)
+		else if (mob instanceof Witch)
 			return mConfig.witchPrize;
-		if (mob instanceof Zombie)
+		else if (mob instanceof Zombie)
 			return mConfig.zombiePrize;
-		if (mob instanceof Ghast)
+		else if (mob instanceof Ghast)
 			return mConfig.ghastPrize;
-		if (mob instanceof Slime)
+		else if (mob instanceof Slime)
 			return mConfig.slimeTinyPrize * ((Slime) mob).getSize();
-		if (mob instanceof EnderDragon)
+		else if (mob instanceof EnderDragon)
 			return mConfig.enderdragonPrize;
-		if (mob instanceof Wither)
+		else if (mob instanceof Wither)
 			return mConfig.witherPrize;
-		if (mob instanceof PigZombie)
-			return mConfig.pigMan;
-		if (mob instanceof Guardian)
-			return mConfig.guardianPrize;
-		if (mob instanceof Endermite)
-			return mConfig.endermitePrize;
-		// TODO: can be removed
-		if (mob instanceof Rabbit)
-			debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
-		if (mob instanceof Rabbit
-				&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-			return mConfig.killerrabbitPrize;
+		else if (mob instanceof PigZombie)
+			return mConfig.zombiePigman;
+
+		// Test if Minecraft 1.8 Mob Classes exists
+		try {
+			Class cls = Class.forName("org.bukkit.entity.Guardian");
+			if (mob instanceof Guardian)
+				return mConfig.guardianPrize;
+			else if (mob instanceof Endermite)
+				return mConfig.endermitePrize;
+			if (mob instanceof Rabbit)
+				debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
+			if (mob instanceof Rabbit
+					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+				return mConfig.killerrabbitPrize;
+		} catch (ClassNotFoundException e) {
+			// This is not MC 1.8
+		}
+
 		return 0;
+	}
+
+	public String getCmdKillPrize(LivingEntity mob) {
+		if (mob instanceof Player)
+			return mConfig.pvpKillCmd;
+		else if (mob instanceof Blaze)
+			return mConfig.blazeCmd;
+		else if (mob instanceof Creeper)
+			return mConfig.creeperCmd;
+		else if (mob instanceof Silverfish)
+			return mConfig.silverfishCmd;
+		else if (mob instanceof Enderman)
+			return mConfig.endermanCmd;
+		else if (mob instanceof Giant)
+			return mConfig.giantCmd;
+		else if (mob instanceof Skeleton) {
+			switch (((Skeleton) mob).getSkeletonType()) {
+			case NORMAL:
+				return mConfig.skeletonCmd;
+			case WITHER:
+				return mConfig.witherSkeletonCmd;
+			}
+		} else if (mob instanceof CaveSpider)
+			return mConfig.caveSpiderCmd;
+		else if (mob instanceof Spider)
+			return mConfig.spiderCmd;
+		else if (mob instanceof Witch)
+			return mConfig.witchCmd;
+		else if (mob instanceof Zombie)
+			return mConfig.zombieCmd;
+		else if (mob instanceof Ghast)
+			return mConfig.ghastCmd;
+		else if (mob instanceof Slime)
+			return mConfig.slimeCmd;
+		else if (mob instanceof EnderDragon)
+			return mConfig.enderdragonCmd;
+		else if (mob instanceof Wither)
+			return mConfig.witherCmd;
+		else if (mob instanceof PigZombie)
+			return mConfig.zombiePigmanCmd;
+
+		// Test if Minecraft 1.8 Mob Classes exists
+		try {
+			Class cls = Class.forName("org.bukkit.entity.Guardian");
+			if (mob instanceof Guardian)
+				return mConfig.guardianCmd;
+			else if (mob instanceof Endermite)
+				return mConfig.endermiteCmd;
+			else if (mob instanceof Rabbit
+					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+				return mConfig.killerrabbitCmd;
+		} catch (ClassNotFoundException e) {
+			// This is not MC 1.8
+		}
+
+		return "";
+	}
+
+	public String getCmdDescKillPrize(LivingEntity mob) {
+		if (mob instanceof Player)
+			return mConfig.pvpKillCmdDesc;
+		else if (mob instanceof Blaze)
+			return mConfig.blazeCmdDesc;
+		else if (mob instanceof Creeper)
+			return mConfig.creeperCmdDesc;
+		else if (mob instanceof Silverfish)
+			return mConfig.silverfishCmdDesc;
+		else if (mob instanceof Enderman)
+			return mConfig.endermanCmdDesc;
+		else if (mob instanceof Giant)
+			return mConfig.giantCmdDesc;
+		else if (mob instanceof Skeleton) {
+			switch (((Skeleton) mob).getSkeletonType()) {
+			case NORMAL:
+				return mConfig.skeletonCmdDesc;
+			case WITHER:
+				return mConfig.witherSkeletonCmdDesc;
+			}
+		} else if (mob instanceof CaveSpider)
+			return mConfig.caveSpiderCmdDesc;
+		else if (mob instanceof Spider)
+			return mConfig.spiderCmdDesc;
+		else if (mob instanceof Witch)
+			return mConfig.witchCmdDesc;
+		else if (mob instanceof Zombie)
+			return mConfig.zombieCmdDesc;
+		else if (mob instanceof Ghast)
+			return mConfig.ghastCmdDesc;
+		else if (mob instanceof Slime)
+			return mConfig.slimeCmdDesc;
+		else if (mob instanceof EnderDragon)
+			return mConfig.enderdragonCmdDesc;
+		else if (mob instanceof Wither)
+			return mConfig.witherCmdDesc;
+		else if (mob instanceof PigZombie)
+			return mConfig.zombiePigmanCmdDesc;
+
+		// Test if Minecraft 1.8 Mob Classes exists
+		try {
+			Class cls = Class.forName("org.bukkit.entity.Guardian");
+			if (mob instanceof Guardian)
+				return mConfig.guardianCmdDesc;
+			else if (mob instanceof Endermite)
+				return mConfig.endermiteCmdDesc;
+			else if (mob instanceof Rabbit
+					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+				return mConfig.killerrabbitCmdDesc;
+
+		} catch (ClassNotFoundException e) {
+			// This is not MC 1.8
+		}
+
+		return "";
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
