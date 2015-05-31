@@ -84,9 +84,9 @@ public class Config extends AutoConfig {
 	public String silverfishCmd = "";
 	@ConfigField(name = "silver-cmd-desc", category = "mobs")
 	public String silverfishCmdDesc = "";
-	
+
 	@ConfigField(name = "zombie-pigman", category = "mobs")
-	public double zombiePigman = 0.5;
+	public double zombiePigmanPrize = 0.5;
 	@ConfigField(name = "zombie-pigman-cmd", category = "mobs")
 	public String zombiePigmanCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_PigZombie\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "zombie-pigman-cmd-desc", category = "mobs")

@@ -16,8 +16,8 @@ public enum ExtendedMobType {
 			"BLAZE", 80), Creeper("CREEPER", 100), Enderman("ENDERMAN", 100), Silverfish(
 			"SILVERFISH", 100), Skeleton("SKELETON", 100), WitherSkeleton(
 			"SKELETON", 80), Spider("SPIDER", 100), CaveSpider("CAVE_SPIDER",
-			100), Witch("WITCH", 80), Wither("WITHER", 20), Zombie("ZOMBIE",
-			100), ZombiePigman("PIG_ZOMBIE", 100), BonusMob("UNKNOWN", 20),
+			100), Witch("WITCH", 80), Wither("WITHER", 20), ZombiePigman(
+			"PIG_ZOMBIE", 100), Zombie("ZOMBIE", 100), BonusMob("UNKNOWN", 20),
 	// Minecraft 1.8 Entity's
 	Endermite("ENDERMITE", 100), Guardian("GUARDIAN", 100), KillerRabbit(
 			"RABBIT", 100), PvpPlayer("PLAYER", 100);

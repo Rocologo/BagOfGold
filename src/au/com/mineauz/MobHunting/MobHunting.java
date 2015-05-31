@@ -717,6 +717,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
+		debug("onSkeletonShoot called");
 		if (!(event.getEntity() instanceof Arrow)
 				|| !(event.getEntity().getShooter() instanceof Skeleton)
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
@@ -745,6 +746,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDamage(EntityDamageByEntityEvent event) {
+		// debug("onMobDamage called");
 		if (!(event.getEntity() instanceof LivingEntity)
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
@@ -838,7 +840,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@SuppressWarnings({ "deprecation", "unused" })
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
-
 		LivingEntity killed = event.getEntity();
 		Player killer = killed.getKiller();
 
@@ -1214,6 +1215,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.spiderPrize;
 		else if (mob instanceof Witch)
 			return mConfig.witchPrize;
+		else if (mob instanceof PigZombie)
+			// PigZombie is a subclass of Zombie. PigZombie must be checked
+			// before Zombie
+			return mConfig.zombiePigmanPrize;
 		else if (mob instanceof Zombie)
 			return mConfig.zombiePrize;
 		else if (mob instanceof Ghast)
@@ -1224,8 +1229,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.enderdragonPrize;
 		else if (mob instanceof Wither)
 			return mConfig.witherPrize;
-		else if (mob instanceof PigZombie)
-			return mConfig.zombiePigman;
 
 		// Test if Minecraft 1.8 Mob Classes exists
 		try {
@@ -1272,6 +1275,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.spiderCmd;
 		else if (mob instanceof Witch)
 			return mConfig.witchCmd;
+		else if (mob instanceof PigZombie)
+			// PigZombie is a subclass of Zombie. PigZombie must be checked
+			// before Zombie
+			return mConfig.zombiePigmanCmd;
 		else if (mob instanceof Zombie)
 			return mConfig.zombieCmd;
 		else if (mob instanceof Ghast)
@@ -1282,8 +1289,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.enderdragonCmd;
 		else if (mob instanceof Wither)
 			return mConfig.witherCmd;
-		else if (mob instanceof PigZombie)
-			return mConfig.zombiePigmanCmd;
 
 		// Test if Minecraft 1.8 Mob Classes exists
 		try {
@@ -1328,6 +1333,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.spiderCmdDesc;
 		else if (mob instanceof Witch)
 			return mConfig.witchCmdDesc;
+		else if (mob instanceof PigZombie)
+			// PigZombie is a subclass of Zombie. PigZombie must be checked
+			// before Zombie
+			return mConfig.zombiePigmanCmdDesc;
 		else if (mob instanceof Zombie)
 			return mConfig.zombieCmdDesc;
 		else if (mob instanceof Ghast)
@@ -1338,8 +1347,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.enderdragonCmdDesc;
 		else if (mob instanceof Wither)
 			return mConfig.witherCmdDesc;
-		else if (mob instanceof PigZombie)
-			return mConfig.zombiePigmanCmdDesc;
 
 		// Test if Minecraft 1.8 Mob Classes exists
 		try {
@@ -1362,7 +1369,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| getBaseKillPrize(event.getEntity()) <= 0
+				|| (getBaseKillPrize(event.getEntity()) <= 0 && getCmdKillPrize(
+						event.getEntity()).equals(""))
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
 			return;
 
@@ -1389,7 +1397,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void spawnerMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| getBaseKillPrize(event.getEntity()) <= 0)
+				|| (getBaseKillPrize(event.getEntity()) <= 0)
+				&& getCmdKillPrize(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() != SpawnReason.SPAWNER
@@ -1403,7 +1412,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void reinforcementMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| getBaseKillPrize(event.getEntity()) <= 0)
+				|| (getBaseKillPrize(event.getEntity()) <= 0)
+				&& getCmdKillPrize(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.REINFORCEMENTS)
