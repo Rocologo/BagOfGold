@@ -232,8 +232,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// CompatibilityManager.register(MobDungeonMainCompat.class,
 		// "MobDungeon");
 		// CompatibilityManager.register(WarCompat.class, "War");
+		// 
+		// TODO: add compatability to MythicMobs
 
-		// TODO: Add compatability to Citizens or MythicMob
+		// TODO: Add compatability to Citizens
 
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 				Messages.getString("mobhunting.command.base.description")
@@ -717,7 +719,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
-		debug("onSkeletonShoot called");
+		// debug("onSkeletonShoot called");
 		if (!(event.getEntity() instanceof Arrow)
 				|| !(event.getEntity().getShooter() instanceof Skeleton)
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
@@ -1220,9 +1222,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 		else if (mob instanceof PigZombie)
 			// PigZombie is a subclass of Zombie. PigZombie must be checked
 			// before Zombie
-			return mConfig.zombiePigmanPrize;
+			if (((PigZombie) mob).isBaby())
+				return mConfig.zombiePigmanPrize * 1.2;
+			else
+				return mConfig.zombiePigmanPrize;
 		else if (mob instanceof Zombie)
-			return mConfig.zombiePrize;
+			if (((Zombie) mob).isBaby())
+				return mConfig.zombiePrize * 1.2;
+			else
+				return mConfig.zombiePrize;
 		else if (mob instanceof Ghast)
 			return mConfig.ghastPrize;
 		else if (mob instanceof Slime)
@@ -1231,6 +1239,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.enderdragonPrize;
 		else if (mob instanceof Wither)
 			return mConfig.witherPrize;
+		else if (mob instanceof IronGolem)
+			return mConfig.ironGolemPrize;
+		else if (mob instanceof MagmaCube)
+			return mConfig.magmaCubePrize;
 
 		// Test if Minecraft 1.8 Mob Classes exists
 		try {
@@ -1239,8 +1251,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return mConfig.guardianPrize;
 			else if (mob instanceof Endermite)
 				return mConfig.endermitePrize;
-			if (mob instanceof Rabbit)
-				debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
+			// if (mob instanceof Rabbit)
+			// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
 			if (mob instanceof Rabbit
 					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
 				return mConfig.killerrabbitPrize;
@@ -1291,6 +1303,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.enderdragonCmd;
 		else if (mob instanceof Wither)
 			return mConfig.witherCmd;
+		else if (mob instanceof IronGolem)
+			return mConfig.ironGolemCmd;
+		else if (mob instanceof MagmaCube)
+			return mConfig.magmaCubeCmd;
 
 		// Test if Minecraft 1.8 Mob Classes exists
 		try {
@@ -1349,6 +1365,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.enderdragonCmdDesc;
 		else if (mob instanceof Wither)
 			return mConfig.witherCmdDesc;
+		else if (mob instanceof IronGolem)
+			return mConfig.ironGolemCmdDesc;
+		else if (mob instanceof MagmaCube)
+			return mConfig.magmaCubeCmdDesc;
 
 		// Test if Minecraft 1.8 Mob Classes exists
 		try {
@@ -1408,6 +1428,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return mConfig.enderdragonFrequency;
 		else if (mob instanceof Wither)
 			return mConfig.witherFrequency;
+		else if (mob instanceof IronGolem)
+			return mConfig.ironGolemFrequency;
+		else if (mob instanceof MagmaCube)
+			return mConfig.magmaCubeFrequency;
 
 		// Test if Minecraft 1.8 Mob Classes exists
 		try {

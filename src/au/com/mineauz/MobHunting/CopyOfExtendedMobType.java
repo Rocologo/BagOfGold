@@ -28,6 +28,7 @@ public enum CopyOfExtendedMobType
 	Zombie(EntityType.ZOMBIE, 100),
 	ZombiePigman(EntityType.PIG_ZOMBIE, 100),
 	BonusMob(EntityType.UNKNOWN, 20),
+	IronGolem(EntityType.IRON_GOLEM,100),
 	// Minecraft 1.8 Entity's
 	Endermite(EntityType.ENDERMITE,100),
 	Guardian(EntityType.GUARDIAN,100),

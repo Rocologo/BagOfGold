@@ -1,8 +1,6 @@
 package au.com.mineauz.MobHunting;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -18,6 +16,7 @@ public enum ExtendedMobType {
 			"SKELETON", 80), Spider("SPIDER", 100), CaveSpider("CAVE_SPIDER",
 			100), Witch("WITCH", 80), Wither("WITHER", 20), ZombiePigman(
 			"PIG_ZOMBIE", 100), Zombie("ZOMBIE", 100), BonusMob("UNKNOWN", 20),
+			IronGolem("IRON_GOLEM",100),
 	// Minecraft 1.8 Entity's
 	Endermite("ENDERMITE", 100), Guardian("GUARDIAN", 100), KillerRabbit(
 			"RABBIT", 100), PvpPlayer("PLAYER", 100);

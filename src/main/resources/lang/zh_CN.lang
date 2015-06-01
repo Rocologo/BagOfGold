@@ -168,6 +168,7 @@ mobs.Guardian.name=Guardian
 mobs.KillerRabbit.name=Killer Rabbit
 mobs.BonusMob.name=奖励生物
 mobs.PvpPlayer.name=PvP Player
+mobs.IronGolem.name=Iron Golem
 
 leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick
 leaderboard.exists=The leaderboard ${id} already exists
