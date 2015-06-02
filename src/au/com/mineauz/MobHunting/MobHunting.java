@@ -1264,8 +1264,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (ClassNotFoundException e) {
 			// This is not MC 1.8
 		}
-		getLogger().warning("Warning: Missing text in getKillPrize(mob="
-		+ mob.getName() + "), please report to developer");
+		//getLogger().warning("Warning: Missing text in getKillPrize(mob="
+		//+ mob.getName() + "), please report to developer");
 		return 0;
 	}
 
@@ -1334,8 +1334,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (ClassNotFoundException e) {
 			// This is not MC 1.8
 		}
-		getLogger().warning("Warning: Missing text in getKillConsoleCommand(mob="
-				+ mob.getName() + "), please report to developer");
+		//getLogger().warning("Warning: Missing text in getKillConsoleCommand(mob="
+		// 		+ mob.getName() + "), please report to developer");
 		return "";
 	}
 
@@ -1404,9 +1404,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (ClassNotFoundException e) {
 			// This is not MC 1.8
 		}
-
-		getLogger().warning("Warning: Missing text in getKillRewardDescription(mob="
-				+ mob.getName() + "), please report to developer");
+		//getLogger().warning("Warning: Missing text in getKillRewardDescription(mob="
+		//		+ mob.getName() + "), please report to developer");
 		return"";
 	}
 
@@ -1469,8 +1468,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (ClassNotFoundException e) {
 			// This is not MC 1.8
 		}
-		getLogger().warning("Warning: Missing text in getCmdRunProbability(mob="
-				+ mob.getName() + "), please report to developer");
+		//getLogger().warning("Warning: Missing text in getCmdRunProbability(mob="
+		//		+ mob.getName() + "), please report to developer");
 		return 100;
 	}
 
