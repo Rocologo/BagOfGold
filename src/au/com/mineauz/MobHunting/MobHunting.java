@@ -93,7 +93,7 @@ import au.com.mineauz.MobHunting.util.Update;
 public class MobHunting extends JavaPlugin implements Listener {
 
 	// Constants
-	public final static String pluginName = "MobHunting";
+	public final static String pluginName = "mobhunting";
 	public final static String tablePrefix = "mh_";
 
 	private Economy mEconomy;
@@ -232,7 +232,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// CompatibilityManager.register(MobDungeonMainCompat.class,
 		// "MobDungeon");
 		// CompatibilityManager.register(WarCompat.class, "War");
-		// 
+		//
 		// TODO: add compatability to MythicMobs
 
 		// TODO: Add compatability to Citizens
@@ -905,7 +905,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (getBaseKillPrize(event.getEntity()) == 0
-				&& getCmdKillPrize(killed).equals("")) {
+				&& getKillConsoleCmd(killed).equals("")) {
 			debug("KillBlocked %s(%d): There is no reward for this Mob/Player",
 					killed.getType(), killed.getEntityId());
 			return;
@@ -929,7 +929,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& mDamageHistory.containsKey((LivingEntity) killed)) {
 			info = mDamageHistory.get(killed);
 
-			if (System.currentTimeMillis() - info.time > 4000)
+			if (System.currentTimeMillis() - info.time > mConfig.assistTimeout * 1000)
 				info = null;
 			else if (killer == null)
 				killer = info.attacker;
@@ -1068,10 +1068,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 				debug("%s got a reward (%s)", killer.getName(),
 						mEconomy.format(cash));
 			} else {
-				mEconomy.depositPlayer(killer, cash / 2);
+				cash = cash / 2;
+				mEconomy.depositPlayer(killer, cash);
 				onAssist(info.assister, killer, killed, info.lastAssistTime);
 				debug("%s got a ½ reward (%s)", killer.getName(),
-						mEconomy.format(cash / 2));
+						mEconomy.format(cash));
 			}
 
 			getDataStore().recordKill(killer,
@@ -1096,13 +1097,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 					killer.getName(), extraString);
 
 		// Run console commands as a reward
-		if (!getCmdKillPrize(killed).equals("")) {
-			if (mRand.nextInt(100) < getCmdRunFrequency(killed)) {
+		if (!getKillConsoleCmd(killed).equals("")) {
+			if (mRand.nextInt(100) < getCmdRunProbability(killed)) {
 				String worldname = killer.getWorld().getName();
-				String prizeCommand = getCmdKillPrize(killed).replaceAll(
-						"\\{player\\}", killer.getName()).replaceAll(
-						"\\{world\\}", worldname);
-				if (!getCmdKillPrize(killed).equals("")) {
+				String prizeCommand = getKillConsoleCmd(killed)
+						.replaceAll("\\{player\\}", killer.getName())
+						.replaceAll("\\{killed_player\\}", killed.getName())
+						.replaceAll("\\{world\\}", worldname);
+				if (!getKillConsoleCmd(killed).equals("")) {
 					String str = prizeCommand;
 					do {
 						if (str.contains("|")) {
@@ -1117,12 +1119,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 							Bukkit.getServer().getConsoleSender(), str);
 				}
 				// send a message to the player
-				if (!getCmdDescKillPrize(killed).equals("")) {
+				if (!getKillRewardDescription(killed).equals("")) {
 					killer.sendMessage(ChatColor.GREEN
 							+ ""
 							+ ChatColor.ITALIC
-							+ getCmdDescKillPrize(killed).replaceAll(
-									"\\{player\\}", killer.getName())
+							+ getKillRewardDescription(killed)
+									.replaceAll("\\{player\\}",
+											killer.getName())
+									.replaceAll("\\{killed_player\\}",
+											killed.getName())
 									.replaceAll("\\{world\\}", worldname));
 				}
 			}
@@ -1259,11 +1264,19 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (ClassNotFoundException e) {
 			// This is not MC 1.8
 		}
-
+		getLogger().warning("Warning: Missing text in getKillPrize(mob="
+		+ mob.getName() + "), please report to developer");
 		return 0;
 	}
 
-	public String getCmdKillPrize(LivingEntity mob) {
+	/**
+	 * Get the command to be run when the player kills a Mob.
+	 * 
+	 * @param mob
+	 * @return a number of commands to be run in the console. Each command must
+	 *         be separeted by a "|"
+	 */
+	public String getKillConsoleCmd(LivingEntity mob) {
 		if (mob instanceof Player)
 			return mConfig.pvpKillCmd;
 		else if (mob instanceof Blaze)
@@ -1321,11 +1334,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (ClassNotFoundException e) {
 			// This is not MC 1.8
 		}
-
+		getLogger().warning("Warning: Missing text in getKillConsoleCommand(mob="
+				+ mob.getName() + "), please report to developer");
 		return "";
 	}
 
-	public String getCmdDescKillPrize(LivingEntity mob) {
+	/**
+	 * Get the text to be send to the player describing the reward
+	 * 
+	 * @param mob
+	 * @return String
+	 */
+	public String getKillRewardDescription(LivingEntity mob) {
 		if (mob instanceof Player)
 			return mConfig.pvpKillCmdDesc;
 		else if (mob instanceof Blaze)
@@ -1385,10 +1405,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// This is not MC 1.8
 		}
 
-		return "";
+		getLogger().warning("Warning: Missing text in getKillRewardDescription(mob="
+				+ mob.getName() + "), please report to developer");
+		return"";
 	}
 
-	public int getCmdRunFrequency(LivingEntity mob) {
+	public int getCmdRunProbability(LivingEntity mob) {
 		if (mob instanceof Player)
 			return 100;
 		else if (mob instanceof Blaze)
@@ -1447,14 +1469,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (ClassNotFoundException e) {
 			// This is not MC 1.8
 		}
-
+		getLogger().warning("Warning: Missing text in getCmdRunProbability(mob="
+				+ mob.getName() + "), please report to developer");
 		return 100;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (getBaseKillPrize(event.getEntity()) <= 0 && getCmdKillPrize(
+				|| (getBaseKillPrize(event.getEntity()) <= 0 && getKillConsoleCmd(
 						event.getEntity()).equals(""))
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
 			return;
@@ -1483,7 +1506,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void spawnerMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
 				|| (getBaseKillPrize(event.getEntity()) <= 0)
-				&& getCmdKillPrize(event.getEntity()).equals(""))
+				&& getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() != SpawnReason.SPAWNER
@@ -1498,7 +1521,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void reinforcementMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
 				|| (getBaseKillPrize(event.getEntity()) <= 0)
-				&& getCmdKillPrize(event.getEntity()).equals(""))
+				&& getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.REINFORCEMENTS)

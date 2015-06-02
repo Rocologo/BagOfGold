@@ -20,7 +20,9 @@ public class Config extends AutoConfig {
 						+ "\nfor 1 hour or use give command to the player items."
 						+ "\nYou can also specify the message send to the player."
 						+ "\nYou can run many console commands on each line, each command"
-						+ "\nmust be separated by |");
+						+ "\nmust be separated by |"
+						+ "\nThe mob-cmd-run-frequency is the chance in % that the cmd is run. 0=disabled,"
+						+ "\n");
 		setCategoryComment("boss",
 				"Here is where you set the base prize in $ for killing the bosses");
 		setCategoryComment(
@@ -52,7 +54,7 @@ public class Config extends AutoConfig {
 				"pvp",
 				"Pvp configuration. Set pvp-allowed = true if you want give the players a reward when they kill eachother."
 						+ "\nYou can alsp run a console command when this happens to give the player a reward or punish him."
-						+ "\nYou can you the following variables {player},{world}."
+						+ "\nYou can you the following variables {player},{world},{killed_player}."
 						+ "\nAn example could be to give the player permission to fly "
 						+ "\nfor 1 hour or use give command to the player items."
 						+ "\nYou can also specify the message send to the player."
@@ -430,9 +432,9 @@ public class Config extends AutoConfig {
 			+ "\nor it kan be a cut in percent of his balance.")
 	public String pvpKillPrize = "1.5%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
-	public String pvpKillCmd = "";
+	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"}|give {player} diamond 1";
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
-	public String pvpKillCmdDesc = "";
+	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
 
 	@ConfigField(name = "mobarena-get-rewards", category = "plugins", comment = "Set to true if you want the players to get rewards while playing MobArena.")
 	public boolean mobarenaGetRewards = false;

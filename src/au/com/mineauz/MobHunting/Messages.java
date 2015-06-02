@@ -88,7 +88,7 @@ public class Messages {
 			if (index == -1)
 				continue;
 
-			String key = line.substring(0, index).trim();
+			String key = line.substring(0, index).toLowerCase().trim();
 			String value = line.substring(index + 1).trim();
 
 			map.put(key, value);
