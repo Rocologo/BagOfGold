@@ -28,7 +28,7 @@ import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
 public class Leaderboard implements DataCallback<List<StatStore>> {
-	private static String EMPTY_STRING = ""; //$NON-NLS-1$
+	private static String EMPTY_STRING = ""; 
 	private Location mLocation;
 	private BlockFace mFacing;
 

@@ -122,6 +122,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ dataString + ", PRIMARY KEY(PLAYER_ID))");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
 
+		// TODO: create tables
+		//creating new tables for citizens and mythicmobsd
+		
 		// Setup Database triggers
 		setupTrigger(connection);
 

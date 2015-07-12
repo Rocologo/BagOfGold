@@ -58,7 +58,6 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 
 import de.Keyle.MyPet.api.entity.MyPetEntity;
-import de.Keyle.MyPet.entity.types.MyPet;
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
@@ -69,11 +68,13 @@ import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.commands.SelectCommand;
 import au.com.mineauz.MobHunting.commands.TopCommand;
 import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
+import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaHelper;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
+import au.com.mineauz.MobHunting.compatability.MythicMobsCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaHelper;
 import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
@@ -89,6 +90,10 @@ import au.com.mineauz.MobHunting.storage.MySQLDataStore;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
 import au.com.mineauz.MobHunting.util.Update;
+import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 
 public class MobHunting extends JavaPlugin implements Listener {
 
@@ -98,10 +103,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	private Economy mEconomy;
 	public static MobHunting instance;
-	private WorldGuardPlugin worldGuard;
-	private boolean worldGuardPresent = false;
-	private Plugin myPet;
-	private boolean myPetPresent = false;
 
 	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Config mConfig;
@@ -178,8 +179,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		mConfig = new Config(new File(getDataFolder(), "config.yml"));
 
-		if (mConfig.load())
-			mConfig.save();
+		if (mConfig.loadConfig())
+			mConfig.saveConfig();
 		else
 			throw new RuntimeException(Messages.getString(pluginName
 					+ ".config.fail"));
@@ -228,14 +229,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(WorldGuardCompat.class, "WorldGuard");
 		CompatibilityManager.register(MobArenaCompat.class, "MobArena");
 		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
+		CompatibilityManager.register(MythicMobsCompat.class, "MythicMobs");
+		CompatibilityManager.register(CitizensCompat.class, "Citizens");
 		// CompatibilityManager.register(HeroesCompat.class, "Heroes");
 		// CompatibilityManager.register(MobDungeonMainCompat.class,
 		// "MobDungeon");
 		// CompatibilityManager.register(WarCompat.class, "War");
-		//
-		// TODO: add compatability to MythicMobs
-
-		// TODO: Add compatability to Citizens
 
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 				Messages.getString("mobhunting.command.base.description")
@@ -255,21 +254,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new SelectCommand());
 		}
 
-		if (getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
-			worldGuard = (WorldGuardPlugin) getServer().getPluginManager()
-					.getPlugin("WorldGuard");
-			worldGuardPresent = true;
-		}
-
-		if (getServer().getPluginManager().isPluginEnabled("MyPet")) {
-			myPet = getServer().getPluginManager().getPlugin("MyPet");
-			myPetPresent = true;
-		}
-
-		if (getServer().getPluginManager().isPluginEnabled("MobArena")) {
-
-		}
-
 		registerAchievements();
 		registerModifiers();
 
@@ -285,6 +269,27 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mLeaderboards.initialize();
 
 		mInitialized = true;
+
+		// if (getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+		// mythicMobsPresent = true;
+		// }
+
+		// if (getServer().getPluginManager().isPluginEnabled("Citizens")) {
+		// citizensPresent = true;
+		// }
+
+		// if (getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+		// worldGuardPresent = WorldGuardCompat.isWorldGuardSupported();
+		// }
+
+		// if (getServer().getPluginManager().isPluginEnabled("MyPet")) {
+		// myPet = getServer().getPluginManager().getPlugin("MyPet");
+		// myPetPresent = true;
+		// }
+
+		// if (getServer().getPluginManager().isPluginEnabled("MobArena")) {
+
+		// }
 
 		try {
 			Metrics metrics = new Metrics(this);
@@ -719,7 +724,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
-		// debug("onSkeletonShoot called");
+		// TODO: can Skeleton use other weapons the Arrow?
 		if (!(event.getEntity() instanceof Arrow)
 				|| !(event.getEntity().getShooter() instanceof Skeleton)
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
@@ -748,23 +753,19 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDamage(EntityDamageByEntityEvent event) {
-		// debug("onMobDamage called");
 		if (!(event.getEntity() instanceof LivingEntity)
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
-		if (worldGuardPresent) {
+		if (WorldGuardCompat.isWorldGuardSupported()) {
 			if ((event.getDamager() instanceof Player)
-					|| (myPetPresent && event.getDamager() instanceof MyPetEntity)) {
-				debug("Damager is %s", event.getDamager());
-				RegionManager regionManager = worldGuard.getRegionManager(event
-						.getDamager().getWorld());
+					|| (MyPetCompat.isMyPetSupported() && event.getDamager() instanceof MyPetEntity)) {
+				RegionManager regionManager = WorldGuardCompat
+						.getWorldGuardPlugin().getRegionManager(
+								event.getDamager().getWorld());
 				ApplicableRegionSet set = regionManager
 						.getApplicableRegions(event.getDamager().getLocation());
 				if (set != null) {
-					debug("Found %s worldguard region: flag is %s", set
-							.getRegions().size(),
-							!set.allows(DefaultFlag.MOB_DAMAGE));
 					if (!set.allows(DefaultFlag.MOB_DAMAGE)) {
 						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s",
 								event.getDamager().getName(),
@@ -852,17 +853,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (worldGuardPresent) {
+		if (WorldGuardCompat.isWorldGuardSupported()) {
 			if (killer instanceof Player
-					|| (myPetPresent && killer instanceof MyPetEntity)) {
-				RegionManager regionManager = worldGuard
-						.getRegionManager(killer.getWorld());
+					|| (MyPetCompat.isMyPetSupported() && killer instanceof MyPetEntity)) {
+				RegionManager regionManager = WorldGuardCompat
+						.getWorldGuardPlugin().getRegionManager(
+								killer.getWorld());
 				ApplicableRegionSet set = regionManager
 						.getApplicableRegions(killer.getLocation());
-				if (set != null) {
-					debug("Found %s worldguard region: flag is %s", set
-							.getRegions().size(),
-							!set.allows(DefaultFlag.MOB_DAMAGE));
+				if (set.size() > 0) {
+					debug("Found %s worldguard regions: flag is %s",
+							set.size(), set.allows(DefaultFlag.MOB_DAMAGE));
 					if (killer instanceof Player
 							&& !set.allows(DefaultFlag.MOB_DAMAGE)) {
 						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s",
@@ -889,6 +890,26 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return;
 			}
 		}
+
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& killed instanceof MythicMob) {
+			debug("A MythicMob was killed: %s (Type=%s)",
+					((MythicMob) killed).getDisplayName(),
+					((MythicMob) killed).getEntityType());
+			// TODO: getprize, pay out
+			// TODO: store kill i
+		}
+
+		if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(killed)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(killed);
+
+			debug("A Citizens - NPC is Sentry=%S ", npc.hasTrait(CitizensAPI
+					.getTraitFactory().getTraitClass("Sentry")));
+			
+			// TODO: getprize, pay out
+			// TODO: store kill i
+		} 
 
 		if (killer instanceof Player) {
 			if (MobArenaHelper.isPlayingMobArena(killer)
@@ -1193,79 +1214,93 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 * @return value
 	 */
 	public double getBaseKillPrize(LivingEntity mob) {
-		if (mob instanceof Player)
-			if (mConfig.pvpKillPrize.endsWith("%")) {
-				double prize = Math.floor(Double.valueOf(mConfig.pvpKillPrize
-						.substring(0, mConfig.pvpKillPrize.length() - 1))
-						* mEconomy.getBalance((Player) mob) / 100);
-				return prize;
+		// TODO: getprize from config
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob instanceof MythicMob) {
+			return 0;
+		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(mob);
+			if (CitizensCompat.isSentry(mob)){
+				debug("Prize=20");
+				return 20;
 			} else
-				return Double.valueOf(mConfig.pvpKillPrize);
-		else if (mob instanceof Blaze)
-			return mConfig.blazePrize;
-		else if (mob instanceof Creeper)
-			return mConfig.creeperPrize;
-		else if (mob instanceof Silverfish)
-			return mConfig.silverfishPrize;
-		else if (mob instanceof Enderman)
-			return mConfig.endermanPrize;
-		else if (mob instanceof Giant)
-			return mConfig.giantPrize;
-		else if (mob instanceof Skeleton) {
-			switch (((Skeleton) mob).getSkeletonType()) {
-			case NORMAL:
-				return mConfig.skeletonPrize;
-			case WITHER:
-				return mConfig.witherSkeletonPrize;
-			}
-		} else if (mob instanceof CaveSpider)
-			return mConfig.caveSpiderPrize;
-		else if (mob instanceof Spider)
-			return mConfig.spiderPrize;
-		else if (mob instanceof Witch)
-			return mConfig.witchPrize;
-		else if (mob instanceof PigZombie)
-			// PigZombie is a subclass of Zombie. PigZombie must be checked
-			// before Zombie
-			if (((PigZombie) mob).isBaby())
-				return mConfig.zombiePigmanPrize * 1.2;
-			else
-				return mConfig.zombiePigmanPrize;
-		else if (mob instanceof Zombie)
-			if (((Zombie) mob).isBaby())
-				return mConfig.zombiePrize * 1.2;
-			else
-				return mConfig.zombiePrize;
-		else if (mob instanceof Ghast)
-			return mConfig.ghastPrize;
-		else if (mob instanceof Slime)
-			return mConfig.slimeTinyPrize * ((Slime) mob).getSize();
-		else if (mob instanceof EnderDragon)
-			return mConfig.enderdragonPrize;
-		else if (mob instanceof Wither)
-			return mConfig.witherPrize;
-		else if (mob instanceof IronGolem)
-			return mConfig.ironGolemPrize;
-		else if (mob instanceof MagmaCube)
-			return mConfig.magmaCubePrize;
+				return 0;
+		} else {
+			if (mob instanceof Player)
+				if (mConfig.pvpKillPrize.endsWith("%")) {
+					double prize = Math.floor(Double
+							.valueOf(mConfig.pvpKillPrize.substring(0,
+									mConfig.pvpKillPrize.length() - 1))
+							* mEconomy.getBalance((Player) mob) / 100);
+					return prize;
+				} else
+					return Double.valueOf(mConfig.pvpKillPrize);
+			else if (mob instanceof Blaze)
+				return mConfig.blazePrize;
+			else if (mob instanceof Creeper)
+				return mConfig.creeperPrize;
+			else if (mob instanceof Silverfish)
+				return mConfig.silverfishPrize;
+			else if (mob instanceof Enderman)
+				return mConfig.endermanPrize;
+			else if (mob instanceof Giant)
+				return mConfig.giantPrize;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return mConfig.skeletonPrize;
+				case WITHER:
+					return mConfig.witherSkeletonPrize;
+				}
+			} else if (mob instanceof CaveSpider)
+				return mConfig.caveSpiderPrize;
+			else if (mob instanceof Spider)
+				return mConfig.spiderPrize;
+			else if (mob instanceof Witch)
+				return mConfig.witchPrize;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				if (((PigZombie) mob).isBaby())
+					return mConfig.zombiePigmanPrize * 1.2;
+				else
+					return mConfig.zombiePigmanPrize;
+			else if (mob instanceof Zombie)
+				if (((Zombie) mob).isBaby())
+					return mConfig.zombiePrize * 1.2;
+				else
+					return mConfig.zombiePrize;
+			else if (mob instanceof Ghast)
+				return mConfig.ghastPrize;
+			else if (mob instanceof Slime)
+				return mConfig.slimeTinyPrize * ((Slime) mob).getSize();
+			else if (mob instanceof EnderDragon)
+				return mConfig.enderdragonPrize;
+			else if (mob instanceof Wither)
+				return mConfig.witherPrize;
+			else if (mob instanceof IronGolem)
+				return mConfig.ironGolemPrize;
+			else if (mob instanceof MagmaCube)
+				return mConfig.magmaCubePrize;
 
-		// Test if Minecraft 1.8 Mob Classes exists
-		try {
-			Class cls = Class.forName("org.bukkit.entity.Guardian");
-			if (mob instanceof Guardian)
-				return mConfig.guardianPrize;
-			else if (mob instanceof Endermite)
-				return mConfig.endermitePrize;
-			// if (mob instanceof Rabbit)
-			// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
-			if (mob instanceof Rabbit
-					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-				return mConfig.killerrabbitPrize;
-		} catch (ClassNotFoundException e) {
-			// This is not MC 1.8
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return mConfig.guardianPrize;
+				else if (mob instanceof Endermite)
+					return mConfig.endermitePrize;
+				// if (mob instanceof Rabbit)
+				// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
+				if (mob instanceof Rabbit
+						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+					return mConfig.killerrabbitPrize;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
 		}
-		//getLogger().warning("Warning: Missing text in getKillPrize(mob="
-		//+ mob.getName() + "), please report to developer");
 		return 0;
 	}
 
@@ -1277,65 +1312,73 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 *         be separeted by a "|"
 	 */
 	public String getKillConsoleCmd(LivingEntity mob) {
-		if (mob instanceof Player)
-			return mConfig.pvpKillCmd;
-		else if (mob instanceof Blaze)
-			return mConfig.blazeCmd;
-		else if (mob instanceof Creeper)
-			return mConfig.creeperCmd;
-		else if (mob instanceof Silverfish)
-			return mConfig.silverfishCmd;
-		else if (mob instanceof Enderman)
-			return mConfig.endermanCmd;
-		else if (mob instanceof Giant)
-			return mConfig.giantCmd;
-		else if (mob instanceof Skeleton) {
-			switch (((Skeleton) mob).getSkeletonType()) {
-			case NORMAL:
-				return mConfig.skeletonCmd;
-			case WITHER:
-				return mConfig.witherSkeletonCmd;
-			}
-		} else if (mob instanceof CaveSpider)
-			return mConfig.caveSpiderCmd;
-		else if (mob instanceof Spider)
-			return mConfig.spiderCmd;
-		else if (mob instanceof Witch)
-			return mConfig.witchCmd;
-		else if (mob instanceof PigZombie)
-			// PigZombie is a subclass of Zombie. PigZombie must be checked
-			// before Zombie
-			return mConfig.zombiePigmanCmd;
-		else if (mob instanceof Zombie)
-			return mConfig.zombieCmd;
-		else if (mob instanceof Ghast)
-			return mConfig.ghastCmd;
-		else if (mob instanceof Slime)
-			return mConfig.slimeCmd;
-		else if (mob instanceof EnderDragon)
-			return mConfig.enderdragonCmd;
-		else if (mob instanceof Wither)
-			return mConfig.witherCmd;
-		else if (mob instanceof IronGolem)
-			return mConfig.ironGolemCmd;
-		else if (mob instanceof MagmaCube)
-			return mConfig.magmaCubeCmd;
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob instanceof MythicMob) {
+			return "";
+		} else if (CitizensCompat.isCitizensSupported() && mob instanceof NPC) {
+			return "";
+		} else {
+			if (mob instanceof Player)
+				return mConfig.pvpKillCmd;
+			else if (mob instanceof Blaze)
+				return mConfig.blazeCmd;
+			else if (mob instanceof Creeper)
+				return mConfig.creeperCmd;
+			else if (mob instanceof Silverfish)
+				return mConfig.silverfishCmd;
+			else if (mob instanceof Enderman)
+				return mConfig.endermanCmd;
+			else if (mob instanceof Giant)
+				return mConfig.giantCmd;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return mConfig.skeletonCmd;
+				case WITHER:
+					return mConfig.witherSkeletonCmd;
+				}
+			} else if (mob instanceof CaveSpider)
+				return mConfig.caveSpiderCmd;
+			else if (mob instanceof Spider)
+				return mConfig.spiderCmd;
+			else if (mob instanceof Witch)
+				return mConfig.witchCmd;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				return mConfig.zombiePigmanCmd;
+			else if (mob instanceof Zombie)
+				return mConfig.zombieCmd;
+			else if (mob instanceof Ghast)
+				return mConfig.ghastCmd;
+			else if (mob instanceof Slime)
+				return mConfig.slimeCmd;
+			else if (mob instanceof EnderDragon)
+				return mConfig.enderdragonCmd;
+			else if (mob instanceof Wither)
+				return mConfig.witherCmd;
+			else if (mob instanceof IronGolem)
+				return mConfig.ironGolemCmd;
+			else if (mob instanceof MagmaCube)
+				return mConfig.magmaCubeCmd;
 
-		// Test if Minecraft 1.8 Mob Classes exists
-		try {
-			Class cls = Class.forName("org.bukkit.entity.Guardian");
-			if (mob instanceof Guardian)
-				return mConfig.guardianCmd;
-			else if (mob instanceof Endermite)
-				return mConfig.endermiteCmd;
-			else if (mob instanceof Rabbit
-					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-				return mConfig.killerrabbitCmd;
-		} catch (ClassNotFoundException e) {
-			// This is not MC 1.8
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return mConfig.guardianCmd;
+				else if (mob instanceof Endermite)
+					return mConfig.endermiteCmd;
+				else if (mob instanceof Rabbit
+						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+					return mConfig.killerrabbitCmd;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
 		}
-		//getLogger().warning("Warning: Missing text in getKillConsoleCommand(mob="
-		// 		+ mob.getName() + "), please report to developer");
+		// getLogger().warning("Warning: Missing text in getKillConsoleCommand(mob="
+		// + mob.getName() + "), please report to developer");
 		return "";
 	}
 
@@ -1346,130 +1389,146 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 * @return String
 	 */
 	public String getKillRewardDescription(LivingEntity mob) {
-		if (mob instanceof Player)
-			return mConfig.pvpKillCmdDesc;
-		else if (mob instanceof Blaze)
-			return mConfig.blazeCmdDesc;
-		else if (mob instanceof Creeper)
-			return mConfig.creeperCmdDesc;
-		else if (mob instanceof Silverfish)
-			return mConfig.silverfishCmdDesc;
-		else if (mob instanceof Enderman)
-			return mConfig.endermanCmdDesc;
-		else if (mob instanceof Giant)
-			return mConfig.giantCmdDesc;
-		else if (mob instanceof Skeleton) {
-			switch (((Skeleton) mob).getSkeletonType()) {
-			case NORMAL:
-				return mConfig.skeletonCmdDesc;
-			case WITHER:
-				return mConfig.witherSkeletonCmdDesc;
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob instanceof MythicMob) {
+			return "";
+		} else if (CitizensCompat.isCitizensSupported() && mob instanceof NPC) {
+			return "";
+		} else {
+			if (mob instanceof Player)
+				return mConfig.pvpKillCmdDesc;
+			else if (mob instanceof Blaze)
+				return mConfig.blazeCmdDesc;
+			else if (mob instanceof Creeper)
+				return mConfig.creeperCmdDesc;
+			else if (mob instanceof Silverfish)
+				return mConfig.silverfishCmdDesc;
+			else if (mob instanceof Enderman)
+				return mConfig.endermanCmdDesc;
+			else if (mob instanceof Giant)
+				return mConfig.giantCmdDesc;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return mConfig.skeletonCmdDesc;
+				case WITHER:
+					return mConfig.witherSkeletonCmdDesc;
+				}
+			} else if (mob instanceof CaveSpider)
+				return mConfig.caveSpiderCmdDesc;
+			else if (mob instanceof Spider)
+				return mConfig.spiderCmdDesc;
+			else if (mob instanceof Witch)
+				return mConfig.witchCmdDesc;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				return mConfig.zombiePigmanCmdDesc;
+			else if (mob instanceof Zombie)
+				return mConfig.zombieCmdDesc;
+			else if (mob instanceof Ghast)
+				return mConfig.ghastCmdDesc;
+			else if (mob instanceof Slime)
+				return mConfig.slimeCmdDesc;
+			else if (mob instanceof EnderDragon)
+				return mConfig.enderdragonCmdDesc;
+			else if (mob instanceof Wither)
+				return mConfig.witherCmdDesc;
+			else if (mob instanceof IronGolem)
+				return mConfig.ironGolemCmdDesc;
+			else if (mob instanceof MagmaCube)
+				return mConfig.magmaCubeCmdDesc;
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return mConfig.guardianCmdDesc;
+				else if (mob instanceof Endermite)
+					return mConfig.endermiteCmdDesc;
+				else if (mob instanceof Rabbit
+						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+					return mConfig.killerrabbitCmdDesc;
+
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
 			}
-		} else if (mob instanceof CaveSpider)
-			return mConfig.caveSpiderCmdDesc;
-		else if (mob instanceof Spider)
-			return mConfig.spiderCmdDesc;
-		else if (mob instanceof Witch)
-			return mConfig.witchCmdDesc;
-		else if (mob instanceof PigZombie)
-			// PigZombie is a subclass of Zombie. PigZombie must be checked
-			// before Zombie
-			return mConfig.zombiePigmanCmdDesc;
-		else if (mob instanceof Zombie)
-			return mConfig.zombieCmdDesc;
-		else if (mob instanceof Ghast)
-			return mConfig.ghastCmdDesc;
-		else if (mob instanceof Slime)
-			return mConfig.slimeCmdDesc;
-		else if (mob instanceof EnderDragon)
-			return mConfig.enderdragonCmdDesc;
-		else if (mob instanceof Wither)
-			return mConfig.witherCmdDesc;
-		else if (mob instanceof IronGolem)
-			return mConfig.ironGolemCmdDesc;
-		else if (mob instanceof MagmaCube)
-			return mConfig.magmaCubeCmdDesc;
-
-		// Test if Minecraft 1.8 Mob Classes exists
-		try {
-			Class cls = Class.forName("org.bukkit.entity.Guardian");
-			if (mob instanceof Guardian)
-				return mConfig.guardianCmdDesc;
-			else if (mob instanceof Endermite)
-				return mConfig.endermiteCmdDesc;
-			else if (mob instanceof Rabbit
-					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-				return mConfig.killerrabbitCmdDesc;
-
-		} catch (ClassNotFoundException e) {
-			// This is not MC 1.8
 		}
-		//getLogger().warning("Warning: Missing text in getKillRewardDescription(mob="
-		//		+ mob.getName() + "), please report to developer");
-		return"";
+		// getLogger().warning("Warning: Missing text in getKillRewardDescription(mob="
+		// + mob.getName() + "), please report to developer");
+		return "";
 	}
 
 	public int getCmdRunProbability(LivingEntity mob) {
-		if (mob instanceof Player)
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob instanceof MythicMob) {
 			return 100;
-		else if (mob instanceof Blaze)
-			return mConfig.blazeFrequency;
-		else if (mob instanceof Creeper)
-			return mConfig.creeperFrequency;
-		else if (mob instanceof Silverfish)
-			return mConfig.silverfishFrequency;
-		else if (mob instanceof Enderman)
-			return mConfig.endermanFrequency;
-		else if (mob instanceof Giant)
-			return mConfig.giantFrequency;
-		else if (mob instanceof Skeleton) {
-			switch (((Skeleton) mob).getSkeletonType()) {
-			case NORMAL:
-				return mConfig.skeletonFrequency;
-			case WITHER:
-				return mConfig.witherSkeletonFrequency;
+		} else if (CitizensCompat.isCitizensSupported() && mob instanceof NPC) {
+			return 100;
+		} else {
+			if (mob instanceof Player)
+				return 100;
+			else if (mob instanceof Blaze)
+				return mConfig.blazeFrequency;
+			else if (mob instanceof Creeper)
+				return mConfig.creeperFrequency;
+			else if (mob instanceof Silverfish)
+				return mConfig.silverfishFrequency;
+			else if (mob instanceof Enderman)
+				return mConfig.endermanFrequency;
+			else if (mob instanceof Giant)
+				return mConfig.giantFrequency;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return mConfig.skeletonFrequency;
+				case WITHER:
+					return mConfig.witherSkeletonFrequency;
+				}
+			} else if (mob instanceof CaveSpider)
+				return mConfig.caveSpiderFrequency;
+			else if (mob instanceof Spider)
+				return mConfig.spiderFrequency;
+			else if (mob instanceof Witch)
+				return mConfig.witchFrequency;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				return mConfig.zombiePigmanFrequency;
+			else if (mob instanceof Zombie)
+				return mConfig.zombieFrequency;
+			else if (mob instanceof Ghast)
+				return mConfig.ghastFrequency;
+			else if (mob instanceof Slime)
+				return mConfig.slimeFrequency;
+			else if (mob instanceof EnderDragon)
+				return mConfig.enderdragonFrequency;
+			else if (mob instanceof Wither)
+				return mConfig.witherFrequency;
+			else if (mob instanceof IronGolem)
+				return mConfig.ironGolemFrequency;
+			else if (mob instanceof MagmaCube)
+				return mConfig.magmaCubeFrequency;
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return mConfig.guardianFrequency;
+				else if (mob instanceof Endermite)
+					return mConfig.endermiteFrequency;
+				else if (mob instanceof Rabbit
+						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+					return mConfig.killerrabbitFrequency;
+
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
 			}
-		} else if (mob instanceof CaveSpider)
-			return mConfig.caveSpiderFrequency;
-		else if (mob instanceof Spider)
-			return mConfig.spiderFrequency;
-		else if (mob instanceof Witch)
-			return mConfig.witchFrequency;
-		else if (mob instanceof PigZombie)
-			// PigZombie is a subclass of Zombie. PigZombie must be checked
-			// before Zombie
-			return mConfig.zombiePigmanFrequency;
-		else if (mob instanceof Zombie)
-			return mConfig.zombieFrequency;
-		else if (mob instanceof Ghast)
-			return mConfig.ghastFrequency;
-		else if (mob instanceof Slime)
-			return mConfig.slimeFrequency;
-		else if (mob instanceof EnderDragon)
-			return mConfig.enderdragonFrequency;
-		else if (mob instanceof Wither)
-			return mConfig.witherFrequency;
-		else if (mob instanceof IronGolem)
-			return mConfig.ironGolemFrequency;
-		else if (mob instanceof MagmaCube)
-			return mConfig.magmaCubeFrequency;
-
-		// Test if Minecraft 1.8 Mob Classes exists
-		try {
-			Class cls = Class.forName("org.bukkit.entity.Guardian");
-			if (mob instanceof Guardian)
-				return mConfig.guardianFrequency;
-			else if (mob instanceof Endermite)
-				return mConfig.endermiteFrequency;
-			else if (mob instanceof Rabbit
-					&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-				return mConfig.killerrabbitFrequency;
-
-		} catch (ClassNotFoundException e) {
-			// This is not MC 1.8
 		}
-		//getLogger().warning("Warning: Missing text in getCmdRunProbability(mob="
-		//		+ mob.getName() + "), please report to developer");
+		// getLogger().warning("Warning: Missing text in getCmdRunProbability(mob="
+		// + mob.getName() + "), please report to developer");
 		return 100;
 	}
 

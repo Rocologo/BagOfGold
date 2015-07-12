@@ -136,22 +136,22 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 
 	public Map<String, Object> write() {
 		HashMap<String, Object> objects = new HashMap<String, Object>();
-		objects.put("id", mId); //$NON-NLS-1$
-		objects.put("world-l", mWorld.getUID().getLeastSignificantBits()); //$NON-NLS-1$
-		objects.put("world-h", mWorld.getUID().getMostSignificantBits()); //$NON-NLS-1$
-		objects.put("mi-x", mMinCorner.getBlockX()); //$NON-NLS-1$
-		objects.put("mi-y", mMinCorner.getBlockY()); //$NON-NLS-1$
-		objects.put("mi-z", mMinCorner.getBlockZ()); //$NON-NLS-1$
+		objects.put("id", mId); 
+		objects.put("world-l", mWorld.getUID().getLeastSignificantBits()); 
+		objects.put("world-h", mWorld.getUID().getMostSignificantBits()); 
+		objects.put("mi-x", mMinCorner.getBlockX()); 
+		objects.put("mi-y", mMinCorner.getBlockY()); 
+		objects.put("mi-z", mMinCorner.getBlockZ()); 
 
-		objects.put("ma-x", mMaxCorner.getBlockX()); //$NON-NLS-1$
-		objects.put("ma-y", mMaxCorner.getBlockY()); //$NON-NLS-1$
-		objects.put("ma-z", mMaxCorner.getBlockZ()); //$NON-NLS-1$
+		objects.put("ma-x", mMaxCorner.getBlockX()); 
+		objects.put("ma-y", mMaxCorner.getBlockY()); 
+		objects.put("ma-z", mMaxCorner.getBlockZ()); 
 
-		objects.put("hor", mHorizontal); //$NON-NLS-1$
+		objects.put("hor", mHorizontal); 
 
-		objects.put("period", mPeriod.ordinal()); //$NON-NLS-1$
-		objects.put("type", mType.getDBColumn()); //$NON-NLS-1$
-
+		objects.put("period", mPeriod.ordinal()); 
+		objects.put("type", mType.getDBColumn()); 
+		
 		return objects;
 	}
 
@@ -179,21 +179,21 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 	}
 
 	public void read(Map<String, Object> data) {
-		UUID worldId = new UUID(
-				toLong(data.get("world-h")), toLong(data.get("world-l"))); //$NON-NLS-1$ //$NON-NLS-2$
+		UUID worldId = new UUID(toLong(data.get("world-h")),
+				toLong(data.get("world-l")));
 		mWorld = Bukkit.getWorld(worldId);
 
-		mMinCorner = new BlockVector(
-				toInt(data.get("mi-x")), toInt(data.get("mi-y")), toInt(data.get("mi-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		mMaxCorner = new BlockVector(
-				toInt(data.get("ma-x")), toInt(data.get("ma-y")), toInt(data.get("ma-z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		mMinCorner = new BlockVector(toInt(data.get("mi-x")),
+				toInt(data.get("mi-y")), toInt(data.get("mi-z")));
+		mMaxCorner = new BlockVector(toInt(data.get("ma-x")),
+				toInt(data.get("ma-y")), toInt(data.get("ma-z")));
 
-		mHorizontal = toBool(data.get("hor")); //$NON-NLS-1$
+		mHorizontal = toBool(data.get("hor"));
 
-		mPeriod = TimePeriod.values()[toInt(data.get("period"))]; //$NON-NLS-1$
-		mType = StatType.fromColumnName((String) data.get("type")); //$NON-NLS-1$
+		mPeriod = TimePeriod.values()[toInt(data.get("period"))];
+		mType = StatType.fromColumnName((String) data.get("type"));
 
-		mId = (String) data.get("id"); //$NON-NLS-1$
+		mId = (String) data.get("id");
 	}
 
 	@Override
@@ -259,7 +259,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 					break;
 
 				signs.get(sign).setLine(line,
-						stat.getAmount() + " " + stat.getPlayer().getName()); 
+						stat.getAmount() + " " + stat.getPlayer().getName());
 
 				++line;
 			}

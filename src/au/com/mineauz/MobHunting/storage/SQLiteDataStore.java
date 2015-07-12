@@ -56,15 +56,35 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		// Create new empty tables if they do not exist
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID TEXT PRIMARY KEY, NAME TEXT, PLAYER_ID INTEGER NOT NULL)"); //$NON-NLS-1$
-		String dataString = ""; //$NON-NLS-1$
+		String dataString = "";
 		for (StatType type : StatType.values())
-			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0"; 
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString + ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$ //$NON-NLS-2$
+			dataString += ", " + type.getDBColumn()
+					+ " INTEGER NOT NULL DEFAULT 0";
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
+				+ dataString + ", PRIMARY KEY(PLAYER_ID, ID))");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
+				+ dataString + ", PRIMARY KEY(PLAYER_ID, ID))");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
+				+ dataString + ", PRIMARY KEY(PLAYER_ID, ID))");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
+				+ dataString + ", PRIMARY KEY(PLAYER_ID, ID))");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
+				+ dataString + ", PRIMARY KEY(PLAYER_ID))");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))"); //$NON-NLS-1$
+
+		//creating new tables for citizens and mythicmobsd
+		//MobHunting.debug("Creating new tables for MobHunting.........");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_MobTypes (MOB_ID INTEGER PRIMARY KEY, MOB_NAME TEXT NOT NULL)");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Kills ("
+				+ " PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID),"
+				+ " MOB_ID INTEGER REFERENCES mh_MobTypes(MOB_ID),"
+				+ " PERIOD TEXT NOT NULL," // PERIOD={D,W,M,Y,A} (Day, Week,
+				// Month, Year, All Time)
+				+ " ID CHAR(6) NOT NULL,"
+				+ " KILLS INTEGER NOT NULL DEFAULT 0,"
+				+ " ASSISTS INTEGER NOT NULL DEFAULT 0,"
+				+ " PRIMARY KEY(PLAYER_ID, MOB_ID, PERIOD))");
+		//MobHunting.debug("Two new tables created for MobHunting......");
 
 		// Setup Database triggers
 		setupTrigger(connection);
@@ -82,7 +102,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		Statement create = connection.createStatement();
 
-		create.executeUpdate("create trigger if not exists mh_DailyInsert after insert on mh_Daily begin insert or ignore into mh_Weekly(ID, PLAYER_ID) values(strftime(\"%Y%W\",\"now\"), NEW.PLAYER_ID); insert or ignore into mh_Monthly(ID, PLAYER_ID) values(strftime(\"%Y%m\",\"now\"), NEW.PLAYER_ID); insert or ignore into mh_Yearly(ID, PLAYER_ID) values(strftime(\"%Y\",\"now\"), NEW.PLAYER_ID); insert or ignore into mh_AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end"); 
+		create.executeUpdate("create trigger if not exists mh_DailyInsert after insert on mh_Daily begin insert or ignore into mh_Weekly(ID, PLAYER_ID) values(strftime(\"%Y%W\",\"now\"), NEW.PLAYER_ID); insert or ignore into mh_Monthly(ID, PLAYER_ID) values(strftime(\"%Y%m\",\"now\"), NEW.PLAYER_ID); insert or ignore into mh_Yearly(ID, PLAYER_ID) values(strftime(\"%Y\",\"now\"), NEW.PLAYER_ID); insert or ignore into mh_AllTime(PLAYER_ID) values(NEW.PLAYER_ID); end");
 
 		// Create the cascade update trigger. It will allow us to only modify
 		// the Daily table, and the rest will happen automatically
@@ -90,7 +110,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		for (StatType type : StatType.values()) {
 			if (updateStringBuilder.length() != 0)
-				updateStringBuilder.append(", "); 
+				updateStringBuilder.append(", ");
 
 			updateStringBuilder
 					.append(String
@@ -387,8 +407,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			ResultSet rs = statement
 					.executeQuery("SELECT IronGolem_kill from mh_Daily LIMIT 0");
 			rs.close();
-			//statement.close();
-			//return; // New Mobs exists in database
+			// statement.close();
+			// return; // New Mobs exists in database
 		} catch (SQLException e) {
 
 			System.out
@@ -419,15 +439,14 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 			setupTrigger(connection);
 
-			System.out
-					.println("[MobHunting]*** Adding IronGolem complete ***");
+			System.out.println("[MobHunting]*** Adding IronGolem complete ***");
 		}
 		try {
 			ResultSet rs = statement
 					.executeQuery("SELECT PvpPlayer_kill from mh_Daily LIMIT 0");
 			rs.close();
-			//statement.close();
-			//return; // New Mobs exists in database
+			// statement.close();
+			// return; // New Mobs exists in database
 		} catch (SQLException e) {
 
 			System.out
@@ -466,8 +485,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			ResultSet rs = statement
 					.executeQuery("SELECT Giant_kill from mh_Daily LIMIT 0");
 			rs.close();
-			//statement.close();
-			//return; // New Mobs exists in database
+			// statement.close();
+			// return; // New Mobs exists in database
 		} catch (SQLException e) {
 
 			System.out

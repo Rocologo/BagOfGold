@@ -15,7 +15,7 @@ public class MinigamesCompat implements Listener
 	public MinigamesCompat()
 	{
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
-		MobHunting.instance.getLogger().info("Enabling Minigames Compatability"); //$NON-NLS-1$
+		MobHunting.instance.getLogger().info("Enabling compatability with Minigames");
 	}
 	
 	@EventHandler(priority=EventPriority.NORMAL)

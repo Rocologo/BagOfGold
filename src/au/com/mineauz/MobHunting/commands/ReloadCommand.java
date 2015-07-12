@@ -55,7 +55,7 @@ public class ReloadCommand implements ICommand
 	@Override
 	public boolean onCommand( CommandSender sender, String label, String[] args )
 	{
-		if(MobHunting.config().load())
+		if(MobHunting.config().loadConfig())
 			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.reload.reload-complete")); //$NON-NLS-1$
 		else
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.reload.reload-error")); //$NON-NLS-1$

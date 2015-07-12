@@ -50,6 +50,7 @@ public class Config extends AutoConfig {
 		setCategoryComment(
 				"killstreak",
 				"Set the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
+		
 		setCategoryComment(
 				"pvp",
 				"Pvp configuration. Set pvp-allowed = true if you want give the players a reward when they kill eachother."
@@ -60,12 +61,42 @@ public class Config extends AutoConfig {
 						+ "\nYou can also specify the message send to the player."
 						+ "\nYou can run many console commands on each line, each command"
 						+ "\nmust be separated by |");
-		setCategoryComment("plugins", "Integration to otherplugins.");
-		setCategoryComment("database", "Database Settings.");
-		setCategoryComment("general", "General Setting.");
+		
+		setCategoryComment(
+				"plugins",
+				"########################################################################"
+						+ "\nIntegration to otherplugins."
+						+ "\n########################################################################");
+		
+		setCategoryComment(
+				"database",
+				"########################################################################"
+						+ "\nDatabase Settings."
+						+ "\n########################################################################");
+		
+		setCategoryComment(
+				"general",
+				"########################################################################"
+						+ "\nGeneral Setting."
+						+ "\n########################################################################");
+
+		//setCategoryComment(
+		//		"mythic-mobs",
+		//		"########################################################################"
+		//				+ "\nHere is where you set the base prize in $ for killing a MythicMob type"
+		//				+ "\n########################################################################");
+		
+		setCategoryComment(
+				"citizens-mobs",
+				"########################################################################"
+						+ "Here is where you set the base prize in $ for killing a Citizen NPC type"
+						+ "\n########################################################################");
 
 	}
 
+	// #####################################################################################
+	// Mobs
+	// #####################################################################################
 	@ConfigField(name = "blaze", category = "mobs")
 	public double blazePrize = 1.0;
 	@ConfigField(name = "blaze-cmd", category = "mobs")
@@ -74,7 +105,7 @@ public class Config extends AutoConfig {
 	public String blazeCmdDesc = "You got a Blaze skull and an Iron ingot.";
 	@ConfigField(name = "blaze-cmd-run-frequency", category = "mobs")
 	public int blazeFrequency = 10;
-	
+
 	@ConfigField(name = "creeper", category = "mobs")
 	public double creeperPrize = 1.0;
 	@ConfigField(name = "creeper-cmd", category = "mobs")
@@ -83,7 +114,7 @@ public class Config extends AutoConfig {
 	public String creeperCmdDesc = "You got a Creeper skull and an Iron ingot.";
 	@ConfigField(name = "creeper-cmd-run-frequency", category = "mobs")
 	public int creeperFrequency = 10;
-	
+
 	@ConfigField(name = "silverfish", category = "mobs")
 	public double silverfishPrize = 0.1;
 	@ConfigField(name = "silverfish-cmd", category = "mobs")
@@ -92,7 +123,7 @@ public class Config extends AutoConfig {
 	public String silverfishCmdDesc = "";
 	@ConfigField(name = "silverfish-cmd-run-frequency", category = "mobs")
 	public int silverfishFrequency = 20;
-	
+
 	@ConfigField(name = "zombie-pigman", category = "mobs")
 	public double zombiePigmanPrize = 0.5;
 	@ConfigField(name = "zombie-pigman-cmd", category = "mobs")
@@ -101,7 +132,7 @@ public class Config extends AutoConfig {
 	public String zombiePigmanCmdDesc = "You got a Zombie Pigman skull and an Iron ingot.";
 	@ConfigField(name = "zombie-pigman-cmd-run-frequency", category = "mobs")
 	public int zombiePigmanFrequency = 10;
-	
+
 	@ConfigField(name = "enderman", category = "mobs")
 	public double endermanPrize = 1.0;
 	@ConfigField(name = "enderman-cmd", category = "mobs")
@@ -110,7 +141,6 @@ public class Config extends AutoConfig {
 	public String endermanCmdDesc = "You got a Enderman skull and an Iron ingot.";
 	@ConfigField(name = "enderman-cmd-run-frequency", category = "mobs")
 	public int endermanFrequency = 20;
-	
 
 	@ConfigField(name = "giant", category = "mobs")
 	public double giantPrize = 2.0;
@@ -120,7 +150,7 @@ public class Config extends AutoConfig {
 	public String giantCmdDesc = "You got an Iron ingot.";
 	@ConfigField(name = "giant-cmd-run-frequency", category = "mobs")
 	public int giantFrequency = 10;
-	
+
 	@ConfigField(name = "skeleton", category = "mobs")
 	public double skeletonPrize = 0.5;
 	@ConfigField(name = "skeleton-cmd", category = "mobs")
@@ -129,7 +159,7 @@ public class Config extends AutoConfig {
 	public String skeletonCmdDesc = "You got a Skeleton skull and an Iron ingot.";
 	@ConfigField(name = "skeleton-cmd-run-frequency", category = "mobs")
 	public int skeletonFrequency = 10;
-	
+
 	@ConfigField(name = "wither-skeleton", category = "mobs")
 	public double witherSkeletonPrize = 1.0;
 	@ConfigField(name = "wither-skeleton-cmd", category = "mobs")
@@ -138,7 +168,7 @@ public class Config extends AutoConfig {
 	public String witherSkeletonCmdDesc = "You got a Wither Skeleton skull and an Iron ingot.";
 	@ConfigField(name = "wither-skeleton-cmd-run-frequency", category = "mobs")
 	public int witherSkeletonFrequency = 20;
-	
+
 	@ConfigField(name = "spider", category = "mobs")
 	public double spiderPrize = 0.5;
 	@ConfigField(name = "spider-cmd", category = "mobs")
@@ -147,7 +177,7 @@ public class Config extends AutoConfig {
 	public String spiderCmdDesc = "You got a Spider skull and an Iron ingot.";
 	@ConfigField(name = "spider-cmd-run-frequency", category = "mobs")
 	public int spiderFrequency = 10;
-	
+
 	@ConfigField(name = "cave-spider", category = "mobs")
 	public double caveSpiderPrize = 0.8;
 	@ConfigField(name = "cave-spider-cmd", category = "mobs")
@@ -165,7 +195,7 @@ public class Config extends AutoConfig {
 	public String witchCmdDesc = "You got a Witch skull and an Iron ingot.";
 	@ConfigField(name = "witch-cmd-run-frequency", category = "mobs")
 	public int witchFrequency = 10;
-	
+
 	@ConfigField(name = "zombie", category = "mobs")
 	public double zombiePrize = 0.5;
 	@ConfigField(name = "zombie-cmd", category = "mobs")
@@ -174,7 +204,7 @@ public class Config extends AutoConfig {
 	public String zombieCmdDesc = "You got a Zombie skull and an Iron ingot.";
 	@ConfigField(name = "zombie-cmd-run-frequency", category = "mobs")
 	public int zombieFrequency = 10;
-	
+
 	@ConfigField(name = "ghast", category = "mobs")
 	public double ghastPrize = 2.0;
 	@ConfigField(name = "ghast-cmd", category = "mobs")
@@ -183,7 +213,7 @@ public class Config extends AutoConfig {
 	public String ghastCmdDesc = "You got a Ghast skull and an Iron ingot.";
 	@ConfigField(name = "ghast-cmd-run-frequency", category = "mobs")
 	public int ghastFrequency = 10;
-	
+
 	@ConfigField(name = "iron-golem", category = "mobs")
 	public double ironGolemPrize = 2.0;
 	@ConfigField(name = "iron-golem-cmd", category = "mobs")
@@ -192,7 +222,7 @@ public class Config extends AutoConfig {
 	public String ironGolemCmdDesc = "You got an Iron Golem skull and an Iron ingot.";
 	@ConfigField(name = "iron-golem-cmd-run-frequency", category = "mobs")
 	public int ironGolemFrequency = 10;
-	
+
 	@ConfigField(name = "magma-cube", category = "mobs")
 	public double magmaCubePrize = 4.0;
 	@ConfigField(name = "magma-cube-cmd", category = "mobs")
@@ -201,7 +231,7 @@ public class Config extends AutoConfig {
 	public String magmaCubeCmdDesc = "You got a Magma Cube skull and an Iron ingot.";
 	@ConfigField(name = "magma-cube-cmd-run-frequency", category = "mobs")
 	public int magmaCubeFrequency = 10;
-	
+
 	@ConfigField(name = "endermite", category = "mobs")
 	public double endermitePrize = 1.0;
 	@ConfigField(name = "endermite-cmd", category = "mobs")
@@ -210,7 +240,7 @@ public class Config extends AutoConfig {
 	public String endermiteCmdDesc = "You got a Endermite skull and an Iron ingot.";
 	@ConfigField(name = "endermite-cmd-run-frequency", category = "mobs")
 	public int endermiteFrequency = 10;
-	
+
 	@ConfigField(name = "guardian", category = "mobs")
 	public double guardianPrize = 1.0;
 	@ConfigField(name = "guardian-cmd", category = "mobs")
@@ -228,7 +258,7 @@ public class Config extends AutoConfig {
 	public String killerrabbitCmdDesc = "";
 	@ConfigField(name = "killerrabbit-cmd-run-frequency", category = "mobs")
 	public int killerrabbitFrequency = 50;
-	
+
 	@ConfigField(name = "slime-base", category = "mobs", comment = "This is multiplied by the size of the slime. So a big natural slime is 4x this value")
 	public double slimeTinyPrize = 0.25;
 	@ConfigField(name = "slime-cmd", category = "mobs")
@@ -237,8 +267,10 @@ public class Config extends AutoConfig {
 	public String slimeCmdDesc = "You got a Slime skull and an Iron ingot.";
 	@ConfigField(name = "slime-cmd-run-frequency", category = "mobs")
 	public int slimeFrequency = 3;
-	
-	
+
+	// #####################################################################################
+	// Bosses
+	// #####################################################################################
 	@ConfigField(name = "wither", category = "boss")
 	public double witherPrize = 500.0;
 	@ConfigField(name = "wither-cmd", category = "boss")
@@ -257,7 +289,9 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "enderdragon-cmd-run-frequency", category = "boss")
 	public int enderdragonFrequency = 100;
 
-	
+	// #####################################################################################
+	// Bonuses
+	// #####################################################################################
 	@ConfigField(name = "sneaky", category = "bonus")
 	public double bonusSneaky = 2.0;
 	@ConfigField(name = "return-to-sender", category = "bonus")
@@ -279,6 +313,9 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "bonus-mob-chance", category = "bonus", comment = "This is the chance (% chance 0-100) that a bonus mob will spawn.")
 	public double bonusMobChance = 0.2;
 
+	// #####################################################################################
+	// Specials
+	// #####################################################################################
 	@ConfigField(name = "charged-kill", category = "special")
 	public double specialCharged = 100;
 	@ConfigField(name = "charged-kill-cmd", category = "special")
@@ -394,6 +431,9 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "hunter7-cmd-desc", category = "special")
 	public String specialHunter7CmdDesc = "";
 
+	// #####################################################################################
+	// Assists
+	// #####################################################################################
 	@ConfigField(name = "enable", category = "assists", comment = "Enabling assist allows the second last player to attack a mob to get some money from it")
 	public boolean enableAssists = true;
 	@ConfigField(name = "multiplier", category = "assists", comment = "This should be a value that is multiplied against the mobs base kill value."
@@ -404,11 +444,17 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "timeout", category = "assists", comment = "Time in seconds after attacking a mob that can be counted as an assist")
 	public int assistTimeout = 4;
 
+	// #####################################################################################
+	// Penalties
+	// #####################################################################################
 	@ConfigField(name = "enable-grinding-penalty", category = "penalty", comment = "Enabling this prevents a player from earning too much money from using a mob grinder")
 	public boolean penaltyGrindingEnable = true;
 	@ConfigField(name = "flyingPenalty", category = "penalty", comment = "If a player flies at any point in a fight, this penalty will be applied")
 	public double penaltyFlying = 0.5;
 
+	// #####################################################################################
+	// Killstreaks
+	// #####################################################################################
 	@ConfigField(name = "level1", category = "killstreak")
 	public int killstreakLevel1 = 5;
 	@ConfigField(name = "level1-multiplier", category = "killstreak")
@@ -426,6 +472,9 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "level4-multiplier", category = "killstreak")
 	public double killstreakLevel4Mult = 4;
 
+	// #####################################################################################
+	// PVP
+	// #####################################################################################
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
 	public boolean pvpAllowed = true;
 	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize kan be a number to stel x dollars from the killed player,"
@@ -436,11 +485,17 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
 	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
 
+	// #####################################################################################
+	// Plugin integration
+	// #####################################################################################
 	@ConfigField(name = "mobarena-get-rewards", category = "plugins", comment = "Set to true if you want the players to get rewards while playing MobArena.")
 	public boolean mobarenaGetRewards = false;
 	@ConfigField(name = "pvparena-get-rewards", category = "plugins", comment = "Set to true if you want the players to get rewards while playing pvpArena.")
 	public boolean pvparenaGetRewards = false;
 
+	// #####################################################################################
+	// Database
+	// #####################################################################################
 	@ConfigField(name = "type", category = "database", comment = "Type of database to use. Valid values are: sqlite, mysql")
 	public String databaseType = "sqlite";
 	@ConfigField(name = "username", category = "database")
@@ -452,6 +507,9 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "database", category = "database")
 	public String databaseName = "mobhunting";
 
+	// #####################################################################################
+	// Generel settings
+	// #####################################################################################
 	@ConfigField(name = "disabled-in-worlds", category = "general", comment = "Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
 	public String[] disabledInWorlds = new String[0];
 	@ConfigField(name = "language", category = "general", comment = "The language (file) to use. You can put the name of the language file as the language code "
@@ -471,6 +529,32 @@ public class Config extends AutoConfig {
 	public boolean killDebug = false;
 	@ConfigField(name = "update-check", category = "general", comment = "Check if there is a new version of the plugin available.")
 	public boolean updateCheck = true;
+
+	// #####################################################################################
+	// MythicMobs
+	// #####################################################################################
+	//@ConfigField(name = "mythic-mobs1", category = "mythic-mobs", comment = "This is an example of a MythicMob.")
+	//public double mythicMob1Prize = 10;
+	//@ConfigField(name = "mythic-mobs1-cmd", category = "mythic-mobs")
+	//public String mythicMob1Cmd = "";
+	//@ConfigField(name = "mythic-mobs1-cmd-desc", category = "mythic-mobs")
+	//public String mythicMob1CmdDesc = "";
+	//@ConfigField(name = "mythic-mobs1-cmd-run-frequency", category = "mythic-mobs")
+	//public int mythicMob1Frequency = 10;
+
+	// #####################################################################################
+	// Citizens - Sentry
+	// #####################################################################################
+	@ConfigField(name = "citizens-sentry-id1", category = "citizens-mobs", comment = "This is an example of a Citizens NPC")
+	public int citizensSentryId1=1;
+	@ConfigField(name = "citizens-sentry-price", category = "citizens-mobs", comment = "This is an example of a Citizens NPC")
+	public double citizensMob1Prize = 10;
+	@ConfigField(name = "citizens-mob1-cmd", category = "citizens-mobs")
+	public String citizensMob1Cmd = "";
+	@ConfigField(name = "citizens-mob1-cmd-desc", category = "citizens-mobs")
+	public String citizensMob1CmdDesc = "";
+	@ConfigField(name = "citizens-mob1-cmd-run-frequency", category = "citizens-mobs")
+	public int citizensMob1Frequency = 10;
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {

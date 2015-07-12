@@ -53,10 +53,9 @@ public abstract class AutoConfig
 		return nodes; 
 	}
 	
-	
 	protected void onPostLoad() throws InvalidConfigurationException {};
 	protected void onPreSave(){};
-	public boolean load()
+	public boolean loadConfig()
 	{
 		FileConfiguration yml = new YamlConfiguration();
 		try
@@ -197,7 +196,7 @@ public abstract class AutoConfig
 		}
 	}
 	
-	public boolean save()
+	public boolean saveConfig()
 	{
 		try
 		{

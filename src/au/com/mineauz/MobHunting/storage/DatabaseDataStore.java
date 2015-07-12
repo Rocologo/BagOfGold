@@ -55,7 +55,6 @@ public abstract class DatabaseDataStore implements DataStore {
 	public void initialize() throws DataStoreException {
 		try {
 
-			MobHunting.debug("DBDS - Initialize connection");
 			mConnection = setupConnection();
 			mConnection.setAutoCommit(false);
 
@@ -106,7 +105,6 @@ public abstract class DatabaseDataStore implements DataStore {
 		try {
 			if (mConnection != null) {
 				mConnection.close();
-				MobHunting.debug("DBDS - shutdown connection");
 			}
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
