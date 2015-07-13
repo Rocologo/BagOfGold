@@ -15,6 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -49,7 +50,7 @@ public class MythicMobsCompat implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
 
 		MobHunting.instance.getLogger().info(
-				"Enabling Compatability with MythicMob ("
+				"Enabling Compatability with MythicMobs ("
 						+ getMythicMobs().getDescription().getVersion() + ")");
 		// API:
 		// http://xikage.elseland.net/viewgit/?a=tree&p=MythicMobs&h=dec796decd1ef71fdd49aed69aef85dc7d82b1c1&hb=ffeb51fb84e882365846a30bd2b9753716faf51e&f=MythicMobs/src/net/elseland/xikage/MythicMobs/API
@@ -110,7 +111,6 @@ public class MythicMobsCompat implements Listener {
 
 				int n = 0;
 				for (String str : mNPCData.keySet()) {
-					MobHunting.debug("Key=%s", str);
 					ConfigurationSection section = config.createSection(str);
 					mNPCData.get(str).save(section);
 					n++;
@@ -164,10 +164,11 @@ public class MythicMobsCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
-		MobHunting.debug(
-				"MythicMob Death event, killer is %s, mobname=%s, Mobname=%s",
-				event.getKiller().getName(), event.MobName,
-				event.getMobType().MobName);
+		if (event.getKiller() != null)
+			MobHunting
+					.debug("MythicMob Death event, killer is %s, mobname=%s, Mobname=%s",
+							event.getKiller().getName(), event.MobName,
+							event.getMobType().MobName);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -186,6 +187,13 @@ public class MythicMobsCompat implements Listener {
 					100, 100));
 			saveMythicMobsData(event.getMobType().MobName);
 		}
+
+		event.getLivingEntity().setMetadata(
+				"MH:MythicMob",
+				new FixedMetadataValue(mPlugin,
+						mNPCData.get(event.getMobType().MobName)));
+		// MobHunting.debug("MythicMob Spawned-%s",
+		// event.getLivingEntity().hasMetadata("MH:MythicMob"));
 
 	}
 

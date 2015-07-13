@@ -73,6 +73,7 @@ import au.com.mineauz.MobHunting.compatability.MobArenaCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaHelper;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.compatability.MythicMobsCompat;
+import au.com.mineauz.MobHunting.compatability.NPCData;
 import au.com.mineauz.MobHunting.compatability.PVPArenaCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaHelper;
 import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
@@ -232,7 +233,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(WorldGuardCompat.class, "WorldGuard");
 		CompatibilityManager.register(MobArenaCompat.class, "MobArena");
 		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
-		//CompatibilityManager.register(MythicMobsCompat.class, "MythicMobs");
+		CompatibilityManager.register(MythicMobsCompat.class, "MythicMobs");
 		CompatibilityManager.register(CitizensCompat.class, "Citizens");
 		// CompatibilityManager.register(HeroesCompat.class, "Heroes");
 		// CompatibilityManager.register(MobDungeonMainCompat.class,
@@ -874,33 +875,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (MythicMobsCompat.isMythicMobsSupported()) {
-			if (killed instanceof MythicMob)
-				debug("Mob is instance of MythicMob");
-			if (killed instanceof MythicMobs)
-				debug("Mob is instance of MythicMobs");
-			if (killed instanceof MythicEntity)
-				debug("Mob is instance of MythicEntity");
-			if (killed instanceof MythicSkeleton)
-				debug("Mob is instance of MythicSkeleton");
-			if (killed instanceof MythicMobDeathEvent)
-				debug("Mob is instance of MythicMobDeathEvent");
-
-			// TODO: getprize, pay out
-			// TODO: store kill i
-
-		}
-
-		if (MythicMobsCompat.isMythicMobsSupported()
-		// && killed instanceof MythicMob
-		) {
-			// debug("A MythicMob was killed: %s (Type=%s),Name=%s",
-			// ((MythicMob) killed).getDisplayName(),
-			// ((MythicMob) killed).getEntityType(),
-			// debug("A MythicMob was killed: %s",
-			// ((MythicMob) killed).MobName);
-
-			// TODO: getprize, pay out
-			// TODO: store kill i
+			if (killed.hasMetadata("MH:MythicMob"))
+				if (killer instanceof Player)
+					debug("%s killed a MythicMob", killer.getName());
+			// if (!(killer instanceof Player))
+			// return;
+			// if (!(killer instanceof Player))
 		}
 
 		if (CitizensCompat.isCitizensSupported()
@@ -1119,8 +1099,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)",
 					killer.getName(), extraString);
 
+		// Run console commands as a reward
 		if (data.dampenedKills < 10) {
-			// Run console commands as a reward
 			if (!getKillConsoleCmd(killed).equals("")) {
 				if (mRand.nextInt(getCmdRunProbabilityBase(killed)) < getCmdRunProbability(killed)) {
 					String worldname = killer.getWorld().getName();
@@ -1222,31 +1202,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// TODO: Test if prize contains "xx:yy" and then give a random reward
 		// between xx and yy
 		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob instanceof MythicMob) {
-			// TODO: This does not work and is not called...
-			debug("Size of mNPCData=" + MythicMobsCompat.getNPCData().size());
-			debug("EntityID=%s, Name=", mob.getEntityId(), mob.getCustomName());
-			debug("Prize="
-					+ MythicMobsCompat.getNPCData().get(mob.getEntityId())
-							.getRewardPrize());
-			return getPrice(MythicMobsCompat.getNPCData()
-					.get(mob.getEntityId()).getRewardPrize());
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return getPrice(((NPCData) value.value()).getRewardPrize());
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				// debug("Size of mNPCData=" +
-				// CitizensCompat.getNPCData().size());
-				// debug("Prize="
-				// +
-				// getPrice(CitizensCompat.getNPCData().get(String.valueOf(npc.getId()))
-				// .getRewardPrize()));
-				// debug("CitizensCompat.getNPCData().get(npc.getId()="
-				// + CitizensCompat.getNPCData().get(npc.getId()));
-				// debug("size of getNPCData="+CitizensCompat.getNPCData().size());
-				// debug("npc.getId="+npc.getId());
 				return getPrice(CitizensCompat.getNPCData()
 						.get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
@@ -1357,15 +1322,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 */
 	public String getKillConsoleCmd(LivingEntity mob) {
 		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob instanceof MythicMob) {
-
-			debug("Size of mNPCData=" + MythicMobsCompat.getNPCData().size());
-			debug("EntityID=%s, Name=", mob.getEntityId(), mob.getCustomName());
-			debug("Prize="
-					+ MythicMobsCompat.getNPCData().get(mob.getEntityId())
-							.getRewardPrize());
-			return MythicMobsCompat.getNPCData().get(mob.getEntityId())
-					.getConsoleRunCommand();
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((NPCData) value.value()).getConsoleRunCommand();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
@@ -1448,15 +1408,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 */
 	public String getKillRewardDescription(LivingEntity mob) {
 		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob instanceof MythicMob) {
-
-			debug("Size of mNPCData=" + MythicMobsCompat.getNPCData().size());
-			debug("EntityID=%s, Name=", mob.getEntityId(), mob.getCustomName());
-			debug("Prize="
-					+ MythicMobsCompat.getNPCData().get(mob.getEntityId())
-							.getRewardPrize());
-			return MythicMobsCompat.getNPCData().get(mob.getEntityId())
-					.getRewardDescription();
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((NPCData) value.value()).getRewardDescription();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
@@ -1536,15 +1491,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public int getCmdRunProbability(LivingEntity mob) {
 		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob instanceof MythicMob) {
-
-			debug("Size of mNPCData=" + MythicMobsCompat.getNPCData().size());
-			debug("EntityID=%s, Name=", mob.getEntityId(), mob.getCustomName());
-			debug("Prize="
-					+ MythicMobsCompat.getNPCData().get(mob.getEntityId())
-							.getRewardPrize());
-			return MythicMobsCompat.getNPCData().get(mob.getEntityId())
-					.getPropability();
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((NPCData) value.value()).getPropability();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
@@ -1623,26 +1573,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public int getCmdRunProbabilityBase(LivingEntity mob) {
 		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob instanceof MythicMob) {
-
-			debug("EntityID=%s, Name=", mob.getEntityId(), mob.getCustomName());
-			debug("Prize="
-					+ MythicMobsCompat.getNPCData()
-							.get(String.valueOf(mob.getEntityId()))
-							.getPropabilityBase());
-			return MythicMobsCompat.getNPCData()
-					.get(String.valueOf(mob.getEntityId()))
-					.getPropabilityBase();
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((NPCData) value.value()).getPropabilityBase();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				debug("Prize="
-						+ CitizensCompat.getNPCData()
-								.get(String.valueOf(npc.getId()))
-								.getPropabilityBase());
 				return CitizensCompat.getNPCData()
 						.get(String.valueOf(npc.getId())).getPropabilityBase();
 			} else
