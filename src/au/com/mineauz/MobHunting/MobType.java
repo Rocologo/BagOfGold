@@ -1,11 +1,23 @@
 package au.com.mineauz.MobHunting;
 
-import au.com.mineauz.MobHunting.MobType.MobPlugin;
-
 public class MobType {
 
 	public enum MobPlugin {
-		Minecraft, MythicMobs, Citizens2
+		Minecraft("Minecraft"), MythicMobs("MythicMobs"), Citizens("Citizens");
+
+		private final String name;
+
+		private MobPlugin(String s) {
+			name = s;
+		}
+
+		public boolean equalsName(String otherName) {
+			return (otherName == null) ? false : name.equals(otherName);
+		}
+
+		public String toString() {
+			return name;
+		}
 	}
 
 	private MobPlugin mobPlugin;
@@ -23,9 +35,9 @@ public class MobType {
 		this.mobType = mobType;
 		this.max = max;
 	}
-	
-	public MobType get(){
-		return new MobType(mobPlugin,mobType,max);
+
+	public MobType get() {
+		return new MobType(mobPlugin, mobType, max);
 	}
 
 	public String getMobType() {
@@ -38,5 +50,16 @@ public class MobType {
 
 	public MobPlugin getMobPlugin() {
 		return mobPlugin;
+	}
+
+	public MobPlugin valueOf(String str) {
+		switch (str) {
+		case "MythicMobs":
+			return MobPlugin.MythicMobs;
+		case "Citizens":
+			return MobPlugin.Citizens;
+		default:
+			return MobPlugin.Minecraft;
+		}
 	}
 }

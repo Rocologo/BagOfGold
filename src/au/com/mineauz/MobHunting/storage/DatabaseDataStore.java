@@ -69,17 +69,18 @@ public abstract class DatabaseDataStore implements DataStore {
 
 	protected abstract Connection setupConnection() throws SQLException,
 			DataStoreException;
-	
+
 	protected abstract void setupTables(Connection connection)
 			throws SQLException;
 
 	protected abstract void setupStatements(Connection connection)
 			throws SQLException;
+
 	protected abstract void setupStatement_1(Connection connection)
 			throws SQLException;
 
 	protected void closeStatements() throws SQLException {
-		//mAddPlayerStatement.close();
+		// mAddPlayerStatement.close();
 		mGetPlayerStatement[0].close();
 		mGetPlayerStatement[1].close();
 		mGetPlayerStatement[2].close();
@@ -88,7 +89,7 @@ public abstract class DatabaseDataStore implements DataStore {
 		mAddPlayerStatsStatement.close();
 		mLoadAchievementsStatement.close();
 		mGetPlayerUUID.close();
-		mUpdatePlayerName.close(); 
+		mUpdatePlayerName.close();
 	}
 
 	protected void rollback() throws DataStoreException {
@@ -113,7 +114,7 @@ public abstract class DatabaseDataStore implements DataStore {
 
 	protected Map<UUID, Integer> getPlayerIds(Set<OfflinePlayer> players)
 			throws SQLException {
-		
+
 		setupStatement_1(mConnection);
 		myAddPlayerStatement.clearBatch();
 
@@ -160,11 +161,13 @@ public abstract class DatabaseDataStore implements DataStore {
 			int index = 0;
 			while (results.next()) {
 				OfflinePlayer player = temp.get(index++);
-				if (!results.getString(2).equals(player.getName())) {
+				if (!results.getString(2).equals(player.getPlayer().getName())) {
 					MobHunting.instance.getLogger().info(
 							"Name change detected: " + results.getString(2)
-									+ " -> " + player.getName()+" UUID="+player.getUniqueId().toString());
-					updatePlayerName(player);
+									+ " -> " + player.getPlayer().getName()
+									+ " UUID="
+									+ player.getUniqueId().toString());
+					updatePlayerName(player.getPlayer());
 				}
 
 				ids.put(UUID.fromString(results.getString(1)),
@@ -177,9 +180,9 @@ public abstract class DatabaseDataStore implements DataStore {
 
 	protected int getPlayerId(OfflinePlayer player) throws SQLException,
 			DataStoreException {
-		//setupStatements(mConnection);
-		//mGetPlayerStatement[0] = mConnection
-		//		.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
+		// setupStatements(mConnection);
+		// mGetPlayerStatement[0] = mConnection
+		// .prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
 		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerStatement[0].executeQuery();
 
@@ -188,11 +191,12 @@ public abstract class DatabaseDataStore implements DataStore {
 			if (!player.getName().equals(name)) {
 				MobHunting.instance.getLogger().info(
 						"Name change detected: " + name + " -> "
-								+ player.getName()+" UUID="+player.getUniqueId().toString());
+								+ player.getName() + " UUID="
+								+ player.getUniqueId().toString());
 				updatePlayerName(player);
 			}
-			//mConnection.commit();
-			//mGetPlayerStatement[0].closeOnCompletion();
+			// mConnection.commit();
+			// mGetPlayerStatement[0].closeOnCompletion();
 			return result.getInt(3);
 		}
 

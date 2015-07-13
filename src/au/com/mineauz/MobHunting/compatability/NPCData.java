@@ -1,41 +1,42 @@
 package au.com.mineauz.MobHunting.compatability;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.BlockVector;
-import org.bukkit.util.Vector;
 
-import au.com.mineauz.MobHunting.MobHunting;
-import au.com.mineauz.MobHunting.StatType;
-import au.com.mineauz.MobHunting.leaderboard.Leaderboard;
-import au.com.mineauz.MobHunting.storage.TimePeriod;
+import au.com.mineauz.MobHunting.MobType.MobPlugin;
 
 public class NPCData {
+	private MobPlugin mobPlugin;
 	private String npcName = "";
 	private double rewardPrize = 5;
 	private String consoleRunCommand = "";
 	private String rewardDescription = "";
 	private int propability = 100;
+	private int propabilityBase = 100;
 
-	public NPCData(String npcName, double rewardPrize, String cmd,
-			String cmdDesc, int propability) {
+	public NPCData(MobPlugin citizens, String npcName, double rewardPrize,
+			String cmd, String cmdDesc, int propability, int propabilityBase) {
+		this.mobPlugin = citizens;
 		this.npcName = npcName;
 		this.rewardPrize = rewardPrize;
 		this.consoleRunCommand = cmd;
 		this.rewardDescription = cmdDesc;
 		this.propability = propability;
+		this.setPropabilityBase(propabilityBase);
+	}
+
+	// **************************************************************************
+	// Getters and Setters
+	// **************************************************************************
+	public MobPlugin getMobPlugin() {
+		return mobPlugin;
+	}
+
+	public void setMobPlugin(MobPlugin mobPlugin) {
+		this.mobPlugin = mobPlugin;
 	}
 
 	public String getNpcName() {
@@ -78,6 +79,14 @@ public class NPCData {
 		this.propability = propability;
 	}
 
+	public int getPropabilityBase() {
+		return propabilityBase;
+	}
+
+	public void setPropabilityBase(int propabilityBase) {
+		this.propabilityBase = propabilityBase;
+	}
+
 	// **************************************************************************
 	// Load & Save
 	// **************************************************************************
@@ -85,39 +94,14 @@ public class NPCData {
 		super();
 	}
 
-	public static HashMap<Integer, NPCData> load() {
-		HashMap<Integer, NPCData> mNPCData = new HashMap<Integer, NPCData>();
-		try {
-			File file = new File(MobHunting.instance.getDataFolder(),
-					"citizens.yml");
-
-			if (!file.exists())
-				return null;
-
-			YamlConfiguration config = new YamlConfiguration();
-			config.load(file);
-
-			for (String key : config.getKeys(false)) {
-				ConfigurationSection section = config
-						.getConfigurationSection(key);
-				NPCData npc = new NPCData();
-				npc.read(section);
-				mNPCData.put(Integer.valueOf(key), npc);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
-		return mNPCData;
-	}
-
 	public void save(ConfigurationSection section) {
-		section.set("npcName", npcName);
+		section.set("plugin", mobPlugin.toString());
+		section.set("mobName", npcName);
 		section.set("rewardPrize", rewardPrize);
 		section.set("consoleRunCommand", consoleRunCommand);
 		section.set("rewardDescription", rewardDescription);
 		section.set("propability", propability);
+		section.set("propabilityBase", propabilityBase);
 	}
 
 	private long toLong(Object obj) {
@@ -153,30 +137,35 @@ public class NPCData {
 
 	public Map<String, Object> write() {
 		HashMap<String, Object> objects = new HashMap<String, Object>();
-		objects.put("npcName", npcName);
+		objects.put("plugin", mobPlugin);
+		objects.put("mobName", npcName);
 		objects.put("rewardPrize", rewardPrize);
 		objects.put("consoleRunCommand", consoleRunCommand);
 		objects.put("rewardDescription", rewardDescription);
 		objects.put("propability", propability);
+		objects.put("propabilityBase", propabilityBase);
 		return objects;
 	}
 
 	public void read(Map<String, Object> data) {
-		npcName = (String) data.get("npcName");
+		mobPlugin = (MobPlugin) data.get("plugin");
+		npcName = (String) data.get("mobName");
 		rewardPrize = toDouble(data.get("rewardPrize"));
 		consoleRunCommand = (String) data.get("consoleRunCommand");
 		rewardDescription = (String) data.get("rewardDescription");
 		propability = toInt(data.get("propability"));
+		propabilityBase = toInt(data.get("propabilityBase"));
 	}
 
 	public void read(ConfigurationSection section)
 			throws InvalidConfigurationException, IllegalStateException {
-
+		mobPlugin = MobPlugin.valueOf(section.get("plugin").toString());
 		npcName = section.getString("npcName");
 		rewardPrize = section.getDouble("rewardPrize");
 		consoleRunCommand = section.getString("consoleRunCommand");
 		rewardDescription = section.getString("rewardDescription");
 		propability = section.getInt("propability");
+		propabilityBase = section.getInt("propabilityBase");
 	}
 
 }

@@ -46,4 +46,5 @@ public class AxeMurderer implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.config().specialAxeMurdererCmdDesc;
 	}
+	
 }

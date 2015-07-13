@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.1.1</version>
+	<version>2.2.0</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -22,6 +22,7 @@
 		<worldedit.version>LATEST</worldedit.version>
 		<worldguard.version>LATEST</worldguard.version>
 		<citizensapi.version>2.0.16-SNAPSHOT</citizensapi.version>
+		<mythicmobs.jar.version>MythicMobs-2.0.6.jar</mythicmobs.jar.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.1</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>1.5</mavenShadePlugin.version>
@@ -190,7 +191,7 @@
 			<artifactId>worldguard</artifactId>
 			<version>${worldguard.version}</version>
 		</dependency>
-		
+
 		<!-- MythicMobs -->
 		<dependency>
 			<groupId>net.elseland.mythicmobs</groupId>
@@ -198,18 +199,18 @@
 			<version>${pvparena.version}</version>
 			<!-- <type>jar</type> <scope>provided</scope> -->
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/MythicMobs-2.0.4.jar</systemPath>
+			<systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
 		</dependency>
-		
+
 		<!-- Citizens -->
- 		<dependency>
+		<dependency>
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>citizensapi</artifactId>
 			<version>${citizensapi.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
- 
+
 	</dependencies>
 
 	<!-- ********************************************************************** -->
@@ -303,8 +304,8 @@
 		<!-- citizens repository -->
 		<repository>
 			<id>citizens-repo</id>
-			<!-- <url>https://github.com/CitizensDev/Citizens2.git</url>  -->
-			<url>http://repo.citizensnpcs.co/</url> 
+			<!-- <url>https://github.com/CitizensDev/Citizens2.git</url> -->
+			<url>http://repo.citizensnpcs.co/</url>
 		</repository>
 
 		<!-- minigamesAPI repository -->

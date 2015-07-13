@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import au.com.mineauz.MobHunting.Config;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.MobType;
 import au.com.mineauz.MobHunting.leaderboard.Leaderboard;
 import au.com.mineauz.MobHunting.leaderboard.LegacyLeaderboard;
 import de.Keyle.MyPet.api.entity.MyPetEntity;
@@ -45,8 +46,10 @@ public class CitizensCompat implements Listener {
 
 	private static boolean supported = false;
 	private static CitizensPlugin mPlugin;
-	//private static Configuration config;
-	private HashMap<Integer, NPCData> mNPCData = new HashMap<Integer, NPCData>();
+	private static HashMap<String, NPCData> mNPCData = new HashMap<String, NPCData>();
+	private File file = new File(MobHunting.instance.getDataFolder(),
+			"citizens-rewards.yml");
+	private YamlConfiguration config = new YamlConfiguration();
 
 	public CitizensCompat() {
 		mPlugin = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(
@@ -61,30 +64,66 @@ public class CitizensCompat implements Listener {
 		supported = true;
 
 		loadCitizensData();
-		//saveCitizensData();
+		saveCitizensData();
+	}
+
+	// **************************************************************************
+	// LOAD & SAVE
+	// **************************************************************************
+	public void loadCitizensData() {
+		try {
+			if (!file.exists())
+				return;
+
+			config.load(file);
+			for (String key : config.getKeys(false)) {
+				ConfigurationSection section = config
+						.getConfigurationSection(key);
+				NPCData npc = new NPCData();
+				npc.read(section);
+				mNPCData.put(key, npc);
+			}
+			MobHunting.debug("Loaded %s NPC's",mNPCData.size());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void loadCitizensData(String key) {
+		try {
+			if (!file.exists())
+				return;
+
+			config.load(file);
+			ConfigurationSection section = config.getConfigurationSection(key);
+			NPCData npc = new NPCData();
+			npc.read(section);
+			mNPCData.put(key, npc);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void saveCitizensData() {
 		try {
-			File file = new File(MobHunting.instance.getDataFolder(),
-					"citizens.yml");
-			YamlConfiguration config = new YamlConfiguration();
 			config.options()
-					.header("This a extra MobHunting config data for the NPCs on your server.");
+					.header("This a extra MobHunting config data for the Citizens/NPC's on your server.");
 
 			if (mNPCData.size() > 0) {
+
 				int n = 0;
-				for (int i = n; i < mNPCData.size(); i++) {
-					MobHunting.instance.getLogger().info("i=" + i);
-					ConfigurationSection section = config.createSection(String
-							.valueOf(i));
-					mNPCData.get(i).save(section);
-					n++; 
+				for (String key : mNPCData.keySet()) {
+					ConfigurationSection section = config.createSection(key);
+					mNPCData.get(key).save(section);
+					n++;
 				}
 
 				if (n != 0) {
-					MobHunting.instance.getLogger().info(
-							"Saving Mobhunting extra NPC data.");
+					MobHunting.debug("Saving Mobhunting extra NPC data.");
 					config.save(file);
 				}
 			}
@@ -93,32 +132,25 @@ public class CitizensCompat implements Listener {
 		}
 	}
 
-	public void loadCitizensData() {
+	public void saveCitizensData(String key) {
 		try {
-			File file = new File(MobHunting.instance.getDataFolder(),
-					"citizens.yml");
-
-			if (!file.exists())
-				return;
-
-			YamlConfiguration config = new YamlConfiguration();
-			config.load(file);
-			
-			for (String key : config.getKeys(false)) {
-				ConfigurationSection section = config
-						.getConfigurationSection(key);
-				NPCData npc = new NPCData();
-				npc.read(section);
-				mNPCData.put(Integer.valueOf(key), npc);
+			if (mNPCData.containsKey(key)) {
+				ConfigurationSection section = config.createSection(key);
+				mNPCData.get(key).save(section);
+				MobHunting.debug("Saving Mobhunting extra NPC data.");
+				config.save(file);
+			} else {
+				MobHunting.debug("ERROR! Mob ID (%s) is not found in mNPCData",
+						key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
 		}
-
 	}
 
+	// **************************************************************************
+	// OTHER FUNCTIONS
+	// **************************************************************************
 	public static CitizensPlugin getCitizensPlugin() {
 		return mPlugin;
 	}
@@ -138,6 +170,10 @@ public class CitizensCompat implements Listener {
 				.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"));
 	}
 
+	public static HashMap<String, NPCData> getNPCData() {
+		return mNPCData;
+	}
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
@@ -155,14 +191,14 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCDamageEvent(NPCDamageEvent event) {
-		MobHunting
-				.debug("NPCDamageEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
-						event.getNPC().getEntity().getType(),
-						event.getNPC().getFullName(),
-						event.getNPC().getName(),
-						event.getNPC().hasTrait(
-								CitizensAPI.getTraitFactory().getTraitClass(
-										"Sentry")));
+		//MobHunting
+		//		.debug("NPCDamageEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
+		//				event.getNPC().getEntity().getType(),
+		//				event.getNPC().getFullName(),
+		//				event.getNPC().getName(),
+		//				event.getNPC().hasTrait(
+		//						CitizensAPI.getTraitFactory().getTraitClass(
+		//								"Sentry")));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -179,10 +215,11 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensEnableEvent(CitizensEnableEvent event) {
-		//MobHunting.debug("MobHunting Datafolder=%s", MobHunting.instance
-		//		.getDataFolder().getName());
-		//MobHunting.debug("Citizens Datafolder=%s", CitizensAPI.getDataFolder()
-		//		.getName());
+		// MobHunting.debug("MobHunting Datafolder=%s", MobHunting.instance
+		// .getDataFolder().getName());
+		// MobHunting.debug("Citizens Datafolder=%s",
+		// CitizensAPI.getDataFolder()
+		// .getName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -192,36 +229,38 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCSpawnEvent(NPCSpawnEvent event) {
-		MobHunting.debug("NPCSpawnEvent");
-		
+		//MobHunting.debug("NPCSpawnEvent");
+
 		for (Iterator<NPCRegistry> registry = CitizensAPI.getNPCRegistries()
 				.iterator(); registry.hasNext();) {
 			NPCRegistry n = registry.next();
 			for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
 				NPC npc = npcList.next();
-				MobHunting.debug("NPC=%s", npc.getFullName());
+				// MobHunting.debug("NPC=%s", npc.getFullName());
 
-				if (mNPCData != null && !mNPCData.containsKey(npc.getId())) {
-					MobHunting.debug("New NPC found=%s,%s", npc.getId(),npc.getFullName());
-					mNPCData.put(npc.getId(), new NPCData(npc.getFullName(), 10,
-							"give {player} diamond_sword 1", "You got a diamond sword.", 100));
+				if (mNPCData != null
+						&& !mNPCData.containsKey(String.valueOf(npc.getId()))) {
+					MobHunting.debug("New NPC found=%s,%s", npc.getId(),
+							npc.getFullName());
+					mNPCData.put(String.valueOf(npc.getId()), new NPCData(
+							MobType.MobPlugin.Citizens, npc.getFullName(), 10,
+							"give {player} iron_sword 1",
+							"You got an Iron sword.", 100, 100));
+					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}
 		}
 
-		//MobHunting.debug("Size of nNPCData = %s", mNPCData.size());
-
-		saveCitizensData();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCDespawnEvent(NPCDespawnEvent event) {
-		MobHunting.debug("NPCDespawnEvent");
+		//MobHunting.debug("NPCDespawnEvent");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerCreateNPCEvent(PlayerCreateNPCEvent event) {
-		MobHunting.debug("NPCDespawnEvent");
+		//MobHunting.debug("NPCCreateNPCEvent");
 	}
 
 	// @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
