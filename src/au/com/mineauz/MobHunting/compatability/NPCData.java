@@ -11,13 +11,13 @@ import au.com.mineauz.MobHunting.MobType.MobPlugin;
 public class NPCData {
 	private MobPlugin mobPlugin;
 	private String npcName = "";
-	private double rewardPrize = 5;
+	private String rewardPrize = "5";
 	private String consoleRunCommand = "";
 	private String rewardDescription = "";
 	private int propability = 100;
 	private int propabilityBase = 100;
 
-	public NPCData(MobPlugin citizens, String npcName, double rewardPrize,
+	public NPCData(MobPlugin citizens, String npcName, String rewardPrize,
 			String cmd, String cmdDesc, int propability, int propabilityBase) {
 		this.mobPlugin = citizens;
 		this.npcName = npcName;
@@ -39,19 +39,19 @@ public class NPCData {
 		this.mobPlugin = mobPlugin;
 	}
 
-	public String getNpcName() {
+	public String getMobName() {
 		return npcName;
 	}
 
-	public void setNpcName(String npcName) {
+	public void setMobName(String npcName) {
 		this.npcName = npcName;
 	}
 
-	public double getRewardPrize() {
+	public String getRewardPrize() {
 		return rewardPrize;
 	}
 
-	public void setRewardPrize(double rewardPrize) {
+	public void setRewardPrize(String rewardPrize) {
 		this.rewardPrize = rewardPrize;
 	}
 
@@ -150,7 +150,7 @@ public class NPCData {
 	public void read(Map<String, Object> data) {
 		mobPlugin = (MobPlugin) data.get("plugin");
 		npcName = (String) data.get("mobName");
-		rewardPrize = toDouble(data.get("rewardPrize"));
+		rewardPrize = (String) data.get("rewardPrize");
 		consoleRunCommand = (String) data.get("consoleRunCommand");
 		rewardDescription = (String) data.get("rewardDescription");
 		propability = toInt(data.get("propability"));
@@ -160,8 +160,8 @@ public class NPCData {
 	public void read(ConfigurationSection section)
 			throws InvalidConfigurationException, IllegalStateException {
 		mobPlugin = MobPlugin.valueOf(section.get("plugin").toString());
-		npcName = section.getString("npcName");
-		rewardPrize = section.getDouble("rewardPrize");
+		npcName = section.getString("mobName");
+		rewardPrize = section.getString("rewardPrize");
 		consoleRunCommand = section.getString("consoleRunCommand");
 		rewardDescription = section.getString("rewardDescription");
 		propability = section.getInt("propability");

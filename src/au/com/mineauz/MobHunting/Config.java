@@ -22,8 +22,10 @@ public class Config extends AutoConfig {
 						+ "\nYou can also specify the message send to the player."
 						+ "\nYou can run many console commands on each line, each command"
 						+ "\nmust be separated by |"
-						+ "\nThe mob-cmd-run-frequency is the chance in % that the cmd is run. 0=disabled,"
-						+ "\n");
+						+ "\nThe player will have the cmd run in {mob-cmd-run-frequency} out of"
+						+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
+						+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
+						+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
 		setCategoryComment("boss",
 				"Here is where you set the base prize in $ for killing the bosses");
 		setCategoryComment(

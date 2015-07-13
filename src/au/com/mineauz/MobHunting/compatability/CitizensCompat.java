@@ -83,7 +83,7 @@ public class CitizensCompat implements Listener {
 				npc.read(section);
 				mNPCData.put(key, npc);
 			}
-			MobHunting.debug("Loaded %s NPC's",mNPCData.size());
+			MobHunting.debug("Loaded %s NPC's", mNPCData.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -191,14 +191,14 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCDamageEvent(NPCDamageEvent event) {
-		//MobHunting
-		//		.debug("NPCDamageEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
-		//				event.getNPC().getEntity().getType(),
-		//				event.getNPC().getFullName(),
-		//				event.getNPC().getName(),
-		//				event.getNPC().hasTrait(
-		//						CitizensAPI.getTraitFactory().getTraitClass(
-		//								"Sentry")));
+		// MobHunting
+		// .debug("NPCDamageEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
+		// event.getNPC().getEntity().getType(),
+		// event.getNPC().getFullName(),
+		// event.getNPC().getName(),
+		// event.getNPC().hasTrait(
+		// CitizensAPI.getTraitFactory().getTraitClass(
+		// "Sentry")));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -229,7 +229,7 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCSpawnEvent(NPCSpawnEvent event) {
-		//MobHunting.debug("NPCSpawnEvent");
+		// MobHunting.debug("NPCSpawnEvent");
 
 		for (Iterator<NPCRegistry> registry = CitizensAPI.getNPCRegistries()
 				.iterator(); registry.hasNext();) {
@@ -243,8 +243,8 @@ public class CitizensCompat implements Listener {
 					MobHunting.debug("New NPC found=%s,%s", npc.getId(),
 							npc.getFullName());
 					mNPCData.put(String.valueOf(npc.getId()), new NPCData(
-							MobType.MobPlugin.Citizens, npc.getFullName(), 10,
-							"give {player} iron_sword 1",
+							MobType.MobPlugin.Citizens, npc.getFullName(),
+							"10", "give {player} iron_sword 1",
 							"You got an Iron sword.", 100, 100));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
@@ -255,12 +255,12 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCDespawnEvent(NPCDespawnEvent event) {
-		//MobHunting.debug("NPCDespawnEvent");
+		// MobHunting.debug("NPCDespawnEvent");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerCreateNPCEvent(PlayerCreateNPCEvent event) {
-		//MobHunting.debug("NPCCreateNPCEvent");
+		// MobHunting.debug("NPCCreateNPCEvent");
 	}
 
 	// @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

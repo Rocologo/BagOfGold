@@ -41,7 +41,7 @@ public class MythicMobsCompat implements Listener {
 	private File file = new File(MobHunting.instance.getDataFolder(),
 			"mythicmobs-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
-	
+
 	public MythicMobsCompat() {
 
 		mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
@@ -76,7 +76,7 @@ public class MythicMobsCompat implements Listener {
 				npc.read(section);
 				mNPCData.put(key, npc);
 			}
-			MobHunting.debug("Loaded %s MythicMobs",mNPCData.size());
+			MobHunting.debug("Loaded %s MythicMobs", mNPCData.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -166,7 +166,8 @@ public class MythicMobsCompat implements Listener {
 	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
 		MobHunting.debug(
 				"MythicMob Death event, killer is %s, mobname=%s, Mobname=%s",
-				event.getKiller().getName(), event.MobName, event.getMobType().MobName);
+				event.getKiller().getName(), event.MobName,
+				event.getMobType().MobName);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -180,7 +181,7 @@ public class MythicMobsCompat implements Listener {
 					.getMobType().MobName, event.getMobType().getDisplayName());
 			mNPCData.put(event.getMobType().MobName, new NPCData(
 					MobType.MobPlugin.MythicMobs, event.getMobType()
-							.getDisplayName(), 10,
+							.getDisplayName(), "10",
 					"give {player} iron_sword 1", "You got an Iron sword.",
 					100, 100));
 			saveMythicMobsData(event.getMobType().MobName);

@@ -119,8 +119,8 @@ public abstract class DatabaseDataStore implements DataStore {
 		myAddPlayerStatement.clearBatch();
 
 		for (OfflinePlayer player : players) {
-			myAddPlayerStatement.setString(1, player.getUniqueId().toString());
-			myAddPlayerStatement.setString(2, player.getName());
+			myAddPlayerStatement.setString(1, player.getPlayer().getUniqueId().toString());
+			myAddPlayerStatement.setString(2, player.getPlayer().getName());
 			myAddPlayerStatement.addBatch();
 		}
 		myAddPlayerStatement.executeBatch();
