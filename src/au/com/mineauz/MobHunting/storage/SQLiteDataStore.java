@@ -72,24 +72,18 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ dataString + ", PRIMARY KEY(PLAYER_ID))");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))"); //$NON-NLS-1$
 
-		//creating new tables for citizens and mythicmobsd
-		//MobHunting.debug("Creating new tables for MobHunting.........");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_MobTypes (MOB_ID INTEGER PRIMARY KEY, MOB_NAME TEXT NOT NULL)");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Kills ("
 				+ " PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID),"
 				+ " MOB_ID INTEGER REFERENCES mh_MobTypes(MOB_ID),"
-				+ " PERIOD TEXT NOT NULL," // PERIOD={D,W,M,Y,A} (Day, Week,
-				// Month, Year, All Time)
+				+ " PERIOD TEXT NOT NULL,"
+				// PERIOD={D,W,M,Y,A} (Day, Week, Month, Year, All Time)
 				+ " ID CHAR(6) NOT NULL,"
 				+ " KILLS INTEGER NOT NULL DEFAULT 0,"
 				+ " ASSISTS INTEGER NOT NULL DEFAULT 0,"
 				+ " PRIMARY KEY(PLAYER_ID, MOB_ID, PERIOD))");
-		//MobHunting.debug("Two new tables created for MobHunting......");
 
-		// Setup Database triggers
 		setupTrigger(connection);
-
-		// performTableMigrate(connection);
 
 		create.close();
 		connection.commit();
@@ -113,40 +107,41 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				updateStringBuilder.append(", ");
 
 			updateStringBuilder
-					.append(String
-							.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn())); //$NON-NLS-1$
+					.append(String.format(
+							"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ",
+							type.getDBColumn()));
 		}
 
 		String updateString = updateStringBuilder.toString();
 
 		StringBuilder updateTrigger = new StringBuilder();
 		updateTrigger
-				.append("create trigger if not exists mh_DailyUpdate after update on mh_Daily begin "); //$NON-NLS-1$
+				.append("create trigger if not exists mh_DailyUpdate after update on mh_Daily begin ");
 
 		// Weekly
-		updateTrigger.append(" update mh_Weekly set "); //$NON-NLS-1$
+		updateTrigger.append(" update mh_Weekly set ");
 		updateTrigger.append(updateString);
 		updateTrigger
-				.append(" where ID=strftime('%Y%W','now') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+				.append(" where ID=strftime('%Y%W','now') AND PLAYER_ID=New.PLAYER_ID;");
 
 		// Monthly
-		updateTrigger.append(" update mh_Monthly set "); //$NON-NLS-1$
+		updateTrigger.append(" update mh_Monthly set ");
 		updateTrigger.append(updateString);
 		updateTrigger
-				.append(" where ID=strftime('%Y%m','now') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+				.append(" where ID=strftime('%Y%m','now') AND PLAYER_ID=New.PLAYER_ID;");
 
 		// Yearly
-		updateTrigger.append(" update mh_Yearly set "); //$NON-NLS-1$
+		updateTrigger.append(" update mh_Yearly set ");
 		updateTrigger.append(updateString);
 		updateTrigger
-				.append(" where ID=strftime('%Y','now') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+				.append(" where ID=strftime('%Y','now') AND PLAYER_ID=New.PLAYER_ID;");
 
 		// AllTime
-		updateTrigger.append(" update mh_AllTime set "); //$NON-NLS-1$
+		updateTrigger.append(" update mh_AllTime set ");
 		updateTrigger.append(updateString);
-		updateTrigger.append(" where PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+		updateTrigger.append(" where PLAYER_ID=New.PLAYER_ID;");
 
-		updateTrigger.append("END"); //$NON-NLS-1$
+		updateTrigger.append("END");
 
 		create.executeUpdate(updateTrigger.toString());
 		create.close();
@@ -156,8 +151,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	@Override
 	protected void setupStatements(Connection connection) throws SQLException {
-		// myAddPlayerStatement = connection
-		//		.prepareStatement("INSERT OR IGNORE INTO mh_Players VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players));"); //$NON-NLS-1$
 		mGetPlayerStatement[0] = connection
 				.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
 		mGetPlayerStatement[1] = connection
@@ -218,10 +211,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 										stat.getAmount()));
 			statement.executeBatch();
 			statement.close();
-			// mConnection.commit();
 			MobHunting.debug("Saved.", "");
 		} catch (SQLException e) {
-			// MobHunting.debug("Performing Rollback", "");
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -230,20 +221,19 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	@Override
 	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
 			throws DataStoreException {
-		// MobHunting.debug("Loading %s stats from database.",period);
 		String id;
 		switch (period) {
 		case Day:
-			id = "strftime('%Y%j','now')"; //$NON-NLS-1$
+			id = "strftime('%Y%j','now')";
 			break;
 		case Week:
-			id = "strftime('%Y%W','now')"; //$NON-NLS-1$
+			id = "strftime('%Y%W','now')";
 			break;
 		case Month:
-			id = "strftime('%Y%m','now')"; //$NON-NLS-1$
+			id = "strftime('%Y%m','now')";
 			break;
 		case Year:
-			id = "strftime('%Y','now')"; //$NON-NLS-1$
+			id = "strftime('%Y','now')";
 			break;
 		default:
 			id = null;
@@ -405,10 +395,45 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		Statement statement = connection.createStatement();
 		try {
 			ResultSet rs = statement
+					.executeQuery("SELECT EnderDragon_kill from mh_Daily LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+
+			System.out
+					.println("[MobHunting]*** Adding EnderDragon to MobHunting Database ***");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `EnderDragon_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `EnderDragon_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `EnderDragon_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `EnderDragon_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `EnderDragon_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `EnderDragon_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `EnderDragon_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `EnderDragon_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `EnderDragon_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `EnderDragon_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
+			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
+			setupTrigger(connection);
+
+			System.out
+					.println("[MobHunting]*** Adding EnderDragon complete ***");
+		}
+		try {
+			ResultSet rs = statement
 					.executeQuery("SELECT IronGolem_kill from mh_Daily LIMIT 0");
 			rs.close();
-			// statement.close();
-			// return; // New Mobs exists in database
 		} catch (SQLException e) {
 
 			System.out
@@ -445,8 +470,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			ResultSet rs = statement
 					.executeQuery("SELECT PvpPlayer_kill from mh_Daily LIMIT 0");
 			rs.close();
-			// statement.close();
-			// return; // New Mobs exists in database
 		} catch (SQLException e) {
 
 			System.out
@@ -485,8 +508,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			ResultSet rs = statement
 					.executeQuery("SELECT Giant_kill from mh_Daily LIMIT 0");
 			rs.close();
-			// statement.close();
-			// return; // New Mobs exists in database
 		} catch (SQLException e) {
 
 			System.out

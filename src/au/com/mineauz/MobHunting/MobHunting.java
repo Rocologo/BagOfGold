@@ -73,7 +73,6 @@ import au.com.mineauz.MobHunting.compatability.MobArenaCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaHelper;
 import au.com.mineauz.MobHunting.compatability.MyPetCompat;
 import au.com.mineauz.MobHunting.compatability.MythicMobsCompat;
-import au.com.mineauz.MobHunting.compatability.NPCData;
 import au.com.mineauz.MobHunting.compatability.PVPArenaCompat;
 import au.com.mineauz.MobHunting.compatability.PVPArenaHelper;
 import au.com.mineauz.MobHunting.compatability.WorldEditCompat;
@@ -89,12 +88,6 @@ import au.com.mineauz.MobHunting.storage.MySQLDataStore;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
 import au.com.mineauz.MobHunting.util.Update;
-import net.elseland.xikage.MythicMobs.MythicMobs;
-import net.elseland.xikage.MythicMobs.API.Events.MythicMobDeathEvent;
-import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
-import net.elseland.xikage.MythicMobs.Mobs.Entities.MythicEntity;
-import net.elseland.xikage.MythicMobs.Mobs.Entities.MythicEntityType;
-import net.elseland.xikage.MythicMobs.Mobs.Entities.MythicSkeleton;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
@@ -878,9 +871,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (killed.hasMetadata("MH:MythicMob"))
 				if (killer instanceof Player)
 					debug("%s killed a MythicMob", killer.getName());
-			// if (!(killer instanceof Player))
-			// return;
-			// if (!(killer instanceof Player))
 		}
 
 		if (CitizensCompat.isCitizensSupported()
@@ -920,12 +910,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (killer == null || killer.getGameMode() == GameMode.CREATIVE
-				|| !isHuntEnabled(killer)) {
-			if (killer != null && killer.getGameMode() == GameMode.CREATIVE)
-				debug("KillBlocked %s: In creative mode", killer.getName());
-			return;
-		}
+		if (!(killed instanceof EnderDragon)) {
+
+			if (killer == null || killer.getGameMode() == GameMode.CREATIVE
+					|| !isHuntEnabled(killer)) {
+				if (killer != null && killer.getGameMode() == GameMode.CREATIVE)
+					debug("KillBlocked %s: In creative mode", killer.getName());
+				return;
+			}
+		} else
+			debug("An EnderDragon was killed by %", killer.getName());
 
 		DamageInformation info = null;
 		if (killed instanceof LivingEntity
@@ -1199,13 +1193,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 * @return value
 	 */
 	public double getBaseKillPrize(LivingEntity mob) {
-		// TODO: Test if prize contains "xx:yy" and then give a random reward
-		// between xx and yy
 		if (MythicMobsCompat.isMythicMobsSupported()
 				&& mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return getPrice(((NPCData) value.value()).getRewardPrize());
+			return getPrice(((MobRewardData) value.value()).getRewardPrize());
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
@@ -1325,7 +1317,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return ((NPCData) value.value()).getConsoleRunCommand();
+			return ((MobRewardData) value.value()).getConsoleRunCommand();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
@@ -1411,7 +1403,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return ((NPCData) value.value()).getRewardDescription();
+			return ((MobRewardData) value.value()).getRewardDescription();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
@@ -1494,7 +1486,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return ((NPCData) value.value()).getPropability();
+			return ((MobRewardData) value.value()).getPropability();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
@@ -1576,7 +1568,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return ((NPCData) value.value()).getPropabilityBase();
+			return ((MobRewardData) value.value()).getPropabilityBase();
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {

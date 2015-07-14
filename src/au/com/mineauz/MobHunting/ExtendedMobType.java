@@ -6,9 +6,11 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
 
 public enum ExtendedMobType {
+	// Minecraft 1.0.0 
 	// Giant is unsupported by in the original game and Giants can only be
 	// spawnwed through plugins.
 	Giant("GIANT", 100),
+	EnderDragon("ENDER_DRAGON",80),
 	// Minecraft 1.7
 	Slime("SLIME", 100), MagmaCube("MAGMA_CUBE", 100), Ghast("GHAST", 80), Blaze(
 			"BLAZE", 80), Creeper("CREEPER", 100), Enderman("ENDERMAN", 100), Silverfish(
@@ -37,9 +39,11 @@ public enum ExtendedMobType {
 		return mMax;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public boolean matches(Entity ent) {
 		// test if MC 1.8 classes exists
 		try {
+			@SuppressWarnings("unused")
 			Class cls = Class.forName("org.bukkit.entity.Rabbit");
 			if (this == KillerRabbit)
 				// return ent instanceof Rabbit && (((Rabbit)

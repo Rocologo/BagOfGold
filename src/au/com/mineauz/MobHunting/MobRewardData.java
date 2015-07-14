@@ -1,4 +1,4 @@
-package au.com.mineauz.MobHunting.compatability;
+package au.com.mineauz.MobHunting;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,10 +6,10 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-import au.com.mineauz.MobHunting.MobType.MobPlugin;
+import au.com.mineauz.MobHunting.MobPlugins.PluginNames;
 
-public class NPCData {
-	private MobPlugin mobPlugin;
+public class MobRewardData {
+	private PluginNames mobPlugin;
 	private String npcName = "";
 	private String rewardPrize = "5";
 	private String consoleRunCommand = "";
@@ -17,7 +17,7 @@ public class NPCData {
 	private int propability = 100;
 	private int propabilityBase = 100;
 
-	public NPCData(MobPlugin citizens, String npcName, String rewardPrize,
+	public MobRewardData(PluginNames citizens, String npcName, String rewardPrize,
 			String cmd, String cmdDesc, int propability, int propabilityBase) {
 		this.mobPlugin = citizens;
 		this.npcName = npcName;
@@ -31,11 +31,11 @@ public class NPCData {
 	// **************************************************************************
 	// Getters and Setters
 	// **************************************************************************
-	public MobPlugin getMobPlugin() {
+	public PluginNames getMobPlugin() {
 		return mobPlugin;
 	}
 
-	public void setMobPlugin(MobPlugin mobPlugin) {
+	public void setMobPlugin(PluginNames mobPlugin) {
 		this.mobPlugin = mobPlugin;
 	}
 
@@ -90,7 +90,7 @@ public class NPCData {
 	// **************************************************************************
 	// Load & Save
 	// **************************************************************************
-	public NPCData() {
+	public MobRewardData() {
 		super();
 	}
 
@@ -148,7 +148,7 @@ public class NPCData {
 	}
 
 	public void read(Map<String, Object> data) {
-		mobPlugin = (MobPlugin) data.get("plugin");
+		mobPlugin = (PluginNames) data.get("plugin");
 		npcName = (String) data.get("mobName");
 		rewardPrize = (String) data.get("rewardPrize");
 		consoleRunCommand = (String) data.get("consoleRunCommand");
@@ -159,7 +159,7 @@ public class NPCData {
 
 	public void read(ConfigurationSection section)
 			throws InvalidConfigurationException, IllegalStateException {
-		mobPlugin = MobPlugin.valueOf(section.get("plugin").toString());
+		mobPlugin = PluginNames.valueOf(section.get("plugin").toString());
 		npcName = section.getString("mobName");
 		rewardPrize = section.getString("rewardPrize");
 		consoleRunCommand = section.getString("consoleRunCommand");

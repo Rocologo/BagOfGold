@@ -1,13 +1,13 @@
 package au.com.mineauz.MobHunting;
 
-public class MobType {
+public class MobPlugins {
 
-	public enum MobPlugin {
+	public enum PluginNames {
 		Minecraft("Minecraft"), MythicMobs("MythicMobs"), Citizens("Citizens");
 
 		private final String name;
 
-		private MobPlugin(String s) {
+		private PluginNames(String s) {
 			name = s;
 		}
 
@@ -20,24 +20,24 @@ public class MobType {
 		}
 	}
 
-	private MobPlugin mobPlugin;
+	private PluginNames mobPlugin;
 	private String mobType;
 	private int max;
 
-	public MobType(MobPlugin mobPlugin, String mobType, int max) {
+	public MobPlugins(PluginNames mobPlugin, String mobType, int max) {
 		this.mobPlugin = mobPlugin;
 		this.mobType = mobType;
 		this.max = max;
 	}
 
-	public void set(MobPlugin mobPlugin, String mobType, int max) {
+	public void set(PluginNames mobPlugin, String mobType, int max) {
 		this.mobPlugin = mobPlugin;
 		this.mobType = mobType;
 		this.max = max;
 	}
 
-	public MobType get() {
-		return new MobType(mobPlugin, mobType, max);
+	public MobPlugins get() {
+		return new MobPlugins(mobPlugin, mobType, max);
 	}
 
 	public String getMobType() {
@@ -48,18 +48,18 @@ public class MobType {
 		return max;
 	}
 
-	public MobPlugin getMobPlugin() {
+	public PluginNames getMobPlugin() {
 		return mobPlugin;
 	}
 
-	public MobPlugin valueOf(String str) {
+	public PluginNames valueOf(String str) {
 		switch (str) {
 		case "MythicMobs":
-			return MobPlugin.MythicMobs;
+			return PluginNames.MythicMobs;
 		case "Citizens":
-			return MobPlugin.Citizens;
+			return PluginNames.Citizens;
 		default:
-			return MobPlugin.Minecraft;
+			return PluginNames.Minecraft;
 		}
 	}
 }

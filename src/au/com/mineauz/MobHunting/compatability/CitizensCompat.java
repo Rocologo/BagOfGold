@@ -24,7 +24,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import au.com.mineauz.MobHunting.Config;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
-import au.com.mineauz.MobHunting.MobType;
+import au.com.mineauz.MobHunting.MobRewardData;
+import au.com.mineauz.MobHunting.MobPlugins;
 import au.com.mineauz.MobHunting.leaderboard.Leaderboard;
 import au.com.mineauz.MobHunting.leaderboard.LegacyLeaderboard;
 import de.Keyle.MyPet.api.entity.MyPetEntity;
@@ -46,7 +47,7 @@ public class CitizensCompat implements Listener {
 
 	private static boolean supported = false;
 	private static CitizensPlugin mPlugin;
-	private static HashMap<String, NPCData> mNPCData = new HashMap<String, NPCData>();
+	private static HashMap<String, MobRewardData> mNPCData = new HashMap<String, MobRewardData>();
 	private File file = new File(MobHunting.instance.getDataFolder(),
 			"citizens-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
@@ -79,7 +80,7 @@ public class CitizensCompat implements Listener {
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config
 						.getConfigurationSection(key);
-				NPCData npc = new NPCData();
+				MobRewardData npc = new MobRewardData();
 				npc.read(section);
 				mNPCData.put(key, npc);
 			}
@@ -98,7 +99,7 @@ public class CitizensCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			NPCData npc = new NPCData();
+			MobRewardData npc = new MobRewardData();
 			npc.read(section);
 			mNPCData.put(key, npc);
 		} catch (IOException e) {
@@ -170,7 +171,7 @@ public class CitizensCompat implements Listener {
 				.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"));
 	}
 
-	public static HashMap<String, NPCData> getNPCData() {
+	public static HashMap<String, MobRewardData> getNPCData() {
 		return mNPCData;
 	}
 
@@ -242,8 +243,8 @@ public class CitizensCompat implements Listener {
 						&& !mNPCData.containsKey(String.valueOf(npc.getId()))) {
 					MobHunting.debug("New NPC found=%s,%s", npc.getId(),
 							npc.getFullName());
-					mNPCData.put(String.valueOf(npc.getId()), new NPCData(
-							MobType.MobPlugin.Citizens, npc.getFullName(),
+					mNPCData.put(String.valueOf(npc.getId()), new MobRewardData(
+							MobPlugins.PluginNames.Citizens, npc.getFullName(),
 							"10", "give {player} iron_sword 1",
 							"You got an Iron sword.", 100, 100));
 					saveCitizensData(String.valueOf(npc.getId()));

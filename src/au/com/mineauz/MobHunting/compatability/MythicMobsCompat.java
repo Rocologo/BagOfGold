@@ -21,7 +21,8 @@ import org.bukkit.plugin.Plugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import au.com.mineauz.MobHunting.MobHunting;
-import au.com.mineauz.MobHunting.MobType;
+import au.com.mineauz.MobHunting.MobRewardData;
+import au.com.mineauz.MobHunting.MobPlugins;
 import de.Keyle.MyPet.api.entity.MyPetEntity;
 import de.Keyle.MyPet.entity.types.MyPetType;
 import net.citizensnpcs.api.CitizensAPI;
@@ -38,7 +39,7 @@ public class MythicMobsCompat implements Listener {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
-	private static HashMap<String, NPCData> mNPCData = new HashMap<String, NPCData>();
+	private static HashMap<String, MobRewardData> mNPCData = new HashMap<String, MobRewardData>();
 	private File file = new File(MobHunting.instance.getDataFolder(),
 			"mythicmobs-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
@@ -73,7 +74,7 @@ public class MythicMobsCompat implements Listener {
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config
 						.getConfigurationSection(key);
-				NPCData npc = new NPCData();
+				MobRewardData npc = new MobRewardData();
 				npc.read(section);
 				mNPCData.put(key, npc);
 			}
@@ -92,7 +93,7 @@ public class MythicMobsCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			NPCData npc = new NPCData();
+			MobRewardData npc = new MobRewardData();
 			npc.read(section);
 			mNPCData.put(key, npc);
 		} catch (IOException e) {
@@ -155,7 +156,7 @@ public class MythicMobsCompat implements Listener {
 		return supported;
 	}
 
-	public static HashMap<String, NPCData> getNPCData() {
+	public static HashMap<String, MobRewardData> getNPCData() {
 		return mNPCData;
 	}
 
@@ -180,8 +181,8 @@ public class MythicMobsCompat implements Listener {
 				&& !mNPCData.containsKey(event.getMobType().MobName)) {
 			MobHunting.debug("New MythicMobType found=%s,%s", event
 					.getMobType().MobName, event.getMobType().getDisplayName());
-			mNPCData.put(event.getMobType().MobName, new NPCData(
-					MobType.MobPlugin.MythicMobs, event.getMobType()
+			mNPCData.put(event.getMobType().MobName, new MobRewardData(
+					MobPlugins.PluginNames.MythicMobs, event.getMobType()
 							.getDisplayName(), "10",
 					"give {player} iron_sword 1", "You got an Iron sword.",
 					100, 100));
