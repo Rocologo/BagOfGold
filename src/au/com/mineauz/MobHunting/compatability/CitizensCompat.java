@@ -180,14 +180,14 @@ public class CitizensCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCDeathEvent(NPCDeathEvent event) {
-		MobHunting
-				.debug("NPCDeathEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
-						event.getNPC().getEntity().getType(),
-						event.getNPC().getFullName(),
-						event.getNPC().getName(),
-						event.getNPC().hasTrait(
-								CitizensAPI.getTraitFactory().getTraitClass(
-										"Sentry")));
+		// MobHunting
+		// .debug("NPCDeathEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
+		// event.getNPC().getEntity().getType(),
+		// event.getNPC().getFullName(),
+		// event.getNPC().getName(),
+		// event.getNPC().hasTrait(
+		// CitizensAPI.getTraitFactory().getTraitClass(
+		// "Sentry")));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -204,14 +204,14 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCDamageByEntityEvent(NPCDamageByEntityEvent event) {
-		MobHunting
-				.debug("NPCDamageByEntityEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
-						event.getNPC().getEntity().getType(),
-						event.getNPC().getFullName(),
-						event.getNPC().getName(),
-						event.getNPC().hasTrait(
-								CitizensAPI.getTraitFactory().getTraitClass(
-										"Sentry")));
+		// MobHunting
+		// .debug("NPCDamageByEntityEvent, type=%s, fullname=%s, name=%s hasTrait(Sentry)=%s",
+		// event.getNPC().getEntity().getType(),
+		// event.getNPC().getFullName(),
+		// event.getNPC().getName(),
+		// event.getNPC().hasTrait(
+		// CitizensAPI.getTraitFactory().getTraitClass(
+		// "Sentry")));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -225,7 +225,7 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensDisableEvent(CitizensDisableEvent event) {
-		MobHunting.debug("CitizensDisableEvent - saving");
+		// MobHunting.debug("CitizensDisableEvent - saving");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -243,10 +243,13 @@ public class CitizensCompat implements Listener {
 						&& !mNPCData.containsKey(String.valueOf(npc.getId()))) {
 					MobHunting.debug("New NPC found=%s,%s", npc.getId(),
 							npc.getFullName());
-					mNPCData.put(String.valueOf(npc.getId()), new MobRewardData(
-							MobPlugins.PluginNames.Citizens, npc.getFullName(),
-							"10", "give {player} iron_sword 1",
-							"You got an Iron sword.", 100, 100));
+					mNPCData.put(
+							String.valueOf(npc.getId()),
+							new MobRewardData(
+									MobPlugins.MobPluginNames.Citizens, npc
+											.getFullName(), "10",
+									"give {player} iron_sword 1",
+									"You got an Iron sword.", 100, 100));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}
@@ -287,7 +290,7 @@ public class CitizensCompat implements Listener {
 
 			if (owner != null && MobHunting.isHuntEnabled(owner)) {
 				MobHunting.instance.getAchievements().awardAchievementProgress(
-						"fangmaster", owner, 1); //$NON-NLS-1$
+						"fangmaster", owner, 1);
 			}
 		}
 	}

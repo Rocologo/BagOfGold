@@ -910,16 +910,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (!(killed instanceof EnderDragon)) {
-
-			if (killer == null || killer.getGameMode() == GameMode.CREATIVE
-					|| !isHuntEnabled(killer)) {
-				if (killer != null && killer.getGameMode() == GameMode.CREATIVE)
-					debug("KillBlocked %s: In creative mode", killer.getName());
-				return;
-			}
-		} else
-			debug("An EnderDragon was killed by %", killer.getName());
+		if (killer == null || killer.getGameMode() == GameMode.CREATIVE
+				|| !isHuntEnabled(killer)) {
+			if (killer != null && killer.getGameMode() == GameMode.CREATIVE)
+				debug("KillBlocked %s: In creative mode", killer.getName());
+			return;
+		}
 
 		DamageInformation info = null;
 		if (killed instanceof LivingEntity

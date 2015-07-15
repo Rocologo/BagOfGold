@@ -165,11 +165,11 @@ public class MythicMobsCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
-		if (event.getKiller() != null)
-			MobHunting
-					.debug("MythicMob Death event, killer is %s, mobname=%s, Mobname=%s",
-							event.getKiller().getName(), event.MobName,
-							event.getMobType().MobName);
+		//if (event.getKiller() != null)
+		//	MobHunting
+		//			.debug("MythicMob Death event, killer is %s, mobname=%s, Mobname=%s",
+		//					event.getKiller().getName(), event.MobName,
+		//					event.getMobType().MobName);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -182,7 +182,7 @@ public class MythicMobsCompat implements Listener {
 			MobHunting.debug("New MythicMobType found=%s,%s", event
 					.getMobType().MobName, event.getMobType().getDisplayName());
 			mNPCData.put(event.getMobType().MobName, new MobRewardData(
-					MobPlugins.PluginNames.MythicMobs, event.getMobType()
+					MobPlugins.MobPluginNames.MythicMobs, event.getMobType()
 							.getDisplayName(), "10",
 					"give {player} iron_sword 1", "You got an Iron sword.",
 					100, 100));
@@ -200,12 +200,12 @@ public class MythicMobsCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSkillEvent(MythicMobSkillEvent event) {
-		MobHunting.debug("MythicMob Skill event");
+		//MobHunting.debug("MythicMob Skill event");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobCustomSkillEvent(MythicMobCustomSkillEvent event) {
-		MobHunting.debug("MythicMob Custom Skill event");
+		//MobHunting.debug("MythicMob Custom Skill event");
 	}
 
 	// @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

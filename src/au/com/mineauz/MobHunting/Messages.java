@@ -24,27 +24,29 @@ public class Messages {
 			"UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 
 	public static void exportDefaultLanguages() {
-		File folder = new File(MobHunting.instance.getDataFolder(), "lang"); //$NON-NLS-1$
+		File folder = new File(MobHunting.instance.getDataFolder(), "lang");
 		if (!folder.exists())
 			folder.mkdirs();
 
-		String[] sources = new String[] { "en_US.lang", "zh_CN.lang" }; //$NON-NLS-1$ //$NON-NLS-2$
+		String[] sources = new String[] { "en_US.lang", "zh_CN.lang" };
 
 		for (String source : sources) {
 			File dest = new File(folder, source);
 			if (!dest.exists())
-				MobHunting.instance.saveResource("lang/" + source, false); //$NON-NLS-1$
+				MobHunting.instance.saveResource("lang/" + source, false);
 			else {
 				if (!injectChanges(
-						MobHunting.instance.getResource("lang/" + source), new File(MobHunting.instance.getDataFolder(), "lang/" + source))) //$NON-NLS-1$ //$NON-NLS-2$
-					MobHunting.instance.saveResource("lang/" + source, true); //$NON-NLS-1$
+						MobHunting.instance.getResource("lang/" + source),
+						new File(MobHunting.instance.getDataFolder(), "lang/"
+								+ source)))
+					MobHunting.instance.saveResource("lang/" + source, true);
 			}
 		}
 	}
 
 	private static boolean injectChanges(InputStream inJar, File onDisk) {
 		try {
-			Map<String, String> source = loadLang(inJar, "UTF-8"); //$NON-NLS-1$
+			Map<String, String> source = loadLang(inJar, "UTF-8");
 			Map<String, String> dest = loadLang(onDisk);
 
 			if (dest == null)
@@ -154,13 +156,13 @@ public class Messages {
 	}
 
 	public static void setLanguage(String lang) {
-		File file = new File(MobHunting.instance.getDataFolder(),
-				"lang/" + lang + ".lang"); //$NON-NLS-1$ //$NON-NLS-2$
+		File file = new File(MobHunting.instance.getDataFolder(), "lang/"
+				+ lang + ".lang");
 		if (!file.exists()) {
 			MobHunting.instance.getLogger().severe(
 					"Language file does not exist.");
 			file = new File(MobHunting.instance.getDataFolder(),
-					"lang/en_US.lang"); //$NON-NLS-1$
+					"lang/en_US.lang");
 		}
 
 		if (file.exists()) {
@@ -183,7 +185,7 @@ public class Messages {
 		if (value == null) {
 			MobHunting.instance.getLogger().warning(
 					"mTranslationTable has not key: " + key.toString());
-			throw new MissingResourceException("", "", key); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new MissingResourceException("", "", key);
 		}
 
 		return value;
@@ -203,7 +205,7 @@ public class Messages {
 	public static String getString(String key, Object... values) {
 		try {
 			if (mPattern == null)
-				mPattern = Pattern.compile("\\$\\{([\\w\\.\\-]+)\\}"); //$NON-NLS-1$
+				mPattern = Pattern.compile("\\$\\{([\\w\\.\\-]+)\\}"); 
 
 			HashMap<String, Object> map = new HashMap<String, Object>();
 
