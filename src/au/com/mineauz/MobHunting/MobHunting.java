@@ -1,6 +1,12 @@
 package au.com.mineauz.MobHunting;
 
 import java.io.File;
+
+import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.state.ServerStartedEvent;
+import org.spongepowered.api.event.state.ServerStoppedEvent;
+import org.spongepowered.api.plugin.Plugin;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -16,6 +22,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -220,9 +227,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mStoreManager = new DataStoreManager(mStore);
 
 		// Handle compatability stuff
+		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit");
 		CompatibilityManager.register(MinigamesCompat.class, "Minigames");
 		CompatibilityManager.register(MyPetCompat.class, "MyPet");
-		CompatibilityManager.register(WorldEditCompat.class, "WorldEdit");
 		CompatibilityManager.register(WorldGuardCompat.class, "WorldGuard");
 		CompatibilityManager.register(MobArenaCompat.class, "MobArena");
 		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
@@ -829,7 +836,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (WorldGuardCompat.isWorldGuardSupported()) {
+		if (WorldGuardCompat.isWorldGuardSupported()
+				&& WorldGuardCompat.isEnabledInConfig()) {
 			if (killer instanceof Player
 					|| (MyPetCompat.isMyPetSupported() && killer instanceof MyPetEntity)) {
 				RegionManager regionManager = WorldGuardCompat
@@ -852,11 +860,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (killed instanceof Player) {
-			if (MobArenaHelper.isPlayingMobArena((Player) killed)) {
+			if (MobArenaCompat.isEnabledInConfig()
+					&& MobArenaHelper.isPlayingMobArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing MobArena.",
 						killed.getName());
 				return;
-			} else if (PVPArenaHelper.isPlayingPVPArena((Player) killed)) {
+			} else if (MobArenaCompat.isEnabledInConfig()
+					&& PVPArenaHelper.isPlayingPVPArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing PvpArena.",
 						killed.getName());
 				return;
@@ -873,7 +883,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 					debug("%s killed a MythicMob", killer.getName());
 		}
 
-		if (CitizensCompat.isCitizensSupported()
+		if (CitizensCompat.isEnabledInConfig()
+				&& CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(killed)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(killed);
@@ -884,12 +895,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (killer instanceof Player) {
-			if (MobArenaHelper.isPlayingMobArena(killer)
+			if (MobArenaCompat.isEnabledInConfig()
+					&& MobArenaHelper.isPlayingMobArena(killer)
 					&& !mConfig.mobarenaGetRewards) {
 				debug("KillBlocked: %s is currently playing MobArena.",
 						killer.getName());
 				return;
-			} else if (PVPArenaHelper.isPlayingPVPArena(killer)
+			} else if (PVPArenaCompat.isEnabledInConfig()
+					&& PVPArenaHelper.isPlayingPVPArena(killer)
 					&& !mConfig.pvparenaGetRewards) {
 				debug("KillBlocked: %s is currently playing PvpArena.",
 						killer.getName());
@@ -1006,6 +1019,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		double cash = getBaseKillPrize(killed);
+		debug("Mob Basic Prize=%s", cash);
 		double multiplier = 1.0;
 
 		// Apply the modifiers
@@ -1048,13 +1062,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			if (killed instanceof Player && killer instanceof Player) {
-				mEconomy.withdrawPlayer((Player) killed, cash);
-				killed.sendMessage(ChatColor.GREEN
-						+ ""
-						+ ChatColor.ITALIC
-						+ Messages.getString("mobhunting.moneylost",
-								mEconomy.format(cash)));
-				debug("%s lost %s", killed.getName(), mEconomy.format(cash));
+				if (!CitizensCompat.isNPC(killed)) {
+					mEconomy.withdrawPlayer((Player) killed, cash);
+					killed.sendMessage(ChatColor.GREEN
+							+ ""
+							+ ChatColor.ITALIC
+							+ Messages.getString("mobhunting.moneylost",
+									mEconomy.format(cash)));
+					debug("%s lost %s", killed.getName(), mEconomy.format(cash));
+				}
 			}
 			if (info.assister == null) {
 				mEconomy.depositPlayer(killer, cash);
@@ -1068,9 +1084,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 						mEconomy.format(cash));
 			}
 
-			getDataStore().recordKill(killer,
-					ExtendedMobType.fromEntity(killed),
-					killed.hasMetadata("MH:hasBonus"));
+			// TODO: record mythicmob kills
+			if (ExtendedMobType.fromEntity(killed) != null)
+				getDataStore().recordKill(killer,
+						ExtendedMobType.fromEntity(killed),
+						killed.hasMetadata("MH:hasBonus"));
 
 			if (extraString.trim().isEmpty()) {
 				killer.sendMessage(ChatColor.GREEN
@@ -1808,5 +1826,28 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 	}
+
+	// ************************************************************************************
+	private Logger logger;
+
+	@Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version = "1.0")
+	public class MobHuntingProject implements Listener {
+		@Subscribe
+		public void onServerStart(ServerStartedEvent event) {
+			// Hey! The server has started!
+			// Try instantiating your logger in here.
+			// (There's a guide for that)
+			logger.info("Hello World!");
+		}
+
+		@Subscribe
+		public void onServerStop(ServerStoppedEvent event) {
+			// Hey! The server has started!
+			// Try instantiating your logger in here.
+			// (There's a guide for that)
+			logger.info("Goodbye World!");
+		}
+	}
+	// ************************************************************************************
 
 }

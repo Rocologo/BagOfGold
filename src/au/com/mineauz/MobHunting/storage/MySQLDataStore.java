@@ -64,7 +64,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected Connection setupConnection() throws SQLException,
 			DataStoreException {
 		try {
-			Class.forName("com.mysql.jdbc.Driver"); //$NON-NLS-1$
+			Class.forName("com.mysql.jdbc.Driver"); 
 			return DriverManager.getConnection(
 					"jdbc:mysql://" + MobHunting.config().databaseHost + "/"
 							+ MobHunting.config().databaseName
@@ -72,7 +72,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 					MobHunting.config().databaseUsername,
 					MobHunting.config().databasePassword);
 		} catch (ClassNotFoundException e) {
-			throw new DataStoreException("MySQL not present on the classpath"); //$NON-NLS-1$
+			throw new DataStoreException("MySQL not present on the classpath"); 
 		}
 	}
 

@@ -61,14 +61,14 @@ public enum ExtendedMobType {
 			return ent instanceof Skeleton
 					&& ((Skeleton) ent).getSkeletonType() == SkeletonType.NORMAL;
 		else if (this == BonusMob)
-			return ent.hasMetadata("MH:hasBonus"); //$NON-NLS-1$
+			return ent.hasMetadata("MH:hasBonus"); 
 		else {
 			return ent.getType().toString() == mType;
 		}
 	}
 
 	public String getName() {
-		return Messages.getString("mobs." + name() + ".name"); //$NON-NLS-1$ //$NON-NLS-2$
+		return Messages.getString("mobs." + name() + ".name"); 
 	}
 
 	public static ExtendedMobType fromEntity(Entity entity) {
@@ -76,7 +76,8 @@ public enum ExtendedMobType {
 			if (type.matches(entity))
 				return type;
 		}
-
+		MobHunting.debug("ERROR!!! - Unhandled Entity: %s(%s) Type:%s", 
+				entity.getName(),entity.getCustomName(),entity.getType().toString());
 		return null;
 	}
 }

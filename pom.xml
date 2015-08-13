@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.1</version>
+	<version>2.3.2</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -27,6 +27,7 @@
 		<mavenCompilerPlugin.version>3.1</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>1.5</mavenShadePlugin.version>
 		<mcstats.pluginname>${groupId}.${artifactId}</mcstats.pluginname>
+		<slf4j.version>1.7.12</slf4j.version>
 	</properties>
 
 	<organization>
@@ -117,11 +118,31 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- SpongeAPI -->
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>2.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Vault / -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
 			<version>${vault.version}</version>
+		</dependency>
+
+		<!-- XLF4J Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
+			your class path. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 
 		<!-- Minigames -->
@@ -213,6 +234,25 @@
 
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- XLF4J Logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
+				your class path. -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<!-- ********************************************************************** -->
 	<!-- **************************** Repositories **************************** -->
 	<!-- ********************************************************************** -->
@@ -227,6 +267,19 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+
+		<!-- SpongeAPI Repository -->
+		<repository>
+			<id>sponge-maven-repo</id>
+			<name>Sponge maven repo</name>
+			<url>http://repo.spongepowered.org/maven</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 
 		<!-- Vault repository -->

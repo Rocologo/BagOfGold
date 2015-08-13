@@ -24,20 +24,40 @@ public class MobArenaCompat implements Listener {
 	private static Plugin mPlugin;
 
 	public MobArenaCompat() {
-		mPlugin = Bukkit.getPluginManager().getPlugin("MobArena");
+		if (isDisabledInConfig()) {
+			MobHunting.instance.getLogger().info(
+					"Compatability with MobArena is disabled in config.yml");
+		} else {
+			mPlugin = Bukkit.getPluginManager().getPlugin("MobArena");
 
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
 
-		MobHunting.instance.getLogger().info(
-				"Enabling compatability with MobArena ("
-						+ getMobArena().getDescription().getVersion()
-						+ ")");
+			MobHunting.instance
+					.getLogger()
+					.info("Enabling compatability with MobArena ("
+							+ getMobArena().getDescription().getVersion() + ")");
+		}
 	}
+	
+	// **************************************************************************
+	// OTHER
+	// **************************************************************************
 
-	public  Plugin getMobArena() {
+	public Plugin getMobArena() {
 		return mPlugin;
 	}
+	
+	public static boolean isDisabledInConfig(){
+		return MobHunting.config().disableIntegrationMobArena;
+	}
 
+	public static boolean isEnabledInConfig(){
+		return !MobHunting.config().disableIntegrationMobArena;
+	}
+
+	// **************************************************************************
+	// EVENTS
+	// **************************************************************************
 	// Happens when the player joins the Arena /ma join
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerJoinEvent(ArenaPlayerJoinEvent event) {

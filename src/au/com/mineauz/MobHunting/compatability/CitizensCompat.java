@@ -53,19 +53,24 @@ public class CitizensCompat implements Listener {
 	private YamlConfiguration config = new YamlConfiguration();
 
 	public CitizensCompat() {
-		mPlugin = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(
-				"Citizens");
+		if (isDisabledInConfig()) {
+			MobHunting.instance.getLogger().info(
+					"Compatability with Citizens2 is disabled in config.yml");
+		} else {
+			mPlugin = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(
+					"Citizens");
 
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
 
-		MobHunting.instance.getLogger().info(
-				"Enabling compatability with Citizens ("
-						+ getCitizensPlugin().getDescription().getVersion()
-						+ ")");
-		supported = true;
+			MobHunting.instance.getLogger().info(
+					"Enabling compatability with Citizens ("
+							+ getCitizensPlugin().getDescription().getVersion()
+							+ ")");
+			supported = true;
 
-		loadCitizensData();
-		saveCitizensData();
+			loadCitizensData();
+			saveCitizensData();
+		}
 	}
 
 	// **************************************************************************
@@ -152,7 +157,7 @@ public class CitizensCompat implements Listener {
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
-	public static CitizensPlugin getCitizensPlugin() {
+	public CitizensPlugin getCitizensPlugin() {
 		return mPlugin;
 	}
 
@@ -174,7 +179,15 @@ public class CitizensCompat implements Listener {
 	public static HashMap<String, MobRewardData> getNPCData() {
 		return mNPCData;
 	}
-
+	
+	public static boolean isDisabledInConfig(){
+		return MobHunting.config().disableIntegrationCitizens; 
+	}
+	
+	public static boolean isEnabledInConfig(){
+		return !MobHunting.config().disableIntegrationCitizens; 
+	}
+	
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
@@ -265,34 +278,6 @@ public class CitizensCompat implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerCreateNPCEvent(PlayerCreateNPCEvent event) {
 		// MobHunting.debug("NPCCreateNPCEvent");
-	}
-
-	// @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	@SuppressWarnings("unused")
-	private void onWolfKillMob(EntityDeathEvent event) {
-		if (!MobHunting.isHuntEnabledInWorld(event.getEntity().getWorld())
-				|| !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent))
-			return;
-
-		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) event
-				.getEntity().getLastDamageCause();
-
-		if (!(dmg.getDamager() instanceof MyPetEntity))
-			return;
-
-		MyPetEntity killer = (MyPetEntity) dmg.getDamager();
-
-		if (killer.getPetType() != MyPetType.Wolf)
-			return;
-
-		if (killer.getOwner() != null) {
-			Player owner = killer.getOwner().getPlayer();
-
-			if (owner != null && MobHunting.isHuntEnabled(owner)) {
-				MobHunting.instance.getAchievements().awardAchievementProgress(
-						"fangmaster", owner, 1);
-			}
-		}
 	}
 
 }
