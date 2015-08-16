@@ -53,7 +53,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 		if (mMaxCorner.getBlockX() - mMinCorner.getBlockX() > 1
 				&& mMaxCorner.getBlockZ() - mMaxCorner.getBlockZ() > 1)
 			throw new IllegalArgumentException(
-					Messages.getString("leaderboard.thick")); //$NON-NLS-1$
+					Messages.getString("leaderboard.thick")); 
 
 		mHorizontal = horizontal;
 	}

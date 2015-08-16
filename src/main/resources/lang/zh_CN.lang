@@ -166,9 +166,23 @@ mobs.Endermite.name=Endermite
 mobs.Giant.name=Giant
 mobs.Guardian.name=Guardian
 mobs.KillerRabbit.name=Killer Rabbit
+mobs.PassiveRabbit.name=Rabbit
 mobs.BonusMob.name=奖励生物
 mobs.PvpPlayer.name=PvP Player
 mobs.IronGolem.name=Iron Golem
+
+mobs.Bat.name=Bat
+mobs.Chicken.name=Chicken
+mobs.Cow.name=Cow
+mobs.Horse.name=Horse
+mobs.MushroomCow.name=MushroomCow
+mobs.Ocelot.name=Ocelot
+mobs.Pig.name=Pig
+mobs.Sheep.name=Sheep
+mobs.Snowman.name=Snowman
+mobs.Squid.name=Squid
+mobs.Villager.name=Villager
+mobs.Wolf.name=Wolf
 
 leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick
 leaderboard.exists=The leaderboard ${id} already exists

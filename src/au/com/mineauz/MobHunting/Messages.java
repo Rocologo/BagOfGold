@@ -32,14 +32,19 @@ public class Messages {
 
 		for (String source : sources) {
 			File dest = new File(folder, source);
-			if (!dest.exists())
+			if (!dest.exists()) {
+				MobHunting.instance.getLogger().info(
+						"Creating language file "+source+" from JAR.");
 				MobHunting.instance.saveResource("lang/" + source, false);
-			else {
+				mTranslationTable = loadLang(dest);
+			} else {
 				if (!injectChanges(
-						MobHunting.instance.getResource("lang/" + source),
-						new File(MobHunting.instance.getDataFolder(), "lang/"
-								+ source)))
+
+				MobHunting.instance.getResource("lang/" + source), new File(
+						MobHunting.instance.getDataFolder(), "lang/" + source))) {
+
 					MobHunting.instance.saveResource("lang/" + source, true);
+				}
 			}
 		}
 	}
@@ -54,8 +59,11 @@ public class Messages {
 
 			HashMap<String, String> newEntries = new HashMap<String, String>();
 			for (String key : source.keySet()) {
-				if (!dest.containsKey(key))
+				if (!dest.containsKey(key)) {
+					MobHunting.instance.getLogger()
+							.info("Missing key in language file: " + key);
 					newEntries.put(key, source.get(key));
+				}
 			}
 
 			if (!newEntries.isEmpty()) {
@@ -63,12 +71,13 @@ public class Messages {
 						new OutputStreamWriter(new FileOutputStream(onDisk,
 								true)));
 				for (Entry<String, String> entry : newEntries.entrySet())
-					writer.append("\n" + entry.getKey() + "=" + entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+					writer.append("\n" + entry.getKey() + "="
+							+ entry.getValue());
 
 				writer.close();
 
 				MobHunting.instance.getLogger().info(
-						"Updated " + onDisk.getName() + " translation"); //$NON-NLS-1$ //$NON-NLS-2$
+						"Updated " + onDisk.getName() + " translation");
 			}
 
 			return true;
@@ -205,7 +214,7 @@ public class Messages {
 	public static String getString(String key, Object... values) {
 		try {
 			if (mPattern == null)
-				mPattern = Pattern.compile("\\$\\{([\\w\\.\\-]+)\\}"); 
+				mPattern = Pattern.compile("\\$\\{([\\w\\.\\-]+)\\}");
 
 			HashMap<String, Object> map = new HashMap<String, Object>();
 

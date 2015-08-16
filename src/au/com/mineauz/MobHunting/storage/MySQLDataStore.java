@@ -64,7 +64,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected Connection setupConnection() throws SQLException,
 			DataStoreException {
 		try {
-			Class.forName("com.mysql.jdbc.Driver"); 
+			Class.forName("com.mysql.jdbc.Driver");
 			return DriverManager.getConnection(
 					"jdbc:mysql://" + MobHunting.config().databaseHost + "/"
 							+ MobHunting.config().databaseName
@@ -72,7 +72,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 					MobHunting.config().databaseUsername,
 					MobHunting.config().databasePassword);
 		} catch (ClassNotFoundException e) {
-			throw new DataStoreException("MySQL not present on the classpath"); 
+			throw new DataStoreException("MySQL not present on the classpath");
 		}
 	}
 
@@ -101,7 +101,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		// Create new empty tables if they do not exist
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID CHAR(40) PRIMARY KEY, NAME CHAR(20), PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, KEY PLAYER_ID (PLAYER_ID))"); //$NON-NLS-1$
-		String dataString = ""; //$NON-NLS-1$
+		String dataString = "";
 		for (StatType type : StatType.values())
 			dataString += ", " + type.getDBColumn()
 					+ " INTEGER NOT NULL DEFAULT 0";
@@ -141,7 +141,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 			for (StatType type : StatType.values()) {
 				if (updateStringBuilder.length() != 0)
-					updateStringBuilder.append(", "); //$NON-NLS-1$
+					updateStringBuilder.append(", ");
 
 				updateStringBuilder
 						.append(String
@@ -155,29 +155,29 @@ public class MySQLDataStore extends DatabaseDataStore {
 					.append("create trigger mh_DailyUpdate after update on mh_Daily for each row begin "); //$NON-NLS-1$
 
 			// Weekly
-			updateTrigger.append(" update mh_Weekly set "); //$NON-NLS-1$
+			updateTrigger.append(" update mh_Weekly set ");
 			updateTrigger.append(updateString);
 			updateTrigger
-					.append(" where ID=DATE_FORMAT(NOW(), '%Y%U') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+					.append(" where ID=DATE_FORMAT(NOW(), '%Y%U') AND PLAYER_ID=New.PLAYER_ID;");
 
 			// Monthly
-			updateTrigger.append(" update mh_Monthly set "); //$NON-NLS-1$
+			updateTrigger.append(" update mh_Monthly set ");
 			updateTrigger.append(updateString);
 			updateTrigger
-					.append(" where ID=DATE_FORMAT(NOW(), '%Y%c') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+					.append(" where ID=DATE_FORMAT(NOW(), '%Y%c') AND PLAYER_ID=New.PLAYER_ID;");
 
 			// Yearly
-			updateTrigger.append(" update mh_Yearly set "); //$NON-NLS-1$
+			updateTrigger.append(" update mh_Yearly set ");
 			updateTrigger.append(updateString);
 			updateTrigger
-					.append(" where ID=DATE_FORMAT(NOW(), '%Y') AND PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+					.append(" where ID=DATE_FORMAT(NOW(), '%Y') AND PLAYER_ID=New.PLAYER_ID;");
 
 			// AllTime
-			updateTrigger.append(" update mh_AllTime set "); //$NON-NLS-1$
+			updateTrigger.append(" update mh_AllTime set ");
 			updateTrigger.append(updateString);
-			updateTrigger.append(" where PLAYER_ID=New.PLAYER_ID;"); //$NON-NLS-1$
+			updateTrigger.append(" where PLAYER_ID=New.PLAYER_ID;");
 
-			updateTrigger.append("END"); //$NON-NLS-1$
+			updateTrigger.append("END");
 
 			create.executeUpdate(updateTrigger.toString());
 		} catch (SQLException e) {
@@ -226,16 +226,16 @@ public class MySQLDataStore extends DatabaseDataStore {
 		String id;
 		switch (period) {
 		case Day:
-			id = "DATE_FORMAT(NOW(), '%Y%j')"; //$NON-NLS-1$
+			id = "DATE_FORMAT(NOW(), '%Y%j')";
 			break;
 		case Week:
-			id = "DATE_FORMAT(NOW(), '%Y%U')"; //$NON-NLS-1$
+			id = "DATE_FORMAT(NOW(), '%Y%U')";
 			break;
 		case Month:
-			id = "DATE_FORMAT(NOW(), '%Y%c')"; //$NON-NLS-1$
+			id = "DATE_FORMAT(NOW(), '%Y%c')";
 			break;
 		case Year:
-			id = "DATE_FORMAT(NOW(), '%Y')"; //$NON-NLS-1$
+			id = "DATE_FORMAT(NOW(), '%Y')";
 			break;
 		default:
 			id = null;
@@ -358,6 +358,292 @@ public class MySQLDataStore extends DatabaseDataStore {
 		Statement statement = connection.createStatement();
 		try {
 			ResultSet rs = statement
+					.executeQuery("SELECT Bat_kill from `mh_Daily` LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+
+			System.out
+					.println("[MobHunting]*** Adding Passive Mobs to MobHunting Database ***");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Bat_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Bat_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Bat_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Bat_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Bat_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Bat_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Bat_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Bat_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Bat_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Bat_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Chicken_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Chicken_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Chicken_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Chicken_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Chicken_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Chicken_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Chicken_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Chicken_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Chicken_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Chicken_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Cow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Cow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Cow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Cow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Cow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Cow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Cow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Cow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Cow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Cow_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Horse_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Horse_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Horse_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Horse_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Horse_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Horse_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Horse_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Horse_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Horse_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Horse_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `MushroomCow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `MushroomCow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `MushroomCow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `MushroomCow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `MushroomCow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `MushroomCow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `MushroomCow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `MushroomCow_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `MushroomCow_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `MushroomCow_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Ocelot_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Ocelot_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Ocelot_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Ocelot_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Ocelot_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Ocelot_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Ocelot_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Ocelot_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Ocelot_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Ocelot_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Pig_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Pig_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Pig_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Pig_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Pig_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Pig_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Pig_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Pig_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Pig_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Pig_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Sheep_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Sheep_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Sheep_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Sheep_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Sheep_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Sheep_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Sheep_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Sheep_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Sheep_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Sheep_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Snowman_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Snowman_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Snowman_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Snowman_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Snowman_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Snowman_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Snowman_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Snowman_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Snowman_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Snowman_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Squid_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Squid_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Squid_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Squid_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Squid_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Squid_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Squid_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Squid_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Squid_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Squid_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Villager_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Villager_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Villager_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Villager_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Villager_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Villager_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Villager_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Villager_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Villager_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Villager_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Wolf_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Daily` add column `Wolf_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Wolf_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `Wolf_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Wolf_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Monthly` add column `Wolf_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Wolf_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `Wolf_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Wolf_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_AllTime` add column `Wolf_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			System.out
+					.println("[MobHunting]*** Adding passive mobs complete ***");
+
+		}
+		try {
+			ResultSet rs = statement
 					.executeQuery("SELECT EnderDragon_kill from `mh_Daily` LIMIT 0");
 			rs.close();
 		} catch (SQLException e) {
@@ -465,7 +751,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("[MobHunting]*** Adding new Mobs to MobHunting Database ***");
+					.println("[MobHunting]*** Adding new 1.8 Mobs to MobHunting Database ***");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `Endermite_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -551,13 +837,15 @@ public class MySQLDataStore extends DatabaseDataStore {
 			statement
 					.executeUpdate("alter table `mh_AllTime` add column `KillerRabbit_assist`  INTEGER NOT NULL DEFAULT 0");
 
-			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
-			statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
-			setupTrigger(connection);
-
-			System.out.println("[MobHunting]*** Adding new Mobs complete ***");
+			System.out
+					.println("[MobHunting]*** Adding new 1.8 Mobs complete ***");
 
 		}
+
+		System.out.println("[MobHunting]*** Updating database triggers ***");
+		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
+		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
+		setupTrigger(connection);
 
 		statement.close();
 		connection.commit();

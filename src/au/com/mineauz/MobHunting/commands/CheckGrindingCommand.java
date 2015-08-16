@@ -20,19 +20,19 @@ public class CheckGrindingCommand implements ICommand
 	@Override
 	public String getName()
 	{
-		return "checkgrinding"; //$NON-NLS-1$
+		return "checkgrinding"; 
 	}
 
 	@Override
 	public String[] getAliases()
 	{
-		return new String[] { "isgrinding", "grinding" }; //$NON-NLS-1$ //$NON-NLS-2$
+		return new String[] { "isgrinding", "grinding" }; 
 	}
 
 	@Override
 	public String getPermission()
 	{
-		return "mobhunting.checkgrinding"; //$NON-NLS-1$
+		return "mobhunting.checkgrinding"; 
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class CheckGrindingCommand implements ICommand
 	@Override
 	public String getDescription()
 	{
-		return Messages.getString("mobhunting.commands.grinding.description"); //$NON-NLS-1$
+		return Messages.getString("mobhunting.commands.grinding.description"); 
 	}
 
 	@Override

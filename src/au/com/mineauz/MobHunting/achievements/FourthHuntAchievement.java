@@ -9,57 +9,57 @@ import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 
-public class FourthHuntAchievement implements ProgressAchievement, Listener
-{
+public class FourthHuntAchievement implements ProgressAchievement, Listener {
 	private ExtendedMobType mType;
-	
-	public FourthHuntAchievement(ExtendedMobType entity)
-	{
+
+	public FourthHuntAchievement(ExtendedMobType entity) {
 		mType = entity;
 	}
+
 	@Override
-	public String getName()
-	{
-		return Messages.getString("achievements.hunter.4.name", "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+	public String getName() {
+		return Messages.getString("achievements.hunter.4.name", "mob",
+				mType.getName());
 	}
 
 	@Override
-	public String getID()
-	{
-		return "hunting-level4-" + mType.name().toLowerCase(); //$NON-NLS-1$
+	public String getID() {
+		return "hunting-level4-" + mType.name().toLowerCase();
 	}
 
 	@Override
-	public String getDescription()
-	{
-		return Messages.getString("achievements.hunter.4.description", "count", getMaxProgress(), "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	public String getDescription() {
+		return Messages.getString("achievements.hunter.4.description", "count",
+				getMaxProgress(), "mob", mType.getName());
 	}
 
 	@Override
-	public double getPrize()
-	{
+	public double getPrize() {
 		return MobHunting.config().specialHunter4;
 	}
 
 	@Override
-	public int getMaxProgress()
-	{
-		return mType.getMax()*10;
+	public int getMaxProgress() {
+		return mType.getMax() * 10;
 	}
 
 	@Override
-	public String inheritFrom() { return "hunting-level3-" + mType.name().toLowerCase(); } //$NON-NLS-1$
-	
-	@EventHandler(priority=EventPriority.MONITOR)
-	private void onKillCompleted(MobHuntKillEvent event)
-	{
-		if(mType.matches(event.getEntity()))
-			MobHunting.instance.getAchievements().awardAchievementProgress(this, event.getPlayer(), 1);
+	public String inheritFrom() {
+		return "hunting-level3-" + mType.name().toLowerCase();
 	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onKillCompleted(MobHuntKillEvent event) {
+		if (mType.matches(event.getEntity()))
+			MobHunting.instance.getAchievements().awardAchievementProgress(
+					this, event.getPlayer(), 1);
+	}
+
 	@Override
 	public String getPrizeCmd() {
 		return MobHunting.config().specialHunter4Cmd;
 	}
+
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.config().specialHunter4CmdDesc;

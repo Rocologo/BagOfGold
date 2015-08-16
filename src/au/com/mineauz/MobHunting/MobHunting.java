@@ -171,7 +171,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		instance = this;
 
 		// Move the old data folder
-		File oldData = new File(getDataFolder().getParentFile(), "Mob Hunting"); //$NON-NLS-1$
+		File oldData = new File(getDataFolder().getParentFile(), "Mob Hunting"); 
 		if (oldData.exists()) {
 			try {
 				Files.move(oldData.toPath(), getDataFolder().toPath(),
@@ -181,6 +181,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
+		Messages.exportDefaultLanguages();
+
 		mConfig = new Config(new File(getDataFolder(), "config.yml"));
 
 		if (mConfig.loadConfig())
@@ -189,9 +191,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			throw new RuntimeException(Messages.getString(pluginName
 					+ ".config.fail"));
 
-		Messages.exportDefaultLanguages();
-
-		RegisteredServiceProvider<Economy> economyProvider = getServer()
+				RegisteredServiceProvider<Economy> economyProvider = getServer()
 				.getServicesManager().getRegistration(Economy.class);
 		if (economyProvider == null) {
 			instance = null;
@@ -910,8 +910,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		if (getBaseKillPrize(event.getEntity()) == 0
-				&& getKillConsoleCmd(killed).equals("")) {
+		if (mConfig.getBaseKillPrize(event.getEntity()) == 0
+				&& mConfig.getKillConsoleCmd(killed).equals("")) {
 			debug("KillBlocked %s(%d): There is no reward for this Mob/Player",
 					killed.getType(), killed.getEntityId());
 			return;
@@ -1018,7 +1018,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		double cash = getBaseKillPrize(killed);
+		double cash = mConfig.getBaseKillPrize(killed);
 		debug("Mob Basic Prize=%s", cash);
 		double multiplier = 1.0;
 
@@ -1109,14 +1109,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Run console commands as a reward
 		if (data.dampenedKills < 10) {
-			if (!getKillConsoleCmd(killed).equals("")) {
-				if (mRand.nextInt(getCmdRunProbabilityBase(killed)) < getCmdRunProbability(killed)) {
+			if (!mConfig.getKillConsoleCmd(killed).equals("")) {
+				if (mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig.getCmdRunProbability(killed)) {
 					String worldname = killer.getWorld().getName();
-					String prizeCommand = getKillConsoleCmd(killed)
+					String prizeCommand = mConfig.getKillConsoleCmd(killed)
 							.replaceAll("\\{player\\}", killer.getName())
 							.replaceAll("\\{killed_player\\}", killed.getName())
 							.replaceAll("\\{world\\}", worldname);
-					if (!getKillConsoleCmd(killed).equals("")) {
+					if (!mConfig.getKillConsoleCmd(killed).equals("")) {
 						String str = prizeCommand;
 						do {
 							if (str.contains("|")) {
@@ -1132,11 +1132,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 								Bukkit.getServer().getConsoleSender(), str);
 					}
 					// send a message to the player
-					if (!getKillRewardDescription(killed).equals("")) {
+					if (!mConfig.getKillRewardDescription(killed).equals("")) {
 						killer.sendMessage(ChatColor.GREEN
 								+ ""
 								+ ChatColor.ITALIC
-								+ getKillRewardDescription(killed)
+								+ mConfig.getKillRewardDescription(killed)
 										.replaceAll("\\{player\\}",
 												killer.getName())
 										.replaceAll("\\{killed_player\\}",
@@ -1162,9 +1162,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		multiplier *= ks;
 		double cash = 0;
 		if (killed instanceof Player)
-			cash = getBaseKillPrize(killed) * multiplier / 2;
+			cash = mConfig.getBaseKillPrize(killed) * multiplier / 2;
 		else
-			cash = getBaseKillPrize(killed) * multiplier;
+			cash = mConfig.getBaseKillPrize(killed) * multiplier;
 
 		if (cash >= 0.01) {
 			getDataStore().recordAssist(player, killer,
@@ -1200,469 +1200,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return mDamageHistory.get(entity);
 	}
 
-	/**
-	 * Return the reward money for a given mob
-	 * 
-	 * @param mob
-	 * @return value
-	 */
-	public double getBaseKillPrize(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
-			MetadataValue value = data.get(0);
-			return getPrice(((MobRewardData) value.value()).getRewardPrize());
-
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
-				return getPrice(CitizensCompat.getNPCData()
-						.get(String.valueOf(npc.getId())).getRewardPrize());
-			} else
-				return 0;
-		} else {
-			if (mob instanceof Player) {
-				if (mConfig.pvpKillPrize.endsWith("%")) {
-					double prize = Math.floor(Double
-							.valueOf(mConfig.pvpKillPrize.substring(0,
-									mConfig.pvpKillPrize.length() - 1))
-							* mEconomy.getBalance((Player) mob) / 100);
-					return prize;
-				} else if (mConfig.pvpKillPrize.contains(":")) {
-					String[] str1 = mConfig.pvpKillPrize.split(":");
-					double prize2 = (mRand.nextDouble()
-							* (Double.valueOf(str1[1]) - Double
-									.valueOf(str1[0])) + Double
-							.valueOf(str1[0]));
-					return Double.valueOf(prize2);
-				} else
-					return Double.valueOf(mConfig.pvpKillPrize);
-			} else if (mob instanceof Blaze)
-				return getPrice(mConfig.blazePrize);
-			else if (mob instanceof Creeper)
-				return getPrice(mConfig.creeperPrize);
-			else if (mob instanceof Silverfish)
-				return getPrice(mConfig.silverfishPrize);
-			else if (mob instanceof Enderman)
-				return getPrice(mConfig.endermanPrize);
-			else if (mob instanceof Giant)
-				return getPrice(mConfig.giantPrize);
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return getPrice(mConfig.skeletonPrize);
-				case WITHER:
-					return getPrice(mConfig.witherSkeletonPrize);
-				}
-			} else if (mob instanceof CaveSpider)
-				return getPrice(mConfig.caveSpiderPrize);
-			else if (mob instanceof Spider)
-				return getPrice(mConfig.spiderPrize);
-			else if (mob instanceof Witch)
-				return getPrice(mConfig.witchPrize);
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				if (((PigZombie) mob).isBaby())
-					return getPrice(mConfig.zombiePigmanPrize) * 1.2;
-				else
-					return getPrice(mConfig.zombiePigmanPrize);
-			else if (mob instanceof Zombie)
-				if (((Zombie) mob).isBaby())
-					return getPrice(mConfig.zombiePrize) * 1.2;
-				else
-					return getPrice(mConfig.zombiePrize);
-			else if (mob instanceof Ghast)
-				return getPrice(mConfig.ghastPrize);
-			else if (mob instanceof Slime)
-				return getPrice(mConfig.slimeTinyPrize)
-						* ((Slime) mob).getSize();
-			else if (mob instanceof EnderDragon)
-				return getPrice(mConfig.enderdragonPrize);
-			else if (mob instanceof Wither)
-				return getPrice(mConfig.witherPrize);
-			else if (mob instanceof IronGolem)
-				return getPrice(mConfig.ironGolemPrize);
-			else if (mob instanceof MagmaCube)
-				return getPrice(mConfig.magmaCubePrize);
-
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return getPrice(mConfig.guardianPrize);
-				else if (mob instanceof Endermite)
-					return getPrice(mConfig.endermitePrize);
-				// if (mob instanceof Rabbit)
-				// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
-				if (mob instanceof Rabbit
-						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-					return getPrice(mConfig.killerrabbitPrize);
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-		}
-		return 0;
-	}
-
-	private double getPrice(String str) {
-		if (str.contains(":")) {
-			String[] str1 = str.split(":");
-			double prize = (mRand.nextDouble()
-					* (Double.valueOf(str1[1]) - Double.valueOf(str1[0])) + Double
-					.valueOf(str1[0]));
-			return prize;
-		} else
-			return Double.valueOf(str);
-	}
-
-	/**
-	 * Get the command to be run when the player kills a Mob.
-	 * 
-	 * @param mob
-	 * @return a number of commands to be run in the console. Each command must
-	 *         be separeted by a "|"
-	 */
-	public String getKillConsoleCmd(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getConsoleRunCommand();
-
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
-						.get(String.valueOf(npc.getId()))
-						.getConsoleRunCommand();
-			} else
-				return "";
-		} else {
-			if (mob instanceof Player)
-				return mConfig.pvpKillCmd;
-			else if (mob instanceof Blaze)
-				return mConfig.blazeCmd;
-			else if (mob instanceof Creeper)
-				return mConfig.creeperCmd;
-			else if (mob instanceof Silverfish)
-				return mConfig.silverfishCmd;
-			else if (mob instanceof Enderman)
-				return mConfig.endermanCmd;
-			else if (mob instanceof Giant)
-				return mConfig.giantCmd;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return mConfig.skeletonCmd;
-				case WITHER:
-					return mConfig.witherSkeletonCmd;
-				}
-			} else if (mob instanceof CaveSpider)
-				return mConfig.caveSpiderCmd;
-			else if (mob instanceof Spider)
-				return mConfig.spiderCmd;
-			else if (mob instanceof Witch)
-				return mConfig.witchCmd;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return mConfig.zombiePigmanCmd;
-			else if (mob instanceof Zombie)
-				return mConfig.zombieCmd;
-			else if (mob instanceof Ghast)
-				return mConfig.ghastCmd;
-			else if (mob instanceof Slime)
-				return mConfig.slimeCmd;
-			else if (mob instanceof EnderDragon)
-				return mConfig.enderdragonCmd;
-			else if (mob instanceof Wither)
-				return mConfig.witherCmd;
-			else if (mob instanceof IronGolem)
-				return mConfig.ironGolemCmd;
-			else if (mob instanceof MagmaCube)
-				return mConfig.magmaCubeCmd;
-
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return mConfig.guardianCmd;
-				else if (mob instanceof Endermite)
-					return mConfig.endermiteCmd;
-				else if (mob instanceof Rabbit
-						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-					return mConfig.killerrabbitCmd;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-		}
-		return "";
-	}
-
-	/**
-	 * Get the text to be send to the player describing the reward
-	 * 
-	 * @param mob
-	 * @return String
-	 */
-	public String getKillRewardDescription(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getRewardDescription();
-
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
-						.get(String.valueOf(npc.getId()))
-						.getRewardDescription();
-			} else
-				return "";
-		} else {
-			if (mob instanceof Player)
-				return mConfig.pvpKillCmdDesc;
-			else if (mob instanceof Blaze)
-				return mConfig.blazeCmdDesc;
-			else if (mob instanceof Creeper)
-				return mConfig.creeperCmdDesc;
-			else if (mob instanceof Silverfish)
-				return mConfig.silverfishCmdDesc;
-			else if (mob instanceof Enderman)
-				return mConfig.endermanCmdDesc;
-			else if (mob instanceof Giant)
-				return mConfig.giantCmdDesc;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return mConfig.skeletonCmdDesc;
-				case WITHER:
-					return mConfig.witherSkeletonCmdDesc;
-				}
-			} else if (mob instanceof CaveSpider)
-				return mConfig.caveSpiderCmdDesc;
-			else if (mob instanceof Spider)
-				return mConfig.spiderCmdDesc;
-			else if (mob instanceof Witch)
-				return mConfig.witchCmdDesc;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return mConfig.zombiePigmanCmdDesc;
-			else if (mob instanceof Zombie)
-				return mConfig.zombieCmdDesc;
-			else if (mob instanceof Ghast)
-				return mConfig.ghastCmdDesc;
-			else if (mob instanceof Slime)
-				return mConfig.slimeCmdDesc;
-			else if (mob instanceof EnderDragon)
-				return mConfig.enderdragonCmdDesc;
-			else if (mob instanceof Wither)
-				return mConfig.witherCmdDesc;
-			else if (mob instanceof IronGolem)
-				return mConfig.ironGolemCmdDesc;
-			else if (mob instanceof MagmaCube)
-				return mConfig.magmaCubeCmdDesc;
-
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return mConfig.guardianCmdDesc;
-				else if (mob instanceof Endermite)
-					return mConfig.endermiteCmdDesc;
-				else if (mob instanceof Rabbit
-						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-					return mConfig.killerrabbitCmdDesc;
-
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-		}
-		// getLogger().warning("Warning: Missing text in getKillRewardDescription(mob="
-		// + mob.getName() + "), please report to developer");
-		return "";
-	}
-
-	public int getCmdRunProbability(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getPropability();
-
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
-						.get(String.valueOf(npc.getId())).getPropability();
-			} else
-				return 100;
-		} else {
-			if (mob instanceof Player)
-				return 100;
-			else if (mob instanceof Blaze)
-				return mConfig.blazeFrequency;
-			else if (mob instanceof Creeper)
-				return mConfig.creeperFrequency;
-			else if (mob instanceof Silverfish)
-				return mConfig.silverfishFrequency;
-			else if (mob instanceof Enderman)
-				return mConfig.endermanFrequency;
-			else if (mob instanceof Giant)
-				return mConfig.giantFrequency;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return mConfig.skeletonFrequency;
-				case WITHER:
-					return mConfig.witherSkeletonFrequency;
-				}
-			} else if (mob instanceof CaveSpider)
-				return mConfig.caveSpiderFrequency;
-			else if (mob instanceof Spider)
-				return mConfig.spiderFrequency;
-			else if (mob instanceof Witch)
-				return mConfig.witchFrequency;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return mConfig.zombiePigmanFrequency;
-			else if (mob instanceof Zombie)
-				return mConfig.zombieFrequency;
-			else if (mob instanceof Ghast)
-				return mConfig.ghastFrequency;
-			else if (mob instanceof Slime)
-				return mConfig.slimeFrequency;
-			else if (mob instanceof EnderDragon)
-				return mConfig.enderdragonFrequency;
-			else if (mob instanceof Wither)
-				return mConfig.witherFrequency;
-			else if (mob instanceof IronGolem)
-				return mConfig.ironGolemFrequency;
-			else if (mob instanceof MagmaCube)
-				return mConfig.magmaCubeFrequency;
-
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return mConfig.guardianFrequency;
-				else if (mob instanceof Endermite)
-					return mConfig.endermiteFrequency;
-				else if (mob instanceof Rabbit
-						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-					return mConfig.killerrabbitFrequency;
-
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-		}
-		// getLogger().warning("Warning: Missing text in getCmdRunProbability(mob="
-		// + mob.getName() + "), please report to developer");
-		return 100;
-	}
-
-	public int getCmdRunProbabilityBase(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getPropabilityBase();
-
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
-						.get(String.valueOf(npc.getId())).getPropabilityBase();
-			} else
-				return 100;
-		} else {
-			if (mob instanceof Player)
-				return 100;
-			else if (mob instanceof Blaze)
-				return mConfig.blazeFrequencyBase;
-			else if (mob instanceof Creeper)
-				return mConfig.creeperFrequencyBase;
-			else if (mob instanceof Silverfish)
-				return mConfig.silverfishFrequencyBase;
-			else if (mob instanceof Enderman)
-				return mConfig.endermanFrequencyBase;
-			else if (mob instanceof Giant)
-				return mConfig.giantFrequencyBase;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return mConfig.skeletonFrequencyBase;
-				case WITHER:
-					return mConfig.witherSkeletonFrequencyBase;
-				}
-			} else if (mob instanceof CaveSpider)
-				return mConfig.caveSpiderFrequencyBase;
-			else if (mob instanceof Spider)
-				return mConfig.spiderFrequencyBase;
-			else if (mob instanceof Witch)
-				return mConfig.witchFrequencyBase;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return mConfig.zombiePigmanFrequencyBase;
-			else if (mob instanceof Zombie)
-				return mConfig.zombieFrequencyBase;
-			else if (mob instanceof Ghast)
-				return mConfig.ghastFrequencyBase;
-			else if (mob instanceof Slime)
-				return mConfig.slimeFrequencyBase;
-			else if (mob instanceof EnderDragon)
-				return mConfig.enderdragonFrequencyBase;
-			else if (mob instanceof Wither)
-				return mConfig.witherFrequencyBase;
-			else if (mob instanceof IronGolem)
-				return mConfig.ironGolemFrequencyBase;
-			else if (mob instanceof MagmaCube)
-				return mConfig.magmaCubeFrequencyBase;
-
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return mConfig.guardianFrequencyBase;
-				else if (mob instanceof Endermite)
-					return mConfig.endermiteFrequencyBase;
-				else if (mob instanceof Rabbit
-						&& (((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-					return mConfig.killerrabbitFrequencyBase;
-
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-		}
-		// getLogger().warning("Warning: Missing text in getCmdRunProbability(mob="
-		// + mob.getName() + "), please report to developer");
-		return 100;
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	
+		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (getBaseKillPrize(event.getEntity()) <= 0 && getKillConsoleCmd(
+				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0 && mConfig.getKillConsoleCmd(
 						event.getEntity()).equals(""))
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
 			return;
@@ -1690,8 +1232,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void spawnerMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (getBaseKillPrize(event.getEntity()) <= 0)
-				&& getKillConsoleCmd(event.getEntity()).equals(""))
+				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
+				&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() != SpawnReason.SPAWNER
@@ -1705,8 +1247,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void reinforcementMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (getBaseKillPrize(event.getEntity()) <= 0)
-				&& getKillConsoleCmd(event.getEntity()).equals(""))
+				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
+				&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.REINFORCEMENTS)

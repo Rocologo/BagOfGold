@@ -93,7 +93,7 @@ public class LeaderboardManager implements Listener {
 			throws IllegalArgumentException {
 		if (!mLegacyNameMap.containsKey(id.toLowerCase()))
 			throw new IllegalArgumentException(Messages.getString(
-					"leaderboard.notexists", "id", id)); 
+					"leaderboard.notexists", "leaderboard", id)); 
 
 		mLegacyLeaderboards.remove(mLegacyNameMap.remove(id.toLowerCase()));
 		save();

@@ -1,9 +1,52 @@
 package au.com.mineauz.MobHunting;
 
 import java.io.File;
+import java.util.List;
+import java.util.Random;
+
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.Blaze;
+import org.bukkit.entity.CaveSpider;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Endermite;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Giant;
+import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.MushroomCow;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Silverfish;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Snowman;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.Squid;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wither;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
+import org.bukkit.metadata.MetadataValue;
 
+import au.com.mineauz.MobHunting.compatability.CitizensCompat;
+import au.com.mineauz.MobHunting.compatability.MythicMobsCompat;
 import au.com.mineauz.MobHunting.util.AutoConfig;
 import au.com.mineauz.MobHunting.util.ConfigField;
 
@@ -28,6 +71,11 @@ public class Config extends AutoConfig {
 						+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
 		setCategoryComment("boss",
 				"Here is where you set the base prize in $ for killing the bosses");
+		setCategoryComment(
+				"passive",
+				"Here is where you set the base prize in $ for killing passive/friendly mobs."
+						+ "\nBy default the player does not get a reward for killing friendly mobs."
+						+ "\nIf you make the number negative, the reward will be a fine for killing a passive animal.");
 		setCategoryComment(
 				"bonus",
 				"These are bonus multipliers that can modify the base prize. "
@@ -89,238 +137,393 @@ public class Config extends AutoConfig {
 	// Mobs
 	// #####################################################################################
 	@ConfigField(name = "blaze", category = "mobs")
-	public String blazePrize = "10.0";
+	private String blazePrize = "10.0";
 	@ConfigField(name = "blaze-cmd", category = "mobs")
-	public String blazeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Blaze\"}|give {player} iron_ingot 1";
+	private String blazeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Blaze\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "blaze-cmd-desc", category = "mobs")
-	public String blazeCmdDesc = "You got a Blaze skull and an Iron ingot.";
+	private String blazeCmdDesc = "You got a Blaze skull and an Iron ingot.";
 	@ConfigField(name = "blaze-cmd-run-frequency", category = "mobs")
-	public int blazeFrequency = 10;
+	private int blazeFrequency = 10;
 	@ConfigField(name = "blaze-cmd-run-frequency-base", category = "mobs")
-	public int blazeFrequencyBase = 100;
+	private int blazeFrequencyBase = 100;
 
 	@ConfigField(name = "creeper", category = "mobs")
-	public String creeperPrize = "10.0";
+	private String creeperPrize = "10.0";
 	@ConfigField(name = "creeper-cmd", category = "mobs")
-	public String creeperCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Creeper\"}|give {player} iron_ingot 1";
+	private String creeperCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Creeper\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "creeper-cmd-desc", category = "mobs")
-	public String creeperCmdDesc = "You got a Creeper skull and an Iron ingot.";
+	private String creeperCmdDesc = "You got a Creeper skull and an Iron ingot.";
 	@ConfigField(name = "creeper-cmd-run-frequency", category = "mobs")
-	public int creeperFrequency = 5;
+	private int creeperFrequency = 5;
 	@ConfigField(name = "creeper-cmd-run-frequency-base", category = "mobs")
-	public int creeperFrequencyBase = 100;
+	private int creeperFrequencyBase = 100;
 
 	@ConfigField(name = "silverfish", category = "mobs")
-	public String silverfishPrize = "10";
+	private String silverfishPrize = "10";
 	@ConfigField(name = "silverfish-cmd", category = "mobs")
-	public String silverfishCmd = "";
+	private String silverfishCmd = "";
 	@ConfigField(name = "silver-cmd-desc", category = "mobs")
-	public String silverfishCmdDesc = "";
+	private String silverfishCmdDesc = "";
 	@ConfigField(name = "silverfish-cmd-run-frequency", category = "mobs")
-	public int silverfishFrequency = 10;
+	private int silverfishFrequency = 10;
 	@ConfigField(name = "silverfish-cmd-run-frequency-base", category = "mobs")
-	public int silverfishFrequencyBase = 100;
+	private int silverfishFrequencyBase = 100;
 
 	@ConfigField(name = "zombie-pigman", category = "mobs")
-	public String zombiePigmanPrize = "4:8";
+	private String zombiePigmanPrize = "4:8";
 	@ConfigField(name = "zombie-pigman-cmd", category = "mobs")
-	public String zombiePigmanCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_PigZombie\"}|give {player} iron_ingot 1";
+	private String zombiePigmanCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_PigZombie\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "zombie-pigman-cmd-desc", category = "mobs")
-	public String zombiePigmanCmdDesc = "You got a Zombie Pigman skull and an Iron ingot.";
+	private String zombiePigmanCmdDesc = "You got a Zombie Pigman skull and an Iron ingot.";
 	@ConfigField(name = "zombie-pigman-cmd-run-frequency", category = "mobs")
-	public int zombiePigmanFrequency = 10;
+	private int zombiePigmanFrequency = 10;
 	@ConfigField(name = "zombie-pigman-cmd-run-frequency-base", category = "mobs")
-	public int zombiePigmanFrequencyBase = 100;
+	private int zombiePigmanFrequencyBase = 100;
 
 	@ConfigField(name = "enderman", category = "mobs")
-	public String endermanPrize = "20:40";
+	private String endermanPrize = "20:40";
 	@ConfigField(name = "enderman-cmd", category = "mobs")
-	public String endermanCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Enderman\"}|give {player} iron_ingot 1";
+	private String endermanCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Enderman\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "enderman-cmd-desc", category = "mobs")
-	public String endermanCmdDesc = "You got a Enderman skull and an Iron ingot.";
+	private String endermanCmdDesc = "You got a Enderman skull and an Iron ingot.";
 	@ConfigField(name = "enderman-cmd-run-frequency", category = "mobs")
-	public int endermanFrequency = 20;
+	private int endermanFrequency = 20;
 	@ConfigField(name = "enderman-cmd-run-frequency-base", category = "mobs")
-	public int endermanFrequencyBase = 100;
+	private int endermanFrequencyBase = 100;
 
 	@ConfigField(name = "giant", category = "mobs")
-	public String giantPrize = "5.0";
+	private String giantPrize = "5.0";
 	@ConfigField(name = "giant-cmd", category = "mobs")
-	public String giantCmd = "give {player} iron_ingot 1";
+	private String giantCmd = "give {player} iron_ingot 1";
 	@ConfigField(name = "giant-cmd-desc", category = "mobs")
-	public String giantCmdDesc = "You got an Iron ingot.";
+	private String giantCmdDesc = "You got an Iron ingot.";
 	@ConfigField(name = "giant-cmd-run-frequency", category = "mobs")
-	public int giantFrequency = 5;
+	private int giantFrequency = 5;
 	@ConfigField(name = "giant-cmd-run-frequency-base", category = "mobs")
-	public int giantFrequencyBase = 100;
+	private int giantFrequencyBase = 100;
 
 	@ConfigField(name = "skeleton", category = "mobs")
-	public String skeletonPrize = "10:30";
+	private String skeletonPrize = "10:30";
 	@ConfigField(name = "skeleton-cmd", category = "mobs")
-	public String skeletonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Skeleton\"}|give {player} iron_ingot 1";
+	private String skeletonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Skeleton\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "skeleton-cmd-desc", category = "mobs")
-	public String skeletonCmdDesc = "You got a Skeleton skull and an Iron ingot.";
+	private String skeletonCmdDesc = "You got a Skeleton skull and an Iron ingot.";
 	@ConfigField(name = "skeleton-cmd-run-frequency", category = "mobs")
-	public int skeletonFrequency = 5;
+	private int skeletonFrequency = 5;
 	@ConfigField(name = "skeleton-cmd-run-frequency-base", category = "mobs")
-	public int skeletonFrequencyBase = 100;
+	private int skeletonFrequencyBase = 100;
 
 	@ConfigField(name = "wither-skeleton", category = "mobs")
-	public String witherSkeletonPrize = "30:50";
+	private String witherSkeletonPrize = "30:50";
 	@ConfigField(name = "wither-skeleton-cmd", category = "mobs")
-	public String witherSkeletonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_WSkeleton\"}|give {player} iron_ingot 1";
+	private String witherSkeletonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_WSkeleton\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "wither-skeleton-cmd-desc", category = "mobs")
-	public String witherSkeletonCmdDesc = "You got a Wither Skeleton skull and an Iron ingot.";
+	private String witherSkeletonCmdDesc = "You got a Wither Skeleton skull and an Iron ingot.";
 	@ConfigField(name = "wither-skeleton-cmd-run-frequency", category = "mobs")
-	public int witherSkeletonFrequency = 10;
+	private int witherSkeletonFrequency = 10;
 	@ConfigField(name = "wither-skeleton-cmd-run-frequency-base", category = "mobs")
-	public int witherSkeletonFrequencyBase = 100;
+	private int witherSkeletonFrequencyBase = 100;
 
 	@ConfigField(name = "spider", category = "mobs")
-	public String spiderPrize = "5.5:10.5";
+	private String spiderPrize = "5.5:10.5";
 	@ConfigField(name = "spider-cmd", category = "mobs")
-	public String spiderCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Spider\"}|give {player} iron_ingot 1";
+	private String spiderCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Spider\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "spider-cmd-desc", category = "mobs")
-	public String spiderCmdDesc = "You got a Spider skull and an Iron ingot.";
+	private String spiderCmdDesc = "You got a Spider skull and an Iron ingot.";
 	@ConfigField(name = "spider-cmd-run-frequency", category = "mobs")
-	public int spiderFrequency = 5;
+	private int spiderFrequency = 5;
 	@ConfigField(name = "spider-cmd-run-frequency-base", category = "mobs")
-	public int spiderFrequencyBase = 100;
+	private int spiderFrequencyBase = 100;
 
 	@ConfigField(name = "cave-spider", category = "mobs")
-	public String caveSpiderPrize = "10:20";
+	private String caveSpiderPrize = "10:20";
 	@ConfigField(name = "cave-spider-cmd", category = "mobs")
-	public String caveSpiderCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_CaveSpider\"}|give {player} iron_ingot 1";
+	private String caveSpiderCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_CaveSpider\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "cave-spider-cmd-desc", category = "mobs")
-	public String caveSpiderCmdDesc = "You got a Cave Spider skull and an Iron ingot.";
+	private String caveSpiderCmdDesc = "You got a Cave Spider skull and an Iron ingot.";
 	@ConfigField(name = "cave-spider-cmd-run-frequency", category = "mobs")
-	public int caveSpiderFrequency = 10;
+	private int caveSpiderFrequency = 10;
 	@ConfigField(name = "cave-spider-cmd-run-frequency-base", category = "mobs")
-	public int caveSpiderFrequencyBase = 100;
+	private int caveSpiderFrequencyBase = 100;
 
 	@ConfigField(name = "witch", category = "mobs")
-	public String witchPrize = "10:15";
+	private String witchPrize = "10:15";
 	@ConfigField(name = "witch-cmd", category = "mobs")
-	public String witchCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Witch\"}|give {player} iron_ingot 1";
+	private String witchCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Witch\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "witch-cmd-desc", category = "mobs")
-	public String witchCmdDesc = "You got a Witch skull and an Iron ingot.";
+	private String witchCmdDesc = "You got a Witch skull and an Iron ingot.";
 	@ConfigField(name = "witch-cmd-run-frequency", category = "mobs")
-	public int witchFrequency = 5;
+	private int witchFrequency = 5;
 	@ConfigField(name = "witch-cmd-run-frequency-base", category = "mobs")
-	public int witchFrequencyBase = 100;
+	private int witchFrequencyBase = 100;
 
 	@ConfigField(name = "zombie", category = "mobs")
-	public String zombiePrize = "7:11";
+	private String zombiePrize = "7:11";
 	@ConfigField(name = "zombie-cmd", category = "mobs")
-	public String zombieCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Zombie\"}|give {player} iron_ingot 1";
+	private String zombieCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Zombie\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "zombie-cmd-desc", category = "mobs")
-	public String zombieCmdDesc = "You got a Zombie skull and an Iron ingot.";
+	private String zombieCmdDesc = "You got a Zombie skull and an Iron ingot.";
 	@ConfigField(name = "zombie-cmd-run-frequency", category = "mobs")
-	public int zombieFrequency = 50;
+	private int zombieFrequency = 50;
 	@ConfigField(name = "zombie-cmd-run-frequency-base", category = "mobs")
-	public int zombieFrequencyBase = 1000;
+	private int zombieFrequencyBase = 1000;
 
 	@ConfigField(name = "ghast", category = "mobs")
-	public String ghastPrize = "40:80";
+	private String ghastPrize = "40:80";
 	@ConfigField(name = "ghast-cmd", category = "mobs")
-	public String ghastCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Ghast\"}|give {player} iron_ingot 1";
+	private String ghastCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Ghast\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "ghast-cmd-desc", category = "mobs")
-	public String ghastCmdDesc = "You got a Ghast skull and an Iron ingot.";
+	private String ghastCmdDesc = "You got a Ghast skull and an Iron ingot.";
 	@ConfigField(name = "ghast-cmd-run-frequency", category = "mobs")
-	public int ghastFrequency = 10;
+	private int ghastFrequency = 10;
 	@ConfigField(name = "ghast-cmd-run-frequency-base", category = "mobs")
-	public int ghastFrequencyBase = 100;
+	private int ghastFrequencyBase = 100;
 
 	@ConfigField(name = "iron-golem", category = "mobs")
-	public String ironGolemPrize = "20:40";
+	private String ironGolemPrize = "20:40";
 	@ConfigField(name = "iron-golem-cmd", category = "mobs")
-	public String ironGolemCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Golem\"}|give {player} iron_ingot 1";
+	private String ironGolemCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Golem\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "iron-golem-cmd-desc", category = "mobs")
-	public String ironGolemCmdDesc = "You got an Iron Golem skull and an Iron ingot.";
+	private String ironGolemCmdDesc = "You got an Iron Golem skull and an Iron ingot.";
 	@ConfigField(name = "iron-golem-cmd-run-frequency", category = "mobs")
-	public int ironGolemFrequency = 10;
+	private int ironGolemFrequency = 10;
 	@ConfigField(name = "iron-golem-cmd-run-frequency-base", category = "mobs")
-	public int ironGolemFrequencyBase = 100;
+	private int ironGolemFrequencyBase = 100;
 
 	@ConfigField(name = "magma-cube", category = "mobs")
-	public String magmaCubePrize = "40:80";
+	private String magmaCubePrize = "40:80";
 	@ConfigField(name = "magma-cube-cmd", category = "mobs")
-	public String magmaCubeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_LavaSlime\"}|give {player} iron_ingot 1";
+	private String magmaCubeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_LavaSlime\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "magma-cube-cmd-desc", category = "mobs")
-	public String magmaCubeCmdDesc = "You got a Magma Cube skull and an Iron ingot.";
+	private String magmaCubeCmdDesc = "You got a Magma Cube skull and an Iron ingot.";
 	@ConfigField(name = "magma-cube-cmd-run-frequency", category = "mobs")
-	public int magmaCubeFrequency = 10;
+	private int magmaCubeFrequency = 10;
 	@ConfigField(name = "magma-cube-cmd-run-frequency-base", category = "mobs")
-	public int magmaCubeFrequencyBase = 100;
+	private int magmaCubeFrequencyBase = 100;
 
 	@ConfigField(name = "endermite", category = "mobs")
-	public String endermitePrize = "10";
+	private String endermitePrize = "10";
 	@ConfigField(name = "endermite-cmd", category = "mobs")
-	public String endermiteCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Endermite\"}|give {player} iron_ingot 1";
+	private String endermiteCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Endermite\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "endermite-cmd-desc", category = "mobs")
-	public String endermiteCmdDesc = "You got a Endermite skull and an Iron ingot.";
+	private String endermiteCmdDesc = "You got a Endermite skull and an Iron ingot.";
 	@ConfigField(name = "endermite-cmd-run-frequency", category = "mobs")
-	public int endermiteFrequency = 10;
+	private int endermiteFrequency = 10;
 	@ConfigField(name = "endermite-cmd-run-frequency-base", category = "mobs")
-	public int endermiteFrequencyBase = 100;
+	private int endermiteFrequencyBase = 100;
 
 	@ConfigField(name = "guardian", category = "mobs")
-	public String guardianPrize = "20:40";
+	private String guardianPrize = "20:40";
 	@ConfigField(name = "guardian-cmd", category = "mobs")
-	public String guardianCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Guardian\"}|give {player} iron_ingot 1";
+	private String guardianCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Guardian\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "guardian-cmd-desc", category = "mobs")
-	public String guardianCmdDesc = "You got a Guardian skull and an Iron ingot.";
+	private String guardianCmdDesc = "You got a Guardian skull and an Iron ingot.";
 	@ConfigField(name = "guardian-cmd-run-frequency", category = "mobs")
-	public int guardianFrequency = 10;
+	private int guardianFrequency = 10;
 	@ConfigField(name = "guardian-cmd-run-frequency-base", category = "mobs")
-	public int guardianFrequencyBase = 100;
+	private int guardianFrequencyBase = 100;
 
 	@ConfigField(name = "killerrabbit", category = "mobs")
-	public String killerrabbitPrize = "200";
+	private String killerrabbitPrize = "200";
 	@ConfigField(name = "killerrabbit-cmd", category = "mobs")
-	public String killerrabbitCmd = "";
+	private String killerrabbitCmd = "";
 	@ConfigField(name = "killerrabbit-cmd-desc", category = "mobs")
-	public String killerrabbitCmdDesc = "";
+	private String killerrabbitCmdDesc = "";
 	@ConfigField(name = "killerrabbit-cmd-run-frequency", category = "mobs")
-	public int killerrabbitFrequency = 25;
+	private int killerrabbitFrequency = 25;
 	@ConfigField(name = "killerrabbit-cmd-run-frequency-base", category = "mobs")
-	public int killerrabbitFrequencyBase = 100;
+	private int killerrabbitFrequencyBase = 100;
 
 	@ConfigField(name = "slime-base", category = "mobs", comment = "This is multiplied by the size of the slime. So a big natural slime is 4x this value")
-	public String slimeTinyPrize = "25";
+	private String slimeTinyPrize = "25";
 	@ConfigField(name = "slime-cmd", category = "mobs")
-	public String slimeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Slime\"}|give {player} iron_ingot 1";
+	private String slimeCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Slime\"}|give {player} iron_ingot 1";
 	@ConfigField(name = "slime-cmd-desc", category = "mobs")
-	public String slimeCmdDesc = "You got a Slime skull and an Iron ingot.";
+	private String slimeCmdDesc = "You got a Slime skull and an Iron ingot.";
 	@ConfigField(name = "slime-cmd-run-frequency", category = "mobs")
-	public int slimeFrequency = 5;
+	private int slimeFrequency = 5;
 	@ConfigField(name = "slime-cmd-run-frequency-base", category = "mobs")
-	public int slimeFrequencyBase = 100;
+	private int slimeFrequencyBase = 100;
 
 	// #####################################################################################
 	// Bosses
 	// #####################################################################################
 	@ConfigField(name = "wither", category = "boss")
-	public String witherPrize = "1000.0:2000.0";
+	private String witherPrize = "1000.0:2000.0";
 	@ConfigField(name = "wither-cmd", category = "boss")
-	public String witherCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Wither\"}|give {player} diamond 2";
+	private String witherCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Wither\"}|give {player} diamond 2";
 	@ConfigField(name = "wither-cmd-desc", category = "boss")
-	public String witherCmdDesc = "You got a Wither skull and two Diamonds.";
+	private String witherCmdDesc = "You got a Wither skull and two Diamonds.";
 	@ConfigField(name = "wither-cmd-run-frequency", category = "boss")
-	public int witherFrequency = 100;
+	private int witherFrequency = 100;
 	@ConfigField(name = "wither-cmd-run-frequency-base", category = "boss")
-	public int witherFrequencyBase = 100;
+	private int witherFrequencyBase = 100;
 
 	@ConfigField(name = "enderdragon", category = "boss")
-	public String enderdragonPrize = "2000.0:5000.0";
+	private String enderdragonPrize = "2000.0:5000.0";
 	@ConfigField(name = "enderdragon-cmd", category = "boss")
-	public String enderdragonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Enderdragon\"}|give {player} diamond 2";
+	private String enderdragonCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Enderdragon\"}|give {player} diamond 2";
 	@ConfigField(name = "enderdragon-cmd-desc", category = "boss")
-	public String enderdragonCmdDesc = "You got a Enderdragon skull and two Diamonds.";
+	private String enderdragonCmdDesc = "You got a Enderdragon skull and two Diamonds.";
 	@ConfigField(name = "enderdragon-cmd-run-frequency", category = "boss")
-	public int enderdragonFrequency = 100;
+	private int enderdragonFrequency = 100;
 	@ConfigField(name = "enderdragon-cmd-run-frequency-base", category = "boss")
-	public int enderdragonFrequencyBase = 100;
+	private int enderdragonFrequencyBase = 100;
+	
+	// Usage: /summon <EntityName> [x] [y] [z] [dataTag]
+	// Try this!!!! /summon Minecart ~ ~ ~20 {Riding:{id:EnderDragon}} 
+	// Then enter to the minecart 
+	// WITH THAT YOU CAN RIDE AN ENDERDRAGON!!! 
+	
+	// /summon Minecart ~ ~ ~ {Riding:{Creeper,Riding:{id:Ozelot}}}  ...Yes..Ocelot need to be spelled Ozelot..
+	
+	// /summon Skeleton ~ ~ ~ {Riding:{id:Spider},Equipment:[{id:57},{id:310},{id:310},{id:310},{id:310}]}
+
+	// #####################################################################################
+	// Passive Mobs
+	// #####################################################################################
+	@ConfigField(name = "bat", category = "passive")
+	private String batPrize = "0";
+	@ConfigField(name = "bat-cmd", category = "passive")
+	private String batCmd = "";
+	@ConfigField(name = "bat-cmd-desc", category = "passive")
+	private String batCmdDesc = "";
+	@ConfigField(name = "bat-cmd-run-frequency", category = "passive")
+	private int batFrequency = 0;
+	@ConfigField(name = "bat-cmd-run-frequency-base", category = "passive")
+	private int batFrequencyBase = 100;
+
+	@ConfigField(name = "chicken", category = "passive")
+	private String chickenPrize = "0";
+	@ConfigField(name = "chicken-cmd", category = "passive")
+	private String chickenCmd = "";
+	@ConfigField(name = "chicken-cmd-desc", category = "passive")
+	private String chickenCmdDesc = "";
+	@ConfigField(name = "chicken-cmd-run-frequency", category = "passive")
+	private int chickenFrequency = 0;
+	@ConfigField(name = "chicken-cmd-run-frequency-base", category = "passive")
+	private int chickenFrequencyBase = 100;
+
+	@ConfigField(name = "cow", category = "passive")
+	private String cowPrize = "0";
+	@ConfigField(name = "cow-cmd", category = "passive")
+	private String cowCmd = "";
+	@ConfigField(name = "cow-cmd-desc", category = "passive")
+	private String cowCmdDesc = "";
+	@ConfigField(name = "cow-cmd-run-frequency", category = "passive")
+	private int cowFrequency = 0;
+	@ConfigField(name = "cow-cmd-run-frequency-base", category = "passive")
+	private int cowFrequencyBase = 100;
+
+	@ConfigField(name = "horse", category = "passive")
+	private String horsePrize = "0";
+	@ConfigField(name = "horse-cmd", category = "passive")
+	private String horseCmd = "";
+	@ConfigField(name = "horse-cmd-desc", category = "passive")
+	private String horseCmdDesc = "";
+	@ConfigField(name = "horse-cmd-run-frequency", category = "passive")
+	private int horseFrequency = 0;
+	@ConfigField(name = "horse-cmd-run-frequency-base", category = "passive")
+	private int horseFrequencyBase = 100;
+
+	@ConfigField(name = "mushroom-cow", category = "passive")
+	private String mushroomCowPrize = "0";
+	@ConfigField(name = "mushroom-cow-cmd", category = "passive")
+	private String mushroomCowCmd = "";
+	@ConfigField(name = "mushroom-cow-cmd-desc", category = "passive")
+	private String mushroomCowCmdDesc = "";
+	@ConfigField(name = "mushroom-cow-cmd-run-frequency", category = "passive")
+	private int mushroomCowFrequency = 0;
+	@ConfigField(name = "mushroom-cow-cmd-run-frequency-base", category = "passive")
+	private int mushroomCowFrequencyBase = 100;
+
+	@ConfigField(name = "ocelot", category = "passive")
+	private String ocelotPrize = "0";
+	@ConfigField(name = "ocelot-cmd", category = "passive")
+	private String ocelotCmd = "";
+	@ConfigField(name = "ocelot-cmd-desc", category = "passive")
+	private String ocelotCmdDesc = "";
+	@ConfigField(name = "ocelot-cmd-run-frequency", category = "passive")
+	private int ocelotFrequency = 0;
+	@ConfigField(name = "ocelot-cmd-run-frequency-base", category = "passive")
+	private int ocelotFrequencyBase = 100;
+
+	@ConfigField(name = "pig", category = "passive")
+	private String pigPrize = "0";
+	@ConfigField(name = "pig-cmd", category = "passive")
+	private String pigCmd = "";
+	@ConfigField(name = "pig-cmd-desc", category = "passive")
+	private String pigCmdDesc = "";
+	@ConfigField(name = "pig-cmd-run-frequency", category = "passive")
+	private int pigFrequency = 0;
+	@ConfigField(name = "pig-cmd-run-frequency-base", category = "passive")
+	private int pigFrequencyBase = 100;
+
+	@ConfigField(name = "rabbit", category = "passive")
+	private String rabbitPrize = "0";
+	@ConfigField(name = "rabbit-cmd", category = "passive")
+	private String rabbitCmd = "";
+	@ConfigField(name = "rabbit-cmd-desc", category = "passive")
+	private String rabbitCmdDesc = "";
+	@ConfigField(name = "rabbit-cmd-run-frequency", category = "passive")
+	private int rabbitFrequency = 0;
+	@ConfigField(name = "rabbit-cmd-run-frequency-base", category = "passive")
+	private int rabbitFrequencyBase = 100;
+
+	@ConfigField(name = "sheep", category = "passive")
+	private String sheepPrize = "0";
+	@ConfigField(name = "sheep-cmd", category = "passive")
+	private String sheepCmd = "";
+	@ConfigField(name = "sheep-cmd-desc", category = "passive")
+	private String sheepCmdDesc = "";
+	@ConfigField(name = "sheep-cmd-run-frequency", category = "passive")
+	private int sheepFrequency = 0;
+	@ConfigField(name = "sheep-cmd-run-frequency-base", category = "passive")
+	private int sheepFrequencyBase = 100;
+
+	@ConfigField(name = "snowman", category = "passive")
+	private String snowmanPrize = "0";
+	@ConfigField(name = "snowman-cmd", category = "passive")
+	private String snowmanCmd = "";
+	@ConfigField(name = "snowman-cmd-desc", category = "passive")
+	private String snowmanCmdDesc = "";
+	@ConfigField(name = "snowman-cmd-run-frequency", category = "passive")
+	private int snowmanFrequency = 0;
+	@ConfigField(name = "snowman-cmd-run-frequency-base", category = "passive")
+	private int snowmanFrequencyBase = 100;
+
+	@ConfigField(name = "squid", category = "passive")
+	private String squidPrize = "0";
+	@ConfigField(name = "squid-cmd", category = "passive")
+	private String squidCmd = "";
+	@ConfigField(name = "squid-cmd-desc", category = "passive")
+	private String squidCmdDesc = "";
+	@ConfigField(name = "squid-cmd-run-frequency", category = "passive")
+	private int squidFrequency = 0;
+	@ConfigField(name = "bat-cmd-run-frequency-base", category = "passive")
+	private int squidFrequencyBase = 100;
+
+	@ConfigField(name = "villager", category = "passive")
+	private String villagerPrize = "0";
+	@ConfigField(name = "villager-cmd", category = "passive")
+	private String villagerCmd = "";
+	@ConfigField(name = "villager-cmd-desc", category = "passive")
+	private String villagerCmdDesc = "";
+	@ConfigField(name = "villager-cmd-run-frequency", category = "passive")
+	private int villagerFequency = 0;
+	@ConfigField(name = "villager-cmd-run-frequency-base", category = "passive")
+	private int villagerFrequencyBase = 100;
+
+	@ConfigField(name = "wolf", category = "passive")
+	private String wolfPrize = "0";
+	@ConfigField(name = "wolf-cmd", category = "passive")
+	private String wolfCmd = "";
+	@ConfigField(name = "wolf-cmd-desc", category = "passive")
+	private String wolfCmdDesc = "";
+	@ConfigField(name = "wolf-cmd-run-frequency", category = "passive")
+	private int wolfFequency = 0;
+	@ConfigField(name = "wolf-cmd-run-frequency-base", category = "passive")
+	private int wolfFrequencyBase = 100;
 
 	// #####################################################################################
 	// Bonuses - multipliers
@@ -345,6 +548,9 @@ public class Config extends AutoConfig {
 	public double bonusCritical = 2;
 	@ConfigField(name = "bonus-mob-chance", category = "bonus", comment = "This is the chance (% chance 0-100) that a bonus mob will spawn.")
 	public double bonusMobChance = 0.2;
+	@ConfigField(name = "babyMultiplyer", category = "bonus", comment = "Bonus for killing a Baby mob.")
+	public double babyMultiplier = 1.2;
+
 
 	// #####################################################################################
 	// Specials
@@ -523,31 +729,30 @@ public class Config extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "disable-integration-mobarena", category = "plugins", comment = "Disable integration with MobArena")
 	public boolean disableIntegrationMobArena = false;
-	
+
 	@ConfigField(name = "mobarena-get-rewards", category = "plugins", comment = "Set to true if you want the players to get rewards while playing MobArena.")
 	public boolean mobarenaGetRewards = false;
-	
+
 	@ConfigField(name = "disable-integration-pvparena", category = "plugins", comment = "Disable integration with PvpArena")
 	public boolean disableIntegrationPvpArena = false;
-	
+
 	@ConfigField(name = "pvparena-get-rewards", category = "plugins", comment = "Set to true if you want the players to get rewards while playing pvpArena.")
 	public boolean pvparenaGetRewards = false;
-	
+
 	@ConfigField(name = "disable-integration-citizens", category = "plugins", comment = "Disable integration with Citizens2")
 	public boolean disableIntegrationCitizens = false;
-	
+
 	@ConfigField(name = "disable-integration-mythicmobs", category = "plugins", comment = "Disable integration with MythicMobs")
 	public boolean disableIntegrationMythicmobs = false;
-	
+
 	@ConfigField(name = "disable-integration-mypet", category = "plugins", comment = "Disable integration with MyPet")
 	public boolean disableIntegrationMyPet = false;
-	
+
 	@ConfigField(name = "disable-integration-minigames", category = "plugins", comment = "Disable integration with MiniGames")
 	public boolean disableIntegrationMinigames = false;
-	
+
 	@ConfigField(name = "disable-integration-worldguard", category = "plugins", comment = "Disable integration with WorldGuard")
 	public boolean disableIntegrationWorldGuard = false;
-
 
 	// #####################################################################################
 	// Database
@@ -586,10 +791,603 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "update-check", category = "general", comment = "Check if there is a new version of the plugin available.")
 	public boolean updateCheck = true;
 
-	
-
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
 		Messages.setLanguage(language);
 	}
+
+	private Random mRand = new Random();
+
+	/**
+	 * Return the reward money for a given mob
+	 * 
+	 * @param mob
+	 * @return value
+	 */
+	public double getBaseKillPrize(LivingEntity mob) {
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return getPrice(((MobRewardData) value.value()).getRewardPrize());
+
+		} else if (CitizensCompat.isCitizensSupported()
+				&& CitizensCompat.isNPC(mob)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(mob);
+			if (CitizensCompat.isSentry(mob)) {
+				return getPrice(CitizensCompat.getNPCData()
+						.get(String.valueOf(npc.getId())).getRewardPrize());
+			} else
+				return 0;
+		} else {
+			if (mob instanceof Player) {
+				if (pvpKillPrize.endsWith("%")) {
+					double prize = Math.floor(Double.valueOf(pvpKillPrize
+							.substring(0, pvpKillPrize.length() - 1))
+							* MobHunting.getEconomy().getBalance((Player) mob)
+							/ 100);
+					return prize;
+				} else if (pvpKillPrize.contains(":")) {
+					String[] str1 = pvpKillPrize.split(":");
+					double prize2 = (mRand.nextDouble()
+							* (Double.valueOf(str1[1]) - Double
+									.valueOf(str1[0])) + Double
+							.valueOf(str1[0]));
+					return Double.valueOf(prize2);
+				} else
+					return Double.valueOf(pvpKillPrize);
+			} else if (mob instanceof Blaze)
+				return getPrice(blazePrize);
+			else if (mob instanceof Creeper)
+				return getPrice(creeperPrize);
+			else if (mob instanceof Silverfish)
+				return getPrice(silverfishPrize);
+			else if (mob instanceof Enderman)
+				return getPrice(endermanPrize);
+			else if (mob instanceof Giant)
+				return getPrice(giantPrize);
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return getPrice(skeletonPrize);
+				case WITHER:
+					return getPrice(witherSkeletonPrize);
+				}
+			} else if (mob instanceof CaveSpider)
+				return getPrice(caveSpiderPrize);
+			else if (mob instanceof Spider)
+				return getPrice(spiderPrize);
+			else if (mob instanceof Witch)
+				return getPrice(witchPrize);
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				if (((PigZombie) mob).isBaby())
+					return getPrice(zombiePigmanPrize) * babyMultiplier;
+				else
+					return getPrice(zombiePigmanPrize);
+			else if (mob instanceof Zombie)
+				if (((Zombie) mob).isBaby())
+					return getPrice(zombiePrize) * babyMultiplier;
+				else
+					return getPrice(zombiePrize);
+			else if (mob instanceof Ghast)
+				return getPrice(ghastPrize);
+			else if (mob instanceof Slime)
+				return getPrice(slimeTinyPrize) * ((Slime) mob).getSize();
+			else if (mob instanceof EnderDragon)
+				return getPrice(enderdragonPrize);
+			else if (mob instanceof Wither)
+				return getPrice(witherPrize);
+			else if (mob instanceof IronGolem)
+				return getPrice(ironGolemPrize);
+			else if (mob instanceof MagmaCube)
+				return getPrice(magmaCubePrize);
+
+			// Passive mobs
+			else if (mob instanceof Bat)
+				return getPrice(batPrize);
+			else if (mob instanceof Chicken)
+				return getPrice(chickenPrize);
+			else if (mob instanceof Cow)
+				return getPrice(cowPrize);
+			else if (mob instanceof Horse)
+				return getPrice(horsePrize);
+			else if (mob instanceof MushroomCow)
+				return getPrice(mushroomCowPrize);
+			else if (mob instanceof Ocelot)
+				return getPrice(ocelotPrize);
+			else if (mob instanceof Pig)
+				return getPrice(pigPrize);
+			else if (mob instanceof Sheep)
+				return getPrice(sheepPrize);
+			else if (mob instanceof Snowman)
+				return getPrice(snowmanPrize);
+			else if (mob instanceof Squid)
+				return getPrice(squidPrize);
+			else if (mob instanceof Villager)
+				return getPrice(villagerPrize);
+			else if (mob instanceof Wolf)
+				return getPrice(wolfPrize);
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return getPrice(guardianPrize);
+				else if (mob instanceof Endermite)
+					return getPrice(endermitePrize);
+				// if (mob instanceof Rabbit)
+				// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
+				if (mob instanceof Rabbit)
+					if (((Rabbit) mob).getRabbitType() == Rabbit.Type.THE_KILLER_BUNNY)
+						return getPrice(killerrabbitPrize);
+					else
+						return getPrice(rabbitPrize);
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+		}
+		return 0;
+	}
+
+	private double getPrice(String str) {
+		if (str.contains(":")) {
+			String[] str1 = str.split(":");
+			double prize = (mRand.nextDouble()
+					* (Double.valueOf(str1[1]) - Double.valueOf(str1[0])) + Double
+					.valueOf(str1[0]));
+			return prize;
+		} else
+			return Double.valueOf(str);
+	}
+
+	/**
+	 * Get the command to be run when the player kills a Mob.
+	 * 
+	 * @param mob
+	 * @return a number of commands to be run in the console. Each command must
+	 *         be separeted by a "|"
+	 */
+	public String getKillConsoleCmd(LivingEntity mob) {
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getConsoleRunCommand();
+
+		} else if (CitizensCompat.isCitizensSupported()
+				&& CitizensCompat.isNPC(mob)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(mob);
+			if (CitizensCompat.isSentry(mob)) {
+				return CitizensCompat.getNPCData()
+						.get(String.valueOf(npc.getId()))
+						.getConsoleRunCommand();
+			} else
+				return "";
+		} else {
+			if (mob instanceof Player)
+				return pvpKillCmd;
+			else if (mob instanceof Blaze)
+				return blazeCmd;
+			else if (mob instanceof Creeper)
+				return creeperCmd;
+			else if (mob instanceof Silverfish)
+				return silverfishCmd;
+			else if (mob instanceof Enderman)
+				return endermanCmd;
+			else if (mob instanceof Giant)
+				return giantCmd;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return skeletonCmd;
+				case WITHER:
+					return witherSkeletonCmd;
+				}
+			} else if (mob instanceof CaveSpider)
+				return caveSpiderCmd;
+			else if (mob instanceof Spider)
+				return spiderCmd;
+			else if (mob instanceof Witch)
+				return witchCmd;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				return zombiePigmanCmd;
+			else if (mob instanceof Zombie)
+				return zombieCmd;
+			else if (mob instanceof Ghast)
+				return ghastCmd;
+			else if (mob instanceof Slime)
+				return slimeCmd;
+			else if (mob instanceof EnderDragon)
+				return enderdragonCmd;
+			else if (mob instanceof Wither)
+				return witherCmd;
+			else if (mob instanceof IronGolem)
+				return ironGolemCmd;
+			else if (mob instanceof MagmaCube)
+				return magmaCubeCmd;
+
+			// Passive mobs
+			else if (mob instanceof Bat)
+				return batCmd;
+			else if (mob instanceof Chicken)
+				return chickenCmd;
+			else if (mob instanceof Cow)
+				return cowCmd;
+			else if (mob instanceof Horse)
+				return horseCmd;
+			else if (mob instanceof MushroomCow)
+				return mushroomCowCmd;
+			else if (mob instanceof Ocelot)
+				return ocelotCmd;
+			else if (mob instanceof Pig)
+				return pigCmd;
+			else if (mob instanceof Sheep)
+				return sheepCmd;
+			else if (mob instanceof Snowman)
+				return snowmanCmd;
+			else if (mob instanceof Squid)
+				return squidCmd;
+			else if (mob instanceof Villager)
+				return villagerCmd;
+			else if (mob instanceof Wolf)
+				return wolfCmd;
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianCmd;
+				else if (mob instanceof Endermite)
+					return endermiteCmd;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitCmd;
+					else
+						return rabbitCmd;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+		}
+		return "";
+	}
+
+	/**
+	 * Get the text to be send to the player describing the reward
+	 * 
+	 * @param mob
+	 * @return String
+	 */
+	public String getKillRewardDescription(LivingEntity mob) {
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getRewardDescription();
+
+		} else if (CitizensCompat.isCitizensSupported()
+				&& CitizensCompat.isNPC(mob)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(mob);
+			if (CitizensCompat.isSentry(mob)) {
+				return CitizensCompat.getNPCData()
+						.get(String.valueOf(npc.getId()))
+						.getRewardDescription();
+			} else
+				return "";
+		} else {
+			if (mob instanceof Player)
+				return pvpKillCmdDesc;
+			else if (mob instanceof Blaze)
+				return blazeCmdDesc;
+			else if (mob instanceof Creeper)
+				return creeperCmdDesc;
+			else if (mob instanceof Silverfish)
+				return silverfishCmdDesc;
+			else if (mob instanceof Enderman)
+				return endermanCmdDesc;
+			else if (mob instanceof Giant)
+				return giantCmdDesc;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return skeletonCmdDesc;
+				case WITHER:
+					return witherSkeletonCmdDesc;
+				}
+			} else if (mob instanceof CaveSpider)
+				return caveSpiderCmdDesc;
+			else if (mob instanceof Spider)
+				return spiderCmdDesc;
+			else if (mob instanceof Witch)
+				return witchCmdDesc;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				return zombiePigmanCmdDesc;
+			else if (mob instanceof Zombie)
+				return zombieCmdDesc;
+			else if (mob instanceof Ghast)
+				return ghastCmdDesc;
+			else if (mob instanceof Slime)
+				return slimeCmdDesc;
+			else if (mob instanceof EnderDragon)
+				return enderdragonCmdDesc;
+			else if (mob instanceof Wither)
+				return witherCmdDesc;
+			else if (mob instanceof IronGolem)
+				return ironGolemCmdDesc;
+			else if (mob instanceof MagmaCube)
+				return magmaCubeCmdDesc;
+
+			// Passive mobs
+			else if (mob instanceof Bat)
+				return batCmdDesc;
+			else if (mob instanceof Chicken)
+				return chickenCmdDesc;
+			else if (mob instanceof Cow)
+				return cowCmdDesc;
+			else if (mob instanceof Horse)
+				return horseCmdDesc;
+			else if (mob instanceof MushroomCow)
+				return mushroomCowCmdDesc;
+			else if (mob instanceof Ocelot)
+				return ocelotCmdDesc;
+			else if (mob instanceof Pig)
+				return pigCmdDesc;
+			else if (mob instanceof Sheep)
+				return sheepCmdDesc;
+			else if (mob instanceof Snowman)
+				return snowmanCmdDesc;
+			else if (mob instanceof Squid)
+				return squidCmdDesc;
+			else if (mob instanceof Villager)
+				return villagerCmdDesc;
+			else if (mob instanceof Wolf)
+				return wolfCmdDesc;
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianCmdDesc;
+				else if (mob instanceof Endermite)
+					return endermiteCmdDesc;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitCmdDesc;
+					else
+						return rabbitCmdDesc;
+
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+		}
+		return "";
+	}
+
+	public int getCmdRunProbability(LivingEntity mob) {
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getPropability();
+
+		} else if (CitizensCompat.isCitizensSupported()
+				&& CitizensCompat.isNPC(mob)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(mob);
+			if (CitizensCompat.isSentry(mob)) {
+				return CitizensCompat.getNPCData()
+						.get(String.valueOf(npc.getId())).getPropability();
+			} else
+				return 100;
+		} else {
+			if (mob instanceof Player)
+				return 100;
+			else if (mob instanceof Blaze)
+				return blazeFrequency;
+			else if (mob instanceof Creeper)
+				return creeperFrequency;
+			else if (mob instanceof Silverfish)
+				return silverfishFrequency;
+			else if (mob instanceof Enderman)
+				return endermanFrequency;
+			else if (mob instanceof Giant)
+				return giantFrequency;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return skeletonFrequency;
+				case WITHER:
+					return witherSkeletonFrequency;
+				}
+			} else if (mob instanceof CaveSpider)
+				return caveSpiderFrequency;
+			else if (mob instanceof Spider)
+				return spiderFrequency;
+			else if (mob instanceof Witch)
+				return witchFrequency;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				return zombiePigmanFrequency;
+			else if (mob instanceof Zombie)
+				return zombieFrequency;
+			else if (mob instanceof Ghast)
+				return ghastFrequency;
+			else if (mob instanceof Slime)
+				return slimeFrequency;
+			else if (mob instanceof EnderDragon)
+				return enderdragonFrequency;
+			else if (mob instanceof Wither)
+				return witherFrequency;
+			else if (mob instanceof IronGolem)
+				return ironGolemFrequency;
+			else if (mob instanceof MagmaCube)
+				return magmaCubeFrequency;
+
+			// Passive mobs
+			else if (mob instanceof Bat)
+				return batFrequency;
+			else if (mob instanceof Chicken)
+				return chickenFrequency;
+			else if (mob instanceof Cow)
+				return cowFrequency;
+			else if (mob instanceof Horse)
+				return horseFrequency;
+			else if (mob instanceof MushroomCow)
+				return mushroomCowFrequency;
+			else if (mob instanceof Ocelot)
+				return ocelotFrequency;
+			else if (mob instanceof Pig)
+				return pigFrequency;
+			else if (mob instanceof Sheep)
+				return sheepFrequency;
+			else if (mob instanceof Snowman)
+				return snowmanFrequency;
+			else if (mob instanceof Squid)
+				return squidFrequency;
+			else if (mob instanceof Villager)
+				return villagerFequency;
+			else if (mob instanceof Wolf)
+				return wolfFequency;
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianFrequency;
+				else if (mob instanceof Endermite)
+					return endermiteFrequency;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitFrequency;
+					else
+						return rabbitFrequency;
+
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+		}
+		return 100;
+	}
+
+	public int getCmdRunProbabilityBase(LivingEntity mob) {
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& mob.hasMetadata("MH:MythicMob")) {
+			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getPropabilityBase();
+
+		} else if (CitizensCompat.isCitizensSupported()
+				&& CitizensCompat.isNPC(mob)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(mob);
+			if (CitizensCompat.isSentry(mob)) {
+				return CitizensCompat.getNPCData()
+						.get(String.valueOf(npc.getId())).getPropabilityBase();
+			} else
+				return 100;
+		} else {
+			if (mob instanceof Player)
+				return 100;
+			else if (mob instanceof Blaze)
+				return blazeFrequencyBase;
+			else if (mob instanceof Creeper)
+				return creeperFrequencyBase;
+			else if (mob instanceof Silverfish)
+				return silverfishFrequencyBase;
+			else if (mob instanceof Enderman)
+				return endermanFrequencyBase;
+			else if (mob instanceof Giant)
+				return giantFrequencyBase;
+			else if (mob instanceof Skeleton) {
+				switch (((Skeleton) mob).getSkeletonType()) {
+				case NORMAL:
+					return skeletonFrequencyBase;
+				case WITHER:
+					return witherSkeletonFrequencyBase;
+				}
+			} else if (mob instanceof CaveSpider)
+				return caveSpiderFrequencyBase;
+			else if (mob instanceof Spider)
+				return spiderFrequencyBase;
+			else if (mob instanceof Witch)
+				return witchFrequencyBase;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie. PigZombie must be checked
+				// before Zombie
+				return zombiePigmanFrequencyBase;
+			else if (mob instanceof Zombie)
+				return zombieFrequencyBase;
+			else if (mob instanceof Ghast)
+				return ghastFrequencyBase;
+			else if (mob instanceof Slime)
+				return slimeFrequencyBase;
+			else if (mob instanceof EnderDragon)
+				return enderdragonFrequencyBase;
+			else if (mob instanceof Wither)
+				return witherFrequencyBase;
+			else if (mob instanceof IronGolem)
+				return ironGolemFrequencyBase;
+			else if (mob instanceof MagmaCube)
+				return magmaCubeFrequencyBase;
+
+			// Passive mobs
+			else if (mob instanceof Bat)
+				return batFrequencyBase;
+			else if (mob instanceof Chicken)
+				return chickenFrequencyBase;
+			else if (mob instanceof Cow)
+				return cowFrequencyBase;
+			else if (mob instanceof Horse)
+				return horseFrequencyBase;
+			else if (mob instanceof MushroomCow)
+				return mushroomCowFrequencyBase;
+			else if (mob instanceof Ocelot)
+				return ocelotFrequencyBase;
+			else if (mob instanceof Pig)
+				return pigFrequencyBase;
+			else if (mob instanceof Sheep)
+				return sheepFrequencyBase;
+			else if (mob instanceof Snowman)
+				return snowmanFrequencyBase;
+			else if (mob instanceof Squid)
+				return squidFrequencyBase;
+			else if (mob instanceof Villager)
+				return villagerFrequencyBase;
+			else if (mob instanceof Wolf)
+				return wolfFrequencyBase;
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianFrequencyBase;
+				else if (mob instanceof Endermite)
+					return endermiteFrequencyBase;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitFrequencyBase;
+					else
+						return rabbitFrequencyBase;
+
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+		}
+		return 100;
+	}
+
 }
