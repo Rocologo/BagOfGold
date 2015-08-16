@@ -137,7 +137,7 @@ public class DataStoreManager {
 		private int mSaveInterval;
 
 		public StoreThread(int interval) {
-			super("MH Data Storer"); //$NON-NLS-1$
+			super("MH Data Storer"); 
 			start();
 			mSaveInterval = interval;
 		}
@@ -201,7 +201,7 @@ public class DataStoreManager {
 		private Object mSignal = new Object();
 
 		public TaskThread() {
-			super("MH Data Retriever"); //$NON-NLS-1$
+			super("MH Data Retriever"); 
 
 			mQueue = new LinkedBlockingQueue<Task>();
 

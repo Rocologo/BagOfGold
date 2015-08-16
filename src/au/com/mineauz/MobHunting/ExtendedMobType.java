@@ -54,7 +54,9 @@ public enum ExtendedMobType {
 			if (this == KillerRabbit)
 				return ent instanceof Rabbit
 						&& (((Rabbit) ent).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY;
-
+			else if (this == PassiveRabbit)
+				return ent instanceof Rabbit
+						&& (((Rabbit) ent).getRabbitType()) != Rabbit.Type.THE_KILLER_BUNNY;
 		} catch (ClassNotFoundException e) {
 			// not MC 1.8
 		}

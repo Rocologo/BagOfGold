@@ -105,6 +105,7 @@ public abstract class DatabaseDataStore implements DataStore {
 	public void shutdown() throws DataStoreException {
 		try {
 			if (mConnection != null) {
+				mConnection.commit();
 				mConnection.close();
 			}
 		} catch (SQLException e) {

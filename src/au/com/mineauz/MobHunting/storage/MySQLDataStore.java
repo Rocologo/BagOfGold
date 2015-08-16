@@ -513,25 +513,25 @@ public class MySQLDataStore extends DatabaseDataStore {
 					.executeUpdate("alter table `mh_AllTime` add column `Pig_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			statement
-					.executeUpdate("alter table `mh_Daily` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Daily` add column `PassiveRabbit_kill`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_Daily` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Daily` add column `PassiveRabbit_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_Weekly` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Weekly` add column `PassiveRabbit_kill`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_Weekly` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Weekly` add column `PassiveRabbit_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_Monthly` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Monthly` add column `PassiveRabbit_kill`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_Monthly` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Monthly` add column `PassiveRabbit_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_Yearly` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Yearly` add column `PassiveRabbit_kill`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_Yearly` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_Yearly` add column `PassiveRabbit_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_AllTime` add column `Rabbit_kill`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_AllTime` add column `PassiveRabbit_kill`  INTEGER NOT NULL DEFAULT 0");
 			statement
-					.executeUpdate("alter table `mh_AllTime` add column `Rabbit_assist`  INTEGER NOT NULL DEFAULT 0");
+					.executeUpdate("alter table `mh_AllTime` add column `PassiveRabbit_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `Sheep_kill`  INTEGER NOT NULL DEFAULT 0");
