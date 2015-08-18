@@ -137,7 +137,7 @@ public class DataStoreManager {
 		private int mSaveInterval;
 
 		public StoreThread(int interval) {
-			super("MH Data Storer"); 
+			super("MH Data Storer");
 			start();
 			mSaveInterval = interval;
 		}
@@ -147,8 +147,8 @@ public class DataStoreManager {
 			try {
 				while (true) {
 					synchronized (this) {
-						if (mExit)
-							break;
+						if (mExit) {
+							break; }
 					}
 
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
@@ -201,7 +201,7 @@ public class DataStoreManager {
 		private Object mSignal = new Object();
 
 		public TaskThread() {
-			super("MH Data Retriever"); 
+			super("MH Data Retriever");
 
 			mQueue = new LinkedBlockingQueue<Task>();
 

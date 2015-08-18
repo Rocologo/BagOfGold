@@ -137,49 +137,50 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	}
 
-	private boolean versionCheck() {
-		String version = Bukkit.getBukkitVersion();
-		if (version == null)
-			return true; // custom bukkit, whatever
+	// private boolean versionCheck() {
+	// String version = Bukkit.getBukkitVersion();
+	// if (version == null)
+	// return true; // custom bukkit, whatever
 
-		// String[] parts = version.split("\\-");
-		// String[] verPart = parts[0].split("\\.");
-		// int major = Integer.valueOf(verPart[0]);
-		// int minor = Integer.valueOf(verPart[1]);
-		// int revision = 0;
-		// if(verPart.length == 3)
-		// revision = Integer.valueOf(verPart[2]);
+	// String[] parts = version.split("\\-");
+	// String[] verPart = parts[0].split("\\.");
+	// int major = Integer.valueOf(verPart[0]);
+	// int minor = Integer.valueOf(verPart[1]);
+	// int revision = 0;
+	// if(verPart.length == 3)
+	// revision = Integer.valueOf(verPart[2]);
 
-		// if(major >= 1 && minor >= 7 && revision >= 8)
-		// return true;
-		//
-		// getLogger().severe("This version of MobHunting is for Bukkit 1.7.8 and up. Please update your bukkit.");
-		// return false;
-		return true;
-	}
+	// if(major >= 1 && minor >= 7 && revision >= 8)
+	// return true;
+	//
+	// getLogger().severe("This version of MobHunting is for Bukkit 1.7.8 and up. Please update your bukkit.");
+	// return false;
+	// return true;
+	// }
 
 	@Override
 	public void onEnable() {
 		mInitialized = false;
 
-		if (!versionCheck()) {
-			instance = null;
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
+		// if (!versionCheck()) {
+		// instance = null;
+		// getServer().getPluginManager().disablePlugin(this);
+		// return;
+		// }
 
 		instance = this;
 
 		// Move the old data folder
-		File oldData = new File(getDataFolder().getParentFile(), "Mob Hunting"); 
-		if (oldData.exists()) {
-			try {
-				Files.move(oldData.toPath(), getDataFolder().toPath(),
-						StandardCopyOption.ATOMIC_MOVE);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		// File oldData = new File(getDataFolder().getParentFile(),
+		// "Mob Hunting");
+		// if (oldData.exists()) {
+		// try {
+		// Files.move(oldData.toPath(), getDataFolder().toPath(),
+		// StandardCopyOption.ATOMIC_MOVE);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// }
 
 		Messages.exportDefaultLanguages();
 
@@ -191,7 +192,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			throw new RuntimeException(Messages.getString(pluginName
 					+ ".config.fail"));
 
-				RegisteredServiceProvider<Economy> economyProvider = getServer()
+		RegisteredServiceProvider<Economy> economyProvider = getServer()
 				.getServicesManager().getRegistration(Economy.class);
 		if (economyProvider == null) {
 			instance = null;
@@ -1110,9 +1111,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Run console commands as a reward
 		if (data.dampenedKills < 10) {
 			if (!mConfig.getKillConsoleCmd(killed).equals("")) {
-				if (mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig.getCmdRunProbability(killed)) {
+				if (mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig
+						.getCmdRunProbability(killed)) {
 					String worldname = killer.getWorld().getName();
-					String prizeCommand = mConfig.getKillConsoleCmd(killed)
+					String prizeCommand = mConfig
+							.getKillConsoleCmd(killed)
 							.replaceAll("\\{player\\}", killer.getName())
 							.replaceAll("\\{killed_player\\}", killed.getName())
 							.replaceAll("\\{world\\}", worldname);
@@ -1136,7 +1139,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 						killer.sendMessage(ChatColor.GREEN
 								+ ""
 								+ ChatColor.ITALIC
-								+ mConfig.getKillRewardDescription(killed)
+								+ mConfig
+										.getKillRewardDescription(killed)
 										.replaceAll("\\{player\\}",
 												killer.getName())
 										.replaceAll("\\{killed_player\\}",
@@ -1200,12 +1204,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return mDamageHistory.get(entity);
 	}
 
-	
-		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
 		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0 && mConfig.getKillConsoleCmd(
-						event.getEntity()).equals(""))
+				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0 && mConfig
+						.getKillConsoleCmd(event.getEntity()).equals(""))
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
 			return;
 
@@ -1240,8 +1243,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& event.getSpawnReason() != SpawnReason.SPAWNER_EGG)
 			return;
 
-		event.getEntity().setMetadata("MH:blocked",
-				new FixedMetadataValue(this, true));
+		if (!mConfig.allowMobSpawners)
+			event.getEntity().setMetadata("MH:blocked",
+					new FixedMetadataValue(this, true));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

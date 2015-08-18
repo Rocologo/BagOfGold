@@ -515,7 +515,7 @@ public class Config extends AutoConfig {
 	private int villagerFrequencyBase = 100;
 
 	@ConfigField(name = "wolf", category = "passive")
-	private String wolfPrize = "0";
+	private String wolfPrize = "-10";
 	@ConfigField(name = "wolf-cmd", category = "passive")
 	private String wolfCmd = "";
 	@ConfigField(name = "wolf-cmd-desc", category = "passive")
@@ -776,6 +776,8 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "language", category = "general", comment = "The language (file) to use. You can put the name of the language file as the language code "
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
+	@ConfigField(name = "allow_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners and eggs?")
+	public boolean allowMobSpawners = false;
 	@ConfigField(name = "broadcast-achievement", category = "general", comment = "Should achievements be broadcasted?")
 	public boolean broadcastAchievement = true;
 	@ConfigField(name = "broadcast-first-achievement", category = "general", comment = "Should the hunt begins achievement be broadcasted?")
