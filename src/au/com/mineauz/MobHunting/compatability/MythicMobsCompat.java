@@ -20,11 +20,12 @@ import org.bukkit.plugin.Plugin;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.MobRewardData;
 import au.com.mineauz.MobHunting.MobPlugins;
-import net.elseland.xikage.MythicMobs.API.Events.MythicMobCustomSkillEvent;
-import net.elseland.xikage.MythicMobs.API.Events.MythicMobDeathEvent;
-import net.elseland.xikage.MythicMobs.API.Events.MythicMobSkillEvent;
-import net.elseland.xikage.MythicMobs.API.Events.MythicMobSpawnEvent;
-import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
+//import net.elseland.xikage.MythicMobs.API.Events.MythicMobCustomSkillEvent;
+//import net.elseland.xikage.MythicMobs.API.Events.MythicMobDeathEvent;
+//import net.elseland.xikage.MythicMobs.API.Events.MythicMobSkillEvent;
+//import net.elseland.xikage.MythicMobs.API.Events.MythicMobSpawnEvent;
+//import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
+import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 
 public class MythicMobsCompat implements Listener {
 

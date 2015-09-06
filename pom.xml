@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.6</version>
+	<version>2.3.7</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -22,7 +22,7 @@
 		<worldedit.version>LATEST</worldedit.version>
 		<worldguard.version>LATEST</worldguard.version>
 		<citizensapi.version>2.0.16-SNAPSHOT</citizensapi.version>
-		<mythicmobs.jar.version>MythicMobs-2.0.6.jar</mythicmobs.jar.version>
+		<mythicmobs.jar.version>MythicMobs-2.1.2.jar</mythicmobs.jar.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.1</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>1.5</mavenShadePlugin.version>
