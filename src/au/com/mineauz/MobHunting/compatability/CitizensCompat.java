@@ -2,34 +2,19 @@ package au.com.mineauz.MobHunting.compatability;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-
-import au.com.mineauz.MobHunting.Config;
-import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.MobRewardData;
 import au.com.mineauz.MobHunting.MobPlugins;
-import au.com.mineauz.MobHunting.leaderboard.Leaderboard;
-import au.com.mineauz.MobHunting.leaderboard.LegacyLeaderboard;
-import de.Keyle.MyPet.api.entity.MyPetEntity;
-import de.Keyle.MyPet.entity.types.MyPetType;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.CitizensPlugin;
 import net.citizensnpcs.api.event.CitizensDisableEvent;
@@ -169,25 +154,38 @@ public class CitizensCompat implements Listener {
 		return CitizensAPI.getNPCRegistry().isNPC(entity);
 	}
 
+	public static int getNPCId(Entity entity) {
+		return CitizensAPI.getNPCRegistry().getNPC(entity).getId();
+	}
+
+	public static String getNPCName(Entity entity) {
+		return CitizensAPI.getNPCRegistry().getNPC(entity).getName();
+	}
+
 	public static boolean isSentry(Entity entity) {
-		return CitizensAPI
-				.getNPCRegistry()
-				.getNPC(entity)
-				.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"));
+		if (CitizensAPI.getNPCRegistry().isNPC(entity))
+			return CitizensAPI
+					.getNPCRegistry()
+					.getNPC(entity)
+					.hasTrait(
+							CitizensAPI.getTraitFactory().getTraitClass(
+									"Sentry"));
+		else
+			return false;
 	}
 
 	public static HashMap<String, MobRewardData> getNPCData() {
 		return mNPCData;
 	}
-	
-	public static boolean isDisabledInConfig(){
-		return MobHunting.config().disableIntegrationCitizens; 
+
+	public static boolean isDisabledInConfig() {
+		return MobHunting.config().disableIntegrationCitizens;
 	}
-	
-	public static boolean isEnabledInConfig(){
-		return !MobHunting.config().disableIntegrationCitizens; 
+
+	public static boolean isEnabledInConfig() {
+		return !MobHunting.config().disableIntegrationCitizens;
 	}
-	
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
@@ -256,11 +254,10 @@ public class CitizensCompat implements Listener {
 						&& !mNPCData.containsKey(String.valueOf(npc.getId()))) {
 					MobHunting.debug("New NPC found=%s,%s", npc.getId(),
 							npc.getFullName());
-					mNPCData.put(
-							String.valueOf(npc.getId()),
+					mNPCData.put(String.valueOf(npc.getId()),
 							new MobRewardData(
-									MobPlugins.MobPluginNames.Citizens, npc
-											.getFullName(), "10",
+									MobPlugins.MobPluginNames.Citizens, "npc",
+									npc.getFullName(), "10",
 									"give {player} iron_sword 1",
 									"You got an Iron sword.", 100, 100));
 					saveCitizensData(String.valueOf(npc.getId()));

@@ -3,32 +3,23 @@ package au.com.mineauz.MobHunting.compatability;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.MobRewardData;
 import au.com.mineauz.MobHunting.MobPlugins;
-import de.Keyle.MyPet.api.entity.MyPetEntity;
-import de.Keyle.MyPet.entity.types.MyPetType;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.CitizensPlugin;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
 import net.elseland.xikage.MythicMobs.API.Events.MythicMobCustomSkillEvent;
 import net.elseland.xikage.MythicMobs.API.Events.MythicMobDeathEvent;
 import net.elseland.xikage.MythicMobs.API.Events.MythicMobSkillEvent;
@@ -39,7 +30,7 @@ public class MythicMobsCompat implements Listener {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
-	private static HashMap<String, MobRewardData> mNPCData = new HashMap<String, MobRewardData>();
+	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
 	private File file = new File(MobHunting.instance.getDataFolder(),
 			"mythicmobs-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
@@ -78,11 +69,12 @@ public class MythicMobsCompat implements Listener {
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config
 						.getConfigurationSection(key);
-				MobRewardData npc = new MobRewardData();
-				npc.read(section);
-				mNPCData.put(key, npc);
+				MobRewardData mob = new MobRewardData();
+				mob.read(section);
+				mob.setMobType(key);
+				mMobRewardData.put(key, mob);
 			}
-			MobHunting.debug("Loaded %s MythicMobs", mNPCData.size());
+			MobHunting.debug("Loaded %s MythicMobs", mMobRewardData.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -97,9 +89,10 @@ public class MythicMobsCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			MobRewardData npc = new MobRewardData();
-			npc.read(section);
-			mNPCData.put(key, npc);
+			MobRewardData mob = new MobRewardData();
+			mob.read(section);
+			mob.setMobType(key);
+			mMobRewardData.put(key, mob);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -112,12 +105,12 @@ public class MythicMobsCompat implements Listener {
 			config.options()
 					.header("This a extra MobHunting config data for the MythicMobs on your server.");
 
-			if (mNPCData.size() > 0) {
+			if (mMobRewardData.size() > 0) {
 
 				int n = 0;
-				for (String str : mNPCData.keySet()) {
+				for (String str : mMobRewardData.keySet()) {
 					ConfigurationSection section = config.createSection(str);
-					mNPCData.get(str).save(section);
+					mMobRewardData.get(str).save(section);
 					n++;
 				}
 
@@ -134,9 +127,9 @@ public class MythicMobsCompat implements Listener {
 
 	public void saveMythicMobsData(String key) {
 		try {
-			if (mNPCData.containsKey(key)) {
+			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);
-				mNPCData.get(key).save(section);
+				mMobRewardData.get(key).save(section);
 				MobHunting.debug("Saving Mobhunting extra MythicMobs data.");
 				config.save(file);
 			} else {
@@ -159,9 +152,19 @@ public class MythicMobsCompat implements Listener {
 	public static boolean isMythicMobsSupported() {
 		return supported;
 	}
+	
+	public static boolean isMythicMob(LivingEntity mob){
+		return mob.hasMetadata("MH:MythicMob");
+	}
+	
+	public static String getMythicMobType(LivingEntity mob){
+		List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+		MetadataValue value = data.get(0);
+		return ((MobRewardData) value.value()).getMobType();		
+	}
 
-	public static HashMap<String, MobRewardData> getNPCData() {
-		return mNPCData;
+	public static HashMap<String, MobRewardData> getMobRewardData() {
+		return mMobRewardData;
 	}
 
 	public static boolean isDisabledInConfig() {
@@ -186,16 +189,16 @@ public class MythicMobsCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
-		MobHunting.debug("MythicMob spawn event: name=%s Mobtype=%s", event
-				.getLivingEntity().getName(), event.getMobType().MobName);
+		MobHunting.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
+				.getLivingEntity().getType(), event.getMobType().MobName);
 
-		if (mNPCData != null
-				&& !mNPCData.containsKey(event.getMobType().MobName)) {
+		if (mMobRewardData != null
+				&& !mMobRewardData.containsKey(event.getMobType().MobName)) {
 			MobHunting.debug("New MythicMobType found=%s,%s", event
 					.getMobType().MobName, event.getMobType().getDisplayName());
-			mNPCData.put(event.getMobType().MobName, new MobRewardData(
-					MobPlugins.MobPluginNames.MythicMobs, event.getMobType()
-							.getDisplayName(), "10",
+			mMobRewardData.put(event.getMobType().MobName, new MobRewardData(
+					MobPlugins.MobPluginNames.MythicMobs, event.getMobType().MobName, 
+					event.getMobType().getDisplayName(), "10",
 					"give {player} iron_sword 1", "You got an Iron sword.",
 					100, 100));
 			saveMythicMobsData(event.getMobType().MobName);
@@ -204,7 +207,8 @@ public class MythicMobsCompat implements Listener {
 		event.getLivingEntity().setMetadata(
 				"MH:MythicMob",
 				new FixedMetadataValue(mPlugin,
-						mNPCData.get(event.getMobType().MobName)));
+						mMobRewardData.get(event.getMobType().MobName)));
+				//new FixedMetadataValue(mPlugin,event.getMobType().MobName));
 
 	}
 

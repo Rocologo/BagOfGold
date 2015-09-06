@@ -8,7 +8,6 @@ import org.bukkit.plugin.Plugin;
 
 import au.com.mineauz.MobHunting.MobHunting;
 
-import com.garbagemule.MobArena.MobArena;
 import com.garbagemule.MobArena.events.ArenaPlayerDeathEvent;
 import com.garbagemule.MobArena.events.ArenaPlayerJoinEvent;
 import com.garbagemule.MobArena.events.ArenaPlayerLeaveEvent;
@@ -38,7 +37,7 @@ public class MobArenaCompat implements Listener {
 							+ getMobArena().getDescription().getVersion() + ")");
 		}
 	}
-	
+
 	// **************************************************************************
 	// OTHER
 	// **************************************************************************
@@ -46,12 +45,12 @@ public class MobArenaCompat implements Listener {
 	public Plugin getMobArena() {
 		return mPlugin;
 	}
-	
-	public static boolean isDisabledInConfig(){
+
+	public static boolean isDisabledInConfig() {
 		return MobHunting.config().disableIntegrationMobArena;
 	}
 
-	public static boolean isEnabledInConfig(){
+	public static boolean isEnabledInConfig() {
 		return !MobHunting.config().disableIntegrationMobArena;
 	}
 

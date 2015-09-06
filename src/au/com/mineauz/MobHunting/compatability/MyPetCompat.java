@@ -8,8 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-
 import au.com.mineauz.MobHunting.MobHunting;
 import de.Keyle.MyPet.MyPetPlugin;
 import de.Keyle.MyPet.api.entity.MyPetEntity;
@@ -34,7 +32,7 @@ public class MyPetCompat implements Listener {
 			supported = true;
 		}
 	}
-	
+
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
@@ -45,15 +43,15 @@ public class MyPetCompat implements Listener {
 	public static boolean isMyPetSupported() {
 		return supported;
 	}
-	
-	public static boolean isDisabledInConfig(){
+
+	public static boolean isDisabledInConfig() {
 		return MobHunting.config().disableIntegrationMyPet;
 	}
-	
-	public static boolean isEnabledInConfig(){
+
+	public static boolean isEnabledInConfig() {
 		return !MobHunting.config().disableIntegrationMyPet;
 	}
-	
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
@@ -75,7 +73,7 @@ public class MyPetCompat implements Listener {
 			return;
 
 		MobHunting.debug("A Wolf Killed a mob");
-		
+
 		if (killer.getOwner() != null) {
 			Player owner = killer.getOwner().getPlayer();
 

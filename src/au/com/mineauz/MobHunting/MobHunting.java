@@ -8,8 +8,6 @@ import org.spongepowered.api.event.state.ServerStoppedEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,9 +93,7 @@ import au.com.mineauz.MobHunting.storage.MySQLDataStore;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
 import au.com.mineauz.MobHunting.util.Update;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
+import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
 
 public class MobHunting extends JavaPlugin implements Listener {
 
@@ -137,50 +133,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	}
 
-	// private boolean versionCheck() {
-	// String version = Bukkit.getBukkitVersion();
-	// if (version == null)
-	// return true; // custom bukkit, whatever
-
-	// String[] parts = version.split("\\-");
-	// String[] verPart = parts[0].split("\\.");
-	// int major = Integer.valueOf(verPart[0]);
-	// int minor = Integer.valueOf(verPart[1]);
-	// int revision = 0;
-	// if(verPart.length == 3)
-	// revision = Integer.valueOf(verPart[2]);
-
-	// if(major >= 1 && minor >= 7 && revision >= 8)
-	// return true;
-	//
-	// getLogger().severe("This version of MobHunting is for Bukkit 1.7.8 and up. Please update your bukkit.");
-	// return false;
-	// return true;
-	// }
-
 	@Override
 	public void onEnable() {
 		mInitialized = false;
-
-		// if (!versionCheck()) {
-		// instance = null;
-		// getServer().getPluginManager().disablePlugin(this);
-		// return;
-		// }
-
 		instance = this;
-
-		// Move the old data folder
-		// File oldData = new File(getDataFolder().getParentFile(),
-		// "Mob Hunting");
-		// if (oldData.exists()) {
-		// try {
-		// Files.move(oldData.toPath(), getDataFolder().toPath(),
-		// StandardCopyOption.ATOMIC_MOVE);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		// }
 
 		Messages.exportDefaultLanguages();
 
@@ -477,7 +433,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		if (enabled && !player.hasPermission("mobhunting.enable")) {
-			debug("KillBlocked %s: Player doesnt have permission",
+			debug("KillBlocked %s: Player doesnt have permission mobhunting.enable",
 					player.getName());
 			return false;
 		}
@@ -708,7 +664,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
-		// TODO: can Skeleton use other weapons the Arrow?
+		// TODO: can Skeleton use other weapons than an Arrow?
 		if (!(event.getEntity() instanceof Arrow)
 				|| !(event.getEntity().getShooter() instanceof Skeleton)
 				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
@@ -824,6 +780,42 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
+	private boolean hasPermissionToKillMob(Player player, LivingEntity mob) {
+		String permission_prefix = "*";
+		if (MythicMobsCompat.isMythicMobsSupported()
+				&& MythicMobsCompat.isMythicMob(mob)) {
+			permission_prefix = MythicMobsCompat.getMythicMobType(mob);
+			if (player.isPermissionSet("mobhunting.mobs." + permission_prefix))
+				return player.hasPermission("mobhunting.mobs."
+						+ MythicMobsCompat.getMythicMobType(mob));
+			else {
+				debug("Permission mobhunting.mobs.mythicmobtype not set, defaulting to True.");
+				return true;
+			}
+		} else if (CitizensCompat.isCitizensSupported()
+				&& CitizensCompat.isSentry(mob)) {
+			permission_prefix = "npc-" + CitizensCompat.getNPCId(mob);
+			if (player.isPermissionSet("mobhunting.mobs." + permission_prefix))
+				return player.hasPermission("mobhunting.mobs."
+						+ permission_prefix);
+			else {
+				debug("Permission mobhunting.mobs.'" + permission_prefix
+						+ "' not set, defaulting to True.");
+				return true;
+			}
+		} else {
+			permission_prefix = mob.getType().toString();
+			if (player.isPermissionSet("mobhunting.mobs." + permission_prefix))
+				return player.hasPermission("mobhunting.mobs."
+						+ permission_prefix);
+			else {
+				debug("Permission 'mobhunting.mobs.*' or 'mobhunting.mobs."
+						+ permission_prefix + "' not set, defaulting to True.");
+				return true;
+			}
+		}
+	}
+
 	@SuppressWarnings({ "deprecation", "unused" })
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
@@ -887,12 +879,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CitizensCompat.isEnabledInConfig()
 				&& CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(killed)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(killed);
-
-			debug("A Citizens was killed - NPC is Sentry=%S ",
-					npc.hasTrait(CitizensAPI.getTraitFactory().getTraitClass(
-							"Sentry")));
+			if (CitizensCompat.isSentry(killed))
+				if (killer instanceof Player)
+					debug("%s killed Sentry npc-%s (name=%s)",
+							killer.getName(), CitizensCompat.getNPCId(killed),
+							CitizensCompat.getNPCName(killed));
 		}
 
 		if (killer instanceof Player) {
@@ -907,6 +898,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 					&& !mConfig.pvparenaGetRewards) {
 				debug("KillBlocked: %s is currently playing PvpArena.",
 						killer.getName());
+				return;
+			}
+
+			if (!hasPermissionToKillMob(killer, killed)) {
+				debug("KillBlocked: %s has not permission to kill %s.",
+						killer.getName(), killed.getName());
 				return;
 			}
 		}
@@ -1086,9 +1083,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			// TODO: record mythicmob kills
-			if (ExtendedMobType.fromEntity(killed) != null)
+			if (ExtendedMobType.getExtendedMobType(killed) != null)
 				getDataStore().recordKill(killer,
-						ExtendedMobType.fromEntity(killed),
+						ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));
 
 			if (extraString.trim().isEmpty()) {
@@ -1114,11 +1111,19 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig
 						.getCmdRunProbability(killed)) {
 					String worldname = killer.getWorld().getName();
+					String killerpos = killer.getLocation().getBlockX() + " "
+							+ killer.getLocation().getBlockY() + " "
+							+ killer.getLocation().getBlockZ();
+					String killedpos = killed.getLocation().getBlockX() + " "
+							+ killed.getLocation().getBlockY() + " "
+							+ killed.getLocation().getBlockZ();
 					String prizeCommand = mConfig
 							.getKillConsoleCmd(killed)
 							.replaceAll("\\{player\\}", killer.getName())
 							.replaceAll("\\{killed_player\\}", killed.getName())
-							.replaceAll("\\{world\\}", worldname);
+							.replaceAll("\\{world\\}", worldname)
+							.replaceAll("\\{killerpos\\}", killerpos)
+							.replaceAll("\\{killedpos\\}", killedpos);
 					if (!mConfig.getKillConsoleCmd(killed).equals("")) {
 						String str = prizeCommand;
 						do {
@@ -1172,7 +1177,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		if (cash >= 0.01) {
 			getDataStore().recordAssist(player, killer,
-					ExtendedMobType.fromEntity(killed),
+					ExtendedMobType.getExtendedMobType(killed),
 					killed.hasMetadata("MH:hasBonus"));
 			mEconomy.depositPlayer(player, cash);
 			debug("%s got a on assist reward (%s)", player.getName(),

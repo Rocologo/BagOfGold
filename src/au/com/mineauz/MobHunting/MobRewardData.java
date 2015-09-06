@@ -6,10 +6,13 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
+import com.sk89q.worldedit.blocks.metadata.MobType;
+
 import au.com.mineauz.MobHunting.MobPlugins.MobPluginNames;
 
 public class MobRewardData {
 	private MobPluginNames mobPluginName;
+	private String mobType = "";
 	private String mobName = "";
 	private String reward = "5";
 	private String consoleRunCommand = "";
@@ -17,11 +20,12 @@ public class MobRewardData {
 	private int propability = 100;
 	private int propabilityBase = 100;
 
-	public MobRewardData(MobPluginNames pluginName, String npcName,
-			String rewardPrize, String cmd, String cmdDesc, int propability,
-			int propabilityBase) {
+	public MobRewardData(MobPluginNames pluginName, String mobType,
+			String mobName, String rewardPrize, String cmd, String cmdDesc,
+			int propability, int propabilityBase) {
 		this.mobPluginName = pluginName;
-		this.mobName = npcName;
+		this.mobType = mobType;
+		this.mobName = mobName;
 		this.reward = rewardPrize;
 		this.consoleRunCommand = cmd;
 		this.rewardDescription = cmdDesc;
@@ -40,12 +44,20 @@ public class MobRewardData {
 		this.mobPluginName = mobPlugin;
 	}
 
+	public String getMobType() {
+		return mobType;
+	}
+
+	public void setMobType(String type) {
+		this.mobType = type;
+	}
+
 	public String getMobName() {
 		return mobName;
 	}
 
-	public void setMobName(String npcName) {
-		this.mobName = npcName;
+	public void setMobName(String mobName) {
+		this.mobName = mobName;
 	}
 
 	public String getRewardPrize() {
@@ -163,7 +175,8 @@ public class MobRewardData {
 
 	public void read(ConfigurationSection section)
 			throws InvalidConfigurationException, IllegalStateException {
-		mobPluginName = MobPluginNames.valueOf(section.get("plugin").toString());
+		mobPluginName = MobPluginNames
+				.valueOf(section.get("plugin").toString());
 		mobName = section.getString("mobName");
 		reward = section.getString("rewardPrize");
 		consoleRunCommand = section.getString("consoleRunCommand");

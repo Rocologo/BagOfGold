@@ -1,7 +1,6 @@
 package au.com.mineauz.MobHunting;
 
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -77,7 +76,7 @@ public enum ExtendedMobType {
 		return Messages.getString("mobs." + name() + ".name");
 	}
 
-	public static ExtendedMobType fromEntity(Entity entity) {
+	public static ExtendedMobType getExtendedMobType(Entity entity) {
 		for (ExtendedMobType type : values()) {
 			if (type.matches(entity))
 				return type;

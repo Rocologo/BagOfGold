@@ -10,7 +10,6 @@ import au.com.mineauz.MobHunting.MobHunting;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class WorldEditCompat {
 	private static WorldEditPlugin mPlugin;
@@ -21,8 +20,7 @@ public class WorldEditCompat {
 
 		MobHunting.instance.getLogger().info(
 				"Enabling compatability with WorldEdit ("
-						+ getWorldEdit().getDescription().getVersion()
-						+ ")");
+						+ getWorldEdit().getDescription().getVersion() + ")");
 	}
 
 	public static WorldEditPlugin getWorldEdit() {
