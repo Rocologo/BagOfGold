@@ -374,15 +374,17 @@ public class Config extends AutoConfig {
 	private int enderdragonFrequency = 100;
 	@ConfigField(name = "enderdragon-cmd-run-frequency-base", category = "boss")
 	private int enderdragonFrequencyBase = 100;
-	
+
 	// Usage: /summon <EntityName> [x] [y] [z] [dataTag]
-	// Try this!!!! /summon Minecart ~ ~ ~20 {Riding:{id:EnderDragon}} 
-	// Then enter to the minecart 
-	// WITH THAT YOU CAN RIDE AN ENDERDRAGON!!! 
-	
-	// /summon Minecart ~ ~ ~ {Riding:{Creeper,Riding:{id:Ozelot}}}  ...Yes..Ocelot need to be spelled Ozelot..
-	
-	// /summon Skeleton ~ ~ ~ {Riding:{id:Spider},Equipment:[{id:57},{id:310},{id:310},{id:310},{id:310}]}
+	// Try this!!!! /summon Minecart ~ ~ ~20 {Riding:{id:EnderDragon}}
+	// Then enter to the minecart
+	// WITH THAT YOU CAN RIDE AN ENDERDRAGON!!!
+
+	// /summon Minecart ~ ~ ~ {Riding:{Creeper,Riding:{id:Ozelot}}}
+	// ...Yes..Ocelot need to be spelled Ozelot..
+
+	// /summon Skeleton ~ ~ ~
+	// {Riding:{id:Spider},Equipment:[{id:57},{id:310},{id:310},{id:310},{id:310}]}
 
 	// #####################################################################################
 	// Passive Mobs
@@ -556,9 +558,8 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "babyMultiplyer", category = "bonus", comment = "Bonus for killing a Baby mob.")
 	public double babyMultiplier = 1.2;
 
-
 	// #####################################################################################
-	// Specials
+	// Specials / Achievements
 	// #####################################################################################
 	@ConfigField(name = "charged-kill", category = "special")
 	public double specialCharged = 1000;
@@ -797,6 +798,13 @@ public class Config extends AutoConfig {
 	public boolean killDebug = false;
 	@ConfigField(name = "update-check", category = "general", comment = "Check if there is a new version of the plugin available.")
 	public boolean updateCheck = true;
+	@ConfigField(name = "reward_rounding", category = "general", comment = "Rounding of rewards when you uses a range or %. (ex creeperPrize=10:30) the reward."
+			+ "\nAll numbers except 0 can be used. "
+			+ "\nSet rounding_reward=1 if you want integers. IE. 10,11,12,13,14..."
+			+ "\nSet rounding_reward=0.01 if you want 2 decimals 10.00, 10.01, 10.02... integers."
+			+ "\nSet rounding_reward=5 if you want multipla of 5 IE. 10,15,20,25..."
+			+ "\nSet rounding_reward=2 if you want multipla of 2 IE. 10,12,14,16...")
+	public double rewardRounding = 0.01;
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
@@ -834,14 +842,14 @@ public class Config extends AutoConfig {
 							.substring(0, pvpKillPrize.length() - 1))
 							* MobHunting.getEconomy().getBalance((Player) mob)
 							/ 100);
-					return prize;
+					return round(prize);
 				} else if (pvpKillPrize.contains(":")) {
 					String[] str1 = pvpKillPrize.split(":");
 					double prize2 = (mRand.nextDouble()
 							* (Double.valueOf(str1[1]) - Double
 									.valueOf(str1[0])) + Double
 							.valueOf(str1[0]));
-					return Double.valueOf(prize2);
+					return round(Double.valueOf(prize2));
 				} else
 					return Double.valueOf(pvpKillPrize);
 			} else if (mob instanceof Blaze)
@@ -871,12 +879,12 @@ public class Config extends AutoConfig {
 				// PigZombie is a subclass of Zombie. PigZombie must be checked
 				// before Zombie
 				if (((PigZombie) mob).isBaby())
-					return getPrice(zombiePigmanPrize) * babyMultiplier;
+					return round(getPrice(zombiePigmanPrize) * babyMultiplier);
 				else
 					return getPrice(zombiePigmanPrize);
 			else if (mob instanceof Zombie)
 				if (((Zombie) mob).isBaby())
-					return getPrice(zombiePrize) * babyMultiplier;
+					return round(getPrice(zombiePrize) * babyMultiplier);
 				else
 					return getPrice(zombiePrize);
 			else if (mob instanceof Ghast)
@@ -940,13 +948,18 @@ public class Config extends AutoConfig {
 		return 0;
 	}
 
+	private double round(double d) {
+		return Math.round(d / rewardRounding) * rewardRounding;
+
+	}
+
 	private double getPrice(String str) {
 		if (str.contains(":")) {
 			String[] str1 = str.split(":");
 			double prize = (mRand.nextDouble()
 					* (Double.valueOf(str1[1]) - Double.valueOf(str1[0])) + Double
 					.valueOf(str1[0]));
-			return prize;
+			return round(prize);
 		} else
 			return Double.valueOf(str);
 	}

@@ -33,6 +33,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.storage.AchievementStore;
@@ -51,8 +52,7 @@ public class AchievementManager implements Listener {
 	public Achievement getAchievement(String id) {
 		if (!mAchievements.containsKey(id))
 			throw new IllegalArgumentException(
-					"There is no achievement by the id: " + id); //$NON-NLS-1$
-
+					"There is no achievement by the id: " + id);
 		return mAchievements.get(id);
 	}
 
@@ -251,9 +251,13 @@ public class AchievementManager implements Listener {
 		// Run console commands as a reward
 		String playername = player.getName();
 		String worldname = player.getWorld().getName();
+		String playerpos = player.getLocation().getBlockX() + " "
+				+ player.getLocation().getBlockY() + " "
+				+ player.getLocation().getBlockZ();
 		String prizeCommand = achievement.getPrizeCmd()
 				.replaceAll("\\{player\\}", playername)
-				.replaceAll("\\{world\\}", worldname);
+				.replaceAll("\\{world\\}", worldname)
+				.replaceAll("\\{killerpos\\}", playerpos);
 		if (!achievement.getPrizeCmd().equals("")) {
 			String str = prizeCommand;
 			do {
@@ -288,14 +292,13 @@ public class AchievementManager implements Listener {
 		meta.setPower(1);
 		meta.addEffect(effect);
 		firework.setFireworkMeta(meta);
-
 	}
 
 	public void awardAchievementProgress(String achievement, Player player,
 			int amount) {
 		Achievement a = getAchievement(achievement);
 		Validate.isTrue(a instanceof ProgressAchievement,
-				"You need to award normal achievements with awardAchievement()"); //$NON-NLS-1$
+				"You need to award normal achievements with awardAchievement()");
 
 		awardAchievementProgress((ProgressAchievement) a, player, amount);
 	}
@@ -345,20 +348,20 @@ public class AchievementManager implements Listener {
 						+ Messages
 								.getString(
 										"mobhunting.achievement.progress", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				player.sendMessage(ChatColor.GRAY
-						+ "" + nextProgress + " / " + maxProgress); //$NON-NLS-1$ //$NON-NLS-2$
+				player.sendMessage(ChatColor.GRAY + "" + nextProgress + " / "
+						+ maxProgress);
 			}
 		}
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public boolean upgradeAchievements() {
-		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml"); //$NON-NLS-1$
+		File file = new File(MobHunting.instance.getDataFolder(), "awards.yml");
 
 		if (!file.exists())
 			return false;
 
-		MobHunting.instance.getLogger().info("Upgrading old awards.yml file"); //$NON-NLS-1$
+		MobHunting.instance.getLogger().info("Upgrading old awards.yml file");
 
 		YamlConfiguration config = new YamlConfiguration();
 		try {
@@ -400,63 +403,76 @@ public class AchievementManager implements Listener {
 
 	public void load(final Player player) {
 		final PlayerStorage storage = new PlayerStorage();
+		storage.enableAchievements = false;
+
 		mStorage.put(player, storage);
 
-		MobHunting.instance.getDataStore().requestAllAchievements(player,
-				new DataCallback<Set<AchievementStore>>() {
-					@Override
-					public void onError(Throwable error) {
-						if (error instanceof UserNotFoundException)
-							storage.enableAchievements = true;
-						else {
-							error.printStackTrace();
-							player.sendMessage(Messages
-									.getString("achievements.load-fail")); //$NON-NLS-1$
-							storage.enableAchievements = false;
-						}
-					}
+		if (!player.hasPermission("mobhunting.achievements.disabled")) {
 
-					@Override
-					public void onCompleted(Set<AchievementStore> data) {
-						for (AchievementStore achievement : data) {
-							if (achievement.progress == -1)
-								storage.gainedAchievements.add(achievement.id);
-							else
-								storage.progressAchievements.put(
-										achievement.id, achievement.progress);
-						}
-
-						// Fix achievement errors where an upper level progress
-						// achievement is in progress/complete, but a lower
-						// level one is not
-						HashSet<String> toRemove = new HashSet<String>();
-						for (Entry<String, Integer> prog : storage.progressAchievements
-								.entrySet()) {
-							Achievement raw = getAchievement(prog.getKey());
-							if (raw instanceof ProgressAchievement) {
-								ProgressAchievement achievement = (ProgressAchievement) raw;
-								while (achievement.inheritFrom() != null) {
-									String parent = achievement.inheritFrom();
-
-									if (storage.progressAchievements
-											.containsKey(parent))
-										toRemove.add(parent);
-									achievement = (ProgressAchievement) getAchievement(parent);
-								}
+			MobHunting.instance.getDataStore().requestAllAchievements(player,
+					new DataCallback<Set<AchievementStore>>() {
+						@Override
+						public void onError(Throwable error) {
+							if (error instanceof UserNotFoundException)
+								storage.enableAchievements = true;
+							else {
+								error.printStackTrace();
+								player.sendMessage(Messages
+										.getString("achievements.load-fail"));
+								storage.enableAchievements = false;
 							}
 						}
 
-						storage.gainedAchievements.addAll(toRemove);
-						for (String id : toRemove) {
-							storage.progressAchievements.remove(id);
-							MobHunting.instance.getDataStore()
-									.recordAchievement(player,
-											getAchievement(id));
-						}
+						@Override
+						public void onCompleted(Set<AchievementStore> data) {
+							for (AchievementStore achievement : data) {
+								if (achievement.progress == -1)
+									storage.gainedAchievements
+											.add(achievement.id);
+								else
+									storage.progressAchievements.put(
+											achievement.id,
+											achievement.progress);
+							}
 
-						storage.enableAchievements = true;
-					}
-				});
+							// Fix achievement errors where an upper level
+							// progress
+							// achievement is in progress/complete, but a lower
+							// level one is not
+							HashSet<String> toRemove = new HashSet<String>();
+							for (Entry<String, Integer> prog : storage.progressAchievements
+									.entrySet()) {
+								Achievement raw = getAchievement(prog.getKey());
+								if (raw instanceof ProgressAchievement) {
+									ProgressAchievement achievement = (ProgressAchievement) raw;
+									while (achievement.inheritFrom() != null) {
+										String parent = achievement
+												.inheritFrom();
+
+										if (storage.progressAchievements
+												.containsKey(parent))
+											toRemove.add(parent);
+										achievement = (ProgressAchievement) getAchievement(parent);
+									}
+								}
+							}
+
+							storage.gainedAchievements.addAll(toRemove);
+							for (String id : toRemove) {
+								storage.progressAchievements.remove(id);
+								MobHunting.instance.getDataStore()
+										.recordAchievement(player,
+												getAchievement(id));
+							}
+
+							storage.enableAchievements = true;
+						}
+					});
+		} else {
+			MobHunting
+					.debug("achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",
+							player.getName());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -4,15 +4,15 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.3.7</version>
+	<version>2.3.8</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.8.7-R0.1-SNAPSHOT</bukkit.version>
-		<spigotmc.version>1.8.7-R0.1-SNAPSHOT</spigotmc.version>
+		<bukkit.version>1.8.8-R0.1-SNAPSHOT</bukkit.version>
+		<spigotmc.version>1.8.8-R0.1-SNAPSHOT</spigotmc.version>
 		<metrics.version>R7</metrics.version>
 		<vault.version>LATEST</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
@@ -25,14 +25,14 @@
 		<mythicmobs.jar.version>MythicMobs-2.1.2.jar</mythicmobs.jar.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.1</mavenCompilerPlugin.version>
-		<mavenShadePlugin.version>1.5</mavenShadePlugin.version>
+		<mavenShadePlugin.version>2.4.2</mavenShadePlugin.version>
 		<mcstats.pluginname>${groupId}.${artifactId}</mcstats.pluginname>
 		<slf4j.version>1.7.12</slf4j.version>
 	</properties>
 
 	<organization>
 		<name>Rocologo</name>
-		<url>https://www.lindegaard.tk</url>
+		<url>https://www.lindegaard.one</url>
 	</organization>
 
 	<!-- ********************************************************************** -->
@@ -62,7 +62,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<!-- <version>2.3.2</version> -->
 				<version>${mavenCompilerPlugin.version}</version>
 				<configuration>
 					<source>${javacompiler.version}</source>

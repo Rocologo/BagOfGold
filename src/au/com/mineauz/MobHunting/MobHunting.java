@@ -2,11 +2,6 @@ package au.com.mineauz.MobHunting;
 
 import java.io.File;
 
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.ServerStartedEvent;
-import org.spongepowered.api.event.state.ServerStoppedEvent;
-import org.spongepowered.api.plugin.Plugin;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +15,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -93,7 +87,6 @@ import au.com.mineauz.MobHunting.storage.MySQLDataStore;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
 import au.com.mineauz.MobHunting.util.Update;
-import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
 
 public class MobHunting extends JavaPlugin implements Listener {
 
@@ -130,7 +123,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@Override
 	public void onLoad() {
-
 	}
 
 	@Override
@@ -192,10 +184,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
 		CompatibilityManager.register(MythicMobsCompat.class, "MythicMobs");
 		CompatibilityManager.register(CitizensCompat.class, "Citizens");
-		// CompatibilityManager.register(HeroesCompat.class, "Heroes");
-		// CompatibilityManager.register(MobDungeonMainCompat.class,
-		// "MobDungeon");
-		// CompatibilityManager.register(WarCompat.class, "War");
 
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 				Messages.getString("mobhunting.command.base.description")
@@ -237,7 +225,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			debug("Metrics started");
 		} catch (IOException e) {
 			debug("Failed to start Metrics!");
-			// Failed to submit the stats :-(
 		}
 
 		// Check for updates asynchronously
@@ -1379,26 +1366,19 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	// ************************************************************************************
-	private Logger logger;
-
-	@Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version = "1.0")
-	public class MobHuntingProject implements Listener {
-		@Subscribe
-		public void onServerStart(ServerStartedEvent event) {
-			// Hey! The server has started!
-			// Try instantiating your logger in here.
-			// (There's a guide for that)
-			logger.info("Hello World!");
-		}
-
-		@Subscribe
-		public void onServerStop(ServerStoppedEvent event) {
-			// Hey! The server has started!
-			// Try instantiating your logger in here.
-			// (There's a guide for that)
-			logger.info("Goodbye World!");
-		}
-	}
+	//private Logger logger;
+	/**
+	 * @Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version =
+	 *            "1.0") public class MobHuntingProject implements Listener {
+	 * @Subscribe public void onServerStart(ServerStartedEvent event) { // Hey!
+	 *            The server has started! // Try instantiating your logger in
+	 *            here. // (There's a guide for that)
+	 *            logger.info("Hello World!"); }
+	 * @Subscribe public void onServerStop(ServerStoppedEvent event) { // Hey!
+	 *            The server has started! // Try instantiating your logger in
+	 *            here. // (There's a guide for that)
+	 *            logger.info("Goodbye World!"); } }
+	 **/
 	// ************************************************************************************
 
 }
