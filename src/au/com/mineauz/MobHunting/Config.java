@@ -889,6 +889,10 @@ public class Config extends AutoConfig {
 					return getPrice(zombiePrize);
 			else if (mob instanceof Ghast)
 				return getPrice(ghastPrize);
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime and must be detected before
+				// the Slime
+				return getPrice(magmaCubePrize) * ((MagmaCube) mob).getSize();
 			else if (mob instanceof Slime)
 				return getPrice(slimeTinyPrize) * ((Slime) mob).getSize();
 			else if (mob instanceof EnderDragon)
@@ -897,8 +901,6 @@ public class Config extends AutoConfig {
 				return getPrice(witherPrize);
 			else if (mob instanceof IronGolem)
 				return getPrice(ironGolemPrize);
-			else if (mob instanceof MagmaCube)
-				return getPrice(magmaCubePrize);
 
 			// Passive mobs
 			else if (mob instanceof Bat)
@@ -1022,6 +1024,10 @@ public class Config extends AutoConfig {
 				return zombieCmd;
 			else if (mob instanceof Ghast)
 				return ghastCmd;
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime and must be detected before
+				// the Slime
+				return magmaCubeCmd;
 			else if (mob instanceof Slime)
 				return slimeCmd;
 			else if (mob instanceof EnderDragon)
@@ -1030,8 +1036,6 @@ public class Config extends AutoConfig {
 				return witherCmd;
 			else if (mob instanceof IronGolem)
 				return ironGolemCmd;
-			else if (mob instanceof MagmaCube)
-				return magmaCubeCmd;
 
 			// Passive mobs
 			else if (mob instanceof Bat)
@@ -1136,6 +1140,10 @@ public class Config extends AutoConfig {
 				return zombieCmdDesc;
 			else if (mob instanceof Ghast)
 				return ghastCmdDesc;
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime and must be detected before
+				// the Slime
+				return magmaCubeCmdDesc;
 			else if (mob instanceof Slime)
 				return slimeCmdDesc;
 			else if (mob instanceof EnderDragon)
@@ -1144,8 +1152,6 @@ public class Config extends AutoConfig {
 				return witherCmdDesc;
 			else if (mob instanceof IronGolem)
 				return ironGolemCmdDesc;
-			else if (mob instanceof MagmaCube)
-				return magmaCubeCmdDesc;
 
 			// Passive mobs
 			else if (mob instanceof Bat)
@@ -1244,6 +1250,10 @@ public class Config extends AutoConfig {
 				return zombieFrequency;
 			else if (mob instanceof Ghast)
 				return ghastFrequency;
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime and must be detected before
+				// the Slime
+				return magmaCubeFrequency;
 			else if (mob instanceof Slime)
 				return slimeFrequency;
 			else if (mob instanceof EnderDragon)
@@ -1252,8 +1262,6 @@ public class Config extends AutoConfig {
 				return witherFrequency;
 			else if (mob instanceof IronGolem)
 				return ironGolemFrequency;
-			else if (mob instanceof MagmaCube)
-				return magmaCubeFrequency;
 
 			// Passive mobs
 			else if (mob instanceof Bat)
@@ -1352,6 +1360,10 @@ public class Config extends AutoConfig {
 				return zombieFrequencyBase;
 			else if (mob instanceof Ghast)
 				return ghastFrequencyBase;
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime and must be detected before
+				// the Slime
+				return magmaCubeFrequencyBase;
 			else if (mob instanceof Slime)
 				return slimeFrequencyBase;
 			else if (mob instanceof EnderDragon)
@@ -1360,8 +1372,6 @@ public class Config extends AutoConfig {
 				return witherFrequencyBase;
 			else if (mob instanceof IronGolem)
 				return ironGolemFrequencyBase;
-			else if (mob instanceof MagmaCube)
-				return magmaCubeFrequencyBase;
 
 			// Passive mobs
 			else if (mob instanceof Bat)
