@@ -161,14 +161,14 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 		else if (obj instanceof Integer)
 			return (int) (Integer) obj;
 
-		throw new IllegalArgumentException("Not a number"); //$NON-NLS-1$
+		throw new IllegalArgumentException("Not a number"); 
 	}
 
 	private int toInt(Object obj) {
 		if (obj instanceof Integer)
 			return (int) (Integer) obj;
 
-		throw new IllegalArgumentException("Not a number"); //$NON-NLS-1$
+		throw new IllegalArgumentException("Not a number"); 
 	}
 
 	private boolean toBool(Object obj) {
@@ -202,10 +202,10 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 
 		// Clear the signs
 		for (Sign sign : signs) {
-			sign.setLine(0, ""); //$NON-NLS-1$
-			sign.setLine(1, ""); //$NON-NLS-1$
-			sign.setLine(2, ""); //$NON-NLS-1$
-			sign.setLine(3, ""); //$NON-NLS-1$
+			sign.setLine(0, ""); 
+			sign.setLine(1, ""); 
+			sign.setLine(2, ""); 
+			sign.setLine(3, ""); 
 		}
 
 		if (signs.isEmpty())

@@ -1035,7 +1035,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		cash *= multiplier;
 
-		if (cash >= 0.01) {
+		if ((cash >= 0.01) || (cash <= -0.01)) {
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed,
 					killer);
 			Bukkit.getPluginManager().callEvent(event2);
@@ -1049,7 +1049,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (killed instanceof Player && killer instanceof Player) {
 				if (!CitizensCompat.isNPC(killed)) {
 					mEconomy.withdrawPlayer((Player) killed, cash);
-					killed.sendMessage(ChatColor.GREEN
+					killed.sendMessage(ChatColor.RED
 							+ ""
 							+ ChatColor.ITALIC
 							+ Messages.getString("mobhunting.moneylost",
@@ -1058,15 +1058,31 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 			if (info.assister == null) {
-				mEconomy.depositPlayer(killer, cash);
-				debug("%s got a reward (%s)", killer.getName(),
-						mEconomy.format(cash));
+				if (cash > 0) {
+					mEconomy.depositPlayer(killer, cash);
+					debug("%s got a reward (%s)", killer.getName(),
+							mEconomy.format(cash));
+				} else {
+					mEconomy.withdrawPlayer(killer, -cash);
+
+					debug("%s got a penalty (%s)", killer.getName(),
+							mEconomy.format(cash));
+
+				}
+
 			} else {
 				cash = cash / 2;
-				mEconomy.depositPlayer(killer, cash);
-				onAssist(info.assister, killer, killed, info.lastAssistTime);
-				debug("%s got a ½ reward (%s)", killer.getName(),
-						mEconomy.format(cash));
+				if (cash > 0) {
+					mEconomy.depositPlayer(killer, cash);
+					onAssist(info.assister, killer, killed, info.lastAssistTime);
+					debug("%s got a ½ reward (%s)", killer.getName(),
+							mEconomy.format(cash));
+				} else {
+					mEconomy.withdrawPlayer(killer, -cash);
+					onAssist(info.assister, killer, killed, info.lastAssistTime);
+					debug("%s got a ½ penalty (%s)", killer.getName(),
+							mEconomy.format(cash));
+				}
 			}
 
 			// TODO: record mythicmob kills
@@ -1076,11 +1092,20 @@ public class MobHunting extends JavaPlugin implements Listener {
 						killed.hasMetadata("MH:hasBonus"));
 
 			if (extraString.trim().isEmpty()) {
-				killer.sendMessage(ChatColor.GREEN
-						+ ""
-						+ ChatColor.ITALIC
-						+ Messages.getString("mobhunting.moneygain", "prize",
-								mEconomy.format(cash)));
+				if (cash > 0) {
+					killer.sendMessage(ChatColor.GREEN
+							+ ""
+							+ ChatColor.ITALIC
+							+ Messages.getString("mobhunting.moneygain",
+									"prize", mEconomy.format(cash)));
+				} else {
+					killer.sendMessage(ChatColor.RED
+							+ ""
+							+ ChatColor.ITALIC
+							+ Messages.getString("mobhunting.moneylost",
+									"prize", mEconomy.format(cash)));
+
+				}
 			} else
 				killer.sendMessage(ChatColor.GREEN
 						+ ""
@@ -1111,6 +1136,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 							.replaceAll("\\{world\\}", worldname)
 							.replaceAll("\\{killerpos\\}", killerpos)
 							.replaceAll("\\{killedpos\\}", killedpos);
+					debug("command to be run is:"+prizeCommand);
 					if (!mConfig.getKillConsoleCmd(killed).equals("")) {
 						String str = prizeCommand;
 						do {
@@ -1366,7 +1392,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	// ************************************************************************************
-	//private Logger logger;
+	// private Logger logger;
 	/**
 	 * @Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version =
 	 *            "1.0") public class MobHuntingProject implements Listener {

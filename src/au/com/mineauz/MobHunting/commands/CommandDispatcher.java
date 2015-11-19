@@ -90,16 +90,15 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		if (!com.canBeConsole()
 				&& (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender)) {
 			sender.sendMessage(ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.base.noconsole", "command", "/" + label + " " + subCommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					+ Messages.getString("mobhunting.commands.base.noconsole",
+							"command", "/" + label + " " + subCommand));
 			return true;
 		}
 		if (!com.canBeCommandBlock() && sender instanceof BlockCommandSender) {
 			sender.sendMessage(ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.base.nocommandblock", "command", "/" + label + " " + subCommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					+ Messages.getString(
+							"mobhunting.commands.base.nocommandblock",
+							"command", "/" + label + " " + subCommand));
 			return true;
 		}
 
@@ -107,27 +106,26 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		if (com.getPermission() != null
 				&& !sender.hasPermission(com.getPermission())) {
 			sender.sendMessage(ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.base.nopermission", "command", "/" + label + " " + subCommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					+ Messages.getString(
+							"mobhunting.commands.base.nopermission", "command",
+							"/" + label + " " + subCommand));
 			return true;
 		}
 
 		if (!com.onCommand(sender, subCommand, subArgs)) {
 			String[] lines = com.getUsageString(subCommand, sender);
-			String usageString = ""; //$NON-NLS-1$
+			String usageString = "";
 
 			for (String line : lines) {
 				if (lines.length > 1)
-					usageString += "\n    "; //$NON-NLS-1$
+					usageString += "\n    ";
 
-				usageString += ChatColor.GRAY + "/" + label + " " + line; //$NON-NLS-1$ //$NON-NLS-2$
+				usageString += ChatColor.GRAY + "/" + label + " " + line;
 			}
 
 			usageString = ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.base.usage", "usage", usageString); //$NON-NLS-1$ //$NON-NLS-2$
+					+ Messages.getString("mobhunting.commands.base.usage",
+							"usage", usageString);
 			sender.sendMessage(usageString);
 		}
 
@@ -136,22 +134,23 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
 	private void displayUsage(CommandSender sender, String label,
 			String subcommand) {
-		String usage = ""; //$NON-NLS-1$
+		String usage = "";
 
 		if (subcommand != null) {
 			sender.sendMessage(ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.base.unknowncommand", "command", ChatColor.RESET + "/" + label + " " + ChatColor.GOLD + subcommand)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					+ Messages.getString(
+							"mobhunting.commands.base.unknowncommand",
+							"command", ChatColor.RESET + "/" + label + " "
+									+ ChatColor.GOLD + subcommand));
 			sender.sendMessage(Messages
-					.getString("mobhunting.commands.base.validcommands")); //$NON-NLS-1$
+					.getString("mobhunting.commands.base.validcommands"));
 		} else {
 			sender.sendMessage(ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.base.nocommand", "command", ChatColor.RESET + "/" + label + ChatColor.GOLD + " <command>")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					+ Messages.getString("mobhunting.commands.base.nocommand",
+							"command", ChatColor.RESET + "/" + label
+									+ ChatColor.GOLD + " <command>"));
 			sender.sendMessage(Messages
-					.getString("mobhunting.commands.base.validcommands")); //$NON-NLS-1$
+					.getString("mobhunting.commands.base.validcommands"));
 		}
 
 		boolean first = true;
@@ -167,7 +166,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 			if (first)
 				usage += ent.getKey();
 			else
-				usage += ", " + ent.getKey(); //$NON-NLS-1$
+				usage += ", " + ent.getKey();
 
 			first = false;
 		}
@@ -184,7 +183,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 			for (ICommand registeredCommand : mCommands.values()) {
 				if (registeredCommand.getName().toLowerCase()
 						.startsWith(args[0].toLowerCase()))
-					results.add(registeredCommand.getName()+" ");
+					results.add(registeredCommand.getName() + " ");
 			}
 		} else {
 			// Find the command to use
@@ -238,7 +237,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
 		@Override
 		public String getName() {
-			return "help"; //$NON-NLS-1$
+			return "help";
 		}
 
 		@Override
@@ -259,7 +258,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		@Override
 		public String getDescription() {
 			return Messages
-					.getString("mobhunting.commands.base.help.description"); //$NON-NLS-1$
+					.getString("mobhunting.commands.base.help.description");
 		}
 
 		@Override
@@ -281,7 +280,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 			sender.sendMessage(ChatColor.GOLD + mRootCommandDescription);
 			sender.sendMessage(ChatColor.GOLD
 					+ Messages
-							.getString("mobhunting.commands.base.help.commands")); //$NON-NLS-1$
+							.getString("mobhunting.commands.base.help.commands"));
 
 			for (ICommand command : mCommands.values()) {
 				// Dont show commands that are irrelevant
@@ -296,21 +295,21 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 						&& !sender.hasPermission(command.getPermission()))
 					continue;
 
-				String usageString = ""; //$NON-NLS-1$
+				String usageString = "";
 				boolean first = true;
 				for (String line : command.getUsageString(command.getName(),
 						sender)) {
 					if (!first)
-						usageString += "\n"; //$NON-NLS-1$
+						usageString += "\n";
 
 					first = false;
 
-					usageString += ChatColor.GOLD
-							+ "/" + mRootCommandName + " " + line; //$NON-NLS-1$ //$NON-NLS-2$
+					usageString += ChatColor.GOLD + "/" + mRootCommandName
+							+ " " + line;
 				}
 
-				sender.sendMessage(usageString
-						+ "\n  " + ChatColor.WHITE + command.getDescription()); //$NON-NLS-1$
+				sender.sendMessage(usageString + "\n  " + ChatColor.WHITE
+						+ command.getDescription());
 			}
 			return true;
 		}

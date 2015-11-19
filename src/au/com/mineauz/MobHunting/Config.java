@@ -412,7 +412,7 @@ public class Config extends AutoConfig {
 	private int chickenFrequencyBase = 100;
 
 	@ConfigField(name = "cow", category = "passive")
-	private String cowPrize = "0";
+	private String cowPrize = "5";
 	@ConfigField(name = "cow-cmd", category = "passive")
 	private String cowCmd = "";
 	@ConfigField(name = "cow-cmd-desc", category = "passive")
@@ -434,7 +434,7 @@ public class Config extends AutoConfig {
 	private int horseFrequencyBase = 100;
 
 	@ConfigField(name = "mushroom-cow", category = "passive")
-	private String mushroomCowPrize = "0";
+	private String mushroomCowPrize = "";
 	@ConfigField(name = "mushroom-cow-cmd", category = "passive")
 	private String mushroomCowCmd = "";
 	@ConfigField(name = "mushroom-cow-cmd-desc", category = "passive")
@@ -869,15 +869,15 @@ public class Config extends AutoConfig {
 				case WITHER:
 					return getPrice(witherSkeletonPrize);
 				}
-			} else if (mob instanceof CaveSpider)
-				return getPrice(caveSpiderPrize);
-			else if (mob instanceof Spider)
-				return getPrice(spiderPrize);
+			} else if (mob instanceof Spider)
+				if (mob instanceof CaveSpider)
+					return getPrice(caveSpiderPrize);
+				else
+					return getPrice(spiderPrize);
 			else if (mob instanceof Witch)
 				return getPrice(witchPrize);
 			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
+				// PigZombie is a subclass of Zombie.
 				if (((PigZombie) mob).isBaby())
 					return round(getPrice(zombiePigmanPrize) * babyMultiplier);
 				else
@@ -889,12 +889,13 @@ public class Config extends AutoConfig {
 					return getPrice(zombiePrize);
 			else if (mob instanceof Ghast)
 				return getPrice(ghastPrize);
-			else if (mob instanceof MagmaCube)
-				// MagmaCube is a subclass of Slime and must be detected before
-				// the Slime
-				return getPrice(magmaCubePrize) * ((MagmaCube) mob).getSize();
 			else if (mob instanceof Slime)
-				return getPrice(slimeTinyPrize) * ((Slime) mob).getSize();
+				if (mob instanceof MagmaCube)
+					// MagmaCube is a subclass of Slime
+					return getPrice(magmaCubePrize)
+							* ((MagmaCube) mob).getSize();
+				else
+					return getPrice(slimeTinyPrize) * ((Slime) mob).getSize();
 			else if (mob instanceof EnderDragon)
 				return getPrice(enderdragonPrize);
 			else if (mob instanceof Wither)
@@ -908,11 +909,13 @@ public class Config extends AutoConfig {
 			else if (mob instanceof Chicken)
 				return getPrice(chickenPrize);
 			else if (mob instanceof Cow)
-				return getPrice(cowPrize);
+				if (mob instanceof MushroomCow)
+					// MushroomCow is a subclass of Cow
+					return getPrice(mushroomCowPrize);
+				else
+					return getPrice(cowPrize);
 			else if (mob instanceof Horse)
 				return getPrice(horsePrize);
-			else if (mob instanceof MushroomCow)
-				return getPrice(mushroomCowPrize);
 			else if (mob instanceof Ocelot)
 				return getPrice(ocelotPrize);
 			else if (mob instanceof Pig)
@@ -1010,26 +1013,26 @@ public class Config extends AutoConfig {
 				case WITHER:
 					return witherSkeletonCmd;
 				}
-			} else if (mob instanceof CaveSpider)
-				return caveSpiderCmd;
-			else if (mob instanceof Spider)
-				return spiderCmd;
+			} else if (mob instanceof Spider)
+				if (mob instanceof CaveSpider)
+					// CaveSpider is a sub class of Spider
+					return caveSpiderCmd;
+				else
+					return spiderCmd;
 			else if (mob instanceof Witch)
 				return witchCmd;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return zombiePigmanCmd;
 			else if (mob instanceof Zombie)
-				return zombieCmd;
+				if (mob instanceof PigZombie)
+					return zombiePigmanCmd;
+				else
+					return zombieCmd;
 			else if (mob instanceof Ghast)
 				return ghastCmd;
-			else if (mob instanceof MagmaCube)
-				// MagmaCube is a subclass of Slime and must be detected before
-				// the Slime
-				return magmaCubeCmd;
 			else if (mob instanceof Slime)
-				return slimeCmd;
+				if (mob instanceof MagmaCube)
+					return magmaCubeCmd;
+				else
+					return slimeCmd;
 			else if (mob instanceof EnderDragon)
 				return enderdragonCmd;
 			else if (mob instanceof Wither)
@@ -1042,12 +1045,14 @@ public class Config extends AutoConfig {
 				return batCmd;
 			else if (mob instanceof Chicken)
 				return chickenCmd;
+
 			else if (mob instanceof Cow)
-				return cowCmd;
+				if (mob instanceof MushroomCow)
+					return mushroomCowCmd;
+				else
+					return cowCmd;
 			else if (mob instanceof Horse)
 				return horseCmd;
-			else if (mob instanceof MushroomCow)
-				return mushroomCowCmd;
 			else if (mob instanceof Ocelot)
 				return ocelotCmd;
 			else if (mob instanceof Pig)
@@ -1126,26 +1131,26 @@ public class Config extends AutoConfig {
 				case WITHER:
 					return witherSkeletonCmdDesc;
 				}
-			} else if (mob instanceof CaveSpider)
-				return caveSpiderCmdDesc;
-			else if (mob instanceof Spider)
-				return spiderCmdDesc;
+			} else if (mob instanceof Spider)
+				if (mob instanceof CaveSpider)
+					return caveSpiderCmdDesc;
+				else
+					return spiderCmdDesc;
 			else if (mob instanceof Witch)
 				return witchCmdDesc;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return zombiePigmanCmdDesc;
 			else if (mob instanceof Zombie)
-				return zombieCmdDesc;
+				if (mob instanceof PigZombie)
+					return zombiePigmanCmdDesc;
+				else
+					return zombieCmdDesc;
 			else if (mob instanceof Ghast)
 				return ghastCmdDesc;
-			else if (mob instanceof MagmaCube)
-				// MagmaCube is a subclass of Slime and must be detected before
-				// the Slime
-				return magmaCubeCmdDesc;
 			else if (mob instanceof Slime)
-				return slimeCmdDesc;
+				if (mob instanceof MagmaCube)
+					// MagmaCube is a subclass of Slime
+					return magmaCubeCmdDesc;
+				else
+					return slimeCmdDesc;
 			else if (mob instanceof EnderDragon)
 				return enderdragonCmdDesc;
 			else if (mob instanceof Wither)
@@ -1159,11 +1164,13 @@ public class Config extends AutoConfig {
 			else if (mob instanceof Chicken)
 				return chickenCmdDesc;
 			else if (mob instanceof Cow)
-				return cowCmdDesc;
+				if (mob instanceof MushroomCow)
+					// MushroomCow is a subclass of Cow
+					return mushroomCowCmdDesc;
+				else
+					return cowCmdDesc;
 			else if (mob instanceof Horse)
 				return horseCmdDesc;
-			else if (mob instanceof MushroomCow)
-				return mushroomCowCmdDesc;
 			else if (mob instanceof Ocelot)
 				return ocelotCmdDesc;
 			else if (mob instanceof Pig)
@@ -1236,26 +1243,27 @@ public class Config extends AutoConfig {
 				case WITHER:
 					return witherSkeletonFrequency;
 				}
-			} else if (mob instanceof CaveSpider)
-				return caveSpiderFrequency;
-			else if (mob instanceof Spider)
-				return spiderFrequency;
+			} else if (mob instanceof Spider)
+				if (mob instanceof CaveSpider)
+					return caveSpiderFrequency;
+				else
+					return spiderFrequency;
 			else if (mob instanceof Witch)
 				return witchFrequency;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return zombiePigmanFrequency;
 			else if (mob instanceof Zombie)
-				return zombieFrequency;
+				if (mob instanceof PigZombie)
+					// PigZombie is a subclass of Zombie.
+					return zombiePigmanFrequency;
+				else
+					return zombieFrequency;
 			else if (mob instanceof Ghast)
 				return ghastFrequency;
-			else if (mob instanceof MagmaCube)
-				// MagmaCube is a subclass of Slime and must be detected before
-				// the Slime
-				return magmaCubeFrequency;
 			else if (mob instanceof Slime)
-				return slimeFrequency;
+				if (mob instanceof MagmaCube)
+					// MagmaCube is a subclass of Slime
+					return magmaCubeFrequency;
+				else
+					return slimeFrequency;
 			else if (mob instanceof EnderDragon)
 				return enderdragonFrequency;
 			else if (mob instanceof Wither)
@@ -1269,11 +1277,13 @@ public class Config extends AutoConfig {
 			else if (mob instanceof Chicken)
 				return chickenFrequency;
 			else if (mob instanceof Cow)
-				return cowFrequency;
+				if (mob instanceof MushroomCow)
+					// MushroomCow is a subclass of Cow
+					return mushroomCowFrequency;
+				else
+					return cowFrequency;
 			else if (mob instanceof Horse)
 				return horseFrequency;
-			else if (mob instanceof MushroomCow)
-				return mushroomCowFrequency;
 			else if (mob instanceof Ocelot)
 				return ocelotFrequency;
 			else if (mob instanceof Pig)
@@ -1346,26 +1356,28 @@ public class Config extends AutoConfig {
 				case WITHER:
 					return witherSkeletonFrequencyBase;
 				}
-			} else if (mob instanceof CaveSpider)
-				return caveSpiderFrequencyBase;
-			else if (mob instanceof Spider)
-				return spiderFrequencyBase;
+			} else if (mob instanceof Spider)
+				if (mob instanceof CaveSpider)
+					// Cavespider is a sub class of Spider
+					return caveSpiderFrequencyBase;
+				else
+					return spiderFrequencyBase;
 			else if (mob instanceof Witch)
 				return witchFrequencyBase;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie. PigZombie must be checked
-				// before Zombie
-				return zombiePigmanFrequencyBase;
 			else if (mob instanceof Zombie)
-				return zombieFrequencyBase;
+				if (mob instanceof PigZombie)
+					// PigZombie is a subclass of Zombie.
+					return zombiePigmanFrequencyBase;
+				else
+					return zombieFrequencyBase;
 			else if (mob instanceof Ghast)
 				return ghastFrequencyBase;
-			else if (mob instanceof MagmaCube)
-				// MagmaCube is a subclass of Slime and must be detected before
-				// the Slime
-				return magmaCubeFrequencyBase;
 			else if (mob instanceof Slime)
-				return slimeFrequencyBase;
+				if (mob instanceof MagmaCube)
+					// MagmaCube is a subclass of Slime
+					return magmaCubeFrequencyBase;
+				else
+					return slimeFrequencyBase;
 			else if (mob instanceof EnderDragon)
 				return enderdragonFrequencyBase;
 			else if (mob instanceof Wither)
@@ -1379,11 +1391,14 @@ public class Config extends AutoConfig {
 			else if (mob instanceof Chicken)
 				return chickenFrequencyBase;
 			else if (mob instanceof Cow)
-				return cowFrequencyBase;
+				if (mob instanceof MushroomCow)
+					// MushroomCow is a subclass of Cow and must be detected
+					// first
+					return mushroomCowFrequencyBase;
+				else
+					return cowFrequencyBase;
 			else if (mob instanceof Horse)
 				return horseFrequencyBase;
-			else if (mob instanceof MushroomCow)
-				return mushroomCowFrequencyBase;
 			else if (mob instanceof Ocelot)
 				return ocelotFrequencyBase;
 			else if (mob instanceof Pig)
