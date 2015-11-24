@@ -11,90 +11,90 @@ import org.bukkit.entity.Player;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.SelectionHelper;
 
-public class SelectCommand implements ICommand
-{
+public class SelectCommand implements ICommand {
 	@Override
-	public String getName()
-	{
-		return "select"; //$NON-NLS-1$
+	public String getName() {
+		return "select";
 	}
 
 	@Override
-	public String[] getAliases()
-	{
-		return new String[] {"sel"}; //$NON-NLS-1$
+	public String[] getAliases() {
+		return new String[] { "sel" };
 	}
 
 	@Override
-	public String getPermission()
-	{
-		return "mobhunting.select"; //$NON-NLS-1$
+	public String getPermission() {
+		return "mobhunting.select";
 	}
 
 	@Override
-	public String[] getUsageString( String label, CommandSender sender )
-	{
-		return new String[] {label + ChatColor.GOLD + " (1|2)" }; //$NON-NLS-1$
+	public String[] getUsageString(String label, CommandSender sender) {
+		return new String[] { label + ChatColor.GOLD + " (1|2)" };
 	}
 
 	@Override
-	public String getDescription()
-	{
-		return Messages.getString("mobhunting.commands.select.description"); //$NON-NLS-1$
+	public String getDescription() {
+		return Messages.getString("mobhunting.commands.select.description");
 	}
 
 	@Override
-	public boolean canBeConsole()
-	{
+	public boolean canBeConsole() {
 		return false;
 	}
 
 	@Override
-	public boolean canBeCommandBlock()
-	{
+	public boolean canBeCommandBlock() {
 		return false;
 	}
 
-	@SuppressWarnings( "deprecation" )
+	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onCommand( CommandSender sender, String label, String[] args )
-	{
-		if(args.length != 1)
+	public boolean onCommand(CommandSender sender, String label, String[] args) {
+		if (args.length != 1)
 			return false;
-		
-		Player player = (Player)sender;
-		
+
+		Player player = (Player) sender;
+
 		boolean pointA = false;
-		if(args[0].equalsIgnoreCase("1")) //$NON-NLS-1$
+		if (args[0].equalsIgnoreCase("1"))
 			pointA = true;
-		else if(!args[0].equalsIgnoreCase("2")) //$NON-NLS-1$
-		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.select.unknown-point", "point", args[0])); //$NON-NLS-1$ //$NON-NLS-2$
+		else if (!args[0].equalsIgnoreCase("2")) {
+			sender.sendMessage(ChatColor.RED
+					+ Messages.getString(
+							"mobhunting.commands.select.unknown-point",
+							"point", args[0]));
 			return true;
 		}
-		
+
 		HashSet<Byte> transparent = new HashSet<Byte>();
-		transparent.add((byte)0);
-		
+		transparent.add((byte) 0);
+
 		Block target = player.getTargetBlock(transparent, 10);
-		if(target == null)
-		{
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.select.too-far")); //$NON-NLS-1$
+		if (target == null) {
+			sender.sendMessage(ChatColor.RED
+					+ Messages.getString("mobhunting.commands.select.too-far"));
 			return true;
 		}
-		
-		if(pointA)
+
+		if (pointA)
 			SelectionHelper.setPointA(player, target.getLocation());
 		else
 			SelectionHelper.setPointB(player, target.getLocation());
-		
-		sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.select.done", "point", args[0], "coords", String.format("%d, %d, %d", target.getX(), target.getY(), target.getZ()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+		sender.sendMessage(ChatColor.GREEN
+				+ Messages.getString(
+						"mobhunting.commands.select.done",
+						"point",
+						args[0],
+						"coords",
+						String.format("%d, %d, %d", target.getX(),
+								target.getY(), target.getZ())));
 		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete( CommandSender sender, String label, String[] args )
-	{
+	public List<String> onTabComplete(CommandSender sender, String label,
+			String[] args) {
 		return null;
 	}
 

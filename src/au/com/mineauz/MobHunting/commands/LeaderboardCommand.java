@@ -21,7 +21,7 @@ import org.bukkit.material.Sign;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
-import au.com.mineauz.MobHunting.leaderboard.Leaderboard;
+import au.com.mineauz.MobHunting.leaderboard.WorldLeaderboard;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
 public class LeaderboardCommand implements ICommand, Listener {
@@ -387,7 +387,7 @@ public class LeaderboardCommand implements ICommand, Listener {
 			}
 
 		} else {
-			Leaderboard board = MobHunting.instance.getLeaderboards()
+			WorldLeaderboard board = MobHunting.instance.getLeaderboards()
 					.getLeaderboardAt(event.getClickedBlock().getLocation());
 			if (board != null) {
 				if (state.type != null)

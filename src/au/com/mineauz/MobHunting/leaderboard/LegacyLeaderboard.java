@@ -53,7 +53,7 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 		if (mMaxCorner.getBlockX() - mMinCorner.getBlockX() > 1
 				&& mMaxCorner.getBlockZ() - mMaxCorner.getBlockZ() > 1)
 			throw new IllegalArgumentException(
-					Messages.getString("leaderboard.thick")); 
+					Messages.getString("leaderboard.thick"));
 
 		mHorizontal = horizontal;
 	}
@@ -136,22 +136,22 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 
 	public Map<String, Object> write() {
 		HashMap<String, Object> objects = new HashMap<String, Object>();
-		objects.put("id", mId); 
-		objects.put("world-l", mWorld.getUID().getLeastSignificantBits()); 
-		objects.put("world-h", mWorld.getUID().getMostSignificantBits()); 
-		objects.put("mi-x", mMinCorner.getBlockX()); 
-		objects.put("mi-y", mMinCorner.getBlockY()); 
-		objects.put("mi-z", mMinCorner.getBlockZ()); 
+		objects.put("id", mId);
+		objects.put("world-l", mWorld.getUID().getLeastSignificantBits());
+		objects.put("world-h", mWorld.getUID().getMostSignificantBits());
+		objects.put("mi-x", mMinCorner.getBlockX());
+		objects.put("mi-y", mMinCorner.getBlockY());
+		objects.put("mi-z", mMinCorner.getBlockZ());
 
-		objects.put("ma-x", mMaxCorner.getBlockX()); 
-		objects.put("ma-y", mMaxCorner.getBlockY()); 
-		objects.put("ma-z", mMaxCorner.getBlockZ()); 
+		objects.put("ma-x", mMaxCorner.getBlockX());
+		objects.put("ma-y", mMaxCorner.getBlockY());
+		objects.put("ma-z", mMaxCorner.getBlockZ());
 
-		objects.put("hor", mHorizontal); 
+		objects.put("hor", mHorizontal);
 
-		objects.put("period", mPeriod.ordinal()); 
-		objects.put("type", mType.getDBColumn()); 
-		
+		objects.put("period", mPeriod.ordinal());
+		objects.put("type", mType.getDBColumn());
+
 		return objects;
 	}
 
@@ -161,14 +161,14 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 		else if (obj instanceof Integer)
 			return (int) (Integer) obj;
 
-		throw new IllegalArgumentException("Not a number"); 
+		throw new IllegalArgumentException("Not a number");
 	}
 
 	private int toInt(Object obj) {
 		if (obj instanceof Integer)
 			return (int) (Integer) obj;
 
-		throw new IllegalArgumentException("Not a number"); 
+		throw new IllegalArgumentException("Not a number");
 	}
 
 	private boolean toBool(Object obj) {
@@ -200,16 +200,16 @@ public class LegacyLeaderboard implements DataCallback<List<StatStore>> {
 	public void onCompleted(List<StatStore> data) {
 		List<Sign> signs = getSigns();
 
-		// Clear the signs
-		for (Sign sign : signs) {
-			sign.setLine(0, ""); 
-			sign.setLine(1, ""); 
-			sign.setLine(2, ""); 
-			sign.setLine(3, ""); 
-		}
-
 		if (signs.isEmpty())
 			return;
+
+		// Clear the signs
+		for (Sign sign : signs) {
+			sign.setLine(0, "");
+			sign.setLine(1, "");
+			sign.setLine(2, "");
+			sign.setLine(3, "");
+		}
 
 		if (mHorizontal) {
 			int startSign = 0;
