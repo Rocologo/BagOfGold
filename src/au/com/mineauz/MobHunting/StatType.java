@@ -77,6 +77,18 @@ public class StatType {
 		return mValues;
 	}
 
+	public static StatType getNextStatType(StatType st) {
+		for (int i = 0; i < mValues.length; i++) {
+			if (st.equals(mValues[i])) {
+				if (i == mValues.length)
+					return mValues[0];
+				else
+					return mValues[i + 1];
+			}
+		}
+		return st;
+	}
+
 	public static StatType parseStat(String typeName) {
 		for (StatType type : mValues) {
 			if (typeName.equalsIgnoreCase(type.translateName().replaceAll(" ",

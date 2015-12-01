@@ -1,7 +1,6 @@
 package au.com.mineauz.MobHunting;
 
 import java.io.File;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +48,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -64,6 +64,7 @@ import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
 import au.com.mineauz.MobHunting.commands.ReloadCommand;
 import au.com.mineauz.MobHunting.commands.SelectCommand;
 import au.com.mineauz.MobHunting.commands.TopCommand;
+import au.com.mineauz.MobHunting.commands.UpdateCommand;
 import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
 import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
@@ -86,13 +87,15 @@ import au.com.mineauz.MobHunting.storage.DataStoreManager;
 import au.com.mineauz.MobHunting.storage.MySQLDataStore;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 import au.com.mineauz.MobHunting.util.Misc;
-import au.com.mineauz.MobHunting.util.Update;
+import au.com.mineauz.MobHunting.util.BukkitUpdate;
 
 public class MobHunting extends JavaPlugin implements Listener {
 
 	// Constants
 	public final static String pluginName = "mobhunting";
 	public final static String tablePrefix = "mh_";
+	public String pluginVersion = "";
+	private static String currentJarFile = "";
 
 	private Economy mEconomy;
 	public static MobHunting instance;
@@ -118,8 +121,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	private boolean mInitialized = false;
 
-	// Update object
-	private Update updateCheck = null;
+	// Metrics
+	Metrics metrics;
+	Graph mobsKilled, topKillers;
 
 	@Override
 	public void onLoad() {
@@ -127,8 +131,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
-		mInitialized = false;
+		// mInitialized = false;
 		instance = this;
+
+		pluginVersion = instance.getDescription().getVersion();
+		currentJarFile = instance.getFile().getName();
 
 		Messages.exportDefaultLanguages();
 
@@ -198,6 +205,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new LeaderboardCommand());
 		cmd.registerCommand(new ClearGrindingCommand());
 		cmd.registerCommand(new WhitelistAreaCommand());
+		cmd.registerCommand(new UpdateCommand());
 
 		if (getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
 			cmd.registerCommand(new SelectCommand());
@@ -219,43 +227,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		mInitialized = true;
 
+		// Start Metrics
 		try {
-			Metrics metrics = new Metrics(this);
+			metrics = new Metrics(this);
+			mobsKilled = metrics.createGraph("Most killed mobs");
+			topKillers = metrics.createGraph("Top Hunters");
 			metrics.start();
 			debug("Metrics started");
 		} catch (IOException e) {
 			debug("Failed to start Metrics!");
 		}
 
-		// Check for updates asynchronously
-		if (instance.mConfig.updateCheck) {
-			checkUpdates();
-			new BukkitRunnable() {
-				int count = 0;
-
-				@Override
-				public void run() {
-					if (count++ > 10) {
-						instance.getLogger()
-								.info("["
-										+ pluginName
-										+ "]No updates found. (No response from server after 10s)");
-						this.cancel();
-					} else {
-						// Wait for the response
-						if (updateCheck != null) {
-							if (updateCheck.isSuccess()) {
-								checkUpdatesNotify(null);
-							} else {
-								instance.getLogger().info(
-										"[" + pluginName + "]No update.");
-							}
-							this.cancel();
-						}
-					}
-				}
-			}.runTaskTimer(instance, 0L, 20L); // Check status every second
-		}
+		pluginUpdateCheck(instance.mConfig.updateCheck);
 
 	}
 
@@ -264,13 +247,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!mInitialized)
 			return;
 
+		debug("mLeaderboards.shutdown()");
 		mLeaderboards.shutdown();
 
 		mAchievements = new AchievementManager();
 		mModifiers.clear();
 
 		try {
+			debug("mStoreManager.shutdown()");
 			mStoreManager.shutdown();
+			debug("mStore.shutdown()");
 			mStore.shutdown();
 		} catch (DataStoreException e) {
 			e.printStackTrace();
@@ -826,7 +812,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				ApplicableRegionSet set = regionManager
 						.getApplicableRegions(killer.getLocation());
 				if (set.size() > 0) {
-					debug("Found %s worldguard regions: flag is %s",
+					debug("Found %s Worldguard region(s): MOB_DAMAGE flag is %s",
 							set.size(), set.allows(DefaultFlag.MOB_DAMAGE));
 					if (killer instanceof Player
 							&& !set.allows(DefaultFlag.MOB_DAMAGE)) {
@@ -914,6 +900,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 				debug("KillBlocked %s: In creative mode", killer.getName());
 			return;
 		}
+
+		updateMetrics(killer, killed);
 
 		DamageInformation info = null;
 		if (killed instanceof LivingEntity
@@ -1136,7 +1124,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 							.replaceAll("\\{world\\}", worldname)
 							.replaceAll("\\{killerpos\\}", killerpos)
 							.replaceAll("\\{killedpos\\}", killedpos);
-					debug("command to be run is:"+prizeCommand);
+					debug("command to be run is:" + prizeCommand);
 					if (!mConfig.getKillConsoleCmd(killed).equals("")) {
 						String str = prizeCommand;
 						do {
@@ -1168,6 +1156,28 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 		}
+	}
+
+	private void updateMetrics(final Entity killer, final Entity killed) {
+		mobsKilled.addPlotter(new Metrics.Plotter(killed.getName()) {
+			@Override
+			public int getValue() {
+				debug("updateMetrics addPlotter(%s) getValue()=%s",
+						killed.getName(), 1);
+				return 1; // Number of mobs killed
+			}
+		});
+
+		topKillers.addPlotter(new Metrics.Plotter(killer.getName()) {
+			@Override
+			public int getValue() {
+				debug("updateMetrics addPlotter(%s) getValue()=%s",
+						killer.getName(), 1);
+				return 1; // killer killed another mob.
+			}
+		});
+
+		// metrics..start();
 	}
 
 	private void onAssist(Player player, Player killer, LivingEntity killed,
@@ -1215,7 +1225,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerJoin(PlayerJoinEvent event) {
-		setHuntEnabled(event.getPlayer(), true);
+		Player player = event.getPlayer();
+		setHuntEnabled(player, true);
+		if (player.hasPermission("mobhunting.update") && updateAvailable) {
+			player.sendMessage(ChatColor.BLUE
+					+ instance.getBukkitUpdate().getVersionName()
+					+ " is available!");
+			player.sendMessage(ChatColor.BLUE + "Type " + ChatColor.GREEN
+					+ "'/mobhunting update'" + ChatColor.BLUE
+					+ " to update Mobhunting.");
+		}
 	}
 
 	public DamageInformation getDamageInformation(LivingEntity entity) {
@@ -1294,36 +1313,70 @@ public class MobHunting extends JavaPlugin implements Listener {
 	// UPDATECHECK - Check if there is a new version available at
 	// https://api.curseforge.com/servermods/files?projectIds=63718
 	// ***************************************************************************
-	/**
-	 * @return the updateCheck
-	 */
-	public Update getUpdateCheck() {
-		return updateCheck;
+
+	// Update object
+	private BukkitUpdate bukkitUpdate = null;
+	private static boolean updateAvailable = false;
+
+	public BukkitUpdate getBukkitUpdate() {
+		return bukkitUpdate;
 	}
 
-	/**
-	 * Checks to see if there are any plugin updates Called when reloading
-	 * settings too
-	 */
-	public void checkUpdates() {
-		// Version checker
-		getLogger().info("Checking for new updates...");
-		getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
-			@Override
-			public void run() {
-				updateCheck = new Update(63718); // MobHunting
-				if (!updateCheck.isSuccess()) {
-					updateCheck = null;
+	public static boolean getUpdateAvailable() {
+		return updateAvailable;
+	}
+
+	public static String getCurrentJarFile() {
+		return currentJarFile;
+	}
+
+	public void pluginUpdateCheck(boolean check) {
+		if (check) {
+			// Check for updates asynchronously in background
+			getLogger().info("Checking for new updates...");
+			getServer().getScheduler().runTaskAsynchronously(this,
+					new Runnable() {
+						@Override
+						public void run() {
+							bukkitUpdate = new BukkitUpdate(63718); // MobHunting
+							if (!bukkitUpdate.isSuccess()) {
+								bukkitUpdate = null;
+							}
+						}
+					});
+			// Check if bukkitUpdate is found in background
+			new BukkitRunnable() {
+				int count = 0;
+
+				@Override
+				public void run() {
+					if (count++ > 10) {
+						instance.getLogger()
+								.info("["
+										+ pluginName
+										+ "]No updates found. (No response from server after 10s)");
+						this.cancel();
+					} else {
+						// Wait for the response
+						if (bukkitUpdate != null) {
+							if (bukkitUpdate.isSuccess()) {
+								notifyWhenUpdateIsFound(null);
+							} else {
+								instance.getLogger().info(
+										"[" + pluginName + "]No update.");
+							}
+							this.cancel();
+						}
+					}
 				}
-			}
-		});
+			}.runTaskTimer(instance, 0L, 20L); // Check status every second
+		}
 	}
 
-	public void checkUpdatesNotify(Player p) {
-		boolean update = false;
-		final String pluginVersion = instance.getDescription().getVersion();
+	private void notifyWhenUpdateIsFound(Player p) {
 		// Check to see if the latest file is newer that this one
-		String[] split = instance.getUpdateCheck().getVersionName().split(" V");
+		String[] split = instance.getBukkitUpdate().getVersionName()
+				.split(" V");
 		// Only do this if the format is what we expect
 		if (split.length == 2) {
 			// Need to escape the period in the regex expression
@@ -1345,10 +1398,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (updateCheck < pluginCheck) {
 						// getLogger().info("["+pluginName+"]DEBUG: plugin is newer!");
 						// plugin is newer
-						update = false;
+						updateAvailable = false;
 						break;
 					} else if (updateCheck > pluginCheck) {
-						update = true;
+						updateAvailable = true;
 						break;
 					}
 				} catch (Exception e) {
@@ -1357,7 +1410,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					getLogger().warning("Plugin version: " + pluginVersion);
 					getLogger().warning(
 							"Update version: "
-									+ instance.getUpdateCheck()
+									+ instance.getBukkitUpdate()
 											.getVersionName());
 					return;
 				}
@@ -1365,34 +1418,40 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 		// Show the results
 		if (p != null) {
-			if (!update) {
+			if (!updateAvailable) {
 				return;
 			} else {
 				// Player login
 				p.sendMessage(ChatColor.GOLD
-						+ instance.getUpdateCheck().getVersionName()
+						+ instance.getBukkitUpdate().getVersionName()
 						+ " is available! You are running " + pluginVersion);
-				p.sendMessage(ChatColor.RED
-						+ "Update at: http://dev.bukkit.org/server-mods/mobhunting/");
+				p.sendMessage(ChatColor.RED + "Update found at: "
+						+ instance.getBukkitUpdate().getVersionLink());
 			}
 		} else {
 			// Console
-			if (!update) {
+			if (!updateAvailable) {
 				getLogger().info("No updates available.");
 				return;
 			} else {
 				getLogger().info(
-						"Version " + instance.getUpdateCheck().getVersionName()
+						instance.getBukkitUpdate().getVersionName()
 								+ " is available! You are running "
 								+ pluginVersion);
-				getLogger()
-						.info("Update at: http://dev.bukkit.org/server-mods/mobhunting/");
+				getLogger().info(
+						"Update found at: "
+								+ instance.getBukkitUpdate().getVersionLink());
+				getLogger().info("Please type '/mh update' to update.");
 			}
 		}
 	}
 
 	// ************************************************************************************
+	// SPONGE PROJECT
+	// ************************************************************************************
+
 	// private Logger logger;
+
 	/**
 	 * @Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version =
 	 *            "1.0") public class MobHuntingProject implements Listener {

@@ -18,8 +18,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.Sign;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -132,12 +135,14 @@ public class regionCommand implements ICommand, Listener {
 									.getString("Unexpected error!!! Please report error to developer (cegionCommand.java - Set is null) "));
 				else if (set.size() == 1) {
 					// player is standing on a location with single region
+					ProtectedRegion region = set.getRegions().iterator().next();
 					if ((args.length == 1)
 							&& args[0].equalsIgnoreCase("mobhunting"))
-						return removeCurrentRegionFlag(set,"mobhunting");
+						return removeCurrentRegionFlag(set, "mobhunting");
 					else if ((args.length >= 2)
 							&& args[0].equalsIgnoreCase("mobhunting"))
-						return setCurrentRegionFlag(set,"mobhunting", args);
+						return setCurrentRegionFlag(sender, region, "mobhunting",
+								args);
 				} else {
 					// player is standing on a location with more than one
 					// region
@@ -163,22 +168,35 @@ public class regionCommand implements ICommand, Listener {
 		return false;
 	}
 
-	private boolean setFlag(String string, String[] args) {
+	private boolean setFlag(String regionid, String[] args) {
+		// TODO Auto-generated method stub
+		final StateFlag MOBHUNTING = new StateFlag("mobhunting", true);
+		// region.setFlag(MOBHUNTING, MOBHUNTING.parseInput(plugin, sender,
+		// value))
+		return true;
+	}
+
+	private boolean setCurrentRegionFlag(CommandSender sender,
+			ProtectedRegion region, String flag, String[] args) {
+		// TODO Auto-generated method stub
+		final StateFlag MOBHUNTING = new StateFlag(flag, true);
+			try {
+				
+				region.setFlag(MOBHUNTING, MOBHUNTING.parseInput(
+						WorldGuardCompat.getWorldGuardPlugin(), sender, "Allow"));
+			} catch (InvalidFlagFormat e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return true;
+	}
+
+	private boolean removeFlag(String id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	private boolean setCurrentRegionFlag(ApplicableRegionSet set, String string, String[] args) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private boolean removeFlag(String string) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private boolean removeCurrentRegionFlag(ApplicableRegionSet set, String string) {
+	private boolean removeCurrentRegionFlag(ApplicableRegionSet set, String id) {
 		// TODO Auto-generated method stub
 		return false;
 	}

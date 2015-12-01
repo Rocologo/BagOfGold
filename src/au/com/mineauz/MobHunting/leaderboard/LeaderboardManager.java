@@ -276,7 +276,8 @@ public class LeaderboardManager implements Listener {
 					// Main sign
 					// TODO: What should be the effect of clicking the main
 					// sign?
-					// TODO: Change stattype or period when clicking. 
+					board.update();
+					board.refresh();
 					return;
 				} else {
 					int place = 1;

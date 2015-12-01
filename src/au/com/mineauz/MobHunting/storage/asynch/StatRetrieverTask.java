@@ -3,6 +3,8 @@ package au.com.mineauz.MobHunting.storage.asynch;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
 import au.com.mineauz.MobHunting.storage.DataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
@@ -32,19 +34,20 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>> {
 
 				Iterator<StatStore> it = stats.iterator();
 				boolean found = false;
-				while (it.hasNext()) {
-					StatStore stat = it.next();
+				if (!it.hasNext())
+					while (it.hasNext()) {
+						StatStore stat = it.next();
+						if (cached.getPlayer().getUniqueId()
+								.equals(stat.getPlayer().getUniqueId())
+								&& cached.getType().equals(stat.getType())) {
+							stat.setAmount(stat.getAmount()
+									+ cached.getAmount());
+							// stat.amount += cached.amount;
 
-					if (cached.getPlayer().getUniqueId()
-							.equals(stat.getPlayer().getUniqueId())
-							&& cached.getType().equals(stat.getType())) {
-						stat.setAmount(stat.getAmount() + cached.getAmount());
-						// stat.amount += cached.amount;
-
-						found = true;
-						break;
+							found = true;
+							break;
+						}
 					}
-				}
 
 				if (!found && cached.getType().equals(mType))
 					stats.add(cached);

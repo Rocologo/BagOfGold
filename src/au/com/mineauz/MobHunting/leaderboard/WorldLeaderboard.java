@@ -175,7 +175,7 @@ public class WorldLeaderboard implements DataCallback<List<StatStore>> {
 		MobHunting.instance.getDataStore().requestStats(getType(), getPeriod(),
 				mWidth * mHeight * 2, this);
 	}
-
+	
 	public void refresh() {
 		Iterator<StatStore> it;
 		if (mData == null)
@@ -327,7 +327,7 @@ public class WorldLeaderboard implements DataCallback<List<StatStore>> {
 		mType = type;
 		mTypeIndex = 0;
 	}
-
+	
 	public void setPeriod(TimePeriod[] period) {
 		mPeriod = period;
 		mPeriodIndex = 0;
@@ -513,4 +513,5 @@ public class WorldLeaderboard implements DataCallback<List<StatStore>> {
 
 		mLocation = pos.toLocation(world);
 	}
+
 }

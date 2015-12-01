@@ -17,7 +17,7 @@ import org.json.simple.JSONValue;
  * https://github.com/gravitylow/ServerModsAPI-Example/blob/master/Update.java
  * License: free
  */
-public class Update {
+public class BukkitUpdate {
 
 	// The project's unique ID
 	private final int projectID;
@@ -62,7 +62,7 @@ public class Update {
 	 *            The BukkitDev Project ID, found in the "Facts" panel on the
 	 *            right-side of your project page.
 	 */
-	public Update(int projectID) {
+	public BukkitUpdate(int projectID) {
 		this(projectID, null);
 	}
 
@@ -76,7 +76,7 @@ public class Update {
 	 *            Your ServerMods API key, found at
 	 *            https://dev.bukkit.org/home/servermods-apikey/
 	 */
-	public Update(int projectID, String apiKey) {
+	public BukkitUpdate(int projectID, String apiKey) {
 		this.projectID = projectID;
 		this.apiKey = apiKey;
 		try {
