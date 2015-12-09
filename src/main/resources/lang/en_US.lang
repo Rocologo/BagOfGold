@@ -120,6 +120,9 @@ mobhunting.commands.whitelistarea.done=Area is now whitelisted
 mobhunting.commands.whitelistarea.remove.done=Area is no longer whitelisted
 mobhunting.commands.whitelistarea.iswhitelisted=Area is whitelisted
 mobhunting.commands.whitelistarea.notwhitelisted=Area is not whitelisted
+mobhunting.commands.region.specifyRegionId=Please specify region 
+mobhunting.commands.region.unknownRegionId=Unknown region &4${regionid}
+mobhunting.commands.region.noWorldguardSupport=Worldguard is disabled or not loaded
 
 stats.achievement_count=Achievement Count
 stats.total=Total

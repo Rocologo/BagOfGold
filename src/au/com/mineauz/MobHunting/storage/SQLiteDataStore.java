@@ -875,7 +875,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			System.out.println("[MobHunting]*** Adding new Mobs complete ***");
 		}
 
-		System.out.println("[MobHunting]*** Updating database triggers ***");
+		MobHunting.debug("Updating database triggers.");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 		setupTrigger(connection);

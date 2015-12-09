@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
 import au.com.mineauz.MobHunting.storage.DataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;

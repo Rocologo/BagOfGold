@@ -183,7 +183,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 			for (ICommand registeredCommand : mCommands.values()) {
 				if (registeredCommand.getName().toLowerCase()
 						.startsWith(args[0].toLowerCase()))
-					results.add(registeredCommand.getName() + " ");
+					results.add(registeredCommand.getName());
 			}
 		} else {
 			// Find the command to use
@@ -228,7 +228,9 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 					args.length) : new String[0]);
 			results = com.onTabComplete(sender, subCommand, subArgs);
 			if (results == null)
-				return new ArrayList<String>();
+				//return new ArrayList<String>();
+				return results;
+				
 		}
 		return results;
 	}

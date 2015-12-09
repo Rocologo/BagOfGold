@@ -50,10 +50,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import de.Keyle.MyPet.api.entity.MyPetEntity;
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
@@ -66,6 +67,7 @@ import au.com.mineauz.MobHunting.commands.SelectCommand;
 import au.com.mineauz.MobHunting.commands.TopCommand;
 import au.com.mineauz.MobHunting.commands.UpdateCommand;
 import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
+import au.com.mineauz.MobHunting.commands.regionCommand;
 import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
@@ -206,9 +208,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new ClearGrindingCommand());
 		cmd.registerCommand(new WhitelistAreaCommand());
 		cmd.registerCommand(new UpdateCommand());
-
 		if (getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
 			cmd.registerCommand(new SelectCommand());
+		}
+		if (getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+			cmd.registerCommand(new regionCommand());
 		}
 
 		registerAchievements();
@@ -232,6 +236,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			metrics = new Metrics(this);
 			mobsKilled = metrics.createGraph("Most killed mobs");
 			topKillers = metrics.createGraph("Top Hunters");
+			metrics.addGraph(mobsKilled);
+			metrics.addGraph(topKillers);
+			metrics.enable();
 			metrics.start();
 			debug("Metrics started");
 		} catch (IOException e) {
@@ -254,9 +261,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mModifiers.clear();
 
 		try {
-			debug("mStoreManager.shutdown()");
 			mStoreManager.shutdown();
-			debug("mStore.shutdown()");
 			mStore.shutdown();
 		} catch (DataStoreException e) {
 			e.printStackTrace();
@@ -663,7 +668,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDamage(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity)
@@ -673,16 +677,23 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (WorldGuardCompat.isWorldGuardSupported()) {
 			if ((event.getDamager() instanceof Player)
 					|| (MyPetCompat.isMyPetSupported() && event.getDamager() instanceof MyPetEntity)) {
-				RegionManager regionManager = WorldGuardCompat
-						.getWorldGuardPlugin().getRegionManager(
-								event.getDamager().getWorld());
-				ApplicableRegionSet set = regionManager
-						.getApplicableRegions(event.getDamager().getLocation());
+				RegionQuery query = WorldGuardCompat.getRegionContainer()
+						.createQuery();
+				ApplicableRegionSet set = query.getApplicableRegions(event
+						.getDamager().getLocation());
+				// RegionManager regionManager = WorldGuardCompat
+				// .getWorldGuardPlugin().getRegionManager(
+				// event.getDamager().getWorld());
+				// ApplicableRegionSet set = regionManager
+				// .getApplicableRegions(event.getDamager().getLocation());
 				if (set != null) {
-					if (!set.allows(DefaultFlag.MOB_DAMAGE)) {
+					LocalPlayer localPlayer = WorldGuardCompat
+							.getWorldGuardPlugin().wrapPlayer(
+									(Player) event.getDamager());
+					if (!set.testState(localPlayer, DefaultFlag.MOB_DAMAGE)) {
 						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s",
-								event.getDamager().getName(),
-								set.allows(DefaultFlag.MOB_DAMAGE));
+								event.getDamager().getName(), set.testState(
+										localPlayer, DefaultFlag.MOB_DAMAGE));
 						return;
 					}
 				}
@@ -789,36 +800,110 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	@SuppressWarnings({ "deprecation", "unused" })
+	@SuppressWarnings({ "unused" })
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 		LivingEntity killed = event.getEntity();
 		Player killer = killed.getKiller();
 
+		// if (WorldGuardCompat.isWorldGuardSupported()
+		// && WorldGuardCompat.isEnabledInConfig()) {
+		// }
+
 		if (!isHuntEnabledInWorld(killed.getWorld())) {
-			debug("KillBlocked %s(%d): Mobhunting disabled in world %s",
-					killed.getType(), killed.getEntityId(), killed.getWorld()
-							.getName());
-			return;
+			if (WorldGuardCompat.isWorldGuardSupported()
+					&& WorldGuardCompat.isEnabledInConfig()) {
+				if (killer instanceof Player
+						|| (MyPetCompat.isMyPetSupported() && killer instanceof MyPetEntity)) {
+					// RegionManager regionManager = WorldGuardCompat
+					// .getWorldGuardPlugin().getRegionManager(
+					// killer.getWorld());
+					// ApplicableRegionSet set = regionManager
+					// .getApplicableRegions(killer.getLocation());
+					// RegionManager regions =
+					// regionContainer.get(killer.getWorld());
+					RegionQuery query = WorldGuardCompat.getRegionContainer()
+							.createQuery();
+					ApplicableRegionSet set = query.getApplicableRegions(killer
+							.getLocation());
+					if (set.size() > 0) {
+						LocalPlayer localPlayer = WorldGuardCompat
+								.getWorldGuardPlugin().wrapPlayer(killer);
+						if (set.queryState(localPlayer,
+								WorldGuardCompat.getMobHuntingFlag()) == null) {
+							debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'"
+									+ ",and MobHunting flag is null",
+									killed.getType(), killed.getEntityId(),
+									killed.getWorld().getName(),
+									set.queryState(localPlayer,
+											WorldGuardCompat
+													.getMobHuntingFlag()));
+							return;
+						} else if (set.queryState(localPlayer,
+								WorldGuardCompat.getMobHuntingFlag()) == State.ALLOW) {
+							debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'"
+									+ ",but MobHunting flag is (%s)",
+									killed.getType(), killed.getEntityId(),
+									killed.getWorld().getName(),
+									set.queryState(localPlayer,
+											WorldGuardCompat
+													.getMobHuntingFlag()));
+						} else {
+							debug("KillBlocked %s(%d): Mobhunting disabled in world '%s',"
+									+ " and MobHunting flag is '%s')",
+									killed.getType(), killed.getEntityId(),
+									killed.getWorld().getName(),
+									set.queryState(localPlayer,
+											WorldGuardCompat
+													.getMobHuntingFlag()));
+
+							return;
+						}
+					} else {
+						debug("KillBlocked %s(%d): Mobhunting disabled in world %s, "
+								+ "WG is supported, but player not in a WG region.",
+								killed.getType(), killed.getEntityId(), killed
+										.getWorld().getName());
+
+						return;
+					}
+				}
+				// killer is not a player - MobHunting is allowed
+			} else {
+				// MobHunting is NOT allowed in world and no support for WG
+				// reject.
+				debug("KillBlocked %s(%d): Mobhunting disabled in world '%s' and Worldguard is not supported");
+				return;
+			}
+			// MobHunting is allowed in this world,
+			// Continue to ned if... (Do NOTHING).
 		}
 
 		if (WorldGuardCompat.isWorldGuardSupported()
 				&& WorldGuardCompat.isEnabledInConfig()) {
 			if (killer instanceof Player
 					|| (MyPetCompat.isMyPetSupported() && killer instanceof MyPetEntity)) {
-				RegionManager regionManager = WorldGuardCompat
-						.getWorldGuardPlugin().getRegionManager(
-								killer.getWorld());
-				ApplicableRegionSet set = regionManager
-						.getApplicableRegions(killer.getLocation());
+
+				RegionQuery query = WorldGuardCompat.getRegionContainer()
+						.createQuery();
+				ApplicableRegionSet set = query.getApplicableRegions(killer
+						.getLocation());
+
+				// RegionManager regionManager = WorldGuardCompat
+				// .getWorldGuardPlugin().getRegionManager(
+				// killer.getWorld());
+				// ApplicableRegionSet set = regionManager
+				// .getApplicableRegions(killer.getLocation());
 				if (set.size() > 0) {
+					LocalPlayer localPlayer = WorldGuardCompat
+							.getWorldGuardPlugin().wrapPlayer(killer);
 					debug("Found %s Worldguard region(s): MOB_DAMAGE flag is %s",
-							set.size(), set.allows(DefaultFlag.MOB_DAMAGE));
-					if (killer instanceof Player
-							&& !set.allows(DefaultFlag.MOB_DAMAGE)) {
+							set.size(),
+							set.queryState(localPlayer, DefaultFlag.MOB_DAMAGE));
+					if (set.queryState(localPlayer, DefaultFlag.MOB_DAMAGE) == State.DENY) {
 						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s",
-								killer.getName(),
-								set.allows(DefaultFlag.MOB_DAMAGE));
+								killer.getName(), set.queryState(localPlayer,
+										DefaultFlag.MOB_DAMAGE));
 						return;
 					}
 				}
@@ -901,7 +986,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		updateMetrics(killer, killed);
+		//updateMetrics(killer, killed);
 
 		DamageInformation info = null;
 		if (killed instanceof LivingEntity
@@ -1158,8 +1243,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void updateMetrics(final Entity killer, final Entity killed) {
-		mobsKilled.addPlotter(new Metrics.Plotter(killed.getName()) {
+		mobsKilled.addPlotter(new Metrics.Plotter(killed.getName().toString()) {
 			@Override
 			public int getValue() {
 				debug("updateMetrics addPlotter(%s) getValue()=%s",
@@ -1168,7 +1254,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		});
 
-		topKillers.addPlotter(new Metrics.Plotter(killer.getName()) {
+		topKillers.addPlotter(new Metrics.Plotter(killer.getName().toString()) {
 			@Override
 			public int getValue() {
 				debug("updateMetrics addPlotter(%s) getValue()=%s",
@@ -1176,8 +1262,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return 1; // killer killed another mob.
 			}
 		});
-
-		// metrics..start();
 	}
 
 	private void onAssist(Player player, Player killer, LivingEntity killed,

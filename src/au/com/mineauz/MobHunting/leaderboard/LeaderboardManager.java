@@ -201,10 +201,10 @@ public class LeaderboardManager implements Listener {
 				board.update();
 				board.refresh();
 				mLeaderboards.put(world, board);
-				MobHunting.debug("Leaderboards loaded from file: %s!",
-						MobHunting.instance.getDataFolder(),
-						"boards-" + world.getName() + ".yml");
 			}
+			MobHunting.debug("%s Leaderboards loaded from file: %s!",
+					mLeaderboards.size(), MobHunting.instance.getDataFolder(),
+					"boards-" + world.getName() + ".yml");
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
