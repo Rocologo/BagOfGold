@@ -24,6 +24,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -248,7 +249,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			debug("Failed to start Metrics!");
 		}
 
-		pluginUpdateCheck(instance.mConfig.updateCheck);
+		pluginUpdateCheck(null, instance.mConfig.updateCheck);
 
 	}
 
@@ -1425,10 +1426,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return currentJarFile;
 	}
 
-	public void pluginUpdateCheck(boolean check) {
+	public void pluginUpdateCheck(final Player sender, boolean check) {
 		if (check) {
 			// Check for updates asynchronously in background
-			getLogger().info("Checking for new updates...");
+			if (sender instanceof Player)
+				sender.sendMessage(ChatColor.GREEN
+						+ Messages
+								.getString("mobhunting.commands.update.check"));
+			else
+				getLogger().info("Checking for new updates...");
 			getServer().getScheduler().runTaskAsynchronously(this,
 					new Runnable() {
 						@Override
@@ -1446,19 +1452,31 @@ public class MobHunting extends JavaPlugin implements Listener {
 				@Override
 				public void run() {
 					if (count++ > 10) {
-						instance.getLogger()
-								.info("["
-										+ pluginName
-										+ "]No updates found. (No response from server after 10s)");
+						if (sender instanceof Player)
+							sender.sendMessage(ChatColor.GREEN
+									+ "No updates found. (No response from server after 10s)");
+						else
+							instance.getLogger()
+									.info("["
+											+ pluginName
+											+ "]No updates found. (No response from server after 10s)");
 						this.cancel();
 					} else {
 						// Wait for the response
 						if (bukkitUpdate != null) {
 							if (bukkitUpdate.isSuccess()) {
-								notifyWhenUpdateIsFound(null);
+								if (sender instanceof Player)
+									notifyWhenUpdateIsFound((Player) sender);
+								else
+									notifyWhenUpdateIsFound(null);
 							} else {
-								instance.getLogger().info(
-										"[" + pluginName + "]No update.");
+								if (sender instanceof Player)
+									sender.sendMessage(ChatColor.GREEN
+											+ Messages
+													.getString("mobhunting.commands.update.no-update"));
+								else
+									getLogger().info(
+											"[" + pluginName + "]No update.");
 							}
 							this.cancel();
 						}
@@ -1514,6 +1532,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Show the results
 		if (p != null) {
 			if (!updateAvailable) {
+				p.sendMessage(ChatColor.GREEN
+						+ Messages
+								.getString("mobhunting.commands.update.no-update"));;
 				return;
 			} else {
 				// Player login
@@ -1539,6 +1560,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				getLogger().info("Please type '/mh update' to update.");
 			}
 		}
+		getLogger().info("done");
 	}
 
 	// ************************************************************************************
