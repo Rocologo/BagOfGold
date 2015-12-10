@@ -122,14 +122,14 @@ public class regionCommand implements ICommand, Listener {
 				if (args[1].equalsIgnoreCase("mobhunting")) {
 					items.add("allow");
 					items.add("deny");
-					items.add("");
+					items.add(" ");
 				} else
 					items.add("mobhunting");
 			} else if (args.length == 3) {
 				if (args[2].equalsIgnoreCase("mobhunting")) {
 					items.add("allow");
 					items.add("deny");
-					items.add("");
+					items.add(" ");
 				} else 
 					items.add("mobhunting");
 			}

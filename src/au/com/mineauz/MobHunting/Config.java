@@ -1,6 +1,7 @@
 package au.com.mineauz.MobHunting;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -106,6 +107,18 @@ public class Config extends AutoConfig {
 		setCategoryComment(
 				"killstreak",
 				"Set the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
+		setCategoryComment(
+				"multiplier",
+				"You can add multipliers for players with different ranks/groups. To do this"
+						+ "\nyou must set give the user/group permissions with a format like this:"
+						+ "\nmobhunting.multiplier.guest"
+						+ "\nmobhunting.multiplier.guardian"
+						+ "\nmobhunting.multiplier.staff"
+						+ "\nmobhunting.multiplier.hasVoted"
+						+ "\nmobhunting.multiplier.donator"
+						+ "\nyou can make your own permission nodes. You just need to keep the format"
+						+ "\nmobhunting.multiplier.name 'value' in your permissions file and the "
+						+ "format below in this file.");
 
 		setCategoryComment(
 				"pvp",
@@ -555,7 +568,7 @@ public class Config extends AutoConfig {
 	public double bonusCritical = 2;
 	@ConfigField(name = "bonus-mob-chance", category = "bonus", comment = "This is the chance (% chance 0-100) that a bonus mob will spawn.")
 	public double bonusMobChance = 0.2;
-	@ConfigField(name = "babyMultiplyer", category = "bonus", comment = "Bonus for killing a Baby mob.")
+	@ConfigField(name = "babyMultiplier", category = "bonus", comment = "Bonus for killing a Baby mob.")
 	public double babyMultiplier = 1.2;
 
 	// #####################################################################################
@@ -718,6 +731,20 @@ public class Config extends AutoConfig {
 	public double killstreakLevel4Mult = 4;
 
 	// #####################################################################################
+	// Multiplier by rank / permission
+	// #####################################################################################
+	@ConfigField(name = "rank-multiplier", category = "multiplier"
+			)
+	public HashMap<String, String> rankMultiplier = new HashMap<String, String>();
+	{
+		rankMultiplier.put("mobhunting.multiplier.guest", "0.9");
+		rankMultiplier.put("mobhunting.multiplier.guardian", "1.02");
+		rankMultiplier.put("mobhunting.multiplier.staff", "1.05");
+		rankMultiplier.put("mobhunting.multiplier.hasVoted", "2");
+		rankMultiplier.put("mobhunting.multiplier.donator", "3");
+	}
+
+	// #####################################################################################
 	// PVP
 	// #####################################################################################
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
@@ -759,6 +786,9 @@ public class Config extends AutoConfig {
 
 	@ConfigField(name = "disable-integration-worldguard", category = "plugins", comment = "Disable integration with WorldGuard")
 	public boolean disableIntegrationWorldGuard = false;
+
+	@ConfigField(name = "disable-integration-essentials", category = "plugins", comment = "Disable integration with Essentials")
+	public boolean disableIntegrationEssentials = false;
 
 	// #####################################################################################
 	// Database

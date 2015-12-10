@@ -55,6 +55,7 @@ import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
+
 import de.Keyle.MyPet.api.entity.MyPetEntity;
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
@@ -70,6 +71,7 @@ import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
 import au.com.mineauz.MobHunting.commands.regionCommand;
 import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
+import au.com.mineauz.MobHunting.compatability.EssentialsCompat;
 import au.com.mineauz.MobHunting.compatability.MinigamesCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaCompat;
 import au.com.mineauz.MobHunting.compatability.MobArenaHelper;
@@ -193,6 +195,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		CompatibilityManager.register(PVPArenaCompat.class, "PVPArena");
 		CompatibilityManager.register(MythicMobsCompat.class, "MythicMobs");
 		CompatibilityManager.register(CitizensCompat.class, "Citizens");
+		CompatibilityManager.register(EssentialsCompat.class, "Essentials");
 
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 				Messages.getString("mobhunting.command.base.description")
@@ -815,13 +818,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 					&& WorldGuardCompat.isEnabledInConfig()) {
 				if (killer instanceof Player
 						|| (MyPetCompat.isMyPetSupported() && killer instanceof MyPetEntity)) {
-					// RegionManager regionManager = WorldGuardCompat
-					// .getWorldGuardPlugin().getRegionManager(
-					// killer.getWorld());
-					// ApplicableRegionSet set = regionManager
-					// .getApplicableRegions(killer.getLocation());
-					// RegionManager regions =
-					// regionContainer.get(killer.getWorld());
 					RegionQuery query = WorldGuardCompat.getRegionContainer()
 							.createQuery();
 					ApplicableRegionSet set = query.getApplicableRegions(killer
@@ -889,11 +885,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 				ApplicableRegionSet set = query.getApplicableRegions(killer
 						.getLocation());
 
-				// RegionManager regionManager = WorldGuardCompat
-				// .getWorldGuardPlugin().getRegionManager(
-				// killer.getWorld());
-				// ApplicableRegionSet set = regionManager
-				// .getApplicableRegions(killer.getLocation());
 				if (set.size() > 0) {
 					LocalPlayer localPlayer = WorldGuardCompat
 							.getWorldGuardPlugin().wrapPlayer(killer);
@@ -957,6 +948,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 				debug("KillBlocked: %s is currently playing PvpArena.",
 						killer.getName());
 				return;
+			} else if (EssentialsCompat.isSupported()) {
+				if (EssentialsCompat.isGodModeEnabled(killer)) {
+					debug("KillBlocked: %s is in God mode", killer.getName());
+					return;
+				} else if (EssentialsCompat.isVanishedModeEnabled(killer)) {
+					debug("KillBlocked: %s is in Vanished mode",
+							killer.getName());
+					return;
+				}
+
 			}
 
 			if (!hasPermissionToKillMob(killer, killed)) {
@@ -986,7 +987,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
-		//updateMetrics(killer, killed);
+		// updateMetrics(killer, killed);
 
 		DamageInformation info = null;
 		if (killed instanceof LivingEntity
@@ -1130,6 +1131,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 					debug("%s lost %s", killed.getName(), mEconomy.format(cash));
 				}
 			}
+			Set<String> ranks = mConfig.rankMultiplier.keySet();
+			for (String rank : ranks) {
+				if (killer.hasPermission(rank)) {
+					cash = cash
+							* Double.valueOf(mConfig.rankMultiplier.get(rank));
+					debug("Reward is multiplied by rankMultiplier permissionNode=%s multiplier=%s",
+							rank, mConfig.rankMultiplier.get(rank));
+				}
+			}
+
 			if (info.assister == null) {
 				if (cash > 0) {
 					mEconomy.depositPlayer(killer, cash);

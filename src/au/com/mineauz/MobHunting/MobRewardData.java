@@ -6,8 +6,6 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-import com.sk89q.worldedit.blocks.metadata.MobType;
-
 import au.com.mineauz.MobHunting.MobPlugins.MobPluginNames;
 
 public class MobRewardData {

@@ -4,7 +4,7 @@ version: ${version}
 description: A Mobhunting plugin
 author: Rocologo
 depend: [Vault]
-softdepend: [Minigames, MyPet, WorldEdit, WorldGuard, MobArena, PVPArena, MythicMobs]
+softdepend: [Minigames, MyPet, WorldEdit, WorldGuard, MobArena, PVPArena, MythicMobs, Citizens, Essentials]
 
 commands:
   mobhunt:
@@ -25,6 +25,12 @@ permissions:
     default: op
     children:
       mobhunting.cmd: true
+  mobhunting.update:
+    description: Allows a player to update the plugin
+    default: op
+  mobhunting.region:
+    description: Allows a player to set Worldguard custom flag MobHunting
+    default: op
   mobhunting.listachievements:
     description: Allows a player to see all their achievements
     default: true
