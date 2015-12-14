@@ -20,4 +20,7 @@ public class DamageInformation
 	public boolean wolfAssist;
 	
 	public boolean wasFlying;
+	
+	//TODO: Do I need this?
+	public boolean wasDisguised;
 }

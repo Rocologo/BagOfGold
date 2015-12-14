@@ -249,7 +249,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			debug("Failed to start Metrics!");
 		}
 
-		pluginUpdateCheck(null, instance.mConfig.updateCheck);
+		instance.getLogger().info(Messages
+						.getString("mobhunting.commands.update.check"));
+		pluginUpdateCheck(getServer().getConsoleSender(),
+				instance.mConfig.updateCheck);
 
 	}
 
@@ -685,11 +688,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 						.createQuery();
 				ApplicableRegionSet set = query.getApplicableRegions(event
 						.getDamager().getLocation());
-				// RegionManager regionManager = WorldGuardCompat
-				// .getWorldGuardPlugin().getRegionManager(
-				// event.getDamager().getWorld());
-				// ApplicableRegionSet set = regionManager
-				// .getApplicableRegions(event.getDamager().getLocation());
 				if (set != null) {
 					LocalPlayer localPlayer = WorldGuardCompat
 							.getWorldGuardPlugin().wrapPlayer(
@@ -714,8 +712,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Player cause = null;
 		ItemStack weapon = null;
 
-		if (event.getDamager() instanceof Player)
+		if (event.getDamager() instanceof Player) {			
 			cause = (Player) event.getDamager();
+			//if (cause.is
+		}
 
 		boolean projectile = false;
 		if (event.getDamager() instanceof Projectile) {
@@ -809,10 +809,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void onMobDeath(EntityDeathEvent event) {
 		LivingEntity killed = event.getEntity();
 		Player killer = killed.getKiller();
-
-		// if (WorldGuardCompat.isWorldGuardSupported()
-		// && WorldGuardCompat.isEnabledInConfig()) {
-		// }
 
 		if (!isHuntEnabledInWorld(killed.getWorld())) {
 			if (WorldGuardCompat.isWorldGuardSupported()
@@ -1323,13 +1319,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		setHuntEnabled(player, true);
-		if (player.hasPermission("mobhunting.update") && updateAvailable) {
-			player.sendMessage(ChatColor.BLUE
-					+ instance.getBukkitUpdate().getVersionName()
-					+ " is available!");
-			player.sendMessage(ChatColor.BLUE + "Type " + ChatColor.GREEN
-					+ "'/mobhunting update'" + ChatColor.BLUE
-					+ " to update Mobhunting.");
+		if (player.hasPermission("mobhunting.update")) {
+			pluginUpdateCheck(player, true);
+			//if (updateAvailable == UpdateStatus.AVAILABLE) {
+			//	player.sendMessage(ChatColor.RED
+			//			+ ""
+			//			+ ChatColor.ITALIC
+			//			+ Messages.getString(
+			//					"mobhunting.commands.update.version-found"));
+			//	player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
+			//			+ Messages.getString("mobhunting.commands.update.help"));
+			//}
 		}
 	}
 
@@ -1412,81 +1412,83 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	// Update object
 	private BukkitUpdate bukkitUpdate = null;
-	private static boolean updateAvailable = false;
+	private UpdateStatus updateAvailable = UpdateStatus.UNKNOWN;
+
+	public enum UpdateStatus {
+		UNKNOWN, NO_RESPONSE, NOT_AVAILABLE, AVAILABLE, RESTART_NEEDED
+	};
 
 	public BukkitUpdate getBukkitUpdate() {
 		return bukkitUpdate;
 	}
 
-	public static boolean getUpdateAvailable() {
+	public UpdateStatus getUpdateAvailable() {
 		return updateAvailable;
 	}
 
-	public static String getCurrentJarFile() {
+	public void setUpdateAvailable(UpdateStatus b) {
+		updateAvailable = b;
+	}
+
+	public String getCurrentJarFile() {
 		return currentJarFile;
 	}
 
-	public void pluginUpdateCheck(final Player sender, boolean check) {
-		if (check) {
-			// Check for updates asynchronously in background
-			if (sender instanceof Player)
-				sender.sendMessage(ChatColor.GREEN
-						+ Messages
-								.getString("mobhunting.commands.update.check"));
-			else
-				getLogger().info("Checking for new updates...");
-			getServer().getScheduler().runTaskAsynchronously(this,
-					new Runnable() {
-						@Override
-						public void run() {
-							bukkitUpdate = new BukkitUpdate(63718); // MobHunting
-							if (!bukkitUpdate.isSuccess()) {
-								bukkitUpdate = null;
+	public void pluginUpdateCheck(final CommandSender sender,
+			boolean updateCheck) {
+		if (updateCheck) {
+			if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
+				// Check for updates asynchronously in background
+				getServer().getScheduler().runTaskAsynchronously(this,
+						new Runnable() {
+							@Override
+							public void run() {
+								bukkitUpdate = new BukkitUpdate(63718); // MobHunting
+								if (!bukkitUpdate.isSuccess()) {
+									bukkitUpdate = null;
+								}
 							}
-						}
-					});
-			// Check if bukkitUpdate is found in background
-			new BukkitRunnable() {
-				int count = 0;
+						});
+				// Check if bukkitUpdate is found in background
+				new BukkitRunnable() {
+					int count = 0;
 
-				@Override
-				public void run() {
-					if (count++ > 10) {
-						if (sender instanceof Player)
-							sender.sendMessage(ChatColor.GREEN
+					@Override
+					public void run() {
+						if (count++ > 10) {
+							sender.sendMessage(ChatColor.RED
 									+ "No updates found. (No response from server after 10s)");
-						else
-							instance.getLogger()
-									.info("["
-											+ pluginName
-											+ "]No updates found. (No response from server after 10s)");
-						this.cancel();
-					} else {
-						// Wait for the response
-						if (bukkitUpdate != null) {
-							if (bukkitUpdate.isSuccess()) {
-								if (sender instanceof Player)
-									notifyWhenUpdateIsFound((Player) sender);
-								else
-									notifyWhenUpdateIsFound(null);
-							} else {
-								if (sender instanceof Player)
-									sender.sendMessage(ChatColor.GREEN
-											+ Messages
-													.getString("mobhunting.commands.update.no-update"));
-								else
-									getLogger().info(
-											"[" + pluginName + "]No update.");
-							}
 							this.cancel();
+						} else {
+							// Wait for the response
+							if (bukkitUpdate != null) {
+								if (bukkitUpdate.isSuccess()) {
+									updateAvailable = isUpdateNewerVersion();
+
+									if (updateAvailable == UpdateStatus.AVAILABLE) {
+										sender.sendMessage(ChatColor.GREEN
+												+ Messages
+														.getString("mobhunting.commands.update.version-found"));
+										sender.sendMessage(ChatColor.GREEN
+												+ Messages
+														.getString("mobhunting.commands.update.help"));
+									} else {
+										sender.sendMessage(ChatColor.GOLD
+												+ Messages
+														.getString("mobhunting.commands.update.no-update"));
+									}
+
+								}
+								this.cancel();
+							}
 						}
 					}
-				}
-			}.runTaskTimer(instance, 0L, 20L); // Check status every second
+				}.runTaskTimer(instance, 0L, 20L); // Check status every second
+			}
 		}
 	}
 
-	private void notifyWhenUpdateIsFound(Player p) {
+	public UpdateStatus isUpdateNewerVersion() {
 		// Check to see if the latest file is newer that this one
 		String[] split = instance.getBukkitUpdate().getVersionName()
 				.split(" V");
@@ -1507,16 +1509,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (i < pluginVer.length) {
 						pluginCheck = Integer.valueOf(pluginVer[i]);
 					}
-					// " plugin is " + pluginCheck);
-					if (updateCheck < pluginCheck) {
-						// getLogger().info("["+pluginName+"]DEBUG: plugin is newer!");
-						// plugin is newer
-						updateAvailable = false;
-						break;
-					} else if (updateCheck > pluginCheck) {
-						updateAvailable = true;
-						break;
-					}
+					if (updateCheck > pluginCheck) {
+						return UpdateStatus.AVAILABLE;
+					} else if (updateCheck < pluginCheck)
+						return UpdateStatus.NOT_AVAILABLE;
 				} catch (Exception e) {
 					getLogger().warning(
 							"Could not determine update's version # ");
@@ -1525,42 +1521,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 							"Update version: "
 									+ instance.getBukkitUpdate()
 											.getVersionName());
-					return;
+					return UpdateStatus.UNKNOWN;
 				}
 			}
 		}
-		// Show the results
-		if (p != null) {
-			if (!updateAvailable) {
-				p.sendMessage(ChatColor.GREEN
-						+ Messages
-								.getString("mobhunting.commands.update.no-update"));;
-				return;
-			} else {
-				// Player login
-				p.sendMessage(ChatColor.GOLD
-						+ instance.getBukkitUpdate().getVersionName()
-						+ " is available! You are running " + pluginVersion);
-				p.sendMessage(ChatColor.RED + "Update found at: "
-						+ instance.getBukkitUpdate().getVersionLink());
-			}
-		} else {
-			// Console
-			if (!updateAvailable) {
-				getLogger().info("No updates available.");
-				return;
-			} else {
-				getLogger().info(
-						instance.getBukkitUpdate().getVersionName()
-								+ " is available! You are running "
-								+ pluginVersion);
-				getLogger().info(
-						"Update found at: "
-								+ instance.getBukkitUpdate().getVersionLink());
-				getLogger().info("Please type '/mh update' to update.");
-			}
-		}
-		getLogger().info("done");
+		return UpdateStatus.NOT_AVAILABLE;
 	}
 
 	// ************************************************************************************

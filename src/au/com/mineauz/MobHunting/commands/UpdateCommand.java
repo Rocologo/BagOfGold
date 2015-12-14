@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.MobHunting.UpdateStatus;
 
 public class UpdateCommand implements ICommand {
 	@Override
@@ -54,30 +55,37 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-		if (MobHunting.getUpdateAvailable()) {
+		if (MobHunting.instance.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
 			if (downloadAndUpdateJar()) {
 				sender.sendMessage(ChatColor.GREEN
 						+ Messages
 								.getString("mobhunting.commands.update.complete"));
+				MobHunting.instance
+						.setUpdateAvailable(UpdateStatus.RESTART_NEEDED);
 
 			} else {
 				sender.sendMessage(ChatColor.GREEN
 						+ Messages
 								.getString("mobhunting.commands.update.could-not-update"));
 			}
+		} else if (MobHunting.instance.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
+			sender.sendMessage(ChatColor.GREEN
+					+ Messages.getString("mobhunting.commands.update.complete"));
 		} else {
-			MobHunting.instance.pluginUpdateCheck((Player)sender,true);
+			MobHunting.instance.pluginUpdateCheck(sender, true);
 		}
 		return true;
 	}
 
 	private static boolean downloadAndUpdateJar() {
 		try {
-			downloadFile(MobHunting.instance.getBukkitUpdate().getVersionLink(),
+			downloadFile(
+					MobHunting.instance.getBukkitUpdate().getVersionLink(),
 					"plugins/MobHunting/update/");
-			File oldFile = new File("plugins/" + MobHunting.getCurrentJarFile());
-			File disabledFile = new File("plugins/" + MobHunting.getCurrentJarFile()
-					+ ".old");
+			File oldFile = new File("plugins/"
+					+ MobHunting.instance.getCurrentJarFile());
+			File disabledFile = new File("plugins/"
+					+ MobHunting.instance.getCurrentJarFile() + ".old");
 			if (!disabledFile.exists()) {
 				oldFile.renameTo(disabledFile);
 

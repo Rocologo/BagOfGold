@@ -59,7 +59,7 @@ public class EssentialsCompat implements Listener {
 		User user = getEssentials().getUser(player);
 	    return user.isVanished();
 	}
-
+	
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
