@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.4.5</version>
+	<version>2.5.7</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -30,6 +30,8 @@
 		<slf4j.version>1.7.12</slf4j.version>
 		<essentials.version>LATEST</essentials.version>
 		<disguisecraft.version>5.1</disguisecraft.version>
+		<libsdisguises.version>8.2.6-SNAPSHOT</libsdisguises.version>
+		<protocollib.version>3.6.4</protocollib.version>
 	</properties>
 
 	<organization>
@@ -240,11 +242,34 @@
 			<systemPath>${project.basedir}/lib/Essentials-2.x-SNAPSHOT-B12-CLJ.jar</systemPath>
 		</dependency>
 
-		<!-- DisguiseCraft --> 
+		<!-- ProtocolLib -->
+		<dependency>
+			<groupId>com.comphenix.protocol</groupId>
+			<artifactId>ProtocolLib</artifactId>
+			<version>${protocollib.version}</version>
+		</dependency>
+
+		<!-- DisguiseCraft -->
 		<dependency>
 			<groupId>pgDev</groupId>
 			<artifactId>DisguiseCraft</artifactId>
 			<version>${disguisecraft.version}</version>
+		</dependency>
+
+		<!-- LibsDisguises -->
+		<dependency>
+			<groupId>LibsDisguises</groupId>
+			<artifactId>LibsDisguises</artifactId>
+			<version>${libsdisguises.version}</version>
+		</dependency> 
+		
+		<!-- iDisguise -->
+		<dependency>
+			<groupId>de.robingrether.idisguise</groupId>
+			<artifactId>idisguise</artifactId>
+			<version>5.0.4</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/iDisguise-5.0.4.jar</systemPath>
 		</dependency>
 
 	</dependencies>
@@ -372,7 +397,6 @@
 		<!-- citizens repository -->
 		<repository>
 			<id>citizens-repo</id>
-			<!-- <url>https://github.com/CitizensDev/Citizens2.git</url> -->
 			<url>http://repo.citizensnpcs.co/</url>
 		</repository>
 
@@ -388,19 +412,58 @@
 			<id>Plugin Metrics</id>
 			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
+		<!-- MCStats SNAPSHOTS-->
+		<repository>
+			<id>Plugin Metrics SNAPSHOTS</id>
+			<url>http://repo.mcstats.org/content/repositories/snapshots/</url>
+		</repository>
+		
 
 		<!-- Essentials -->
 		<repository>
 			<id>ess-repo</id>
 			<url>http://repo.ess3.net/content/groups/public</url>
 		</repository>
-		
+
+		<!-- ProtocolLib-repo -->
+		<repository>
+			<id>dmulloy2-repo</id>
+			<url>http://repo.dmulloy2.net/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>comphenix-rep</id>
+			<name>Comphenix Repository</name>
+			<url>http://repo.comphenix.net/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>comphenix-snapshot-rep</id>
+			<name>Comphenix Snapshot Repository</name>
+			<url>http://repo.comphenix.net/content/repositories/snapshots/</url>
+		</repository>
+
 		<!-- DisguiseCraft -->
 		<repository>
 			<id>disguise-repo</id>
 			<url>http://build.yu8.me:8080/plugin/repository/everything/</url>
 		</repository>
-		 
+
+		<!-- LibsDisguises -->
+		<repository>
+			<id>libsdisguises-repo</id>
+			<url>http://repo.md-5.net/content/repositories/public/</url>
+		</repository>
+
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>md_5-releases</id>
+			<url>http://repo.md-5.net/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>md_5-snapshots</id>
+			<url>http://repo.md-5.net/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +25,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Firework;
@@ -99,7 +101,7 @@ public class AchievementManager implements Listener {
 	public int getProgress(String achievement, Player player) {
 		Achievement a = getAchievement(achievement);
 		Validate.isTrue(a instanceof ProgressAchievement,
-				"This achievement does not have progress"); //$NON-NLS-1$
+				"This achievement does not have progress");
 
 		return getProgress((ProgressAchievement) a, player);
 	}
@@ -197,6 +199,14 @@ public class AchievementManager implements Listener {
 	public Collection<Achievement> getAllAchievements() {
 		return Collections.unmodifiableCollection(mAchievements.values());
 	}
+	
+	public void listAllAchievements(CommandSender sender) {
+		Iterator<Achievement> itr = Collections.unmodifiableCollection(mAchievements.values()).iterator();
+		while (itr.hasNext()){
+			Achievement a = itr.next();
+			sender.sendMessage(a.getID()+"---"+a.getName()+"---"+ a.getDescription());
+		}
+	}
 
 	public void awardAchievement(String achievement, Player player) {
 		awardAchievement(getAchievement(achievement), player);
@@ -225,13 +235,19 @@ public class AchievementManager implements Listener {
 
 		storage.gainedAchievements.add(achievement.getID());
 		player.sendMessage(ChatColor.GOLD
-				+ Messages
-						.getString(
-								"mobhunting.achievement.awarded", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		player.sendMessage(ChatColor.BLUE
-				+ "" + ChatColor.ITALIC + achievement.getDescription()); //$NON-NLS-1$
+				+ Messages.getString(
+						"mobhunting.achievement.awarded",
+						"name",
+						"" + ChatColor.WHITE + ChatColor.ITALIC
+								+ achievement.getName()));
+		player.sendMessage(ChatColor.BLUE + "" + ChatColor.ITALIC
+				+ achievement.getDescription());
 		player.sendMessage(ChatColor.WHITE
-				+ "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize", "prize", MobHunting.getEconomy().format(achievement.getPrize()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ ""
+				+ ChatColor.ITALIC
+				+ Messages.getString("mobhunting.achievement.awarded.prize",
+						"prize",
+						MobHunting.getEconomy().format(achievement.getPrize())));
 
 		EconomyResponse result = MobHunting.getEconomy().depositPlayer(player,
 				achievement.getPrize());
@@ -244,9 +260,11 @@ public class AchievementManager implements Listener {
 						.config().broadcastFirstAchievement))
 			broadcast(
 					ChatColor.GOLD
-							+ Messages
-									.getString(
-											"mobhunting.achievement.awarded.broadcast", "player", player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()), player); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+							+ Messages.getString(
+									"mobhunting.achievement.awarded.broadcast",
+									"player", player.getName(), "name",
+									"" + ChatColor.WHITE + ChatColor.ITALIC
+											+ achievement.getName()), player);
 
 		// Run console commands as a reward
 		String playername = player.getName();
@@ -345,9 +363,9 @@ public class AchievementManager implements Listener {
 			if (curProgress / segment < nextProgress / segment
 					|| curProgress == 0 && nextProgress > 0) {
 				player.sendMessage(ChatColor.BLUE
-						+ Messages
-								.getString(
-										"mobhunting.achievement.progress", "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						+ Messages.getString("mobhunting.achievement.progress",
+								"name", "" + ChatColor.WHITE + ChatColor.ITALIC
+										+ achievement.getName()));
 				player.sendMessage(ChatColor.GRAY + "" + nextProgress + " / "
 						+ maxProgress);
 			}

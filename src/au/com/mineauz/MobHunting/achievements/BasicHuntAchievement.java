@@ -13,20 +13,19 @@ public class BasicHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getName() {
-		return Messages.getString(
-				"achievements.hunter.1.name", "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+		return Messages.getString("achievements.hunter.1.name", "mob",
+				mType.getName());
 	}
 
 	@Override
 	public String getID() {
-		return "hunting-level1-" + mType.name().toLowerCase(); //$NON-NLS-1$
+		return "hunting-level1-" + mType.name().toLowerCase();
 	}
 
 	@Override
 	public String getDescription() {
-		return Messages
-				.getString(
-						"achievements.hunter.1.description", "count", getMaxProgress(), "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return Messages.getString("achievements.hunter.1.description", "count",
+				getMaxProgress(), "mob", mType.getName());
 	}
 
 	@Override

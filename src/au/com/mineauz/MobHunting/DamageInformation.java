@@ -21,6 +21,8 @@ public class DamageInformation
 	
 	public boolean wasFlying;
 	
-	//TODO: Do I need this?
-	public boolean wasDisguised;
+	//Disguises
+	public boolean playerUndercover; //Player attacking undercover (disguise)
+	public boolean mobCoverBlown; //Player attacked a disguised Mob/Player
+
 }

@@ -100,7 +100,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 
 		// Create new empty tables if they do not exist
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID CHAR(40) PRIMARY KEY, NAME CHAR(20), PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, KEY PLAYER_ID (PLAYER_ID))"); //$NON-NLS-1$
+		String lm = MobHunting.config().learningMode ? "1" : "0";
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID CHAR(40) PRIMARY KEY, NAME CHAR(20), PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, "
+				+ "KEY PLAYER_ID (PLAYER_ID), LEARNING_MODE INTEGER NOT NULL DEFAULT "
+				+ lm + ", MUTE_MODE INTEGER NOT NULL DEFAULT 0)");
 		String dataString = "";
 		for (StatType type : StatType.values())
 			dataString += ", " + type.getDBColumn()
@@ -143,16 +146,16 @@ public class MySQLDataStore extends DatabaseDataStore {
 				if (updateStringBuilder.length() != 0)
 					updateStringBuilder.append(", ");
 
-				updateStringBuilder
-						.append(String
-								.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn())); //$NON-NLS-1$
+				updateStringBuilder.append(String.format(
+						"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ",
+						type.getDBColumn()));
 			}
 
 			String updateString = updateStringBuilder.toString();
 
 			StringBuilder updateTrigger = new StringBuilder();
 			updateTrigger
-					.append("create trigger mh_DailyUpdate after update on mh_Daily for each row begin "); //$NON-NLS-1$
+					.append("create trigger mh_DailyUpdate after update on mh_Daily for each row begin ");
 
 			// Weekly
 			updateTrigger.append(" update mh_Weekly set ");
@@ -212,10 +215,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
 		mUpdatePlayerName = connection
 				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
+		mUpdatePlayerData = connection
+				.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?, MUTE_MODE=? WHERE UUID=?;");
 	}
 
 	@Override
 	protected void setupStatement_1(Connection connection) throws SQLException {
+		// TODO: Am I missing two values? ,1,0 ???
 		myAddPlayerStatement = connection
 				.prepareStatement("INSERT IGNORE INTO mh_Players(UUID,NAME) VALUES(?,?);");
 	}
@@ -842,6 +848,30 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		}
 
+		try {
+			ResultSet rs = statement
+					.executeQuery("SELECT LEARNING_MODE from mh_Players LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			System.out
+					.println("[MobHunting]*** Adding new Player leaning mode to MobHunting Database ***");
+			String lm = MobHunting.config().learningMode ? "1" : "0";
+			statement
+					.executeUpdate("alter table `mh_Players` add column `LEARNING_MODE` INTEGER NOT NULL DEFAULT "
+							+ lm);
+		}
+
+		try {
+			ResultSet rs = statement
+					.executeQuery("SELECT MUTE_MODE from mh_Players LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			System.out
+					.println("[MobHunting]*** Adding new Player mute mode to MobHunting Database ***");
+			statement
+					.executeUpdate("alter table `mh_Players` add column `MUTE_MODE` INTEGER NOT NULL DEFAULT 0");
+		}
+
 		System.out.println("[MobHunting]*** Updating database triggers ***");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
@@ -850,4 +880,5 @@ public class MySQLDataStore extends DatabaseDataStore {
 		statement.close();
 		connection.commit();
 	}
+
 }

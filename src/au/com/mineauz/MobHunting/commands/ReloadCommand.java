@@ -11,7 +11,7 @@ import au.com.mineauz.MobHunting.MobHunting;
 public class ReloadCommand implements ICommand {
 	@Override
 	public String getName() {
-		return "reload"; //$NON-NLS-1$
+		return "reload"; 
 	}
 
 	@Override

@@ -16,8 +16,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.MobHunting.MobHunting;
-
 public abstract class AutoConfig {
 	private File mFile;
 	private HashMap<String, String> mCategoryComments;
@@ -57,7 +55,6 @@ public abstract class AutoConfig {
 	protected void onPreSave() {
 	};
 
-	@SuppressWarnings("unchecked")
 	public boolean loadConfig() {
 		FileConfiguration yml = new YamlConfiguration();
 		try {

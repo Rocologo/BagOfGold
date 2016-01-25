@@ -19,7 +19,7 @@ public class StatStore {
 	public StatStore(StatType type, OfflinePlayer player) {
 		this.type = type;
 		this.player = player;
-		amount = 1;
+		amount = 1;// should this be 0?
 	}
 
 	/**

@@ -51,6 +51,16 @@ public abstract class DatabaseDataStore implements DataStore {
 	 */
 	protected PreparedStatement mUpdatePlayerName;
 
+	/**
+	 * Args: player uuid
+	 */
+	protected PreparedStatement mGetPlayerData;
+	
+	/**
+	 * Args: player uuid
+	 */
+	protected PreparedStatement mUpdatePlayerData;
+
 	@Override
 	public void initialize() throws DataStoreException {
 		try {
@@ -62,6 +72,7 @@ public abstract class DatabaseDataStore implements DataStore {
 
 			mGetPlayerStatement = new PreparedStatement[4];
 			setupStatements(mConnection);
+
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
 		}
@@ -80,7 +91,6 @@ public abstract class DatabaseDataStore implements DataStore {
 			throws SQLException;
 
 	protected void closeStatements() throws SQLException {
-		// mAddPlayerStatement.close();
 		mGetPlayerStatement[0].close();
 		mGetPlayerStatement[1].close();
 		mGetPlayerStatement[2].close();
@@ -90,6 +100,9 @@ public abstract class DatabaseDataStore implements DataStore {
 		mLoadAchievementsStatement.close();
 		mGetPlayerUUID.close();
 		mUpdatePlayerName.close();
+		mGetPlayerData.close();
+		mUpdatePlayerData.close();
+
 	}
 
 	protected void rollback() throws DataStoreException {
@@ -117,10 +130,12 @@ public abstract class DatabaseDataStore implements DataStore {
 			throws SQLException {
 
 		setupStatement_1(mConnection);
+
 		myAddPlayerStatement.clearBatch();
 
 		for (OfflinePlayer player : players) {
-			myAddPlayerStatement.setString(1, player.getPlayer().getUniqueId().toString());
+			myAddPlayerStatement.setString(1, player.getPlayer().getUniqueId()
+					.toString());
 			myAddPlayerStatement.setString(2, player.getPlayer().getName());
 			myAddPlayerStatement.addBatch();
 		}
@@ -162,9 +177,11 @@ public abstract class DatabaseDataStore implements DataStore {
 			int index = 0;
 			while (results.next()) {
 				OfflinePlayer player = temp.get(index++);
-				if (results.getString(1).equals(player.getUniqueId().toString()) && 
-						!results.getString(2).equals(player.getPlayer().getName())) {
-					MobHunting.instance.getLogger().severe(
+				if (results.getString(1)
+						.equals(player.getUniqueId().toString())
+						&& !results.getString(2).equals(
+								player.getPlayer().getName())) {
+					MobHunting.instance.getLogger().warning(
 							"Name change detected(1): " + results.getString(2)
 									+ " -> " + player.getPlayer().getName()
 									+ " UUID="
@@ -175,6 +192,7 @@ public abstract class DatabaseDataStore implements DataStore {
 				ids.put(UUID.fromString(results.getString(1)),
 						results.getInt(3));
 			}
+			results.close();
 		}
 
 		return ids;
@@ -189,13 +207,15 @@ public abstract class DatabaseDataStore implements DataStore {
 			String name = result.getString(2);
 			if (player.getUniqueId().equals(result.getString(1))
 					&& !player.getName().equals(name)) {
-				MobHunting.instance.getLogger().severe(
+				MobHunting.instance.getLogger().warning(
 						"Name change detected(2): " + name + " -> "
 								+ player.getName() + " UUID="
 								+ player.getUniqueId().toString());
 				updatePlayerName(player);
 			}
-			return result.getInt(3);
+			int res = result.getInt(3);
+			result.close();
+			return res;
 		}
 
 		throw new UserNotFoundException("User " + player.toString()
@@ -222,10 +242,11 @@ public abstract class DatabaseDataStore implements DataStore {
 
 			if (set.next()) {
 				UUID uid = UUID.fromString(set.getString(1));
+				set.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
-			throw new UserNotFoundException(
-					"User " + name + " is not present in database"); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new UserNotFoundException("User " + name
+					+ " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
 		}
@@ -234,7 +255,6 @@ public abstract class DatabaseDataStore implements DataStore {
 	@Override
 	public Set<AchievementStore> loadAchievements(OfflinePlayer player)
 			throws DataStoreException {
-
 		try {
 			int playerId = getPlayerId(player);
 			mLoadAchievementsStatement.setInt(1, playerId);
@@ -244,6 +264,7 @@ public abstract class DatabaseDataStore implements DataStore {
 				achievements.add(new AchievementStore(set.getString(1), player,
 						set.getInt(3)));
 			}
+			set.close();
 			return achievements;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -276,6 +297,56 @@ public abstract class DatabaseDataStore implements DataStore {
 			mConnection.commit();
 		} catch (SQLException e) {
 
+			rollback();
+			throw new DataStoreException(e);
+		}
+	}
+
+	@Override
+	public PlayerData getPlayerData(OfflinePlayer player)
+			throws DataStoreException {
+		try {
+			mGetPlayerStatement[0]
+					.setString(1, player.getUniqueId().toString());
+
+			ResultSet result = mGetPlayerStatement[0].executeQuery();
+
+			if (result.next()) {
+				PlayerData ps = new PlayerData(player,
+						result.getBoolean("LEARNING_MODE"),
+						result.getBoolean("MUTE_MODE"));
+
+				result.close();
+				return ps;
+			}
+
+		} catch (SQLException e) {
+			MobHunting.debug("ERROR in PlayerData.getPlayerData");
+			e.printStackTrace();
+		}
+
+		throw new UserNotFoundException("User " + player.toString()
+				+ " is not present in database");
+	}
+	
+	@Override
+	public void savePlayerData(Set<PlayerData> playerDataSet)
+			throws DataStoreException {
+		try {
+			for (PlayerData playerData : playerDataSet) {
+				mUpdatePlayerData.setString(1, playerData.isLearningMode() ? "1"
+						: "0");
+				mUpdatePlayerData.setString(2, playerData.isMuted() ? "1"
+						: "0");
+				mUpdatePlayerData.setString(3, playerData.getPlayer()
+						.getUniqueId().toString());
+				mUpdatePlayerData.addBatch();
+			}
+			mUpdatePlayerData.executeBatch();
+			mUpdatePlayerData.close();
+
+			mConnection.commit();
+		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);
 		}

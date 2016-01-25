@@ -64,7 +64,7 @@ public class WorldLeaderboard implements DataCallback<List<StatStore>> {
 	WorldLeaderboard() {
 	}
 
-	List<StatStore> getCurrentStats() {
+	public List<StatStore> getCurrentStats() {
 		if (mData == null)
 			return Collections.emptyList();
 		return mData;

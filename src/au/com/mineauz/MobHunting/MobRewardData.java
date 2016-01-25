@@ -18,6 +18,10 @@ public class MobRewardData {
 	private int propability = 100;
 	private int propabilityBase = 100;
 
+	public MobRewardData() {
+		super();
+	}
+
 	public MobRewardData(MobPluginNames pluginName, String mobType,
 			String mobName, String rewardPrize, String cmd, String cmdDesc,
 			int propability, int propabilityBase) {
@@ -101,10 +105,6 @@ public class MobRewardData {
 	// **************************************************************************
 	// Load & Save
 	// **************************************************************************
-	public MobRewardData() {
-		super();
-	}
-
 	public void save(ConfigurationSection section) {
 		section.set("plugin", mobPluginName.toString());
 		section.set("mobName", mobName);
@@ -173,6 +173,7 @@ public class MobRewardData {
 
 	public void read(ConfigurationSection section)
 			throws InvalidConfigurationException, IllegalStateException {
+		
 		mobPluginName = MobPluginNames
 				.valueOf(section.get("plugin").toString());
 		mobName = section.getString("mobName");

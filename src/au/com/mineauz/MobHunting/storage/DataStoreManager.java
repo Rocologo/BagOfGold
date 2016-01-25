@@ -8,6 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.ExtendedMobType;
@@ -148,7 +149,8 @@ public class DataStoreManager {
 				while (true) {
 					synchronized (this) {
 						if (mExit) {
-							break; }
+							break;
+						}
 					}
 
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
@@ -288,4 +290,32 @@ public class DataStoreManager {
 		}
 	}
 
+	/**
+	 * Save all waiting PlayerData changes
+	 * 
+	 * @param player
+	 * @param learning_mode
+	 * @param muted
+	 */
+	public void savePlayerData(OfflinePlayer player, boolean learning_mode,
+			boolean muted) {
+		synchronized (mWaiting) {
+			mWaiting.add(new PlayerData(player, learning_mode, muted));
+		}
+	}
+
+	/**
+	 * @param player
+	 * @return PlayerData for player
+	 */
+	public PlayerData getPlayerData(Player player) {
+		try {
+			return mStore.getPlayerData(player);
+		} catch (UserNotFoundException e) {
+			return new PlayerData(player, true, false);
+		} catch (DataStoreException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

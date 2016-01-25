@@ -57,10 +57,14 @@ public class Config extends AutoConfig {
 
 		setCategoryComment(
 				"mobs",
-				"Here is where you set the base prize in $ for killing a mob of each type"
+				"########################################################################"
+						+ "\nRewards for killing mobs."
+						+ "\n########################################################################"
+						+ "\nHere is where you set the base prize in $ for killing a mob of each type"
 						+ "\nYou can either set a decimal number ex 1.23 or a range 1.23:2.23"
 						+ "\nFor each kill you can run a console command to give the player a reward."
-						+ "\nYou can use the following variables {player},{world},"
+						+ "\nYou can use the following variables:"
+						+ "\n{killer},{killed},{player},{killed_player},{prize},{world},"
 						+ "\n{killerpos},{killedpos}. Killerpos and Killedpos will have the "
 						+ "\nformat <x> <y> <z>. Which could be used to /summon items. "
 						+ "\nAn example could be /summon apple {killedpos} 2. to summon two apples where"
@@ -75,26 +79,42 @@ public class Config extends AutoConfig {
 						+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
 						+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
 						+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
-		setCategoryComment("boss",
-				"Here is where you set the base prize in $ for killing the bosses");
+		setCategoryComment(
+				"boss",
+				"########################################################################"
+						+ "\nRewards for killing bosses"
+						+ "\n########################################################################"
+						+ "\nHere is where you set the base prize in $ for killing the bosses");
 		setCategoryComment(
 				"passive",
-				"Here is where you set the base prize in $ for killing passive/friendly mobs."
+				"########################################################################"
+						+ "\nRewards for killing passive mobs"
+						+ "\n########################################################################"
+						+ "\nHere is where you set the base prize in $ for killing passive/friendly mobs."
 						+ "\nBy default the player does not get a reward for killing friendly mobs."
 						+ "\nIf you make the number negative, the reward will be a fine for killing a passive animal.");
 		setCategoryComment(
 				"bonus",
-				"These are bonus multipliers that can modify the base prize. "
+				"########################################################################"
+						+ "\n Bonus multipliers"
+						+ "\n########################################################################"
+						+ "\nThese are bonus multipliers that can modify the base prize. "
 						+ "\nREMEMBER: These are not in $ but they are a multiplier. "
 						+ "\nSetting to 1 will disable them.");
 		setCategoryComment(
 				"penalty",
-				"These are penalty multipliers that can modify the base prize. "
+				"########################################################################"
+						+ "\nPenalty multipliers"
+						+ "\n########################################################################"
+						+ "\nThese are penalty multipliers that can modify the base prize. "
 						+ "\nREMEMBER: These are not in $ but they are a multiplier. "
 						+ "\nSetting to 1 will disable them.");
 		setCategoryComment(
 				"special",
-				"Here is where you set the prize in $ for achieving a special kill. "
+				"########################################################################"
+						+ "\nSpecial / Achievements rewards"
+						+ "\n########################################################################"
+						+ "\nHere is where you set the prize in $ for achieving a special kill. "
 						+ "\nFor each achievment you can run a console command to give the player a reward. "
 						+ "\nYou can use the following variables {player},{world}."
 						+ "\nAn example could be to give the player permission to fly "
@@ -102,27 +122,42 @@ public class Config extends AutoConfig {
 						+ "\nYou can also specify the message send to the player."
 						+ "\nYou can run many console commands on each line, each command"
 						+ "\nmust be separated by |");
-		setCategoryComment("assists",
-				"They players can get an extra reward if they help each other killing mobs.");
+		setCategoryComment(
+				"assists",
+				"########################################################################"
+						+ "\nRewards for assisting killings"
+						+ "\n########################################################################"
+						+ "\nThey players can get an extra reward if they help each other killing mobs.");
 		setCategoryComment(
 				"killstreak",
-				"Set the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
+				"########################################################################"
+						+ "\nReward for kills in a row"
+						+ "\n########################################################################"
+						+ "\nSet the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
 		setCategoryComment(
 				"multiplier",
-				"You can add multipliers for players with different ranks/groups. To do this"
+				"########################################################################"
+						+ "\nRank multipliers"
+						+ "\n########################################################################"
+						+ "\nYou can add multipliers for players with different ranks/groups. To do this"
 						+ "\nyou must set give the user/group permissions with a format like this:"
 						+ "\nmobhunting.multiplier.guest"
 						+ "\nmobhunting.multiplier.guardian"
 						+ "\nmobhunting.multiplier.staff"
 						+ "\nmobhunting.multiplier.hasVoted"
 						+ "\nmobhunting.multiplier.donator"
+						+ "\nmobhunting.multiplier.op <---- Notice 'op' is reserved for OP'ed players!"
+						+ "\nOP'ed players will only get the OP multiplier"
 						+ "\nyou can make your own permission nodes. You just need to keep the format"
 						+ "\nmobhunting.multiplier.name 'value' in your permissions file and the "
 						+ "format below in this file.");
 
 		setCategoryComment(
 				"pvp",
-				"Pvp configuration. Set pvp-allowed = true if you want give the players a reward when they kill eachother."
+				"########################################################################"
+						+ "\nPvp rewards"
+						+ "\n########################################################################"
+						+ "\nPvp configuration. Set pvp-allowed = true if you want give the players a reward when they kill eachother."
 						+ "\nYou can alsp run a console command when this happens to give the player a reward or punish him."
 						+ "\nYou can you the following variables {player},{world},{killed_player}."
 						+ "\nAn example could be to give the player permission to fly "
@@ -130,6 +165,13 @@ public class Config extends AutoConfig {
 						+ "\nYou can also specify the message send to the player."
 						+ "\nYou can run many console commands on each line, each command"
 						+ "\nmust be separated by |");
+		setCategoryComment(
+				"disguises",
+				"########################################################################"
+						+ "\nDisguises rewards"
+						+ "\n########################################################################"
+						+ "\nHere is where can define the actions when a player is under disguise (attacker)"
+						+ "\n or when the attacked (victim)");
 
 		setCategoryComment(
 				"plugins",
@@ -141,6 +183,12 @@ public class Config extends AutoConfig {
 				"database",
 				"########################################################################"
 						+ "\nDatabase Settings."
+						+ "\n########################################################################");
+
+		setCategoryComment(
+				"updates",
+				"########################################################################"
+						+ "\nUpdate settings"
 						+ "\n########################################################################");
 
 		setCategoryComment(
@@ -733,8 +781,7 @@ public class Config extends AutoConfig {
 	// #####################################################################################
 	// Multiplier by rank / permission
 	// #####################################################################################
-	@ConfigField(name = "rank-multiplier", category = "multiplier"
-			)
+	@ConfigField(name = "rank-multiplier", category = "multiplier")
 	public HashMap<String, String> rankMultiplier = new HashMap<String, String>();
 	{
 		rankMultiplier.put("mobhunting.multiplier.guest", "0.9");
@@ -749,6 +796,10 @@ public class Config extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
 	public boolean pvpAllowed = true;
+	@ConfigField(name = "rob-from-victim", category = "pvp", comment = "Set rob-from-victim=true to steal from the victim or "
+			+ "\nrob-from-victim=false to get the reward mpney from the server.")
+	public boolean robFromVictim = true;
+
 	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize kan be a number to stel x dollars from the killed player,"
 			+ "\nor it kan be a cut in percent of his balance.")
 	public String pvpKillPrize = "1.5%";
@@ -756,6 +807,33 @@ public class Config extends AutoConfig {
 	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"}|give {player} diamond 1";
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
 	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
+
+	// #####################################################################################
+	// Disguises
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-i-disguise", category = "disguises", comment = "Disable integration with iDisguise")
+	public boolean disableIntegrationIDisguise = false;
+
+	@ConfigField(name = "disable-integration-disguisecraft", category = "disguises", comment = "Disable integration with DisguiseCcraft")
+	public boolean disableIntegrationDisguiseCraft = false;
+
+	@ConfigField(name = "disable-integration-libsdisguises", category = "disguises", comment = "Disable integration with LibsDisguises")
+	public boolean disableIntegrationLibsDisguises = false;
+
+	@ConfigField(name = "remove-disguise-when-attacking", category = "disguises", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
+	public boolean removeDisguiseWhenAttacking = true;
+
+	@ConfigField(name = "remove-disguise-when-attacked", category = "disguises", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
+	public boolean removeDisguiseWhenAttacked = true;
+
+	@ConfigField(name = "undercover-multiplier", category = "disguises", comment = "Bonus multiplier for killing while disgused."
+			+ "\nCan be both positive an negative = reward or penalty"
+			+ "\nand over and under 1 = raise or lower the reward. ")
+	public double undercoverMultiplier = 0.95;
+	@ConfigField(name = "cover-blown-multiplier", category = "disguises", comment = "Bonus multiplier for killing a disgused player."
+			+ "\nCan be both positive an negative = reward or penalty"
+			+ "\nand over and under 1 = raise or lower the reward. ")
+	public double coverBlownMultiplier = 1.2;
 
 	// #####################################################################################
 	// Plugin integration
@@ -805,6 +883,18 @@ public class Config extends AutoConfig {
 	public String databaseName = "mobhunting";
 
 	// #####################################################################################
+	// Update Setting
+	// #####################################################################################
+	@ConfigField(name = "update-check", category = "updates", comment = "Check if there is a new version of the plugin available.")
+	public boolean updateCheck = true;
+	@ConfigField(name = "check_every", category = "updates", comment = "Set the number of seconds between each check. Recommended setting is"
+			+ "\ncheck_every: 3600 ~ to check every hour.")
+	public int checkEvery = 3600;
+	@ConfigField(name = "autoupdate", category = "updates", comment = "Set 'autoupdate: true' if you want new updates downloaded and installed."
+			+ "\nYou will still have to reboot the server manually.")
+	public boolean autoupdate = false;
+
+	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
 	@ConfigField(name = "disabled-in-worlds", category = "general", comment = "Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
@@ -826,8 +916,7 @@ public class Config extends AutoConfig {
 	public int killTimeout = 4;
 	@ConfigField(name = "kill-debug", category = "general", comment = "If kills are not being registered in mob hunting. Enable this to see why they arent")
 	public boolean killDebug = false;
-	@ConfigField(name = "update-check", category = "general", comment = "Check if there is a new version of the plugin available.")
-	public boolean updateCheck = true;
+
 	@ConfigField(name = "reward_rounding", category = "general", comment = "Rounding of rewards when you uses a range or %. (ex creeperPrize=10:30) the reward."
 			+ "\nAll numbers except 0 can be used. "
 			+ "\nSet rounding_reward=1 if you want integers. IE. 10,11,12,13,14..."
@@ -835,6 +924,10 @@ public class Config extends AutoConfig {
 			+ "\nSet rounding_reward=5 if you want multipla of 5 IE. 10,15,20,25..."
 			+ "\nSet rounding_reward=2 if you want multipla of 2 IE. 10,12,14,16...")
 	public double rewardRounding = 0.01;
+	@ConfigField(name = "newplayer_learning_mode", category = "general", comment = "When a new playerjoins the server he will by default start"
+			+ "\nin 'LEARNING MODE' and get extra information about when he get rewards and not,"
+			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mh learn'")
+	public boolean learningMode = true;
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
@@ -861,7 +954,7 @@ public class Config extends AutoConfig {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return getPrice(CitizensCompat.getNPCData()
+				return getPrice(CitizensCompat.getMobRewardData()
 						.get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
 				return 0;
@@ -1018,7 +1111,7 @@ public class Config extends AutoConfig {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
+				return CitizensCompat.getMobRewardData()
 						.get(String.valueOf(npc.getId()))
 						.getConsoleRunCommand();
 			} else
@@ -1136,7 +1229,7 @@ public class Config extends AutoConfig {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
+				return CitizensCompat.getMobRewardData()
 						.get(String.valueOf(npc.getId()))
 						.getRewardDescription();
 			} else
@@ -1249,7 +1342,7 @@ public class Config extends AutoConfig {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
+				return CitizensCompat.getMobRewardData()
 						.get(String.valueOf(npc.getId())).getPropability();
 			} else
 				return 100;
@@ -1362,7 +1455,7 @@ public class Config extends AutoConfig {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getNPCData()
+				return CitizensCompat.getMobRewardData()
 						.get(String.valueOf(npc.getId())).getPropabilityBase();
 			} else
 				return 100;

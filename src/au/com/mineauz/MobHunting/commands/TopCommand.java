@@ -19,7 +19,7 @@ public class TopCommand implements ICommand {
 
 	@Override
 	public String getName() {
-		return "top"; //$NON-NLS-1$
+		return "top";
 	}
 
 	@Override
@@ -34,14 +34,14 @@ public class TopCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label
-				+ ChatColor.GOLD
-				+ " <type> (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" }; //$NON-NLS-1$ //$NON-NLS-2$
+		return new String[] { label + ChatColor.GOLD
+				+ " <type> (day|week|month|year|alltime)" + ChatColor.GREEN
+				+ " [count]" };
 	}
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("mobhunting.commands.top.description"); //$NON-NLS-1$
+		return Messages.getString("mobhunting.commands.top.description");
 	}
 
 	@Override
@@ -62,9 +62,9 @@ public class TopCommand implements ICommand {
 		StatType selectedType = StatType.parseStat(args[0]);
 		if (selectedType == null) {
 			sender.sendMessage(ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.top.unknown-stat", "stat", ChatColor.YELLOW + args[0] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+					+ Messages.getString(
+							"mobhunting.commands.top.unknown-stat", "stat",
+							ChatColor.YELLOW + args[0] + ChatColor.RED));
 			return true;
 		}
 
@@ -72,9 +72,9 @@ public class TopCommand implements ICommand {
 		TimePeriod selectedPeriod = TimePeriod.parsePeriod(args[1]);
 		if (selectedPeriod == null) {
 			sender.sendMessage(ChatColor.RED
-					+ Messages
-							.getString(
-									"mobhunting.commands.top.unknown-period", "period", ChatColor.YELLOW + args[1] + ChatColor.RED)); //$NON-NLS-1$ //$NON-NLS-2$
+					+ Messages.getString(
+							"mobhunting.commands.top.unknown-period", "period",
+							ChatColor.YELLOW + args[1] + ChatColor.RED));
 			return true;
 		}
 
@@ -85,13 +85,13 @@ public class TopCommand implements ICommand {
 				if (count <= 0 || count > 100) {
 					sender.sendMessage(ChatColor.RED
 							+ Messages
-									.getString("mobhunting.commands.top.invalid-range")); //$NON-NLS-1$
+									.getString("mobhunting.commands.top.invalid-range"));
 					return true;
 				}
 			} catch (NumberFormatException e) {
 				sender.sendMessage(ChatColor.RED
 						+ Messages
-								.getString("mobhunting.commands.top.invalid-number")); //$NON-NLS-1$
+								.getString("mobhunting.commands.top.invalid-number"));
 				return true;
 			}
 		}
@@ -110,10 +110,10 @@ public class TopCommand implements ICommand {
 
 		if (args.length == 1) {
 			for (StatType type : StatType.values())
-				items.add(type.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
+				items.add(type.translateName().replaceAll(" ", "_"));
 		} else if (args.length == 2) {
 			for (TimePeriod period : TimePeriod.values())
-				items.add(period.translateName().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
+				items.add(period.translateName().replaceAll(" ", "_"));
 		} else
 			return null;
 
@@ -146,13 +146,13 @@ public class TopCommand implements ICommand {
 		@Override
 		public void onCompleted(List<StatStore> data) {
 			ArrayList<String> lines = new ArrayList<String>();
-			String name = ""; //$NON-NLS-1$
+			String name = "";
 			if (!data.isEmpty())
 				name = data.get(0).getType().translateName();
 			else {
-				mSender.sendMessage(Messages
-						.getString(
-								"mobhunting.commands.top.results.empty", "period", mPeriod.translateNameFriendly())); //$NON-NLS-1$ //$NON-NLS-2$
+				mSender.sendMessage(Messages.getString(
+						"mobhunting.commands.top.results.empty", "period",
+						mPeriod.translateNameFriendly()));
 				return;
 			}
 
@@ -182,7 +182,7 @@ public class TopCommand implements ICommand {
 		@Override
 		public void onError(Throwable error) {
 			mSender.sendMessage(ChatColor.RED
-					+ Messages.getString("mobhunting.commands.base.error")); //$NON-NLS-1$
+					+ Messages.getString("mobhunting.commands.base.error"));
 			error.printStackTrace();
 		}
 
