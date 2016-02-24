@@ -215,8 +215,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
 		mUpdatePlayerName = connection
 				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
-		mUpdatePlayerData = connection
-				.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?, MUTE_MODE=? WHERE UUID=?;");
+		mUpdatePlayerData = connection.prepareStatement("REPLACE INTO mh_Players "
+				+ "(UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
+				+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
 	}
 
 	@Override

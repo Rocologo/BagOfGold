@@ -232,9 +232,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new LearnCommand());
 		cmd.registerCommand(new MuteCommand());
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			cmd.registerCommand(new NpcCommand());
-			// getServer().getPluginManager().registerEvents(
-			// new MobHuntingTrait(), this);
+			//cmd.registerCommand(new NpcCommand());
 		}
 
 		registerAchievements();
@@ -1080,7 +1078,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					killed.getType(), killed.getEntityId());
 			if (killer != null && killed != null)
 				learn(killer, "There is no reward for killing this mob/player:"
-						+ killed.getCustomName());
+						+ killed.getName());
 			return;
 		}
 

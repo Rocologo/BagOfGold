@@ -334,12 +334,14 @@ public abstract class DatabaseDataStore implements DataStore {
 			throws DataStoreException {
 		try {
 			for (PlayerData playerData : playerDataSet) {
-				mUpdatePlayerData.setString(1, playerData.isLearningMode() ? "1"
-						: "0");
-				mUpdatePlayerData.setString(2, playerData.isMuted() ? "1"
-						: "0");
-				mUpdatePlayerData.setString(3, playerData.getPlayer()
+				mUpdatePlayerData.setString(1, playerData.getPlayer()
 						.getUniqueId().toString());
+				mUpdatePlayerData.setString(2, playerData.getPlayer()
+						.getName().toString());
+				mUpdatePlayerData.setInt(3, playerData.isLearningMode() ? 1
+						: 0);
+				mUpdatePlayerData.setInt(4, playerData.isMuted() ? 1
+						: 0);
 				mUpdatePlayerData.addBatch();
 			}
 			mUpdatePlayerData.executeBatch();

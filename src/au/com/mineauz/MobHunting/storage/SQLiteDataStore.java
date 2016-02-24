@@ -75,17 +75,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ dataString + ", PRIMARY KEY(PLAYER_ID))");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))"); //$NON-NLS-1$
 
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_MobTypes (MOB_ID INTEGER PRIMARY KEY, MOB_NAME TEXT NOT NULL)");
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Kills ("
-				+ " PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID),"
-				+ " MOB_ID INTEGER REFERENCES mh_MobTypes(MOB_ID),"
-				+ " PERIOD TEXT NOT NULL,"
-				// PERIOD={D,W,M,Y,A} (Day, Week, Month, Year, All Time)
-				+ " ID CHAR(6) NOT NULL,"
-				+ " KILLS INTEGER NOT NULL DEFAULT 0,"
-				+ " ASSISTS INTEGER NOT NULL DEFAULT 0,"
-				+ " PRIMARY KEY(PLAYER_ID, MOB_ID, PERIOD))");
-
 		setupTrigger(connection);
 
 		create.close();
@@ -177,7 +166,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		mUpdatePlayerName = connection
 				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
 		mUpdatePlayerData = connection
-				.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?, MUTE_MODE=? WHERE UUID=?;");
+				.prepareStatement("INSERT OR REPLACE INTO mh_Players "
+						+ "(UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
+						+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
 	}
 
 	@Override

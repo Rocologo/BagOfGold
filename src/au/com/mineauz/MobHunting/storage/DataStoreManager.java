@@ -312,6 +312,8 @@ public class DataStoreManager {
 		try {
 			return mStore.getPlayerData(player);
 		} catch (UserNotFoundException e) {
+			MobHunting.debug("Saving new MobHunting player to database: %s", player);
+			savePlayerData(player, true, false);
 			return new PlayerData(player, true, false);
 		} catch (DataStoreException e) {
 			e.printStackTrace();

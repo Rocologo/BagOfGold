@@ -43,7 +43,7 @@ public class CitizensCompat implements Listener {
 			MobHunting.instance.getDataFolder(), "citizens-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
 
-	private MasterMobHunterManager masterMobHunterManager = new MasterMobHunterManager();
+	private static MasterMobHunterManager masterMobHunterManager = new MasterMobHunterManager();
 
 	public CitizensCompat() {
 		if (isDisabledInConfig()) {
@@ -52,7 +52,6 @@ public class CitizensCompat implements Listener {
 		} else {
 			mPlugin = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(
 					"Citizens");
-			MobHunting.debug("After getPlugin");
 			// wait 5 seconds or until Citizens is fully loaded.
 			MobHunting.instance
 					.getServer()
@@ -81,19 +80,21 @@ public class CitizensCompat implements Listener {
 									masterMobHunterManager.loadData();
 									masterMobHunterManager.saveData();
 								}
-							}, 20 * 5); // 20ticks/sec * 5 sec.
+							}, 20 * 0); // 20ticks/sec * 5 sec.
 
 			// Update MasterMobHunter Citizens every x second.
-			Bukkit.getScheduler().runTaskTimer(MobHunting.instance, new Runnable() {
-				public void run() {
-					MobHunting
-							.debug("MobHuntingTrait - starting backgroud update process ");
-					masterMobHunterManager.update();
-				}
-			}, 1L, 400); // MobHunting.config().leaderboardUpdatePeriod
-			
+			Bukkit.getScheduler().runTaskTimer(MobHunting.instance,
+					new Runnable() {
+						public void run() {
+							// MobHunting.debug("CitizensCompat - running update process ");
+							masterMobHunterManager.update();
+						}
+					}, 1L, MobHunting.config().masterMobHuntercheckEvery * 20); // MobHunting.config().leaderboardUpdatePeriod
+
 			Bukkit.getPluginManager().registerEvents(new MobHuntingTrait(),
 					MobHunting.instance);
+			Bukkit.getPluginManager().registerEvents(
+					new MasterMobHunterManager(), MobHunting.instance);
 		}
 	}
 
@@ -110,9 +111,12 @@ public class CitizensCompat implements Listener {
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config
 						.getConfigurationSection(key);
-				MobRewardData npc = new MobRewardData();
-				npc.read(section);
-				mMobRewardData.put(key, npc);
+				MobRewardData mrd = new MobRewardData();
+				mrd.read(section);
+				mMobRewardData.put(key, mrd);
+				// NPCRegistry registry = CitizensAPI.getNPCRegistry();
+				// NPC npc = registry.getById(Integer.valueOf(key));
+				// npc.spawn(npc.getStoredLocation());
 			}
 			MobHunting.debug("Loaded %s Sentry Traits.", mMobRewardData.size());
 		} catch (IOException e) {
@@ -129,9 +133,10 @@ public class CitizensCompat implements Listener {
 
 			config.load(fileMobRewardData);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			MobRewardData npc = new MobRewardData();
-			npc.read(section);
-			mMobRewardData.put(key, npc);
+			MobRewardData mrd = new MobRewardData();
+			mrd.read(section);
+			mMobRewardData.put(key, mrd);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -182,7 +187,6 @@ public class CitizensCompat implements Listener {
 		}
 	}
 
-	
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
@@ -194,8 +198,15 @@ public class CitizensCompat implements Listener {
 		return supported;
 	}
 
+	public static MasterMobHunterManager getManager() {
+		return masterMobHunterManager;
+	}
+
 	public static boolean isNPC(Entity entity) {
-		return CitizensAPI.getNPCRegistry().isNPC(entity);
+		if (isCitizensSupported())
+			return CitizensAPI.getNPCRegistry().isNPC(entity);
+		else
+			return false;
 	}
 
 	public static int getNPCId(Entity entity) {
@@ -293,23 +304,23 @@ public class CitizensCompat implements Listener {
 						saveCitizensData(String.valueOf(npc.getId()));
 					}
 				} else if (isMasterMobHunter(npc.getEntity())) {
-					if (masterMobHunterManager.getMasterMobHunterData() != null
-							&& !masterMobHunterManager.getMasterMobHunterData().containsKey(String
-									.valueOf(npc.getId()))) {
+					if (masterMobHunterManager.getAll() != null
+							&& !masterMobHunterManager.getAll().containsKey(
+									String.valueOf(npc.getId()))) {
 						MobHunting.debug(
 								"A New MasterMobHunter NPC found. ID=%s,%s",
 								npc.getId(), npc.getName());
-						masterMobHunterManager.getMasterMobHunterData().put(npc.getId(),
+						masterMobHunterManager.put(npc.getId(),
 								new MasterMobHunterData(npc.getId()));
 						masterMobHunterManager.saveData(npc.getId());
 					}
 				} else {
 					if (mMobRewardData.containsKey(String.valueOf(npc.getId())))
 						mMobRewardData.remove(String.valueOf(npc.getId()));
-					if (masterMobHunterManager.getMasterMobHunterData().containsKey(String.valueOf(npc
-							.getId())))
-						masterMobHunterManager.getMasterMobHunterData()
-								.remove(String.valueOf(npc.getId()));
+					if (masterMobHunterManager.getAll().containsKey(
+							String.valueOf(npc.getId())))
+						masterMobHunterManager.getAll().remove(
+								String.valueOf(npc.getId()));
 					MobHunting
 							.debug("The spawned NPC was not Sentry and MasterMobHunter. Traits=s%",
 									npc.getTraits().toString());

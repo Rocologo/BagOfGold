@@ -174,6 +174,11 @@ public class Config extends AutoConfig {
 						+ "\n or when the attacked (victim)");
 
 		setCategoryComment(
+				"npc",
+				"########################################################################"
+						+ "\nNPC / Citizens / MasterMobHunter settings."
+						+ "\n########################################################################");
+		setCategoryComment(
 				"plugins",
 				"########################################################################"
 						+ "\nIntegration to otherplugins."
@@ -883,7 +888,7 @@ public class Config extends AutoConfig {
 	public String databaseName = "mobhunting";
 
 	// #####################################################################################
-	// Update Setting
+	// Update Settings
 	// #####################################################################################
 	@ConfigField(name = "update-check", category = "updates", comment = "Check if there is a new version of the plugin available.")
 	public boolean updateCheck = true;
@@ -894,6 +899,13 @@ public class Config extends AutoConfig {
 			+ "\nYou will still have to reboot the server manually.")
 	public boolean autoupdate = false;
 
+	// #####################################################################################
+	// MasterMobHunter Settings
+	// #####################################################################################
+	@ConfigField(name = "masterMobHunter_check_every", category = "npc", comment = "Set the number of seconds between each check. Recommended setting is"
+				+ "\nmasterMobHunter_check_every: 300 ~ to update all MasterMobHunters every 5th minute.")
+	public int masterMobHuntercheckEvery = 300;
+		
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
