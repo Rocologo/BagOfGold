@@ -232,7 +232,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new LearnCommand());
 		cmd.registerCommand(new MuteCommand());
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			//cmd.registerCommand(new NpcCommand());
+			cmd.registerCommand(new NpcCommand());
 		}
 
 		registerAchievements();
@@ -291,6 +291,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 		}
+		CitizensCompat.shutdown();
 	}
 
 	private void registerAchievements() {

@@ -117,8 +117,14 @@ public class NpcCommand implements ICommand, Listener {
 		Player p = (Player) sender;
 		NPC npc;
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
+			MasterMobHunterManager masterMobHunterManager = CitizensCompat
+					.getManager();
 			npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
 			if (args.length == 1 && args[0].equalsIgnoreCase("remove")) {
+				if (masterMobHunterManager.contains(npc.getId())) {
+					masterMobHunterManager.remove(npc.getId());
+					masterMobHunterManager.saveData(npc.getId());
+				}
 				npc.destroy();
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("update")) {
@@ -135,7 +141,7 @@ public class NpcCommand implements ICommand, Listener {
 				npc.despawn();
 				return true;
 			} else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
-				StatType statType = StatType.parseStat(args[1]);
+				StatType statType = StatType.fromColumnName(args[1]);
 				if (statType == null) {
 					MobHunting.debug("statType=%s", statType);
 					sender.sendMessage(ChatColor.RED
@@ -167,10 +173,10 @@ public class NpcCommand implements ICommand, Listener {
 				npc.spawn(p.getEyeLocation());
 				MobHunting.debug("Creating NPC id=%s,stat=%s,per=%s,rank=%s",
 						npc.getId(), statType.translateName(), period, rank);
-				MasterMobHunterManager masterMobHunterManager = CitizensCompat.getManager();
+
 				masterMobHunterManager.put(npc.getId(),
-						new MasterMobHunterData(npc.getId(), statType, period,0,
-								rank, false));
+						new MasterMobHunterData(npc.getId(), statType, period,
+								0, rank, false));
 				masterMobHunterManager.saveData(npc.getId());
 				return true;
 			}

@@ -500,7 +500,7 @@ public class Config extends AutoConfig {
 	private int horseFrequencyBase = 100;
 
 	@ConfigField(name = "mushroom-cow", category = "passive")
-	private String mushroomCowPrize = "";
+	private String mushroomCowPrize = "0";
 	@ConfigField(name = "mushroom-cow-cmd", category = "passive")
 	private String mushroomCowCmd = "";
 	@ConfigField(name = "mushroom-cow-cmd-desc", category = "passive")

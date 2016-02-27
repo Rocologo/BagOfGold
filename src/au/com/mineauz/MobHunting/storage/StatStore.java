@@ -19,7 +19,7 @@ public class StatStore {
 	public StatStore(StatType type, OfflinePlayer player) {
 		this.type = type;
 		this.player = player;
-		amount = 0;
+		amount = 1; //add one kill first time.
 	}
 
 	/**

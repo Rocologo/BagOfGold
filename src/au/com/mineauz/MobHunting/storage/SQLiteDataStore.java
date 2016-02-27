@@ -183,6 +183,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	@Override
 	public void saveStats(Set<StatStore> stats) throws DataStoreException {
 		try {
+			MobHunting.debug("Saving stats to Database.");
 			Statement statement = mConnection.createStatement();
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
@@ -209,6 +210,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 										stat.getAmount()));
 			statement.executeBatch();
 			statement.close();
+			mConnection.commit();
+			MobHunting.debug("Saved.");
 		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);

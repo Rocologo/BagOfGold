@@ -152,7 +152,6 @@ public class DataStoreManager {
 							break;
 						}
 					}
-
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
 
 					Thread.sleep(mSaveInterval * 50);
@@ -312,7 +311,8 @@ public class DataStoreManager {
 		try {
 			return mStore.getPlayerData(player);
 		} catch (UserNotFoundException e) {
-			MobHunting.debug("Saving new MobHunting player to database: %s", player);
+			MobHunting.debug("Saving new MobHunting player to database: %s",
+					player);
 			savePlayerData(player, true, false);
 			return new PlayerData(player, true, false);
 		} catch (DataStoreException e) {
