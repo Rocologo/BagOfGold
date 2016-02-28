@@ -87,10 +87,10 @@ public class NpcCommand implements ICommand, Listener {
 			if (args.length == 1) {
 				items.add("create");
 				items.add("remove");
-				items.add("update");
 				items.add("select");
 				items.add("spawn");
 				items.add("despawn");
+				items.add("update");
 			} else if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("create")) {
 					StatType[] values = StatType.values();
@@ -127,8 +127,6 @@ public class NpcCommand implements ICommand, Listener {
 				}
 				npc.destroy();
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("update")) {
-
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
 				npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
 				// Location loc =p.getEyeLocation();
@@ -140,7 +138,11 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("despawn")) {
 				npc.despawn();
 				return true;
-			} else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("update")) {
+				sender.sendMessage("Updating all MasterMobHunter NPCs");
+				masterMobHunterManager.forceUpdate();
+				return true;} 
+			else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
 				StatType statType = StatType.fromColumnName(args[1]);
 				if (statType == null) {
 					MobHunting.debug("statType=%s", statType);

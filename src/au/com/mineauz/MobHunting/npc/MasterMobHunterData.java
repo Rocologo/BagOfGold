@@ -57,7 +57,7 @@ public class MasterMobHunterData implements Listener,
 		this.statType = StatType.KillsTotal;
 		this.period = TimePeriod.AllTime;
 		this.numberOfKills = 0;
-		this.rank = 0;
+		this.rank = 1;
 		this.world = null;
 		this.signLocations.clear();
 		this.redstonePoweredSign = false;
@@ -144,7 +144,7 @@ public class MasterMobHunterData implements Listener,
 		ArrayList<StatStore> altData = new ArrayList<StatStore>(data.size());
 		for (StatStore stat : data) {
 			if (stat.getAmount() != 0) {
-				// MobHunting.debug("Stat=%s", stat);
+				//MobHunting.debug("Stat=%s", stat);
 				altData.add(stat);
 			}
 		}
@@ -161,12 +161,15 @@ public class MasterMobHunterData implements Listener,
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		NPC npc = n.getById(id);
 		if (npc != null) {
+			//MobHunting.debug("rank=%s stats.size()=%s", rank,stats.size());
 			if (rank < stats.size() + 1) {
-				if (!stats.get(rank - 1).getPlayer().getName()
-						.equals(npc.getName())) {
-					npc.setName(stats.get(rank - 1).getPlayer().getName());
+				if (rank != 0) {
+					if (!stats.get(rank - 1).getPlayer().getName()
+							.equals(npc.getName())) {
+						npc.setName(stats.get(rank - 1).getPlayer().getName());
+					}
+					numberOfKills = stats.get(rank - 1).getAmount();
 				}
-				numberOfKills = stats.get(rank - 1).getAmount();
 				if (signLocations.size() > 0) {
 					for (Location loc : signLocations) {
 						if (loc.getBlock().getState() instanceof org.bukkit.block.Sign) {
@@ -197,9 +200,6 @@ public class MasterMobHunterData implements Listener,
 		section.set("period", period.toString());
 		section.set("kills", numberOfKills);
 		section.set("rank", rank);
-		MobHunting.debug("WriteData=%s,%s,%s,%s loc=%s",
-				statType.getDBColumn(), period.toString(), numberOfKills, rank,
-				signLocations.size());
 		if (world != null)
 			section.set("world", world.getUID().toString());
 		if (signLocations.size() > 0)
@@ -212,13 +212,9 @@ public class MasterMobHunterData implements Listener,
 			throws InvalidConfigurationException, IllegalStateException {
 		id = Integer.valueOf(section.getString("id"));
 		statType = StatType.fromColumnName(section.getString("stattype"));
-		// MobHunting.debug("stattype=%s ", statType.translateName());
 		period = TimePeriod.parsePeriod(section.getString("period"));
 		numberOfKills = Integer.valueOf(section.getInt("kills"));
 		rank = Integer.valueOf(section.getInt("rank"));
-		// MobHunting.debug("ReadData=%s,%s,%s,%s", statType.translateName(),
-		// period.toString(), numberOfKills, rank);
-
 		if (section.contains("world"))
 			world = Bukkit
 					.getWorld(UUID.fromString(section.getString("world")));

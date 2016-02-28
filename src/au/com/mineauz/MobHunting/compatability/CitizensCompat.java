@@ -52,6 +52,12 @@ public class CitizensCompat implements Listener {
 		} else {
 			mPlugin = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(
 					"Citizens");
+
+			// Register MobHunting Trait with Citizens.
+			net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(
+					net.citizensnpcs.api.trait.TraitInfo.create(
+							MobHuntingTrait.class).withName("MasterMobHunter"));
+
 			// wait 5 seconds or until Citizens is fully loaded.
 			MobHunting.instance
 					.getServer()
@@ -59,14 +65,7 @@ public class CitizensCompat implements Listener {
 					.scheduleSyncDelayedTask(MobHunting.instance,
 							new Runnable() {
 								public void run() {
-									// Register MobHunting Trait with Citizens.
-									net.citizensnpcs.api.CitizensAPI
-											.getTraitFactory()
-											.registerTrait(
-													net.citizensnpcs.api.trait.TraitInfo
-															.create(MobHuntingTrait.class)
-															.withName(
-																	"MasterMobHunter"));
+
 									MobHunting.instance
 											.getLogger()
 											.info("Enabling compatability with Citizens ("
@@ -81,8 +80,11 @@ public class CitizensCompat implements Listener {
 
 									masterMobHunterManager.initialize();
 									masterMobHunterManager.saveData();
+
+									findMissingNPC();
+
 								}
-							}, 20 * 0); // 20ticks/sec * 5 sec.
+							}, 20 * 10); // 20ticks/sec * 5 sec.
 
 		}
 	}
@@ -127,8 +129,9 @@ public class CitizensCompat implements Listener {
 				}
 
 				if (n != 0) {
-					MobHunting
-							.debug("Saving Sentry Trait Reward data to file.");
+					MobHunting.debug(
+							"Saving %s Sentry Trait Reward data to file.",
+							mMobRewardData.size());
 					config.save(fileMobRewardData);
 				}
 			}
@@ -257,44 +260,43 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onNPCSpawnEvent(NPCSpawnEvent event) {
-		NPCRegistry n = CitizensAPI.getNPCRegistry();
-		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
-			NPC npc = npcList.next();
-			if (npc.getId() == event.getNPC().getId()) {
-				MobHunting.debug("NPC=%s was spawned: ID=%s", npc.getName(),
-						npc.getId());
-				if (isSentry(npc.getEntity())) {
-					if (mMobRewardData != null
-							&& !mMobRewardData.containsKey(String.valueOf(npc
-									.getId()))) {
-						MobHunting.debug("A new Sentry NPC found. ID=%s,%s",
-								npc.getId(), npc.getName());
-						mMobRewardData.put(String.valueOf(npc.getId()),
-								new MobRewardData(
-										MobPlugins.MobPluginNames.Citizens,
-										"npc", npc.getFullName(), "10",
-										"give {player} iron_sword 1",
-										"You got an Iron sword.", 100, 100));
-						saveCitizensData(String.valueOf(npc.getId()));
-					}
-				} else if (isMasterMobHunter(npc.getEntity())) {
-					if (masterMobHunterManager.getAll() != null
-							&& !masterMobHunterManager.getAll().containsKey(
-									String.valueOf(npc.getId()))) {
-						MobHunting.debug(
-								"A New MasterMobHunter NPC found. ID=%s,%s",
-								npc.getId(), npc.getName());
-						masterMobHunterManager.put(npc.getId(),
-								new MasterMobHunterData(npc.getId()));
-						masterMobHunterManager.saveData(npc.getId());
-					}
-				} else {
-					MobHunting
-							.debug("The spawned NPC was not Sentry and MasterMobHunter. Traits=s%",
-									npc.getTraits().toString());
+		NPC npc = event.getNPC();
+		// NPCRegistry n = CitizensAPI.getNPCRegistry();
+		// for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
+		// NPC npc = npcList.next();
+		if (npc.getId() == event.getNPC().getId()) {
+			MobHunting.debug("NPC=%s was spawned: ID=%s", npc.getName(),
+					npc.getId());
+			if (isSentry(npc.getEntity())) {
+				if (mMobRewardData != null
+						&& !mMobRewardData.containsKey(String.valueOf(npc
+								.getId()))) {
+					MobHunting.debug("A new Sentry NPC found. ID=%s,%s",
+							npc.getId(), npc.getName());
+					mMobRewardData.put(String.valueOf(npc.getId()),
+							new MobRewardData(
+									MobPlugins.MobPluginNames.Citizens, "npc",
+									npc.getFullName(), "10",
+									"give {player} iron_sword 1",
+									"You got an Iron sword.", 100, 100));
+					saveCitizensData(String.valueOf(npc.getId()));
 				}
+			} else if (isMasterMobHunter(npc.getEntity())) {
+				if (!masterMobHunterManager.contains(npc.getId())) {
+					MobHunting.debug(
+							"A New MasterMobHunter NPC found. ID=%s,%s",
+							npc.getId(), npc.getName());
+					masterMobHunterManager.put(npc.getId(),
+							new MasterMobHunterData(npc.getId()));
+					masterMobHunterManager.saveData(npc.getId());
+				}
+			} else {
+				MobHunting
+						.debug("The spawned NPC was not Sentry and MasterMobHunter. Traits=s%",
+								npc.getTraits().toString());
 			}
 		}
+		// }
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -305,6 +307,37 @@ public class CitizensCompat implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerCreateNPCEvent(PlayerCreateNPCEvent event) {
 		// MobHunting.debug("NPCCreateNPCEvent");
+	}
+
+	private void findMissingNPC() {
+		NPCRegistry n = CitizensAPI.getNPCRegistry();
+		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
+			NPC npc = npcList.next();
+			if (isSentry(npc.getEntity())) {
+				if (mMobRewardData != null
+						&& !mMobRewardData.containsKey(String.valueOf(npc
+								.getId()))) {
+					MobHunting.debug("A new Sentry NPC found. ID=%s,%s",
+							npc.getId(), npc.getName());
+					mMobRewardData.put(String.valueOf(npc.getId()),
+							new MobRewardData(
+									MobPlugins.MobPluginNames.Citizens, "npc",
+									npc.getFullName(), "10",
+									"give {player} iron_sword 1",
+									"You got an Iron sword.", 100, 100));
+					saveCitizensData(String.valueOf(npc.getId()));
+				}
+			} else if (isMasterMobHunter(npc.getEntity())) {
+				if (!masterMobHunterManager.contains(npc.getId())) {
+					MobHunting.debug(
+							"A New MasterMobHunter NPC found. ID=%s,%s",
+							npc.getId(), npc.getName());
+					masterMobHunterManager.put(npc.getId(),
+							new MasterMobHunterData(npc.getId()));
+					masterMobHunterManager.saveData(npc.getId());
+				}
+			}
+		}
 	}
 
 }
