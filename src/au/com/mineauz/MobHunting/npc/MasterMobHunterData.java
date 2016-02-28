@@ -161,23 +161,24 @@ public class MasterMobHunterData implements Listener,
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		NPC npc = n.getById(id);
 		if (npc != null) {
-			//MobHunting.debug("rank=%s stats.size()=%s", rank,stats.size());
+			MobHunting.debug("rank=%s stats.size()=%s", rank,stats.size());
 			if (rank < stats.size() + 1) {
 				if (rank != 0) {
 					if (!stats.get(rank - 1).getPlayer().getName()
 							.equals(npc.getName())) {
 						npc.setName(stats.get(rank - 1).getPlayer().getName());
 					}
-					numberOfKills = stats.get(rank - 1).getAmount();
+					//MobHunting.debug("Set No of kills=%s", stats.get(rank-1).getAmount());
+					this.numberOfKills = stats.get(rank - 1).getAmount();
 				}
 				if (signLocations.size() > 0) {
 					for (Location loc : signLocations) {
 						if (loc.getBlock().getState() instanceof org.bukkit.block.Sign) {
 							org.bukkit.block.Sign s = (org.bukkit.block.Sign) loc
 									.getBlock().getState();
-							s.setLine(1, (rank + ". " + npc.getName()));
-							s.setLine(2, (period.translateNameFriendly()));
-							s.setLine(3, (numberOfKills + " " + statType
+							s.setLine(1, (this.rank + ". " + npc.getName()));
+							s.setLine(2, (this.period.translateNameFriendly()));
+							s.setLine(3, (stats.get(rank - 1).getAmount() + " " + this.statType
 									.translateName()));
 							s.update();
 						} else {

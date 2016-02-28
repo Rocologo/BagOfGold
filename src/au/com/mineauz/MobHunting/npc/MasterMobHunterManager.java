@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -48,16 +50,17 @@ public class MasterMobHunterManager implements Listener {
 				MobHunting.instance);
 
 	}
-	
+
 	public void forceUpdate() {
-		mUpdater = Bukkit.getScheduler().runTaskAsynchronously(MobHunting.instance,
-				new Updater());
+		mUpdater = Bukkit.getScheduler().runTaskAsynchronously(
+				MobHunting.instance, new Updater());
 	}
 
 	private class Updater implements Runnable {
 		@Override
 		public void run() {
-			MobHunting.debug("Refreshing %s MasterMobHunter", mMasterMobHunterData.size());
+			MobHunting.debug("Refreshing %s MasterMobHunter",
+					mMasterMobHunterData.size());
 			for (int id : mMasterMobHunterData.keySet()) {
 				mMasterMobHunterData.get(id).update();
 			}
@@ -164,17 +167,19 @@ public class MasterMobHunterManager implements Listener {
 	// ****************************************************************************
 	// Events
 	// ****************************************************************************
-	// TODO: must be removed.
 	@EventHandler
 	public void onClick(NPCLeftClickEvent event) {
-		MobHunting.debug("MasterMobHunterManager - Leftclick :"
-				+ event.getNPC().getId());
+		MobHunting.debug(
+				"MasterMobHunterManager - Leftclick :%s, No of NPCs=%s", event
+						.getNPC().getId(), mMasterMobHunterData.size());
 		NPC npc = event.getNPC();
 		if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
 			npc.setName("MasterMobHunter");
-			//MobHunting.debug("mMasterMobHunterData.size=%s",
-			//		mMasterMobHunterData.size());
-			MasterMobHunterData mmhd = mMasterMobHunterData.get(npc.getId());
+			MasterMobHunterData mmhd = new MasterMobHunterData();
+			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
+			mmhd.update();
+			//TODO: wait 10 sec and continue
+			// mmhd.refresh();
 			event.getClicker().sendMessage(
 					"You LEFT clicked a MasterMobHunter NPC(" + npc.getId()
 							+ ")=" + event.getNPC().getName() + " rank="
@@ -182,6 +187,7 @@ public class MasterMobHunterManager implements Listener {
 							+ mmhd.getNumberOfKills() + " Period="
 							+ mmhd.getPeriod().translateName() + " StatType="
 							+ mmhd.getStatType().translateName());
+			mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
 		}
 	}
 
@@ -191,15 +197,26 @@ public class MasterMobHunterManager implements Listener {
 				+ event.getNPC().getId());
 		NPC npc = event.getNPC();
 		if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
-			//MobHunting.debug("NPC name=%s", npc.getName());
-			MasterMobHunterData mmhd = mMasterMobHunterData.get(npc.getId());
-			event.getClicker().sendMessage(
-					"You RIGHT clicked a MasterMobHunter NPC(" + npc.getId()
-							+ ")=" + event.getNPC().getName() + " rank="
-							+ mmhd.getRank() + " kills="
-							+ mmhd.getNumberOfKills() + " Period="
-							+ mmhd.getPeriod().translateName() + " StatType="
-							+ mmhd.getStatType().translateName());
+			MasterMobHunterData mmhd = new MasterMobHunterData();
+			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
+			mmhd.update();
+			//TODO: wait 10 sec and continue
+			// mmhd.refresh();
+			if (mMasterMobHunterData.containsKey(npc.getId())) {
+				// MasterMobHunterData mmhd = new MasterMobHunterData();
+				// mmhd = mMasterMobHunterData.get(npc.getId());
+				event.getClicker().sendMessage(
+						"You RIGHT clicked a MasterMobHunter NPC("
+								+ npc.getId() + ")=" + event.getNPC().getName()
+								+ " rank=" + mmhd.getRank() + " kills="
+								+ mmhd.getNumberOfKills() + " Period="
+								+ mmhd.getPeriod().translateName()
+								+ " StatType="
+								+ mmhd.getStatType().translateName());
+				mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
+			} else
+				MobHunting.debug("NPC ID %s DOES NOT EXISTS!!!", event.getNPC()
+						.getId());
 		}
 	}
 
@@ -222,12 +239,16 @@ public class MasterMobHunterManager implements Listener {
 		if (npc != null) {
 			if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
 				Location location = event.getBlock().getLocation();
-				MasterMobHunterData mmhd = mMasterMobHunterData.get(id);
+				MasterMobHunterData mmhd = new MasterMobHunterData();
+				mmhd = mMasterMobHunterData.get(id);
+				mmhd.update();
+				//TODO: wait 10 sec and continue
+				// mmhd.refresh();
 				mmhd.putLocation(location);
 				mMasterMobHunterData.put(id, mmhd);
 				saveData(id);
-				p.sendMessage(p.getName() + " placed a MobHunting Sign (ID=" + id
-						+ ")");
+				p.sendMessage(p.getName() + " placed a MobHunting Sign (ID="
+						+ id + ")");
 				// event.setLine(0, "");
 				event.setLine(1,
 						(mMasterMobHunterData.get(id).getRank() + "." + npc

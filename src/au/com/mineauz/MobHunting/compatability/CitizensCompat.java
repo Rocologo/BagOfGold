@@ -250,7 +250,7 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensEnableEvent(CitizensEnableEvent event) {
-
+		MobHunting.debug("onCitizensEnableEvent:%s",event.getEventName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -281,7 +281,8 @@ public class CitizensCompat implements Listener {
 									"You got an Iron sword.", 100, 100));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
-			} else if (isMasterMobHunter(npc.getEntity())) {
+			}
+			if (isMasterMobHunter(npc.getEntity())) {
 				if (!masterMobHunterManager.contains(npc.getId())) {
 					MobHunting.debug(
 							"A New MasterMobHunter NPC found. ID=%s,%s",
@@ -327,7 +328,8 @@ public class CitizensCompat implements Listener {
 									"You got an Iron sword.", 100, 100));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
-			} else if (isMasterMobHunter(npc.getEntity())) {
+			}
+			if (isMasterMobHunter(npc.getEntity())) {
 				if (!masterMobHunterManager.contains(npc.getId())) {
 					MobHunting.debug(
 							"A New MasterMobHunter NPC found. ID=%s,%s",

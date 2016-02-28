@@ -121,11 +121,14 @@ public class NpcCommand implements ICommand, Listener {
 					.getManager();
 			npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
 			if (args.length == 1 && args[0].equalsIgnoreCase("remove")) {
-				if (masterMobHunterManager.contains(npc.getId())) {
-					masterMobHunterManager.remove(npc.getId());
-					masterMobHunterManager.saveData(npc.getId());
-				}
-				npc.destroy();
+				if (npc != null) {
+					if (masterMobHunterManager.contains(npc.getId())) {
+						masterMobHunterManager.remove(npc.getId());
+						masterMobHunterManager.saveData(npc.getId());
+					}
+					npc.destroy();
+				} else
+					sender.sendMessage("You have not selected a MasterMobhunter");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
 				npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
@@ -141,11 +144,10 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("update")) {
 				sender.sendMessage("Updating all MasterMobHunter NPCs");
 				masterMobHunterManager.forceUpdate();
-				return true;} 
-			else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
+				return true;
+			} else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
 				StatType statType = StatType.fromColumnName(args[1]);
 				if (statType == null) {
-					MobHunting.debug("statType=%s", statType);
 					sender.sendMessage(ChatColor.RED
 							+ Messages.getString(
 									"mobhunting.commands.npc.unknown_stattype",
@@ -169,17 +171,18 @@ public class NpcCommand implements ICommand, Listener {
 									"rank", args[3]));
 					return true;
 				}
+				MobHunting.debug("No of NPCs=%s",masterMobHunterManager.getAll().size());
 				NPCRegistry registry = CitizensAPI.getNPCRegistry();
 				npc = registry.createNPC(EntityType.PLAYER, "MasterMobHunter");
 				npc.addTrait(MobHuntingTrait.class);
-				npc.spawn(p.getEyeLocation());
-				MobHunting.debug("Creating NPC id=%s,stat=%s,per=%s,rank=%s",
-						npc.getId(), statType.translateName(), period, rank);
-
 				masterMobHunterManager.put(npc.getId(),
 						new MasterMobHunterData(npc.getId(), statType, period,
 								0, rank, false));
 				masterMobHunterManager.saveData(npc.getId());
+				npc.spawn(p.getEyeLocation());
+				MobHunting.debug("Creating NPC id=%s,stat=%s,per=%s,rank=%s",
+						npc.getId(), statType.translateName(), period, rank);
+				MobHunting.debug("No of NPCs=%s",masterMobHunterManager.getAll().size());
 				return true;
 			}
 
