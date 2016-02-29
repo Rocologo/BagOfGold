@@ -12,7 +12,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 
 /**
@@ -158,7 +157,7 @@ public class BukkitUpdate {
 		} catch (IOException e) {
 			// There was an error reading the query
 			if (e.getMessage().contains("Server returned HTTP response code: 504 for URL: https://api.curseforge.com/servermods/filesrojectIds=63718")){
-				MobHunting.instance.getLogger().warning("MobHunting could not communicate with Http://api.curseforge.com. HTTP response code: 504. A new attempt will be initialted later. Thisis only a warning.");
+				MobHunting.instance.getLogger().warning("[MobHunting] MobHunting could not communicate with Http://api.curseforge.com. HTTP response code: 504. A new attempt will be initialted later. Thisis only a warning.");
 			} else
 			e.printStackTrace();
 			return false;

@@ -52,12 +52,12 @@ public class VersionCommand implements ICommand {
 
 		sender.sendMessage(ChatColor.GREEN
 				+ Messages.getString(
-						"mobhunting.commands.version.version-number","version",
+						"mobhunting.commands.version.currentversion","currentversion",
 						MobHunting.instance.pluginVersion));
 		if (UpdateHelper.getUpdateAvailable() == UpdateStatus.AVAILABLE)
 			sender.sendMessage(ChatColor.GREEN
 					+ Messages.getString(
-							"mobhunting.commands.version.newversion-number","version",
+							"mobhunting.commands.version.newversion","newversion",
 							UpdateHelper.getBukkitUpdate().getVersionName()));
 		if (sender.hasPermission("mobhunting.update")) {
 			UpdateHelper.pluginUpdateCheck(sender, true, true);

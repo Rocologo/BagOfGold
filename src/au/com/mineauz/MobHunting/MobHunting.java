@@ -43,6 +43,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -270,7 +271,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} catch (IOException e) {
 			debug("Failed to start Metrics!");
 		}
-
+		
 		UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(),
 				instance.mConfig.updateCheck, false);
 	}
