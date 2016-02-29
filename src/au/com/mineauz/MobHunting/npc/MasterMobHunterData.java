@@ -11,6 +11,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -161,7 +162,7 @@ public class MasterMobHunterData implements Listener,
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		NPC npc = n.getById(id);
 		if (npc != null) {
-			MobHunting.debug("rank=%s stats.size()=%s", rank,stats.size());
+			//MobHunting.debug("rank=%s stats.size()=%s", rank,stats.size());
 			if (rank < stats.size() + 1) {
 				if (rank != 0) {
 					if (!stats.get(rank - 1).getPlayer().getName()
@@ -173,7 +174,7 @@ public class MasterMobHunterData implements Listener,
 				}
 				if (signLocations.size() > 0) {
 					for (Location loc : signLocations) {
-						if (loc.getBlock().getState() instanceof org.bukkit.block.Sign) {
+						if (loc.getBlock().getState().getType()==Material.SIGN||loc.getBlock().getState().getType()==Material.SIGN_POST) {
 							org.bukkit.block.Sign s = (org.bukkit.block.Sign) loc
 									.getBlock().getState();
 							s.setLine(1, (this.rank + ". " + npc.getName()));
@@ -182,8 +183,8 @@ public class MasterMobHunterData implements Listener,
 									.translateName()));
 							s.update();
 						} else {
-							CitizensCompat.getManager().get(id)
-									.removeLocation(loc);
+							//CitizensCompat.getManager().get(id).removeLocation(loc);
+							loc.zero();
 						}
 					}
 				}

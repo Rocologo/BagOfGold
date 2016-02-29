@@ -120,7 +120,7 @@ public class NpcCommand implements ICommand, Listener {
 			MasterMobHunterManager masterMobHunterManager = CitizensCompat
 					.getManager();
 			npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
-			if (args.length == 1 && args[0].equalsIgnoreCase("remove")) {
+			if (args.length == 1 && (args[0].equalsIgnoreCase("remove")||args[0].equalsIgnoreCase("delete"))) {
 				if (npc != null) {
 					if (masterMobHunterManager.contains(npc.getId())) {
 						masterMobHunterManager.remove(npc.getId());
@@ -133,7 +133,7 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
 				npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
 				// Location loc =p.getEyeLocation();
-				sender.sendMessage("NPC is " + npc.getName());
+				sender.sendMessage("NPC is " + npc.getName()+"(ID="+npc.getId()+")");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("spawn")) {
 				npc.spawn(npc.getStoredLocation());
@@ -171,7 +171,7 @@ public class NpcCommand implements ICommand, Listener {
 									"rank", args[3]));
 					return true;
 				}
-				MobHunting.debug("No of NPCs=%s",masterMobHunterManager.getAll().size());
+				//MobHunting.debug("No of NPCs=%s",masterMobHunterManager.getAll().size());
 				NPCRegistry registry = CitizensAPI.getNPCRegistry();
 				npc = registry.createNPC(EntityType.PLAYER, "MasterMobHunter");
 				npc.addTrait(MobHuntingTrait.class);

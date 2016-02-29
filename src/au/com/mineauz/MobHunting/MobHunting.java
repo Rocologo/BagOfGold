@@ -1142,12 +1142,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		boolean killer_muted = false;
 		boolean killed_muted = false;
-		if (killer instanceof Player) {
+		if (playerData.containsKey(killer.getUniqueId())) {
 			killer_muted = playerData.get(killer.getUniqueId()).isMuted();
 			debug("killer.getMuteMode=%s", killer_muted);
 		}
-		if (killed instanceof Player)
-			killed_muted = playerData.get(killer.getUniqueId()).isMuted();
+		if (playerData.containsKey(killed.getUniqueId()))
+			killed_muted = playerData.get(killed.getUniqueId()).isMuted();
 
 		if (!info.playerUndercover)
 			if (DisguisesHelper.isDisguised(killer)) {
