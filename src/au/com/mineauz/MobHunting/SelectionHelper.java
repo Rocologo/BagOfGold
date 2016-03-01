@@ -19,11 +19,11 @@ public class SelectionHelper {
 			Entry<Location, Location> existing = mPoints.get(player);
 			if (existing == null || existing.getKey() == null)
 				throw new IllegalArgumentException(
-						Messages.getString("mobhunting.commands.select.point1-unset")); //$NON-NLS-1$
+						Messages.getString("mobhunting.commands.select.point1-unset"));
 
 			if (!existing.getKey().getWorld().equals(player.getWorld()))
 				throw new IllegalArgumentException(
-						Messages.getString("mobhunting.commands.select.point1-unset")); //$NON-NLS-1$
+						Messages.getString("mobhunting.commands.select.point1-unset"));
 
 			return existing.getKey();
 		} else

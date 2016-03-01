@@ -299,7 +299,8 @@ public class AchievementManager implements Listener {
 							.replaceAll("\\{world\\}", worldname));
 		}
 
-		player.getWorld().playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f,
+		//TODO: find the best Fireworksound
+		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_TWINKLE, 1.0f,
 				1.0f);
 		FireworkEffect effect = FireworkEffect.builder()
 				.withColor(Color.ORANGE, Color.YELLOW).flicker(true)

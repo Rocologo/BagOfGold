@@ -26,7 +26,9 @@ public enum ExtendedMobType {
 			"WOLF", 100),
 	// Minecraft 1.8 Entity's
 	Endermite("ENDERMITE", 100), Guardian("GUARDIAN", 100), KillerRabbit(
-			"RABBIT", 100), PvpPlayer("PLAYER", 100);
+			"RABBIT", 100), PvpPlayer("PLAYER", 100),
+			// Minecraft 1.9 Entity
+			Shulker("SHULKER",100);
 
 	private String mType;
 	private int mMax;
@@ -46,6 +48,15 @@ public enum ExtendedMobType {
 
 	@SuppressWarnings("rawtypes")
 	public boolean matches(Entity ent) {
+		// test if MC 1.9 classes exists
+		try {
+			@SuppressWarnings("unused")
+			Class cls = Class.forName("org.bukkit.entity.Shulker");
+			if (this == Shulker)
+				return ent instanceof org.bukkit.entity.Shulker;
+		} catch (ClassNotFoundException e) {
+			// not MC 1.9
+		}
 		// test if MC 1.8 classes exists
 		try {
 			@SuppressWarnings("unused")

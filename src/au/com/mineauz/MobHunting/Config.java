@@ -33,6 +33,7 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Silverfish;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
@@ -415,6 +416,17 @@ public class Config extends AutoConfig {
 	private int slimeFrequency = 5;
 	@ConfigField(name = "slime-cmd-run-frequency-base", category = "mobs")
 	private int slimeFrequencyBase = 100;
+
+	@ConfigField(name = "shulker", category = "mobs")
+	private String shulkerPrize = "25";
+	@ConfigField(name = "shulker-cmd", category = "mobs")
+	private String shulkerCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Shulker\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "shulker-cmd-desc", category = "mobs")
+	private String shulkerCmdDesc = "You got a Shulker skull and an Iron ingot.";
+	@ConfigField(name = "shulker-cmd-run-frequency", category = "mobs")
+	private int shulkerFrequency = 50;
+	@ConfigField(name = "slime-cmd-run-frequency-base", category = "mobs")
+	private int shulkerFrequencyBase = 100;
 
 	// #####################################################################################
 	// Bosses
@@ -903,9 +915,9 @@ public class Config extends AutoConfig {
 	// MasterMobHunter Settings
 	// #####################################################################################
 	@ConfigField(name = "masterMobHunter_check_every", category = "npc", comment = "Set the number of seconds between each check. Recommended setting is"
-				+ "\nmasterMobHunter_check_every: 300 ~ to update all MasterMobHunters every 5th minute.")
+			+ "\nmasterMobHunter_check_every: 300 ~ to update all MasterMobHunters every 5th minute.")
 	public int masterMobHuntercheckEvery = 300;
-		
+
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
@@ -1084,6 +1096,17 @@ public class Config extends AutoConfig {
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.8
 			}
+
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return getPrice(shulkerPrize);
+			} catch (ClassNotFoundException e) {
+				// This is not a MC 1.9 entity
+			}
+
 		}
 		return 0;
 	}
@@ -1219,6 +1242,15 @@ public class Config extends AutoConfig {
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.8
 			}
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerCmd;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
+			}
 		}
 		return "";
 	}
@@ -1338,6 +1370,15 @@ public class Config extends AutoConfig {
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.8
 			}
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerCmdDesc;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
+			}
 		}
 		return "";
 	}
@@ -1450,6 +1491,15 @@ public class Config extends AutoConfig {
 
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.8
+			}
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerFrequency;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
 			}
 		}
 		return 100;
@@ -1566,6 +1616,15 @@ public class Config extends AutoConfig {
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.8
 			}
+			// Test if Minecraft 1.9 Mob Classes exists
+						try {
+							@SuppressWarnings({ "rawtypes", "unused" })
+							Class cls = Class.forName("org.bukkit.entity.Shulker");
+							if (mob instanceof Shulker)
+								return shulkerFrequencyBase;
+						} catch (ClassNotFoundException e) {
+							// This is not MC 1.9
+						}
 		}
 		return 100;
 	}
