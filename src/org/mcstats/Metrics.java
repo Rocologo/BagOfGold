@@ -34,6 +34,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
+import au.com.mineauz.MobHunting.MobHunting;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -332,7 +334,8 @@ public class Metrics {
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
         String pluginVersion = description.getVersion();
         String serverVersion = Bukkit.getVersion();
-        int playersOnline = Bukkit.getServer().getOnlinePlayers().size();
+        //int playersOnline = Bukkit.getServer().getOnlinePlayers().size();
+        int playersOnline = MobHunting.instance.playerData.size();
 
         // END server software specific section -- all code below does not use any code outside of this class / Java
 
