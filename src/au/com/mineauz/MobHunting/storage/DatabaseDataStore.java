@@ -339,21 +339,14 @@ public abstract class DatabaseDataStore implements DataStore {
 			throws DataStoreException {
 		try {
 			for (PlayerData playerData : playerDataSet) {
-				Statement statement;
-				try {
-					// test if connection to MySql works properly
-					statement = mConnection.createStatement();
-					ResultSet rs = statement
-							.executeQuery("SELECT PLAYER_ID from `mh_Players` LIMIT 0");
-					rs.close();
-					mUpdatePlayerData.setInt(1, playerData.isLearningMode() ? 1
-							: 0);
-					mUpdatePlayerData.setInt(2, playerData.isMuted() ? 1 : 0);
-					mUpdatePlayerData.setString(3, playerData.getPlayer()
-							.getUniqueId().toString());
-					mUpdatePlayerData.addBatch();
-					statement.close();
-				} catch (SQLException e) {
+				//try {
+				//	mUpdatePlayerData.setInt(1, playerData.isLearningMode() ? 1
+				//			: 0);
+				//	mUpdatePlayerData.setInt(2, playerData.isMuted() ? 1 : 0);
+				//	mUpdatePlayerData.setString(3, playerData.getPlayer()
+				//			.getUniqueId().toString());
+				//	mUpdatePlayerData.addBatch();
+				// catch (SQLException e) {
 					mInsertPlayerData.setString(1, playerData.getPlayer()
 							.getUniqueId().toString());
 					mInsertPlayerData.setString(2, playerData.getPlayer()
@@ -361,12 +354,14 @@ public abstract class DatabaseDataStore implements DataStore {
 					mInsertPlayerData.setInt(3, playerData.isLearningMode() ? 1
 							: 0);
 					mInsertPlayerData.setInt(4, playerData.isMuted() ? 1 : 0);
+					mInsertPlayerData.setInt(5, playerData.isLearningMode() ? 1
+							: 0);
+					mInsertPlayerData.setInt(6, playerData.isMuted() ? 1 : 0);
+					
 					mInsertPlayerData.addBatch();
-				}
+				//}
 			}
 			mUpdatePlayerData.executeBatch();
-			// mUpdatePlayerData.close();
-
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
