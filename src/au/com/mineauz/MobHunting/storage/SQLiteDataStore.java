@@ -169,6 +169,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				.prepareStatement("INSERT OR REPLACE INTO mh_Players "
 						+ "(UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
 						+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
+		mInsertPlayerData = connection
+				.prepareStatement("INSERT OR REPLACE INTO mh_Players "
+						+ "(UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
+						+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
 	}
 
 	@Override
@@ -245,7 +249,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					+ type.getDBColumn() + ", mh_Players.UUID from mh_"
 					+ period.getTable()
 					+ " inner join mh_Players using (PLAYER_ID)"
-					+ (id != null ? " where ID=" + id : "") + " order by "
+					+ (id != null ? " where mh_Players.NAME!='' and ID=" + id : "") + " order by "
 					+ type.getDBColumn() + " desc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 

@@ -143,7 +143,7 @@ public class MasterMobHunterData implements Listener,
 	public void onCompleted(List<StatStore> data) {
 		ArrayList<StatStore> altData = new ArrayList<StatStore>(data.size());
 		for (StatStore stat : data) {
-			if (stat.getAmount() != 0) {
+			if (stat.getAmount() != 0&&stat.getPlayer().getName()!=null) {
 				//MobHunting.debug("Stat=%s", stat);
 				altData.add(stat);
 			}

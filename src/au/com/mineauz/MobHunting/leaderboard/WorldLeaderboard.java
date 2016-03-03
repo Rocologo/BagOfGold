@@ -257,8 +257,7 @@ public class WorldLeaderboard implements DataCallback<List<StatStore>> {
 				org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block
 						.getState();
 
-				if (stat1 != null&&stat1.getPlayer()!=null) {
-					MobHunting.debug("Stat1=%s", stat1.toString());
+				if (stat1 != null) {
 					sign.setLine(0, ChatColor.GREEN + String.valueOf(place)
 							+ " " + ChatColor.BLACK
 							+ stat1.getPlayer().getName());
@@ -269,7 +268,7 @@ public class WorldLeaderboard implements DataCallback<List<StatStore>> {
 					sign.setLine(1, EMPTY_STRING);
 				}
 
-				if (stat2 != null&&stat2.getPlayer()!=null) {
+				if (stat2 != null) {
 					sign.setLine(2, ChatColor.GREEN + String.valueOf(place + 1)
 							+ " " + ChatColor.BLACK + stat2.getPlayer().getName());
 					sign.setLine(3,
@@ -427,6 +426,7 @@ public class WorldLeaderboard implements DataCallback<List<StatStore>> {
 		ArrayList<StatStore> altData = new ArrayList<StatStore>(data.size());
 		for (StatStore stat : data) {
 			if (stat.getAmount() != 0)
+				//MobHunting.debug("StatStore=%s", stat.toString());
 				altData.add(stat);
 		}
 

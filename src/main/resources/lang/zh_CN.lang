@@ -208,6 +208,7 @@ mobs.BonusMob.name=奖励生物
 mobs.PvpPlayer.name=PvP Player
 mobs.IronGolem.name=Iron Golem
 mobs.EnderDragon.name=EnderDragon
+mobs.Shulker.name=Shulker
 
 mobs.Bat.name=Bat
 mobs.Chicken.name=Chicken

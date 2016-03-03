@@ -55,11 +55,16 @@ public abstract class DatabaseDataStore implements DataStore {
 	 * Args: player uuid
 	 */
 	protected PreparedStatement mGetPlayerData;
-	
+
 	/**
 	 * Args: player uuid
 	 */
 	protected PreparedStatement mUpdatePlayerData;
+
+	/**
+	 * Args: player uuid
+	 */
+	protected PreparedStatement mInsertPlayerData;
 
 	@Override
 	public void initialize() throws DataStoreException {
@@ -328,24 +333,39 @@ public abstract class DatabaseDataStore implements DataStore {
 		throw new UserNotFoundException("User " + player.toString()
 				+ " is not present in database");
 	}
-	
+
 	@Override
 	public void savePlayerData(Set<PlayerData> playerDataSet)
 			throws DataStoreException {
 		try {
 			for (PlayerData playerData : playerDataSet) {
-				mUpdatePlayerData.setString(1, playerData.getPlayer()
-						.getUniqueId().toString());
-				mUpdatePlayerData.setString(2, playerData.getPlayer()
-						.getName().toString());
-				mUpdatePlayerData.setInt(3, playerData.isLearningMode() ? 1
-						: 0);
-				mUpdatePlayerData.setInt(4, playerData.isMuted() ? 1
-						: 0);
-				mUpdatePlayerData.addBatch();
+				Statement statement;
+				try {
+					// test if connection to MySql works properly
+					statement = mConnection.createStatement();
+					ResultSet rs = statement
+							.executeQuery("SELECT PLAYER_ID from `mh_Players` LIMIT 0");
+					rs.close();
+					mUpdatePlayerData.setInt(1, playerData.isLearningMode() ? 1
+							: 0);
+					mUpdatePlayerData.setInt(2, playerData.isMuted() ? 1 : 0);
+					mUpdatePlayerData.setString(3, playerData.getPlayer()
+							.getUniqueId().toString());
+					mUpdatePlayerData.addBatch();
+					statement.close();
+				} catch (SQLException e) {
+					mInsertPlayerData.setString(1, playerData.getPlayer()
+							.getUniqueId().toString());
+					mInsertPlayerData.setString(2, playerData.getPlayer()
+							.getName().toString());
+					mInsertPlayerData.setInt(3, playerData.isLearningMode() ? 1
+							: 0);
+					mInsertPlayerData.setInt(4, playerData.isMuted() ? 1 : 0);
+					mInsertPlayerData.addBatch();
+				}
 			}
 			mUpdatePlayerData.executeBatch();
-			//mUpdatePlayerData.close();
+			// mUpdatePlayerData.close();
 
 			mConnection.commit();
 		} catch (SQLException e) {
