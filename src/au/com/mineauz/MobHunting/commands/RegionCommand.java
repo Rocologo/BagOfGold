@@ -16,7 +16,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import de.Keyle.MyPet.api.entity.MyPetEntity;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
@@ -88,8 +87,7 @@ public class RegionCommand implements ICommand, Listener {
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)) {
 			if (args.length == 1) {
-				if ((sender instanceof Player)
-						|| (MyPetCompat.isMyPetSupported() && sender instanceof MyPetEntity)) {
+				if (sender instanceof Player || MyPetCompat.isMyPet(sender)) {
 
 					RegionManager regionManager = WorldGuardCompat
 							.getWorldGuardPlugin().getRegionManager(
@@ -144,8 +142,7 @@ public class RegionCommand implements ICommand, Listener {
 			return false;
 
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)) {
-			if ((sender instanceof Player)
-					|| (MyPetCompat.isMyPetSupported() && sender instanceof MyPetEntity)) {
+			if (sender instanceof Player || MyPetCompat.isMyPet(sender)) {
 				RegionQuery query = WorldGuardCompat.getRegionContainer()
 						.createQuery();
 				ApplicableRegionSet set = query

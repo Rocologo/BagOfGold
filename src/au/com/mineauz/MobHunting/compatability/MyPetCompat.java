@@ -10,15 +10,15 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import de.Keyle.MyPet.MyPetPlugin;
-import de.Keyle.MyPet.api.entity.MyPetEntity;
-import de.Keyle.MyPet.entity.types.MyPetType;
+import de.Keyle.MyPet.api.entity.MyPetBukkitEntity;
+import de.Keyle.MyPet.api.entity.MyPetType;
 
 public class MyPetCompat implements Listener {
 	private static boolean supported = false;
 	private static MyPetPlugin mPlugin;
 
 	public MyPetCompat() {
-		if (isDisabledInConfig()) {
+		if (MobHunting.config().disableIntegrationMyPet) {
 			MobHunting.instance.getLogger().info(
 					"Compatability with MyPet is disabled in config.yml");
 		} else {
@@ -40,12 +40,9 @@ public class MyPetCompat implements Listener {
 		return mPlugin;
 	}
 
-	public static boolean isMyPetSupported() {
-		return supported;
-	}
-
-	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationMyPet;
+	public static boolean isMyPet(Object obj) {
+		return (supported && obj instanceof MyPetBukkitEntity && MobHunting
+				.config().disableIntegrationMyPet);
 	}
 
 	public static boolean isEnabledInConfig() {
@@ -64,10 +61,10 @@ public class MyPetCompat implements Listener {
 		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) event
 				.getEntity().getLastDamageCause();
 
-		if (!(dmg.getDamager() instanceof MyPetEntity))
+		if (!(dmg.getDamager() instanceof MyPetBukkitEntity))
 			return;
 
-		MyPetEntity killer = (MyPetEntity) dmg.getDamager();
+		MyPetBukkitEntity killer = (MyPetBukkitEntity) dmg.getDamager();
 
 		if (killer.getPetType() != MyPetType.Wolf)
 			return;

@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.Listener;
@@ -120,10 +121,10 @@ public class MasterMobHunterData implements Listener,
 		this.redstonePoweredSign = redstonePoweredSign;
 	}
 
-	// private boolean isLoaded(Block block) {
-	// return (mLocation.getWorld().isChunkLoaded(block.getX() >> 4,
-	// block.getZ() >> 4));
-	// }
+	private boolean isLoaded(Block block) {
+		return (block.getWorld().isChunkLoaded(block.getX() >> 4,
+				block.getZ() >> 4));
+	}
 
 	// ***********************************************************************************
 	// RequestStats / DataCallBack
@@ -143,8 +144,7 @@ public class MasterMobHunterData implements Listener,
 	public void onCompleted(List<StatStore> data) {
 		ArrayList<StatStore> altData = new ArrayList<StatStore>(data.size());
 		for (StatStore stat : data) {
-			if (stat.getAmount() != 0&&stat.getPlayer().getName()!=null) {
-				//MobHunting.debug("Stat=%s", stat);
+			if (stat.getAmount() != 0 && stat.getPlayer().getName() != null) {
 				altData.add(stat);
 			}
 		}
@@ -161,29 +161,30 @@ public class MasterMobHunterData implements Listener,
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		NPC npc = n.getById(id);
 		if (npc != null) {
-			//MobHunting.debug("rank=%s stats.size()=%s", rank,stats.size());
 			if (rank < stats.size() + 1) {
 				if (rank != 0) {
 					if (!stats.get(rank - 1).getPlayer().getName()
 							.equals(npc.getName())) {
 						npc.setName(stats.get(rank - 1).getPlayer().getName());
 					}
-					//MobHunting.debug("Set No of kills=%s", stats.get(rank-1).getAmount());
 					this.numberOfKills = stats.get(rank - 1).getAmount();
 				}
 				if (signLocations.size() > 0) {
 					for (Location loc : signLocations) {
-						if (loc.getBlock().getState().getType()==Material.SIGN||loc.getBlock().getState().getType()==Material.SIGN_POST) {
-							org.bukkit.block.Sign s = (org.bukkit.block.Sign) loc
-									.getBlock().getState();
-							s.setLine(1, (this.rank + ". " + npc.getName()));
-							s.setLine(2, (this.period.translateNameFriendly()));
-							s.setLine(3, (stats.get(rank - 1).getAmount() + " " + this.statType
-									.translateName()));
-							s.update();
-						} else {
-							//CitizensCompat.getManager().get(id).removeLocation(loc);
-							loc.zero();
+						if (isLoaded(loc.getBlock())) {
+							if (loc.getBlock().getState().getType() == Material.SIGN
+									|| loc.getBlock().getState().getType() == Material.SIGN_POST) {
+								org.bukkit.block.Sign s = (org.bukkit.block.Sign) loc
+										.getBlock().getState();
+								s.setLine(1, (this.rank + ". " + npc.getName()));
+								s.setLine(2,
+										(this.period.translateNameFriendly()));
+								s.setLine(3, (stats.get(rank - 1).getAmount()
+										+ " " + this.statType.translateName()));
+								s.update();
+							} else {
+								loc.zero();
+							}
 						}
 					}
 				}

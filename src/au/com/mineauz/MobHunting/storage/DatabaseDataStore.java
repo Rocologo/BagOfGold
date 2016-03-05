@@ -361,7 +361,9 @@ public abstract class DatabaseDataStore implements DataStore {
 					mInsertPlayerData.addBatch();
 				//}
 			}
-			mUpdatePlayerData.executeBatch();
+			//mUpdatePlayerData.executeBatch();
+			mInsertPlayerData.executeBatch();
+			mInsertPlayerData.close();
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();

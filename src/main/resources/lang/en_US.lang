@@ -226,3 +226,17 @@ mobs.Wolf.name=Wolf
 leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick
 leaderboard.exists=The leaderboard ${leaderboard} already exists
 leaderboard.notexists=The leaderboard ${leaderboard} does not exist
+
+mobhunting.learn.prefix=[MobHunting]
+mobhunting.learn.disabled1=MobHunting is disabled in this world by Admin, and you are not in a WorldGuard region where MobHunting is set to 'ALLOW'.
+mobhunting.learn.disabled2=MobHunting is disabled in this world by Admin.
+mobhunting.learn.mob-damage-flag=You don't get a reward because you are in a WorldGuard region with 'MOB-DAMAGE DENY' flag set.
+mobhunting.learn.mobhunting-deny=You don't get a reward because you are in a WorldGuard region with 'MOBHUNTING DENY' flag set.
+mobhunting.learn.mobarena=You don't get rewards while playing MobArena
+mobhunting.learn.pvparena=You don't get rewards while playing PvpArena
+mobhunting.learn.godmode=You don't get rewards while you are in God mode
+mobhunting.learn.vanished=You don't get rewards while you are Vanished
+mobhunting.learn.no-permission=You don't have permission to get reward for killing this mob: ${killed-mob}
+mobhunting.learn.no-reward=There is no reward for killing this mob/player: ${killed}
+mobhunting.learn.mobspawner=There is no rewards for killing this mob/player: ${killed} is was probaly spawned from a mob spawner
+mobhunting.learn.creative=You don't get MobHunting rewards, when you are in Creative mode.

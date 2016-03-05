@@ -176,12 +176,9 @@ public class MasterMobHunterManager implements Listener {
 			MasterMobHunterData mmhd = new MasterMobHunterData();
 			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
 			mmhd.update();
-			//TODO: wait 10 sec and continue
-			// mmhd.refresh();
 			event.getClicker().sendMessage(
 					"You LEFT clicked a MasterMobHunter NPC(" + npc.getId()
-							+ ")=" + event.getNPC().getName() + " rank="
-							+ mmhd.getRank() + " kills="
+							+ ") rank=" + mmhd.getRank() + " kills="
 							+ mmhd.getNumberOfKills() + " Period="
 							+ mmhd.getPeriod().translateName() + " StatType="
 							+ mmhd.getStatType().translateName());
@@ -198,23 +195,15 @@ public class MasterMobHunterManager implements Listener {
 			MasterMobHunterData mmhd = new MasterMobHunterData();
 			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
 			mmhd.update();
-			//TODO: wait 10 sec and continue
+			// TODO: wait 10 sec and continue
 			// mmhd.refresh();
-			if (mMasterMobHunterData.containsKey(npc.getId())) {
-				// MasterMobHunterData mmhd = new MasterMobHunterData();
-				// mmhd = mMasterMobHunterData.get(npc.getId());
-				event.getClicker().sendMessage(
-						"You RIGHT clicked a MasterMobHunter NPC("
-								+ npc.getId() + ")=" + event.getNPC().getName()
-								+ " rank=" + mmhd.getRank() + " kills="
-								+ mmhd.getNumberOfKills() + " Period="
-								+ mmhd.getPeriod().translateName()
-								+ " StatType="
-								+ mmhd.getStatType().translateName());
-				mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
-			} else
-				MobHunting.debug("NPC ID %s DOES NOT EXISTS!!!", event.getNPC()
-						.getId());
+			event.getClicker().sendMessage(
+					"You RIGHT clicked a MasterMobHunter NPC(" + npc.getId()
+							+ ") rank=" + mmhd.getRank() + " kills="
+							+ mmhd.getNumberOfKills() + " Period="
+							+ mmhd.getPeriod().translateName() + " StatType="
+							+ mmhd.getStatType().translateName());
+			mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
 		}
 	}
 
@@ -240,7 +229,7 @@ public class MasterMobHunterManager implements Listener {
 				MasterMobHunterData mmhd = new MasterMobHunterData();
 				mmhd = mMasterMobHunterData.get(id);
 				mmhd.update();
-				//TODO: wait 10 sec and continue
+				// TODO: wait 10 sec and continue
 				// mmhd.refresh();
 				mmhd.putLocation(location);
 				mMasterMobHunterData.put(id, mmhd);

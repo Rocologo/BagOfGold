@@ -55,7 +55,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 
-import de.Keyle.MyPet.api.entity.MyPetEntity;
 import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
@@ -623,7 +622,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	public static void learn(Player player, String text, Object... args) {
 		if (player != null)
 			if (instance.playerData.get(player.getUniqueId()).isLearningMode())
-				player.sendMessage(ChatColor.AQUA + "[MobHunting] "
+				player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix")+" "
 						+ String.format(text, args));
 	}
 
@@ -725,7 +724,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return;
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)) {
 			if ((damager instanceof Player)
-					|| (MyPetCompat.isMyPetSupported() && damager instanceof MyPetEntity)) {
+					|| MyPetCompat.isMyPet(damager)) {
 				RegionManager regionManager = WorldGuardCompat
 						.getWorldGuardPlugin().getRegionManager(
 								damager.getWorld());
@@ -917,7 +916,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)
 					&& WorldGuardCompat.isEnabledInConfig()) {
 				if (killer instanceof Player
-						|| (MyPetCompat.isMyPetSupported() && killer instanceof MyPetEntity)) {
+						|| MyPetCompat.isMyPet(killer)) {
 					ApplicableRegionSet set = WorldGuardCompat
 							.getWorldGuardPlugin()
 							.getRegionManager(killer.getWorld())
@@ -937,8 +936,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 									killed.getWorld().getName(),
 									set.allows(WorldGuardCompat
 											.getMobHuntingFlag()));
-							learn(killer,
-									"MobHunting is disabled in this world by Admin, and you are not in a WorldGuard region wher MobHunting is set to 'ALLOW'.");
+							learn(killer, Messages.getString("mobhunting.learn.disabled1")
+									);
 							return;
 						}
 					} else {
@@ -946,8 +945,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 								+ "WG is supported, but player not in a WG region.",
 								killed.getType(), killed.getEntityId(), killed
 										.getWorld().getName());
-						learn(killer,
-								"MobHunting is disabled in this world by Admin.");
+						learn(killer,Messages.getString(
+								"mobhunting.learn.disabled2"));
 						return;
 					}
 				}
@@ -956,7 +955,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				// MobHunting is NOT allowed in world and no support for WG
 				// reject.
 				debug("KillBlocked: MobHunting disabled in world and Worldguard is not supported");
-				learn(killer, "MobHunting is disabled in this world by Admin.");
+				learn(killer, Messages.getString("mobhunting.learn.disabled2"));
 				return;
 			}
 
@@ -967,7 +966,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)
 				&& WorldGuardCompat.isEnabledInConfig()) {
 			if (killer instanceof Player
-					|| (MyPetCompat.isMyPetSupported() && killer instanceof MyPetEntity)) {
+					|| MyPetCompat.isMyPet(killer)) {
 
 				ApplicableRegionSet set = WorldGuardCompat
 						.getWorldGuardPlugin()
@@ -981,16 +980,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s",
 								killer.getName(),
 								set.allows(DefaultFlag.MOB_DAMAGE));
-						learn(killer,
-								"You don't get a reward because you are in a WorldGuard region with 'MOB-DAMAGE DENY' flag set.");
+						learn(killer,Messages.getString("mobhunting.learn.mob-damage-flag")
+								);
 						return;
 					} else if (!set
 							.allows(WorldGuardCompat.getMobHuntingFlag())) {
 						debug("KillBlocked: %s is hiding in WG region with MOBHUNTING FLAG %s",
 								killer.getName(), set.allows(WorldGuardCompat
 										.getMobHuntingFlag()));
-						learn(killer,
-								"You don't get a reward because you are in a WorldGuard region with 'MOBHUNTING DENY' flag set.");
+						learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny")
+								);
 						return;
 					}
 
@@ -1038,26 +1037,26 @@ public class MobHunting extends JavaPlugin implements Listener {
 					&& !mConfig.mobarenaGetRewards) {
 				debug("KillBlocked: %s is currently playing MobArena.",
 						killer.getName());
-				learn(killer, "You don't get rewards while playing MobArena");
+				learn(killer, Messages.getString("mobhunting.learn.mobarena"));
 				return;
 			} else if (PVPArenaCompat.isEnabledInConfig()
 					&& PVPArenaHelper.isPlayingPVPArena(killer)
 					&& !mConfig.pvparenaGetRewards) {
 				debug("KillBlocked: %s is currently playing PvpArena.",
 						killer.getName());
-				learn(killer, "You don't get rewards while playing PvpArena");
+				learn(killer, Messages.getString("mobhunting.learn.pvparena"));
 				return;
 			} else if (EssentialsCompat.isSupported()) {
 				if (EssentialsCompat.isGodModeEnabled(killer)) {
 					debug("KillBlocked: %s is in God mode", killer.getName());
-					learn(killer,
-							"You don't get rewards while you are in God mode");
+					learn(killer, Messages.getString("mobhunting.learn.godmode")
+							);
 					return;
 				} else if (EssentialsCompat.isVanishedModeEnabled(killer)) {
 					debug("KillBlocked: %s is in Vanished mode",
 							killer.getName());
-					learn(killer,
-							"You don't get rewards while you are Vanished");
+					learn(killer, Messages.getString("mobhunting.learn.vanished")
+							);
 					return;
 				}
 
@@ -1066,9 +1065,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (!hasPermissionToKillMob(killer, killed)) {
 				debug("KillBlocked: %s has not permission to kill %s.",
 						killer.getName(), killed.getName());
-				learn(killer,
-						"You don't have permission to get reward for killing this mob:"
-								+ killed.getCustomName());
+				learn(killer, Messages.getString("mobhunting.learn.no-permission","killed-mob",
+								killed.getName()));
 				return;
 			}
 		}
@@ -1078,8 +1076,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			debug("KillBlocked %s(%d): There is no reward for this Mob/Player",
 					killed.getType(), killed.getEntityId());
 			if (killer != null && killed != null)
-				learn(killer, "There is no reward for killing this mob/player:"
-						+ killed.getName());
+				learn(killer, Messages.getString("mobhunting.learn.no-reward","killed",
+						killed.getCustomName()));
 			return;
 		}
 
@@ -1087,10 +1085,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
 					killed.getType(), killed.getEntityId());
 			if (killer != null && killed != null) {
-				learn(killer,
-						"There is no rewards for killing this mob/player:"
-								+ killed.getCustomName()
-								+ "is was probaly spawned from a mob spawner");
+				learn(killer, Messages.getString("mobhunting.learn.mobspawner","killed",
+								killed.getCustomName()));
 			}
 			return;
 		}
@@ -1099,8 +1095,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				|| !isHuntEnabled(killer)) {
 			if (killer != null && killer.getGameMode() == GameMode.CREATIVE) {
 				debug("KillBlocked %s: In creative mode", killer.getName());
-				learn(killer,
-						"You don't get MobHunting rewards, when you are in Creative mode.");
+				learn(killer, Messages.getString("mobhunting.learn.creative"));
 			}
 			return;
 		}
