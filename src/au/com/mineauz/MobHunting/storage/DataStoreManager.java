@@ -296,7 +296,7 @@ public class DataStoreManager {
 	 * @param learning_mode
 	 * @param muted
 	 */
-	public void savePlayerData(OfflinePlayer player, boolean learning_mode,
+	public void createPlayerData(OfflinePlayer player, boolean learning_mode,
 			boolean muted) {
 		synchronized (mWaiting) {
 			mWaiting.add(new PlayerData(player, learning_mode, muted));
@@ -313,11 +313,18 @@ public class DataStoreManager {
 		} catch (UserNotFoundException e) {
 			MobHunting.debug("Saving new MobHunting player to database: %s",
 					player);
-			savePlayerData(player, true, false);
-			return new PlayerData(player, true, false);
+			createPlayerData(player, MobHunting.config().learningMode, false);
+			return new PlayerData(player, MobHunting.config().learningMode, false);
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public void updatePlayerData(Player player, boolean lm, boolean muted) {
+		synchronized (mWaiting) {
+			mWaiting.add(new PlayerData(player, lm, muted));
+		}
+		
 	}
 }

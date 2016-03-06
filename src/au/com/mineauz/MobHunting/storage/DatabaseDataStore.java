@@ -106,7 +106,7 @@ public abstract class DatabaseDataStore implements DataStore {
 		mGetPlayerUUID.close();
 		mUpdatePlayerName.close();
 		mGetPlayerData.close();
-		mUpdatePlayerData.close();
+		// mUpdatePlayerData.close();
 
 	}
 
@@ -308,60 +308,18 @@ public abstract class DatabaseDataStore implements DataStore {
 	}
 
 	@Override
-	public PlayerData getPlayerData(OfflinePlayer player)
-			throws DataStoreException {
-		try {
-			mGetPlayerStatement[0]
-					.setString(1, player.getUniqueId().toString());
-
-			ResultSet result = mGetPlayerStatement[0].executeQuery();
-
-			if (result.next()) {
-				PlayerData ps = new PlayerData(player,
-						result.getBoolean("LEARNING_MODE"),
-						result.getBoolean("MUTE_MODE"));
-
-				result.close();
-				return ps;
-			}
-
-		} catch (SQLException e) {
-			MobHunting.debug("ERROR in PlayerData.getPlayerData");
-			e.printStackTrace();
-		}
-
-		throw new UserNotFoundException("User " + player.toString()
-				+ " is not present in database");
-	}
-
-	@Override
-	public void savePlayerData(Set<PlayerData> playerDataSet)
+	public void createPlayerData(Set<PlayerData> playerDataSet)
 			throws DataStoreException {
 		try {
 			for (PlayerData playerData : playerDataSet) {
-				//try {
-				//	mUpdatePlayerData.setInt(1, playerData.isLearningMode() ? 1
-				//			: 0);
-				//	mUpdatePlayerData.setInt(2, playerData.isMuted() ? 1 : 0);
-				//	mUpdatePlayerData.setString(3, playerData.getPlayer()
-				//			.getUniqueId().toString());
-				//	mUpdatePlayerData.addBatch();
-				// catch (SQLException e) {
-					mInsertPlayerData.setString(1, playerData.getPlayer()
-							.getUniqueId().toString());
-					mInsertPlayerData.setString(2, playerData.getPlayer()
-							.getName().toString());
-					mInsertPlayerData.setInt(3, playerData.isLearningMode() ? 1
-							: 0);
-					mInsertPlayerData.setInt(4, playerData.isMuted() ? 1 : 0);
-					mInsertPlayerData.setInt(5, playerData.isLearningMode() ? 1
-							: 0);
-					mInsertPlayerData.setInt(6, playerData.isMuted() ? 1 : 0);
-					
-					mInsertPlayerData.addBatch();
-				//}
+				MobHunting.debug("playerdata=%s", playerData.toString());
+				mInsertPlayerData.setString(1, playerData.getPlayer()
+						.getUniqueId().toString());
+				mInsertPlayerData
+						.setInt(2, playerData.isLearningMode() ? 1 : 0);
+				mInsertPlayerData.setInt(3, playerData.isMuted() ? 1 : 0);
+				mInsertPlayerData.addBatch();
 			}
-			//mUpdatePlayerData.executeBatch();
 			mInsertPlayerData.executeBatch();
 			mInsertPlayerData.close();
 			mConnection.commit();
@@ -370,4 +328,26 @@ public abstract class DatabaseDataStore implements DataStore {
 			throw new DataStoreException(e);
 		}
 	}
+
+	@Override
+	public void updatePlayerData(Set<PlayerData> playerDataSet)
+			throws DataStoreException {
+		try {
+			for (PlayerData playerData : playerDataSet) {
+				mUpdatePlayerData
+						.setInt(1, playerData.isLearningMode() ? 1 : 0);
+				mUpdatePlayerData.setInt(2, playerData.isMuted() ? 1 : 0);
+				mUpdatePlayerData.setString(3, playerData.getPlayer()
+						.getUniqueId().toString());
+				mUpdatePlayerData.addBatch();
+				mUpdatePlayerData.executeBatch();
+				mUpdatePlayerName.close();
+				mConnection.commit();
+			}
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+	}
+
 }

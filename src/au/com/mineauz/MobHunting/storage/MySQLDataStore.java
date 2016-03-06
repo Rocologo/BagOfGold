@@ -61,6 +61,33 @@ public class MySQLDataStore extends DatabaseDataStore {
 	}
 
 	@Override
+	public PlayerData getPlayerData(OfflinePlayer player)
+			throws DataStoreException {
+		try {
+			mGetPlayerStatement[0]
+					.setString(1, player.getUniqueId().toString());
+
+			ResultSet result = mGetPlayerStatement[0].executeQuery();
+
+			if (result.next()) {
+				PlayerData ps = new PlayerData(player,
+						result.getBoolean("LEARNING_MODE"),
+						result.getBoolean("MUTE_MODE"));
+
+				result.close();
+				return ps;
+			}
+
+		} catch (SQLException e) {
+			MobHunting.debug("ERROR in PlayerData.getPlayerData");
+			e.printStackTrace();
+		}
+
+		throw new UserNotFoundException("User " + player.toString()
+				+ " is not present in database");
+	}
+
+	@Override
 	protected Connection setupConnection() throws SQLException,
 			DataStoreException {
 		try {
@@ -215,12 +242,14 @@ public class MySQLDataStore extends DatabaseDataStore {
 				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
 		mUpdatePlayerName = connection
 				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
-		mUpdatePlayerData = connection.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=?"
-				+ " WHERE UUID=?;");
-		mInsertPlayerData = connection.prepareStatement("INSERT INTO mh_Players "
-				+ "(UUID,NAME,LEARNING_MODE,MUTE_MODE) "
-				+ "VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE SET LEARNING_MODE=?,MUTE_MODE=?;");
-	} 
+		mUpdatePlayerData = connection
+				.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=?"
+						+ " WHERE UUID=?;");
+		mInsertPlayerData = connection
+				.prepareStatement("INSERT IGNORE INTO mh_Players "
+						+ "(UUID,NAME,LEARNING_MODE,MUTE_MODE) "
+						+ "VALUES(?,?,?,?);");
+	}
 
 	@Override
 	protected void setupStatement_1(Connection connection) throws SQLException {
@@ -851,7 +880,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		}
 
-		
 		try {
 			ResultSet rs = statement
 					.executeQuery("SELECT Shulker_kill from `mh_Daily` LIMIT 0");

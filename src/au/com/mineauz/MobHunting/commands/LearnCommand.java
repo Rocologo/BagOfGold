@@ -103,14 +103,14 @@ public class LearnCommand implements ICommand, Listener {
 					player.getUniqueId()).isMuted();
 			if (MobHunting.instance.playerData.get(player.getUniqueId())
 					.isLearningMode()) {
-				ds.savePlayerData(player, false, mm);
+				ds.updatePlayerData(player, false, mm);
 				MobHunting.instance.playerData.put(player.getUniqueId(),
 						new PlayerData(player, false, mm));
 				player.sendMessage(Messages.getString(
 						"mobhunting.commands.learn.disabled", "player",
 						player.getName()));
 			} else {
-				ds.savePlayerData(player, true, mm);
+				ds.updatePlayerData(player, true, mm);
 				MobHunting.instance.playerData.put(player.getUniqueId(),
 						new PlayerData(player, true, mm));
 				player.sendMessage(Messages.getString(

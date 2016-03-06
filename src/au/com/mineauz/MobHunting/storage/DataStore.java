@@ -25,8 +25,13 @@ public interface DataStore {
 
 	public OfflinePlayer getPlayerByName(String name) throws DataStoreException;
 
-	public PlayerData getPlayerData(OfflinePlayer player) throws DataStoreException;
-	
-	public void savePlayerData(Set<PlayerData> playerDataSet) throws DataStoreException;
+	public PlayerData getPlayerData(OfflinePlayer player)
+			throws DataStoreException;
+
+	public void updatePlayerData(Set<PlayerData> playerDataSet)
+			throws DataStoreException;
+
+	public void createPlayerData(Set<PlayerData> playerDataSet)
+			throws DataStoreException;
 
 }

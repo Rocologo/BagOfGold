@@ -21,6 +21,34 @@ import au.com.mineauz.MobHunting.StatType;
 import au.com.mineauz.MobHunting.util.UUIDHelper;
 
 public class SQLiteDataStore extends DatabaseDataStore {
+
+	@Override
+	public PlayerData getPlayerData(OfflinePlayer player)
+			throws DataStoreException {
+		try {
+			mGetPlayerStatement[0]
+					.setString(1, player.getUniqueId().toString());
+
+			ResultSet result = mGetPlayerStatement[0].executeQuery();
+
+			if (result.next()) {
+				PlayerData ps = new PlayerData(player,
+						result.getBoolean("LEARNING_MODE"),
+						result.getBoolean("MUTE_MODE"));
+
+				result.close();
+				return ps;
+			}
+
+		} catch (SQLException e) {
+			MobHunting.debug("ERROR in PlayerData.getPlayerData");
+			e.printStackTrace();
+		}
+
+		throw new UserNotFoundException("User " + player.toString()
+				+ " is not present in database");
+	}
+
 	@Override
 	protected Connection setupConnection() throws SQLException,
 			DataStoreException {
@@ -165,14 +193,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
 		mUpdatePlayerName = connection
 				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
-		mUpdatePlayerData = connection
-				.prepareStatement("INSERT OR REPLACE INTO mh_Players "
-						+ "(UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
-						+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
 		mInsertPlayerData = connection
-				.prepareStatement("INSERT OR REPLACE INTO mh_Players "
+				.prepareStatement("INSERT OR IGNORE INTO mh_Players "
 						+ "(UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
 						+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
+		mUpdatePlayerData = connection
+				.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=? WHERE UUID=?;");
 	}
 
 	@Override
@@ -246,11 +272,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		try {
 			Statement statement = mConnection.createStatement();
 			ResultSet results = statement.executeQuery("SELECT "
-					+ type.getDBColumn() + ", mh_Players.UUID from mh_"
+					+ type.getDBColumn()
+					+ ", mh_Players.UUID from mh_"
 					+ period.getTable()
 					+ " inner join mh_Players using (PLAYER_ID)"
-					+ (id != null ? " where mh_Players.NAME!='' and ID=" + id : "") + " order by "
-					+ type.getDBColumn() + " desc limit " + count);
+					+ (id != null ? " where mh_Players.NAME!='' and ID=" + id
+							: "") + " order by " + type.getDBColumn()
+					+ " desc limit " + count);
 			ArrayList<StatStore> list = new ArrayList<StatStore>();
 
 			while (results.next())

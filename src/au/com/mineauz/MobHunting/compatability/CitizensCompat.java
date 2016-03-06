@@ -96,7 +96,7 @@ public class CitizensCompat implements Listener {
 		try {
 			if (!fileMobRewardData.exists())
 				return;
-			MobHunting.debug("Loading Sentry Traits.");
+			MobHunting.debug("Loading extra MobRewards.");
 
 			config.load(fileMobRewardData);
 			for (String key : config.getKeys(false)) {
@@ -106,7 +106,7 @@ public class CitizensCompat implements Listener {
 				mrd.read(section);
 				mMobRewardData.put(key, mrd);
 			}
-			MobHunting.debug("Loaded %s Sentry Traits.", mMobRewardData.size());
+			MobHunting.debug("Loaded %s extra MobRewards.", mMobRewardData.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -130,7 +130,7 @@ public class CitizensCompat implements Listener {
 
 				if (n != 0) {
 					MobHunting.debug(
-							"Saving %s Sentry Trait Reward data to file.",
+							"Saving %s MobRewards to file.",
 							mMobRewardData.size());
 					config.save(fileMobRewardData);
 				}

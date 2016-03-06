@@ -1501,11 +1501,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}.runTaskLater(MobHunting.instance, 20L);
 		}
-		boolean lm = getDataStore().getPlayerData(player).isLearningMode();
-		boolean mm = getDataStore().getPlayerData(player).isMuted();
-		if (mm)
+		boolean learning_mode = getDataStore().getPlayerData(player).isLearningMode();
+		boolean muted = getDataStore().getPlayerData(player).isMuted();
+		if (muted)
 			debug("%s isMuted()", player.getName());
-		playerData.put(player.getUniqueId(), new PlayerData(player, lm, mm));
+		playerData.put(player.getUniqueId(), new PlayerData(player, learning_mode, muted));
+		mStoreManager.createPlayerData(player, learning_mode, muted);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
