@@ -17,7 +17,7 @@ public class PlayerData {
 
 	public PlayerData(OfflinePlayer player) {
 		this.player = player;
-		this.learning_mode = true;
+		this.learning_mode = MobHunting.config().learningMode;
 		this.mute = false;
 	}
 

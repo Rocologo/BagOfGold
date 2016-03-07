@@ -343,6 +343,7 @@ public abstract class DatabaseDataStore implements DataStore {
 				mUpdatePlayerData.executeBatch();
 				mUpdatePlayerName.close();
 				mConnection.commit();
+				MobHunting.debug("updatePlayerData: Learn=%s, Muted=%s", playerData.isMuted(), playerData.isLearningMode());
 			}
 		} catch (SQLException e) {
 			rollback();

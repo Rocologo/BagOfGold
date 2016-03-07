@@ -1077,7 +1077,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					killed.getType(), killed.getEntityId());
 			if (killer != null && killed != null)
 				learn(killer, Messages.getString("mobhunting.learn.no-reward","killed",
-						killed.getCustomName()));
+						killed.getName()));
 			return;
 		}
 
@@ -1086,7 +1086,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					killed.getType(), killed.getEntityId());
 			if (killer != null && killed != null) {
 				learn(killer, Messages.getString("mobhunting.learn.mobspawner","killed",
-								killed.getCustomName()));
+								killed.getName()));
 			}
 			return;
 		}
@@ -1505,6 +1505,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		boolean muted = getDataStore().getPlayerData(player).isMuted();
 		if (muted)
 			debug("%s isMuted()", player.getName());
+		if (learning_mode)
+			debug("%s is in LearningMode()", player.getName());
+		
 		playerData.put(player.getUniqueId(), new PlayerData(player, learning_mode, muted));
 		mStoreManager.createPlayerData(player, learning_mode, muted);
 	}

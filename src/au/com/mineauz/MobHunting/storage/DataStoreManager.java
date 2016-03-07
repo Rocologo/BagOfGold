@@ -305,7 +305,7 @@ public class DataStoreManager {
 
 	/**
 	 * @param player
-	 * @return PlayerData for player
+	 * @return Get PlayerData for player. If player does not exist in Database, a new record will be created.
 	 */
 	public PlayerData getPlayerData(Player player) {
 		try {
@@ -321,9 +321,9 @@ public class DataStoreManager {
 		}
 	}
 
-	public void updatePlayerData(Player player, boolean lm, boolean muted) {
+	public void updatePlayerData(Player player, boolean learning_mode, boolean muted) {
 		synchronized (mWaiting) {
-			mWaiting.add(new PlayerData(player, lm, muted));
+			mWaiting.add(new PlayerData(player, learning_mode, muted));
 		}
 		
 	}
