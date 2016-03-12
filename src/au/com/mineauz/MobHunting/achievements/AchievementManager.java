@@ -199,12 +199,14 @@ public class AchievementManager implements Listener {
 	public Collection<Achievement> getAllAchievements() {
 		return Collections.unmodifiableCollection(mAchievements.values());
 	}
-	
+
 	public void listAllAchievements(CommandSender sender) {
-		Iterator<Achievement> itr = Collections.unmodifiableCollection(mAchievements.values()).iterator();
-		while (itr.hasNext()){
+		Iterator<Achievement> itr = Collections.unmodifiableCollection(
+				mAchievements.values()).iterator();
+		while (itr.hasNext()) {
 			Achievement a = itr.next();
-			sender.sendMessage(a.getID()+"---"+a.getName()+"---"+ a.getDescription());
+			sender.sendMessage(a.getID() + "---" + a.getName() + "---"
+					+ a.getDescription());
 		}
 	}
 
@@ -299,9 +301,16 @@ public class AchievementManager implements Listener {
 							.replaceAll("\\{world\\}", worldname));
 		}
 
-		//TODO: find the best Fireworksound
-		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_TWINKLE, 1.0f,
-				1.0f);
+		try {
+			//Minecraft 1.9
+			player.getWorld().playSound(player.getLocation(),
+					Sound.valueOf("ENTITY_PLAYER_LEVELUP"), 1.0f, 1.0f);
+		} catch (Exception e) {
+			//Minecraft 1.8.8
+			player.getWorld().playSound(player.getLocation(),
+					Sound.valueOf("LEVEL_UP"), 1.0f, 1.0f);
+		}
+		 
 		FireworkEffect effect = FireworkEffect.builder()
 				.withColor(Color.ORANGE, Color.YELLOW).flicker(true)
 				.trail(false).build();

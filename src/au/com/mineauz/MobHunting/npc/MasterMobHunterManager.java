@@ -3,6 +3,8 @@ package au.com.mineauz.MobHunting.npc;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -213,14 +215,25 @@ public class MasterMobHunterManager implements Listener {
 	@EventHandler
 	public void onSignPlace(SignChangeEvent event) {
 		String l0 = event.getLine(0);
-		if (!l0.matches("\\[(MH|mh|Mh|mH)(\\d+)\\]")) {
+		// https://regex101.com/
+		// Regex string="\[(MH|mh|Mh|mH)(\d+)(\+)?\]"
+		// Example: [mh001+]
+		String patternStr = "\\[(MH|mh|Mh|mH)(\\d+)(\\+)?\\]";
+		if (!l0.matches(patternStr)) {
+			MobHunting.debug("This is not a MobHunting Sign");
 			return;
 		}
+		Pattern pattern = Pattern.compile(patternStr);
+		Matcher m = pattern.matcher(l0);
+		m.find();
+		MobHunting.debug("Number of groups=%s",m.groupCount());
 		Player p = event.getPlayer();
 		// Sign sign = (Sign) event.getBlock().getState().getData();
 		// Block attached =
 		// event.getBlock().getRelative(sign.getAttachedFace());
-		int id = Integer.valueOf(l0.substring(3, l0.length() - 1));
+		//String label = m.group(1);
+		int id = Integer.valueOf(m.group(2));
+		boolean powered = (m.group(3) == null) ? false : true;
 		NPCRegistry registry = CitizensAPI.getNPCRegistry();
 		NPC npc = registry.getById(id);
 		if (npc != null) {
@@ -232,6 +245,7 @@ public class MasterMobHunterManager implements Listener {
 				// TODO: wait 10 sec and continue
 				// mmhd.refresh();
 				mmhd.putLocation(location);
+				mmhd.setRedstonePoweredSign(powered);
 				mMasterMobHunterData.put(id, mmhd);
 				saveData(id);
 				p.sendMessage(p.getName() + " placed a MobHunting Sign (ID="
@@ -245,6 +259,11 @@ public class MasterMobHunterManager implements Listener {
 				event.setLine(3, (mMasterMobHunterData.get(id)
 						.getNumberOfKills() + " " + mMasterMobHunterData
 						.get(id).getStatType().translateName()));
+				if (powered){
+					NpcSigns.setPower(location, powered);
+					MobHunting.debug("setPower(%s)=%s mmdh.isRedstoneSign=%s",powered,location.toString(),
+							mmhd.isRedstonePoweredSign());
+				}
 			}
 
 		}

@@ -186,6 +186,7 @@ public class MasterMobHunterData implements Listener,
 								loc.zero();
 							}
 						}
+						if (isRedstonePoweredSign()) NpcSigns.setPower(loc,true);
 					}
 				}
 			}

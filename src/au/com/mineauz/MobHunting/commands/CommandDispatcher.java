@@ -108,7 +108,8 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 			sender.sendMessage(ChatColor.RED
 					+ Messages.getString(
 							"mobhunting.commands.base.nopermission", "command",
-							"/" + label + " " + subCommand));
+							"/" + label + " " + subCommand, "perm",
+							com.getPermission()));
 			return true;
 		}
 

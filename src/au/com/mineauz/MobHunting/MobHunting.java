@@ -59,6 +59,7 @@ import au.com.mineauz.MobHunting.achievements.*;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
 import au.com.mineauz.MobHunting.commands.CommandDispatcher;
+import au.com.mineauz.MobHunting.commands.DatabaseCommand;
 import au.com.mineauz.MobHunting.commands.LeaderboardCommand;
 import au.com.mineauz.MobHunting.commands.LearnCommand;
 import au.com.mineauz.MobHunting.commands.ListAchievementsCommand;
@@ -233,6 +234,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
 			cmd.registerCommand(new NpcCommand());
 		}
+		cmd.registerCommand(new DatabaseCommand());
 
 		registerAchievements();
 		registerModifiers();

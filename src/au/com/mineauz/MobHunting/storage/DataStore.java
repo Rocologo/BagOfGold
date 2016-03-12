@@ -1,5 +1,6 @@
 package au.com.mineauz.MobHunting.storage;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -33,5 +34,7 @@ public interface DataStore {
 
 	public void createPlayerData(Set<PlayerData> playerDataSet)
 			throws DataStoreException;
+	
+	void databaseFixLeaderboard() throws SQLException;
 
 }

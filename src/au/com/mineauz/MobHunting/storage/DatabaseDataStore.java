@@ -343,11 +343,57 @@ public abstract class DatabaseDataStore implements DataStore {
 				mUpdatePlayerData.executeBatch();
 				mUpdatePlayerName.close();
 				mConnection.commit();
-				MobHunting.debug("updatePlayerData: Learn=%s, Muted=%s", playerData.isMuted(), playerData.isLearningMode());
+				MobHunting.debug("updatePlayerData: Learn=%s, Muted=%s",
+						playerData.isMuted(), playerData.isLearningMode());
 			}
 		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);
+		}
+	}
+
+	@Override
+	public void databaseFixLeaderboard() throws SQLException {
+		Statement statement = mConnection.createStatement();
+		try {
+			MobHunting.debug("Beginning cleaning of database");
+			int result;
+			result = statement
+					.executeUpdate("DELETE FROM mh_Achievements WHERE PLAYER_ID NOT IN "
+							+ "(SELECT PLAYER_ID FROM mh_Players "
+							+ "where mh_Achievements.PLAYER_ID=mh_Players.PLAYER_ID);");
+			MobHunting
+					.debug("%s rows was deleted from Mh_Achievements", result);
+			result = statement
+					.executeUpdate("DELETE FROM mh_AllTime WHERE PLAYER_ID NOT IN "
+							+ "(SELECT PLAYER_ID FROM mh_Players "
+							+ "where mh_AllTime.PLAYER_ID=mh_Players.PLAYER_ID);");
+			MobHunting.debug("%s rows was deleted from Mh_AllTime", result);
+			result = statement
+					.executeUpdate("DELETE FROM mh_Daily WHERE PLAYER_ID NOT IN "
+							+ "(SELECT PLAYER_ID FROM mh_Players "
+							+ "where mh_Daily.PLAYER_ID=mh_Players.PLAYER_ID);");
+			MobHunting.debug("%s rows was deleted from Mh_Daily", result);
+			result = statement
+					.executeUpdate("DELETE FROM mh_Monthly WHERE PLAYER_ID NOT IN "
+							+ "(SELECT PLAYER_ID FROM mh_Players "
+							+ "where mh_Monthly.PLAYER_ID=mh_Players.PLAYER_ID);");
+			MobHunting.debug("%s rows was deleted from Mh_Monthly", result);
+			result = statement
+					.executeUpdate("DELETE FROM mh_Weekly WHERE PLAYER_ID NOT IN "
+							+ "(SELECT PLAYER_ID FROM mh_Players "
+							+ "where mh_Weekly.PLAYER_ID=mh_Players.PLAYER_ID);");
+			MobHunting.debug("%s rows was deleted from Mh_Weekly", result);
+			result = statement
+					.executeUpdate("DELETE FROM mh_Yearly WHERE PLAYER_ID NOT IN "
+							+ "(SELECT PLAYER_ID FROM mh_Players "
+							+ "where mh_Yearly.PLAYER_ID=mh_Players.PLAYER_ID);");
+			MobHunting.debug("%s rows was deleted from Mh_Yearly", result);
+			statement.close();
+			mConnection.commit();
+			MobHunting.debug("MobHunting Database was cleaned");
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 

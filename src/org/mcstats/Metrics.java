@@ -336,7 +336,7 @@ public class Metrics {
         String serverVersion = Bukkit.getVersion();
         //int playersOnline = Bukkit.getServer().getOnlinePlayers().size();
         int playersOnline = MobHunting.instance.playerData.size();
-        MobHunting.debug("Reporting %s players to Mstats",playersOnline);
+        MobHunting.debug("Reporting %s players to Mcstats",playersOnline);
 
         // END server software specific section -- all code below does not use any code outside of this class / Java
 
