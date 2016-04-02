@@ -17,6 +17,7 @@ import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.event.PlayerCreateNPCEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
+import net.citizensnpcs.api.trait.TraitInfo;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,7 +38,7 @@ import au.com.mineauz.MobHunting.npc.MasterMobHunterData;
 public class CitizensCompat implements Listener {
 
 	private static boolean supported = false;
-	private static CitizensPlugin mPlugin;
+	private static CitizensPlugin citizensAPI;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
 	private File fileMobRewardData = new File(
 			MobHunting.instance.getDataFolder(), "citizens-rewards.yml");
@@ -50,13 +51,18 @@ public class CitizensCompat implements Listener {
 			MobHunting.instance.getLogger().info(
 					"Compatability with Citizens2 is disabled in config.yml");
 		} else {
-			mPlugin = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(
+			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(
 					"Citizens");
+			if (citizensAPI == null)
+				return;
 
 			// Register MobHunting Trait with Citizens.
-			net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(
-					net.citizensnpcs.api.trait.TraitInfo.create(
-							MobHuntingTrait.class).withName("MasterMobHunter"));
+			// net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(
+			// net.citizensnpcs.api.trait.TraitInfo.create(
+			// MobHuntingTrait.class).withName("MasterMobHunter"));
+			TraitInfo trait = TraitInfo.create(MobHuntingTrait.class).withName(
+					"MasterMobHunter");
+			citizensAPI.getTraitFactory().registerTrait(trait);
 
 			// wait 5 seconds or until Citizens is fully loaded.
 			MobHunting.instance
@@ -106,7 +112,8 @@ public class CitizensCompat implements Listener {
 				mrd.read(section);
 				mMobRewardData.put(key, mrd);
 			}
-			MobHunting.debug("Loaded %s extra MobRewards.", mMobRewardData.size());
+			MobHunting.debug("Loaded %s extra MobRewards.",
+					mMobRewardData.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -129,8 +136,7 @@ public class CitizensCompat implements Listener {
 				}
 
 				if (n != 0) {
-					MobHunting.debug(
-							"Saving %s MobRewards to file.",
+					MobHunting.debug("Saving %s MobRewards to file.",
 							mMobRewardData.size());
 					config.save(fileMobRewardData);
 				}
@@ -168,7 +174,7 @@ public class CitizensCompat implements Listener {
 	}
 
 	public CitizensPlugin getCitizensPlugin() {
-		return mPlugin;
+		return citizensAPI;
 	}
 
 	public static boolean isCitizensSupported() {
@@ -250,7 +256,7 @@ public class CitizensCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensEnableEvent(CitizensEnableEvent event) {
-		MobHunting.debug("onCitizensEnableEvent:%s",event.getEventName());
+		MobHunting.debug("onCitizensEnableEvent:%s", event.getEventName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

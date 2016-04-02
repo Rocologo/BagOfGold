@@ -23,6 +23,7 @@ public class DisguiseCraftCompat implements Listener {
 
 	private static Plugin mPlugin;
 	private static DisguiseCraftAPI dcAPI;
+	private static boolean supported = false;
 
 	public DisguiseCraftCompat() {
 		if (isDisabledInConfig()) {
@@ -32,14 +33,18 @@ public class DisguiseCraftCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("DisguiseCraft");
-			dcAPI = DisguiseCraft.getAPI();
+			if (mPlugin != null) {
+				dcAPI = DisguiseCraft.getAPI();
 
-			Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
+				Bukkit.getPluginManager().registerEvents(this,
+						MobHunting.instance);
 
-			MobHunting.instance.getLogger().info(
-					"Enabling compatability with DisguiseCraft ("
-							+ getDisguiseCraft().getDescription().getVersion()
-							+ ")");
+				MobHunting.instance.getLogger().info(
+						"Enabling compatability with DisguiseCraft ("
+								+ getDisguiseCraft().getDescription()
+										.getVersion() + ")");
+				supported = true;
+			}
 		}
 	}
 
@@ -49,6 +54,10 @@ public class DisguiseCraftCompat implements Listener {
 
 	public static Plugin getDisguiseCraft() {
 		return mPlugin;
+	}
+
+	public static boolean isSupported() {
+		return supported;
 	}
 
 	public static boolean isDisabledInConfig() {
@@ -88,6 +97,7 @@ public class DisguiseCraftCompat implements Listener {
 			DisguiseType.Guardian, DisguiseType.PigZombie,
 			DisguiseType.Skeleton, DisguiseType.Slime, DisguiseType.Spider,
 			DisguiseType.Witch, DisguiseType.Wither, DisguiseType.Zombie };
+	
 	public static final Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(
 			Arrays.asList(aggresiveList));
 

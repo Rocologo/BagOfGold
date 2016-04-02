@@ -113,8 +113,7 @@ public class WorldGuardCompat implements Listener {
 		return mPlugin;
 	}
 
-	@SuppressWarnings("unused")
-	private static boolean isWorldGuardSupported() {
+	public static boolean isSupported() {
 		return supported;
 	}
 

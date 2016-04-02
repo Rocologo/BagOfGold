@@ -24,6 +24,7 @@ public class LibsDisguisesCompat implements Listener {
 	// https://www.spigotmc.org/wiki/lib-s-disguises/
 
 	private static Plugin mPlugin;
+	private static boolean supported = false;
 
 	public LibsDisguisesCompat() {
 		if (isDisabledInConfig()) {
@@ -40,6 +41,7 @@ public class LibsDisguisesCompat implements Listener {
 					"Enabling compatability with LibsDisguises ("
 							+ getLibsDisguises().getDescription().getVersion()
 							+ ")");
+			supported=true;
 		}
 	}
 
@@ -49,6 +51,10 @@ public class LibsDisguisesCompat implements Listener {
 
 	public static Plugin getLibsDisguises() {
 		return mPlugin;
+	}
+	
+	public static boolean isSupported() {
+		return supported;
 	}
 	
 	public static me.libraryaddict.disguise.disguisetypes.Disguise getDisguise(Entity entity) {

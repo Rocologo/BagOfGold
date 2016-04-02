@@ -1,20 +1,25 @@
 package au.com.mineauz.MobHunting.commands;
 
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
+
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.storage.DataStoreManager;
 import au.com.mineauz.MobHunting.storage.PlayerData;
 
 public class LearnCommand implements ICommand, Listener {
+	private MobHunting instance;
 
-	public LearnCommand() {
+	public LearnCommand(Plugin plugin) {
+		this.instance = (MobHunting) plugin;
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
 	}
 
@@ -97,22 +102,17 @@ public class LearnCommand implements ICommand, Listener {
 	}
 
 	private void togglePlayerLearningMode(Player player) {
-		DataStoreManager ds = MobHunting.instance.getDataStore();
-		if (MobHunting.instance.playerData.containsKey(player.getUniqueId())) {
-			boolean mm = MobHunting.instance.playerData.get(
-					player.getUniqueId()).isMuted();
-			if (MobHunting.instance.playerData.get(player.getUniqueId())
-					.isLearningMode()) {
+		DataStoreManager ds = instance.getDataStore();
+		if (instance.getPlayerData().containsKey(player.getUniqueId())) {
+			boolean mm = instance.getPlayerData(player.getUniqueId()).isMuted();
+			if (instance.getPlayerData(player.getUniqueId()).isLearningMode()) {
 				ds.updatePlayerData(player, false, mm);
-				MobHunting.instance.playerData.put(player.getUniqueId(),
-						new PlayerData(player, false, mm));
+				instance.addPlayerData(new PlayerData(player, false, mm));
 				player.sendMessage(Messages.getString(
 						"mobhunting.commands.learn.disabled", "player",
 						player.getName()));
 			} else {
-				ds.updatePlayerData(player, true, mm);
-				MobHunting.instance.playerData.put(player.getUniqueId(),
-						new PlayerData(player, true, mm));
+				instance.addPlayerData(new PlayerData(player, true, mm));
 				player.sendMessage(Messages.getString(
 						"mobhunting.commands.learn.enabled", "player",
 						player.getName()));

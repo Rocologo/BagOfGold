@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -35,20 +36,21 @@ public class MasterMobHunterManager implements Listener {
 	private BukkitTask mUpdater = null;
 
 	public MasterMobHunterManager() {
-		loadData();
+			loadData();
 	}
 
 	public void initialize() {
-		mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.instance,
-				new Updater(), 1L,
-				MobHunting.config().masterMobHuntercheckEvery * 20);
-		Bukkit.getPluginManager().registerEvents(new MobHuntingTrait(),
-				MobHunting.instance);
-		Bukkit.getPluginManager().registerEvents(new MasterMobHunterManager(),
-				MobHunting.instance);
-		Bukkit.getPluginManager().registerEvents(new MasterMobHunterData(),
-				MobHunting.instance);
-
+		if (CitizensCompat.isCitizensSupported()) {
+			mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.instance,
+					new Updater(), 1L,
+					MobHunting.config().masterMobHuntercheckEvery * 20);
+			Bukkit.getPluginManager().registerEvents(new MobHuntingTrait(),
+					MobHunting.instance);
+			Bukkit.getPluginManager().registerEvents(
+					new MasterMobHunterManager(), MobHunting.instance);
+			Bukkit.getPluginManager().registerEvents(new MasterMobHunterData(),
+					MobHunting.instance);
+		}
 	}
 
 	public void forceUpdate() {
@@ -197,8 +199,6 @@ public class MasterMobHunterManager implements Listener {
 			MasterMobHunterData mmhd = new MasterMobHunterData();
 			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
 			mmhd.update();
-			// TODO: wait 10 sec and continue
-			// mmhd.refresh();
 			event.getClicker().sendMessage(
 					"You RIGHT clicked a MasterMobHunter NPC(" + npc.getId()
 							+ ") rank=" + mmhd.getRank() + " kills="
@@ -212,26 +212,24 @@ public class MasterMobHunterManager implements Listener {
 	// ***************************************************************
 	// Events
 	// ***************************************************************
+
+	// https://regex101.com/
+	// Regex string="\[(MH|mh|Mh|mH)(\d+)(\+)?\]"
+	// Example: [mh001+]
+	final static String MASTERMOBHUNTERSIGN = "\\[(MH|mh|Mh|mH)(\\d+)(\\+)?\\]";
+
 	@EventHandler
 	public void onSignPlace(SignChangeEvent event) {
 		String l0 = event.getLine(0);
-		// https://regex101.com/
-		// Regex string="\[(MH|mh|Mh|mH)(\d+)(\+)?\]"
-		// Example: [mh001+]
-		String patternStr = "\\[(MH|mh|Mh|mH)(\\d+)(\\+)?\\]";
-		if (!l0.matches(patternStr)) {
+		if (!l0.matches(MASTERMOBHUNTERSIGN)) {
 			MobHunting.debug("This is not a MobHunting Sign");
 			return;
 		}
-		Pattern pattern = Pattern.compile(patternStr);
+		Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
 		Matcher m = pattern.matcher(l0);
 		m.find();
-		MobHunting.debug("Number of groups=%s",m.groupCount());
+		MobHunting.debug("Number of groups=%s", m.groupCount());
 		Player p = event.getPlayer();
-		// Sign sign = (Sign) event.getBlock().getState().getData();
-		// Block attached =
-		// event.getBlock().getRelative(sign.getAttachedFace());
-		//String label = m.group(1);
 		int id = Integer.valueOf(m.group(2));
 		boolean powered = (m.group(3) == null) ? false : true;
 		NPCRegistry registry = CitizensAPI.getNPCRegistry();
@@ -242,8 +240,6 @@ public class MasterMobHunterManager implements Listener {
 				MasterMobHunterData mmhd = new MasterMobHunterData();
 				mmhd = mMasterMobHunterData.get(id);
 				mmhd.update();
-				// TODO: wait 10 sec and continue
-				// mmhd.refresh();
 				mmhd.putLocation(location);
 				mmhd.setRedstonePoweredSign(powered);
 				mMasterMobHunterData.put(id, mmhd);
@@ -259,14 +255,20 @@ public class MasterMobHunterManager implements Listener {
 				event.setLine(3, (mMasterMobHunterData.get(id)
 						.getNumberOfKills() + " " + mMasterMobHunterData
 						.get(id).getStatType().translateName()));
-				if (powered){
-					NpcSigns.setPower(location, powered);
-					MobHunting.debug("setPower(%s)=%s mmdh.isRedstoneSign=%s",powered,location.toString(),
-							mmhd.isRedstonePoweredSign());
+				if (powered) {
+					//TODO: powersigns does not work yet. :-(
+					//MasterMobhunterSigns.setPower(event.getBlock(), powered);
+					//MobHunting.debug("MasterMobHunter - setPower(%s) on %s",
+					//		powered, event.getBlock().getType()
+					//		);
 				}
 			}
 
 		}
 	}
 
+	@EventHandler
+	public void onBlockBreak(final BlockBreakEvent event) {
+		// TODO: Test if MMHD sign at remove from NPC list. Maybe.
+	}
 }

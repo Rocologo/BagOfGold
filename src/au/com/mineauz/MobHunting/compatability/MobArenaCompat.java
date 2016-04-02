@@ -21,6 +21,7 @@ import com.garbagemule.MobArena.events.NewWaveEvent;
 public class MobArenaCompat implements Listener {
 
 	private static Plugin mPlugin;
+	private static boolean supported = false;
 
 	public MobArenaCompat() {
 		if (isDisabledInConfig()) {
@@ -35,6 +36,7 @@ public class MobArenaCompat implements Listener {
 					.getLogger()
 					.info("Enabling compatability with MobArena ("
 							+ getMobArena().getDescription().getVersion() + ")");
+			supported = true;
 		}
 	}
 
@@ -44,6 +46,10 @@ public class MobArenaCompat implements Listener {
 
 	public Plugin getMobArena() {
 		return mPlugin;
+	}
+
+	public static boolean isSupported() {
+		return supported;
 	}
 
 	public static boolean isDisabledInConfig() {

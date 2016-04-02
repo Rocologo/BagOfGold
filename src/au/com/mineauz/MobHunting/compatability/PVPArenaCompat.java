@@ -13,6 +13,9 @@ import org.bukkit.event.Listener;
 import au.com.mineauz.MobHunting.MobHunting;
 
 public class PVPArenaCompat implements Listener {
+
+	private static boolean supported = false;
+
 	public PVPArenaCompat() {
 		if (isDisabledInConfig()) {
 			MobHunting.instance.getLogger().info(
@@ -21,12 +24,17 @@ public class PVPArenaCompat implements Listener {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
 			MobHunting.instance.getLogger().info(
 					"Enabling PVPArena Compatability");
+			supported = true;
 		}
 	}
 
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
+	public static boolean isSupported() {
+		return supported;
+	}
+
 	public static boolean isDisabledInConfig() {
 		return MobHunting.config().disableIntegrationPvpArena;
 	}

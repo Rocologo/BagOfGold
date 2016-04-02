@@ -23,6 +23,7 @@ public class IDisguiseCompat implements Listener {
 
 	private static Plugin mPlugin;
 	private static DisguiseAPI api;
+	private static boolean supported = false;
 
 	public IDisguiseCompat() {
 		if (isDisabledInConfig()) {
@@ -40,6 +41,7 @@ public class IDisguiseCompat implements Listener {
 					"Enabling compatability with iDisguise ("
 							+ getiDisguise().getDescription().getVersion()
 							+ ")");
+			supported = true;
 		}
 	}
 
@@ -49,6 +51,10 @@ public class IDisguiseCompat implements Listener {
 
 	public static Plugin getiDisguise() {
 		return mPlugin;
+	}
+
+	public static boolean isSupported() {
+		return supported;
 	}
 
 	public static boolean isDisabledInConfig() {
@@ -79,7 +85,7 @@ public class IDisguiseCompat implements Listener {
 
 	public static void undisguisePlayer(Entity entity) {
 		if (entity instanceof Player)
-			api.undisguiseToAll((Player)entity);
+			api.undisguiseToAll((Player) entity);
 	}
 
 	private static final DisguiseType aggresiveList[] = { DisguiseType.ZOMBIE,

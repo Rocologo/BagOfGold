@@ -9,6 +9,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Blaze;
@@ -967,18 +968,17 @@ public class Config extends AutoConfig {
 	 * @return value
 	 */
 	public double getBaseKillPrize(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
+		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return getPrice(((MobRewardData) value.value()).getRewardPrize());
+			return getPrice(mob,((MobRewardData) value.value()).getRewardPrize());
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return getPrice(CitizensCompat.getMobRewardData()
+				return getPrice(mob,CitizensCompat.getMobRewardData()
 						.get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
 				return 0;
@@ -1000,99 +1000,99 @@ public class Config extends AutoConfig {
 				} else
 					return Double.valueOf(pvpKillPrize);
 			} else if (mob instanceof Blaze)
-				return getPrice(blazePrize);
+				return getPrice(mob,blazePrize);
 			else if (mob instanceof Creeper)
-				return getPrice(creeperPrize);
+				return getPrice(mob,creeperPrize);
 			else if (mob instanceof Silverfish)
-				return getPrice(silverfishPrize);
+				return getPrice(mob,silverfishPrize);
 			else if (mob instanceof Enderman)
-				return getPrice(endermanPrize);
+				return getPrice(mob,endermanPrize);
 			else if (mob instanceof Giant)
-				return getPrice(giantPrize);
+				return getPrice(mob,giantPrize);
 			else if (mob instanceof Skeleton) {
 				switch (((Skeleton) mob).getSkeletonType()) {
 				case NORMAL:
-					return getPrice(skeletonPrize);
+					return getPrice(mob,skeletonPrize);
 				case WITHER:
-					return getPrice(witherSkeletonPrize);
+					return getPrice(mob,witherSkeletonPrize);
 				}
 			} else if (mob instanceof Spider)
 				if (mob instanceof CaveSpider)
-					return getPrice(caveSpiderPrize);
+					return getPrice(mob,caveSpiderPrize);
 				else
-					return getPrice(spiderPrize);
+					return getPrice(mob,spiderPrize);
 			else if (mob instanceof Witch)
-				return getPrice(witchPrize);
+				return getPrice(mob,witchPrize);
 			else if (mob instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
 				if (((PigZombie) mob).isBaby())
-					return round(getPrice(zombiePigmanPrize) * babyMultiplier);
+					return round(getPrice(mob,zombiePigmanPrize) * babyMultiplier);
 				else
-					return getPrice(zombiePigmanPrize);
+					return getPrice(mob,zombiePigmanPrize);
 			else if (mob instanceof Zombie)
 				if (((Zombie) mob).isBaby())
-					return round(getPrice(zombiePrize) * babyMultiplier);
+					return round(getPrice(mob,zombiePrize) * babyMultiplier);
 				else
-					return getPrice(zombiePrize);
+					return getPrice(mob,zombiePrize);
 			else if (mob instanceof Ghast)
-				return getPrice(ghastPrize);
+				return getPrice(mob,ghastPrize);
 			else if (mob instanceof Slime)
 				if (mob instanceof MagmaCube)
 					// MagmaCube is a subclass of Slime
-					return getPrice(magmaCubePrize)
+					return getPrice(mob,magmaCubePrize)
 							* ((MagmaCube) mob).getSize();
 				else
-					return getPrice(slimeTinyPrize) * ((Slime) mob).getSize();
+					return getPrice(mob,slimeTinyPrize) * ((Slime) mob).getSize();
 			else if (mob instanceof EnderDragon)
-				return getPrice(enderdragonPrize);
+				return getPrice(mob,enderdragonPrize);
 			else if (mob instanceof Wither)
-				return getPrice(witherPrize);
+				return getPrice(mob,witherPrize);
 			else if (mob instanceof IronGolem)
-				return getPrice(ironGolemPrize);
+				return getPrice(mob,ironGolemPrize);
 
 			// Passive mobs
 			else if (mob instanceof Bat)
-				return getPrice(batPrize);
+				return getPrice(mob,batPrize);
 			else if (mob instanceof Chicken)
-				return getPrice(chickenPrize);
+				return getPrice(mob,chickenPrize);
 			else if (mob instanceof Cow)
 				if (mob instanceof MushroomCow)
 					// MushroomCow is a subclass of Cow
-					return getPrice(mushroomCowPrize);
+					return getPrice(mob,mushroomCowPrize);
 				else
-					return getPrice(cowPrize);
+					return getPrice(mob,cowPrize);
 			else if (mob instanceof Horse)
-				return getPrice(horsePrize);
+				return getPrice(mob,horsePrize);
 			else if (mob instanceof Ocelot)
-				return getPrice(ocelotPrize);
+				return getPrice(mob,ocelotPrize);
 			else if (mob instanceof Pig)
-				return getPrice(pigPrize);
+				return getPrice(mob,pigPrize);
 			else if (mob instanceof Sheep)
-				return getPrice(sheepPrize);
+				return getPrice(mob,sheepPrize);
 			else if (mob instanceof Snowman)
-				return getPrice(snowmanPrize);
+				return getPrice(mob,snowmanPrize);
 			else if (mob instanceof Squid)
-				return getPrice(squidPrize);
+				return getPrice(mob,squidPrize);
 			else if (mob instanceof Villager)
-				return getPrice(villagerPrize);
+				return getPrice(mob,villagerPrize);
 			else if (mob instanceof Wolf)
-				return getPrice(wolfPrize);
+				return getPrice(mob,wolfPrize);
 
 			// Test if Minecraft 1.8 Mob Classes exists
 			try {
 				@SuppressWarnings({ "rawtypes", "unused" })
 				Class cls = Class.forName("org.bukkit.entity.Guardian");
 				if (mob instanceof Guardian)
-					return getPrice(guardianPrize);
+					return getPrice(mob,guardianPrize);
 				else if (mob instanceof Endermite)
-					return getPrice(endermitePrize);
+					return getPrice(mob,endermitePrize);
 				// if (mob instanceof Rabbit)
 				// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
 				if (mob instanceof Rabbit)
 					if (((Rabbit) mob).getRabbitType() == Rabbit.Type.THE_KILLER_BUNNY)
-						return getPrice(killerrabbitPrize);
+						return getPrice(mob,killerrabbitPrize);
 					else
-						return getPrice(rabbitPrize);
+						return getPrice(mob,rabbitPrize);
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.8
 			}
@@ -1102,7 +1102,7 @@ public class Config extends AutoConfig {
 				@SuppressWarnings({ "rawtypes", "unused" })
 				Class cls = Class.forName("org.bukkit.entity.Shulker");
 				if (mob instanceof Shulker)
-					return getPrice(shulkerPrize);
+					return getPrice(mob,shulkerPrize);
 			} catch (ClassNotFoundException e) {
 				// This is not a MC 1.9 entity
 			}
@@ -1116,13 +1116,22 @@ public class Config extends AutoConfig {
 
 	}
 
-	private double getPrice(String str) {
+	private double getPrice(LivingEntity mob, String str) {
 		if (str.contains(":")) {
 			String[] str1 = str.split(":");
 			double prize = (mRand.nextDouble()
 					* (Double.valueOf(str1[1]) - Double.valueOf(str1[0])) + Double
 					.valueOf(str1[0]));
 			return round(prize);
+		} else if (str.equals("") || str == null || str.isEmpty()) {
+			MobHunting.instance
+					.getServer()
+					.getConsoleSender()
+					.sendMessage(ChatColor.RED+
+							"[MobHunting] [WARNING]"+ChatColor.RESET+" The prize for killing a "
+									+ mob.getName()
+									+ " is not set in config.yml. Please set the prize to 0 or an positive or negative number.");
+			return 0;
 		} else
 			return Double.valueOf(str);
 	}
@@ -1135,8 +1144,7 @@ public class Config extends AutoConfig {
 	 *         be separeted by a "|"
 	 */
 	public String getKillConsoleCmd(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
+		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
@@ -1262,8 +1270,7 @@ public class Config extends AutoConfig {
 	 * @return String
 	 */
 	public String getKillRewardDescription(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
+		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
@@ -1384,8 +1391,7 @@ public class Config extends AutoConfig {
 	}
 
 	public int getCmdRunProbability(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
+		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropability();
@@ -1506,8 +1512,7 @@ public class Config extends AutoConfig {
 	}
 
 	public int getCmdRunProbabilityBase(LivingEntity mob) {
-		if (MythicMobsCompat.isMythicMobsSupported()
-				&& mob.hasMetadata("MH:MythicMob")) {
+		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropabilityBase();
@@ -1617,14 +1622,14 @@ public class Config extends AutoConfig {
 				// This is not MC 1.8
 			}
 			// Test if Minecraft 1.9 Mob Classes exists
-						try {
-							@SuppressWarnings({ "rawtypes", "unused" })
-							Class cls = Class.forName("org.bukkit.entity.Shulker");
-							if (mob instanceof Shulker)
-								return shulkerFrequencyBase;
-						} catch (ClassNotFoundException e) {
-							// This is not MC 1.9
-						}
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerFrequencyBase;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
+			}
 		}
 		return 100;
 	}

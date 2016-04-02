@@ -36,6 +36,11 @@ public class MyPetCompat implements Listener {
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
+	
+	public static boolean isSupported(){
+		return supported;
+	}
+	
 	public static MyPetPlugin getMyPetPlugin() {
 		return mPlugin;
 	}

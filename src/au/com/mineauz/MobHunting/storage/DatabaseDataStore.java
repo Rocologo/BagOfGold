@@ -146,10 +146,17 @@ public abstract class DatabaseDataStore implements DataStore {
 		}
 		myAddPlayerStatement.executeBatch();
 		myAddPlayerStatement.close();
+		
+		
+		//added because of ticket 37 as a fix. Im not sure this fixes the problem.
+		mConnection.commit(); 
+		// http://dev.bukkit.org/bukkit-plugins/mobhunting/tickets/37-2-7-1-bug-sql-name-change/
 
+		
 		int left = players.size();
 		Iterator<OfflinePlayer> it = players.iterator();
 		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
+		ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
 
 		while (left > 0) {
 			PreparedStatement statement;
@@ -178,7 +185,7 @@ public abstract class DatabaseDataStore implements DataStore {
 			}
 
 			ResultSet results = statement.executeQuery();
-
+			
 			int index = 0;
 			while (results.next()) {
 				OfflinePlayer player = temp.get(index++);
@@ -191,15 +198,20 @@ public abstract class DatabaseDataStore implements DataStore {
 									+ " -> " + player.getPlayer().getName()
 									+ " UUID="
 									+ player.getUniqueId().toString());
-					updatePlayerName(player.getPlayer());
+					changedNames.add(player);
 				}
 
 				ids.put(UUID.fromString(results.getString(1)),
 						results.getInt(3));
 			}
 			results.close();
+			
+			Iterator<OfflinePlayer> itr = changedNames.iterator(); 
+			while(itr.hasNext()) {
+				OfflinePlayer p = itr.next(); 
+				updatePlayerName(p.getPlayer());
+			}
 		}
-
 		return ids;
 	}
 
@@ -343,8 +355,6 @@ public abstract class DatabaseDataStore implements DataStore {
 				mUpdatePlayerData.executeBatch();
 				mUpdatePlayerName.close();
 				mConnection.commit();
-				MobHunting.debug("updatePlayerData: Learn=%s, Muted=%s",
-						playerData.isMuted(), playerData.isLearningMode());
 			}
 		} catch (SQLException e) {
 			rollback();

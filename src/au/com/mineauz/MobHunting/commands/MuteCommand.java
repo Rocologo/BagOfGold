@@ -1,20 +1,25 @@
 package au.com.mineauz.MobHunting.commands;
 
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
+
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.storage.DataStoreManager;
 import au.com.mineauz.MobHunting.storage.PlayerData;
 
 public class MuteCommand implements ICommand, Listener {
+	private MobHunting instance;
 
-	public MuteCommand() {
+	public MuteCommand(Plugin plugin) {
+		this.instance = (MobHunting) plugin;
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
 	}
 
@@ -96,22 +101,19 @@ public class MuteCommand implements ICommand, Listener {
 	}
 
 	private void togglePlayerMuteMode(Player player) {
-		DataStoreManager ds = MobHunting.instance.getDataStore();
-		if (MobHunting.instance.playerData.containsKey(player.getUniqueId())) {
-			boolean lm = MobHunting.instance.playerData.get(
-					player.getUniqueId()).isLearningMode();
-			if (MobHunting.instance.playerData.get(player.getUniqueId())
-					.isMuted()) {
+		DataStoreManager ds = instance.getDataStore();
+		if (instance.getPlayerData().containsKey(player.getUniqueId())) {
+			boolean lm = instance.getPlayerData(player.getUniqueId())
+					.isLearningMode();
+			if (instance.getPlayerData(player.getUniqueId()).isMuted()) {
 				ds.updatePlayerData(player, lm, false);
-				MobHunting.instance.playerData.put(player.getUniqueId(),
-						new PlayerData(player, lm, false));
+				instance.addPlayerData(new PlayerData(player, lm, false));
 				player.sendMessage(Messages.getString(
 						"mobhunting.commands.mute.unmuted", "player",
 						player.getName()));
 			} else {
 				ds.updatePlayerData(player, lm, true);
-				MobHunting.instance.playerData.put(player.getUniqueId(),
-						new PlayerData(player, lm, true));
+				instance.addPlayerData(new PlayerData(player, lm, true));
 				player.sendMessage(Messages.getString(
 						"mobhunting.commands.mute.muted", "player",
 						player.getName()));

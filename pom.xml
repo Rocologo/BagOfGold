@@ -4,34 +4,34 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.7.1</version>
+	<version>2.7.2</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.9-R0.1-SNAPSHOT</bukkit.version>
-		<spigotmc.version>1.9-R0.1-SNAPSHOT</spigotmc.version>
+		<bukkit.version>1.9.2-R0.1-SNAPSHOT</bukkit.version>
+		<spigotmc.version>1.9.2-R0.1-SNAPSHOT</spigotmc.version>
 		<metrics.version>R8-SNAPSHOT</metrics.version>
 		<vault.version>1.5.6</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
-		<mypet.version>1.3.2-SNAPSHOT</mypet.version>
+		<mypet.version>2.0.4-SNAPSHOT</mypet.version>
 		<mobarena.version>0.97.1</mobarena.version>
 		<pvparena.version>1.3.0.548</pvparena.version>
 		<worldedit.version>LATEST</worldedit.version>
-		<worldguard.version>6.1</worldguard.version>
+		<worldguard.version>LATEST</worldguard.version>
 		<citizensapi.version>2.0.17-SNAPSHOT</citizensapi.version>
-		<mythicmobs.jar.version>MythicMobs-2.2.0.jar</mythicmobs.jar.version>
+		<mythicmobs.jar.version>MythicMobs-2.3.0.jar</mythicmobs.jar.version>
 		<javacompiler.version>1.7</javacompiler.version>
-		<mavenCompilerPlugin.version>3.1</mavenCompilerPlugin.version>
-		<mavenShadePlugin.version>2.4.2</mavenShadePlugin.version>
+		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
+		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
 		<mcstats.pluginname>${groupId}.${artifactId}</mcstats.pluginname>
-		<slf4j.version>1.7.12</slf4j.version>
+		<slf4j.version>1.7.20</slf4j.version>
 		<essentials.version>LATEST</essentials.version>
 		<disguisecraft.version>5.1</disguisecraft.version>
 		<libsdisguises.version>8.2.6-SNAPSHOT</libsdisguises.version>
-		<protocollib.version>3.6.5</protocollib.version>
+		<protocollib.version>3.7.0-BETA</protocollib.version>
 	</properties>
 
 	<organization>
@@ -261,8 +261,8 @@
 			<groupId>LibsDisguises</groupId>
 			<artifactId>LibsDisguises</artifactId>
 			<version>${libsdisguises.version}</version>
-		</dependency> 
-		
+		</dependency>
+
 		<!-- iDisguise -->
 		<dependency>
 			<groupId>de.robingrether.idisguise</groupId>
@@ -405,12 +405,12 @@
 			<id>Plugin Metrics</id>
 			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
-		<!-- MCStats SNAPSHOTS-->
+		<!-- MCStats SNAPSHOTS -->
 		<repository>
 			<id>Plugin Metrics SNAPSHOTS</id>
 			<url>http://repo.mcstats.org/content/repositories/snapshots/</url>
 		</repository>
-		
+
 
 		<!-- Essentials -->
 		<repository>
@@ -442,7 +442,11 @@
 
 		<!-- LibsDisguises -->
 		<repository>
-			<id>libsdisguises-repo</id>
+			<id>libsdisguises-repo-new</id>
+			<url>http://server.o2gaming.com/repo/</url>
+		</repository>
+		<repository>
+			<id>libsdisguises-repo-old</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
 		</repository>
 

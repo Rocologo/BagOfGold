@@ -150,7 +150,7 @@ public class MythicMobsCompat implements Listener {
 		return mPlugin;
 	}
 
-	public static boolean isMythicMobsSupported() {
+	public static boolean isSupported() {
 		return supported;
 	}
 	
