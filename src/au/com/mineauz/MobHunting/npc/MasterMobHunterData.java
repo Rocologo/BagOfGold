@@ -11,7 +11,6 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,7 +33,7 @@ public class MasterMobHunterData implements Listener,
 	private int rank;
 	private World world;
 	private List<Location> signLocations = new ArrayList<Location>();
-	private boolean redstonePoweredSign;
+	//private int redstonePoweredSign;
 
 	private List<StatStore> stats;
 
@@ -42,7 +41,7 @@ public class MasterMobHunterData implements Listener,
 	}
 
 	public MasterMobHunterData(int id, StatType statType, TimePeriod period,
-			int numberOfKills, int rank, boolean redstonePowered) {
+			int numberOfKills, int rank) {
 		this.id = id;
 		this.statType = statType;
 		this.period = period;
@@ -50,7 +49,7 @@ public class MasterMobHunterData implements Listener,
 		this.rank = rank;
 		this.world = null;
 		this.signLocations.clear();
-		this.redstonePoweredSign = redstonePowered;
+		//this.redstonePoweredSign = redstonePowered;
 	}
 
 	public MasterMobHunterData(int id) {
@@ -61,7 +60,7 @@ public class MasterMobHunterData implements Listener,
 		this.rank = 1;
 		this.world = null;
 		this.signLocations.clear();
-		this.redstonePoweredSign = false;
+		//this.redstonePoweredSign = 0;
 	}
 
 	public int getId() {
@@ -113,13 +112,16 @@ public class MasterMobHunterData implements Listener,
 		this.signLocations.remove(location);
 	}
 
+	/**
 	public boolean isRedstonePoweredSign() {
+	 
 		return this.redstonePoweredSign;
 	}
 
-	public void setRedstonePoweredSign(boolean redstonePoweredSign) {
+	public void setRedstonePoweredSign(int redstonePoweredSign) {
 		this.redstonePoweredSign = redstonePoweredSign;
 	}
+	**/
 
 	private boolean isLoaded(Block block) {
 		return (block.getWorld().isChunkLoaded(block.getX() >> 4,
@@ -171,22 +173,22 @@ public class MasterMobHunterData implements Listener,
 				}
 				if (signLocations.size() > 0) {
 					for (Location loc : signLocations) {
-						if (isLoaded(loc.getBlock())) {
-							if (loc.getBlock().getState().getType() == Material.SIGN
-									|| loc.getBlock().getState().getType() == Material.SIGN_POST) {
-								org.bukkit.block.Sign s = (org.bukkit.block.Sign) loc
-										.getBlock().getState();
+						Block sb = loc.getBlock();
+						if (isLoaded(sb)) {
+							if (MasterMobhunterSign.isSign(sb)) {
+								org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
 								s.setLine(1, (this.rank + ". " + npc.getName()));
 								s.setLine(2,
 										(this.period.translateNameFriendly()));
 								s.setLine(3, (stats.get(rank - 1).getAmount()
 										+ " " + this.statType.translateName()));
 								s.update();
+								if (MasterMobhunterSign.isMHSign(sb))
+									MasterMobhunterSign.setPower(sb, 15);
 							} else {
 								loc.zero();
 							}
 						}
-						if (isRedstonePoweredSign()) MasterMobhunterSigns.setPower(loc.getBlock(),true);
 					}
 				}
 			}
@@ -207,7 +209,7 @@ public class MasterMobHunterData implements Listener,
 			section.set("world", world.getUID().toString());
 		if (signLocations.size() > 0)
 			section.set("signs", signLocations);
-		section.set("redstone_powered_sign", redstonePoweredSign);
+		//section.set("redstone_power", redstonePoweredSign);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -225,7 +227,7 @@ public class MasterMobHunterData implements Listener,
 			signLocations = (List<Location>) section
 					.get("signs", signLocations);
 		}
-		redstonePoweredSign = section.getBoolean("redstone_powered_sign");
+		//redstonePoweredSign = section.getInt("redstone_power");
 	}
 
 }

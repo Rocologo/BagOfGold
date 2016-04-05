@@ -241,7 +241,7 @@ public class MasterMobHunterManager implements Listener {
 				mmhd = mMasterMobHunterData.get(id);
 				mmhd.update();
 				mmhd.putLocation(location);
-				mmhd.setRedstonePoweredSign(powered);
+				//mmhd.setRedstonePoweredSign(15);
 				mMasterMobHunterData.put(id, mmhd);
 				saveData(id);
 				p.sendMessage(p.getName() + " placed a MobHunting Sign (ID="
@@ -256,11 +256,7 @@ public class MasterMobHunterManager implements Listener {
 						.getNumberOfKills() + " " + mMasterMobHunterData
 						.get(id).getStatType().translateName()));
 				if (powered) {
-					//TODO: powersigns does not work yet. :-(
-					//MasterMobhunterSigns.setPower(event.getBlock(), powered);
-					//MobHunting.debug("MasterMobHunter - setPower(%s) on %s",
-					//		powered, event.getBlock().getType()
-					//		);
+					MasterMobhunterSign.setPower(event.getBlock(), 15);
 				}
 			}
 

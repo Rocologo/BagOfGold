@@ -177,7 +177,7 @@ public class NpcCommand implements ICommand, Listener {
 				npc.addTrait(MobHuntingTrait.class);
 				masterMobHunterManager.put(npc.getId(),
 						new MasterMobHunterData(npc.getId(), statType, period,
-								0, rank, false));
+								0, rank));
 				masterMobHunterManager.saveData(npc.getId());
 				npc.spawn(p.getEyeLocation());
 				MobHunting.debug("Creating NPC id=%s,stat=%s,per=%s,rank=%s",

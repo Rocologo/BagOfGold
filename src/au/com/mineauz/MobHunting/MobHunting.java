@@ -92,7 +92,7 @@ import au.com.mineauz.MobHunting.events.MobHuntEnableCheckEvent;
 import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.leaderboard.LeaderboardManager;
 import au.com.mineauz.MobHunting.modifier.*;
-import au.com.mineauz.MobHunting.npc.MasterMobhunterSigns;
+import au.com.mineauz.MobHunting.npc.MasterMobhunterSign;
 import au.com.mineauz.MobHunting.storage.DataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
 import au.com.mineauz.MobHunting.storage.DataStoreManager;
@@ -257,7 +257,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(
-				new MasterMobhunterSigns(this), this);
+				new MasterMobhunterSign(this), this);
 
 		if (mAchievements.upgradeAchievements())
 			mStoreManager.waitForUpdates();
@@ -1600,7 +1600,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			automaticUpdatesGraph.addPlotter(new Metrics.Plotter("Amount") {
 				@Override
 				public int getValue() {
-					return mConfig.autoupdate ? 1 : 0; // 1=Automatic update of
+					return config().autoupdate ? 1 : 0; // 1=Automatic update of
 														// plugin
 				}
 			});
@@ -1634,12 +1634,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 				@Override
 				public int getValue() {
 					return EssentialsCompat.isSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("MyPet") {
-				@Override
-				public int getValue() {
-					return MyPetCompat.isSupported() ? 1 : 0;
 				}
 			});
 			integrationsGraph.addPlotter(new Metrics.Plotter("MyPet") {
@@ -1725,8 +1719,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			leaderboardsGraph.addPlotter(new Metrics.Plotter("Amount") {
 				@Override
 				public int getValue() {
-					return mConfig.autoupdate ? 1 : 0; // 1=Automatic update of
-														// plugin
+					return mLeaderboards.getAllLegacyBoards().size();
 				}
 			});
 			metrics.addGraph(leaderboardsGraph);
@@ -1736,8 +1729,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			masterMobHunterGraphs.addPlotter(new Metrics.Plotter("Amount") {
 				@Override
 				public int getValue() {
-					return mConfig.autoupdate ? 1 : 0; // 1=Automatic update of
-														// plugin
+					return CitizensCompat.getManager().getAll().size();
 				}
 			});
 			metrics.addGraph(masterMobHunterGraphs);

@@ -6,8 +6,8 @@ import au.com.mineauz.MobHunting.MobHunting;
 
 public class PlayerData {
 	private OfflinePlayer player;
-	private boolean learning_mode;
-	private boolean mute;
+	private boolean learning_mode=false;
+	private boolean mute=false;
 
 	public PlayerData(OfflinePlayer player, boolean learning_mode, boolean mute) {
 		this.player = player;
