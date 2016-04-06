@@ -124,7 +124,7 @@ public abstract class DatabaseDataStore implements DataStore {
 		try {
 			if (mConnection != null) {
 				mConnection.commit();
-				mConnection.close();
+				//mConnection.close();
 			}
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -146,12 +146,7 @@ public abstract class DatabaseDataStore implements DataStore {
 		}
 		myAddPlayerStatement.executeBatch();
 		myAddPlayerStatement.close();
-		
-		
-		//added because of ticket 37 as a fix. Im not sure this fixes the problem.
-		mConnection.commit(); 
-		// http://dev.bukkit.org/bukkit-plugins/mobhunting/tickets/37-2-7-1-bug-sql-name-change/
-
+		mConnection.commit();
 		
 		int left = players.size();
 		Iterator<OfflinePlayer> it = players.iterator();
@@ -219,6 +214,8 @@ public abstract class DatabaseDataStore implements DataStore {
 			DataStoreException {
 		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerStatement[0].executeQuery();
+		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
+		ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
 
 		if (result.next()) {
 			String name = result.getString(2);
@@ -228,10 +225,17 @@ public abstract class DatabaseDataStore implements DataStore {
 						"Name change detected(2): " + name + " -> "
 								+ player.getName() + " UUID="
 								+ player.getUniqueId().toString());
-				updatePlayerName(player);
+				ids.put(UUID.fromString(result.getString(1)),result.getInt(3));
 			}
 			int res = result.getInt(3);
 			result.close();
+			
+			Iterator<OfflinePlayer> itr = changedNames.iterator(); 
+			while(itr.hasNext()) {
+				OfflinePlayer p = itr.next(); 
+				updatePlayerName(p.getPlayer());
+			}
+			
 			return res;
 		}
 

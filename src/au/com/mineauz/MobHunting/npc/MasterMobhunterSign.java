@@ -2,18 +2,12 @@ package au.com.mineauz.MobHunting.npc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.minecraft.server.v1_7_R4.PossibleFishingResult;
-import net.minecraft.server.v1_9_R1.EnumDirection;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
@@ -40,11 +34,13 @@ import au.com.mineauz.MobHunting.MobHunting;
 
 public class MasterMobhunterSign implements Listener {
 
+	@SuppressWarnings("unused")
 	private MobHunting plugin;
 
-	private String owner;
+	// private String owner;
 
 	private final static String MH_POWERED = "MH:powered";
+	public final static byte POWER_FROM_SIGN = 15;
 
 	// https://regex101.com/
 	// Regex string="\[(MH|mh|Mh|mH)(\d+)(\+)?\]"
@@ -89,14 +85,15 @@ public class MasterMobhunterSign implements Listener {
 	// ****************************************************************************'
 
 	@SuppressWarnings("deprecation")
-	public static void setPower(Block b, int power) {
-		// byte power = (byte) (poweron ? 0xF : 0x0);
+	public static void setPower(Block b, byte power) {
 		if (isMHSign(b)) {
-			MobHunting.debug("setPowered: SetMHPower(15)");
-			setMHPower(b, 15);
+			if (getPowerSetOnSign(((Sign) b.getState()).getLine(0)))
+				setMHPower(b, POWER_FROM_SIGN);
+			else
+				removeMHPower(b);
 		} else if (supportedmats.contains(b.getType())) {
 			if (isRedstoneWire(b)) {
-				b.setData((byte) power, true);
+				b.setData(power, true);
 				b.getState().update();
 			} else
 				MobHunting
@@ -105,32 +102,35 @@ public class MasterMobhunterSign implements Listener {
 		}
 	}
 
-	private static void setMHPower(Block b, int power) {
-		if (power >= 0 && power <= 15) {
+	@SuppressWarnings("unused")
+	private static void setMHPower(Block b, byte power) {
+		if (power >= 0 && power <= POWER_FROM_SIGN) {
 			MobHunting.debug("MMHSign - setMHPower(%s) on %s ", power,
 					b.getType());
 			b.setMetadata(MH_POWERED,
 					new FixedMetadataValue(MobHunting.getInstance(), power));
+			if (!isMHSign(b))
+				setPower(b, power);
 		}
 		if (isMHSign(b) || isMHIndirectPoweredBySign(b)) {
-			power = 15;
+			power = POWER_FROM_SIGN;
 		} else {
 			power--;
 		}
-		if (power >= 0 && power <= 15) {
+		if (power >= 0 && power <= POWER_FROM_SIGN) {
 			for (BlockFace bf : possibleBlockface) {
 				Block rb = b.getRelative(bf);
 				if (supportedmats.contains(rb.getType())) {
-					if (isMHIndirectPoweredBySign(rb)) {
+					if (isMHIndirectPoweredBySign(rb)) {// b or rb?
 						if (isRedstoneWire(rb)) {
-							MobHunting.debug("Set power on wire");
+							// MobHunting.debug("Set power on wire");
 							setMHPowerOnRedstoneWire(rb, power);
 						} else if (isRedstoneLamp(rb)) {
-							MobHunting.debug("Update this lamp - turn on.");
+							// MobHunting.debug("Set power on lamp");
 							setPowerOnRedstoneLamp(rb, power);
 						} else if (isPistonBase(rb)) {
-							MobHunting.debug("Set power on PistonType is %s",
-									rb.getType());
+							// MobHunting.debug("Set power on Piston(%s)",
+							// rb.getType());
 							setPowerOnPiston(rb);
 						} else if (rb.getType().equals(Material.FURNACE)) {
 							Furnace furnace = (Furnace) rb;
@@ -162,32 +162,34 @@ public class MasterMobhunterSign implements Listener {
 	}
 
 	@SuppressWarnings("deprecation")
-	private static void setMHPowerOnRedstoneWire(Block block, int power) {
-		block.setData((byte) power, true);
+	private static void setMHPowerOnRedstoneWire(Block block, byte power) {
+		block.setData(power, true);
 		block.getState().update();
 	}
 
 	@SuppressWarnings("deprecation")
-	private static void setPowerOnRedstoneLamp(Block b, int power) {
-		b.setTypeIdAndData(124, (byte) power, true);
-		b.getState().update(false);
+	private static void setPowerOnRedstoneLamp(Block b, byte power) {
+		b.setTypeIdAndData(124, power, false);
+		b.getState().update(false, false);
 	}
 
 	@SuppressWarnings("deprecation")
 	private static void setPowerOnPiston(Block b) {
 		MobHunting.debug("BlockPlaceEvent(3): piston on face=%s", b.getState()
 				.getData());
-		PistonBaseMaterial piston = (PistonBaseMaterial) b.getState().getData();
-		BlockFace blockFace = piston.getFacing();
+		// Piston p = (Piston) b.getState();
+		PistonBaseMaterial pistonData = (PistonBaseMaterial) b.getState()
+				.getData();
+		BlockFace blockFace = pistonData.getFacing();
 		Block tb = b.getRelative(blockFace);
-		piston.setPowered(true);
-		b.setData(piston.getData());
+		pistonData.setPowered(true);
+		b.setData(pistonData.getData());
 		tb.setType(Material.PISTON_EXTENSION);
 		PistonExtensionMaterial pem = (PistonExtensionMaterial) tb.getState()
 				.getData();
 		tb.setData(pem.getData());
-		b.getState().update();
-		tb.getState().update();
+		b.getState().update(true, true);
+		tb.getState().update(true, true);
 
 	}
 
@@ -195,7 +197,8 @@ public class MasterMobhunterSign implements Listener {
 	// GETTERS
 	// ****************************************************************************'
 
-	public static int getMHpower(Block block) {
+	@SuppressWarnings("unused")
+	private static int getMHpower(Block block) {
 		int power = 0;
 		if (block.hasMetadata(MH_POWERED)) {
 			for (MetadataValue value : block.getMetadata(MH_POWERED)) {
@@ -206,12 +209,53 @@ public class MasterMobhunterSign implements Listener {
 		return power;
 	}
 
+	public static int getNPCIdOnSign(String str) {
+		if (!str.matches(MASTERMOBHUNTERSIGN)) {
+			// MobHunting.debug("This is not a MobHunting Sign");
+			return 0;
+		}
+		Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
+		Matcher m = pattern.matcher(str);
+		m.find();
+		return Integer.valueOf(m.group(2));
+	}
+
+	public static boolean getPowerSetOnSign(String str) {
+		if (!str.matches(MASTERMOBHUNTERSIGN)) {
+			// MobHunting.debug("This is not a MobHunting Sign");
+			return false;
+		}
+		Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
+		Matcher m = pattern.matcher(str);
+		m.find();
+		return (m.group(3) == null) ? false : true;
+	}
+
 	// ****************************************************************************'
 	// REMOVE
 	// ****************************************************************************'
 
+	public static void removePower(Block block) {
+		if (isMHPowered(block)) {
+			block.removeMetadata(MH_POWERED, MobHunting.instance);
+			setPower(block, (byte) 0);
+			for (BlockFace bf : possibleBlockface) {
+				Block rb = block.getRelative(bf);
+				if (isMHPowered(rb)&&!isMHPoweredSign(rb)) {
+					removeMHPower(rb);
+					setPower(rb, (byte) 0);
+				}
+			}
+		}
+	}
+
 	private static void removeMHPower(Block block) {
 		block.removeMetadata(MH_POWERED, MobHunting.instance);
+		for (BlockFace bf : possibleBlockface) {
+			Block rb = block.getRelative(bf);
+			if (isMHPowered(rb)&&!isMHPoweredSign(rb))
+				removeMHPower(rb);
+		}
 	}
 
 	// ****************************************************************************'
@@ -224,8 +268,17 @@ public class MasterMobhunterSign implements Listener {
 			return;
 		if (event.getClickedBlock() == null)
 			return;
-		if (event.getHand().equals(EquipmentSlot.OFF_HAND))
-			return;
+		try {
+			@SuppressWarnings({ "rawtypes", "unused" })
+			Class cls = Class
+					.forName("org.bukkit.event.player.PlayerInteractEvent.getHand");
+			// This only works on Minecraft 1.9
+			if (event.getHand().equals(EquipmentSlot.OFF_HAND))
+				return;
+		} catch (ClassNotFoundException e) {
+			// This is not a MC 1.9
+		}
+
 		if (!event.getPlayer().getItemInHand().getType().equals(Material.STICK))
 			return;
 
@@ -246,32 +299,32 @@ public class MasterMobhunterSign implements Listener {
 		int power3 = 0;
 		if (clickedBlock.isBlockPowered())
 			power3 = clickedBlock.getBlockPower();
-		MobHunting
-				.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s",
-						power, power2, power3,clickedBlock.getType());
+		MobHunting.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s",
+				power, power2, power3, clickedBlock.getType());
 	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlaceEvent(BlockPlaceEvent e) {
 		Block b = e.getBlock();
-		if (isSign(e.getBlock())) {
-			MobHunting.debug("BlockPlaceEvent(1): %s", b.getType());
-			if (isMHSign(b))
-				setMHPower(b, 15);
+		if (isSign(b) && isMHSign(b)) {
+			// MobHunting.debug("BlockPlaceEvent(1): %s", b.getType());
+			if (getPowerSetOnSign(((Sign) b.getState()).getLine(0)))
+				setMHPower(b, POWER_FROM_SIGN);
+			else
+				removeMHPower(b);
 		} else if (supportedmats.contains(b.getType())) {
-			MobHunting.debug("BlockPlaceEvent(2): %s", b.getType());
+			// MobHunting.debug("BlockPlaceEvent(2): %s", b.getType());
 			if (isMHIndirectPoweredBySign(b)) {
+				setMHPower(b, POWER_FROM_SIGN);
 				if (isRedstoneLamp(b)) {
-					MobHunting.debug("BlockPlaceEvent(3): set lamp on");
-					setPowerOnRedstoneLamp(b, 15);
+					// MobHunting.debug("BlockPlaceEvent(3): set lamp on");
+					setPowerOnRedstoneLamp(b, POWER_FROM_SIGN);
 				} else if (isPistonBase(b)) {
 					setPowerOnPiston(b);
 				} else {
-					setMHPower(b, 15);
-					b.setData((byte) 15, true);
+					b.setData(POWER_FROM_SIGN, true);
 					b.getState().update();
-					// update(b);
 				}
 			}
 		}
@@ -281,8 +334,8 @@ public class MasterMobhunterSign implements Listener {
 	public void onBlockRedstoneEvent(BlockRedstoneEvent e) {
 		Block b = e.getBlock();
 		if (isMHPowered(b)) {
-			MobHunting.debug("BlockRedstoneEvent(1): MHPowered block %s",
-					b.getType());
+			// MobHunting.debug("BlockRedstoneEvent: MHPowered block %s",
+			// b.getType());
 			for (MetadataValue mdv : b.getMetadata(MH_POWERED)) {
 				if (isMHIndirectPoweredBySign(e.getBlock()))
 					e.setNewCurrent(mdv.asInt());
@@ -299,10 +352,10 @@ public class MasterMobhunterSign implements Listener {
 				}
 			}
 		} else if (isSign(b)) {
-			MobHunting.debug("BlockRedstoneEvent(2): Sign");
+			// MobHunting.debug("BlockRedstoneEvent(2): Sign");
 		} else if (b.getType().equals(Material.REDSTONE_LAMP_OFF)
 				|| b.getType().equals(Material.REDSTONE_LAMP_ON)) {
-			MobHunting.debug("BlockRedstoneEvent(3): %s", b.getType());
+			// MobHunting.debug("BlockRedstoneEvent(3): %s", b.getType());
 		}
 	}
 
@@ -347,14 +400,14 @@ public class MasterMobhunterSign implements Listener {
 	// TESTS
 	// ************************************************************************************
 
-	private static boolean isRedstoneWire(Block block) {
+	public static boolean isRedstoneWire(Block block) {
 		if (block.getType().equals(Material.REDSTONE_WIRE))
 			return true;
 		else
 			return false;
 	}
 
-	private static boolean isRedstoneLamp(Block block) {
+	public static boolean isRedstoneLamp(Block block) {
 		if (block.getType().equals(Material.REDSTONE_LAMP_OFF)
 				|| block.getType().equals(Material.REDSTONE_LAMP_ON))
 			return true;
@@ -362,7 +415,7 @@ public class MasterMobhunterSign implements Listener {
 			return false;
 	}
 
-	private static boolean isPistonBase(Block block) {
+	public static boolean isPistonBase(Block block) {
 		if (block.getType().equals(Material.PISTON_BASE)
 				|| block.getType().equals(Material.PISTON_STICKY_BASE))
 			return true;
@@ -405,16 +458,17 @@ public class MasterMobhunterSign implements Listener {
 
 	private static boolean isMHPoweredSign(Block block) {
 		if (isMHSign(block) && isMHPowered(block))
-					return true;
-				else 
-		return false;
+			return true;
+		else
+			return false;
 	}
 
-	public static boolean isMHPowered(Block block) {
+	private static boolean isMHPowered(Block block) {
 		return block.hasMetadata(MH_POWERED);
 	}
 
-	public static boolean isMHIndirectPowered(Block block) {
+	@SuppressWarnings("unused")
+	private static boolean isMHIndirectPowered(Block block) {
 		for (BlockFace bf : possibleBlockface) {
 			if (isMHPowered(block.getRelative(bf)))
 				return true;
@@ -422,7 +476,7 @@ public class MasterMobhunterSign implements Listener {
 		return false;
 	}
 
-	public static boolean isMHIndirectPoweredBySign(Block block) {
+	private static boolean isMHIndirectPoweredBySign(Block block) {
 		for (BlockFace bf : possibleBlockface) {
 			if (isMHPoweredSign(block.getRelative(bf)))
 				return true;
@@ -433,23 +487,25 @@ public class MasterMobhunterSign implements Listener {
 	// ********************************************************************************************
 	// UNUSED
 	// ********************************************************************************************
+
+	// This method was used to format the sign.
 	@SuppressWarnings("unused")
 	private static void update(final Block b) {
 		MobHunting.getInstance().getServer().getScheduler()
 				.runTaskLater(MobHunting.getInstance(), new Runnable() {
 					@Override
 					public void run() {
-						// Sign sign;
+						Sign sign;
 						if (isSign(b)) {
-							// sign = (Sign) b.getState();
+							sign = (Sign) b.getState();
 						} else {
-							// MobHunting.debug("Block at " + b.getX() + ","
-							// + b.getY() + "," + b.getZ()
-							// + ", is no longer a sign.");
+							MobHunting.debug("Block at " + b.getX() + ","
+									+ b.getY() + "," + b.getZ()
+									+ ", is no longer a sign.");
 							return;
 						}
-						// String coords = b.getX() + "," + b.getY() + ","
-						// + b.getZ();
+						String coords = b.getX() + "," + b.getY() + ","
+								+ b.getZ();
 						// if (!isStoredSign(sign.getBlock())) {
 						// setMetadata(sign, type);
 						// }
@@ -520,7 +576,7 @@ public class MasterMobhunterSign implements Listener {
 							// coordsforpoweredsigns.add(coords);
 							// plugin.poweredsigns.put(sign.getWorld(),
 							// coordsforpoweredsigns);
-							setPower(b, 15);
+							setPower(b, POWER_FROM_SIGN);
 						} else {
 							// List<String> coordsforpoweredsigns = new
 							// ArrayList<String>();
@@ -533,7 +589,7 @@ public class MasterMobhunterSign implements Listener {
 							// plugin.poweredsigns.put(sign.getWorld(),
 							// coordsforpoweredsigns);
 							MobHunting.debug("Does this happen!!!");
-							setPower(b, 0);
+							setPower(b, (byte) 0);
 						}
 						// return true;
 					}

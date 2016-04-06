@@ -15,7 +15,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.event.Listener;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
@@ -23,8 +22,7 @@ import au.com.mineauz.MobHunting.storage.DataCallback;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
-public class MasterMobHunterData implements Listener,
-		DataCallback<List<StatStore>> {
+public class MasterMobHunterData implements DataCallback<List<StatStore>> {
 
 	private int id;
 	private StatType statType;
@@ -33,7 +31,6 @@ public class MasterMobHunterData implements Listener,
 	private int rank;
 	private World world;
 	private List<Location> signLocations = new ArrayList<Location>();
-	//private int redstonePoweredSign;
 
 	private List<StatStore> stats;
 
@@ -49,7 +46,6 @@ public class MasterMobHunterData implements Listener,
 		this.rank = rank;
 		this.world = null;
 		this.signLocations.clear();
-		//this.redstonePoweredSign = redstonePowered;
 	}
 
 	public MasterMobHunterData(int id) {
@@ -60,7 +56,6 @@ public class MasterMobHunterData implements Listener,
 		this.rank = 1;
 		this.world = null;
 		this.signLocations.clear();
-		//this.redstonePoweredSign = 0;
 	}
 
 	public int getId() {
@@ -111,17 +106,6 @@ public class MasterMobHunterData implements Listener,
 	public void removeLocation(Location location) {
 		this.signLocations.remove(location);
 	}
-
-	/**
-	public boolean isRedstonePoweredSign() {
-	 
-		return this.redstonePoweredSign;
-	}
-
-	public void setRedstonePoweredSign(int redstonePoweredSign) {
-		this.redstonePoweredSign = redstonePoweredSign;
-	}
-	**/
 
 	private boolean isLoaded(Block block) {
 		return (block.getWorld().isChunkLoaded(block.getX() >> 4,
@@ -184,7 +168,7 @@ public class MasterMobHunterData implements Listener,
 										+ " " + this.statType.translateName()));
 								s.update();
 								if (MasterMobhunterSign.isMHSign(sb))
-									MasterMobhunterSign.setPower(sb, 15);
+									MasterMobhunterSign.setPower(sb, MasterMobhunterSign.POWER_FROM_SIGN);
 							} else {
 								loc.zero();
 							}
@@ -209,7 +193,6 @@ public class MasterMobHunterData implements Listener,
 			section.set("world", world.getUID().toString());
 		if (signLocations.size() > 0)
 			section.set("signs", signLocations);
-		//section.set("redstone_power", redstonePoweredSign);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -227,7 +210,6 @@ public class MasterMobHunterData implements Listener,
 			signLocations = (List<Location>) section
 					.get("signs", signLocations);
 		}
-		//redstonePoweredSign = section.getInt("redstone_power");
 	}
 
 }

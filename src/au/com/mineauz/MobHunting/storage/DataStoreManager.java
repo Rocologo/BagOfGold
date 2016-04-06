@@ -107,6 +107,7 @@ public class DataStoreManager {
 	}
 
 	public void flush() {
+		MobHunting.debug("Flushing waiting data to database...");
 		mTaskThread.addTask(new StoreTask(mWaiting), null);
 	}
 
@@ -126,7 +127,6 @@ public class DataStoreManager {
 
 	public void waitForUpdates() {
 		flush();
-
 		try {
 			mTaskThread.waitForEmptyQueue();
 		} catch (InterruptedException e) {
@@ -305,7 +305,8 @@ public class DataStoreManager {
 
 	/**
 	 * @param player
-	 * @return Get PlayerData for player. If player does not exist in Database, a new record will be created.
+	 * @return Get PlayerData for player. If player does not exist in Database,
+	 *         a new record will be created.
 	 */
 	public PlayerData getPlayerData(Player player) {
 		try {
@@ -314,17 +315,19 @@ public class DataStoreManager {
 			MobHunting.debug("Saving new MobHunting player to database: %s",
 					player);
 			createPlayerData(player, MobHunting.config().learningMode, false);
-			return new PlayerData(player, MobHunting.config().learningMode, false);
+			return new PlayerData(player, MobHunting.config().learningMode,
+					false);
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public void updatePlayerData(Player player, boolean learning_mode, boolean muted) {
+	public void updatePlayerData(Player player, boolean learning_mode,
+			boolean muted) {
 		synchronized (mWaiting) {
 			mWaiting.add(new PlayerData(player, learning_mode, muted));
 		}
-		
+
 	}
 }

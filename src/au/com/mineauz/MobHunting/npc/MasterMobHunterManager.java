@@ -3,11 +3,8 @@ package au.com.mineauz.MobHunting.npc;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,7 +19,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 
@@ -36,7 +32,7 @@ public class MasterMobHunterManager implements Listener {
 	private BukkitTask mUpdater = null;
 
 	public MasterMobHunterManager() {
-			loadData();
+		loadData();
 	}
 
 	public void initialize() {
@@ -48,8 +44,6 @@ public class MasterMobHunterManager implements Listener {
 					MobHunting.instance);
 			Bukkit.getPluginManager().registerEvents(
 					new MasterMobHunterManager(), MobHunting.instance);
-			Bukkit.getPluginManager().registerEvents(new MasterMobHunterData(),
-					MobHunting.instance);
 		}
 	}
 
@@ -213,40 +207,23 @@ public class MasterMobHunterManager implements Listener {
 	// Events
 	// ***************************************************************
 
-	// https://regex101.com/
-	// Regex string="\[(MH|mh|Mh|mH)(\d+)(\+)?\]"
-	// Example: [mh001+]
-	final static String MASTERMOBHUNTERSIGN = "\\[(MH|mh|Mh|mH)(\\d+)(\\+)?\\]";
-
+	@SuppressWarnings("deprecation")
 	@EventHandler
-	public void onSignPlace(SignChangeEvent event) {
-		String l0 = event.getLine(0);
-		if (!l0.matches(MASTERMOBHUNTERSIGN)) {
-			MobHunting.debug("This is not a MobHunting Sign");
-			return;
-		}
-		Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
-		Matcher m = pattern.matcher(l0);
-		m.find();
-		MobHunting.debug("Number of groups=%s", m.groupCount());
+	public void onSignChangeEvent(SignChangeEvent event) {
 		Player p = event.getPlayer();
-		int id = Integer.valueOf(m.group(2));
-		boolean powered = (m.group(3) == null) ? false : true;
-		NPCRegistry registry = CitizensAPI.getNPCRegistry();
-		NPC npc = registry.getById(id);
+		int id = MasterMobhunterSign.getNPCIdOnSign(event.getLine(0));
+		boolean powered = MasterMobhunterSign.getPowerSetOnSign(event.getLine(0));
+		NPC npc = CitizensAPI.getNPCRegistry().getById(id);
 		if (npc != null) {
 			if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
-				Location location = event.getBlock().getLocation();
 				MasterMobHunterData mmhd = new MasterMobHunterData();
 				mmhd = mMasterMobHunterData.get(id);
 				mmhd.update();
-				mmhd.putLocation(location);
-				//mmhd.setRedstonePoweredSign(15);
+				mmhd.putLocation(event.getBlock().getLocation());
 				mMasterMobHunterData.put(id, mmhd);
 				saveData(id);
 				p.sendMessage(p.getName() + " placed a MobHunting Sign (ID="
 						+ id + ")");
-				// event.setLine(0, "");
 				event.setLine(1,
 						(mMasterMobHunterData.get(id).getRank() + "." + npc
 								.getName()));
@@ -255,11 +232,13 @@ public class MasterMobHunterManager implements Listener {
 				event.setLine(3, (mMasterMobHunterData.get(id)
 						.getNumberOfKills() + " " + mMasterMobHunterData
 						.get(id).getStatType().translateName()));
-				if (powered) {
-					MasterMobhunterSign.setPower(event.getBlock(), 15);
-				}
+				if (powered && Bukkit.getPlayer(npc.getName()).isOnline())
+					MasterMobhunterSign.setPower(event.getBlock(),
+							MasterMobhunterSign.POWER_FROM_SIGN);
+				else
+					MasterMobhunterSign.removePower(event.getBlock());
+					
 			}
-
 		}
 	}
 

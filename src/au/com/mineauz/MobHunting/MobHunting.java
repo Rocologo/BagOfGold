@@ -1088,7 +1088,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& mConfig.getKillConsoleCmd(killed).equals("")) {
 			debug("KillBlocked %s(%d): There is no reward for this Mob/Player",
 					killed.getType(), killed.getEntityId());
-			if (killer != null && killed != null)
+			if (killed != null)
 				learn(killer, Messages.getString("mobhunting.learn.no-reward",
 						"killed", killed.getName()));
 			return;
@@ -1097,19 +1097,22 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killed.hasMetadata("MH:blocked")) {
 			debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
 					killed.getType(), killed.getEntityId());
-			if (killer != null && killed != null) {
+			if (killed != null) {
 				learn(killer, Messages.getString("mobhunting.learn.mobspawner",
 						"killed", killed.getName()));
 			}
 			return;
 		}
+		
+		if (!isHuntEnabled(killer)) {
+				debug("KillBlocked %s: Hunting is disabled for player", killer.getName());
+				learn(killer, Messages.getString("mobhunting.learn.huntdisabled"));
+			return;
+		}
 
-		if (killer == null || killer.getGameMode() == GameMode.CREATIVE
-				|| !isHuntEnabled(killer)) {
-			if (killer != null && killer.getGameMode() == GameMode.CREATIVE) {
+		if (killer.getGameMode() == GameMode.CREATIVE) {
 				debug("KillBlocked %s: In creative mode", killer.getName());
 				learn(killer, Messages.getString("mobhunting.learn.creative"));
-			}
 			return;
 		}
 
