@@ -56,6 +56,8 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 
 import au.com.mineauz.MobHunting.achievements.*;
+import au.com.mineauz.MobHunting.bounty.BountyManager;
+import au.com.mineauz.MobHunting.commands.BountyCommand;
 import au.com.mineauz.MobHunting.commands.CheckGrindingCommand;
 import au.com.mineauz.MobHunting.commands.ClearGrindingCommand;
 import au.com.mineauz.MobHunting.commands.CommandDispatcher;
@@ -93,7 +95,7 @@ import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.leaderboard.LeaderboardManager;
 import au.com.mineauz.MobHunting.modifier.*;
 import au.com.mineauz.MobHunting.npc.MasterMobhunterSign;
-import au.com.mineauz.MobHunting.storage.DataStore;
+import au.com.mineauz.MobHunting.storage.IDataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
 import au.com.mineauz.MobHunting.storage.DataStoreManager;
 import au.com.mineauz.MobHunting.storage.MySQLDataStore;
@@ -126,12 +128,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private ParticleManager mParticles = new ParticleManager();
 	private Random mRand = new Random();
 
-	private DataStore mStore;
+	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private HashMap<UUID, PlayerData> mPlayerData = new HashMap<UUID, PlayerData>();
 
 	private LeaderboardManager mLeaderboards;
-
+	
 	private boolean mInitialized = false;
 
 	// Metrics
@@ -211,7 +213,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		mStoreManager = new DataStoreManager(mStore);
-
+		
 		// Handle compatability stuff
 		registerPlugin(EssentialsCompat.class, "Essentials");
 		registerPlugin(WorldEditCompat.class, "WorldEdit");
@@ -251,6 +253,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new NpcCommand());
 		}
 		cmd.registerCommand(new DatabaseCommand());
+		
+		//TODO: enable
+		//if(!mConfig.disablePlayerBounties){
+		//	cmd.registerCommand(new BountyCommand(this));
+		//	BountyManager.initialize(this);
+		//}
 
 		registerAchievements();
 		registerModifiers();
@@ -299,6 +307,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 
 		mLeaderboards.shutdown();
+		//TODO: enable
+		//BountyManager.shutdown();
 
 		mAchievements = new AchievementManager();
 		mModifiers.clear();
@@ -1603,8 +1613,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			automaticUpdatesGraph.addPlotter(new Metrics.Plotter("Amount") {
 				@Override
 				public int getValue() {
-					return config().autoupdate ? 1 : 0; // 1=Automatic update of
-														// plugin
+					return config().autoupdate ? 1 : 0; 
 				}
 			});
 			metrics.addGraph(automaticUpdatesGraph);

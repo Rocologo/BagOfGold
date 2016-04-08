@@ -22,11 +22,140 @@ import au.com.mineauz.MobHunting.util.UUIDHelper;
 
 public class MySQLDataStore extends DatabaseDataStore {
 
+	// *******************************************************************************
+	// SETUP / INITIALIZE
+	// *******************************************************************************
+
 	@Override
-	public void saveStats(Set<StatStore> stats) throws DataStoreException {
+	protected Connection setupConnection() throws SQLException,
+			DataStoreException {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			return DriverManager.getConnection(
+					"jdbc:mysql://" + MobHunting.config().databaseHost + "/"
+							+ MobHunting.config().databaseName
+							+ "?autoReconnect=true",
+					MobHunting.config().databaseUsername,
+					MobHunting.config().databasePassword);
+		} catch (ClassNotFoundException e) {
+			throw new DataStoreException("MySQL not present on the classpath");
+		}
+	}
+
+	@Override
+	protected void openPreparedStatements(Connection connection,
+			PreparedConnectionType preparedConnectionType) throws SQLException {
+		switch (preparedConnectionType) {
+		case SAVE_PLAYER_STATS:
+			mSavePlayerStatsStatement = connection
+					.prepareStatement("INSERT IGNORE INTO mh_Daily(ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?);");
+			break;
+		case LOAD_ARCHIEVEMENTS:
+			mLoadAchievementsStatement = connection
+					.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;");
+			break;
+		case SAVE_ACHIEVEMENTS:
+			mSaveAchievementStatement = connection
+					.prepareStatement("REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
+			break;
+		case GET1PLAYER:
+			mGetPlayerStatement[0] = connection
+					.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
+			break;
+		case GET2PLAYERS:
+			mGetPlayerStatement[1] = connection
+					.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);");
+			break;
+		case GET5PLAYERS:
+			mGetPlayerStatement[2] = connection
+					.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);");
+			break;
+		case GET10PLAYERS:
+			mGetPlayerStatement[3] = connection
+					.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);");
+			break;
+		case GET_PLAYER_UUID:
+			mGetPlayerUUID = connection
+					.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
+			break;
+		case UPDATE_PLAYER_NAME:
+			mUpdatePlayerName = connection
+					.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
+			break;
+		case UPDATE_PLAYER_SETTINGS:
+			mUpdatePlayerData = connection
+					.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=?"
+							+ " WHERE UUID=?;");
+			break;
+		case INSERT_PLAYER_DATA:
+			mInsertPlayerData = connection
+					.prepareStatement("INSERT IGNORE INTO mh_Players "
+							+ "(UUID,NAME,LEARNING_MODE,MUTE_MODE) "
+							+ "VALUES(?,?,?,?);");
+			break;
+		case INSERT_PLAYER_SETTINGS:
+			myAddPlayerStatement = connection
+					.prepareStatement("INSERT IGNORE INTO mh_Players(UUID,NAME) VALUES(?,?);");
+		case GET_PLAYER_SETTINGS: mGetPlayerDATA = connection
+				.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
+			break;
+		default:
+			break;
+		}
+	}
+
+	// *******************************************************************************
+	// LoadStats / SaveStats 
+	// *******************************************************************************
+
+	@Override
+	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count)
+			throws DataStoreException {
+		String id;
+		switch (period) {
+		case Day:
+			id = "DATE_FORMAT(NOW(), '%Y%j')";
+			break;
+		case Week:
+			id = "DATE_FORMAT(NOW(), '%Y%U')";
+			break;
+		case Month:
+			id = "DATE_FORMAT(NOW(), '%Y%c')";
+			break;
+		case Year:
+			id = "DATE_FORMAT(NOW(), '%Y')";
+			break;
+		default:
+			id = null;
+			break;
+		}
+		try {
+			Statement statement = mConnection.createStatement();
+			ResultSet results = statement.executeQuery("SELECT "
+					+ type.getDBColumn()
+					+ ", mh_Players.UUID, mh_Players.NAME from mh_"
+					+ period.getTable()
+					+ " inner join mh_Players on mh_Players.PLAYER_ID=mh_"
+					+ period.getTable() + ".PLAYER_ID"
+					+ (id != null ? " where ID=" + id : " ") + " order by "
+					+ type.getDBColumn() + " desc limit " + count);
+			ArrayList<StatStore> list = new ArrayList<StatStore>();
+
+			while (results.next())
+				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID
+						.fromString(results.getString(2))), results.getInt(1)));
+			results.close();
+			statement.close();
+			return list;
+		} catch (SQLException e) {
+			throw new DataStoreException(e);
+		}
+	}
+
+	@Override
+	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
 		try {
 			MobHunting.debug("Saving stats to Database.");
-			Statement statement = mConnection.createStatement();
 
 			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
 			for (StatStore stat : stats)
@@ -34,15 +163,19 @@ public class MySQLDataStore extends DatabaseDataStore {
 			Map<UUID, Integer> ids = getPlayerIds(names);
 
 			// Make sure the stats are available for each player
-			mAddPlayerStatsStatement.clearBatch();
+			openPreparedStatements(mConnection,
+					PreparedConnectionType.SAVE_PLAYER_STATS);
+			mSavePlayerStatsStatement.clearBatch();
 			for (OfflinePlayer player : names) {
-				mAddPlayerStatsStatement.setInt(1,
+				mSavePlayerStatsStatement.setInt(1,
 						ids.get(player.getUniqueId()));
-				mAddPlayerStatsStatement.addBatch();
+				mSavePlayerStatsStatement.addBatch();
 			}
-			mAddPlayerStatsStatement.executeBatch();
+			mSavePlayerStatsStatement.executeBatch();
+			mSavePlayerStatsStatement.close();
 
 			// Now add each of the stats
+			Statement statement = mConnection.createStatement();
 			for (StatStore stat : stats)
 				statement
 						.addBatch(String
@@ -60,48 +193,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 	}
 
-	@Override
-	public PlayerData getPlayerData(OfflinePlayer player)
-			throws DataStoreException {
-		try {
-			mGetPlayerStatement[0]
-					.setString(1, player.getUniqueId().toString());
 
-			ResultSet result = mGetPlayerStatement[0].executeQuery();
-
-			if (result.next()) {
-				PlayerData ps = new PlayerData(player,
-						result.getBoolean("LEARNING_MODE"),
-						result.getBoolean("MUTE_MODE"));
-
-				result.close();
-				return ps;
-			}
-
-		} catch (SQLException e) {
-			MobHunting.debug("ERROR in PlayerData.getPlayerData");
-			e.printStackTrace();
-		}
-
-		throw new UserNotFoundException("User " + player.toString()
-				+ " is not present in database");
-	}
-
-	@Override
-	protected Connection setupConnection() throws SQLException,
-			DataStoreException {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection(
-					"jdbc:mysql://" + MobHunting.config().databaseHost + "/"
-							+ MobHunting.config().databaseName
-							+ "?autoReconnect=true",
-					MobHunting.config().databaseUsername,
-					MobHunting.config().databasePassword);
-		} catch (ClassNotFoundException e) {
-			throw new DataStoreException("MySQL not present on the classpath");
-		}
-	}
+	// *******************************************************************************
+	// DATABASE SETUP / MIGRATION
+	// *******************************************************************************
 
 	@Override
 	protected void setupTables(Connection connection) throws SQLException {
@@ -216,107 +311,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		create.close();
 		connection.commit();
-	}
-
-	@Override
-	protected void setupStatements(Connection connection) throws SQLException {
-		mGetPlayerStatement[0] = connection
-				.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
-		mGetPlayerStatement[1] = connection
-				.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);");
-		mGetPlayerStatement[2] = connection
-				.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);");
-		mGetPlayerStatement[3] = connection
-				.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);");
-
-		mRecordAchievementStatement = connection
-				.prepareStatement("REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
-
-		mAddPlayerStatsStatement = connection
-				.prepareStatement("INSERT IGNORE INTO mh_Daily(ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?);");
-
-		mLoadAchievementsStatement = connection
-				.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;");
-
-		mGetPlayerUUID = connection
-				.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
-		mUpdatePlayerName = connection
-				.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
-		mUpdatePlayerData = connection
-				.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=?"
-						+ " WHERE UUID=?;");
-		mInsertPlayerData = connection
-				.prepareStatement("INSERT IGNORE INTO mh_Players "
-						+ "(UUID,NAME,LEARNING_MODE,MUTE_MODE) "
-						+ "VALUES(?,?,?,?);");
-	}
-
-	@Override
-	protected void setupStatement_1(Connection connection) throws SQLException {
-		// TODO: Am I missing two values? ,1,0 ???
-		myAddPlayerStatement = connection
-				.prepareStatement("INSERT IGNORE INTO mh_Players(UUID,NAME) VALUES(?,?);");
-	}
-
-	@Override
-	public List<StatStore> loadStats(StatType type, TimePeriod period, int count)
-			throws DataStoreException {
-		String id;
-		switch (period) {
-		case Day:
-			id = "DATE_FORMAT(NOW(), '%Y%j')";
-			break;
-		case Week:
-			id = "DATE_FORMAT(NOW(), '%Y%U')";
-			break;
-		case Month:
-			id = "DATE_FORMAT(NOW(), '%Y%c')";
-			break;
-		case Year:
-			id = "DATE_FORMAT(NOW(), '%Y')";
-			break;
-		default:
-			id = null;
-			break;
-		}
-		Statement statement;
-		try {
-			// test if connection to MySql works properly
-			statement = mConnection.createStatement();
-			ResultSet rs = statement
-					.executeQuery("SELECT PLAYER_ID from `mh_Players` LIMIT 0");
-			rs.close();
-			statement.close();
-		} catch (SQLException e) {
-			// The connection did not work, try to initialiaze again.
-			mConnection = null;
-			try {
-				mConnection = setupConnection();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
-		try {
-			statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT "
-					+ type.getDBColumn()
-					+ ", mh_Players.UUID, mh_Players.NAME from mh_"
-					+ period.getTable()
-					+ " inner join mh_Players on mh_Players.PLAYER_ID=mh_"
-					+ period.getTable() + ".PLAYER_ID"
-					+ (id != null ? " where ID=" + id : " ") + " order by "
-					+ type.getDBColumn() + " desc limit " + count);
-			ArrayList<StatStore> list = new ArrayList<StatStore>();
-
-			while (results.next())
-				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID
-						.fromString(results.getString(2))), results.getInt(1)));
-			results.close();
-			statement.close();
-			return list;
-		} catch (SQLException e) {
-			throw new DataStoreException(e);
-		}
 	}
 
 	private void performUUIDMigrate(Connection connection) throws SQLException {

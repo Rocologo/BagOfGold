@@ -55,9 +55,6 @@ public class PlayerData {
 	 * @return the player
 	 */
 	public OfflinePlayer getPlayer() {
-		if (player.getName().isEmpty())
-			MobHunting.debug("PlayerStore-Playername for ID:%s was empty (%s)",
-					player.getUniqueId(), player.getName());
 		return player;
 	}
 
@@ -69,6 +66,9 @@ public class PlayerData {
 		this.player = player;
 	}
 	
+	/**
+	 * convert data to a readable format.
+	 */
 	@Override
 	public String toString() {
 		return String.format(

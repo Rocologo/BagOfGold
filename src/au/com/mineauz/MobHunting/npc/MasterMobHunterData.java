@@ -18,11 +18,11 @@ import org.bukkit.configuration.InvalidConfigurationException;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
-import au.com.mineauz.MobHunting.storage.DataCallback;
+import au.com.mineauz.MobHunting.storage.IDataCallback;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
-public class MasterMobHunterData implements DataCallback<List<StatStore>> {
+public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 
 	private int id;
 	private StatType statType;

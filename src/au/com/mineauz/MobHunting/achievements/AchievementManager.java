@@ -39,7 +39,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.storage.AchievementStore;
-import au.com.mineauz.MobHunting.storage.DataCallback;
+import au.com.mineauz.MobHunting.storage.IDataCallback;
 import au.com.mineauz.MobHunting.storage.UserNotFoundException;
 
 public class AchievementManager implements Listener {
@@ -121,7 +121,7 @@ public class AchievementManager implements Listener {
 	}
 
 	public void requestCompletedAchievements(OfflinePlayer player,
-			final DataCallback<List<Map.Entry<Achievement, Integer>>> callback) {
+			final IDataCallback<List<Map.Entry<Achievement, Integer>>> callback) {
 		if (player.isOnline()) {
 			List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
 			ArrayList<Map.Entry<Achievement, Integer>> toRemove = new ArrayList<Map.Entry<Achievement, Integer>>();
@@ -158,7 +158,7 @@ public class AchievementManager implements Listener {
 
 		// Look through the data store for offline players
 		MobHunting.instance.getDataStore().requestAllAchievements(player,
-				new DataCallback<Set<AchievementStore>>() {
+				new IDataCallback<Set<AchievementStore>>() {
 					@Override
 					public void onError(Throwable error) {
 						callback.onError(error);
@@ -438,7 +438,7 @@ public class AchievementManager implements Listener {
 		if (!player.hasPermission("mobhunting.achievements.disabled")) {
 
 			MobHunting.instance.getDataStore().requestAllAchievements(player,
-					new DataCallback<Set<AchievementStore>>() {
+					new IDataCallback<Set<AchievementStore>>() {
 						@Override
 						public void onError(Throwable error) {
 							if (error instanceof UserNotFoundException)

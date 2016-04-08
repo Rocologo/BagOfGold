@@ -2,7 +2,6 @@ package au.com.mineauz.MobHunting.storage;
 
 import org.bukkit.OfflinePlayer;
 
-import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
 
 public class StatStore {
@@ -41,9 +40,6 @@ public class StatStore {
 	 * @return the player
 	 */
 	public OfflinePlayer getPlayer() {
-		if (player.getName().isEmpty())
-			MobHunting.debug("StatStore-Playername for ID:%s was empty (%s)",
-					player.getUniqueId(), player.getName());
 		return player;
 	}
 
@@ -70,6 +66,9 @@ public class StatStore {
 		this.amount = amount;
 	}
 
+	/**
+	 * convert data to a readable format
+	 */
 	@Override
 	public String toString() {
 		return String.format("StatStore: {player: %s type: %s amount: %d}",

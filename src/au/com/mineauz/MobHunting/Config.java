@@ -181,6 +181,13 @@ public class Config extends AutoConfig {
 						+ "\nNPC / Citizens / MasterMobHunter settings."
 						+ "\n########################################################################");
 		setCategoryComment(
+				"bounties",
+				"########################################################################"
+						+ "\nBounty settings"
+						+ "\n########################################################################"
+						+ "\nHere you can chnage the behavior of the Bounty Command or you can disable"
+						+ "\nthe command completely.");
+		setCategoryComment(
 				"plugins",
 				"########################################################################"
 						+ "\nIntegration to otherplugins."
@@ -197,7 +204,6 @@ public class Config extends AutoConfig {
 				"########################################################################"
 						+ "\nUpdate settings"
 						+ "\n########################################################################");
-
 		setCategoryComment(
 				"general",
 				"########################################################################"
@@ -854,6 +860,22 @@ public class Config extends AutoConfig {
 	public double coverBlownMultiplier = 1.2;
 
 	// #####################################################################################
+	// MasterMobHunter Settings
+	// #####################################################################################
+	@ConfigField(name = "masterMobHunter_check_every", category = "npc", comment = "Set the number of seconds between each check. Recommended setting is"
+			+ "\nmasterMobHunter_check_every: 300 ~ to update all MasterMobHunters every 5th minute.")
+	public int masterMobHuntercheckEvery = 300;
+
+	// #####################################################################################
+	// Bounty Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-player-bounties", category = "bounties", comment = "Set to true if you want to disable players to be able to put bounties on each other.")
+	public boolean disablePlayerBounties = false;
+	@ConfigField(name = "bounty-return-pct", category = "bounties", comment = "Here you set how much of a bound the bounty owner get back if "
+			+ "\nhe drop the bounty on another player")
+	public int bountyReturnPct = 50;
+
+	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
 	@ConfigField(name = "disable-integration-mobarena", category = "plugins", comment = "Disable integration with MobArena")
@@ -913,13 +935,6 @@ public class Config extends AutoConfig {
 	public boolean autoupdate = false;
 
 	// #####################################################################################
-	// MasterMobHunter Settings
-	// #####################################################################################
-	@ConfigField(name = "masterMobHunter_check_every", category = "npc", comment = "Set the number of seconds between each check. Recommended setting is"
-			+ "\nmasterMobHunter_check_every: 300 ~ to update all MasterMobHunters every 5th minute.")
-	public int masterMobHuntercheckEvery = 300;
-
-	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
 	@ConfigField(name = "disabled-in-worlds", category = "general", comment = "Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
@@ -971,15 +986,19 @@ public class Config extends AutoConfig {
 		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return getPrice(mob,((MobRewardData) value.value()).getRewardPrize());
+			return getPrice(mob,
+					((MobRewardData) value.value()).getRewardPrize());
 
 		} else if (CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return getPrice(mob,CitizensCompat.getMobRewardData()
-						.get(String.valueOf(npc.getId())).getRewardPrize());
+				return getPrice(
+						mob,
+						CitizensCompat.getMobRewardData()
+								.get(String.valueOf(npc.getId()))
+								.getRewardPrize());
 			} else
 				return 0;
 		} else {
@@ -1000,99 +1019,101 @@ public class Config extends AutoConfig {
 				} else
 					return Double.valueOf(pvpKillPrize);
 			} else if (mob instanceof Blaze)
-				return getPrice(mob,blazePrize);
+				return getPrice(mob, blazePrize);
 			else if (mob instanceof Creeper)
-				return getPrice(mob,creeperPrize);
+				return getPrice(mob, creeperPrize);
 			else if (mob instanceof Silverfish)
-				return getPrice(mob,silverfishPrize);
+				return getPrice(mob, silverfishPrize);
 			else if (mob instanceof Enderman)
-				return getPrice(mob,endermanPrize);
+				return getPrice(mob, endermanPrize);
 			else if (mob instanceof Giant)
-				return getPrice(mob,giantPrize);
+				return getPrice(mob, giantPrize);
 			else if (mob instanceof Skeleton) {
 				switch (((Skeleton) mob).getSkeletonType()) {
 				case NORMAL:
-					return getPrice(mob,skeletonPrize);
+					return getPrice(mob, skeletonPrize);
 				case WITHER:
-					return getPrice(mob,witherSkeletonPrize);
+					return getPrice(mob, witherSkeletonPrize);
 				}
 			} else if (mob instanceof Spider)
 				if (mob instanceof CaveSpider)
-					return getPrice(mob,caveSpiderPrize);
+					return getPrice(mob, caveSpiderPrize);
 				else
-					return getPrice(mob,spiderPrize);
+					return getPrice(mob, spiderPrize);
 			else if (mob instanceof Witch)
-				return getPrice(mob,witchPrize);
+				return getPrice(mob, witchPrize);
 			else if (mob instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
 				if (((PigZombie) mob).isBaby())
-					return round(getPrice(mob,zombiePigmanPrize) * babyMultiplier);
+					return round(getPrice(mob, zombiePigmanPrize)
+							* babyMultiplier);
 				else
-					return getPrice(mob,zombiePigmanPrize);
+					return getPrice(mob, zombiePigmanPrize);
 			else if (mob instanceof Zombie)
 				if (((Zombie) mob).isBaby())
-					return round(getPrice(mob,zombiePrize) * babyMultiplier);
+					return round(getPrice(mob, zombiePrize) * babyMultiplier);
 				else
-					return getPrice(mob,zombiePrize);
+					return getPrice(mob, zombiePrize);
 			else if (mob instanceof Ghast)
-				return getPrice(mob,ghastPrize);
+				return getPrice(mob, ghastPrize);
 			else if (mob instanceof Slime)
 				if (mob instanceof MagmaCube)
 					// MagmaCube is a subclass of Slime
-					return getPrice(mob,magmaCubePrize)
+					return getPrice(mob, magmaCubePrize)
 							* ((MagmaCube) mob).getSize();
 				else
-					return getPrice(mob,slimeTinyPrize) * ((Slime) mob).getSize();
+					return getPrice(mob, slimeTinyPrize)
+							* ((Slime) mob).getSize();
 			else if (mob instanceof EnderDragon)
-				return getPrice(mob,enderdragonPrize);
+				return getPrice(mob, enderdragonPrize);
 			else if (mob instanceof Wither)
-				return getPrice(mob,witherPrize);
+				return getPrice(mob, witherPrize);
 			else if (mob instanceof IronGolem)
-				return getPrice(mob,ironGolemPrize);
+				return getPrice(mob, ironGolemPrize);
 
 			// Passive mobs
 			else if (mob instanceof Bat)
-				return getPrice(mob,batPrize);
+				return getPrice(mob, batPrize);
 			else if (mob instanceof Chicken)
-				return getPrice(mob,chickenPrize);
+				return getPrice(mob, chickenPrize);
 			else if (mob instanceof Cow)
 				if (mob instanceof MushroomCow)
 					// MushroomCow is a subclass of Cow
-					return getPrice(mob,mushroomCowPrize);
+					return getPrice(mob, mushroomCowPrize);
 				else
-					return getPrice(mob,cowPrize);
+					return getPrice(mob, cowPrize);
 			else if (mob instanceof Horse)
-				return getPrice(mob,horsePrize);
+				return getPrice(mob, horsePrize);
 			else if (mob instanceof Ocelot)
-				return getPrice(mob,ocelotPrize);
+				return getPrice(mob, ocelotPrize);
 			else if (mob instanceof Pig)
-				return getPrice(mob,pigPrize);
+				return getPrice(mob, pigPrize);
 			else if (mob instanceof Sheep)
-				return getPrice(mob,sheepPrize);
+				return getPrice(mob, sheepPrize);
 			else if (mob instanceof Snowman)
-				return getPrice(mob,snowmanPrize);
+				return getPrice(mob, snowmanPrize);
 			else if (mob instanceof Squid)
-				return getPrice(mob,squidPrize);
+				return getPrice(mob, squidPrize);
 			else if (mob instanceof Villager)
-				return getPrice(mob,villagerPrize);
+				return getPrice(mob, villagerPrize);
 			else if (mob instanceof Wolf)
-				return getPrice(mob,wolfPrize);
+				return getPrice(mob, wolfPrize);
 
 			// Test if Minecraft 1.8 Mob Classes exists
 			try {
 				@SuppressWarnings({ "rawtypes", "unused" })
 				Class cls = Class.forName("org.bukkit.entity.Guardian");
 				if (mob instanceof Guardian)
-					return getPrice(mob,guardianPrize);
+					return getPrice(mob, guardianPrize);
 				else if (mob instanceof Endermite)
-					return getPrice(mob,endermitePrize);
+					return getPrice(mob, endermitePrize);
 				// if (mob instanceof Rabbit)
 				// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
 				if (mob instanceof Rabbit)
 					if (((Rabbit) mob).getRabbitType() == Rabbit.Type.THE_KILLER_BUNNY)
-						return getPrice(mob,killerrabbitPrize);
+						return getPrice(mob, killerrabbitPrize);
 					else
-						return getPrice(mob,rabbitPrize);
+						return getPrice(mob, rabbitPrize);
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.8
 			}
@@ -1102,7 +1123,7 @@ public class Config extends AutoConfig {
 				@SuppressWarnings({ "rawtypes", "unused" })
 				Class cls = Class.forName("org.bukkit.entity.Shulker");
 				if (mob instanceof Shulker)
-					return getPrice(mob,shulkerPrize);
+					return getPrice(mob, shulkerPrize);
 			} catch (ClassNotFoundException e) {
 				// This is not a MC 1.9 entity
 			}
@@ -1127,8 +1148,11 @@ public class Config extends AutoConfig {
 			MobHunting.instance
 					.getServer()
 					.getConsoleSender()
-					.sendMessage(ChatColor.RED+
-							"[MobHunting] [WARNING]"+ChatColor.RESET+" The prize for killing a "
+					.sendMessage(
+							ChatColor.RED
+									+ "[MobHunting] [WARNING]"
+									+ ChatColor.RESET
+									+ " The prize for killing a "
 									+ mob.getName()
 									+ " is not set in config.yml. Please set the prize to 0 or an positive or negative number.");
 			return 0;

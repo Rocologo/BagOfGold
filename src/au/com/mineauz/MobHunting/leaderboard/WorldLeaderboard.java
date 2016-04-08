@@ -23,11 +23,11 @@ import org.bukkit.util.Vector;
 
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
-import au.com.mineauz.MobHunting.storage.DataCallback;
+import au.com.mineauz.MobHunting.storage.IDataCallback;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
-public class WorldLeaderboard implements DataCallback<List<StatStore>> {
+public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	private static String EMPTY_STRING = ""; 
 	private Location mLocation;
 	private BlockFace mFacing;

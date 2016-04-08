@@ -26,7 +26,7 @@ public class DataStoreManager {
 	private HashSet<Object> mWaiting = new HashSet<Object>();
 
 	// Accessed only from these threads
-	private DataStore mStore;
+	private IDataStore mStore;
 	private boolean mExit = false;
 
 	// Accessed only from store thread
@@ -35,7 +35,7 @@ public class DataStoreManager {
 	// Accessed only from retreive thread
 	private TaskThread mTaskThread;
 
-	public DataStoreManager(DataStore store) {
+	public DataStoreManager(IDataStore store) {
 		mStore = store;
 
 		mTaskThread = new TaskThread();
@@ -83,25 +83,25 @@ public class DataStoreManager {
 	}
 
 	public void requestAllAchievements(OfflinePlayer player,
-			DataCallback<Set<AchievementStore>> callback) {
+			IDataCallback<Set<AchievementStore>> callback) {
 		mTaskThread.addTask(new AchievementRetrieverTask(Mode.All, player,
 				mWaiting), callback);
 	}
 
 	public void requestCompletedAchievements(OfflinePlayer player,
-			DataCallback<Set<AchievementStore>> callback) {
+			IDataCallback<Set<AchievementStore>> callback) {
 		mTaskThread.addTask(new AchievementRetrieverTask(Mode.Completed,
 				player, mWaiting), callback);
 	}
 
 	public void requestInProgressAchievements(OfflinePlayer player,
-			DataCallback<Set<AchievementStore>> callback) {
+			IDataCallback<Set<AchievementStore>> callback) {
 		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress,
 				player, mWaiting), callback);
 	}
 
 	public void requestStats(StatType type, TimePeriod period, int count,
-			DataCallback<List<StatStore>> callback) {
+			IDataCallback<List<StatStore>> callback) {
 		mTaskThread.addTask(
 				new StatRetrieverTask(type, period, count, mWaiting), callback);
 	}
@@ -163,22 +163,22 @@ public class DataStoreManager {
 	}
 
 	private static class Task {
-		public Task(DataStoreTask<?> task, DataCallback<?> callback) {
+		public Task(DataStoreTask<?> task, IDataCallback<?> callback) {
 			this.task = task;
 			this.callback = callback;
 		}
 
 		public DataStoreTask<?> task;
 
-		public DataCallback<?> callback;
+		public IDataCallback<?> callback;
 	}
 
 	private static class CallbackCaller implements Runnable {
-		private DataCallback<Object> mCallback;
+		private IDataCallback<Object> mCallback;
 		private Object mObj;
 		private boolean mSuccess;
 
-		public CallbackCaller(DataCallback<Object> callback, Object obj,
+		public CallbackCaller(IDataCallback<Object> callback, Object obj,
 				boolean success) {
 			mCallback = callback;
 			mObj = obj;
@@ -222,7 +222,7 @@ public class DataStoreManager {
 			mWritesOnly = writes;
 		}
 
-		public <T> void addTask(DataStoreTask<T> task, DataCallback<T> callback) {
+		public <T> void addTask(DataStoreTask<T> task, IDataCallback<T> callback) {
 			try {
 				mQueue.put(new Task(task, callback));
 			} catch (InterruptedException e) {
@@ -254,7 +254,7 @@ public class DataStoreManager {
 									.runTask(
 											MobHunting.instance,
 											new CallbackCaller(
-													(DataCallback<Object>) task.callback,
+													(IDataCallback<Object>) task.callback,
 													result, true));
 					} catch (DataStoreException e) {
 						if (task.callback != null)
@@ -262,7 +262,7 @@ public class DataStoreManager {
 									.runTask(
 											MobHunting.instance,
 											new CallbackCaller(
-													(DataCallback<Object>) task.callback,
+													(IDataCallback<Object>) task.callback,
 													e, false));
 						else
 							e.printStackTrace();
@@ -310,7 +310,7 @@ public class DataStoreManager {
 	 */
 	public PlayerData getPlayerData(Player player) {
 		try {
-			return mStore.getPlayerData(player);
+			return mStore.getPlayerSettings(player);
 		} catch (UserNotFoundException e) {
 			MobHunting.debug("Saving new MobHunting player to database: %s",
 					player);

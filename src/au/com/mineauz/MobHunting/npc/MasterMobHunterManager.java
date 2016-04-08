@@ -49,8 +49,8 @@ public class MasterMobHunterManager implements Listener {
 
 	public void forceUpdate() {
 		mUpdater = Bukkit.getScheduler().runTaskAsynchronously(
-				MobHunting.instance, new Updater());
-	}
+		MobHunting.instance, new Updater());
+	} 
 
 	private class Updater implements Runnable {
 		@Override
@@ -163,6 +163,7 @@ public class MasterMobHunterManager implements Listener {
 	// ****************************************************************************
 	// Events
 	// ****************************************************************************
+	
 	@EventHandler
 	public void onClick(NPCLeftClickEvent event) {
 		MobHunting.debug(
@@ -202,10 +203,6 @@ public class MasterMobHunterManager implements Listener {
 			mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
 		}
 	}
-
-	// ***************************************************************
-	// Events
-	// ***************************************************************
 
 	@SuppressWarnings("deprecation")
 	@EventHandler

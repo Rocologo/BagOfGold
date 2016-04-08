@@ -7,7 +7,7 @@ import java.util.Set;
 import org.bukkit.OfflinePlayer;
 
 import au.com.mineauz.MobHunting.storage.AchievementStore;
-import au.com.mineauz.MobHunting.storage.DataStore;
+import au.com.mineauz.MobHunting.storage.IDataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
 
 public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementStore>>
@@ -75,7 +75,7 @@ public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementSt
 		}
 	}
 	
-	public Set<AchievementStore> run(DataStore store) throws DataStoreException
+	public Set<AchievementStore> run(IDataStore store) throws DataStoreException
 	{
 		synchronized(mWaiting)
 		{

@@ -16,7 +16,7 @@ import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.achievements.Achievement;
 import au.com.mineauz.MobHunting.achievements.ProgressAchievement;
-import au.com.mineauz.MobHunting.storage.DataCallback;
+import au.com.mineauz.MobHunting.storage.IDataCallback;
 import au.com.mineauz.MobHunting.storage.UserNotFoundException;
 
 public class ListAchievementsCommand implements ICommand {
@@ -111,7 +111,7 @@ public class ListAchievementsCommand implements ICommand {
 
 			MobHunting.instance.getAchievements().requestCompletedAchievements(
 					player,
-					new DataCallback<List<Entry<Achievement, Integer>>>() {
+					new IDataCallback<List<Entry<Achievement, Integer>>>() {
 						@Override
 						public void onError(Throwable error) {
 							if (error instanceof UserNotFoundException) {

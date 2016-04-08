@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.StatType;
-import au.com.mineauz.MobHunting.storage.DataCallback;
+import au.com.mineauz.MobHunting.storage.IDataCallback;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
 
@@ -131,7 +131,7 @@ public class TopCommand implements ICommand {
 	}
 
 	private static class LeaderboardDisplay implements
-			DataCallback<List<StatStore>> {
+			IDataCallback<List<StatStore>> {
 		private CommandSender mSender;
 		private int mCount;
 		private TimePeriod mPeriod;

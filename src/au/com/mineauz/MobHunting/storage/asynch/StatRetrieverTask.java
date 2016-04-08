@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import au.com.mineauz.MobHunting.StatType;
-import au.com.mineauz.MobHunting.storage.DataStore;
+import au.com.mineauz.MobHunting.storage.IDataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
 import au.com.mineauz.MobHunting.storage.StatStore;
 import au.com.mineauz.MobHunting.storage.TimePeriod;
@@ -55,9 +55,9 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>> {
 	}
 
 	@Override
-	public List<StatStore> run(DataStore store) throws DataStoreException {
+	public List<StatStore> run(IDataStore store) throws DataStoreException {
 		synchronized (mWaiting) {
-			List<StatStore> stats = store.loadStats(mType, mPeriod, mCount);
+			List<StatStore> stats = store.loadPlayerStats(mType, mPeriod, mCount);
 			updateUsingCache(stats);
 			return stats;
 		}

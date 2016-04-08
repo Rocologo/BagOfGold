@@ -1,6 +1,6 @@
 package au.com.mineauz.MobHunting.storage;
 
-public interface DataCallback<T>
+public interface IDataCallback<T>
 {
 	public void onCompleted(T data);
 	

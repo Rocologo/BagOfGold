@@ -10,14 +10,14 @@ import org.bukkit.event.Listener;
 
 import au.com.mineauz.MobHunting.Messages;
 import au.com.mineauz.MobHunting.MobHunting;
-import au.com.mineauz.MobHunting.storage.DataStore;
+import au.com.mineauz.MobHunting.storage.IDataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
 import au.com.mineauz.MobHunting.storage.MySQLDataStore;
 import au.com.mineauz.MobHunting.storage.SQLiteDataStore;
 
 public class DatabaseCommand implements ICommand, Listener {
 
-	private DataStore mStore;
+	private IDataStore mStore;
 
 	// private DataStoreManager mStoreManager;
 

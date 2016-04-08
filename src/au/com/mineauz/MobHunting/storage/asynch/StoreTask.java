@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import au.com.mineauz.MobHunting.storage.AchievementStore;
-import au.com.mineauz.MobHunting.storage.DataStore;
+import au.com.mineauz.MobHunting.storage.IDataStore;
 import au.com.mineauz.MobHunting.storage.DataStoreException;
 import au.com.mineauz.MobHunting.storage.PlayerData;
 import au.com.mineauz.MobHunting.storage.StatStore;
@@ -37,16 +37,16 @@ public class StoreTask implements DataStoreTask<Void>
 		}
 	}
 	@Override
-	public Void run( DataStore store ) throws DataStoreException
+	public Void run( IDataStore store ) throws DataStoreException
 	{
 		if(!mWaitingStats.isEmpty())
-			store.saveStats(mWaitingStats);
+			store.savePlayerStats(mWaitingStats);
 
 		if(!mWaitingAchievements.isEmpty())
 			store.saveAchievements(mWaitingAchievements);
 
 		if(!mWaitingPlayerData.isEmpty())
-			store.updatePlayerData(mWaitingPlayerData);
+			store.updatePlayerSettings(mWaitingPlayerData);
 
 		return null;
 	}
