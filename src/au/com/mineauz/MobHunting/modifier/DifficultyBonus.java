@@ -25,18 +25,15 @@ public class DifficultyBonus implements IModifier {
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Difficulty dif = killer.getWorld().getDifficulty();
-		String str = MobHunting.config().difficultyMultiplier
-				.get(("difficulty.multiplier." + dif.name()).toLowerCase()
-						.toLowerCase());
 		Iterator<Entry<String, String>> difficulties = MobHunting.config().difficultyMultiplier
 				.entrySet().iterator();
-		String valueStr = "";
+		String valueStr = "1";
 		while (difficulties.hasNext()) {
 			Entry<String, String> difficulty = difficulties.next();
-			if (!difficulty.getKey().equalsIgnoreCase("mobhunting")
+			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
 					&& !difficulty.getKey().equalsIgnoreCase(
-							"mobhunting.multiplier")
-							&& (difficulty.getKey().equals("mobhunting.multiplier."
+							"difficulty.multiplier")
+							&& (difficulty.getKey().equals("difficulty.multiplier."
 									+ dif.name().toLowerCase()))) {
 				valueStr = difficulty.getValue();
 				break;
@@ -58,10 +55,10 @@ public class DifficultyBonus implements IModifier {
 		String valueStr = "1";
 		while (difficulties.hasNext()) {
 			Entry<String, String> difficulty = difficulties.next();
-			if (!difficulty.getKey().equalsIgnoreCase("mobhunting")
+			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
 					&& !difficulty.getKey().equalsIgnoreCase(
-							"mobhunting.multiplier")
-					&& (difficulty.getKey().equals("mobhunting.multiplier."
+							"difficulty.multiplier")
+					&& (difficulty.getKey().equals("difficulty.multiplier."
 							+ dif.name().toLowerCase()))) {
 				valueStr = difficulty.getValue();
 				MobHunting.debug("DifficultyMultiplier: %s=%s",difficulty.getKey(),valueStr);

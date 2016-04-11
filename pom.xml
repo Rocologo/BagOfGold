@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.7.7</version>
+	<version>2.7.8</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -172,6 +172,13 @@
 			<version>${worldedit.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics-lite</artifactId>
+			<version>R8-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- MCStats / Plugin Metrics -->
 		<dependency>
 			<groupId>org.mcstats.bukkit</groupId>
@@ -306,7 +313,7 @@
 			<id>bukkit-repo-alt</id>
 			<url>http://maven.elmakers.com/repository/bukkit/</url>
 		</repository>
-		
+
 
 		<!-- SpigotMC Repository -->
 		<repository>
@@ -317,7 +324,7 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
-		
+
 
 		<!-- SpongeAPI Repository -->
 		<repository>
@@ -459,12 +466,12 @@
 			<id>libsdisguises-repo-old</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
 		</repository>
-		
+
 		<!-- Multiverse -->
 		<repository>
-            <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public</url>
-        </repository>
+			<id>onarandombox</id>
+			<url>http://repo.onarandombox.com/content/groups/public</url>
+		</repository>
 
 	</repositories>
 
