@@ -69,9 +69,10 @@ public interface IDataStore {
 	 * @param player
 	 * @return
 	 * @throws DataStoreException
+	 * @throws SQLException 
 	 */
 	public PlayerData getPlayerSettings(OfflinePlayer player)
-			throws DataStoreException;
+			throws DataStoreException, SQLException;
 
 	/**
 	 * Update the players Settings in the Database

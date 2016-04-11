@@ -75,7 +75,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected PreparedStatement mGetPlayerDATA;
 
 	/**
-	 *  Establish initial connection to Database
+	 * Establish initial connection to Database
 	 */
 	protected abstract Connection setupConnection() throws SQLException,
 			DataStoreException;
@@ -87,13 +87,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME,
-		UPDATE_PLAYER_SETTINGS, INSERT_PLAYER_DATA, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, 
-		GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_SETTINGS, GET_PLAYER_SETTINGS
+		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, UPDATE_PLAYER_SETTINGS, INSERT_PLAYER_DATA, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_SETTINGS, GET_PLAYER_SETTINGS
 	};
 
 	/**
 	 * Open a connection to the Database and prepare a statement for executing.
+	 * 
 	 * @param connection
 	 * @param preparedConnectionType
 	 * @throws SQLException
@@ -102,9 +101,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			PreparedConnectionType preparedConnectionType) throws SQLException;
 
 	/**
-	 * Initialize the connection. Must be called after Opening of initial connection.
-	 * Open Prepared statements for batch processing large selections of players. Batches
-	 * will be performed in batches of 10,5,2,1 
+	 * Initialize the connection. Must be called after Opening of initial
+	 * connection. Open Prepared statements for batch processing large
+	 * selections of players. Batches will be performed in batches of 10,5,2,1
 	 */
 	@Override
 	public void initialize() throws DataStoreException {
@@ -131,7 +130,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	/**
-	 * Close all opened connections for batch processing. 
+	 * Close all opened connections for batch processing.
+	 * 
 	 * @throws SQLException
 	 */
 	protected void closePreparedStatements() throws SQLException {
@@ -143,6 +143,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * Rollback of last transaction on Database.
+	 * 
 	 * @throws DataStoreException
 	 */
 	protected void rollback() throws DataStoreException {
@@ -172,36 +173,37 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * getPlayerSettings
-	 * @param player:OfflinePlayer
+	 * 
+	 * @param player
+	 *            :OfflinePlayer
 	 * @return PlayerData
 	 * @throws DataStoreException
+	 * @throws SQLException
 	 * 
 	 */
 	public PlayerData getPlayerSettings(OfflinePlayer player)
-			throws DataStoreException {
-		try {
-			openPreparedStatements(mConnection,
-					PreparedConnectionType.GET_PLAYER_SETTINGS);
-			ResultSet result = mGetPlayerStatement[0].executeQuery();
-			if (result.next()) {
-				PlayerData ps = new PlayerData(player,
-						result.getBoolean("LEARNING_MODE"),
-						result.getBoolean("MUTE_MODE"));
-				result.close();
-				return ps;
-			}
-		} catch (SQLException e) {
-			MobHunting.debug("ERROR in PlayerData.getPlayerData");
-			e.printStackTrace();
+			throws DataStoreException, SQLException {
+		openPreparedStatements(mConnection,
+				PreparedConnectionType.GET_PLAYER_SETTINGS);
+		ResultSet result = mGetPlayerStatement[0].executeQuery();
+		if (result.next()) {
+			PlayerData ps = new PlayerData(player,
+					result.getBoolean("LEARNING_MODE"),
+					result.getBoolean("MUTE_MODE"));
+			result.close();
+			return ps;
 		}
 		throw new UserNotFoundException("User " + player.toString()
 				+ " is not present in database");
 	}
 
 	/**
-	 * getPLayerIds 
-	 * @param players: A set of players: Set<OfflinePlayer>
-	 * @return Map<UUID, Integer> a Map with all players UUID and player_ID in the Database. 
+	 * getPLayerIds
+	 * 
+	 * @param players
+	 *            : A set of players: Set<OfflinePlayer>
+	 * @return Map<UUID, Integer> a Map with all players UUID and player_ID in
+	 *         the Database.
 	 * @throws SQLException
 	 */
 	protected Map<UUID, Integer> getPlayerIds(Set<OfflinePlayer> players)
@@ -287,6 +289,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * getPlayerID. get the player ID and check if the player has change name
+	 * 
 	 * @param player
 	 * @return PlayerID: int
 	 * @throws SQLException
@@ -326,7 +329,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * updatePlayerName - update the players name in the Database
-	 * @param player: OfflinePlayer
+	 * 
+	 * @param player
+	 *            : OfflinePlayer
 	 * @throws SQLException
 	 */
 	protected void updatePlayerName(OfflinePlayer player) throws SQLException {
@@ -345,7 +350,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * getPlayerByName - get the player
-	 * @param name: String
+	 * 
+	 * @param name
+	 *            : String
 	 * @return player
 	 */
 	@Override
@@ -371,7 +378,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * loadAchievements - loading the achievements for one player into memory
-	 * @param OfflinePlayer:
+	 * 
+	 * @param OfflinePlayer
+	 *            :
 	 * @throws DataStoreException
 	 */
 	@Override
@@ -432,7 +441,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	/**
-	 * insertPalayerData - insert a Set of player data into the Database. 
+	 * insertPalayerData - insert a Set of player data into the Database.
 	 */
 	@Override
 	public void insertPlayerData(Set<PlayerData> playerDataSet)
@@ -482,9 +491,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	/**
-	 * databaseFixLeaderboard - tries to fix inconsistens in the database. Will later 
-	 * be used for cleaning the database; deleting old data or so. This is not 
-	 * implemented yet. 
+	 * databaseFixLeaderboard - tries to fix inconsistens in the database. Will
+	 * later be used for cleaning the database; deleting old data or so. This is
+	 * not implemented yet.
 	 */
 	@Override
 	public void databaseFixLeaderboard() throws SQLException {

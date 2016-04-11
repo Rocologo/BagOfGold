@@ -1,5 +1,6 @@
 package au.com.mineauz.MobHunting.storage;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -307,6 +308,7 @@ public class DataStoreManager {
 	 * @param player
 	 * @return Get PlayerData for player. If player does not exist in Database,
 	 *         a new record will be created.
+	 * @throws SQLException 
 	 */
 	public PlayerData getPlayerData(Player player) {
 		try {
@@ -318,6 +320,10 @@ public class DataStoreManager {
 			return new PlayerData(player, MobHunting.config().learningMode,
 					false);
 		} catch (DataStoreException e) {
+			e.printStackTrace();
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}

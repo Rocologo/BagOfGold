@@ -89,7 +89,9 @@ public class LibsDisguisesCompat implements Listener {
 			DisguiseType.SKELETON, DisguiseType.SLIME, DisguiseType.SPIDER,
 			DisguiseType.WITCH, DisguiseType.WITHER,
 			DisguiseType.WITHER_SKELETON, DisguiseType.WITHER_SKULL,
-			DisguiseType.ZOMBIE, DisguiseType.ZOMBIE_VILLAGER };
+			DisguiseType.ZOMBIE, DisguiseType.ZOMBIE_VILLAGER};
+			// TODO: Shulker not supported in Libsdisguises???
+	
 	public static final Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(
 			Arrays.asList(aggresiveList));
 

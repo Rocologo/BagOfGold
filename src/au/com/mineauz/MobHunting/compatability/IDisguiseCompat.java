@@ -95,6 +95,8 @@ public class IDisguiseCompat implements Listener {
 			DisguiseType.GUARDIAN, DisguiseType.PIG_ZOMBIE,
 			DisguiseType.SKELETON, DisguiseType.SLIME, DisguiseType.SPIDER,
 			DisguiseType.WITCH, DisguiseType.WITHER, DisguiseType.ZOMBIE };
+	// TODO: SHULKER not supported by IDisguise yet???
+	
 	public static final Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(
 			Arrays.asList(aggresiveList));
 

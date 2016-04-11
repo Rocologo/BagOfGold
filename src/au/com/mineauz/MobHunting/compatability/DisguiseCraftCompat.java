@@ -97,6 +97,7 @@ public class DisguiseCraftCompat implements Listener {
 			DisguiseType.Guardian, DisguiseType.PigZombie,
 			DisguiseType.Skeleton, DisguiseType.Slime, DisguiseType.Spider,
 			DisguiseType.Witch, DisguiseType.Wither, DisguiseType.Zombie };
+			// TODO: Shulker not supported by Disguisecraft????
 	
 	public static final Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(
 			Arrays.asList(aggresiveList));
