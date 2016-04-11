@@ -365,7 +365,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mModifiers.add(new Undercover());
 		mModifiers.add(new CoverBlown());
 		mModifiers.add(new RankBonus());
-
+		mModifiers.add(new DifficultyBonus());
 		// Check if horses exist
 		try {
 			Class.forName("org.bukkit.entity.Horse");

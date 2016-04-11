@@ -340,10 +340,6 @@ public abstract class AutoConfig {
 						config.set(path, field.get(this));
 					// HashMap
 					else if (field.getType().equals(HashMap.class)) {
-						//MobHunting
-						//		.debug("Creating rankMultiplier Section in config.yml with %s rows",
-						//				((HashMap<String, String>) field
-						//						.get(this)).size());
 						config.createSection(path,
 								(HashMap<String, String>) field.get(this));
 					} else

@@ -10,6 +10,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Blaze;
@@ -139,7 +140,7 @@ public class Config extends AutoConfig {
 		setCategoryComment(
 				"multiplier",
 				"########################################################################"
-						+ "\nRank multipliers"
+						+ "\nRank multipliers and world difficulty multipliers"
 						+ "\n########################################################################"
 						+ "\nYou can add multipliers for players with different ranks/groups. To do this"
 						+ "\nyou must set give the user/group permissions with a format like this:"
@@ -805,7 +806,7 @@ public class Config extends AutoConfig {
 	// #####################################################################################
 	// Multiplier by rank / permission
 	// #####################################################################################
-	@ConfigField(name = "rank-multiplier", category = "multiplier")
+	@ConfigField(name = "rank-multiplier", category = "multiplier",comment="Ranks")
 	public HashMap<String, String> rankMultiplier = new HashMap<String, String>();
 	{
 		rankMultiplier.put("mobhunting.multiplier.guest", "0.9");
@@ -813,6 +814,18 @@ public class Config extends AutoConfig {
 		rankMultiplier.put("mobhunting.multiplier.staff", "1.05");
 		rankMultiplier.put("mobhunting.multiplier.hasVoted", "2");
 		rankMultiplier.put("mobhunting.multiplier.donator", "3");
+	}
+
+	// #####################################################################################
+	// Multiplier pr World Difficulty
+	// #####################################################################################
+	@ConfigField(name = "world-difficulty-multiplier", category = "multiplier", comment="WorldDifficulty")
+	public HashMap<String, String> difficultyMultiplier = new HashMap<String, String>();
+	{
+		difficultyMultiplier.put("difficulty.multiplier.peacefull", "0.5");
+		difficultyMultiplier.put("difficulty.multiplier.easy", "0.75");
+		difficultyMultiplier.put("difficulty.multiplier.normal", "1");
+		difficultyMultiplier.put("difficulty.multiplier.hard", "2");
 	}
 
 	// #####################################################################################

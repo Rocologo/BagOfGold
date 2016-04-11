@@ -179,7 +179,8 @@ bonus.coverblown.name=Cover Blown!
 bonus.coverblown.message=${damaged} was disguised!
 bonus.undercover.name=Under cover!
 bonus.undercover.message=${cause} disguise was blown!
-bonus.rank.name=Rank Bonus!
+bonus.rank.name=Rank
+bonus.difficulty.name=Difficulty
 
 penalty.flying.name=Flying Penalty
 penalty.grinding.name=Grinding Penalty
