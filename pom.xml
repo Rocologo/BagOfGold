@@ -184,7 +184,7 @@
 			<groupId>org.mcstats.bukkit</groupId>
 			<artifactId>metrics</artifactId>
 			<version>${metrics.version}</version>
-			<scope>compile</scope>
+			<!-- <scope>compile</scope>  -->
 		</dependency>
 
 		<!-- MyPet -->
