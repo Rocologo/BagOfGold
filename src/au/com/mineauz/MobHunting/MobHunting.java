@@ -1731,6 +1731,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			leaderboardsGraph.addPlotter(new Metrics.Plotter("Amount") {
 				@Override
 				public int getValue() {
+					debug("Number of Leaderboards reported=%s", mLeaderboards.getAllLegacyBoards().size());
 					return mLeaderboards.getAllLegacyBoards().size();
 				}
 			});
@@ -1741,6 +1742,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			masterMobHunterGraphs.addPlotter(new Metrics.Plotter("Amount") {
 				@Override
 				public int getValue() {
+					debug("Number of MasterMobHunters created=%s", CitizensCompat.getManager().getAll().size());
 					return CitizensCompat.getManager().getAll().size();
 				}
 			});
