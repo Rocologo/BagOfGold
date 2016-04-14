@@ -3,22 +3,27 @@ package au.com.mineauz.MobHunting.npc;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import au.com.mineauz.MobHunting.MobHunting;
 import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 
@@ -49,8 +54,8 @@ public class MasterMobHunterManager implements Listener {
 
 	public void forceUpdate() {
 		mUpdater = Bukkit.getScheduler().runTaskAsynchronously(
-		MobHunting.instance, new Updater());
-	} 
+				MobHunting.instance, new Updater());
+	}
 
 	private class Updater implements Runnable {
 		@Override
@@ -60,6 +65,15 @@ public class MasterMobHunterManager implements Listener {
 			for (int id : mMasterMobHunterData.keySet()) {
 				mMasterMobHunterData.get(id).update();
 			}
+		}
+	}
+	
+	public void update(NPC npc){
+		if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
+			MasterMobHunterData mmhd = new MasterMobHunterData();
+			mmhd = mMasterMobHunterData.get(npc.getId());
+			mmhd.update();
+			mMasterMobHunterData.put(npc.getId(), mmhd);
 		}
 	}
 
@@ -126,7 +140,7 @@ public class MasterMobHunterManager implements Listener {
 							.debug("Saving MasterMobhunter (%s) to file.", id);
 					config.save(file);
 				} else if (config.contains(key)) {
-					config.set(key, null);
+					config.set(String.valueOf(key), null);
 				}
 			}
 		} catch (IOException e) {
@@ -163,7 +177,7 @@ public class MasterMobHunterManager implements Listener {
 	// ****************************************************************************
 	// Events
 	// ****************************************************************************
-	
+
 	@EventHandler
 	public void onClick(NPCLeftClickEvent event) {
 		MobHunting.debug(
@@ -174,13 +188,18 @@ public class MasterMobHunterManager implements Listener {
 			npc.setName("MasterMobHunter");
 			MasterMobHunterData mmhd = new MasterMobHunterData();
 			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
-			mmhd.update();
-			event.getClicker().sendMessage(
-					"You LEFT clicked a MasterMobHunter NPC(" + npc.getId()
-							+ ") rank=" + mmhd.getRank() + " kills="
-							+ mmhd.getNumberOfKills() + " Period="
-							+ mmhd.getPeriod().translateName() + " StatType="
-							+ mmhd.getStatType().translateName());
+			if (mMasterMobHunterData.containsKey(event.getNPC().getId())) {
+				mmhd.update();
+				event.getClicker().sendMessage(
+						"You LEFT clicked a MasterMobHunter NPC(" + npc.getId()
+								+ ") rank=" + mmhd.getRank() + " kills="
+								+ mmhd.getNumberOfKills() + " Period="
+								+ mmhd.getPeriod().translateName()
+								+ " StatType="
+								+ mmhd.getStatType().translateName());
+			} else
+				MobHunting.debug("ID=%s is missing in mMasterMobHunterData???",
+						event.getNPC().getId());
 			mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
 		}
 	}
@@ -192,7 +211,7 @@ public class MasterMobHunterManager implements Listener {
 		NPC npc = event.getNPC();
 		if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
 			MasterMobHunterData mmhd = new MasterMobHunterData();
-			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
+			mmhd = mMasterMobHunterData.get(npc.getId());
 			mmhd.update();
 			event.getClicker().sendMessage(
 					"You RIGHT clicked a MasterMobHunter NPC(" + npc.getId()
@@ -203,18 +222,20 @@ public class MasterMobHunterManager implements Listener {
 			mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
 		}
 	}
-
+	
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onSignChangeEvent(SignChangeEvent event) {
 		Player p = event.getPlayer();
 		int id = MasterMobhunterSign.getNPCIdOnSign(event.getLine(0));
-		boolean powered = MasterMobhunterSign.getPowerSetOnSign(event.getLine(0));
+		boolean powered = MasterMobhunterSign
+				.isPowerSetOnSign(event.getLine(0));
 		NPC npc = CitizensAPI.getNPCRegistry().getById(id);
 		if (npc != null) {
 			if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
 				MasterMobHunterData mmhd = new MasterMobHunterData();
 				mmhd = mMasterMobHunterData.get(id);
+				if (mMasterMobHunterData.containsKey(npc.getId())) {
 				mmhd.update();
 				mmhd.putLocation(event.getBlock().getLocation());
 				mMasterMobHunterData.put(id, mmhd);
@@ -229,18 +250,34 @@ public class MasterMobHunterManager implements Listener {
 				event.setLine(3, (mMasterMobHunterData.get(id)
 						.getNumberOfKills() + " " + mMasterMobHunterData
 						.get(id).getStatType().translateName()));
-				if (powered && Bukkit.getPlayer(npc.getName()).isOnline())
+				if (powered) { 
+					OfflinePlayer player = Bukkit.getPlayer(npc.getName());
+					if (player!=null && player.isOnline())
 					MasterMobhunterSign.setPower(event.getBlock(),
 							MasterMobhunterSign.POWER_FROM_SIGN);
+				}
 				else
 					MasterMobhunterSign.removePower(event.getBlock());
-					
-			}
+				}
+
+			} else
+			MobHunting.debug("ID=%s is missing in mMasterMobHunterData???",
+					npc.getId());
 		}
 	}
 
 	@EventHandler
 	public void onBlockBreak(final BlockBreakEvent event) {
 		// TODO: Test if MMHD sign at remove from NPC list. Maybe.
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onPlayerJoin(PlayerJoinEvent event) {
+		Iterator<NPC> itr = CitizensAPI.getNPCRegistry().iterator();
+		while (itr.hasNext()){
+			NPC npc = (NPC) itr.next();
+			if (event.getPlayer().getName().equals(npc.getName()))
+				update(npc);
+		}
 	}
 }

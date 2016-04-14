@@ -171,7 +171,6 @@ public class NpcCommand implements ICommand, Listener {
 									"rank", args[3]));
 					return true;
 				}
-				//MobHunting.debug("No of NPCs=%s",masterMobHunterManager.getAll().size());
 				NPCRegistry registry = CitizensAPI.getNPCRegistry();
 				npc = registry.createNPC(EntityType.PLAYER, "MasterMobHunter");
 				npc.addTrait(MobHuntingTrait.class);
@@ -180,6 +179,7 @@ public class NpcCommand implements ICommand, Listener {
 								0, rank));
 				masterMobHunterManager.saveData(npc.getId());
 				npc.spawn(p.getEyeLocation());
+				masterMobHunterManager.update(npc);
 				MobHunting.debug("Creating NPC id=%s,stat=%s,per=%s,rank=%s",
 						npc.getId(), statType.translateName(), period, rank);
 				MobHunting.debug("No of NPCs=%s",masterMobHunterManager.getAll().size());

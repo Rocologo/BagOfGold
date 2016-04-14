@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -88,7 +91,7 @@ public class MasterMobhunterSign implements Listener {
 
 	public static void setPower(Block b, byte power) {
 		if (isMHSign(b)) {
-			if (getPowerSetOnSign(((Sign) b.getState()).getLine(0)))
+			if (isPowerSetOnSign(((Sign) b.getState()).getLine(0)))
 				setMHPower(b, POWER_FROM_SIGN);
 			else
 				removeMHPower(b);
@@ -120,7 +123,7 @@ public class MasterMobhunterSign implements Listener {
 							setMHPowerOnRedstoneWire(rb, power);
 						} else if (isRedstoneLamp(rb)) {
 							setPowerOnRedstoneLamp(rb, power);
-						} else if (isPiston(rb)) {
+						} else if (isPistonBase(rb)) {
 							setPowerOnPiston(rb);
 						}
 						if (!isMHPowered(rb))
@@ -166,24 +169,24 @@ public class MasterMobhunterSign implements Listener {
 
 	@SuppressWarnings("deprecation")
 	private static void setPowerOnPiston(Block b) {
-		if (!isMHPowered(b)) {
-			PistonBaseMaterial pistonData = (PistonBaseMaterial) b.getState()
-					.getData();
-			if (!pistonData.isPowered()) {
-				pistonData.setPowered(true);
-				b.setData(pistonData.getData(), false);
-				b.getState().update();
+		// if (!isMHPowered(b)) {
+		PistonBaseMaterial pistonData = (PistonBaseMaterial) b.getState()
+				.getData();
+		if (!pistonData.isPowered()) {
+			pistonData.setPowered(true);
+			b.setData(pistonData.getData(), false);
+			b.getState().update();
 
-				BlockFace blockFace = pistonData.getFacing();
-				Block tb = b.getRelative(blockFace);
-				tb.setType(Material.PISTON_EXTENSION, false);
-				PistonExtensionMaterial pistonExtentionData = (PistonExtensionMaterial) tb
-						.getState().getData();
-				pistonExtentionData.setFacingDirection(b.getFace(tb));
-				tb.setData(pistonExtentionData.getData(), false);
-				tb.getState().update();
-			}
+			BlockFace blockFace = pistonData.getFacing();
+			Block tb = b.getRelative(blockFace);
+			tb.setType(Material.PISTON_EXTENSION, false);
+			PistonExtensionMaterial pistonExtentionData = (PistonExtensionMaterial) tb
+					.getState().getData();
+			pistonExtentionData.setFacingDirection(b.getFace(tb));
+			tb.setData(pistonExtentionData.getData(), false);
+			tb.getState().update();
 		}
+		// }
 	}
 
 	// ****************************************************************************'
@@ -212,7 +215,7 @@ public class MasterMobhunterSign implements Listener {
 		return Integer.valueOf(m.group(2));
 	}
 
-	public static boolean getPowerSetOnSign(String str) {
+	public static boolean isPowerSetOnSign(String str) {
 		if (!str.matches(MASTERMOBHUNTERSIGN)) {
 			return false;
 		}
@@ -229,12 +232,10 @@ public class MasterMobhunterSign implements Listener {
 	public static void removePower(Block block) {
 		if (isMHPowered(block)) {
 			block.removeMetadata(MH_POWERED, MobHunting.instance);
-			//setPower(block, (byte) 0);
 			for (BlockFace bf : possibleBlockface) {
 				Block rb = block.getRelative(bf);
 				if (isMHPowered(rb) && !isMHPoweredSign(rb)) {
 					removeMHPower(rb);
-					//setPower(rb, (byte) 0);
 				}
 			}
 		}
@@ -299,7 +300,11 @@ public class MasterMobhunterSign implements Listener {
 	public void onBlockPlaceEvent(BlockPlaceEvent e) {
 		Block b = e.getBlock();
 		if (isSign(b) && isMHSign(b)) {
-			if (getPowerSetOnSign(((Sign) b.getState()).getLine(0)))
+			int id = MasterMobhunterSign.getNPCIdOnSign(((Sign) b.getState())
+					.getLine(0));
+			NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+			if (isPowerSetOnSign(((Sign) b.getState()).getLine(0))
+					&& Bukkit.getPlayer(npc.getName()).isOnline())
 				setMHPower(b, POWER_FROM_SIGN);
 			else
 				removeMHPower(b);
@@ -310,7 +315,7 @@ public class MasterMobhunterSign implements Listener {
 				b.setData(POWER_FROM_SIGN, true);
 				b.getState().update();
 			}
-		} else if ((isRedstoneLamp(b) || isPiston(b))
+		} else if ((isRedstoneLamp(b) || isPistonBase(b))
 				&& isMHIndirectPoweredBySign(b)) {
 			// power on Redstone Lamp and Piston must be set in next tick to
 			// work
@@ -325,8 +330,11 @@ public class MasterMobhunterSign implements Listener {
 					public void run() {
 						if (isRedstoneLamp(block))
 							setPowerOnRedstoneLamp(block, POWER_FROM_SIGN);
-						else if (isPiston(block))
+						else if (isPistonBase(block))
 							setPowerOnPiston(block);
+						block.setMetadata(MH_POWERED, new FixedMetadataValue(
+								MobHunting.getInstance(), (byte) 15));
+						
 					}
 				}, 1L);
 	}
@@ -358,23 +366,25 @@ public class MasterMobhunterSign implements Listener {
 
 		// This is the block which is going to be changed
 		Block b = e.getBlock();
-		// getChangedType() Gets the type of block that changed, causing this
+		// getChangedType() the type of block that changed, causing this
 		// event
 		Material c = e.getChangedType();
-		// MobHunting.debug("BlockPhysicsEvent(1) on %s by %s",b.getType(),c);
 
-		if (b.getType().equals(Material.REDSTONE_LAMP_ON)
-		// || b.getType().equals(Material.PISTON_EXTENSION)
-		) {
+		if (b.getType().equals(Material.REDSTONE_LAMP_ON)) {
+			//MobHunting.debug("BlockPhysicsEvent(2) on %s by %s - MHPowered=%s",b.getType(), c, isMHPowered(b));
 			if (isMHIndirectPoweredBySign(b)) {
 				e.setCancelled(true);
 			}
 		} else if (isPiston(b)) {
-			MobHunting.debug("BlockPhysicsEvent(3) on %s by %s - MHPowered=%s",
-					b.getType(), c, isMHPowered(b));
-			if (b.getType().equals(Material.PISTON_EXTENSION)
-					&& c.equals(Material.PISTON_BASE)) {
-				// e.setCancelled(true);
+			//MobHunting.debug("BlockPhysicsEvent(3) on %s by %s - MHPowered=%s",	b.getType(), c, isMHPowered(b));
+			if (isMHIndirectPoweredBySign(b))
+				if (isMHPowered(b)) {
+					e.setCancelled(true);
+					setMHPowerLater(b);
+				}
+			if ((b.getType().equals(Material.PISTON_EXTENSION) && c
+					.equals(Material.REDSTONE_WIRE))) {
+
 			}
 		}
 	}
@@ -410,6 +420,14 @@ public class MasterMobhunterSign implements Listener {
 		if (block.getType().equals(Material.PISTON_BASE)
 				|| block.getType().equals(Material.PISTON_EXTENSION)
 				|| block.getType().equals(Material.PISTON_MOVING_PIECE)
+				|| block.getType().equals(Material.PISTON_STICKY_BASE))
+			return true;
+		else
+			return false;
+	}
+	
+	public static boolean isPistonBase(Block block) {
+		if (block.getType().equals(Material.PISTON_BASE)
 				|| block.getType().equals(Material.PISTON_STICKY_BASE))
 			return true;
 		else

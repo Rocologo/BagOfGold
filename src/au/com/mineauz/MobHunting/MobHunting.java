@@ -649,11 +649,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	public static void learn(Player player, String text, Object... args) {
-		if (player instanceof Player && !CitizensCompat.isNPC(player))
+		if (player instanceof Player && !CitizensCompat.isNPC(player)){
+			debug("isNPC=%s", CitizensCompat.isNPC(player));
 			if (instance.getPlayerData(player.getUniqueId()).isLearningMode())
 				player.sendMessage(ChatColor.AQUA
 						+ Messages.getString("mobhunting.learn.prefix") + " "
-						+ String.format(text, args));
+						+ String.format(text, args));}
 	}
 
 	@EventHandler

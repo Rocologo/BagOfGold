@@ -11,6 +11,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -144,8 +145,7 @@ public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 	}
 
 	public void refresh() {
-		NPCRegistry n = CitizensAPI.getNPCRegistry();
-		NPC npc = n.getById(id);
+		NPC npc = CitizensAPI.getNPCRegistry().getById(id);
 		if (npc != null) {
 			if (rank < stats.size() + 1) {
 				if (rank != 0) {
@@ -160,15 +160,24 @@ public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 						Block sb = loc.getBlock();
 						if (isLoaded(sb)) {
 							if (MasterMobhunterSign.isSign(sb)) {
-								org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
+								org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb
+										.getState();
 								s.setLine(1, (this.rank + ". " + npc.getName()));
 								s.setLine(2,
 										(this.period.translateNameFriendly()));
 								s.setLine(3, (stats.get(rank - 1).getAmount()
 										+ " " + this.statType.translateName()));
 								s.update();
-								if (MasterMobhunterSign.isMHSign(sb))
-									MasterMobhunterSign.setPower(sb, MasterMobhunterSign.POWER_FROM_SIGN);
+								if (MasterMobhunterSign.isMHSign(sb)) {
+									@SuppressWarnings("deprecation")
+									OfflinePlayer player = Bukkit.getPlayer(npc
+											.getName());
+									if (player != null && player.isOnline())
+										MasterMobhunterSign
+												.setPower(
+														sb,
+														MasterMobhunterSign.POWER_FROM_SIGN);
+								}
 							} else {
 								loc.zero();
 							}
