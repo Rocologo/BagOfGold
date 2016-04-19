@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.7.9</version>
+	<version>2.8.0</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -26,12 +26,12 @@
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
-		<mcstats.pluginname>${groupId}.${artifactId}</mcstats.pluginname>
+		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<slf4j.version>1.7.20</slf4j.version>
 		<essentials.version>LATEST</essentials.version>
-		<disguisecraft.version>5.1</disguisecraft.version>
+		<disguisecraft.version>5.2</disguisecraft.version>
 		<libsdisguises.version>8.2.6-SNAPSHOT</libsdisguises.version>
-		<protocollib.version>3.7.0-BETA</protocollib.version>
+		<protocollib.version>3.7.0-SNAPSHOT</protocollib.version>
 	</properties>
 
 	<organization>
@@ -43,7 +43,8 @@
 	<!-- ******************************** Build ******************************* -->
 	<!-- ********************************************************************** -->
 	<build>
-		<defaultGoal>clean package install</defaultGoal>
+		<defaultGoal>package</defaultGoal>
+		<directory>${basedir}/target</directory>
 		<finalName>${project.name}-${project.version}</finalName>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 		<resources>
@@ -75,7 +76,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>${mavenShadePlugin}</version>
+				<version>${mavenShadePlugin.version}</version>
 				<configuration>
 					<artifactSet>
 						<includes>
@@ -100,205 +101,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<!-- ********************************************************************** -->
-	<!-- **************************** Dependencies **************************** -->
-	<!-- ********************************************************************** -->
-	<dependencies>
-		<!-- CraftBukkit Dependency for experimental features -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>${bukkit.version}</version>
-		</dependency>
-
-		<!-- SpigotMC -->
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- SpongeAPI -->
-		<dependency>
-			<groupId>org.spongepowered</groupId>
-			<artifactId>spongeapi</artifactId>
-			<version>2.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Vault / -->
-		<dependency>
-			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>Vault</artifactId>
-			<version>${vault.version}</version>
-		</dependency>
-
-		<!-- XLF4J Logging -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
-			your class path. -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-
-		<!-- Minigames -->
-		<dependency>
-			<groupId>au.com.mineauz</groupId>
-			<artifactId>Minigames</artifactId>
-			<version>${minigames.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.bukkit</groupId>
-					<artifactId>bukkit</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.bukkit</groupId>
-					<artifactId>craftbukkit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- WorldEdit -->
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldedit</artifactId>
-			<version>${worldedit.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics-lite</artifactId>
-			<version>R8-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<!-- MCStats / Plugin Metrics -->
-		<dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics</artifactId>
-			<version>${metrics.version}</version>
-			<!-- <scope>compile</scope>  -->
-		</dependency>
-
-		<!-- MyPet -->
-		<dependency>
-			<groupId>de.keyle</groupId>
-			<artifactId>mypet</artifactId>
-			<version>${mypet.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- MobArena -->
-		<dependency>
-			<groupId>com.garbagemule.mobarena</groupId>
-			<artifactId>mobarena</artifactId>
-			<version>${mobarena.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/MobArena.jar</systemPath>
-			<!-- <type>jar</type> <scope>provided</scope> -->
-		</dependency>
-
-		<!-- PvpArena -->
-		<dependency>
-			<groupId>net.slipcor.pvparena</groupId>
-			<artifactId>PVPArena</artifactId>
-			<version>${pvparena.version}</version>
-			<!-- <type>jar</type> <scope>provided</scope> -->
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/pvparena.jar</systemPath>
-		</dependency>
-
-		<!-- Worldguard -->
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldguard</artifactId>
-			<version>${worldguard.version}</version>
-		</dependency>
-
-		<!-- MythicMobs -->
-		<dependency>
-			<groupId>net.elseland.mythicmobs</groupId>
-			<artifactId>MythicMobs</artifactId>
-			<version>${pvparena.version}</version>
-			<!-- <type>jar</type> <scope>provided</scope> -->
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
-		</dependency>
-
-		<!-- Citizens -->
-		<dependency>
-			<groupId>net.citizensnpcs</groupId>
-			<artifactId>citizensapi</artifactId>
-			<version>${citizensapi.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.ess3</groupId>
-			<artifactId>Essentials</artifactId>
-			<version>${essentials.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/Essentials-2.x-SNAPSHOT-B12-CLJ.jar</systemPath>
-		</dependency>
-
-		<!-- ProtocolLib -->
-		<dependency>
-			<groupId>com.comphenix.protocol</groupId>
-			<artifactId>ProtocolLib</artifactId>
-			<version>${protocollib.version}</version>
-		</dependency>
-
-		<!-- DisguiseCraft -->
-		<dependency>
-			<groupId>pgDev</groupId>
-			<artifactId>DisguiseCraft</artifactId>
-			<version>${disguisecraft.version}</version>
-		</dependency>
-
-		<!-- LibsDisguises -->
-		<dependency>
-			<groupId>LibsDisguises</groupId>
-			<artifactId>LibsDisguises</artifactId>
-			<version>${libsdisguises.version}</version>
-		</dependency>
-
-		<!-- iDisguise -->
-		<dependency>
-			<groupId>de.robingrether.idisguise</groupId>
-			<artifactId>idisguise</artifactId>
-			<version>5.0.4</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/iDisguise-5.0.4.jar</systemPath>
-		</dependency>
-
-	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-
-			<!-- XLF4J Logging -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
-				your class path. -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<!-- ********************************************************************** -->
 	<!-- **************************** Repositories **************************** -->
@@ -364,7 +166,7 @@
 		<!-- Maven repository -->
 		<repository>
 			<id>maven-central</id>
-			<url>http://repo1.maven.org/maven2/</url>
+			<url>http://repo1.maven.org/maven3/</url>
 		</repository>
 
 		<!-- sk89q repository -->
@@ -382,13 +184,13 @@
 		<!-- MobArena repository -->
 		<repository>
 			<id>mobarena-repo</id>
-			<url>https://github.com/garbagemule/MobArena</url>
+			<url>https://github.com/garbagemule/MobArena.git</url>
 		</repository>
 
 		<!-- PvpArena repository -->
 		<repository>
 			<id>pvparena-repo</id>
-			<url>git://git.bukkit.org/minecraft/pvparena/mainline.git</url>
+			<url>https://github.com/slipcor/pvparena.git</url>
 		</repository>
 
 
@@ -458,13 +260,15 @@
 		</repository>
 
 		<!-- LibsDisguises -->
-		<repository>
-			<id>libsdisguises-repo-new</id>
-			<url>http://server.o2gaming.com/repo/</url>
-		</repository>
+		<!-- <repository> <id>libsdisguises-repo-new</id> <url>http://server.o2gaming.com/repo/</url> 
+			</repository> -->
 		<repository>
 			<id>libsdisguises-repo-old</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
+		</repository>
+		<repository>
+			<id>libsdisguises-repo-github</id>
+			<url>https://github.com/libraryaddict/LibsDisguises.git</url>
 		</repository>
 
 		<!-- Multiverse -->
@@ -485,5 +289,197 @@
 			<url>http://repo.md-5.net/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<!-- ********************************************************************** -->
+	<!-- **************************** Dependencies **************************** -->
+	<!-- ********************************************************************** -->
+	<dependencies>
+		<!-- CraftBukkit Dependency for experimental features -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>${bukkit.version}</version>
+		</dependency>
+
+		<!-- SpigotMC -->
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigotmc.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- SpongeAPI -->
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>2.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Vault / -->
+		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>${vault.version}</version>
+		</dependency>
+
+		<!-- XLF4J Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
+			your class path. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+
+		<!-- Minigames -->
+		<dependency>
+			<groupId>au.com.mineauz</groupId>
+			<artifactId>Minigames</artifactId>
+			<version>${minigames.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>bukkit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>craftbukkit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- WorldEdit -->
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldedit</artifactId>
+			<version>${worldedit.version}</version>
+		</dependency>
+
+		<!-- MCStats / Plugin Metrics -->
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics</artifactId>
+			<version>${metrics.version}</version>
+			<!-- <scope>compile</scope> -->
+		</dependency>
+
+		<!-- MyPet -->
+		<dependency>
+			<groupId>de.keyle</groupId>
+			<artifactId>mypet</artifactId>
+			<version>${mypet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- MobArena -->
+		<dependency>
+			<groupId>com.garbagemule.mobarena</groupId>
+			<artifactId>mobarena</artifactId>
+			<version>${mobarena.version}</version>
+			<type>jar</type>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/MobArena0.97.1.jar</systemPath>
+		</dependency>
+
+		<!-- PvpArena -->
+		<dependency>
+			<groupId>net.slipcor.pvparena</groupId>
+			<artifactId>PVPArena</artifactId>
+			<version>${pvparena.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<type>jar</type>
+			<systemPath>${project.basedir}/lib/pvparena.jar</systemPath>
+		</dependency>
+
+		<!-- Worldguard -->
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldguard</artifactId>
+			<version>${worldguard.version}</version>
+		</dependency>
+
+		<!-- MythicMobs -->
+		<dependency>
+			<groupId>net.elseland.mythicmobs</groupId>
+			<artifactId>MythicMobs</artifactId>
+			<version>${mythicmobs.jar.version}</version>
+			<type>jar</type> <!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/MythicMobs-2.3.0.jar</systemPath>
+		</dependency>
+
+		<!-- Citizens -->
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizensapi</artifactId>
+			<version>${citizensapi.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.ess3</groupId>
+			<artifactId>Essentials</artifactId>
+			<version>${essentials.version}</version>
+			<scope>system</scope>
+			<type>jar</type>
+			<systemPath>${project.basedir}/lib/Essentials-2.x-SNAPSHOT-B12-CLJ.jar</systemPath>
+		</dependency>
+
+		<!-- ProtocolLib -->
+		<dependency>
+			<groupId>com.comphenix.protocol</groupId>
+			<artifactId>ProtocolLib</artifactId>
+			<version>${protocollib.version}</version>
+		</dependency>
+
+		<!-- DisguiseCraft -->
+		<dependency>
+			<groupId>pgDev</groupId>
+			<artifactId>DisguiseCraft</artifactId>
+			<version>${disguisecraft.version}</version>
+		</dependency>
+
+		<!-- LibsDisguises -->
+		<dependency>
+			<groupId>LibsDisguises</groupId>
+			<artifactId>LibsDisguises</artifactId>
+			<version>${libsdisguises.version}</version>
+		</dependency>
+
+		<!-- iDisguise -->
+		<dependency>
+			<groupId>de.robingrether.idisguise</groupId>
+			<artifactId>idisguise</artifactId>
+			<version>5.0.4</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/iDisguise-5.0.4.jar</systemPath>
+		</dependency>
+
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- XLF4J Logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
+				your class path. -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>

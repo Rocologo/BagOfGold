@@ -20,52 +20,46 @@ public class RankBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer,
-			HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (!killer.isOp()) {
-			Iterator<Entry<String, String>> ranks = MobHunting.config().rankMultiplier
-					.entrySet().iterator();
+			Iterator<Entry<String, String>> ranks = MobHunting.config().rankMultiplier.entrySet().iterator();
+			double mul = 0;
 			while (ranks.hasNext()) {
 				Entry<String, String> rank = ranks.next();
 				if (!rank.getKey().equalsIgnoreCase("mobhunting")
-						&& !rank.getKey().equalsIgnoreCase(
-								"mobhunting.multiplier"))
+						&& !rank.getKey().equalsIgnoreCase("mobhunting.multiplier")) {
 					if (killer.hasPermission(rank.getKey())) {
-						return Double.valueOf(rank.getValue());
+						mul = (Double.valueOf(rank.getValue()) > mul) ? Double.valueOf(rank.getValue()) : mul;
 					}
+				}
 			}
-		} else if (MobHunting.config().rankMultiplier
-				.containsKey("mobhunting.multiplier.op"))
-			return Double.valueOf(MobHunting.config().rankMultiplier
-					.get("mobhunting.multiplier.op"));
+			return (mul == 0) ? 1 : mul;
+		} else if (MobHunting.config().rankMultiplier.containsKey("mobhunting.multiplier.op"))
+			return Double.valueOf(MobHunting.config().rankMultiplier.get("mobhunting.multiplier.op"));
 		return 1;
 	}
 
 	@Override
-	public boolean doesApply(LivingEntity deadEntity, Player killer,
-			HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (!killer.isOp()) {
-			Iterator<Entry<String, String>> ranks = MobHunting.config().rankMultiplier
-					.entrySet().iterator();
+			Iterator<Entry<String, String>> ranks = MobHunting.config().rankMultiplier.entrySet().iterator();
+			boolean hasRank = false;
 			while (ranks.hasNext()) {
 				Entry<String, String> rank = ranks.next();
 				if (!rank.getKey().equalsIgnoreCase("mobhunting")
-						&& !rank.getKey().equalsIgnoreCase(
-								"mobhunting.multiplier"))
+						&& !rank.getKey().equalsIgnoreCase("mobhunting.multiplier")) {
 					if (killer.hasPermission(rank.getKey())) {
-						MobHunting.debug("RankMultiplier Key=%s Value=%s",
-								rank.getKey(), rank.getValue());
-						return true;
+						MobHunting.debug("RankMultiplier Key=%s Value=%s", rank.getKey(), rank.getValue());
+						hasRank = true;
 					}
+				}
 			}
-		} else if (MobHunting.config().rankMultiplier
-				.containsKey("mobhunting.multiplier.op")) {
-			MobHunting.debug(
-					"RankMultiplier Key=mobhunting.multiplier.op Value=%s",
-					MobHunting.config().rankMultiplier
-							.get("mobhunting.multiplier.op"));
+			return hasRank;
+		} else if (MobHunting.config().rankMultiplier.containsKey("mobhunting.multiplier.op")) {
+			MobHunting.debug("RankMultiplier Key=mobhunting.multiplier.op Value=%s Player is OP",
+					MobHunting.config().rankMultiplier.get("mobhunting.multiplier.op"));
 			return true;
 		}
 		MobHunting.debug("%s has no Rank Multiplier", killer.getName());

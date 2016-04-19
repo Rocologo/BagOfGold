@@ -266,7 +266,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 						&& !results.getString(2).equals(
 								player.getPlayer().getName())) {
 					MobHunting.instance.getLogger().warning(
-							"Name change detected(1): " + results.getString(2)
+							"[MobHunting] Name change detected(1): " + results.getString(2)
 									+ " -> " + player.getPlayer().getName()
 									+ " UUID="
 									+ player.getUniqueId().toString());
@@ -307,7 +307,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			if (player.getUniqueId().equals(result.getString(1))
 					&& !player.getName().equals(name)) {
 				MobHunting.instance.getLogger().warning(
-						"Name change detected(2): " + name + " -> "
+						"[MobHunting] Name change detected(2): " + name + " -> "
 								+ player.getName() + " UUID="
 								+ player.getUniqueId().toString());
 				ids.put(UUID.fromString(result.getString(1)), result.getInt(3));
@@ -323,7 +323,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			return res;
 		}
 
-		throw new UserNotFoundException("User " + player.toString()
+		throw new UserNotFoundException("[MobHunting] User " + player.toString()
 				+ " is not present in database");
 	}
 
@@ -369,7 +369,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerUUID.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
-			throw new UserNotFoundException("User " + name
+			throw new UserNotFoundException("[MobHunting] User " + name
 					+ " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);

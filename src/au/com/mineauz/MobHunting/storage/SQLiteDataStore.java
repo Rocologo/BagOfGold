@@ -386,7 +386,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		}
 
 		System.out
-				.println("[MobHunting]*** Migrating MobHunting Database to UUIDs ***");
+				.println("[MobHunting] Migrating MobHunting Database User ID to User UUID.");
 
 		// Add missing columns
 		performTableMigrate(connection);
@@ -421,16 +421,16 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		UUIDHelper.clearCache();
 
 		if (failCount > 0) {
-			System.err.println("* " + failCount
+			System.err.println("[MobHunting] " + failCount
 					+ " accounts failed to convert:");
-			System.err.println("** " + failString.toString());
+			System.err.println("[MobHunting] " + failString.toString());
 		}
 
 		insert.executeBatch();
 		insert.close();
 
 		System.out
-				.println("[MobHunting]*** Player UUID migration complete ***");
+				.println("[MobHunting] Player UUID migration complete.");
 
 		statement.close();
 		connection.commit();
@@ -445,7 +445,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("[MobHunting]*** Adding Passive Mobs to MobHunting Database ***");
+					.println("[MobHunting] Adding Passive Mobs to MobHunting Database.");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `Bat_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -721,7 +721,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					.executeUpdate("alter table `mh_AllTime` add column `Wolf_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			System.out
-					.println("[MobHunting]*** Adding passive mobs complete ***");
+					.println("[MobHunting] Adding passive mobs complete.");
 
 		}
 
@@ -732,7 +732,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("[MobHunting]*** Adding EnderDragon to MobHunting Database ***");
+					.println("[MobHunting] Adding EnderDragon to MobHunting Database.");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `EnderDragon_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -756,7 +756,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					.executeUpdate("alter table `mh_AllTime` add column `EnderDragon_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			System.out
-					.println("[MobHunting]*** Adding EnderDragon complete ***");
+					.println("[MobHunting] Adding EnderDragon complete.");
 		}
 		try {
 			ResultSet rs = statement
@@ -765,7 +765,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("[MobHunting]*** Adding IronGolem to MobHunting Database ***");
+					.println("[MobHunting] Adding IronGolem to MobHunting Database ");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `IronGolem_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -788,7 +788,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement
 					.executeUpdate("alter table `mh_AllTime` add column `IronGolem_assist`  INTEGER NOT NULL DEFAULT 0");
 
-			System.out.println("[MobHunting]*** Adding IronGolem complete ***");
+			System.out.println("[MobHunting] Adding IronGolem complete.");
 		}
 		try {
 			ResultSet rs = statement
@@ -797,7 +797,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("[MobHunting]*** Adding new PvpPlayer to MobHunting Database ***");
+					.println("[MobHunting] Adding new PvpPlayer to MobHunting Database.");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `PvpPlayer_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -821,7 +821,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					.executeUpdate("alter table `mh_AllTime` add column `PvpPlayer_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			System.out
-					.println("[MobHunting]*** Adding new PvpPlayer complete ***");
+					.println("[MobHunting] Adding new PvpPlayer complete.");
 		}
 
 		try {
@@ -831,7 +831,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("[MobHunting]*** Adding new Mobs to MobHunting Database ***");
+					.println("[MobHunting] Adding new Mobs to MobHunting Database.");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `Endermite_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -917,7 +917,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement
 					.executeUpdate("alter table `mh_AllTime` add column `KillerRabbit_assist`  INTEGER NOT NULL DEFAULT 0");
 
-			System.out.println("[MobHunting]*** Adding new Mobs complete ***");
+			System.out.println("[MobHunting] Adding new Mobs complete.");
 		}
 
 		try {
@@ -927,7 +927,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 
 			System.out
-					.println("[MobHunting]*** Adding new 1.9 Mobs (Shulker) to MobHunting Database ***");
+					.println("[MobHunting] Adding new 1.9 Mobs (Shulker) to MobHunting Database.");
 
 			statement
 					.executeUpdate("alter table `mh_Daily` add column `Shulker_kill`  INTEGER NOT NULL DEFAULT 0");
@@ -951,7 +951,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					.executeUpdate("alter table `mh_AllTime` add column `Shulker_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			System.out
-					.println("[MobHunting]*** Adding new 1.9 Mobs complete ***");
+					.println("[MobHunting] Adding new 1.9 Mobs complete.");
 		}
 
 		try {
@@ -960,7 +960,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			rs.close();
 		} catch (SQLException e) {
 			System.out
-					.println("[MobHunting]*** Adding new Player leaning mode to MobHunting Database ***");
+					.println("[MobHunting] Adding new Player leaning mode to MobHunting Database.");
 			String lm = MobHunting.config().learningMode ? "1" : "0";
 			statement
 					.executeUpdate("alter table `mh_Players` add column `LEARNING_MODE` INTEGER NOT NULL DEFAULT "
@@ -973,7 +973,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			rs.close();
 		} catch (SQLException e) {
 			System.out
-					.println("[MobHunting]*** Adding new Player mute mode to MobHunting Database ***");
+					.println("[MobHunting] Adding new Player mute mode to MobHunting Database.");
 			statement
 					.executeUpdate("alter table `mh_Players` add column `MUTE_MODE` INTEGER NOT NULL DEFAULT 0");
 		}

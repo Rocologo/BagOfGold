@@ -270,7 +270,7 @@ public class DataStoreManager {
 					}
 				}
 			} catch (InterruptedException e) {
-				System.out.println("MH Data Retriever thread was interrupted"); //$NON-NLS-1$
+				System.out.println("[MobHunting] MH Data Retriever thread was interrupted"); 
 			}
 		}
 	}
