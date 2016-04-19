@@ -329,7 +329,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Method method;
 		try {
 			method = Bukkit.class.getDeclaredMethod("getOnlinePlayers");
-			debug("The getOnlinePlayers Method is: %s", method);
 			Object players = method.invoke(null);
 			Collection<Player> newPlayers = Collections.emptyList();
 			if (players instanceof Player[]) {
