@@ -10,7 +10,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Difficulty;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Blaze;
@@ -920,6 +919,9 @@ public class Config extends AutoConfig {
 
 	@ConfigField(name = "disable-integration-essentials", category = "plugins", comment = "Disable integration with Essentials")
 	public boolean disableIntegrationEssentials = false;
+
+	@ConfigField(name = "disable-integration-battlearena", category = "plugins", comment = "Disable integration with BattleArena")
+	public boolean disableIntegrationBattleArena = false;
 
 	// #####################################################################################
 	// Database

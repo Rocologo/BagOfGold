@@ -185,6 +185,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws DataStoreException, SQLException {
 		openPreparedStatements(mConnection,
 				PreparedConnectionType.GET_PLAYER_SETTINGS);
+		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerStatement[0].executeQuery();
 		if (result.next()) {
 			PlayerData ps = new PlayerData(player,

@@ -81,6 +81,7 @@ import au.com.mineauz.MobHunting.commands.UpdateCommand;
 import au.com.mineauz.MobHunting.commands.VersionCommand;
 import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
 import au.com.mineauz.MobHunting.commands.RegionCommand;
+import au.com.mineauz.MobHunting.compatability.BattleArenaCompat;
 import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.DisguiseCraftCompat;
@@ -233,6 +234,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerPlugin(LibsDisguisesCompat.class, "LibsDisguises");
 		registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
 		registerPlugin(IDisguiseCompat.class, "iDisguise");
+		registerPlugin(BattleArenaCompat.class, "BattleArena");
 
 		// register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",

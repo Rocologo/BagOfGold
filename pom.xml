@@ -4,7 +4,7 @@
 	<groupId>au.com.mineauz</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.8.1</version>
+	<version>2.8.2</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -32,6 +32,7 @@
 		<disguisecraft.version>5.2</disguisecraft.version>
 		<libsdisguises.version>8.2.6-SNAPSHOT</libsdisguises.version>
 		<protocollib.version>3.7.0-SNAPSHOT</protocollib.version>
+		<battleArena.version>LATEST</battleArena.version>
 	</properties>
 
 	<organization>
@@ -277,6 +278,14 @@
 			<url>http://repo.onarandombox.com/content/groups/public</url>
 		</repository>
 
+		<!-- BattleArena -->
+		<repository>
+			<id>battleplugins-net</id>
+			<name>BattlePlugins</name>
+			<!-- <url>http://battleplugins.com/maven</url> -->
+			<url>https://github.com/BattlePlugins/BattleArena.git</url>
+		</repository>
+
 	</repositories>
 
 	<distributionManagement>
@@ -459,6 +468,15 @@
 			<version>5.0.4</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/iDisguise-5.0.4.jar</systemPath>
+		</dependency>
+
+		<!-- BattleArena -->
+		<dependency>
+			<groupId>mc.alk</groupId>
+			<artifactId>
+				BattleArena
+			</artifactId>
+			<version>${battleArena.version}</version>
 		</dependency>
 
 	</dependencies>
