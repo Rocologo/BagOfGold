@@ -82,6 +82,7 @@ import au.com.mineauz.MobHunting.commands.VersionCommand;
 import au.com.mineauz.MobHunting.commands.WhitelistAreaCommand;
 import au.com.mineauz.MobHunting.commands.RegionCommand;
 import au.com.mineauz.MobHunting.compatability.BattleArenaCompat;
+import au.com.mineauz.MobHunting.compatability.BattleArenaHelper;
 import au.com.mineauz.MobHunting.compatability.CitizensCompat;
 import au.com.mineauz.MobHunting.compatability.CompatibilityManager;
 import au.com.mineauz.MobHunting.compatability.DisguiseCraftCompat;
@@ -999,8 +1000,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
 				return;
-			} else if (MobArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)) {
+			} else if (PVPArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing PvpArena.", killed.getName());
+				return;
+			} else if (BattleArenaCompat.isEnabledInConfig() && BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
+				debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
 				return;
 			} else if (killer instanceof Player && !mConfig.pvpAllowed) {
 				debug("KillBlocked: PVP not allowed. %s killed %s.", killer.getName(), killed.getName());
@@ -1032,6 +1036,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 					&& !mConfig.pvparenaGetRewards) {
 				debug("KillBlocked: %s is currently playing PvpArena.", killer.getName());
 				learn(killer, Messages.getString("mobhunting.learn.pvparena"));
+				return;
+			} else if (BattleArenaCompat.isEnabledInConfig() && BattleArenaHelper.isPlayingBattleArena(killer)) {
+				debug("KillBlocked: %s is currently playing BattleArena.", killer.getName());
+				learn(killer, Messages.getString("mobhunting.learn.battlearena"));
 				return;
 			} else if (EssentialsCompat.isSupported()) {
 				if (EssentialsCompat.isGodModeEnabled(killer)) {

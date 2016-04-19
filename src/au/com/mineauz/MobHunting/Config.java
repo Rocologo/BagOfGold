@@ -982,7 +982,7 @@ public class Config extends AutoConfig {
 	@ConfigField(name = "newplayer_learning_mode", category = "general", comment = "When a new playerjoins the server he will by default start"
 			+ "\nin 'LEARNING MODE' and get extra information about when he get rewards and not,"
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mh learn'")
-	public boolean learningMode = true;
+	public boolean learningMode = false;
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
