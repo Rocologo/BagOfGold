@@ -2,7 +2,10 @@ package au.com.mineauz.MobHunting;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -23,6 +27,7 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -269,7 +274,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (mAchievements.upgradeAchievements())
 			mStoreManager.waitForUpdates();
 
-		for (Player player : Bukkit.getOnlinePlayers())
+		for (Player player : getOnlinePlayersCollection())
 			mAchievements.load(player);
 
 		mLeaderboards = new LeaderboardManager();
@@ -291,6 +296,53 @@ public class MobHunting extends JavaPlugin implements Listener {
 							+ "] please check if [" + pluginName + "] is compatible with the server ["
 							+ getServer().getBukkitVersion() + "]");
 		}
+	}
+
+	/**
+	 * Gets the online player (backwards compatibility)
+	 * 
+	 * @return online player amount
+	 */
+	public int getOnlinePlayersNo() {
+		try {
+			Method method = Server.class.getMethod("getOnlinePlayers");
+			if (method.getReturnType().equals(Collection.class)) {
+				return ((Collection<?>) method.invoke(Bukkit.getServer())).size();
+			} else {
+				return ((Player[]) method.invoke(Bukkit.getServer())).length;
+			}
+		} catch (Exception ex) {
+			debug(ex.getMessage().toString());
+		}
+		return 0;
+	}
+
+	/**
+	 * Gets the online player (backwards compatibility)
+	 * 
+	 * @return online player Collection
+	 */
+	@SuppressWarnings({ "unchecked" })
+	public Collection<Player> getOnlinePlayersCollection() {
+		Method method;
+		try {
+			method = Bukkit.class.getDeclaredMethod("getOnlinePlayers");
+			debug("The getOnlinePlayers Method is: %s", method);
+			Object players = method.invoke(null);
+			Collection<Player> newPlayers = Collections.emptyList();
+			if (players instanceof Player[]) {
+				Player[] oldPlayers = (Player[]) players;
+				for (int i = 0; i < oldPlayers.length; i++)
+					newPlayers.add(oldPlayers[i]);
+			} else {
+				newPlayers = (Collection<Player>) players;
+			}
+			return newPlayers;
+		} catch (Exception ex) {
+			debug(ex.getMessage().toString());
+			return Collections.emptyList();
+		}
+
 	}
 
 	@Override
@@ -1586,26 +1638,27 @@ public class MobHunting extends JavaPlugin implements Listener {
 	// SPONGE PROJECT
 	// ************************************************************************************
 
-	//private Logger logger;
+	// private Logger logger;
 
-	//@Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version = "1.0")
-	//public class MobHuntingProject implements Listener {
-		//@Subscribe
-		//public void onServerStart(ServerStartedEvent event) {
-			// Hey!The server has started!
-			// Try instantiating your logger in here.
-			// (There's a guide for that)
-			//logger.info("Hello World!");
-		//}
+	// @Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version =
+	// "1.0")
+	// public class MobHuntingProject implements Listener {
+	// @Subscribe
+	// public void onServerStart(ServerStartedEvent event) {
+	// Hey!The server has started!
+	// Try instantiating your logger in here.
+	// (There's a guide for that)
+	// logger.info("Hello World!");
+	// }
 
-		//@Subscribe
-		//public void onServerStop(ServerStoppedEvent event) {
-			// Hey! The server has started!
-			// Try instantiating your logger in here.
-			// (There's a guide for that)
-			//logger.info("Goodbye World!");
-		//}
-	//}
+	// @Subscribe
+	// public void onServerStop(ServerStoppedEvent event) {
+	// Hey! The server has started!
+	// Try instantiating your logger in here.
+	// (There's a guide for that)
+	// logger.info("Goodbye World!");
+	// }
+	// }
 
 	// ************************************************************************************
 

@@ -215,7 +215,7 @@ public class AchievementManager implements Listener {
 	}
 
 	private void broadcast(String message, Player except) {
-		for (Player player : Bukkit.getOnlinePlayers()) {
+		for (Player player : MobHunting.instance.getOnlinePlayersCollection()) {
 			if (player.equals(except))
 				continue;
 
