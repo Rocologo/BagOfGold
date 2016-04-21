@@ -1,5 +1,5 @@
 name: MobHunting
-main: au.com.mineauz.MobHunting.MobHunting
+main: one.lindegaard.MobHunting.MobHunting
 version: ${version}
 description: A Mobhunting plugin
 author: Rocologo
