@@ -21,7 +21,7 @@ public class CoverBlown implements IModifier {
 	public double getMultiplier(LivingEntity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return MobHunting.config().coverBlownMultiplier;
+		return MobHunting.getConfigManager().coverBlownMultiplier;
 	}
 
 	@Override

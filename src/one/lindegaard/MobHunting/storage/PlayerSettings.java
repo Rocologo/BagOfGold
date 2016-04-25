@@ -17,7 +17,7 @@ public class PlayerSettings {
 
 	public PlayerSettings(OfflinePlayer player) {
 		this.player = player;
-		this.learning_mode = MobHunting.config().learningMode;
+		this.learning_mode = MobHunting.getConfigManager().learningMode;
 		this.mute = false;
 	}
 

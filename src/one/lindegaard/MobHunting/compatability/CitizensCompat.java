@@ -224,11 +224,11 @@ public class CitizensCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationCitizens;
+		return MobHunting.getConfigManager().disableIntegrationCitizens;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationCitizens;
+		return !MobHunting.getConfigManager().disableIntegrationCitizens;
 	}
 
 	// **************************************************************************

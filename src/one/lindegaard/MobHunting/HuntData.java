@@ -8,6 +8,7 @@ import org.bukkit.Location;
 
 public class HuntData {
 
+	MobHunting instance;
 	private int killStreak = 0;
 	private int dampenedKills = 0;
 	private static double cDampnerRange = 15;
@@ -16,7 +17,8 @@ public class HuntData {
 	private double reward = 0;
 	private HashMap<String, Double> modifiers = new HashMap<String, Double>();
 
-	public HuntData() {
+	public HuntData(MobHunting instance) {
+		this.instance = instance;
 	}
 
 	public Area getGrindingArea(Location location) {
@@ -139,13 +141,13 @@ public class HuntData {
 	}
 
 	public int getKillstreakLevel() {
-		if (killStreak < MobHunting.config().killstreakLevel1)
+		if (killStreak < MobHunting.getConfigManager().killstreakLevel1)
 			return 0;
-		else if (killStreak < MobHunting.config().killstreakLevel2)
+		else if (killStreak < MobHunting.getConfigManager().killstreakLevel2)
 			return 1;
-		else if (killStreak < MobHunting.config().killstreakLevel3)
+		else if (killStreak < MobHunting.getConfigManager().killstreakLevel3)
 			return 2;
-		else if (killStreak < MobHunting.config().killstreakLevel4)
+		else if (killStreak < MobHunting.getConfigManager().killstreakLevel4)
 			return 3;
 		else
 			return 4;
@@ -163,13 +165,13 @@ public class HuntData {
 		case 0:
 			return 1.0;
 		case 1:
-			return MobHunting.config().killstreakLevel1Mult;
+			return MobHunting.getConfigManager().killstreakLevel1Mult;
 		case 2:
-			return MobHunting.config().killstreakLevel2Mult;
+			return MobHunting.getConfigManager().killstreakLevel2Mult;
 		case 3:
-			return MobHunting.config().killstreakLevel3Mult;
+			return MobHunting.getConfigManager().killstreakLevel3Mult;
 		default:
-			return MobHunting.config().killstreakLevel4Mult;
+			return MobHunting.getConfigManager().killstreakLevel4Mult;
 		}
 	}
 

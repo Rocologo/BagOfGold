@@ -22,7 +22,7 @@ public class FlyingPenalty implements IModifier
 	@Override
 	public double getMultiplier( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
-		return MobHunting.config().penaltyFlying;
+		return MobHunting.getConfigManager().penaltyFlying;
 	}
 
 	@Override

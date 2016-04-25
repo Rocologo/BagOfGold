@@ -102,23 +102,20 @@ public class MuteCommand implements ICommand, Listener {
 
 	private void togglePlayerMuteMode(Player player) {
 		DataStoreManager ds = instance.getDataStore();
-		if (instance.getPlayerData().containsKey(player.getUniqueId())) {
-			boolean lm = instance.getPlayerData(player.getUniqueId())
+			boolean lm = instance.getPlayerSettings(player)
 					.isLearningMode();
-			if (instance.getPlayerData(player.getUniqueId()).isMuted()) {
+			if (instance.getPlayerSettings(player).isMuted()) {
 				ds.updatePlayerSettings(player, lm, false);
-				instance.addPlayerData(new PlayerSettings(player, lm, false));
+				instance.addPlayerSettings(player, new PlayerSettings(player, lm, false));
 				player.sendMessage(Messages.getString(
 						"mobhunting.commands.mute.unmuted", "player",
 						player.getName()));
 			} else {
 				ds.updatePlayerSettings(player, lm, true);
-				instance.addPlayerData(new PlayerSettings(player, lm, true));
+			instance.addPlayerSettings(player, new PlayerSettings(player, lm, true));
 				player.sendMessage(Messages.getString(
 						"mobhunting.commands.mute.muted", "player",
 						player.getName()));
 			}
 		}
-	}
-
 }

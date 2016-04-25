@@ -118,11 +118,11 @@ public class WorldGuardCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationWorldGuard;
+		return MobHunting.getConfigManager().disableIntegrationWorldGuard;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationWorldGuard;
+		return !MobHunting.getConfigManager().disableIntegrationWorldGuard;
 	}
 
 	public static StateFlag getMobHuntingFlag() {

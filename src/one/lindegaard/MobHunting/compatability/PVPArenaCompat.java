@@ -35,11 +35,11 @@ public class PVPArenaCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationPvpArena;
+		return MobHunting.getConfigManager().disableIntegrationPvpArena;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationPvpArena;
+		return !MobHunting.getConfigManager().disableIntegrationPvpArena;
 	}
 
 	// **************************************************************************

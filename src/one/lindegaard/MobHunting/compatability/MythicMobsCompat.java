@@ -169,11 +169,11 @@ public class MythicMobsCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationMythicmobs;
+		return MobHunting.getConfigManager().disableIntegrationMythicmobs;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationMythicmobs;
+		return !MobHunting.getConfigManager().disableIntegrationMythicmobs;
 	}
 
 	// **************************************************************************
@@ -181,36 +181,30 @@ public class MythicMobsCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
-		// if (event.getKiller() != null)
-		// MobHunting
-		// .debug("MythicMob Death event, killer is %s, mobname=%s, Mobname=%s",
-		// event.getKiller().getName(), event.MobName,
-		// event.getMobType().MobName);
+		//MobHunting.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
+		//		.getLivingEntity().getType(), event.getMobType().getInternalName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
 		MobHunting.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
-				.getLivingEntity().getType(), event.getMobType().MobName);
-
+				.getLivingEntity().getType(), event.getMobType().getInternalName());
 		if (mMobRewardData != null
-				&& !mMobRewardData.containsKey(event.getMobType().MobName)) {
+				&& !mMobRewardData.containsKey(event.getMobType().getInternalName())) {
 			MobHunting.debug("New MythicMobType found=%s,%s", event
-					.getMobType().MobName, event.getMobType().getDisplayName());
-			mMobRewardData.put(event.getMobType().MobName, new MobRewardData(
-					MobPlugins.MobPluginNames.MythicMobs, event.getMobType().MobName, 
+					.getMobType().getInternalName(), event.getMobType().getDisplayName());
+			mMobRewardData.put(event.getMobType().getInternalName(), new MobRewardData(
+					MobPlugins.MobPluginNames.MythicMobs, event.getMobType().getInternalName(), 
 					event.getMobType().getDisplayName(), "10",
 					"give {player} iron_sword 1", "You got an Iron sword.",
 					100, 100));
-			saveMythicMobsData(event.getMobType().MobName);
+			saveMythicMobsData(event.getMobType().getInternalName());
 		}
 
 		event.getLivingEntity().setMetadata(
 				"MH:MythicMob",
 				new FixedMetadataValue(mPlugin,
-						mMobRewardData.get(event.getMobType().MobName)));
-				//new FixedMetadataValue(mPlugin,event.getMobType().MobName));
-
+						mMobRewardData.get(event.getMobType().getInternalName())));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

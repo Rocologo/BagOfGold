@@ -17,9 +17,9 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.milkbowl.vault.economy.EconomyResponse;
+import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobHuntingManager;
 import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
@@ -43,11 +43,12 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 public class AchievementManager implements Listener {
-	private HashMap<String, Achievement> mAchievements = new HashMap<String, Achievement>();
 
+	private HashMap<String, Achievement> mAchievements = new HashMap<String, Achievement>();
 	private WeakHashMap<Player, PlayerStorage> mStorage = new WeakHashMap<Player, PlayerStorage>();
 
-	public void initialize() {
+	public AchievementManager() {
+		registerAchievements();
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -73,6 +74,33 @@ public class AchievementManager implements Listener {
 		if (achievement instanceof Listener)
 			Bukkit.getPluginManager().registerEvents((Listener) achievement, MobHunting.getInstance());
 	}
+	
+	public void registerAchievements() {
+		registerAchievement(new AxeMurderer());
+		registerAchievement(new CreeperBoxing());
+		registerAchievement(new Electrifying());
+		registerAchievement(new RecordHungry());
+		registerAchievement(new InFighting());
+		registerAchievement(new ByTheBook());
+		registerAchievement(new Creepercide());
+		registerAchievement(new TheHuntBegins());
+		registerAchievement(new ItsMagic());
+		registerAchievement(new FancyPants());
+		registerAchievement(new MasterSniper());
+		registerAchievement(new WolfKillAchievement());
+
+		for (ExtendedMobType type : ExtendedMobType.values()) {
+			registerAchievement(new BasicHuntAchievement(type));
+			registerAchievement(new SecondHuntAchievement(type));
+			registerAchievement(new ThirdHuntAchievement(type));
+			registerAchievement(new FourthHuntAchievement(type));
+			registerAchievement(new FifthHuntAchievement(type));
+			registerAchievement(new SixthHuntAchievement(type));
+			registerAchievement(new SeventhHuntAchievement(type));
+		}
+	}
+
+
 
 	public boolean hasAchievement(String achievement, Player player) {
 		return hasAchievement(getAchievement(achievement), player);
@@ -229,8 +257,8 @@ public class AchievementManager implements Listener {
 		if (!result.transactionSuccess())
 			player.sendMessage(ChatColor.RED + "Unable to add prize money: " + result.errorMessage);
 
-		if (MobHunting.config().broadcastAchievement
-				&& (!(achievement instanceof TheHuntBegins) || MobHunting.config().broadcastFirstAchievement))
+		if (MobHunting.getConfigManager().broadcastAchievement
+				&& (!(achievement instanceof TheHuntBegins) || MobHunting.getConfigManager().broadcastFirstAchievement))
 			broadcast(
 					ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player",
 							player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()),

@@ -69,11 +69,11 @@ public class LibsDisguisesCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationLibsDisguises;
+		return MobHunting.getConfigManager().disableIntegrationLibsDisguises;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationLibsDisguises;
+		return !MobHunting.getConfigManager().disableIntegrationLibsDisguises;
 	}
 
 	public static boolean isDisguised(Entity entity) {

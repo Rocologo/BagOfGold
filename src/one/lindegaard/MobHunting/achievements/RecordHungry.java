@@ -33,7 +33,7 @@ public class RecordHungry implements Achievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialRecordHungry;
+		return MobHunting.getConfigManager().specialRecordHungry;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -63,11 +63,11 @@ public class RecordHungry implements Achievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialRecordHungryCmd;
+		return MobHunting.getConfigManager().specialRecordHungryCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialRecordHungryCmdDesc;
+		return MobHunting.getConfigManager().specialRecordHungryCmdDesc;
 	}
 }

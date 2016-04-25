@@ -127,12 +127,12 @@ public class MobHuntingManager {
 		final String HUNTDATA = "MH:HuntData";
 		HuntData data = null;
 		if (!player.hasMetadata(HUNTDATA)) {
-			data = new HuntData();
+			data = new HuntData(instance);
 			player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
 		} else {
 			if (!(player.getMetadata(HUNTDATA).get(0).value() instanceof HuntData)) {
 				player.getMetadata(HUNTDATA).get(0).invalidate();
-				player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, new HuntData()));
+				player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, new HuntData(instance)));
 			}
 
 			data = (HuntData) player.getMetadata(HUNTDATA).get(0).value();

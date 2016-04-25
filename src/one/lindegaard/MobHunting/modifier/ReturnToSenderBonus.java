@@ -12,30 +12,28 @@ import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
-public class ReturnToSenderBonus implements IModifier
-{
+public class ReturnToSenderBonus implements IModifier {
 
 	@Override
-	public String getName()
-	{
-		return ChatColor.GOLD + Messages.getString("bonus.returntosender.name"); //$NON-NLS-1$
+	public String getName() {
+		return ChatColor.GOLD + Messages.getString("bonus.returntosender.name");
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause)
-	{
-		return MobHunting.config().bonusReturnToSender;
+	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+			EntityDamageByEntityEvent lastDamageCause) {
+		return MobHunting.getConfigManager().bonusReturnToSender;
 	}
 
 	@Override
-	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
-	{
-		if(!(deadEntity instanceof Ghast))
+	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+			EntityDamageByEntityEvent lastDamageCause) {
+		if (!(deadEntity instanceof Ghast))
 			return false;
-		if(!(deadEntity.getLastDamageCause() instanceof EntityDamageByEntityEvent))
+		if (!(deadEntity.getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return false;
 
-		return (((EntityDamageByEntityEvent)deadEntity.getLastDamageCause()).getDamager() instanceof LargeFireball);
+		return (((EntityDamageByEntityEvent) deadEntity.getLastDamageCause()).getDamager() instanceof LargeFireball);
 	}
 
 }

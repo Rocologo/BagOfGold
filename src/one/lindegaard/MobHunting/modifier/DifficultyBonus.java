@@ -25,7 +25,7 @@ public class DifficultyBonus implements IModifier {
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Difficulty dif = killer.getWorld().getDifficulty();
-		Iterator<Entry<String, String>> difficulties = MobHunting.config().difficultyMultiplier
+		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier
 				.entrySet().iterator();
 		String valueStr = "1";
 		while (difficulties.hasNext()) {
@@ -50,7 +50,7 @@ public class DifficultyBonus implements IModifier {
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Difficulty dif = killer.getWorld().getDifficulty();
-		Iterator<Entry<String, String>> difficulties = MobHunting.config().difficultyMultiplier
+		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier
 				.entrySet().iterator();
 		String valueStr = "1";
 		while (difficulties.hasNext()) {

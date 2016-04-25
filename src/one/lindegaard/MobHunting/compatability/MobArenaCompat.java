@@ -53,11 +53,11 @@ public class MobArenaCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationMobArena;
+		return MobHunting.getConfigManager().disableIntegrationMobArena;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationMobArena;
+		return !MobHunting.getConfigManager().disableIntegrationMobArena;
 	}
 
 	// **************************************************************************

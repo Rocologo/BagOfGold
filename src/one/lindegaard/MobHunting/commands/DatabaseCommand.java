@@ -22,7 +22,7 @@ public class DatabaseCommand implements ICommand, Listener {
 	// private DataStoreManager mStoreManager;
 
 	public DatabaseCommand() {
-		if (MobHunting.config().databaseType.equalsIgnoreCase("mysql"))
+		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql"))
 			mStore = new MySQLDataStore();
 		else
 			mStore = new SQLiteDataStore();

@@ -33,7 +33,7 @@ public class MasterSniper implements Achievement, Listener
 	@Override
 	public double getPrize()
 	{
-		return MobHunting.config().specialMasterSniper;
+		return MobHunting.getConfigManager().specialMasterSniper;
 	}
 
 	@EventHandler(priority=EventPriority.MONITOR)
@@ -51,11 +51,11 @@ public class MasterSniper implements Achievement, Listener
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialMasterSniperCmd;
+		return MobHunting.getConfigManager().specialMasterSniperCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialMasterSniperCmdDesc;
+		return MobHunting.getConfigManager().specialMasterSniperCmdDesc;
 	}
 }

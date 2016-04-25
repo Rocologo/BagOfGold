@@ -12,39 +12,38 @@ public class AxeMurderer implements Achievement, Listener {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.axemurderer.name"); //$NON-NLS-1$
+		return Messages.getString("achievements.axemurderer.name");
 	}
 
 	@Override
 	public String getID() {
-		return "axemurderer"; //$NON-NLS-1$
+		return "axemurderer";
 	}
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("achievements.axemurderer.description"); //$NON-NLS-1$
+		return Messages.getString("achievements.axemurderer.description");
 	}
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialAxeMurderer;
+		return MobHunting.getConfigManager().specialAxeMurderer;
 	}
 
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
 		if (Misc.isAxe(event.getDamageInfo().weapon))
-			MobHunting.getInstance().getAchievements().awardAchievement(this,
-					event.getPlayer());
+			MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialAxeMurdererCmd;
+		return MobHunting.getConfigManager().specialAxeMurdererCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialAxeMurdererCmdDesc;
+		return MobHunting.getConfigManager().specialAxeMurdererCmdDesc;
 	}
-	
+
 }

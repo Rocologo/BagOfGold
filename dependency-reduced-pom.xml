@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>au.com.mineauz</groupId>
+  <groupId>one.lindegaard</groupId>
   <artifactId>MobHunting</artifactId>
   <name>MobHunting</name>
-  <version>2.8.0</version>
+  <version>2.8.6</version>
   <description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
   <url>http://dev.bukkit.org/server-mods/mobhunting/</url>
   <organization>
@@ -187,6 +187,11 @@
     <repository>
       <id>onarandombox</id>
       <url>http://repo.onarandombox.com/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>battleplugins-net</id>
+      <name>BattlePlugins</name>
+      <url>https://github.com/BattlePlugins/BattleArena.git</url>
     </repository>
   </repositories>
   <dependencies>
@@ -379,6 +384,12 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>mc.alk</groupId>
+      <artifactId>BattleArena</artifactId>
+      <version>LATEST</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>com.garbagemule.mobarena</groupId>
       <artifactId>mobarena</artifactId>
       <version>${mobarena.version}</version>
@@ -397,7 +408,7 @@
       <artifactId>MythicMobs</artifactId>
       <version>${mythicmobs.jar.version}</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/lib/MythicMobs-2.3.0.jar</systemPath>
+      <systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
     </dependency>
     <dependency>
       <groupId>net.ess3</groupId>
@@ -440,6 +451,7 @@
   </distributionManagement>
   <properties>
     <mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
+    <battleArena.version>LATEST</battleArena.version>
     <mobarena.version>0.97.1</mobarena.version>
     <minigames.version>1.7.0-SNAPSHOT</minigames.version>
     <mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
@@ -461,7 +473,7 @@
     <spigotmc.version>1.9.2-R0.1-SNAPSHOT</spigotmc.version>
     <metrics.version>R8-SNAPSHOT</metrics.version>
     <worldguard.version>LATEST</worldguard.version>
-    <mythicmobs.jar.version>MythicMobs-2.3.0.jar</mythicmobs.jar.version>
+    <mythicmobs.jar.version>MythicMobs-2.4.0.jar</mythicmobs.jar.version>
   </properties>
 </project>
 

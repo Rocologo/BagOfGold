@@ -32,7 +32,7 @@ public class FifthHuntAchievement implements ProgressAchievement {
 	@Override
 	public double getPrize()
 	{
-		return MobHunting.config().specialHunter5;
+		return MobHunting.getConfigManager().specialHunter5;
 	}
 
 	@Override
@@ -45,10 +45,10 @@ public class FifthHuntAchievement implements ProgressAchievement {
 	public String inheritFrom() { return "hunting-level4-" + mType.name().toLowerCase(); } //$NON-NLS-1$
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialHunter5Cmd;
+		return MobHunting.getConfigManager().specialHunter5Cmd;
 	}
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialHunter5CmdDesc;
+		return MobHunting.getConfigManager().specialHunter5CmdDesc;
 	}
 }

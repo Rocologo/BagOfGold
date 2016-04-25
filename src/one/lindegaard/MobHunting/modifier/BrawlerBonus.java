@@ -22,7 +22,7 @@ public class BrawlerBonus implements IModifier {
 	public double getMultiplier(LivingEntity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return MobHunting.config().bonusNoWeapon;
+		return MobHunting.getConfigManager().bonusNoWeapon;
 	}
 
 	@Override

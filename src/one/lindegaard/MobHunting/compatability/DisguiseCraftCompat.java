@@ -61,11 +61,11 @@ public class DisguiseCraftCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationDisguiseCraft;
+		return MobHunting.getConfigManager().disableIntegrationDisguiseCraft;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationDisguiseCraft;
+		return !MobHunting.getConfigManager().disableIntegrationDisguiseCraft;
 	}
 
 	public static boolean isDisguised(Player player) {

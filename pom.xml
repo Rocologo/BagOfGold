@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>2.8.5</version>
+	<version>2.8.6</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -22,7 +22,7 @@
 		<worldedit.version>LATEST</worldedit.version>
 		<worldguard.version>LATEST</worldguard.version>
 		<citizensapi.version>2.0.17-SNAPSHOT</citizensapi.version>
-		<mythicmobs.jar.version>MythicMobs-2.3.0.jar</mythicmobs.jar.version>
+		<mythicmobs.jar.version>MythicMobs-2.4.0.jar</mythicmobs.jar.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
@@ -421,7 +421,7 @@
 			<version>${mythicmobs.jar.version}</version>
 			<type>jar</type> <!-- <scope>provided</scope> -->
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/MythicMobs-2.3.0.jar</systemPath>
+			<systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
 		</dependency>
 
 		<!-- Citizens -->

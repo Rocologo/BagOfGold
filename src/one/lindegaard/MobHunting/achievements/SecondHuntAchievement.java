@@ -31,7 +31,7 @@ public class SecondHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialHunter2;
+		return MobHunting.getConfigManager().specialHunter2;
 	}
 
 	@Override
@@ -46,11 +46,11 @@ public class SecondHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialHunter2Cmd;
+		return MobHunting.getConfigManager().specialHunter2Cmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialHunter2CmdDesc;
+		return MobHunting.getConfigManager().specialHunter2CmdDesc;
 	}
 }

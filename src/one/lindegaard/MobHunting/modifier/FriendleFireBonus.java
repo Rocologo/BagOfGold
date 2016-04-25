@@ -24,7 +24,7 @@ public class FriendleFireBonus implements IModifier
 	@Override
 	public double getMultiplier( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
-		return MobHunting.config().bonusFriendlyFire;
+		return MobHunting.getConfigManager().bonusFriendlyFire;
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class UpdateHelper {
 				public void run() {
 					pluginUpdateCheck(sender, true, false);
 				}
-			}.runTaskTimer(MobHunting.getInstance(), 0L, MobHunting.config().checkEvery * 20L);
+			}.runTaskTimer(MobHunting.getInstance(), 0L, MobHunting.getConfigManager().checkEvery * 20L);
 			// Check for update timer
 		}
 	}
@@ -96,7 +96,7 @@ public class UpdateHelper {
 									if (updateAvailable == UpdateStatus.AVAILABLE) {
 										sender.sendMessage(ChatColor.GREEN + "[MobHunting] "
 												+ Messages.getString("mobhunting.commands.update.version-found"));
-										if (MobHunting.config().autoupdate) {
+										if (MobHunting.getConfigManager().autoupdate) {
 											downloadAndUpdateJar();
 											sender.sendMessage(ChatColor.GREEN + "[MobHunting] "
 													+ Messages.getString("mobhunting.commands.update.complete"));

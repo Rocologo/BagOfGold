@@ -43,13 +43,8 @@ public class LearnCommand implements ICommand, Listener {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] {
-				label + " learn" + ChatColor.GREEN
-						+ " - to enable/disable learningmode.",
-				label
-						+ " learn playername"
-						+ ChatColor.GREEN
-						+ " - to enable/disable learningmode for a specific player." };
+		return new String[] { label + " learn" + ChatColor.GREEN + " - to enable/disable learningmode.", label
+				+ " learn playername" + ChatColor.GREEN + " - to enable/disable learningmode for a specific player." };
 	}
 
 	@Override
@@ -68,8 +63,7 @@ public class LearnCommand implements ICommand, Listener {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, String label,
-			String[] args) {
+	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		return null;
 	}
 
@@ -83,18 +77,15 @@ public class LearnCommand implements ICommand, Listener {
 			DataStoreManager ds = MobHunting.getInstance().getDataStore();
 			Player player = (Player) ds.getPlayerByName(args[0]);
 			if (player != null) {
-				if (sender.hasPermission("mobhunting.learn.other")
-						|| sender instanceof ConsoleCommandSender) {
+				if (sender.hasPermission("mobhunting.learn.other") || sender instanceof ConsoleCommandSender) {
 					togglePlayerLearningMode(player);
 				} else {
-					sender.sendMessage(ChatColor.RED
-							+ "You dont have permission " + ChatColor.AQUA
-							+ "'mobhunting.learn.other'");
+					sender.sendMessage(
+							ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'mobhunting.learn.other'");
 				}
 				return true;
 			} else {
-				sender.sendMessage(ChatColor.RED + "Player " + args[0]
-						+ " is not online.");
+				sender.sendMessage(ChatColor.RED + "Player " + args[0] + " is not online.");
 				return false;
 			}
 		}
@@ -103,20 +94,14 @@ public class LearnCommand implements ICommand, Listener {
 
 	private void togglePlayerLearningMode(Player player) {
 		DataStoreManager ds = instance.getDataStore();
-		if (instance.getPlayerData().containsKey(player.getUniqueId())) {
-			boolean mm = instance.getPlayerData(player.getUniqueId()).isMuted();
-			if (instance.getPlayerData(player.getUniqueId()).isLearningMode()) {
-				ds.updatePlayerSettings(player, false, mm);
-				instance.addPlayerData(new PlayerSettings(player, false, mm));
-				player.sendMessage(Messages.getString(
-						"mobhunting.commands.learn.disabled", "player",
-						player.getName()));
-			} else {
-				instance.addPlayerData(new PlayerSettings(player, true, mm));
-				player.sendMessage(Messages.getString(
-						"mobhunting.commands.learn.enabled", "player",
-						player.getName()));
-			}
+		boolean mm = instance.getPlayerSettings(player).isMuted();
+		if (instance.getPlayerSettings(player).isLearningMode()) {
+			ds.updatePlayerSettings(player, false, mm);
+			instance.addPlayerSettings(player, new PlayerSettings(player, false, mm));
+			player.sendMessage(Messages.getString("mobhunting.commands.learn.disabled", "player", player.getName()));
+		} else {
+			instance.addPlayerSettings(player, new PlayerSettings(player, true, mm));
+			player.sendMessage(Messages.getString("mobhunting.commands.learn.enabled", "player", player.getName()));
 		}
 	}
 

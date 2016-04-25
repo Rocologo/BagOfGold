@@ -27,7 +27,7 @@ public class ItsMagic implements Achievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialItsMagic;
+		return MobHunting.getConfigManager().specialItsMagic;
 	}
 
 	@EventHandler
@@ -39,11 +39,11 @@ public class ItsMagic implements Achievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialItsMagicCmd;
+		return MobHunting.getConfigManager().specialItsMagicCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialItsMagicCmdDesc;
+		return MobHunting.getConfigManager().specialItsMagicCmdDesc;
 	}
 }

@@ -31,7 +31,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			return DriverManager.getConnection("jdbc:sqlite:" + MobHunting.getInstance().getDataFolder().getPath() + "/" //$NON-NLS-1$ //$NON-NLS-2$
-					+ MobHunting.config().databaseName + ".db"); //$NON-NLS-1$
+					+ MobHunting.getConfigManager().databaseName + ".db");
 		} catch (ClassNotFoundException e) {
 			throw new DataStoreException("SQLite not present on the classpath");
 		}
@@ -78,13 +78,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 							+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
 			break;
 		case UPDATE_PLAYER_SETTINGS:
-			mUpdatePlayerData = connection
+			mUpdatePlayerSettings = connection
 					.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=? WHERE UUID=?;");
 			break;
 		case INSERT_PLAYER_SETTINGS:
 			myAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO mh_Players "
 					+ "VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),"
-					+ (MobHunting.config().learningMode ? "1" : "0") + ",0 );");
+					+ (MobHunting.getConfigManager().learningMode ? "1" : "0") + ",0 );");
 			break;
 		case GET_PLAYER_SETTINGS:
 			mGetPlayerDATA = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
@@ -198,7 +198,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		}
 
 		// Create new empty tables if they do not exist
-		String lm = MobHunting.config().learningMode ? "1" : "0";
+		String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players (UUID TEXT PRIMARY KEY, NAME TEXT, "
 				+ "PLAYER_ID INTEGER NOT NULL, LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm
 				+ ", MUTE_MODE INTEGER NOT NULL DEFAULT 0 )");
@@ -220,7 +220,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
 				+ dataString + ", PRIMARY KEY(PLAYER_ID))");
 		create.executeUpdate(
-				"CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))"); //$NON-NLS-1$
+				"CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))");
 
 		setupTrigger(connection);
 
@@ -751,7 +751,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			rs.close();
 		} catch (SQLException e) {
 			System.out.println("[MobHunting] Adding new Player leaning mode to MobHunting Database.");
-			String lm = MobHunting.config().learningMode ? "1" : "0";
+			String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
 			statement.executeUpdate(
 					"alter table `mh_Players` add column `LEARNING_MODE` INTEGER NOT NULL DEFAULT " + lm);
 		}

@@ -31,7 +31,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialFangMaster;
+		return MobHunting.getConfigManager().specialFangMaster;
 	}
 
 	@Override
@@ -69,11 +69,11 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialFangMasterCmd;
+		return MobHunting.getConfigManager().specialFangMasterCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialFangMasterCmdDesc;
+		return MobHunting.getConfigManager().specialFangMasterCmdDesc;
 	}
 }

@@ -42,11 +42,11 @@ public class BattleArenaCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationBattleArena;
+		return MobHunting.getConfigManager().disableIntegrationBattleArena;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationBattleArena;
+		return !MobHunting.getConfigManager().disableIntegrationBattleArena;
 	}
 
 	// **************************************************************************

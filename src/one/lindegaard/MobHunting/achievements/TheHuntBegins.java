@@ -30,7 +30,7 @@ public class TheHuntBegins implements Achievement, Listener
 	@Override
 	public double getPrize()
 	{
-		return MobHunting.config().specialHuntBegins;
+		return MobHunting.getConfigManager().specialHuntBegins;
 	}
 
 	@EventHandler
@@ -41,11 +41,11 @@ public class TheHuntBegins implements Achievement, Listener
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialHuntBeginsCmd;
+		return MobHunting.getConfigManager().specialHuntBeginsCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialHuntBeginsCmdDesc;
+		return MobHunting.getConfigManager().specialHuntBeginsCmdDesc;
 	}
 }

@@ -27,7 +27,7 @@ public class FancyPants implements Achievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialFancyPants;
+		return MobHunting.getConfigManager().specialFancyPants;
 	}
 
 	@EventHandler
@@ -51,11 +51,11 @@ public class FancyPants implements Achievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialFancyPantsCmd;
+		return MobHunting.getConfigManager().specialFancyPantsCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialFancyPantsCmdDesc;
+		return MobHunting.getConfigManager().specialFancyPantsCmdDesc;
 	}
 }

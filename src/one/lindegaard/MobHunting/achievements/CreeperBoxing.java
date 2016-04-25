@@ -14,25 +14,25 @@ public class CreeperBoxing implements Achievement, Listener
 	@Override
 	public String getName()
 	{
-		return Messages.getString("achievements.creeperboxing.name"); //$NON-NLS-1$
+		return Messages.getString("achievements.creeperboxing.name"); 
 	}
 
 	@Override
 	public String getID()
 	{
-		return "creeperboxing"; //$NON-NLS-1$
+		return "creeperboxing"; 
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Messages.getString("achievements.creeperboxing.description"); //$NON-NLS-1$
+		return Messages.getString("achievements.creeperboxing.description"); 
 	}
 
 	@Override
 	public double getPrize()
 	{
-		return MobHunting.config().specialCreeperPunch;
+		return MobHunting.getConfigManager().specialCreeperPunch;
 	}
 
 	@EventHandler
@@ -44,11 +44,11 @@ public class CreeperBoxing implements Achievement, Listener
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialCreeperPunchCmd;
+		return MobHunting.getConfigManager().specialCreeperPunchCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialCreeperPunchCmdDesc;
+		return MobHunting.getConfigManager().specialCreeperPunchCmdDesc;
 	}
 }

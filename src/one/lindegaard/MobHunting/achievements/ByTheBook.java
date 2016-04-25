@@ -27,7 +27,7 @@ public class ByTheBook implements Achievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialByTheBook;
+		return MobHunting.getConfigManager().specialByTheBook;
 	}
 
 	@EventHandler
@@ -40,11 +40,11 @@ public class ByTheBook implements Achievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialByTheBookCmd;
+		return MobHunting.getConfigManager().specialByTheBookCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialByTheBookCmdDesc;
+		return MobHunting.getConfigManager().specialByTheBookCmdDesc;
 	}
 }

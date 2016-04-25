@@ -31,7 +31,7 @@ public class Creepercide implements Achievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialCreepercide;
+		return MobHunting.getConfigManager().specialCreepercide;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -70,11 +70,11 @@ public class Creepercide implements Achievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialCreepercideCmd;
+		return MobHunting.getConfigManager().specialCreepercideCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialCreepercideCmdDesc;
+		return MobHunting.getConfigManager().specialCreepercideCmdDesc;
 	}
 }

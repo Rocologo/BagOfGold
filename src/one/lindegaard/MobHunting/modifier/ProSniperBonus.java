@@ -22,7 +22,7 @@ public class ProSniperBonus implements IModifier {
 	public double getMultiplier(LivingEntity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return MobHunting.config().bonusFarShot;
+		return MobHunting.getConfigManager().bonusFarShot;
 	}
 
 	@Override

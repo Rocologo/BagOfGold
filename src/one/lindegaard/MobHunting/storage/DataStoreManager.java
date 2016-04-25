@@ -40,7 +40,7 @@ public class DataStoreManager {
 		mStore = store;
 
 		mTaskThread = new TaskThread();
-		mStoreThread = new StoreThread(MobHunting.config().savePeriod);
+		mStoreThread = new StoreThread(MobHunting.getConfigManager().savePeriod);
 	}
 
 	public void recordKill(OfflinePlayer player, ExtendedMobType type, boolean bonusMob) {
@@ -273,7 +273,7 @@ public class DataStoreManager {
 	 * @param learning_mode
 	 * @param muted
 	 */
-	public void createPlayerData(OfflinePlayer player, boolean learning_mode, boolean muted) {
+	public void createPlayerSettings(OfflinePlayer player, boolean learning_mode, boolean muted) {
 		synchronized (mWaiting) {
 			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
 		}
@@ -290,8 +290,8 @@ public class DataStoreManager {
 			return mStore.getPlayerSettings(player);
 		} catch (UserNotFoundException e) {
 			MobHunting.debug("Saving Player Settings for %s to database.", player);
-			createPlayerData(player, MobHunting.config().learningMode, false);
-			return new PlayerSettings(player, MobHunting.config().learningMode, false);
+			createPlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
+			return new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 			return null;

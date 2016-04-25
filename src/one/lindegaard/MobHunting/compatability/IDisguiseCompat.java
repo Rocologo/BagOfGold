@@ -57,11 +57,11 @@ public class IDisguiseCompat implements Listener {
 	}
 
 	public static boolean isDisabledInConfig() {
-		return MobHunting.config().disableIntegrationIDisguise;
+		return MobHunting.getConfigManager().disableIntegrationIDisguise;
 	}
 
 	public static boolean isEnabledInConfig() {
-		return !MobHunting.config().disableIntegrationIDisguise;
+		return !MobHunting.getConfigManager().disableIntegrationIDisguise;
 	}
 
 	public static boolean isDisguised(Entity entity) {

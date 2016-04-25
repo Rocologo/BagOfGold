@@ -1,16 +1,9 @@
 package one.lindegaard.MobHunting;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -74,8 +67,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -88,8 +79,6 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -97,10 +86,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-import org.slf4j.Logger;
-import org.spongepowered.api.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -112,35 +97,28 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private final static String pluginName = "mobhunting";
 	// private String pluginVersion = "";
 
-	private Economy mEconomy;
+	private static Economy mEconomy;
 	private static MobHunting instance;
 
 	private MobHuntingManager mMobHuntingManager;
-
-	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
-	private Config mConfig;
-
-	private AchievementManager mAchievements = new AchievementManager();
-
-	private Set<IModifier> mModifiers = new HashSet<IModifier>();
-
-	private ArrayList<Area> mKnownGrindingSpots = new ArrayList<Area>();
-	private HashMap<UUID, LinkedList<Area>> mWhitelistedAreas = new HashMap<UUID, LinkedList<Area>>();
-
-	private ParticleManager mParticles = new ParticleManager();
-	private Random mRand = new Random();
+	private AreaManager mAreaManager;
+	private LeaderboardManager mLeaderboardManager;
+	private AchievementManager mAchievementManager;
+	private ParticleManager mParticleManager = new ParticleManager();
+	private MetricsManager mMetricsManager;
 
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
+	private static ConfigManager mConfig;
 	private HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
 
-	private LeaderboardManager mLeaderboards;
+	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
+
+	private Set<IModifier> mModifiers = new HashSet<IModifier>();
+
+	private Random mRand = new Random();
 
 	private boolean mInitialized = false;
-
-	// Metrics
-	private Metrics metrics;
-	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, leaderboardsGraph, masterMobHunterGraphs;
 
 	@Override
 	public void onLoad() {
@@ -152,12 +130,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		mMobHuntingManager = new MobHuntingManager(this);
 
-		// pluginVersion = instance.getDescription().getVersion();
 		UpdateHelper.setCurrentJarFile(instance.getFile().getName());
 
 		Messages.exportDefaultLanguages();
 
-		mConfig = new Config(new File(getDataFolder(), "config.yml"));
+		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
 
 		if (mConfig.loadConfig())
 			mConfig.saveConfig();
@@ -172,11 +149,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-
+		
 		mEconomy = economyProvider.getProvider();
 
-		if (!loadWhitelist())
-			throw new RuntimeException();
+		mAreaManager = new AreaManager(this);
 
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
 			mStore = new MySQLDataStore();
@@ -198,7 +174,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		mStoreManager = new DataStoreManager(mStore);
-
+		
 		// Handle compatability stuff
 		registerPlugin(EssentialsCompat.class, "Essentials");
 		registerPlugin(WorldEditCompat.class, "WorldEdit");
@@ -245,26 +221,27 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// BountyManager.initialize(this);
 		// }
 
-		registerAchievements();
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
-		getServer().getPluginManager().registerEvents(new MasterMobhunterSign(this), this);
-
-		if (mAchievements.upgradeAchievements())
+		
+		mAchievementManager = new AchievementManager();
+				
+		if (mAchievementManager.upgradeAchievements())
 			mStoreManager.waitForUpdates();
 
 		for (Player player : mMobHuntingManager.getOnlinePlayers())
-			mAchievements.load(player);
+			mAchievementManager.load(player);
 
-		mLeaderboards = new LeaderboardManager();
-		mLeaderboards.initialize();
+		mLeaderboardManager = new LeaderboardManager(this);
+		
+		mMetricsManager = new MetricsManager();
+		mMetricsManager.startMetrics();
 
+		UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
+		
 		mInitialized = true;
 
-		startMetrics();
-
-		UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), config().updateCheck, false);
 	}
 
 	private void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
@@ -283,11 +260,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!mInitialized)
 			return;
 
-		mLeaderboards.shutdown();
+		mLeaderboardManager.shutdown();
+		mAreaManager.shutdown();
 		// TODO: enable
 		// BountyManager.shutdown();
 
-		mAchievements = new AchievementManager();
 		mModifiers.clear();
 
 		try {
@@ -297,33 +274,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 		CitizensCompat.shutdown();
-	}
-
-	private void registerAchievements() {
-		mAchievements.registerAchievement(new AxeMurderer());
-		mAchievements.registerAchievement(new CreeperBoxing());
-		mAchievements.registerAchievement(new Electrifying());
-		mAchievements.registerAchievement(new RecordHungry());
-		mAchievements.registerAchievement(new InFighting());
-		mAchievements.registerAchievement(new ByTheBook());
-		mAchievements.registerAchievement(new Creepercide());
-		mAchievements.registerAchievement(new TheHuntBegins());
-		mAchievements.registerAchievement(new ItsMagic());
-		mAchievements.registerAchievement(new FancyPants());
-		mAchievements.registerAchievement(new MasterSniper());
-		mAchievements.registerAchievement(new WolfKillAchievement());
-
-		for (ExtendedMobType type : ExtendedMobType.values()) {
-			mAchievements.registerAchievement(new BasicHuntAchievement(type));
-			mAchievements.registerAchievement(new SecondHuntAchievement(type));
-			mAchievements.registerAchievement(new ThirdHuntAchievement(type));
-			mAchievements.registerAchievement(new FourthHuntAchievement(type));
-			mAchievements.registerAchievement(new FifthHuntAchievement(type));
-			mAchievements.registerAchievement(new SixthHuntAchievement(type));
-			mAchievements.registerAchievement(new SeventhHuntAchievement(type));
-		}
-
-		mAchievements.initialize();
 	}
 
 	private void registerModifiers() {
@@ -351,58 +301,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	void registerKnownGrindingSpot(Area newArea) {
-		for (Area area : mKnownGrindingSpots) {
-			if (newArea.center.getWorld().equals(area.center.getWorld())) {
-				double dist = newArea.center.distance(area.center);
-
-				double remaining = dist;
-				remaining -= area.range;
-				remaining -= newArea.range;
-
-				if (remaining < 0) {
-					if (dist > area.range)
-						area.range = dist;
-
-					area.count += newArea.count;
-
-					return;
-				}
-			}
-		}
-
-		mKnownGrindingSpots.add(newArea);
-	}
-
-	public Area getGrindingArea(Location location) {
-		for (Area area : mKnownGrindingSpots) {
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
-					return area;
-			}
-		}
-
-		return null;
-	}
-
-	public void clearGrindingArea(Location location) {
-		Iterator<Area> it = mKnownGrindingSpots.iterator();
-		while (it.hasNext()) {
-			Area area = it.next();
-
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
-					it.remove();
-			}
-		}
-	}
-
 	public static Economy getEconomy() {
-		return instance.mEconomy;
+		return mEconomy;
 	}
 
-	public static Config config() {
-		return instance.mConfig;
+	public static ConfigManager getConfigManager() {
+		return mConfig;
 	}
 
 	public void registerModifier(IModifier modifier) {
@@ -411,7 +315,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public static boolean isHuntEnabledInWorld(World world) {
 		if (world != null)
-			for (String worldName : config().disabledInWorlds) {
+			for (String worldName : mConfig.disabledInWorlds) {
 				if (world.getName().equalsIgnoreCase(worldName))
 					return false;
 			}
@@ -419,168 +323,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return true;
 	}
 
-	private boolean saveWhitelist() {
-		YamlConfiguration whitelist = new YamlConfiguration();
-		File file = new File(getDataFolder(), "whitelist.yml");
-
-		for (Entry<UUID, LinkedList<Area>> entry : mWhitelistedAreas.entrySet()) {
-			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-			for (Area area : entry.getValue()) {
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("Center", Misc.toMap(area.center));
-				map.put("Radius", area.range);
-				list.add(map);
-			}
-
-			whitelist.set(entry.getKey().toString(), list);
-		}
-
-		try {
-			whitelist.save(file);
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private boolean loadWhitelist() {
-		YamlConfiguration whitelist = new YamlConfiguration();
-		File file = new File(getDataFolder(), "whitelist.yml");
-
-		if (!file.exists())
-			return true;
-
-		try {
-			whitelist.load(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		mWhitelistedAreas.clear();
-
-		for (String worldId : whitelist.getKeys(false)) {
-			UUID world = UUID.fromString(worldId);
-			List<Map<String, Object>> list = (List<Map<String, Object>>) whitelist.getList(worldId);
-			LinkedList<Area> areas = new LinkedList<Area>();
-
-			if (list == null)
-				continue;
-
-			for (Map<String, Object> map : list) {
-				Area area = new Area();
-				area.center = Misc.fromMap((Map<String, Object>) map.get("Center"));
-				area.range = (Double) map.get("Radius");
-				areas.add(area);
-			}
-
-			mWhitelistedAreas.put(world, areas);
-		}
-
-		return true;
-	}
-
-	public static boolean isWhitelisted(Location location) {
-		LinkedList<Area> areas = instance.mWhitelistedAreas.get(location.getWorld().getUID());
-
-		if (areas == null)
-			return false;
-
-		for (Area area : areas) {
-			if (area.center.distance(location) < area.range)
-				return true;
-		}
-
-		return false;
-	}
-
-	public void whitelistArea(Area newArea) {
-		LinkedList<Area> areas = mWhitelistedAreas.get(newArea.center.getWorld().getUID());
-
-		if (areas == null) {
-			areas = new LinkedList<Area>();
-			mWhitelistedAreas.put(newArea.center.getWorld().getUID(), areas);
-		}
-
-		for (Area area : areas) {
-			if (newArea.center.getWorld().equals(area.center.getWorld())) {
-				double dist = newArea.center.distance(area.center);
-
-				double remaining = dist;
-				remaining -= area.range;
-				remaining -= newArea.range;
-
-				if (remaining < 0) {
-					if (dist > area.range)
-						area.range = dist;
-
-					area.count += newArea.count;
-
-					return;
-				}
-			}
-		}
-
-		areas.add(newArea);
-
-		saveWhitelist();
-	}
-
-	public void unWhitelistArea(Location location) {
-		LinkedList<Area> areas = mWhitelistedAreas.get(location.getWorld().getUID());
-
-		if (areas == null)
-			return;
-
-		Iterator<Area> it = areas.iterator();
-		while (it.hasNext()) {
-			Area area = it.next();
-
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
-					it.remove();
-			}
-		}
-
-		if (areas.isEmpty())
-			mWhitelistedAreas.remove(location.getWorld().getUID());
-
-		saveWhitelist();
-	}
-
 	public static void debug(String text, Object... args) {
-		if (config().killDebug)
+		if (mConfig.killDebug)
 			instance.getLogger().info("[Debug] " + String.format(text, args));
 	}
 
 	public static void learn(Player player, String text, Object... args) {
 		if (player instanceof Player && !CitizensCompat.isNPC(player)) {
-			if (instance.getPlayerData(player.getUniqueId()).isLearningMode())
+			if (instance.getPlayerSettings(player).isLearningMode())
 				player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
 						+ String.format(text, args));
-		}
-	}
-
-	@EventHandler
-	private void onWorldLoad(WorldLoadEvent event) {
-		List<Area> areas = mWhitelistedAreas.get(event.getWorld().getUID());
-		if (areas != null) {
-			for (Area area : areas)
-				area.center.setWorld(event.getWorld());
-		}
-	}
-
-	@EventHandler
-	private void onWorldUnLoad(WorldUnloadEvent event) {
-		List<Area> areas = mWhitelistedAreas.get(event.getWorld().getUID());
-		if (areas != null) {
-			for (Area area : areas)
-				area.center.setWorld(null);
 		}
 	}
 
@@ -996,7 +748,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (DisguisesHelper.isDisguisedAsAgresiveMob(killed)) {
 					info.mobCoverBlown = true;
 				}
-				if (config().removeDisguiseWhenAttacked) {
+				if (mConfig.removeDisguiseWhenAttacked) {
 					DisguisesHelper.undisguiseEntity(killed);
 					if (killed instanceof Player && !killed_muted)
 						killed.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
@@ -1016,20 +768,20 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Record kills that are still within a small area
 		Location loc = killed.getLocation();
 
-		Area detectedGrindingArea = getGrindingArea(loc);
+		Area detectedGrindingArea = AreaManager.getGrindingArea(loc);
 
 		if (detectedGrindingArea == null)
 			detectedGrindingArea = data.getGrindingArea(loc);
 
 		// Slimes are except from grinding due to their splitting nature
 		if (!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable
-				&& !killed.hasMetadata("MH:reinforcement") && !isWhitelisted(killed.getLocation())) {
+				&& !killed.hasMetadata("MH:reinforcement") && !AreaManager.isWhitelisted(killed.getLocation())) {
 			if (detectedGrindingArea != null) {
 				data.lastKillAreaCenter = null;
 				data.setDampenedKills(detectedGrindingArea.count++);
 
 				if (data.getDampenedKills() == 20)
-					registerKnownGrindingSpot(detectedGrindingArea);
+					mAreaManager.registerKnownGrindingSpot(detectedGrindingArea);
 			} else {
 				if (data.lastKillAreaCenter != null) {
 					if (loc.getWorld().equals(data.lastKillAreaCenter.getWorld())) {
@@ -1254,8 +1006,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (learning_mode)
 			debug("%s is in LearningMode()", player.getName());
 
-		addPlayerData(new PlayerSettings(player, learning_mode, muted));
-		mStoreManager.createPlayerData(player, learning_mode, muted);
+		addPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
+		mStoreManager.createPlayerSettings(player, learning_mode, muted);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -1279,7 +1031,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 
 		if (mRand.nextDouble() * 100 < mConfig.bonusMobChance) {
-			mParticles.attachEffect(event.getEntity(), Effect.MOBSPAWNER_FLAMES);
+			mParticleManager.attachEffect(event.getEntity(), Effect.MOBSPAWNER_FLAMES);
 			if (mRand.nextBoolean())
 				event.getEntity()
 						.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 3));
@@ -1365,153 +1117,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	private void startMetrics() {
-		try {
-			metrics = new Metrics(this);
-			automaticUpdatesGraph = metrics.createGraph("# of installations with automatic update");
-			automaticUpdatesGraph.addPlotter(new Metrics.Plotter("Amount") {
-				@Override
-				public int getValue() {
-					return config().autoupdate ? 1 : 0;
-				}
-			});
-			metrics.addGraph(automaticUpdatesGraph);
-
-			databaseGraph = metrics.createGraph("Database used for MobHunting");
-			databaseGraph.addPlotter(new Metrics.Plotter("MySQL") {
-				@Override
-				public int getValue() {
-					return mConfig.databaseType.equalsIgnoreCase("MySQL") ? 1 : 0;
-				}
-			});
-			databaseGraph.addPlotter(new Metrics.Plotter("SQLite") {
-				@Override
-				public int getValue() {
-					return mConfig.databaseType.equalsIgnoreCase("SQLite") ? 1 : 0;
-				}
-			});
-			metrics.addGraph(databaseGraph);
-
-			integrationsGraph = metrics.createGraph("MobHunting integrations");
-			integrationsGraph.addPlotter(new Metrics.Plotter("Citizens") {
-				@Override
-				public int getValue() {
-					return CitizensCompat.isCitizensSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("Essentials") {
-				@Override
-				public int getValue() {
-					return EssentialsCompat.isSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("MyPet") {
-				@Override
-				public int getValue() {
-					return MyPetCompat.isSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("MythicMobs") {
-				@Override
-				public int getValue() {
-					return MythicMobsCompat.isSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("DisguisesCraft") {
-				@Override
-				public int getValue() {
-					try {
-						@SuppressWarnings({ "rawtypes", "unused" })
-						// Class cls = Class
-						// .forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
-						Class cls = Class.forName("pgDev.bukkit.DisguiseCraft");
-						return DisguiseCraftCompat.isSupported() ? 1 : 0;
-					} catch (ClassNotFoundException e) {
-						// DisguiseCraft is not present.
-						return 0;
-					}
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("iDisguises") {
-				@Override
-				public int getValue() {
-					try {
-						@SuppressWarnings({ "rawtypes", "unused" })
-						Class cls = Class.forName("de.robingrether.idisguise");
-						return IDisguiseCompat.isSupported() ? 1 : 0;
-					} catch (ClassNotFoundException e) {
-						return 0;
-					}
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("LibsDisguises") {
-				@Override
-				public int getValue() {
-					try {
-						@SuppressWarnings({ "rawtypes", "unused" })
-						Class cls = Class.forName("de.robingrether.idisguise");
-						return LibsDisguisesCompat.isSupported() ? 1 : 0;
-					} catch (ClassNotFoundException e) {
-						return 0;
-					}
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("MobArena") {
-				@Override
-				public int getValue() {
-					return MobArenaCompat.isSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("PvpArena") {
-				@Override
-				public int getValue() {
-					return PVPArenaCompat.isSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("WorldGuard") {
-				@Override
-				public int getValue() {
-					try {
-						@SuppressWarnings({ "rawtypes", "unused" })
-						Class cls = Class.forName("com.sk89q.worldguard");
-						return WorldGuardCompat.isSupported() ? 1 : 0;
-					} catch (ClassNotFoundException e) {
-						return 0;
-					}
-
-				}
-			});
-			metrics.addGraph(integrationsGraph);
-
-			leaderboardsGraph = metrics.createGraph("# of leaderboards");
-			leaderboardsGraph.addPlotter(new Metrics.Plotter("Amount") {
-				@Override
-				public int getValue() {
-					debug("Number of Leaderboards reported=%s", mLeaderboards.getAllLegacyBoards().size());
-					return mLeaderboards.getAllLegacyBoards().size();
-				}
-			});
-			metrics.addGraph(leaderboardsGraph);
-
-			masterMobHunterGraphs = metrics.createGraph("# of MasterMobhunters");
-			masterMobHunterGraphs.addPlotter(new Metrics.Plotter("Amount") {
-				@Override
-				public int getValue() {
-					debug("Number of MasterMobHunters created=%s", CitizensCompat.getManager().getAll().size());
-					return CitizensCompat.getManager().getAll().size();
-				}
-			});
-			metrics.addGraph(masterMobHunterGraphs);
-
-			metrics.enable();
-			metrics.start();
-			debug("Metrics started");
-		} catch (IOException e) {
-			debug("Failed to start Metrics!");
-		}
-
-	}
-
 	/**
 	 * Returns the MobHunting object
 	 *
@@ -1546,7 +1151,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 * @return
 	 */
 	public AchievementManager getAchievements() {
-		return mAchievements;
+		return mAchievementManager;
 	}
 
 	/**
@@ -1564,35 +1169,26 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 * @return
 	 */
 	public LeaderboardManager getLeaderboardManager() {
-		return mLeaderboards;
+		return mLeaderboardManager;
 	}
 
 	/**
-	 * Get playerData from memory
+	 * Get playerSettings from memory
 	 * 
-	 * @param uuid
-	 * @return
+	 * @param player
+	 * @return PlayerSettings
 	 */
-	public PlayerSettings getPlayerData(UUID uuid) {
-		return mPlayerSettings.get(uuid);
+	public PlayerSettings getPlayerSettings(Player player) {
+		return mPlayerSettings.get(player.getUniqueId());
 	}
 
 	/**
-	 * Store playerData in memory
+	 * Store playerSettings in memory
 	 * 
-	 * @param playerData
+	 * @param playerSettings
 	 */
-	public void addPlayerData(PlayerSettings playerData) {
-		mPlayerSettings.put(playerData.getPlayer().getUniqueId(), playerData);
-	}
-
-	/**
-	 * Get playerData for all online players
-	 * 
-	 * @return
-	 */
-	public HashMap<UUID, PlayerSettings> getPlayerData() {
-		return mPlayerSettings;
+	public void addPlayerSettings(Player player, PlayerSettings playerSettings) {
+		mPlayerSettings.put(player.getUniqueId(), playerSettings);
 	}
 
 	// ************************************************************************************

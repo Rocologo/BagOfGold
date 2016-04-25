@@ -23,7 +23,7 @@ public class ShoveBonus implements IModifier
 	@Override
 	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause)
 	{
-		return MobHunting.config().bonusSendFalling;
+		return MobHunting.getConfigManager().bonusSendFalling;
 	}
 
 	@Override

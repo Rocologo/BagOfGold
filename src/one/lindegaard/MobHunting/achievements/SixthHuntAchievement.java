@@ -32,7 +32,7 @@ public class SixthHuntAchievement implements ProgressAchievement {
 	@Override
 	public double getPrize()
 	{
-		return MobHunting.config().specialHunter6;
+		return MobHunting.getConfigManager().specialHunter6;
 	}
 
 	@Override
@@ -46,10 +46,10 @@ public class SixthHuntAchievement implements ProgressAchievement {
 	
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialHunter6Cmd;
+		return MobHunting.getConfigManager().specialHunter6Cmd;
 	}
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialHunter6CmdDesc;
+		return MobHunting.getConfigManager().specialHunter6CmdDesc;
 	}
 }

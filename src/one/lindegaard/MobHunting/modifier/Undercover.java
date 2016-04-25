@@ -21,7 +21,7 @@ public class Undercover implements IModifier {
 	public double getMultiplier(LivingEntity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return MobHunting.config().undercoverMultiplier;
+		return MobHunting.getConfigManager().undercoverMultiplier;
 	}
 
 	@Override

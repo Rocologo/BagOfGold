@@ -130,7 +130,7 @@ public class BountyCommand implements ICommand {
 						bountyOwner);
 
 				// TODO: Pay some money back
-				int pct = instance.config().bountyReturnPct;
+				int pct = MobHunting.getConfigManager().bountyReturnPct;
 				// not implemented yet.
 
 				return true;

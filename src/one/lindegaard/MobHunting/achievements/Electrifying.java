@@ -27,7 +27,7 @@ public class Electrifying implements Achievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialCharged;
+		return MobHunting.getConfigManager().specialCharged;
 	}
 
 	@EventHandler
@@ -38,11 +38,11 @@ public class Electrifying implements Achievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialChargedCmd;
+		return MobHunting.getConfigManager().specialChargedCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialChargedCmdDesc;
+		return MobHunting.getConfigManager().specialChargedCmdDesc;
 	}
 }

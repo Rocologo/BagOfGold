@@ -23,7 +23,7 @@ public class RankBonus implements IModifier {
 	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (!killer.isOp()) {
-			Iterator<Entry<String, String>> ranks = MobHunting.config().rankMultiplier.entrySet().iterator();
+			Iterator<Entry<String, String>> ranks = MobHunting.getConfigManager().rankMultiplier.entrySet().iterator();
 			double mul = 0;
 			while (ranks.hasNext()) {
 				Entry<String, String> rank = ranks.next();
@@ -35,8 +35,8 @@ public class RankBonus implements IModifier {
 				}
 			}
 			return (mul == 0) ? 1 : mul;
-		} else if (MobHunting.config().rankMultiplier.containsKey("mobhunting.multiplier.op"))
-			return Double.valueOf(MobHunting.config().rankMultiplier.get("mobhunting.multiplier.op"));
+		} else if (MobHunting.getConfigManager().rankMultiplier.containsKey("mobhunting.multiplier.op"))
+			return Double.valueOf(MobHunting.getConfigManager().rankMultiplier.get("mobhunting.multiplier.op"));
 		return 1;
 	}
 
@@ -44,7 +44,7 @@ public class RankBonus implements IModifier {
 	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (!killer.isOp()) {
-			Iterator<Entry<String, String>> ranks = MobHunting.config().rankMultiplier.entrySet().iterator();
+			Iterator<Entry<String, String>> ranks = MobHunting.getConfigManager().rankMultiplier.entrySet().iterator();
 			boolean hasRank = false;
 			while (ranks.hasNext()) {
 				Entry<String, String> rank = ranks.next();
@@ -57,9 +57,9 @@ public class RankBonus implements IModifier {
 				}
 			}
 			return hasRank;
-		} else if (MobHunting.config().rankMultiplier.containsKey("mobhunting.multiplier.op")) {
+		} else if (MobHunting.getConfigManager().rankMultiplier.containsKey("mobhunting.multiplier.op")) {
 			MobHunting.debug("RankMultiplier Key=mobhunting.multiplier.op Value=%s Player is OP",
-					MobHunting.config().rankMultiplier.get("mobhunting.multiplier.op"));
+					MobHunting.getConfigManager().rankMultiplier.get("mobhunting.multiplier.op"));
 			return true;
 		}
 		MobHunting.debug("%s has no Rank Multiplier", killer.getName());

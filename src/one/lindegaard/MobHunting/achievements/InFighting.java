@@ -32,7 +32,7 @@ public class InFighting implements Achievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.config().specialInfighting;
+		return MobHunting.getConfigManager().specialInfighting;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -70,11 +70,11 @@ public class InFighting implements Achievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.config().specialInfightingCmd;
+		return MobHunting.getConfigManager().specialInfightingCmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.config().specialInfightingCmdDesc;
+		return MobHunting.getConfigManager().specialInfightingCmdDesc;
 	}
 }

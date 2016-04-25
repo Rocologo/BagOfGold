@@ -52,162 +52,123 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.metadata.MetadataValue;
 
-public class Config extends AutoConfig {
-	public Config(File file) {
-		super(file);
+public class ConfigManager extends AutoConfig {
+	private static MobHunting instance;
 
-		setCategoryComment(
-				"mobs",
-				"########################################################################"
-						+ "\nRewards for killing mobs."
-						+ "\n########################################################################"
-						+ "\nHere is where you set the base prize in $ for killing a mob of each type"
-						+ "\nYou can either set a decimal number ex 1.23 or a range 1.23:2.23"
-						+ "\nFor each kill you can run a console command to give the player a reward."
-						+ "\nYou can use the following variables:"
-						+ "\n{killer},{killed},{player},{killed_player},{prize},{world},"
-						+ "\n{killerpos},{killedpos}. Killerpos and Killedpos will have the "
-						+ "\nformat <x> <y> <z>. Which could be used to /summon items. "
-						+ "\nAn example could be /summon apple {killedpos} 2. to summon two apples where"
-						+ "\nwhere the mob was killed or /summon apple {killerpos} 1. to summon an"
-						+ "\nan apple where the player is."
-						+ "\nAnother example could be to give the player permission to fly"
-						+ "\nfor 1 hour or use give command to the player items."
-						+ "\nYou can also specify the message send to the player."
-						+ "\nYou can run many console commands on each line, each command"
-						+ "\nmust be separated by |"
-						+ "\nThe player will have the cmd run in {mob-cmd-run-frequency} out of"
-						+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
-						+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
-						+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
-		setCategoryComment(
-				"boss",
+	public ConfigManager(File file) {
+		super(file);
+		instance = MobHunting.getInstance();
+
+		setCategoryComment("mobs", "########################################################################"
+				+ "\nRewards for killing mobs."
+				+ "\n########################################################################"
+				+ "\nHere is where you set the base prize in $ for killing a mob of each type"
+				+ "\nYou can either set a decimal number ex 1.23 or a range 1.23:2.23"
+				+ "\nFor each kill you can run a console command to give the player a reward."
+				+ "\nYou can use the following variables:"
+				+ "\n{killer},{killed},{player},{killed_player},{prize},{world},"
+				+ "\n{killerpos},{killedpos}. Killerpos and Killedpos will have the "
+				+ "\nformat <x> <y> <z>. Which could be used to /summon items. "
+				+ "\nAn example could be /summon apple {killedpos} 2. to summon two apples where"
+				+ "\nwhere the mob was killed or /summon apple {killerpos} 1. to summon an"
+				+ "\nan apple where the player is." + "\nAnother example could be to give the player permission to fly"
+				+ "\nfor 1 hour or use give command to the player items."
+				+ "\nYou can also specify the message send to the player."
+				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
+				+ "\nThe player will have the cmd run in {mob-cmd-run-frequency} out of"
+				+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
+				+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
+				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
+		setCategoryComment("boss",
 				"########################################################################"
 						+ "\nRewards for killing bosses"
 						+ "\n########################################################################"
 						+ "\nHere is where you set the base prize in $ for killing the bosses");
-		setCategoryComment(
-				"passive",
+		setCategoryComment("passive",
 				"########################################################################"
 						+ "\nRewards for killing passive mobs"
 						+ "\n########################################################################"
 						+ "\nHere is where you set the base prize in $ for killing passive/friendly mobs."
 						+ "\nBy default the player does not get a reward for killing friendly mobs."
 						+ "\nIf you make the number negative, the reward will be a fine for killing a passive animal.");
-		setCategoryComment(
-				"bonus",
-				"########################################################################"
-						+ "\n Bonus multipliers"
-						+ "\n########################################################################"
-						+ "\nThese are bonus multipliers that can modify the base prize. "
-						+ "\nREMEMBER: These are not in $ but they are a multiplier. "
-						+ "\nSetting to 1 will disable them.");
-		setCategoryComment(
-				"penalty",
-				"########################################################################"
-						+ "\nPenalty multipliers"
-						+ "\n########################################################################"
-						+ "\nThese are penalty multipliers that can modify the base prize. "
-						+ "\nREMEMBER: These are not in $ but they are a multiplier. "
-						+ "\nSetting to 1 will disable them.");
-		setCategoryComment(
-				"special",
-				"########################################################################"
-						+ "\nSpecial / Achievements rewards"
-						+ "\n########################################################################"
-						+ "\nHere is where you set the prize in $ for achieving a special kill. "
-						+ "\nFor each achievment you can run a console command to give the player a reward. "
-						+ "\nYou can use the following variables {player},{world}."
-						+ "\nAn example could be to give the player permission to fly "
-						+ "\nfor 1 hour or use give command to the player items."
-						+ "\nYou can also specify the message send to the player."
-						+ "\nYou can run many console commands on each line, each command"
-						+ "\nmust be separated by |");
-		setCategoryComment(
-				"assists",
+		setCategoryComment("bonus", "########################################################################"
+				+ "\n Bonus multipliers" + "\n########################################################################"
+				+ "\nThese are bonus multipliers that can modify the base prize. "
+				+ "\nREMEMBER: These are not in $ but they are a multiplier. " + "\nSetting to 1 will disable them.");
+		setCategoryComment("penalty", "########################################################################"
+				+ "\nPenalty multipliers" + "\n########################################################################"
+				+ "\nThese are penalty multipliers that can modify the base prize. "
+				+ "\nREMEMBER: These are not in $ but they are a multiplier. " + "\nSetting to 1 will disable them.");
+		setCategoryComment("special", "########################################################################"
+				+ "\nSpecial / Achievements rewards"
+				+ "\n########################################################################"
+				+ "\nHere is where you set the prize in $ for achieving a special kill. "
+				+ "\nFor each achievment you can run a console command to give the player a reward. "
+				+ "\nYou can use the following variables {player},{world}."
+				+ "\nAn example could be to give the player permission to fly "
+				+ "\nfor 1 hour or use give command to the player items."
+				+ "\nYou can also specify the message send to the player."
+				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |");
+		setCategoryComment("assists",
 				"########################################################################"
 						+ "\nRewards for assisting killings"
 						+ "\n########################################################################"
 						+ "\nThey players can get an extra reward if they help each other killing mobs.");
-		setCategoryComment(
-				"killstreak",
+		setCategoryComment("killstreak",
 				"########################################################################"
 						+ "\nReward for kills in a row"
 						+ "\n########################################################################"
 						+ "\nSet the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
-		setCategoryComment(
-				"multiplier",
-				"########################################################################"
-						+ "\nRank multipliers and world difficulty multipliers"
-						+ "\n########################################################################"
-						+ "\nYou can add multipliers for players with different ranks/groups. To do this"
-						+ "\nyou must set give the user/group permissions with a format like this:"
-						+ "\nmobhunting.multiplier.guest"
-						+ "\nmobhunting.multiplier.guardian"
-						+ "\nmobhunting.multiplier.staff"
-						+ "\nmobhunting.multiplier.hasVoted"
-						+ "\nmobhunting.multiplier.donator"
-						+ "\nmobhunting.multiplier.op <---- Notice 'op' is reserved for OP'ed players!"
-						+ "\nOP'ed players will only get the OP multiplier"
-						+ "\nyou can make your own permission nodes. You just need to keep the format"
-						+ "\nmobhunting.multiplier.name 'value' in your permissions file and the "
-						+ "format below in this file.");
+		setCategoryComment("multiplier", "########################################################################"
+				+ "\nRank multipliers and world difficulty multipliers"
+				+ "\n########################################################################"
+				+ "\nYou can add multipliers for players with different ranks/groups. To do this"
+				+ "\nyou must set give the user/group permissions with a format like this:"
+				+ "\nmobhunting.multiplier.guest" + "\nmobhunting.multiplier.guardian" + "\nmobhunting.multiplier.staff"
+				+ "\nmobhunting.multiplier.hasVoted" + "\nmobhunting.multiplier.donator"
+				+ "\nmobhunting.multiplier.op <---- Notice 'op' is reserved for OP'ed players!"
+				+ "\nOP'ed players will only get the OP multiplier"
+				+ "\nyou can make your own permission nodes. You just need to keep the format"
+				+ "\nmobhunting.multiplier.name 'value' in your permissions file and the "
+				+ "format below in this file.");
 
-		setCategoryComment(
-				"pvp",
-				"########################################################################"
-						+ "\nPvp rewards"
-						+ "\n########################################################################"
-						+ "\nPvp configuration. Set pvp-allowed = true if you want give the players a reward when they kill eachother."
-						+ "\nYou can alsp run a console command when this happens to give the player a reward or punish him."
-						+ "\nYou can you the following variables {player},{world},{killed_player}."
-						+ "\nAn example could be to give the player permission to fly "
-						+ "\nfor 1 hour or use give command to the player items."
-						+ "\nYou can also specify the message send to the player."
-						+ "\nYou can run many console commands on each line, each command"
-						+ "\nmust be separated by |");
-		setCategoryComment(
-				"disguises",
-				"########################################################################"
-						+ "\nDisguises rewards"
+		setCategoryComment("pvp", "########################################################################"
+				+ "\nPvp rewards" + "\n########################################################################"
+				+ "\nPvp configuration. Set pvp-allowed = true if you want give the players a reward when they kill eachother."
+				+ "\nYou can alsp run a console command when this happens to give the player a reward or punish him."
+				+ "\nYou can you the following variables {player},{world},{killed_player}."
+				+ "\nAn example could be to give the player permission to fly "
+				+ "\nfor 1 hour or use give command to the player items."
+				+ "\nYou can also specify the message send to the player."
+				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |");
+		setCategoryComment("disguises",
+				"########################################################################" + "\nDisguises rewards"
 						+ "\n########################################################################"
 						+ "\nHere is where can define the actions when a player is under disguise (attacker)"
 						+ "\n or when the attacked (victim)");
 
-		setCategoryComment(
-				"npc",
+		setCategoryComment("npc",
 				"########################################################################"
 						+ "\nNPC / Citizens / MasterMobHunter settings."
 						+ "\n########################################################################");
-		setCategoryComment(
-				"bounties",
-				"########################################################################"
-						+ "\nBounty settings"
+		setCategoryComment("bounties",
+				"########################################################################" + "\nBounty settings"
 						+ "\n########################################################################"
 						+ "\nHere you can chnage the behavior of the Bounty Command or you can disable"
 						+ "\nthe command completely.");
-		setCategoryComment(
-				"plugins",
+		setCategoryComment("plugins",
 				"########################################################################"
 						+ "\nIntegration to otherplugins."
 						+ "\n########################################################################");
 
-		setCategoryComment(
-				"database",
-				"########################################################################"
-						+ "\nDatabase Settings."
+		setCategoryComment("database",
+				"########################################################################" + "\nDatabase Settings."
 						+ "\n########################################################################");
 
-		setCategoryComment(
-				"updates",
-				"########################################################################"
-						+ "\nUpdate settings"
-						+ "\n########################################################################");
-		setCategoryComment(
-				"general",
-				"########################################################################"
-						+ "\nGeneral Setting."
-						+ "\n########################################################################");
+		setCategoryComment("updates", "########################################################################"
+				+ "\nUpdate settings" + "\n########################################################################");
+		setCategoryComment("general", "########################################################################"
+				+ "\nGeneral Setting." + "\n########################################################################");
 
 	}
 
@@ -804,7 +765,7 @@ public class Config extends AutoConfig {
 	// #####################################################################################
 	// Multiplier by rank / permission
 	// #####################################################################################
-	@ConfigField(name = "rank-multiplier", category = "multiplier",comment="Ranks")
+	@ConfigField(name = "rank-multiplier", category = "multiplier", comment = "Ranks")
 	public HashMap<String, String> rankMultiplier = new HashMap<String, String>();
 	{
 		rankMultiplier.put("mobhunting.multiplier.guest", "0.9");
@@ -817,7 +778,7 @@ public class Config extends AutoConfig {
 	// #####################################################################################
 	// Multiplier pr World Difficulty
 	// #####################################################################################
-	@ConfigField(name = "world-difficulty-multiplier", category = "multiplier", comment="WorldDifficulty")
+	@ConfigField(name = "world-difficulty-multiplier", category = "multiplier", comment = "WorldDifficulty")
 	public HashMap<String, String> difficultyMultiplier = new HashMap<String, String>();
 	{
 		difficultyMultiplier.put("difficulty.multiplier.peacefull", "0.5");
@@ -1000,35 +961,26 @@ public class Config extends AutoConfig {
 		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
 			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
 			MetadataValue value = data.get(0);
-			return getPrice(mob,
-					((MobRewardData) value.value()).getRewardPrize());
+			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return getPrice(
-						mob,
-						CitizensCompat.getMobRewardData()
-								.get(String.valueOf(npc.getId()))
-								.getRewardPrize());
+				return getPrice(mob,
+						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
 				return 0;
 		} else {
 			if (mob instanceof Player) {
 				if (pvpKillPrize.endsWith("%")) {
-					double prize = Math.floor(Double.valueOf(pvpKillPrize
-							.substring(0, pvpKillPrize.length() - 1))
-							* MobHunting.getEconomy().getBalance((Player) mob)
-							/ 100);
+					double prize = Math.floor(Double.valueOf(pvpKillPrize.substring(0, pvpKillPrize.length() - 1))
+							* MobHunting.getEconomy().getBalance((Player) mob) / 100);
 					return round(prize);
 				} else if (pvpKillPrize.contains(":")) {
 					String[] str1 = pvpKillPrize.split(":");
-					double prize2 = (mRand.nextDouble()
-							* (Double.valueOf(str1[1]) - Double
-									.valueOf(str1[0])) + Double
-							.valueOf(str1[0]));
+					double prize2 = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
+							+ Double.valueOf(str1[0]));
 					return round(Double.valueOf(prize2));
 				} else
 					return Double.valueOf(pvpKillPrize);
@@ -1059,10 +1011,9 @@ public class Config extends AutoConfig {
 			else if (mob instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
 				if (((PigZombie) mob).isBaby())
-					return round(getPrice(mob, zombiePigmanPrize)
-							* babyMultiplier);
+				return round(getPrice(mob, zombiePigmanPrize) * babyMultiplier);
 				else
-					return getPrice(mob, zombiePigmanPrize);
+				return getPrice(mob, zombiePigmanPrize);
 			else if (mob instanceof Zombie)
 				if (((Zombie) mob).isBaby())
 					return round(getPrice(mob, zombiePrize) * babyMultiplier);
@@ -1073,11 +1024,9 @@ public class Config extends AutoConfig {
 			else if (mob instanceof Slime)
 				if (mob instanceof MagmaCube)
 					// MagmaCube is a subclass of Slime
-					return getPrice(mob, magmaCubePrize)
-							* ((MagmaCube) mob).getSize();
+					return getPrice(mob, magmaCubePrize) * ((MagmaCube) mob).getSize();
 				else
-					return getPrice(mob, slimeTinyPrize)
-							* ((Slime) mob).getSize();
+					return getPrice(mob, slimeTinyPrize) * ((Slime) mob).getSize();
 			else if (mob instanceof EnderDragon)
 				return getPrice(mob, enderdragonPrize);
 			else if (mob instanceof Wither)
@@ -1154,21 +1103,13 @@ public class Config extends AutoConfig {
 	private double getPrice(LivingEntity mob, String str) {
 		if (str.contains(":")) {
 			String[] str1 = str.split(":");
-			double prize = (mRand.nextDouble()
-					* (Double.valueOf(str1[1]) - Double.valueOf(str1[0])) + Double
-					.valueOf(str1[0]));
+			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
+					+ Double.valueOf(str1[0]));
 			return round(prize);
 		} else if (str.equals("") || str == null || str.isEmpty()) {
-			MobHunting.getInstance()
-					.getServer()
-					.getConsoleSender()
-					.sendMessage(
-							ChatColor.RED
-									+ "[MobHunting] [WARNING]"
-									+ ChatColor.RESET
-									+ " The prize for killing a "
-									+ mob.getName()
-									+ " is not set in config.yml. Please set the prize to 0 or an positive or negative number.");
+			instance.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting] [WARNING]"
+					+ ChatColor.RESET + " The prize for killing a " + mob.getName()
+					+ " is not set in config.yml. Please set the prize to 0 or an positive or negative number.");
 			return 0;
 		} else
 			return Double.valueOf(str);
@@ -1187,14 +1128,11 @@ public class Config extends AutoConfig {
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
 
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getMobRewardData()
-						.get(String.valueOf(npc.getId()))
-						.getConsoleRunCommand();
+				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getConsoleRunCommand();
 			} else
 				return "";
 		} else {
@@ -1313,14 +1251,11 @@ public class Config extends AutoConfig {
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
 
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getMobRewardData()
-						.get(String.valueOf(npc.getId()))
-						.getRewardDescription();
+				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardDescription();
 			} else
 				return "";
 		} else {
@@ -1434,13 +1369,11 @@ public class Config extends AutoConfig {
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropability();
 
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getMobRewardData()
-						.get(String.valueOf(npc.getId())).getPropability();
+				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getPropability();
 			} else
 				return 100;
 		} else {
@@ -1555,13 +1488,11 @@ public class Config extends AutoConfig {
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropabilityBase();
 
-		} else if (CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentry(mob)) {
-				return CitizensCompat.getMobRewardData()
-						.get(String.valueOf(npc.getId())).getPropabilityBase();
+				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getPropabilityBase();
 			} else
 				return 100;
 		} else {

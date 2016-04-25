@@ -63,7 +63,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement mUpdatePlayerData;
+	protected PreparedStatement mUpdatePlayerSettings;
 
 	/**
 	 * Args: player uuid
@@ -444,13 +444,13 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_PLAYER_SETTINGS);
 			for (PlayerSettings playerData : playerDataSet) {
-				mUpdatePlayerData.setInt(1, playerData.isLearningMode() ? 1 : 0);
-				mUpdatePlayerData.setInt(2, playerData.isMuted() ? 1 : 0);
-				mUpdatePlayerData.setString(3, playerData.getPlayer().getUniqueId().toString());
-				mUpdatePlayerData.addBatch();
+				mUpdatePlayerSettings.setInt(1, playerData.isLearningMode() ? 1 : 0);
+				mUpdatePlayerSettings.setInt(2, playerData.isMuted() ? 1 : 0);
+				mUpdatePlayerSettings.setString(3, playerData.getPlayer().getUniqueId().toString());
+				mUpdatePlayerSettings.addBatch();
 			}
-			mUpdatePlayerData.executeBatch();
-			mUpdatePlayerData.close();
+			mUpdatePlayerSettings.executeBatch();
+			mUpdatePlayerSettings.close();
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
