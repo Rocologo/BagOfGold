@@ -402,7 +402,7 @@ public class AchievementManager implements Listener {
 
 		mStorage.put(player, storage);
 
-		if (!player.hasPermission("mobhunting.achievements.disabled")) {
+		if (!player.hasPermission("mobhunting.achievements.disabled")||player.hasPermission("*")) {
 
 			MobHunting.getInstance().getDataStore().requestAllAchievements(player,
 					new IDataCallback<Set<AchievementStore>>() {
@@ -464,6 +464,5 @@ public class AchievementManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	private void onPlayerJoin(PlayerLoginEvent event) {
 		load(event.getPlayer());
-
 	}
 }

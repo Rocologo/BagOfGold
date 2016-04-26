@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -49,9 +50,9 @@ public class MobHuntingManager {
 	/**
 	 * Gets the online player (for backwards compatibility)
 	 * 
-	 * @return all online players as a Java Collection, if
-	 *         return type of Bukkit.getOnlinePlayers() is Player[] it will be
-	 *         converted to a Collection.
+	 * @return all online players as a Java Collection, if return type of
+	 *         Bukkit.getOnlinePlayers() is Player[] it will be converted to a
+	 *         Collection.
 	 */
 	@SuppressWarnings({ "unchecked" })
 	public Collection<Player> getOnlinePlayers() {
@@ -69,10 +70,9 @@ public class MobHuntingManager {
 			}
 			return newPlayers;
 		} catch (Exception ex) {
-			MobHunting.debug(ex.getMessage().toString());
-			return Collections.emptyList();
+			ex.printStackTrace();
 		}
-
+		return Collections.emptyList();
 	}
 
 	/**
@@ -139,6 +139,22 @@ public class MobHuntingManager {
 		}
 
 		return data;
+	}
+
+	/**
+	 * Check if MobHunting is allowed in world
+	 * 
+	 * @param world
+	 * @return true if MobHunting is allowed.
+	 */
+	public static boolean isHuntEnabledInWorld(World world) {
+		if (world != null)
+			for (String worldName : MobHunting.getConfigManager().disabledInWorlds) {
+				if (world.getName().equalsIgnoreCase(worldName))
+					return false;
+			}
+
+		return true;
 	}
 
 }

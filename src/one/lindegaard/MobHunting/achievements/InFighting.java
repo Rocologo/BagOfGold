@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.MobHuntingManager;
 
 public class InFighting implements Achievement, Listener {
 
@@ -37,7 +38,8 @@ public class InFighting implements Achievement, Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onDeath(EntityDeathEvent event) {
-		if (!(event.getEntity() instanceof Skeleton) || !MobHunting.isHuntEnabledInWorld(event.getEntity().getWorld()))
+		if (!(event.getEntity() instanceof Skeleton)
+				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		Skeleton killed = (Skeleton) event.getEntity();

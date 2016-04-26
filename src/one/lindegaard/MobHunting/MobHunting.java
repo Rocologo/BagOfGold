@@ -149,7 +149,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		
+
 		mEconomy = economyProvider.getProvider();
 
 		mAreaManager = new AreaManager(this);
@@ -174,7 +174,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		mStoreManager = new DataStoreManager(mStore);
-		
+
 		// Handle compatability stuff
 		registerPlugin(EssentialsCompat.class, "Essentials");
 		registerPlugin(WorldEditCompat.class, "WorldEdit");
@@ -224,9 +224,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
-		
+
 		mAchievementManager = new AchievementManager();
-				
+
+		// this is only need when server owner upgrades from very old version of
+		// Mobhunting
 		if (mAchievementManager.upgradeAchievements())
 			mStoreManager.waitForUpdates();
 
@@ -234,13 +236,21 @@ public class MobHunting extends JavaPlugin implements Listener {
 			mAchievementManager.load(player);
 
 		mLeaderboardManager = new LeaderboardManager(this);
-		
+
 		mMetricsManager = new MetricsManager();
 		mMetricsManager.startMetrics();
 
 		UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
-		
+
 		mInitialized = true;
+
+		if (mMobHuntingManager.getOnlinePlayersAmount() > 0)
+			debug("onReload: loading %s players from the database", mMobHuntingManager.getOnlinePlayersAmount());
+		for (Player player : mMobHuntingManager.getOnlinePlayers()) {
+			boolean learning_mode = getDataStore().getPlayerSettings(player).isLearningMode();
+			boolean muted = getDataStore().getPlayerSettings(player).isMuted();
+			addPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
+		}
 
 	}
 
@@ -313,16 +323,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mModifiers.add(modifier);
 	}
 
-	public static boolean isHuntEnabledInWorld(World world) {
-		if (world != null)
-			for (String worldName : mConfig.disabledInWorlds) {
-				if (world.getName().equalsIgnoreCase(worldName))
-					return false;
-			}
-
-		return true;
-	}
-
 	public static void debug(String text, Object... args) {
 		if (mConfig.killDebug)
 			instance.getLogger().info("[Debug] " + String.format(text, args));
@@ -338,7 +338,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerDeath(PlayerDeathEvent event) {
-		if (!isHuntEnabledInWorld(event.getEntity().getWorld()) || !mMobHuntingManager.isHuntEnabled(event.getEntity()))
+		if (!MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
+				|| !mMobHuntingManager.isHuntEnabled(event.getEntity()))
 			return;
 
 		HuntData data = mMobHuntingManager.getHuntData(event.getEntity());
@@ -353,7 +354,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!(event.getEntity() instanceof Player))
 			return;
 
-		if (!isHuntEnabledInWorld(event.getEntity().getWorld())
+		if (!MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
 				|| !mMobHuntingManager.isHuntEnabled((Player) event.getEntity()))
 			return;
 
@@ -369,7 +370,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
 		// TODO: can Skeleton use other weapons than an Arrow?
 		if (!(event.getEntity() instanceof Arrow) || !(event.getEntity().getShooter() instanceof Skeleton)
-				|| !isHuntEnabledInWorld(event.getEntity().getWorld()))
+				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		Skeleton shooter = (Skeleton) event.getEntity().getShooter();
@@ -394,7 +395,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDamage(EntityDamageByEntityEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity) || !isHuntEnabledInWorld(event.getEntity().getWorld()))
+		if (!(event.getEntity() instanceof LivingEntity)
+				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
@@ -529,7 +531,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killer == null)
 			return;
 
-		if (!isHuntEnabledInWorld(killed.getWorld())) {
+		if (!MobHuntingManager.isHuntEnabledInWorld(killed.getWorld())) {
 			if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 				if (killer instanceof Player || MyPetCompat.isMyPet(killer)) {
 					ApplicableRegionSet set = WorldGuardCompat.getWorldGuardPlugin().getRegionManager(killer.getWorld())
@@ -760,8 +762,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 		HuntData data = mMobHuntingManager.getHuntData(killer);
-		if (data == null)
-			debug("DATA WAS NULL!!!!!!!!!!!!!!!!");
+		// if (data == null)
+		// debug("DATA WAS NULL!!!!!!!!!!!!!!!!");
 
 		Misc.handleKillstreak(killer);
 
@@ -1024,7 +1026,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (event.getEntityType() == EntityType.ENDER_DRAGON)
 			return;
 
-		if (!isHuntEnabledInWorld(event.getLocation().getWorld())
+		if (!MobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
 				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0
 						&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
@@ -1048,8 +1050,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(event.getEntity()))
 			return;
 
-		if (!isHuntEnabledInWorld(event.getLocation().getWorld()) || (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
-				&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
+		if (!MobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
+				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
+						&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() != SpawnReason.SPAWNER && event.getSpawnReason() != SpawnReason.SPAWNER_EGG)
@@ -1061,8 +1064,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void reinforcementMobSpawn(CreatureSpawnEvent event) {
-		if (!isHuntEnabledInWorld(event.getLocation().getWorld()) || (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
-				&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
+		if (!MobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
+				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
+						&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.REINFORCEMENTS)

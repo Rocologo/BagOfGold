@@ -128,29 +128,43 @@ public class UpdateHelper {
 	}
 
 	public static boolean downloadAndUpdateJar() {
-		try {
-			if (updateAvailable != UpdateStatus.RESTART_NEEDED)
-				downloadFile(getBukkitUpdate().getVersionLink(), "plugins/MobHunting/update/");
-			File oldFile = new File("plugins/" + getCurrentJarFile());
-			File disabledFile = new File("plugins/" + getCurrentJarFile() + ".old");
-			int count = 0;
-			while (disabledFile.exists() && count++ < 10) {
-				disabledFile = new File("plugins/" + getCurrentJarFile() + ".old" + count);
+		final String OS = System.getProperty("os.name");
+		if (OS.indexOf("Win") >= 0) {
+			try {
+				downloadFile(getBukkitUpdate().getVersionLink(), "plugins/Updater/");
+				File downloadedJar = new File(
+						"plugins/Updater/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+				File newJar = new File("plugins/Updater/MobHunting.jar");
+				downloadedJar.renameTo(newJar);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			if (!disabledFile.exists()) {
-				oldFile.renameTo(disabledFile);
+			return true;
+		} else {
+			try {
+				if (updateAvailable != UpdateStatus.RESTART_NEEDED)
+					downloadFile(getBukkitUpdate().getVersionLink(), "plugins/MobHunting/update/");
+				File currentJar = new File("plugins/" + getCurrentJarFile());
+				File disabledJar = new File("plugins/" + getCurrentJarFile() + ".old");
+				int count = 0;
+				while (disabledJar.exists() && count++ < 100) {
+					disabledJar = new File("plugins/" + getCurrentJarFile() + ".old" + count);
+				}
+				if (!disabledJar.exists()) {
+					currentJar.renameTo(disabledJar);
 
-				File newJarFile = new File(
-						"plugins/MobHunting/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
-				File movedNewJarFile = new File("plugins/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
-				newJarFile.renameTo(movedNewJarFile);
-				updateAvailable = UpdateStatus.RESTART_NEEDED;
-				return true;
+					File downloadedJar = new File(
+							"plugins/MobHunting/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+					File newJar = new File("plugins/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+					downloadedJar.renameTo(newJar);
+					updateAvailable = UpdateStatus.RESTART_NEEDED;
+					return true;
+				}
+			} catch (MalformedInputException malformedInputException) {
+				malformedInputException.printStackTrace();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
 			}
-		} catch (MalformedInputException malformedInputException) {
-			malformedInputException.printStackTrace();
-		} catch (IOException ioException) {
-			ioException.printStackTrace();
 		}
 		return false;
 	}

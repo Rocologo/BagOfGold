@@ -88,6 +88,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	public enum PreparedConnectionType {
 		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, UPDATE_PLAYER_SETTINGS, INSERT_PLAYER_DATA, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_SETTINGS, GET_PLAYER_SETTINGS
 	};
+	//GET_PLAYER_SETTINGS is unused! 
 
 	/**
 	 * Open a connection to the Database and prepare a statement for executing.
@@ -110,14 +111,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			mConnection = setupConnection();
 			mConnection.setAutoCommit(false);
-
 			setupTables(mConnection);
-
 			mGetPlayerStatement = new PreparedStatement[4];
-			openPreparedStatements(mConnection, PreparedConnectionType.GET1PLAYER);
-			openPreparedStatements(mConnection, PreparedConnectionType.GET2PLAYERS);
-			openPreparedStatements(mConnection, PreparedConnectionType.GET5PLAYERS);
-			openPreparedStatements(mConnection, PreparedConnectionType.GET10PLAYERS);
 
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -125,11 +120,23 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	/**
+	 * Open connections for batch processing.
+	 * 
+	 * @throws SQLException
+	 */
+	protected void openPreparedGetPlayerStatements() throws SQLException {
+		openPreparedStatements(mConnection, PreparedConnectionType.GET1PLAYER);
+		openPreparedStatements(mConnection, PreparedConnectionType.GET2PLAYERS);
+		openPreparedStatements(mConnection, PreparedConnectionType.GET5PLAYERS);
+		openPreparedStatements(mConnection, PreparedConnectionType.GET10PLAYERS);
+	}
+	
+	/**
 	 * Close all opened connections for batch processing.
 	 * 
 	 * @throws SQLException
 	 */
-	protected void closePreparedStatements() throws SQLException {
+	protected void closePreparedGetPlayerStatements() throws SQLException {
 		mGetPlayerStatement[0].close();
 		mGetPlayerStatement[1].close();
 		mGetPlayerStatement[2].close();
@@ -156,7 +163,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void shutdown() throws DataStoreException {
 		try {
-			closePreparedStatements();
+			closePreparedGetPlayerStatements();
 			if (mConnection != null) {
 				mConnection.commit();
 				try {
@@ -185,13 +192,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	public PlayerSettings getPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException {
-		openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_SETTINGS);
+		openPreparedGetPlayerStatements();
 		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerStatement[0].executeQuery();
 		if (result.next()) {
 			PlayerSettings ps = new PlayerSettings(player, result.getBoolean("LEARNING_MODE"),
 					result.getBoolean("MUTE_MODE"));
 			result.close();
+			closePreparedGetPlayerStatements();
 			return ps;
 		}
 		throw new UserNotFoundException("User " + player.toString() + " is not present in database");
@@ -207,7 +215,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * @throws SQLException
 	 */
 	protected Map<UUID, Integer> getPlayerIds(Set<OfflinePlayer> players) throws SQLException {
-
+		
 		// make sure all players are in mh_Players.
 		openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_SETTINGS);
 		myAddPlayerStatement.clearBatch();
@@ -226,6 +234,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
 		ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
 
+		openPreparedGetPlayerStatements();
 		while (left > 0) {
 			PreparedStatement statement;
 			int size = 0;
@@ -275,6 +284,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				updatePlayerName(p.getPlayer());
 			}
 		}
+		closePreparedGetPlayerStatements();
 		mConnection.commit();
 		return ids;
 	}
@@ -288,6 +298,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * @throws DataStoreException
 	 */
 	protected int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException {
+		openPreparedGetPlayerStatements();
 		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerStatement[0].executeQuery();
 		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
@@ -307,9 +318,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				OfflinePlayer p = itr.next();
 				updatePlayerName(p.getPlayer());
 			}
-
+			closePreparedGetPlayerStatements();
 			return res;
 		}
+		closePreparedGetPlayerStatements();
 
 		throw new UserNotFoundException("[MobHunting] User " + player.toString() + " is not present in database");
 	}

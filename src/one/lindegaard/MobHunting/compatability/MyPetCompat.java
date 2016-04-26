@@ -12,6 +12,7 @@ import de.Keyle.MyPet.MyPetPlugin;
 import de.Keyle.MyPet.api.entity.MyPetBukkitEntity;
 import de.Keyle.MyPet.api.entity.MyPetType;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.MobHuntingManager;
 
 public class MyPetCompat implements Listener {
 	private static boolean supported = false;
@@ -54,7 +55,7 @@ public class MyPetCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onWolfKillMob(EntityDeathEvent event) {
-		if (!MobHunting.isHuntEnabledInWorld(event.getEntity().getWorld())
+		if (!MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
 				|| !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return;
 
