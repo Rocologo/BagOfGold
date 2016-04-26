@@ -87,6 +87,7 @@ public class AchievementManager implements Listener {
 		registerAchievement(new ItsMagic());
 		registerAchievement(new FancyPants());
 		registerAchievement(new MasterSniper());
+		registerAchievement(new JustInTime());
 		registerAchievement(new WolfKillAchievement());
 
 		for (ExtendedMobType type : ExtendedMobType.values()) {
