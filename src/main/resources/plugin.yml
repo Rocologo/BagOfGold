@@ -28,9 +28,16 @@ permissions:
   mobhunting.update:
     description: Allows a player to update the plugin
     default: op
+    children:
+      mobhunting.cmd: true
   mobhunting.region:
     description: Allows a player to set Worldguard custom flag MobHunting
     default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.achievements.disabled:
+    description: Reject a player to get Achievements. 
+    default: false
   mobhunting.listachievements:
     description: Allows a player to see all their achievements
     default: true
@@ -66,3 +73,35 @@ permissions:
     default: op
     children:
       mobhunting.cmd: true
+  mobhunting.learn:
+    description: Allows you to toggle the learning mode on and off
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.mute:
+    description: Allows you to toggle the muting mode on and off
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.npc:
+    description: Allows you to create and delete Citizen2 NPCs
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.reload:
+    description: Allows you to reload the configuration
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.database:
+    description: Allows you to do database operations.
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.version:
+    description: Allows you to get plugin version.
+    default: true
+    children:
+      mobhunting.cmd: true
+
+
