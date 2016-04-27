@@ -163,7 +163,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void shutdown() throws DataStoreException {
 		try {
-			closePreparedGetPlayerStatements();
+			//closePreparedGetPlayerStatements();
 			if (mConnection != null) {
 				mConnection.commit();
 				try {

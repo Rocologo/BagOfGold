@@ -205,10 +205,18 @@ public class AchievementManager implements Listener {
 				});
 	}
 
+	/**
+	 * Get a Collection of all Achievements
+	 * @return a Collection of achievements.
+	 */
 	public Collection<Achievement> getAllAchievements() {
 		return Collections.unmodifiableCollection(mAchievements.values());
 	}
 
+	/**
+	 * List all Achievements done by the player / command sender
+	 * @param sender
+	 */
 	public void listAllAchievements(CommandSender sender) {
 		Iterator<Achievement> itr = Collections.unmodifiableCollection(mAchievements.values()).iterator();
 		while (itr.hasNext()) {
@@ -216,7 +224,12 @@ public class AchievementManager implements Listener {
 			sender.sendMessage(a.getID() + "---" + a.getName() + "---" + a.getDescription());
 		}
 	}
-
+	
+	/**
+	 * Award the player when he make an Achievement
+	 * @param achievement
+	 * @param player
+	 */
 	public void awardAchievement(String achievement, Player player) {
 		awardAchievement(getAchievement(achievement), player);
 	}
@@ -228,14 +241,20 @@ public class AchievementManager implements Listener {
 	 * @param except
 	 */
 	public void broadcast(String message, Player except) {
-		for (Player player : MobHunting.getInstance().getMobHuntingManager().getOnlinePlayers()) {
+		Iterator<Player> players = MobHunting.getInstance().getMobHuntingManager().getOnlinePlayers().iterator();
+		while (players.hasNext()){
+			Player player = players.next();
 			if (player.equals(except))
 				continue;
-
 			player.sendMessage(message);
 		}
 	}
 
+	/**
+	 * Award the player when he make an Achievement
+	 * @param achievement
+	 * @param player
+	 */
 	public void awardAchievement(Achievement achievement, Player player) {
 		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;

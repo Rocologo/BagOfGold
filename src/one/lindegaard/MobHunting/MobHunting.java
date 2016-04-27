@@ -50,7 +50,6 @@ import one.lindegaard.MobHunting.compatability.WorldGuardCompat;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.modifier.*;
-import one.lindegaard.MobHunting.npc.MasterMobhunterSign;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
 import one.lindegaard.MobHunting.storage.IDataStore;
@@ -216,10 +215,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new DatabaseCommand());
 
 		// TODO: enable
-		// if(!mConfig.disablePlayerBounties){
-		// cmd.registerCommand(new BountyCommand(this));
-		// BountyManager.initialize(this);
-		// }
+		if(!mConfig.disablePlayerBounties){
+		  debug("Enabling Bounty command");
+		  cmd.registerCommand(new BountyCommand(this)); BountyManager.initialize(this);
+		}
 
 		registerModifiers();
 
@@ -273,7 +272,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mLeaderboardManager.shutdown();
 		mAreaManager.shutdown();
 		// TODO: enable
-		// BountyManager.shutdown();
+		BountyManager.shutdown();
 
 		mModifiers.clear();
 
