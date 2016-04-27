@@ -672,6 +672,12 @@ public class ConfigManager extends AutoConfig {
 	public String specialMasterSniperCmd = "give {player} gold_ingot 1";
 	@ConfigField(name = "master-sniper-cmd-desc", category = "special")
 	public String specialMasterSniperCmdDesc = "Enjoy you Gold Ingots";
+	@ConfigField(name = "justintime", category = "special")
+	public double specialJustInTime = 1000;
+	@ConfigField(name = "justintime-cmd", category = "special")
+	public String specialJustInTimeCmd = "give {player} gold_ingot 1";
+	@ConfigField(name = "justintime-cmd-desc", category = "special")
+	public String specialJustInTimeCmdDesc = "Enjoy you Gold Ingots";
 	@ConfigField(name = "fangmaster", category = "special")
 	public double specialFangMaster = 1000;
 	@ConfigField(name = "fangmaster-cmd", category = "special")
