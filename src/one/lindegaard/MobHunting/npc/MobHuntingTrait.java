@@ -22,7 +22,7 @@ public class MobHuntingTrait extends Trait implements Listener {
 
 	public MobHuntingTrait() {
 		super("MasterMobHunter");
-		plugin = MobHunting.getInstance();
+		//plugin = MobHunting.getInstance();
 	}
 
 	// see the 'Persistence API' section
@@ -36,13 +36,13 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// they will be overridden here.
 	// This is called BEFORE onSpawn, npc.getBukkitEntity() will return null.
 	public void load(DataKey key) {
-		//MobHunting.debug("MobHuntingTrait.load(DataKey)");
+		// MobHunting.debug("MobHuntingTrait.load(DataKey)");
 	}
 
 	// Save settings for this NPC (optional). These values will be persisted to
 	// the Citizens saves.yml file
 	public void save(DataKey key) {
-		//MobHunting.debug("MobHuntingTrait.save(DataKey)");
+		// MobHunting.debug("MobHuntingTrait.save(DataKey)");
 	}
 
 	// An example event handler. All traits will be registered automatically as
@@ -65,16 +65,17 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// This would be a good place to load configurable defaults for new NPCs.
 	@Override
 	public void onAttach() {
-		//plugin.getServer().getLogger()
-		//		.info("npc.getName() + " has been assigned as a MasterMobHunter");
-		load(new net.citizensnpcs.api.util.MemoryDataKey());
+		// plugin.getServer().getLogger()
+		// .info("npc.getName() + " has been assigned as a MasterMobHunter");
+		//load(new net.citizensnpcs.api.util.MemoryDataKey());
 	}
 
 	// Run code when the NPC is despawned. This is called before the entity
 	// actually despawns so npc.getBukkitEntity() is still valid.
 	@Override
 	public void onDespawn() {
-		//MobHunting.debug("MobHuntingTrait - NPC %s despawned",this.getNPC().getId());
+		// MobHunting.debug("MobHuntingTrait - NPC %s
+		// despawned",this.getNPC().getId());
 	}
 
 	// Run code when the NPC is spawned. Note that npc.getBukkitEntity() will be
@@ -82,14 +83,16 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// This is called AFTER onAttach and AFTER Load when the server is started.
 	@Override
 	public void onSpawn() {
-		//MobHunting.debug("MobHuntingTrait - NPC %s spawned",this.getNPC().getId());
+		// MobHunting.debug("MobHuntingTrait - NPC %s
+		// spawned",this.getNPC().getId());
 	}
 
 	// run code when the NPC is removed. Use this to tear down any repeating
 	// tasks.
 	@Override
 	public void onRemove() {
-		//MobHunting.debug("MobHuntingTrait - NPC %s removed",this.getNPC().getId());
+		// MobHunting.debug("MobHuntingTrait - NPC %s
+		// removed",this.getNPC().getId());
 	}
 
 }

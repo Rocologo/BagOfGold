@@ -215,9 +215,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new DatabaseCommand());
 
 		// TODO: enable
-		if(!mConfig.disablePlayerBounties){
-		  debug("Enabling Bounty command");
-		  cmd.registerCommand(new BountyCommand(this)); BountyManager.initialize(this);
+		if (!mConfig.disablePlayerBounties) {
+			debug("Enabling Bounty command");
+			cmd.registerCommand(new BountyCommand(this));
+			BountyManager.initialize(this);
 		}
 
 		registerModifiers();
@@ -261,6 +262,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 					.sendMessage(ChatColor.RED + "[MobHunting][ERROR] MobHunting could not register with [" + pluginName
 							+ "] please check if [" + pluginName + "] is compatible with the server ["
 							+ getServer().getBukkitVersion() + "]");
+			if (getConfigManager().killDebug)
+				e.printStackTrace();
 		}
 	}
 

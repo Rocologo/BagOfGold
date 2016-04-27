@@ -89,7 +89,7 @@ public class CitizensCompat implements Listener {
 
 		}
 	}
-
+	
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
@@ -165,6 +165,9 @@ public class CitizensCompat implements Listener {
 	public static void shutdown() {
 		if (supported) {
 			masterMobHunterManager.shutdown();
+			TraitInfo trait = TraitInfo.create(MobHuntingTrait.class).withName(
+					"MasterMobHunter");
+			citizensAPI.getTraitFactory().deregisterTrait(trait);
 		}
 	}
 
