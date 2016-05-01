@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -16,10 +15,8 @@ import one.lindegaard.MobHunting.storage.DataStoreManager;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class LearnCommand implements ICommand, Listener {
-	private MobHunting instance;
 
-	public LearnCommand(Plugin plugin) {
-		this.instance = (MobHunting) plugin;
+	public LearnCommand() {
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -74,7 +71,7 @@ public class LearnCommand implements ICommand, Listener {
 			togglePlayerLearningMode((Player) sender);
 			return true;
 		} else if (args.length == 1) {
-			DataStoreManager ds = MobHunting.getInstance().getDataStore();
+			DataStoreManager ds = MobHunting.getDataStoreManager();
 			Player player = (Player) ds.getPlayerByName(args[0]);
 			if (player != null) {
 				if (sender.hasPermission("mobhunting.learn.other") || sender instanceof ConsoleCommandSender) {
@@ -93,14 +90,14 @@ public class LearnCommand implements ICommand, Listener {
 	}
 
 	private void togglePlayerLearningMode(Player player) {
-		DataStoreManager ds = instance.getDataStore();
-		boolean mm = instance.getPlayerSettings(player).isMuted();
-		if (instance.getPlayerSettings(player).isLearningMode()) {
+		DataStoreManager ds = MobHunting.getDataStoreManager();
+		boolean mm = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
+		if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode()) {
 			ds.updatePlayerSettings(player, false, mm);
-			instance.addPlayerSettings(player, new PlayerSettings(player, false, mm));
+			MobHunting.getPlayerSettingsmanager().putPlayerSettings(player, new PlayerSettings(player, false, mm));
 			player.sendMessage(Messages.getString("mobhunting.commands.learn.disabled", "player", player.getName()));
 		} else {
-			instance.addPlayerSettings(player, new PlayerSettings(player, true, mm));
+			MobHunting.getPlayerSettingsmanager().putPlayerSettings(player, new PlayerSettings(player, true, mm));
 			player.sendMessage(Messages.getString("mobhunting.commands.learn.enabled", "player", player.getName()));
 		}
 	}

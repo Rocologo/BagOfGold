@@ -39,7 +39,7 @@ public class CreeperBoxing implements Achievement, Listener
 	private void onKill(MobHuntKillEvent event)
 	{
 		if(event.getKilledEntity() instanceof Creeper && !event.getDamageInfo().usedWeapon)
-			MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override

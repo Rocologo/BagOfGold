@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -16,10 +15,8 @@ import one.lindegaard.MobHunting.storage.DataStoreManager;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class MuteCommand implements ICommand, Listener {
-	private MobHunting instance;
 
-	public MuteCommand(Plugin plugin) {
-		this.instance = (MobHunting) plugin;
+	public MuteCommand() {
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -43,12 +40,8 @@ public class MuteCommand implements ICommand, Listener {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] {
-				label + " mute" + ChatColor.GREEN + " - to mute/unmute.",
-				label
-						+ " mute playername"
-						+ ChatColor.GREEN
-						+ " - to mute/unmute a the notifications for a specific player." };
+		return new String[] { label + " mute" + ChatColor.GREEN + " - to mute/unmute.", label + " mute playername"
+				+ ChatColor.GREEN + " - to mute/unmute a the notifications for a specific player." };
 	}
 
 	@Override
@@ -67,8 +60,7 @@ public class MuteCommand implements ICommand, Listener {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, String label,
-			String[] args) {
+	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		return null;
 	}
 
@@ -79,21 +71,19 @@ public class MuteCommand implements ICommand, Listener {
 			togglePlayerMuteMode((Player) sender);
 			return true;
 		} else if (args.length == 1) {
-			DataStoreManager ds = MobHunting.getInstance().getDataStore();
+			MobHunting.getInstance();
+			DataStoreManager ds = MobHunting.getDataStoreManager();
 			Player player = (Player) ds.getPlayerByName(args[0]);
 			if (player != null) {
-				if (sender.hasPermission("mobhunting.mute.other")
-						|| sender instanceof ConsoleCommandSender) {
+				if (sender.hasPermission("mobhunting.mute.other") || sender instanceof ConsoleCommandSender) {
 					togglePlayerMuteMode(player);
 				} else {
-					sender.sendMessage(ChatColor.RED
-							+ "You dont have permission " + ChatColor.AQUA
-							+ "'mobhunting.mute.other'");
+					sender.sendMessage(
+							ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'mobhunting.mute.other'");
 				}
 				return true;
 			} else {
-				sender.sendMessage(ChatColor.RED + "Player " + args[0]
-						+ " is not online.");
+				sender.sendMessage(ChatColor.RED + "Player " + args[0] + " is not online.");
 				return false;
 			}
 		}
@@ -101,21 +91,16 @@ public class MuteCommand implements ICommand, Listener {
 	}
 
 	private void togglePlayerMuteMode(Player player) {
-		DataStoreManager ds = instance.getDataStore();
-			boolean lm = instance.getPlayerSettings(player)
-					.isLearningMode();
-			if (instance.getPlayerSettings(player).isMuted()) {
-				ds.updatePlayerSettings(player, lm, false);
-				instance.addPlayerSettings(player, new PlayerSettings(player, lm, false));
-				player.sendMessage(Messages.getString(
-						"mobhunting.commands.mute.unmuted", "player",
-						player.getName()));
-			} else {
-				ds.updatePlayerSettings(player, lm, true);
-			instance.addPlayerSettings(player, new PlayerSettings(player, lm, true));
-				player.sendMessage(Messages.getString(
-						"mobhunting.commands.mute.muted", "player",
-						player.getName()));
-			}
+		DataStoreManager ds = MobHunting.getDataStoreManager();
+		boolean lm = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode();
+		if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted()) {
+			ds.updatePlayerSettings(player, lm, false);
+			MobHunting.getPlayerSettingsmanager().putPlayerSettings(player, new PlayerSettings(player, lm, false));
+			player.sendMessage(Messages.getString("mobhunting.commands.mute.unmuted", "player", player.getName()));
+		} else {
+			ds.updatePlayerSettings(player, lm, true);
+			MobHunting.getPlayerSettingsmanager().putPlayerSettings(player, new PlayerSettings(player, lm, true));
+			player.sendMessage(Messages.getString("mobhunting.commands.mute.muted", "player", player.getName()));
 		}
+	}
 }

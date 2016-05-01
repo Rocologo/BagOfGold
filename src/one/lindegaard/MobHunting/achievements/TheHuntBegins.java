@@ -36,7 +36,7 @@ public class TheHuntBegins implements Achievement, Listener
 	@EventHandler
 	private void onKill(MobHuntKillEvent event)
 	{
-		MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
+		MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override

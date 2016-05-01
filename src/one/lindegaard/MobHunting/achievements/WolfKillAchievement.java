@@ -11,7 +11,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobHuntingManager;
 
 public class WolfKillAchievement implements ProgressAchievement, Listener {
 
@@ -47,7 +46,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onWolfKillMob(EntityDeathEvent event) {
-		if (!MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
+		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld())
 				|| !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return;
 
@@ -61,8 +60,8 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 		if (killer.isTamed() && killer.getOwner() instanceof OfflinePlayer) {
 			Player owner = ((OfflinePlayer) killer.getOwner()).getPlayer();
 
-			if (owner != null && MobHunting.getInstance().getMobHuntingManager().isHuntEnabled(owner)) {
-				MobHunting.getInstance().getAchievements().awardAchievementProgress(this, owner, 1);
+			if (owner != null && MobHunting.getMobHuntingManager().isHuntEnabled(owner)) {
+				MobHunting.getAchievements().awardAchievementProgress(this, owner, 1);
 			}
 		}
 

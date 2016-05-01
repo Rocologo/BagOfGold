@@ -51,7 +51,7 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onKillCompleted(MobHuntKillEvent event) {
 		if (mType.matches(event.getKilledEntity()))
-			MobHunting.getInstance().getAchievements().awardAchievementProgress(
+			MobHunting.getAchievements().awardAchievementProgress(
 					this, event.getPlayer(), 1);
 	}
 

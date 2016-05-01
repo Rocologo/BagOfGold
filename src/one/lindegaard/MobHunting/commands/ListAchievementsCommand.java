@@ -79,7 +79,7 @@ public class ListAchievementsCommand implements ICommand {
 
 		if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 			sender.sendMessage("list all archivement descriptions");
-			MobHunting.getInstance().getAchievements().listAllAchievements(sender);
+			MobHunting.getAchievements().listAllAchievements(sender);
 
 		} else {
 
@@ -91,7 +91,7 @@ public class ListAchievementsCommand implements ICommand {
 
 				player = Bukkit.getPlayer(name);
 				if (player == null)
-					player = MobHunting.getInstance().getDataStore().getPlayerByName(name);
+					player = MobHunting.getDataStoreManager().getPlayerByName(name);
 
 			}
 
@@ -105,7 +105,7 @@ public class ListAchievementsCommand implements ICommand {
 					: player.getName());
 			final boolean self = (player == sender);
 
-			MobHunting.getInstance().getAchievements().requestCompletedAchievements(player,
+			MobHunting.getAchievements().requestCompletedAchievements(player,
 					new IDataCallback<List<Entry<Achievement, Integer>>>() {
 						@Override
 						public void onError(Throwable error) {
@@ -123,7 +123,7 @@ public class ListAchievementsCommand implements ICommand {
 						public void onCompleted(List<Entry<Achievement, Integer>> data) {
 							int outOf = 0;
 
-							for (Achievement achievement : MobHunting.getInstance().getAchievements()
+							for (Achievement achievement : MobHunting.getAchievements()
 									.getAllAchievements()) {
 								if (achievement instanceof ProgressAchievement) {
 									if (((ProgressAchievement) achievement).inheritFrom() == null)

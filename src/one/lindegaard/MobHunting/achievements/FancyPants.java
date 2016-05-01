@@ -46,7 +46,7 @@ public class FancyPants implements Achievement, Listener {
 				&& event.getPlayer().getInventory().getBoots() != null
 				&& event.getPlayer().getInventory().getBoots().getType() == Material.DIAMOND_BOOTS
 				&& !event.getPlayer().getInventory().getBoots().getEnchantments().isEmpty())
-			MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override

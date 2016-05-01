@@ -44,7 +44,7 @@ public class MasterSniper implements Achievement, Listener
 			double dist = event.getDamageInfo().attackerPosition.distance(event.getKilledEntity().getLocation());
 			if(dist >= 40)
 			{
-				MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
+				MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
 			}
 		}
 	}

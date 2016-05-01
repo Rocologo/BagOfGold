@@ -35,7 +35,7 @@ public class ByTheBook implements Achievement, Listener {
 		if (event.getDamageInfo().weapon.getType() == Material.BOOK
 				|| event.getDamageInfo().weapon.getType() == Material.WRITTEN_BOOK
 				|| event.getDamageInfo().weapon.getType() == Material.BOOK_AND_QUILL)
-			MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override

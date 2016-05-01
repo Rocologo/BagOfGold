@@ -28,7 +28,7 @@ import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;
 
 public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
-	private static String EMPTY_STRING = ""; 
+	private static String EMPTY_STRING = "";
 	private Location mLocation;
 	private BlockFace mFacing;
 
@@ -44,10 +44,10 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 	private List<StatStore> mData;
 
-	public WorldLeaderboard(Location location, BlockFace facing, int width,
-			int height, boolean horizontal, StatType[] stat, TimePeriod[] period) {
-		Validate.isTrue(facing == BlockFace.NORTH || facing == BlockFace.EAST
-				|| facing == BlockFace.SOUTH || facing == BlockFace.WEST);
+	public WorldLeaderboard(Location location, BlockFace facing, int width, int height, boolean horizontal,
+			StatType[] stat, TimePeriod[] period) {
+		Validate.isTrue(facing == BlockFace.NORTH || facing == BlockFace.EAST || facing == BlockFace.SOUTH
+				|| facing == BlockFace.WEST);
 
 		mLocation = location;
 		mFacing = facing;
@@ -92,22 +92,19 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 		ArrayList<Block> blocks = new ArrayList<Block>();
 		Location min = mLocation.clone();
-		min.add(-horizontal.getModX() * (mWidth / 2), -1, -horizontal.getModZ()
-				* (mWidth / 2));
+		min.add(-horizontal.getModX() * (mWidth / 2), -1, -horizontal.getModZ() * (mWidth / 2));
 
 		if (mHorizontal) {
 			for (int y = 0; y < mHeight; ++y) {
 				for (int x = 0; x < mWidth; ++x) {
-					Location loc = min.clone().add(horizontal.getModX() * x,
-							-y, horizontal.getModZ() * x);
+					Location loc = min.clone().add(horizontal.getModX() * x, -y, horizontal.getModZ() * x);
 					blocks.add(loc.getBlock());
 				}
 			}
 		} else {
 			for (int x = 0; x < mWidth; ++x) {
 				for (int y = 0; y < mHeight; ++y) {
-					Location loc = min.clone().add(horizontal.getModX() * x,
-							-y, horizontal.getModZ() * x);
+					Location loc = min.clone().add(horizontal.getModX() * x, -y, horizontal.getModZ() * x);
 					blocks.add(loc.getBlock());
 				}
 			}
@@ -131,14 +128,12 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 					break;
 				}
 
-				if (block.getType() != Material.WALL_SIGN
-						|| ((Sign) block.getState().getData()).getFacing() != mFacing)
+				if (block.getType() != Material.WALL_SIGN || ((Sign) block.getState().getData()).getFacing() != mFacing)
 					return false;
 			}
 
 			// Check that it will be supported
-			if (!block.getRelative(mFacing.getOppositeFace()).getType()
-					.isSolid())
+			if (!block.getRelative(mFacing.getOppositeFace()).getType().isSolid())
 				return false;
 		}
 
@@ -172,10 +167,9 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 				mPeriodIndex = 0;
 		}
 
-		MobHunting.getInstance().getDataStore().requestStats(getType(), getPeriod(),
-				mWidth * mHeight * 2, this);
+		MobHunting.getDataStoreManager().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
 	}
-	
+
 	public void refresh() {
 		Iterator<StatStore> it;
 		if (mData == null)
@@ -189,12 +183,10 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 			if (labelSign.getType() != Material.WALL_SIGN) {
 				labelSign.setType(Material.WALL_SIGN);
 			}
-			
-			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) labelSign
-					.getState();
 
-			sign.setLine(0, ChatColor.BLUE + ChatColor.BOLD.toString()
-					+ "MobHunting");
+			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) labelSign.getState();
+
+			sign.setLine(0, ChatColor.BLUE + ChatColor.BOLD.toString() + "MobHunting");
 
 			String statName = getType().translateName();
 			if (statName.length() > 15) {
@@ -212,15 +204,13 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 				sign.setLine(2, EMPTY_STRING);
 			}
 
-			sign.setLine(3, ChatColor.YELLOW
-					+ getPeriod().translateNameFriendly());
+			sign.setLine(3, ChatColor.YELLOW + getPeriod().translateNameFriendly());
 			sign.setData(sign.getData());
-			
-			((Sign) sign.getData())
-			.setFacingDirection(mFacing);
+
+			((Sign) sign.getData()).setFacingDirection(mFacing);
 
 			sign.update(true, false);
-		} 
+		}
 
 		// Update all the leaderboard signs
 		int place = 1;
@@ -239,10 +229,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 			if (isLoaded(block)) {
 				if (block.getType() != Material.WALL_SIGN) {
-					if (!block.getRelative(mFacing.getOppositeFace()).getType()
-							.isSolid())
-						block.getRelative(mFacing.getOppositeFace()).setType(
-								Material.STONE);
+					if (!block.getRelative(mFacing.getOppositeFace()).getType().isSolid())
+						block.getRelative(mFacing.getOppositeFace()).setType(Material.STONE);
 
 					Sign sign = new Sign(Material.WALL_SIGN);
 					sign.setFacingDirection(mFacing);
@@ -254,25 +242,21 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 					state.update(true, false);
 				}
 
-				org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block
-						.getState();
+				org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block.getState();
 
 				if (stat1 != null) {
-					sign.setLine(0, ChatColor.GREEN + String.valueOf(place)
-							+ " " + ChatColor.BLACK
+					sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + " " + ChatColor.BLACK
 							+ stat1.getPlayer().getName());
-					sign.setLine(1,
-							ChatColor.BLUE + String.valueOf(stat1.getAmount()));
+					sign.setLine(1, ChatColor.BLUE + String.valueOf(stat1.getAmount()));
 				} else {
 					sign.setLine(0, EMPTY_STRING);
 					sign.setLine(1, EMPTY_STRING);
 				}
 
 				if (stat2 != null) {
-					sign.setLine(2, ChatColor.GREEN + String.valueOf(place + 1)
-							+ " " + ChatColor.BLACK + stat2.getPlayer().getName());
-					sign.setLine(3,
-							ChatColor.BLUE + String.valueOf(stat2.getAmount()));
+					sign.setLine(2, ChatColor.GREEN + String.valueOf(place + 1) + " " + ChatColor.BLACK
+							+ stat2.getPlayer().getName());
+					sign.setLine(3, ChatColor.BLUE + String.valueOf(stat2.getAmount()));
 				} else {
 					sign.setLine(2, EMPTY_STRING);
 					sign.setLine(3, EMPTY_STRING);
@@ -305,8 +289,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		}
 
 		Location min = mLocation.clone();
-		min.add(-horizontal.getModX() * (mWidth / 2), -1, -horizontal.getModZ()
-				* (mWidth / 2));
+		min.add(-horizontal.getModX() * (mWidth / 2), -1, -horizontal.getModZ() * (mWidth / 2));
 
 		for (int x = 0; x < mWidth; ++x) {
 			int xx = min.getBlockX() + horizontal.getModX() * x;
@@ -327,7 +310,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		mType = type;
 		mTypeIndex = 0;
 	}
-	
+
 	public void setPeriod(TimePeriod[] period) {
 		mPeriod = period;
 		mPeriodIndex = 0;
@@ -377,8 +360,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		if (!loc.getWorld().equals(mLocation.getWorld()))
 			return false;
 
-		if (loc.getBlockY() < mLocation.getBlockY() - mHeight - 1
-				|| loc.getBlockY() > mLocation.getBlockY())
+		if (loc.getBlockY() < mLocation.getBlockY() - mHeight - 1 || loc.getBlockY() > mLocation.getBlockY())
 			return false;
 
 		BlockFace horizontal;
@@ -401,10 +383,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		}
 
 		Location min = mLocation.clone();
-		min.add(-horizontal.getModX() * (mWidth / 2), 0, -horizontal.getModZ()
-				* (mWidth / 2));
-		Location max = min.clone().add(
-				horizontal.getModX() * (mWidth - 1) - mFacing.getModX(), 0,
+		min.add(-horizontal.getModX() * (mWidth / 2), 0, -horizontal.getModZ() * (mWidth / 2));
+		Location max = min.clone().add(horizontal.getModX() * (mWidth - 1) - mFacing.getModX(), 0,
 				horizontal.getModZ() * (mWidth - 1) - mFacing.getModZ());
 
 		int minX = Math.min(min.getBlockX(), max.getBlockX());
@@ -417,8 +397,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	}
 
 	private boolean isLoaded(Block block) {
-		return (mLocation.getWorld().isChunkLoaded(block.getX() >> 4,
-				block.getZ() >> 4));
+		return (mLocation.getWorld().isChunkLoaded(block.getX() >> 4, block.getZ() >> 4));
 	}
 
 	@Override
@@ -426,7 +405,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		ArrayList<StatStore> altData = new ArrayList<StatStore>(data.size());
 		for (StatStore stat : data) {
 			if (stat.getAmount() != 0)
-				//MobHunting.debug("StatStore=%s", stat.toString());
+				// MobHunting.debug("StatStore=%s", stat.toString());
 				altData.add(stat);
 		}
 
@@ -460,10 +439,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		section.set("height", mHeight);
 	}
 
-	public void read(ConfigurationSection section)
-			throws InvalidConfigurationException, IllegalStateException {
-		World world = Bukkit.getWorld(UUID.fromString(section
-				.getString("world")));
+	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
+		World world = Bukkit.getWorld(UUID.fromString(section.getString("world")));
 		if (world == null)
 			throw new IllegalStateException();
 
@@ -477,10 +454,9 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		mWidth = section.getInt("width");
 		mHeight = section.getInt("height");
 
-		if (mFacing != BlockFace.NORTH && mFacing != BlockFace.SOUTH
-				&& mFacing != BlockFace.WEST && mFacing != BlockFace.EAST)
-			throw new InvalidConfigurationException(
-					"Invalid leaderboard facing " + section.getString("facing"));
+		if (mFacing != BlockFace.NORTH && mFacing != BlockFace.SOUTH && mFacing != BlockFace.WEST
+				&& mFacing != BlockFace.EAST)
+			throw new InvalidConfigurationException("Invalid leaderboard facing " + section.getString("facing"));
 		if (periods == null)
 			throw new InvalidConfigurationException("Error in time period list");
 		if (stats == null)
@@ -497,16 +473,14 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		for (int i = 0; i < periods.size(); ++i) {
 			mPeriod[i] = TimePeriod.valueOf(periods.get(i));
 			if (mPeriod[i] == null)
-				throw new InvalidConfigurationException("Invalid time period "
-						+ periods.get(i));
+				throw new InvalidConfigurationException("Invalid time period " + periods.get(i));
 		}
 
 		mType = new StatType[stats.size()];
 		for (int i = 0; i < stats.size(); ++i) {
 			mType[i] = StatType.fromColumnName(stats.get(i));
 			if (mType[i] == null)
-				throw new InvalidConfigurationException("Invalid stat type "
-						+ stats.get(i));
+				throw new InvalidConfigurationException("Invalid stat type " + stats.get(i));
 		}
 
 		mPeriodIndex = 0;

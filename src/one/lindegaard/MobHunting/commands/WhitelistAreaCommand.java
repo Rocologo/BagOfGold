@@ -8,8 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Area;
-import one.lindegaard.MobHunting.AreaManager;
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 
 public class WhitelistAreaCommand implements ICommand {
 
@@ -54,7 +54,7 @@ public class WhitelistAreaCommand implements ICommand {
 		Location loc = ((Player) sender).getLocation();
 
 		if (args.length == 0) {
-			if (AreaManager.isWhitelisted(loc))
+			if (MobHunting.getAreaManager().isWhitelisted(loc))
 				sender.sendMessage(ChatColor.GREEN
 						+ Messages
 								.getString("mobhunting.commands.whitelistarea.iswhitelisted"));
@@ -64,7 +64,7 @@ public class WhitelistAreaCommand implements ICommand {
 								.getString("mobhunting.commands.whitelistarea.notwhitelisted"));
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("remove")) {
-				AreaManager.unWhitelistArea(loc);
+				MobHunting.getAreaManager().unWhitelistArea(loc);
 				sender.sendMessage(ChatColor.GREEN
 						+ Messages
 								.getString("mobhunting.commands.whitelistarea.remove.done"));
@@ -72,7 +72,7 @@ public class WhitelistAreaCommand implements ICommand {
 				Area area = new Area();
 				area.center = loc;
 				area.range = 15;
-				AreaManager.whitelistArea(area);
+				MobHunting.getAreaManager().whitelistArea(area);
 
 				sender.sendMessage(ChatColor.GREEN
 						+ Messages

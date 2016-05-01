@@ -1,75 +1,75 @@
 package one.lindegaard.MobHunting.bounty;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.storage.IDataCallback;
 
 public class BountyManager implements Listener {
 
 	private MobHunting instance;
 
-	private static BountyManager mBountyManager;
 	private static final String MH_BOUNTY = "MH:bounty";
 
-	private HashMap<OfflinePlayer, Bounties> mBounties = new HashMap<OfflinePlayer, Bounties>();
-	private File file = new File(MobHunting.getInstance().getDataFolder(), "bounties.yml");
-	private YamlConfiguration config = new YamlConfiguration();
+	//mBounties contains all bounties on the OfflinePlayer and the Bounties put on other players
+	private static HashMap<OfflinePlayer, Bounties> mBounties = new HashMap<OfflinePlayer, Bounties>();
+	//private static List<Bounty> mNewBounties;
 
 	public BountyManager(MobHunting instance) {
 		this.instance = instance;
 		// loadData();
+		addTestData();
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
-	public static void initialize(MobHunting instance) {
-		mBountyManager = new BountyManager(instance);
-		addTestData();
-	}
-	
-	private static void addTestData(){
-		OfflinePlayer p1 = Bukkit.getOfflinePlayer("MrDanielBoy");
+	private void addTestData() {
+		OfflinePlayer p1 = Bukkit.getOfflinePlayer("Gabriel333");
 		OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
-		OfflinePlayer p3 = Bukkit.getOfflinePlayer("Gabriel333");
-		Bounty b1 = new Bounty(p1, 101, "he he he");
-		Bounty b2 = new Bounty(p1, 102, "ho ho ho");
-		Bounty b3 = new Bounty(p2, 200, "ha ha ha");
-		Bounty b4 = new Bounty(p3, 300, "hi hi hi");
+		OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
 
-		mBountyManager.putBountyOnWantedPlayer(p1, b3);
-		mBountyManager.saveBounties(p1);
-		mBountyManager.putBountyOnWantedPlayer(p1, b4);
-		mBountyManager.saveBounties(p1);
-		mBountyManager.putBountyOnWantedPlayer(p2, b1);
-		mBountyManager.saveBounties(p2);
-		mBountyManager.putBountyOnWantedPlayer(p3, b2);
-		mBountyManager.saveBounties(p3);
+		Bounty b1 = new Bounty("Default", p3, p2, 101, "he he he");
+		Bounty b2 = new Bounty("Default", p3, p1, 102, "ho ho ho");
+		Bounty b3 = new Bounty("Default", p2, p3, 200, "ha ha ha");
+		Bounty b4 = new Bounty("Default", p1, p3, 300, "hi hi hi");
 
-		mBountyManager.loadBounties(p1);
-		mBountyManager.loadBounties(p2);
-		mBountyManager.loadBounties(p3);
+		insertBountyOnWantedPlayer(b1);
+		insertBountyOnWantedPlayer(b2);
+		insertBountyOnWantedPlayer(b3);
+		insertBountyOnWantedPlayer(b4);
+
+		// putBountyOnWantedPlayer(p1, b3);
+		// saveBounties(p1);
+		// putBountyOnWantedPlayer(p1, b4);
+		// saveBounties(p1);
+		// putBountyOnWantedPlayer(p2, b1);
+		// saveBounties(p2);
+		// putBountyOnWantedPlayer(p3, b2);
+		// saveBounties(p3);
+
+		// loadBounties(p1);
+		// loadBounties(p2);
+		// loadBounties(p3);
 	}
 
-	public static void shutdown() {
-		mBountyManager.saveBounties();
+	public void shutdown() {
+		// saveBounties();
 	}
 
-	public static BountyManager getBountyManager() {
-		return mBountyManager;
+	public void insertBountyOnWantedPlayer(Bounty bounty) {
+		MobHunting.getDataStoreManager().insertBounty(bounty);
 	}
 
 	public void putBountyOnWantedPlayer(OfflinePlayer wantedPlayer, Bounty bounty) {
@@ -81,11 +81,6 @@ public class BountyManager implements Listener {
 		}
 		bounties.putBounty(bounty.getBountyOwner(), bounty);
 		mBounties.put(wantedPlayer, bounties);
-
-	}
-
-	public Set<OfflinePlayer> getAllWantedPlayers() {
-		return mBounties.keySet();
 	}
 
 	public HashMap<OfflinePlayer, Bounties> getBounties() {
@@ -98,17 +93,14 @@ public class BountyManager implements Listener {
 
 	// Tests
 
-	public boolean hasBounties(UUID uuid) {
-		return mBounties.containsKey(uuid);
-	}
-
 	public boolean hasBounties(OfflinePlayer wantedPlayer) {
+		MobHunting.debug("mBounties.szie=%s", mBounties.size());
 		return mBounties.containsKey(wantedPlayer);
 	}
 
 	public boolean hasBounty(OfflinePlayer wantedPlayer, OfflinePlayer bountyOwner) {
 		if (hasBounties(wantedPlayer))
-			return mBounties.get(wantedPlayer).hasBounty(bountyOwner);
+			return mBounties.get(wantedPlayer).hasBounties(bountyOwner);
 		else
 			return false;
 	}
@@ -132,84 +124,44 @@ public class BountyManager implements Listener {
 	// Events
 	// ****************************************************************************
 
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		addMarkOnWantedPlayer(e.getPlayer());
 		loadBounties(e.getPlayer());
 	}
 
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerLeave(PlayerQuitEvent e) {
-		saveBounties(e.getPlayer());
+		// saveBounties(e.getPlayer());
 	}
 
 	// ****************************************************************************
 	// Save & Load
 	// ****************************************************************************
-
 	public void loadBounties(OfflinePlayer offlinePlayer) {
-		try {
-			if (!file.exists())
-				return;
-			MobHunting.debug("Loading bounties for %s.", offlinePlayer.getName());
-			config.load(file);
-			ConfigurationSection section = config
-					.getConfigurationSection("wantedplayers." + offlinePlayer.getUniqueId().toString() + ".bounties");
-			Bounties bounties = new Bounties();
-			// Set<String> keys = section.getKeys(false);
-			// for (String uuid : keys) {
-			bounties.read(section);
-			mBounties.put(offlinePlayer, bounties);
-			// }
-			MobHunting.debug("Loaded %s bounties on player %s", mBounties.get(offlinePlayer).getBounties().size(),
-					offlinePlayer.getName());
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	public void saveBounties(OfflinePlayer offlinePlayer) {
-		try {
-			config.options().header("----------------------------------------------------------"
-					+ "\nBounties put on wantedplayers. You are not allowed to change this file."
-					+ "\n----------------------------------------------------------");
-			if (mBounties.containsKey(offlinePlayer)) {
-				MobHunting.debug("Saving wantedPlayer (%s) to file.", offlinePlayer.getName());
-				ConfigurationSection section = config
-						.createSection("wantedplayers." + offlinePlayer.getUniqueId().toString());
-				section.set("name", offlinePlayer.getName());
-				mBounties.get(offlinePlayer).write(section);
-				config.save(file);
-			} else if (config.contains(offlinePlayer.getUniqueId().toString())) {
-				config.set(offlinePlayer.getUniqueId().toString(), null);
+
+	}
+	
+	public void requestOpenBounties(OfflinePlayer player,
+			final IDataCallback<List<Bounty>> callback) {
+		if (player.isOnline()) {
+			List<Bounty> achievements = new ArrayList<Bounty>();
+			ArrayList<Bounty> toRemove = new ArrayList<Bounty>();
+
+			for (Bounty bounty : mBounties.get(player).getBounties().values().iterator()) {
+				
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+
+			achievements.removeAll(toRemove);
+
+			callback.onCompleted(achievements);
+			return;
 		}
 	}
-
-	public void saveBounties() {
-		try {
-			config.options().header("----------------------------------------------------------"
-					+"\nBounties put on wantedplayers. You are not allowed to change this file."+
-					"\n----------------------------------------------------------");
-			int n = 0;
-			if (mBounties.size() > 0) {
-				for (OfflinePlayer offlinePlayer : mBounties.keySet()) {
-					ConfigurationSection section = config
-							.createSection("wantedplayers." + offlinePlayer.getUniqueId().toString());
-					section.set("name", offlinePlayer.getName());
-					mBounties.get(offlinePlayer).write(section);
-					n++;
-				}
-			}
-			if (n != 0) {
-				MobHunting.debug("Saving %s Bounties to file.", n);
-				config.save(file);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
+	
+	
 }

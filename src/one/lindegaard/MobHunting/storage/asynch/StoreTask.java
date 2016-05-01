@@ -3,6 +3,7 @@ package one.lindegaard.MobHunting.storage.asynch;
 import java.util.HashSet;
 import java.util.Set;
 
+import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
@@ -14,6 +15,8 @@ public class StoreTask implements DataStoreTask<Void>
 	private HashSet<StatStore> mWaitingPlayerStats = new HashSet<StatStore>();
 	private HashSet<AchievementStore> mWaitingAchievements = new HashSet<AchievementStore>();
 	private HashSet<PlayerSettings> mWaitingPlayerSettings = new HashSet<PlayerSettings>();
+	private HashSet<Bounty> mWaitingBounties = new HashSet<Bounty>();
+	
 	
 	public StoreTask(Set<Object> waiting)
 	{
@@ -31,6 +34,8 @@ public class StoreTask implements DataStoreTask<Void>
 					mWaitingAchievements.add((AchievementStore)obj);
 				if(obj instanceof PlayerSettings)
 					mWaitingPlayerSettings.add((PlayerSettings)obj);
+				if(obj instanceof Bounty)
+					mWaitingBounties.add((Bounty)obj);
 			}
 			
 			waiting.clear();
@@ -48,6 +53,9 @@ public class StoreTask implements DataStoreTask<Void>
 		if(!mWaitingPlayerSettings.isEmpty())
 			store.updatePlayerSettings(mWaitingPlayerSettings);
 
+		if(!mWaitingBounties.isEmpty())
+			store.insertBounty(mWaitingBounties);
+		
 		return null;
 	}
 

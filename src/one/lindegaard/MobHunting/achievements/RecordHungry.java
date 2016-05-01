@@ -13,7 +13,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobHuntingManager;
 
 public class RecordHungry implements Achievement, Listener {
 
@@ -40,7 +39,7 @@ public class RecordHungry implements Achievement, Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onDeath(EntityDeathEvent event) {
 		if (!(event.getEntity() instanceof Creeper)
-				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
+				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		Creeper killed = (Creeper) event.getEntity();
@@ -57,8 +56,8 @@ public class RecordHungry implements Achievement, Listener {
 				Player target = (Player) killed.getTarget();
 
 				if (skele.getTarget() == target && target.getGameMode() != GameMode.CREATIVE
-						&& MobHunting.getInstance().getMobHuntingManager().isHuntEnabled(target))
-					MobHunting.getInstance().getAchievements().awardAchievement(this, target);
+						&& MobHunting.getMobHuntingManager().isHuntEnabled(target))
+					MobHunting.getAchievements().awardAchievement(this, target);
 			}
 		}
 	}

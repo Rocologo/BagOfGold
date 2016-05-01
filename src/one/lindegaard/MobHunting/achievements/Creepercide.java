@@ -11,7 +11,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobHuntingManager;
 
 public class Creepercide implements Achievement, Listener {
 
@@ -38,7 +37,7 @@ public class Creepercide implements Achievement, Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onDeath(EntityDeathEvent event) {
 		if (!(event.getEntity() instanceof Creeper)
-				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
+				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		Creeper killed = (Creeper) event.getEntity();
@@ -55,8 +54,8 @@ public class Creepercide implements Achievement, Listener {
 				initiator = (Player) ((Creeper) event.getEntity()).getTarget();
 			else {
 				DamageInformation a, b;
-				a = MobHunting.getInstance().getDamageInformation(killed);
-				b = MobHunting.getInstance().getDamageInformation((Creeper) damage.getDamager());
+				a = MobHunting.getDamageInformation(killed);
+				b = MobHunting.getDamageInformation((Creeper) damage.getDamager());
 
 				if (a != null)
 					initiator = a.attacker;
@@ -65,8 +64,8 @@ public class Creepercide implements Achievement, Listener {
 					initiator = b.attacker;
 			}
 
-			if (initiator != null && MobHunting.getInstance().getMobHuntingManager().isHuntEnabled(initiator))
-				MobHunting.getInstance().getAchievements().awardAchievement("creepercide", initiator);
+			if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator))
+				MobHunting.getAchievements().awardAchievement("creepercide", initiator);
 		}
 	}
 

@@ -148,8 +148,8 @@ public class MetricsManager {
 				@Override
 				public int getValue() {
 					MobHunting.debug("Number of Leaderboards reported=%s",
-							MobHunting.getInstance().getLeaderboardManager().getWorldLeaderBoards().size());
-					return MobHunting.getInstance().getLeaderboardManager().getWorldLeaderBoards().size();
+							MobHunting.getLeaderboardManager().getWorldLeaderBoards().size());
+					return MobHunting.getLeaderboardManager().getWorldLeaderBoards().size();
 				}
 			});
 			metrics.addGraph(leaderboardsGraph);

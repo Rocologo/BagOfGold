@@ -42,28 +42,27 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			throws SQLException {
 		switch (preparedConnectionType) {
 		case GET1PLAYER:
-			mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
+			mGetPlayerData[0] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
 			break;
 		case GET2PLAYERS:
-			mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);");
+			mGetPlayerData[1] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);");
 			break;
 		case GET5PLAYERS:
-			mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);");
+			mGetPlayerData[2] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);");
 			break;
 		case GET10PLAYERS:
-			mGetPlayerStatement[3] = connection
+			mGetPlayerData[3] = connection
 					.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);");
 			break;
 		case SAVE_ACHIEVEMENTS:
-			mSaveAchievementStatement = connection
-					.prepareStatement("INSERT OR REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
+			mSaveAchievement = connection.prepareStatement("INSERT OR REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
 			break;
 		case SAVE_PLAYER_STATS:
-			mSavePlayerStatsStatement = connection.prepareStatement(
+			mSavePlayerStats = connection.prepareStatement(
 					"INSERT OR IGNORE INTO mh_Daily(ID, PLAYER_ID) VALUES(strftime(\"%Y%j\",\"now\"),?);");
 			break;
 		case LOAD_ARCHIEVEMENTS:
-			mLoadAchievementsStatement = connection
+			mLoadAchievements = connection
 					.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;");
 			break;
 		case GET_PLAYER_UUID:
@@ -74,30 +73,36 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			break;
 		case INSERT_PLAYER_DATA:
 			mInsertPlayerData = connection.prepareStatement(
-					"INSERT OR IGNORE INTO mh_Players " + "(UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
+					"INSERT OR IGNORE INTO mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) "
 							+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?);");
 			break;
 		case UPDATE_PLAYER_SETTINGS:
 			mUpdatePlayerSettings = connection
 					.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=? WHERE UUID=?;");
 			break;
-		case INSERT_PLAYER_SETTINGS:
-			myAddPlayerStatement = connection.prepareStatement("INSERT OR IGNORE INTO mh_Players "
-					+ "VALUES(?, ?, (SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),"
-					+ (MobHunting.getConfigManager().learningMode ? "1" : "0") + ",0 );");
+		case GET_BOUNTIES:
+			mGetBounties = connection
+					.prepareStatement("SELECT * FROM mh_Bounties where COMPLETED=0 AND (BOUNTYOWNER_ID=? OR WANTEDPLAYER_ID=? OR NOT NPC_ID=0);");
 			break;
-		case GET_PLAYER_SETTINGS:
-			mGetPlayerDATA = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
+		case INSERT_BOUNTY:
+			mInsertBounty = connection
+					.prepareStatement("INSERT INTO mh_Bounties "
+							+ "(BOUNTY_ID, MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
+							+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE) "
+							+" VALUES ((SELECT IFNULL(MAX(BOUNTY_ID),0)+1 FROM mh_Bounties),?,?,?,?,?,?,?,?,?,?);");
+			break;
+		case UPDATE_BOUNTY:
+			mUpdateBounty = connection
+					.prepareStatement("UPDATE mh_Bounties SET COMPLETED=? WHERE BOUNTY_ID=?;");
 			break;
 		default:
 			break;
 		}
 	}
-
+	
 	// *******************************************************************************
 	// LoadStats / SaveStats
 	// *******************************************************************************
-
 	@Override
 	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException {
 		String id;
@@ -148,13 +153,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 			// Make sure the stats are available for each player
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
-			mSavePlayerStatsStatement.clearBatch();
+			mSavePlayerStats.clearBatch();
 			for (OfflinePlayer player : names) {
-				mSavePlayerStatsStatement.setInt(1, ids.get(player.getUniqueId()));
-				mSavePlayerStatsStatement.addBatch();
+				mSavePlayerStats.setInt(1, ids.get(player.getUniqueId()));
+				mSavePlayerStats.addBatch();
 			}
-			mSavePlayerStatsStatement.executeBatch();
-			mSavePlayerStatsStatement.close();
+			mSavePlayerStats.executeBatch();
+			mSavePlayerStats.close();
 
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
@@ -221,7 +226,27 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ dataString + ", PRIMARY KEY(PLAYER_ID))");
 		create.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))");
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_Bounties ("
+						+"BOUNTY_ID INTEGER NOT NULL, "
+						+"BOUNTYOWNER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, "
+						+"MOBTYPE TEXT, "
+						+"WANTEDPLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID), "
+						+"NPC_ID INTEGER, "
+						+"MOB_ID TEXT, "
+						+"WORLDGROUP TEXT NOT NULL, "
+						+"CREATED_DATE INTEGER NOT NULL, "
+						+"END_DATE INTEGER NOT NULL, "
+						+"PRIZE FLOAT NOT NULL, "
+						+"MESSAGE TEXT, "
+						+"COMPLETED INTEGER NOT NULL DEFAULT 0, "
+						+"PRIMARY KEY(BOUNTY_ID, BOUNTYOWNER_ID, MOBTYPE, WANTEDPLAYER_ID, NPC_ID ,MOB_ID, COMPLETED), "
+						+"FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID), "
+						+"FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID)"
+						+")");
+		
 
+		
 		setupTrigger(connection);
 
 		create.close();

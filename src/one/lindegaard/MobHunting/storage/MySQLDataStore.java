@@ -33,8 +33,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			return DriverManager.getConnection(
 					"jdbc:mysql://" + MobHunting.getConfigManager().databaseHost + "/"
 							+ MobHunting.getConfigManager().databaseName + "?autoReconnect=true",
-					MobHunting.getConfigManager().databaseUsername,
-					MobHunting.getConfigManager().databasePassword);
+					MobHunting.getConfigManager().databaseUsername, MobHunting.getConfigManager().databasePassword);
 		} catch (ClassNotFoundException e) {
 			throw new DataStoreException("MySQL not present on the classpath");
 		}
@@ -45,27 +44,27 @@ public class MySQLDataStore extends DatabaseDataStore {
 			throws SQLException {
 		switch (preparedConnectionType) {
 		case SAVE_PLAYER_STATS:
-			mSavePlayerStatsStatement = connection.prepareStatement(
+			mSavePlayerStats = connection.prepareStatement(
 					"INSERT IGNORE INTO mh_Daily(ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?);");
 			break;
 		case LOAD_ARCHIEVEMENTS:
-			mLoadAchievementsStatement = connection
+			mLoadAchievements = connection
 					.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;");
 			break;
 		case SAVE_ACHIEVEMENTS:
-			mSaveAchievementStatement = connection.prepareStatement("REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
+			mSaveAchievement = connection.prepareStatement("REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
 			break;
 		case GET1PLAYER:
-			mGetPlayerStatement[0] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
+			mGetPlayerData[0] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
 			break;
 		case GET2PLAYERS:
-			mGetPlayerStatement[1] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);");
+			mGetPlayerData[1] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);");
 			break;
 		case GET5PLAYERS:
-			mGetPlayerStatement[2] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);");
+			mGetPlayerData[2] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);");
 			break;
 		case GET10PLAYERS:
-			mGetPlayerStatement[3] = connection
+			mGetPlayerData[3] = connection
 					.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);");
 			break;
 		case GET_PLAYER_UUID:
@@ -76,16 +75,26 @@ public class MySQLDataStore extends DatabaseDataStore {
 			break;
 		case UPDATE_PLAYER_SETTINGS:
 			mUpdatePlayerSettings = connection
-					.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=?" + " WHERE UUID=?;");
+					.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=? WHERE UUID=?;");
 			break;
 		case INSERT_PLAYER_DATA:
 			mInsertPlayerData = connection.prepareStatement(
-					"INSERT IGNORE INTO mh_Players " + "(UUID,NAME,LEARNING_MODE,MUTE_MODE) " + "VALUES(?,?,?,?);");
+					"INSERT IGNORE INTO mh_Players (UUID,NAME,LEARNING_MODE,MUTE_MODE) VALUES(?,?,?,?);");
 			break;
-		case INSERT_PLAYER_SETTINGS:
-			myAddPlayerStatement = connection.prepareStatement("INSERT IGNORE INTO mh_Players(UUID,NAME) VALUES(?,?);");
-		case GET_PLAYER_SETTINGS:
-			mGetPlayerDATA = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
+		case GET_BOUNTIES:
+			mGetBounties = connection
+					.prepareStatement("SELECT * FROM mh_Bounties where COMPLETED=0;");
+			break;
+		case INSERT_BOUNTY:
+			mInsertBounty = connection
+					.prepareStatement("INSERT INTO mh_Bounties "
+							+ "(MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
+							+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE) "
+							+" VALUES (?,?,?,?,?,?,?,?,?,?);");
+			break;
+		case UPDATE_BOUNTY:
+			mUpdateBounty = connection
+					.prepareStatement("UPDATE mh_Bounties SET COMPLETED=? WHERE BOUNTY_ID=?;");
 			break;
 		default:
 			break;
@@ -148,13 +157,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 			// Make sure the stats are available for each player
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
-			mSavePlayerStatsStatement.clearBatch();
+			mSavePlayerStats.clearBatch();
 			for (OfflinePlayer player : names) {
-				mSavePlayerStatsStatement.setInt(1, ids.get(player.getUniqueId()));
-				mSavePlayerStatsStatement.addBatch();
+				mSavePlayerStats.setInt(1, ids.get(player.getUniqueId()));
+				mSavePlayerStats.addBatch();
 			}
-			mSavePlayerStatsStatement.executeBatch();
-			mSavePlayerStatsStatement.close();
+			mSavePlayerStats.executeBatch();
+			mSavePlayerStats.close();
 
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
@@ -224,7 +233,32 @@ public class MySQLDataStore extends DatabaseDataStore {
 				"CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE"
 						+ dataString + ", PRIMARY KEY(PLAYER_ID))");
 		create.executeUpdate(
-				"CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
+				"CREATE TABLE IF NOT EXISTS mh_Achievements "
+						+"(PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
+						+"ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, "
+						+"PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
+		//TODO: must be updated
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_Bounties ("
+						+"BOUNTY_ID INTEGER NOT NULL, "
+						+"BOUNTYOWNER_ID INTEGER NOT NULL, "
+						+"MOBTYPE TEXT, "
+						+"WANTEDPLAYER_ID INTEGER, "
+						+"NPC_ID INTEGER, "
+						+"MOB_ID TEXT, "
+						+"WORLDGROUP TEXT NOT NULL, "
+						+"CREATED_DATE INTEGER NOT NULL, "
+						+"END_DATE INTEGER NOT NULL, "
+						+"PRIZE FLOAT NOT NULL, "
+						+"MESSAGE VARCHAR(64), "
+						+"PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, "
+						+"COMPLETED INTEGER NOT NULL, "
+						+"PRIMARY KEY(WANTEDPLAYER_ID, NPC ,MOBTYPE, COMPLETED), "
+						+"FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID), "
+						+"FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID), "
+						+"FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID)"
+						+")");
+
 
 		// Setup Database triggers
 		setupTrigger(connection);

@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import one.lindegaard.MobHunting.AreaManager;
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -56,10 +55,10 @@ public class ClearGrindingCommand implements ICommand {
 			return false;
 
 		Location loc = ((Player) sender).getLocation();
-		AreaManager.clearGrindingArea(loc);
+		MobHunting.getAreaManager().clearGrindingArea(loc);
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			HuntData data = MobHunting.getInstance().getMobHuntingManager().getHuntData(player);
+			HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
 			data.clearGrindingArea(loc);
 		}
 

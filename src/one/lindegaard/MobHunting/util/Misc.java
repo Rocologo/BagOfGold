@@ -35,7 +35,7 @@ public class Misc {
 	}
 
 	public static double handleKillstreak(Player player) {
-		HuntData data = MobHunting.getInstance().getMobHuntingManager().getHuntData(player);
+		HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
 
 		int lastKillstreakLevel = data.getKillstreakLevel();
 		data.setKillStreak(data.getKillStreak() + 1);
@@ -44,21 +44,21 @@ public class Misc {
 		if (data.getKillstreakLevel() != lastKillstreakLevel) {
 			switch (data.getKillstreakLevel()) {
 			case 1:
-				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1")); //$NON-NLS-1$
+				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1"));
 				break;
 			case 2:
-				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2")); //$NON-NLS-1$
+				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2"));
 				break;
 			case 3:
-				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3")); //$NON-NLS-1$
+				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3"));
 				break;
 			default:
-				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4")); //$NON-NLS-1$
+				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4"));
 				break;
 			}
 
-			player.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier", //$NON-NLS-1$ //$NON-NLS-2$
-					String.format("%.1f", data.getKillstreakMultiplier()))); //$NON-NLS-1$
+			player.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier",
+					String.format("%.1f", data.getKillstreakMultiplier())));
 		}
 
 		return data.getKillstreakMultiplier();

@@ -16,11 +16,14 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.achievements.Achievement;
 import one.lindegaard.MobHunting.achievements.ProgressAchievement;
+import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.StoreTask;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask.Mode;
+import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask;
+import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask.BountyMode;
 
 public class DataStoreManager {
 	// Accessed on multiple threads
@@ -42,7 +45,10 @@ public class DataStoreManager {
 		mTaskThread = new TaskThread();
 		mStoreThread = new StoreThread(MobHunting.getConfigManager().savePeriod);
 	}
-
+	
+	//**************************************************************************************
+	// PlayerStats
+	//**************************************************************************************
 	public void recordKill(OfflinePlayer player, ExtendedMobType type, boolean bonusMob) {
 		synchronized (mWaiting) {
 			mWaiting.add(new StatStore(StatType.fromMobType(type, true), player));
@@ -63,6 +69,13 @@ public class DataStoreManager {
 		}
 	}
 
+	public void requestStats(StatType type, TimePeriod period, int count, IDataCallback<List<StatStore>> callback) {
+		mTaskThread.addTask(new StatRetrieverTask(type, period, count, mWaiting), callback);
+	}
+
+	//**************************************************************************************
+	// Achievements
+	//**************************************************************************************
 	public void recordAchievement(OfflinePlayer player, Achievement achievement) {
 		synchronized (mWaiting) {
 			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
@@ -88,10 +101,89 @@ public class DataStoreManager {
 		mTaskThread.addTask(new AchievementRetrieverTask(Mode.InProgress, player, mWaiting), callback);
 	}
 
-	public void requestStats(StatType type, TimePeriod period, int count, IDataCallback<List<StatStore>> callback) {
-		mTaskThread.addTask(new StatRetrieverTask(type, period, count, mWaiting), callback);
+	// *****************************************************************************
+	// Bounties
+	// *****************************************************************************
+	public void insertBounty(Bounty bounty) {
+		synchronized (mWaiting) {
+			mWaiting.add(new Bounty(bounty));
+		}
+	}
+	
+	public void requestBounties(BountyMode mode, OfflinePlayer player, IDataCallback<Set<Bounty>> callback) {
+		mTaskThread.addTask(new BountyRetrieverTask(mode, player, mWaiting), callback);
+	}
+	
+	// *****************************************************************************
+	// PlayerSettings
+	// *****************************************************************************
+	/**
+	 * Gets an offline player using the last known name. WARNING: This does a
+	 * database lookup directly. This will block waiting for a reply
+	 */
+	public OfflinePlayer getPlayerByName(String name) {
+		try {
+			return mStore.getPlayerByName(name);
+		} catch (UserNotFoundException e) {
+			return null;
+		} catch (DataStoreException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
+	/**
+	 * @param player
+	 * @return Get PlayerSettings for player. If player does not exist in
+	 *         Database, a new record will be created.
+	 * @throws SQLException
+	 */
+	public PlayerSettings getPlayerSettings(Player player) {
+		try {
+			return mStore.getPlayerSettings(player);
+		} catch (UserNotFoundException e) {
+			MobHunting.debug("Saving Player Settings for %s to database.", player);
+			insertPlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
+			return new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
+		} catch (DataStoreException e) {
+			e.printStackTrace();
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Insert new Players in the Database
+	 * 
+	 * @param player
+	 * @param learning_mode
+	 * @param muted
+	 */
+	private void insertPlayerSettings(OfflinePlayer player, boolean learning_mode, boolean muted) {
+		synchronized (mWaiting) {
+			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
+		}
+	}
+
+	/**
+	 * Update the playerSettings in the Database
+	 * 
+	 * @param player
+	 * @param learning_mode
+	 * @param muted
+	 */
+	public void updatePlayerSettings(Player player, boolean learning_mode, boolean muted) {
+		synchronized (mWaiting) {
+			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
+		}
+
+	}
+
+	// *****************************************************************************
+	// Common
+	// *****************************************************************************
 	public void flush() {
 		MobHunting.debug("Flushing waiting data to database...");
 		mTaskThread.addTask(new StoreTask(mWaiting), null);
@@ -207,6 +299,7 @@ public class DataStoreManager {
 			mWritesOnly = writes;
 		}
 
+		
 		public <T> void addTask(DataStoreTask<T> task, IDataCallback<T> callback) {
 			try {
 				mQueue.put(new Task(task, callback));
@@ -249,63 +342,8 @@ public class DataStoreManager {
 				System.out.println("[MobHunting] MH Data Retriever thread was interrupted");
 			}
 		}
+
+		
 	}
 
-	/**
-	 * Gets an offline player using the last known name. WARNING: This does a
-	 * database lookup directly. This will block waiting for a reply
-	 */
-	public OfflinePlayer getPlayerByName(String name) {
-		try {
-			return mStore.getPlayerByName(name);
-		} catch (UserNotFoundException e) {
-			return null;
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Save all waiting PlayerData changes
-	 * 
-	 * @param player
-	 * @param learning_mode
-	 * @param muted
-	 */
-	public void createPlayerSettings(OfflinePlayer player, boolean learning_mode, boolean muted) {
-		synchronized (mWaiting) {
-			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
-		}
-	}
-
-	/**
-	 * @param player
-	 * @return Get PlayerData for player. If player does not exist in Database,
-	 *         a new record will be created.
-	 * @throws SQLException
-	 */
-	public PlayerSettings getPlayerSettings(Player player) {
-		try {
-			return mStore.getPlayerSettings(player);
-		} catch (UserNotFoundException e) {
-			MobHunting.debug("Saving Player Settings for %s to database.", player);
-			createPlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
-			return new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-			return null;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public void updatePlayerSettings(Player player, boolean learning_mode, boolean muted) {
-		synchronized (mWaiting) {
-			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
-		}
-
-	}
 }

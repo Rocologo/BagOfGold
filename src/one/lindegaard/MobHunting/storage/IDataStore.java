@@ -7,33 +7,39 @@ import java.util.Set;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.bounty.Bounty;
 
 public interface IDataStore {
 	/**
-	 * Initialize - opening a connection to the Database and initialize the connection.
+	 * Initialize - opening a connection to the Database and initialize the
+	 * connection.
+	 * 
 	 * @throws DataStoreException
 	 */
 	public void initialize() throws DataStoreException;
 
 	/**
 	 * Closing all connections to the Database
+	 * 
 	 * @throws DataStoreException
 	 */
 	public void shutdown() throws DataStoreException;
 
 	/**
-	 * loadPlayerStats - Loading <count> records of Player Stats from the Database 
+	 * loadPlayerStats - Loading <count> records of Player Stats from the
+	 * Database
+	 * 
 	 * @param type
 	 * @param period
 	 * @param count
 	 * @return List<StatStore>
 	 * @throws DataStoreException
 	 */
-	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count)
-			throws DataStoreException;
+	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException;
 
 	/**
 	 * Save a Set of Player Stats to the Database
+	 * 
 	 * @param stats
 	 * @throws DataStoreException
 	 */
@@ -41,24 +47,24 @@ public interface IDataStore {
 
 	/**
 	 * Load a Players Archievements
+	 * 
 	 * @param player
 	 * @return
 	 * @throws DataStoreException
 	 */
-	public Set<AchievementStore> loadAchievements(OfflinePlayer player)
-			throws DataStoreException;
+	public Set<AchievementStore> loadAchievements(OfflinePlayer player) throws DataStoreException;
 
 	/**
 	 * Save a Set of players archievements
+	 * 
 	 * @param achievements
 	 * @throws DataStoreException
 	 */
-	public void saveAchievements(Set<AchievementStore> achievements)
-			throws DataStoreException;
+	public void saveAchievements(Set<AchievementStore> achievements) throws DataStoreException;
 
 	/**
-	 * Get the player by his name from the Database. 
-	 *ings @param name
+	 * Get the player by his name from the Database. ings @param name
+	 * 
 	 * @return
 	 * @throws DataStoreException
 	 */
@@ -66,34 +72,43 @@ public interface IDataStore {
 
 	/**
 	 * Get the players Settings from the Database
+	 * 
 	 * @param player
 	 * @return
 	 * @throws DataStoreException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public PlayerSettings getPlayerSettings(OfflinePlayer player)
-			throws DataStoreException, SQLException;
+	public PlayerSettings getPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException;
 
 	/**
 	 * Update the players Settings in the Database
+	 * 
 	 * @param playerDataSet
 	 * @throws DataStoreException
 	 */
-	public void updatePlayerSettings(Set<PlayerSettings> playerDataSet)
-			throws DataStoreException;
+	public void updatePlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException;
 
 	/**
 	 * Insert all PlayerData for one player into the Database
+	 * 
 	 * @param playerDataSet
 	 * @throws DataStoreException
 	 */
-	public void insertPlayerSettings(Set<PlayerSettings> playerDataSet)
-			throws DataStoreException;
-	
+	public void insertPlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException;
+
 	/**
 	 * Fixes error in the database
+	 * 
 	 * @throws SQLException
 	 */
 	public void databaseFixLeaderboard() throws SQLException;
+
+	public Set<Bounty> requestBounties(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException;
+
+	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
+
+	public void updateBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
+
+	public Set<Bounty> loadBounties(OfflinePlayer mPlayer);
 
 }

@@ -282,8 +282,9 @@
 		<repository>
 			<id>battleplugins-net</id>
 			<name>BattlePlugins</name>
-			<!-- <url>http://battleplugins.com/maven</url> -->
-			<url>https://github.com/BattlePlugins/BattleArena.git</url>
+			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
+			<!-- <url>http://battleplugins.com/maven</url> 
+			<url>https://github.com/BattlePlugins/BattleArena.git</url>-->
 		</repository>
 
 	</repositories>

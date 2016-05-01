@@ -2,15 +2,17 @@ package one.lindegaard.MobHunting;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.MobHunting.achievements.*;
+import one.lindegaard.MobHunting.bounty.Bounties;
+import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
 import one.lindegaard.MobHunting.commands.BountyCommand;
 import one.lindegaard.MobHunting.commands.CheckGrindingCommand;
@@ -65,7 +67,7 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -99,19 +101,21 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private static Economy mEconomy;
 	private static MobHunting instance;
 
-	private MobHuntingManager mMobHuntingManager;
-	private AreaManager mAreaManager;
-	private LeaderboardManager mLeaderboardManager;
-	private AchievementManager mAchievementManager;
-	private ParticleManager mParticleManager = new ParticleManager();
-	private MetricsManager mMetricsManager;
+	private static MobHuntingManager mMobHuntingManager;
+	private static AreaManager mAreaManager;
+	private static LeaderboardManager mLeaderboardManager;
+	private static AchievementManager mAchievementManager;
+	private static BountyManager mBountyManager;
+	private static ParticleManager mParticleManager = new ParticleManager();
+	private static MetricsManager mMetricsManager;
+	private static PlayerSettingsManager mPlayerSettingsManager;
+	private static WorldGroupManager mWorldGroupManager;
 
-	private IDataStore mStore;
-	private DataStoreManager mStoreManager;
+	private static IDataStore mStore;
+	private static DataStoreManager mStoreManager;
 	private static ConfigManager mConfig;
-	private HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
 
-	private WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
+	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 
 	private Set<IModifier> mModifiers = new HashSet<IModifier>();
 
@@ -139,6 +143,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			mConfig.saveConfig();
 		else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
+		
+		mWorldGroupManager = new WorldGroupManager();
+		mWorldGroupManager.load();
 
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager()
 				.getRegistration(Economy.class);
@@ -207,18 +214,19 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new ReloadCommand());
 		cmd.registerCommand(new UpdateCommand());
 		cmd.registerCommand(new VersionCommand());
-		cmd.registerCommand(new LearnCommand(this));
-		cmd.registerCommand(new MuteCommand(this));
+		cmd.registerCommand(new LearnCommand());
+		cmd.registerCommand(new MuteCommand());
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
 			cmd.registerCommand(new NpcCommand());
 		}
 		cmd.registerCommand(new DatabaseCommand());
 
-		// TODO: enable
+		mBountyManager = new BountyManager(this);
 		if (!mConfig.disablePlayerBounties) {
 			debug("Enabling Bounty command");
-			cmd.registerCommand(new BountyCommand(this));
-			BountyManager.initialize(this);
+			cmd.registerCommand(new BountyCommand());
+			//mBountyManager.initialize(this);
+			debug("BountyManager Size=%s",mBountyManager.getBounties().size());
 		}
 
 		registerModifiers();
@@ -242,15 +250,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
-		mInitialized = true;
-
+		mPlayerSettingsManager = new PlayerSettingsManager();
 		if (mMobHuntingManager.getOnlinePlayersAmount() > 0)
 			debug("onReload: loading %s players from the database", mMobHuntingManager.getOnlinePlayersAmount());
 		for (Player player : mMobHuntingManager.getOnlinePlayers()) {
-			boolean learning_mode = getDataStore().getPlayerSettings(player).isLearningMode();
-			boolean muted = getDataStore().getPlayerSettings(player).isMuted();
-			addPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
+			boolean learning_mode = getDataStoreManager().getPlayerSettings(player).isLearningMode();
+			boolean muted = getDataStoreManager().getPlayerSettings(player).isMuted();
+			mPlayerSettingsManager.putPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
 		}
+
+		mInitialized = true;
 
 	}
 
@@ -275,7 +284,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mLeaderboardManager.shutdown();
 		mAreaManager.shutdown();
 		// TODO: enable
-		BountyManager.shutdown();
+		mBountyManager.shutdown();
 
 		mModifiers.clear();
 
@@ -286,6 +295,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 		CitizensCompat.shutdown();
+		mWorldGroupManager.save();
 	}
 
 	private void registerModifiers() {
@@ -313,12 +323,95 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
+	// ************************************************************************************
+	// Managers and handlers
+	// ************************************************************************************
+	public static MobHunting getInstance() {
+		return instance;
+	}
+
 	public static Economy getEconomy() {
 		return mEconomy;
 	}
 
 	public static ConfigManager getConfigManager() {
 		return mConfig;
+	}
+
+	/**
+	 * Gets the MobHuntingHandler
+	 * 
+	 * @return MobHuntingManager
+	 */
+	public static MobHuntingManager getMobHuntingManager() {
+		return mMobHuntingManager;
+	}
+
+	/**
+	 * Gets the DamageInformation for a LivingEntity
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public static DamageInformation getDamageInformation(LivingEntity entity) {
+		return mDamageHistory.get(entity);
+	}
+
+	/**
+	 * Get all Achievements for all players.
+	 * 
+	 * @return
+	 */
+	public static AchievementManager getAchievements() {
+		return mAchievementManager;
+	}
+
+	/**
+	 * Gets the Database Store Manager
+	 * 
+	 * @return
+	 */
+	public static DataStoreManager getDataStoreManager() {
+		return mStoreManager;
+	}
+
+	/**
+	 * Gets the LeaderboardManager
+	 * 
+	 * @return
+	 */
+	public static LeaderboardManager getLeaderboardManager() {
+		return mLeaderboardManager;
+	}
+
+	/**
+	 * Get the BountyManager
+	 * 
+	 * @return
+	 */
+	public static BountyManager getBountyManager() {
+		return mBountyManager;
+	}
+
+	/**
+	 * Get the AreaManager
+	 * 
+	 * @return
+	 */
+	public static AreaManager getAreaManager() {
+		return mAreaManager;
+	}
+
+	/**
+	 * Get all WorldGroups and their worlds
+	 * @return
+	 */
+	public static WorldGroupManager getWorldGroupManager(){
+		return mWorldGroupManager;
+	}
+	
+	public static PlayerSettingsManager getPlayerSettingsmanager() {
+		return mPlayerSettingsManager;
 	}
 
 	public void registerModifier(IModifier modifier) {
@@ -332,15 +425,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	public static void learn(Player player, String text, Object... args) {
 		if (player instanceof Player && !CitizensCompat.isNPC(player)) {
-			if (instance.getPlayerSettings(player).isLearningMode())
+			if (mPlayerSettingsManager.getPlayerSettings(player).isLearningMode())
 				player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
 						+ String.format(text, args));
 		}
 	}
 
+	// ************************************************************************************
+	// EVENTS
+	// ************************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerDeath(PlayerDeathEvent event) {
-		if (!MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
+		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
 				|| !mMobHuntingManager.isHuntEnabled(event.getEntity()))
 			return;
 
@@ -356,7 +452,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!(event.getEntity() instanceof Player))
 			return;
 
-		if (!MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
+		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())
 				|| !mMobHuntingManager.isHuntEnabled((Player) event.getEntity()))
 			return;
 
@@ -372,7 +468,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
 		// TODO: can Skeleton use other weapons than an Arrow?
 		if (!(event.getEntity() instanceof Arrow) || !(event.getEntity().getShooter() instanceof Skeleton)
-				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
+				|| !mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		Skeleton shooter = (Skeleton) event.getEntity().getShooter();
@@ -398,7 +494,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDamage(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity)
-				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
+				|| !mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
@@ -529,11 +625,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 		LivingEntity killed = event.getEntity();
+		debug("EntityDies=%s", killed.getName());
 		Player killer = killed.getKiller();
 		if (killer == null)
 			return;
 
-		if (!MobHuntingManager.isHuntEnabledInWorld(killed.getWorld())) {
+		if (!mMobHuntingManager.isHuntEnabledInWorld(killed.getWorld())) {
 			if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 				if (killer instanceof Player || MyPetCompat.isMyPet(killer)) {
 					ApplicableRegionSet set = WorldGuardCompat.getWorldGuardPlugin().getRegionManager(killer.getWorld())
@@ -724,12 +821,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		boolean killer_muted = false;
 		boolean killed_muted = false;
-		if (mPlayerSettings.containsKey(killer.getUniqueId())) {
-			killer_muted = mPlayerSettings.get(killer.getUniqueId()).isMuted();
+		if (mPlayerSettingsManager.containsKey(killer)) {
+			killer_muted = mPlayerSettingsManager.getPlayerSettings(killer).isMuted();
 			debug("killer.getMuteMode=%s", killer_muted);
 		}
-		if (mPlayerSettings.containsKey(killed.getUniqueId()))
-			killed_muted = mPlayerSettings.get(killed.getUniqueId()).isMuted();
+		if (mPlayerSettingsManager.containsKey(killed))
+			killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) killed).isMuted();
 
 		if (!info.playerUndercover)
 			if (DisguisesHelper.isDisguised(killer)) {
@@ -744,7 +841,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 						killed.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ Messages.getString("bonus.undercover.message", "cause", killer.getName()));
 				}
-
 			}
 
 		if (!info.mobCoverBlown)
@@ -764,22 +860,20 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 		HuntData data = mMobHuntingManager.getHuntData(killer);
-		// if (data == null)
-		// debug("DATA WAS NULL!!!!!!!!!!!!!!!!");
 
 		Misc.handleKillstreak(killer);
 
 		// Record kills that are still within a small area
 		Location loc = killed.getLocation();
 
-		Area detectedGrindingArea = AreaManager.getGrindingArea(loc);
+		Area detectedGrindingArea = mAreaManager.getGrindingArea(loc);
 
 		if (detectedGrindingArea == null)
 			detectedGrindingArea = data.getGrindingArea(loc);
 
 		// Slimes are except from grinding due to their splitting nature
 		if (!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable
-				&& !killed.hasMetadata("MH:reinforcement") && !AreaManager.isWhitelisted(killed.getLocation())) {
+				&& !killed.hasMetadata("MH:reinforcement") && !mAreaManager.isWhitelisted(killed.getLocation())) {
 			if (detectedGrindingArea != null) {
 				data.lastKillAreaCenter = null;
 				data.setDampenedKills(detectedGrindingArea.count++);
@@ -846,6 +940,37 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		cash *= multiplier;
 
+		// Handle Bounty Kills
+		double reward = 0;
+		if (killed instanceof Player && killer instanceof Player) {
+			debug("This was a Pvp kill (killed=%s) no af bounties=%s", killed.getName(),
+					mBountyManager.getBounties().size());
+			if (mBountyManager.hasBounties((OfflinePlayer) killed)) {
+				debug("There is a bounty on %s");
+				Bounties bounties = mBountyManager.getBounties().get(killed);
+				for (Entry<OfflinePlayer, List<Bounty>> entry : bounties.getBounties().entrySet()) {
+					reward += entry.getValue().getPrize();
+					OfflinePlayer bountyOwner = entry.getValue().getBountyOwner();
+					mBountyManager.removeBounty((OfflinePlayer) killed, entry.getKey());
+					debug("AcummulatedReward=%s removedBountyOwner=%s", reward, entry.getKey().getName());
+					if (bountyOwner.isOnline())
+						((Player) bountyOwner).sendMessage(bountyOwner.getName() + " claimed the bounty ("
+								+ entry.getValue().getPrize() + ") you had put on " + killed.getName());
+				}
+				// getEconomy().depositPlayer(killer, reward);
+				// killer.sendMessage(Messages.getString(key),"killer",killer);
+				killer.sendMessage("You got " + reward + " in bounty for killing " + killed.getName());
+				// TODO: call bounty event, and check if canceled.
+				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
+						killed.hasMetadata("MH:hasBonus"));
+				// return;
+			} else {
+				debug("There is no Bounty on %s", killed.getName());
+			}
+		}
+
+		cash += reward;
+
 		if ((cash >= 0.01) || (cash <= -0.01)) {
 			// TODO: This must be moved, only works for cash!=0
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, killer);
@@ -895,7 +1020,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			// TODO: record mythicmob kills as its own kind of mobs
 			if (ExtendedMobType.getExtendedMobType(killed) != null)
-				getDataStore().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
+				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));
 
 			if (!killer_muted)
@@ -976,7 +1101,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cash = mConfig.getBaseKillPrize(killed) * multiplier;
 
 		if (cash >= 0.01) {
-			getDataStore().recordAssist(player, killer, ExtendedMobType.getExtendedMobType(killed),
+			getDataStoreManager().recordAssist(player, killer, ExtendedMobType.getExtendedMobType(killed),
 					killed.hasMetadata("MH:hasBonus"));
 			mEconomy.depositPlayer(player, cash);
 			debug("%s got a on assist reward (%s)", player.getName(), mEconomy.format(cash));
@@ -1003,21 +1128,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}.runTaskLater(instance, 20L);
 		}
-		boolean learning_mode = getDataStore().getPlayerSettings(player).isLearningMode();
-		boolean muted = getDataStore().getPlayerSettings(player).isMuted();
-		if (muted)
-			debug("%s isMuted()", player.getName());
-		if (learning_mode)
-			debug("%s is in LearningMode()", player.getName());
-
-		addPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
-		mStoreManager.createPlayerSettings(player, learning_mode, muted);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerQuit(PlayerQuitEvent event) {
-		Player player = event.getPlayer();
-		mPlayerSettings.remove(player.getUniqueId());
+		// Player player = event.getPlayer();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -1028,7 +1143,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (event.getEntityType() == EntityType.ENDER_DRAGON)
 			return;
 
-		if (!MobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
+		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
 				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0
 						&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
@@ -1052,7 +1167,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(event.getEntity()))
 			return;
 
-		if (!MobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
+		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
 				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
 						&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
@@ -1066,7 +1181,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void reinforcementMobSpawn(CreatureSpawnEvent event) {
-		if (!MobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
+		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
 				|| (mConfig.getBaseKillPrize(event.getEntity()) <= 0)
 						&& mConfig.getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
@@ -1121,80 +1236,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return true;
 			}
 		}
-	}
-
-	/**
-	 * Returns the MobHunting object
-	 *
-	 * @return the instance
-	 */
-	public static MobHunting getInstance() {
-		return instance;
-	}
-
-	/**
-	 * Gets the MobHuntingHandler
-	 * 
-	 * @return MobHuntingManager
-	 */
-	public MobHuntingManager getMobHuntingManager() {
-		return mMobHuntingManager;
-	}
-
-	/**
-	 * Gets the DamageInformation for a LivingEntity
-	 * 
-	 * @param entity
-	 * @return
-	 */
-	public DamageInformation getDamageInformation(LivingEntity entity) {
-		return mDamageHistory.get(entity);
-	}
-
-	/**
-	 * Get all Achievements for all players.
-	 * 
-	 * @return
-	 */
-	public AchievementManager getAchievements() {
-		return mAchievementManager;
-	}
-
-	/**
-	 * Gets the Database Store Manager
-	 * 
-	 * @return
-	 */
-	public DataStoreManager getDataStore() {
-		return mStoreManager;
-	}
-
-	/**
-	 * Gets the LeaderboardManager
-	 * 
-	 * @return
-	 */
-	public LeaderboardManager getLeaderboardManager() {
-		return mLeaderboardManager;
-	}
-
-	/**
-	 * Get playerSettings from memory
-	 * 
-	 * @param player
-	 * @return PlayerSettings
-	 */
-	public PlayerSettings getPlayerSettings(Player player) {
-		return mPlayerSettings.get(player.getUniqueId());
-	}
-
-	/**
-	 * Store playerSettings in memory
-	 * 
-	 * @param playerSettings
-	 */
-	public void addPlayerSettings(Player player, PlayerSettings playerSettings) {
-		mPlayerSettings.put(player.getUniqueId(), playerSettings);
 	}
 
 	// ************************************************************************************

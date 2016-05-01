@@ -36,8 +36,7 @@ public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 	public MasterMobHunterData() {
 	}
 
-	public MasterMobHunterData(int id, StatType statType, TimePeriod period,
-			int numberOfKills, int rank) {
+	public MasterMobHunterData(int id, StatType statType, TimePeriod period, int numberOfKills, int rank) {
 		this.id = id;
 		this.statType = statType;
 		this.period = period;
@@ -107,16 +106,14 @@ public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 	}
 
 	private boolean isLoaded(Block block) {
-		return (block.getWorld().isChunkLoaded(block.getX() >> 4,
-				block.getZ() >> 4));
+		return (block.getWorld().isChunkLoaded(block.getX() >> 4, block.getZ() >> 4));
 	}
 
 	// ***********************************************************************************
 	// RequestStats / DataCallBack
 	// ***********************************************************************************
 	public void update() {
-		MobHunting.getInstance().getDataStore().requestStats(statType, period, 25,
-				this);
+		MobHunting.getDataStoreManager().requestStats(statType, period, 25, this);
 	}
 
 	public List<StatStore> getCurrentStats() {
@@ -147,8 +144,7 @@ public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 		if (npc != null) {
 			if (rank < stats.size() + 1) {
 				if (rank != 0) {
-					if (!stats.get(rank - 1).getPlayer().getName()
-							.equals(npc.getName())) {
+					if (!stats.get(rank - 1).getPlayer().getName().equals(npc.getName())) {
 						npc.setName(stats.get(rank - 1).getPlayer().getName());
 					}
 					this.numberOfKills = stats.get(rank - 1).getAmount();
@@ -158,23 +154,16 @@ public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 						Block sb = loc.getBlock();
 						if (isLoaded(sb)) {
 							if (MasterMobhunterSign.isSign(sb)) {
-								org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb
-										.getState();
+								org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
 								s.setLine(1, (this.rank + ". " + npc.getName()));
-								s.setLine(2,
-										(this.period.translateNameFriendly()));
-								s.setLine(3, (stats.get(rank - 1).getAmount()
-										+ " " + this.statType.translateName()));
+								s.setLine(2, (this.period.translateNameFriendly()));
+								s.setLine(3, (stats.get(rank - 1).getAmount() + " " + this.statType.translateName()));
 								s.update();
 								if (MasterMobhunterSign.isMHSign(sb)) {
 									@SuppressWarnings("deprecation")
-									OfflinePlayer player = Bukkit.getPlayer(npc
-											.getName());
+									OfflinePlayer player = Bukkit.getPlayer(npc.getName());
 									if (player != null && player.isOnline())
-										MasterMobhunterSign
-												.setPower(
-														sb,
-														MasterMobhunterSign.POWER_FROM_SIGN);
+										MasterMobhunterSign.setPower(sb, MasterMobhunterSign.POWER_FROM_SIGN);
 								}
 							} else {
 								loc.zero();
@@ -203,19 +192,16 @@ public class MasterMobHunterData implements IDataCallback<List<StatStore>> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void read(ConfigurationSection section)
-			throws InvalidConfigurationException, IllegalStateException {
+	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
 		id = Integer.valueOf(section.getString("id"));
 		statType = StatType.fromColumnName(section.getString("stattype"));
 		period = TimePeriod.parsePeriod(section.getString("period"));
 		numberOfKills = Integer.valueOf(section.getInt("kills"));
 		rank = Integer.valueOf(section.getInt("rank"));
 		if (section.contains("world"))
-			world = Bukkit
-					.getWorld(UUID.fromString(section.getString("world")));
+			world = Bukkit.getWorld(UUID.fromString(section.getString("world")));
 		if (section.contains("signs")) {
-			signLocations = (List<Location>) section
-					.get("signs", signLocations);
+			signLocations = (List<Location>) section.get("signs", signLocations);
 		}
 	}
 

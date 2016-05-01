@@ -114,7 +114,7 @@ public class LegacyLeaderboard implements IDataCallback<List<StatStore>> {
 	}
 
 	public void updateBoard() {
-		MobHunting.getInstance().getDataStore().requestStats(mType, mPeriod,
+		MobHunting.getDataStoreManager().requestStats(mType, mPeriod,
 				countSigns() * 4, this);
 	}
 

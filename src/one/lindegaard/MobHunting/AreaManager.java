@@ -24,7 +24,7 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class AreaManager implements Listener {
 
-	MobHunting instance;
+	private MobHunting instance;
 	private static ArrayList<Area> mKnownGrindingSpots = new ArrayList<Area>();
 	private static HashMap<UUID, LinkedList<Area>> mWhitelistedAreas = new HashMap<UUID, LinkedList<Area>>();
 
@@ -35,7 +35,7 @@ public class AreaManager implements Listener {
 		instance.getServer().getPluginManager().registerEvents(this, instance);
 	}
 
-	public static ArrayList<Area> getKnownGrindingSpots() {
+	public ArrayList<Area> getKnownGrindingSpots() {
 		return mKnownGrindingSpots;
 	}
 
@@ -51,7 +51,7 @@ public class AreaManager implements Listener {
 		saveWhitelist();
 	}
 
-	private static boolean saveWhitelist() {
+	private boolean saveWhitelist() {
 		YamlConfiguration whitelist = new YamlConfiguration();
 		File file = new File(MobHunting.getInstance().getDataFolder(), "whitelist.yml");
 
@@ -117,7 +117,7 @@ public class AreaManager implements Listener {
 		return true;
 	}
 
-	public static boolean isWhitelisted(Location location) {
+	public boolean isWhitelisted(Location location) {
 		LinkedList<Area> areas = mWhitelistedAreas.get(location.getWorld().getUID());
 
 		if (areas == null)
@@ -131,7 +131,7 @@ public class AreaManager implements Listener {
 		return false;
 	}
 
-	public static void whitelistArea(Area newArea) {
+	public void whitelistArea(Area newArea) {
 		LinkedList<Area> areas = mWhitelistedAreas.get(newArea.center.getWorld().getUID());
 
 		if (areas == null) {
@@ -163,7 +163,7 @@ public class AreaManager implements Listener {
 		saveWhitelist();
 	}
 
-	public static void unWhitelistArea(Location location) {
+	public void unWhitelistArea(Location location) {
 		LinkedList<Area> areas = mWhitelistedAreas.get(location.getWorld().getUID());
 
 		if (areas == null)
@@ -208,7 +208,7 @@ public class AreaManager implements Listener {
 		addKnownGrindingSpot(newArea);
 	}
 
-	public static Area getGrindingArea(Location location) {
+	public Area getGrindingArea(Location location) {
 		for (Area area : getKnownGrindingSpots()) {
 			if (area.center.getWorld().equals(location.getWorld())) {
 				if (area.center.distance(location) < area.range)
@@ -219,7 +219,7 @@ public class AreaManager implements Listener {
 		return null;
 	}
 
-	public static void clearGrindingArea(Location location) {
+	public void clearGrindingArea(Location location) {
 		Iterator<Area> it = getKnownGrindingSpots().iterator();
 		while (it.hasNext()) {
 			Area area = it.next();

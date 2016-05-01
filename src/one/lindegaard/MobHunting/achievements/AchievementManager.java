@@ -74,7 +74,7 @@ public class AchievementManager implements Listener {
 		if (achievement instanceof Listener)
 			Bukkit.getPluginManager().registerEvents((Listener) achievement, MobHunting.getInstance());
 	}
-	
+
 	public void registerAchievements() {
 		registerAchievement(new AxeMurderer());
 		registerAchievement(new CreeperBoxing());
@@ -100,8 +100,6 @@ public class AchievementManager implements Listener {
 			registerAchievement(new SeventhHuntAchievement(type));
 		}
 	}
-
-
 
 	public boolean hasAchievement(String achievement, Player player) {
 		return hasAchievement(getAchievement(achievement), player);
@@ -170,43 +168,44 @@ public class AchievementManager implements Listener {
 			return;
 		}
 
+		MobHunting.getInstance();
 		// Look through the data store for offline players
-		MobHunting.getInstance().getDataStore().requestAllAchievements(player,
-				new IDataCallback<Set<AchievementStore>>() {
-					@Override
-					public void onError(Throwable error) {
-						callback.onError(error);
+		MobHunting.getDataStoreManager().requestAllAchievements(player, new IDataCallback<Set<AchievementStore>>() {
+			@Override
+			public void onError(Throwable error) {
+				callback.onError(error);
+			}
+
+			@Override
+			public void onCompleted(Set<AchievementStore> data) {
+				List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
+				ArrayList<Map.Entry<Achievement, Integer>> toRemove = new ArrayList<Map.Entry<Achievement, Integer>>();
+
+				for (AchievementStore stored : data) {
+					if (mAchievements.containsKey(stored.id)) {
+						Achievement achievement = mAchievements.get(stored.id);
+						achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement,
+								stored.progress));
+
+						// If the achievement is a higher level, remove
+						// the lower level from the list
+						if (stored.progress == -1 && achievement instanceof ProgressAchievement
+								&& ((ProgressAchievement) achievement).inheritFrom() != null)
+							toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
+									getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
 					}
+				}
 
-					@Override
-					public void onCompleted(Set<AchievementStore> data) {
-						List<Map.Entry<Achievement, Integer>> achievements = new ArrayList<Map.Entry<Achievement, Integer>>();
-						ArrayList<Map.Entry<Achievement, Integer>> toRemove = new ArrayList<Map.Entry<Achievement, Integer>>();
+				achievements.removeAll(toRemove);
 
-						for (AchievementStore stored : data) {
-							if (mAchievements.containsKey(stored.id)) {
-								Achievement achievement = mAchievements.get(stored.id);
-								achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement,
-										stored.progress));
-
-								// If the achievement is a higher level, remove
-								// the lower level from the list
-								if (stored.progress == -1 && achievement instanceof ProgressAchievement
-										&& ((ProgressAchievement) achievement).inheritFrom() != null)
-									toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
-											getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
-							}
-						}
-
-						achievements.removeAll(toRemove);
-
-						callback.onCompleted(achievements);
-					}
-				});
+				callback.onCompleted(achievements);
+			}
+		});
 	}
 
 	/**
 	 * Get a Collection of all Achievements
+	 * 
 	 * @return a Collection of achievements.
 	 */
 	public Collection<Achievement> getAllAchievements() {
@@ -215,6 +214,7 @@ public class AchievementManager implements Listener {
 
 	/**
 	 * List all Achievements done by the player / command sender
+	 * 
 	 * @param sender
 	 */
 	public void listAllAchievements(CommandSender sender) {
@@ -224,9 +224,10 @@ public class AchievementManager implements Listener {
 			sender.sendMessage(a.getID() + "---" + a.getName() + "---" + a.getDescription());
 		}
 	}
-	
+
 	/**
 	 * Award the player when he make an Achievement
+	 * 
 	 * @param achievement
 	 * @param player
 	 */
@@ -241,8 +242,8 @@ public class AchievementManager implements Listener {
 	 * @param except
 	 */
 	public void broadcast(String message, Player except) {
-		Iterator<Player> players = MobHunting.getInstance().getMobHuntingManager().getOnlinePlayers().iterator();
-		while (players.hasNext()){
+		Iterator<Player> players = MobHunting.getMobHuntingManager().getOnlinePlayers().iterator();
+		while (players.hasNext()) {
 			Player player = players.next();
 			if (player.equals(except))
 				continue;
@@ -252,6 +253,7 @@ public class AchievementManager implements Listener {
 
 	/**
 	 * Award the player when he make an Achievement
+	 * 
 	 * @param achievement
 	 * @param player
 	 */
@@ -263,7 +265,8 @@ public class AchievementManager implements Listener {
 		if (storage == null)
 			return;
 
-		MobHunting.getInstance().getDataStore().recordAchievement(player, achievement);
+		MobHunting.getInstance();
+		MobHunting.getDataStoreManager().recordAchievement(player, achievement);
 
 		storage.gainedAchievements.add(achievement.getID());
 		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name",
@@ -362,7 +365,8 @@ public class AchievementManager implements Listener {
 		else {
 			storage.progressAchievements.put(achievement.getID(), nextProgress);
 
-			MobHunting.getInstance().getDataStore().recordAchievementProgress(player, achievement, nextProgress);
+			MobHunting.getInstance();
+			MobHunting.getDataStoreManager().recordAchievementProgress(player, achievement, nextProgress);
 
 			int segment = Math.min(25, maxProgress / 2);
 
@@ -391,14 +395,15 @@ public class AchievementManager implements Listener {
 				if (config.isList(player)) {
 					for (Object obj : (List<Object>) config.getList(player)) {
 						if (obj instanceof String) {
-							MobHunting.getInstance().getDataStore().recordAchievement(Bukkit.getOfflinePlayer(player),
+							MobHunting.getInstance();
+							MobHunting.getDataStoreManager().recordAchievement(Bukkit.getOfflinePlayer(player),
 									getAchievement((String) obj));
 						} else if (obj instanceof Map) {
 							Map<String, Integer> map = (Map<String, Integer>) obj;
 							String id = map.keySet().iterator().next();
-							MobHunting.getInstance().getDataStore().recordAchievementProgress(
-									Bukkit.getOfflinePlayer(player), (ProgressAchievement) getAchievement(id),
-									(Integer) map.get(id));
+							MobHunting.getInstance();
+							MobHunting.getDataStoreManager().recordAchievementProgress(Bukkit.getOfflinePlayer(player),
+									(ProgressAchievement) getAchievement(id), (Integer) map.get(id));
 						}
 					}
 				}
@@ -422,58 +427,59 @@ public class AchievementManager implements Listener {
 
 		mStorage.put(player, storage);
 
-		if (!player.hasPermission("mobhunting.achievements.disabled")||player.hasPermission("*")) {
+		if (!player.hasPermission("mobhunting.achievements.disabled") || player.hasPermission("*")) {
 
-			MobHunting.getInstance().getDataStore().requestAllAchievements(player,
-					new IDataCallback<Set<AchievementStore>>() {
-						@Override
-						public void onError(Throwable error) {
-							if (error instanceof UserNotFoundException)
-								storage.enableAchievements = true;
-							else {
-								error.printStackTrace();
-								player.sendMessage(Messages.getString("achievements.load-fail"));
-								storage.enableAchievements = false;
+			MobHunting.getInstance();
+			MobHunting.getDataStoreManager().requestAllAchievements(player, new IDataCallback<Set<AchievementStore>>() {
+				@Override
+				public void onError(Throwable error) {
+					if (error instanceof UserNotFoundException)
+						storage.enableAchievements = true;
+					else {
+						error.printStackTrace();
+						player.sendMessage(Messages.getString("achievements.load-fail"));
+						storage.enableAchievements = false;
+					}
+				}
+
+				@Override
+				public void onCompleted(Set<AchievementStore> data) {
+					for (AchievementStore achievement : data) {
+						if (achievement.progress == -1)
+							storage.gainedAchievements.add(achievement.id);
+						else
+							storage.progressAchievements.put(achievement.id, achievement.progress);
+					}
+
+					// Fix achievement errors where an upper level
+					// progress
+					// achievement is in progress/complete, but a lower
+					// level one is not
+					HashSet<String> toRemove = new HashSet<String>();
+					for (Entry<String, Integer> prog : storage.progressAchievements.entrySet()) {
+						Achievement raw = getAchievement(prog.getKey());
+						if (raw instanceof ProgressAchievement) {
+							ProgressAchievement achievement = (ProgressAchievement) raw;
+							while (achievement.inheritFrom() != null) {
+								String parent = achievement.inheritFrom();
+
+								if (storage.progressAchievements.containsKey(parent))
+									toRemove.add(parent);
+								achievement = (ProgressAchievement) getAchievement(parent);
 							}
 						}
+					}
 
-						@Override
-						public void onCompleted(Set<AchievementStore> data) {
-							for (AchievementStore achievement : data) {
-								if (achievement.progress == -1)
-									storage.gainedAchievements.add(achievement.id);
-								else
-									storage.progressAchievements.put(achievement.id, achievement.progress);
-							}
+					storage.gainedAchievements.addAll(toRemove);
+					for (String id : toRemove) {
+						storage.progressAchievements.remove(id);
+						MobHunting.getInstance();
+						MobHunting.getDataStoreManager().recordAchievement(player, getAchievement(id));
+					}
 
-							// Fix achievement errors where an upper level
-							// progress
-							// achievement is in progress/complete, but a lower
-							// level one is not
-							HashSet<String> toRemove = new HashSet<String>();
-							for (Entry<String, Integer> prog : storage.progressAchievements.entrySet()) {
-								Achievement raw = getAchievement(prog.getKey());
-								if (raw instanceof ProgressAchievement) {
-									ProgressAchievement achievement = (ProgressAchievement) raw;
-									while (achievement.inheritFrom() != null) {
-										String parent = achievement.inheritFrom();
-
-										if (storage.progressAchievements.containsKey(parent))
-											toRemove.add(parent);
-										achievement = (ProgressAchievement) getAchievement(parent);
-									}
-								}
-							}
-
-							storage.gainedAchievements.addAll(toRemove);
-							for (String id : toRemove) {
-								storage.progressAchievements.remove(id);
-								MobHunting.getInstance().getDataStore().recordAchievement(player, getAchievement(id));
-							}
-
-							storage.enableAchievements = true;
-						}
-					});
+					storage.enableAchievements = true;
+				}
+			});
 		} else {
 			MobHunting.debug(
 					"achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",

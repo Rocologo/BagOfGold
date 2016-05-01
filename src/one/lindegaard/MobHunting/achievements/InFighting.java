@@ -12,7 +12,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobHuntingManager;
 
 public class InFighting implements Achievement, Listener {
 
@@ -39,7 +38,7 @@ public class InFighting implements Achievement, Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onDeath(EntityDeathEvent event) {
 		if (!(event.getEntity() instanceof Skeleton)
-				|| !MobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld()))
+				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
 		Skeleton killed = (Skeleton) event.getEntity();
@@ -54,8 +53,8 @@ public class InFighting implements Achievement, Listener {
 
 			if (killed.getTarget() == skele && skele.getTarget() == killed) {
 				DamageInformation a, b;
-				a = MobHunting.getInstance().getDamageInformation(killed);
-				b = MobHunting.getInstance().getDamageInformation(skele);
+				a = MobHunting.getDamageInformation(killed);
+				b = MobHunting.getDamageInformation(skele);
 
 				Player initiator = null;
 				if (a != null)
@@ -64,8 +63,8 @@ public class InFighting implements Achievement, Listener {
 				if (b != null && initiator == null)
 					initiator = b.attacker;
 
-				if (initiator != null && MobHunting.getInstance().getMobHuntingManager().isHuntEnabled(initiator))
-					MobHunting.getInstance().getAchievements().awardAchievement(this, initiator);
+				if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator))
+					MobHunting.getAchievements().awardAchievement(this, initiator);
 			}
 		}
 	}

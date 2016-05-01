@@ -1,74 +1,115 @@
 package one.lindegaard.MobHunting.bounty;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
+
+import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.achievements.Achievement;
+import one.lindegaard.MobHunting.achievements.ProgressAchievement;
+import one.lindegaard.MobHunting.storage.AchievementStore;
+import one.lindegaard.MobHunting.storage.IDataCallback;
+import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask.BountyMode;
 
 public class Bounties {
 
-	// index = BountyOwner
-	HashMap<OfflinePlayer, Bounty> bounties = new HashMap<OfflinePlayer, Bounty>();
+	HashMap<OfflinePlayer, List<Bounty>> bounties = new HashMap<OfflinePlayer, List<Bounty>>();
 
 	Bounties() {
 	}
 
 	/**
 	 * Get all bounties on a wantedPlayer
+	 * 
 	 * @return a map of bountyOwners how has put a prize on the wantedPlayer
 	 */
-	public HashMap<OfflinePlayer, Bounty> getBounties() {
+	public HashMap<OfflinePlayer, List<Bounty>> getBounties() {
 		return bounties;
 	}
 
+	public HashMap<OfflinePlayer, List<Bounty>> getBounties(OfflinePlayer player) {
+		//MobHunting.getDataStoreManager().requestBounties(BountyMode.Open, player,
+			//	new IDataCallback<Set<Bounty>>());
+				
+		//MobHunting.getDataStoreManager().requestAllAchievements(player, new IDataCallback<Set<AchievementStore>>()
+		//public void requestCompletedAchievements(OfflinePlayer player,
+		//		final IDataCallback<List<Map.Entry<Achievement, Integer>>> callback)
+		
+		return bounties;
+	}
+	
 	/**
-	 * Set all bounties for the wantedPlayer 
-	 * @param bounties 
+	 * Set all bounties for the wantedPlayer
+	 * 
+	 * @param bounties
 	 */
-	public void setBounties(HashMap<OfflinePlayer, Bounty> bounties) {
+	public void setBounties(HashMap<OfflinePlayer, List<Bounty>> bounties) {
 		this.bounties = bounties;
 	}
 
 	/**
 	 * get the Bounty on the wantedPlayer set by the bountyOwner
+	 * 
 	 * @param bountyOwner
 	 * @return
 	 */
-	public Bounty getBounty(OfflinePlayer bountyOwner) {
+	public List<Bounty> getBounty(OfflinePlayer bountyOwner) {
 		return bounties.get(bountyOwner);
 	}
 
 	/**
-	 * put/add a bounty on the wantedplayer.
-	 * @param bountyOwner
+	 * put/add a bounty on the set of Bounties.
+	 * 
+	 * @param offlinePlayer
 	 * @param bounty
 	 */
-	public void putBounty(OfflinePlayer bountyOwner, Bounty bounty) {
-		Bounty b;
-		if (!bounties.containsKey(bountyOwner)) {
-			b = bounty;
+	public void putBounty(OfflinePlayer offlinePlayer, Bounty bounty) {
+		List<Bounty> bountyList;
+		bountyList=bounties.get(offlinePlayer);
+		
+		if (bountyList.isEmpty()) {
+			bountyList.add(bounty);
 		} else {
-			b = bounties.get(bountyOwner);
-			b.setPrize(b.getPrize() + bounty.getPrize());
-			b.setMessage(bounty.getMessage());
+			for (Bounty b: bountyList){
+				if (b.getBountyId()==bounty.getBountyId()){
+					b.setPrize(b.getPrize() + bounty.getPrize());
+					b.setMessage(bounty.getMessage());
+				}
+			}
 		}
-		bounties.put(bountyOwner, b);
+		bounties.put(offlinePlayer, bountyList);
 	}
 
 	/**
 	 * Check if the wantedPlayer has a bounty set by bountyOwner
+	 * 
 	 * @param bountyOwner
-	 * @return true if the wantedPlayer has a bounty which was put by the bountyOwner.
+	 * @return true if the wantedPlayer has a bounty which was put by the
+	 *         bountyOwner.
 	 */
-	public boolean hasBounty(OfflinePlayer bountyOwner) {
+	public boolean hasBounties(OfflinePlayer bountyOwner) {
 		return bounties.containsKey(bountyOwner);
 	}
+	
+	public boolean hasBounty(OfflinePlayer killed) {
+		if (bounties.containsKey(killed)){
+			for (Bounty temp: bounties.get(killed)){
+				if (temp.getWantedPlayer().equals(killed)) 
+					return true;
+			}
+		}
+		return false;
+	}
+
 
 	/**
 	 * get all bountyOwners who has put a bounty on the wantedPlayer
+	 * 
 	 * @return
 	 */
 	public Set<OfflinePlayer> getBountyOwners() {
@@ -77,41 +118,11 @@ public class Bounties {
 
 	/**
 	 * Remove bounty on wantedPlayer, put by bountyOwner
+	 * 
 	 * @param bountyOwner
 	 */
 	public void removeBounty(OfflinePlayer bountyOwner) {
 		bounties.remove(bountyOwner);
 	}
 
-	// ***************************************************************
-	// write & read
-	// ***************************************************************
-
-	/**
-	 * write all Bounties section on a wantedPlayer into configuration
-	 * @param section
-	 */
-	public void write(ConfigurationSection section) {
-		section.createSection("bounties");
-		for (OfflinePlayer b : bounties.keySet()) {
-			section.createSection("bounties." + b.getUniqueId());
-			bounties.get(b).write(section, b.getUniqueId());
-		}
-	}
-
-	/**
-	 * Read all bounties section for the wantedPlayer from the configuration
-	 * @param section
-	 * @throws InvalidConfigurationException
-	 * @throws IllegalStateException
-	 */
-	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
-		Set<String> keys = section.getKeys(false);
-		for (String uuid : keys) {
-			Bounty bounty = new Bounty();
-			bounty.read(section,UUID.fromString(uuid));
-			bounties.put(bounty.getBountyOwner(), bounty);
-		}
-	}
-
-	}
+}

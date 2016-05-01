@@ -33,7 +33,7 @@ public class AxeMurderer implements Achievement, Listener {
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
 		if (Misc.isAxe(event.getDamageInfo().weapon))
-			MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override

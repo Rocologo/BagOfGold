@@ -32,7 +32,6 @@ public class JustInTime implements Achievement, Listener {
 
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
-		MobHunting.debug("time=%s", event.getKilledEntity().getWorld().getTime());
 		// getTime() return world time in ticks. 0 ticks = 6:00 500=6:30
 		// Zombies begin burning about 5:30 = 23500
 		// player get a reward if he kills between 5:30 and 6:00.
@@ -40,7 +39,7 @@ public class JustInTime implements Achievement, Listener {
 				&& (event.getKilledEntity().getWorld().getTime() >= 23500
 						&& event.getKilledEntity().getWorld().getTime() <= 24000)
 				&& event.getKilledEntity().getFireTicks() > 0)
-			MobHunting.getInstance().getAchievements().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override

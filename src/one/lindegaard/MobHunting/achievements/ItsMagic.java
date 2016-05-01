@@ -33,7 +33,7 @@ public class ItsMagic implements Achievement, Listener {
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
 		if (event.getDamageInfo().weapon.getType() == Material.POTION)
-			MobHunting.getInstance().getAchievements().awardAchievement(this,
+			MobHunting.getAchievements().awardAchievement(this,
 					event.getPlayer());
 	}
 

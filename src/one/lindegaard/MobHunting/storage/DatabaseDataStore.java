@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.bounty.Bounty;
 
 public abstract class DatabaseDataStore implements IDataStore {
 	/**
@@ -24,26 +26,22 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * Args: player id
 	 */
-	protected PreparedStatement mSavePlayerStatsStatement;
+	protected PreparedStatement mSavePlayerStats;
 
 	/**
 	 * Args: player id
 	 */
-	protected PreparedStatement mLoadAchievementsStatement;
+	protected PreparedStatement mLoadAchievements;
 
 	/**
 	 * Args: player id, achievement, date, progress
 	 */
-	protected PreparedStatement mSaveAchievementStatement;
+	protected PreparedStatement mSaveAchievement;
 
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement myAddPlayerStatement;
-	/**
-	 * Args: player uuid
-	 */
-	protected PreparedStatement[] mGetPlayerStatement;
+	protected PreparedStatement[] mGetPlayerData;
 
 	/**
 	 * Args: player name
@@ -58,11 +56,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement mGetPlayerData;
-
-	/**
-	 * Args: player uuid
-	 */
 	protected PreparedStatement mUpdatePlayerSettings;
 
 	/**
@@ -73,7 +66,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement mGetPlayerDATA;
+	protected PreparedStatement mGetBounties;
+
+	/**
+	 * Args: player uuid
+	 */
+	protected PreparedStatement mInsertBounty;
+
+	/**
+	 * Args: player uuid
+	 */
+	protected PreparedStatement mUpdateBounty;
 
 	/**
 	 * Establish initial connection to Database
@@ -86,9 +89,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract void setupTables(Connection connection) throws SQLException;
 
 	public enum PreparedConnectionType {
-		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, UPDATE_PLAYER_SETTINGS, INSERT_PLAYER_DATA, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_SETTINGS, GET_PLAYER_SETTINGS
+		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, 
+		UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, 
+		GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, 
+		GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY
 	};
-	//GET_PLAYER_SETTINGS is unused! 
 
 	/**
 	 * Open a connection to the Database and prepare a statement for executing.
@@ -112,7 +117,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mConnection = setupConnection();
 			mConnection.setAutoCommit(false);
 			setupTables(mConnection);
-			mGetPlayerStatement = new PreparedStatement[4];
+			mGetPlayerData = new PreparedStatement[4];
 
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -130,17 +135,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 		openPreparedStatements(mConnection, PreparedConnectionType.GET5PLAYERS);
 		openPreparedStatements(mConnection, PreparedConnectionType.GET10PLAYERS);
 	}
-	
+
 	/**
 	 * Close all opened connections for batch processing.
 	 * 
 	 * @throws SQLException
 	 */
 	protected void closePreparedGetPlayerStatements() throws SQLException {
-		mGetPlayerStatement[0].close();
-		mGetPlayerStatement[1].close();
-		mGetPlayerStatement[2].close();
-		mGetPlayerStatement[3].close();
+		mGetPlayerData[0].close();
+		mGetPlayerData[1].close();
+		mGetPlayerData[2].close();
+		mGetPlayerData[3].close();
 	}
 
 	/**
@@ -163,13 +168,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void shutdown() throws DataStoreException {
 		try {
-			//closePreparedGetPlayerStatements();
+			// closePreparedGetPlayerStatements();
 			if (mConnection != null) {
 				mConnection.commit();
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				MobHunting.debug("Closing database connection.");
@@ -180,6 +184,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throw new DataStoreException(e);
 		}
 	}
+
+	// ******************************************************************
+	// Player Settings
+	// ******************************************************************
 
 	/**
 	 * getPlayerSettings
@@ -193,8 +201,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	public PlayerSettings getPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException {
 		openPreparedGetPlayerStatements();
-		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
-		ResultSet result = mGetPlayerStatement[0].executeQuery();
+		mGetPlayerData[0].setString(1, player.getUniqueId().toString());
+		ResultSet result = mGetPlayerData[0].executeQuery();
 		if (result.next()) {
 			PlayerSettings ps = new PlayerSettings(player, result.getBoolean("LEARNING_MODE"),
 					result.getBoolean("MUTE_MODE"));
@@ -206,7 +214,48 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	/**
-	 * getPLayerIds
+	 * insertPalayerData - insert a Set of player data into the Database.
+	 */
+	@Override
+	public void insertPlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_DATA);
+			for (PlayerSettings playerData : playerDataSet) {
+				mInsertPlayerData.setString(1, playerData.getPlayer().getUniqueId().toString());
+				mInsertPlayerData.setInt(2, playerData.isLearningMode() ? 1 : 0);
+				mInsertPlayerData.setInt(3, playerData.isMuted() ? 1 : 0);
+				mInsertPlayerData.addBatch();
+			}
+			mInsertPlayerData.executeBatch();
+			mInsertPlayerData.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+	}
+
+	@Override
+	public void updatePlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_PLAYER_SETTINGS);
+			for (PlayerSettings playerData : playerDataSet) {
+				mUpdatePlayerSettings.setInt(1, playerData.isLearningMode() ? 1 : 0);
+				mUpdatePlayerSettings.setInt(2, playerData.isMuted() ? 1 : 0);
+				mUpdatePlayerSettings.setString(3, playerData.getPlayer().getUniqueId().toString());
+				mUpdatePlayerSettings.addBatch();
+			}
+			mUpdatePlayerSettings.executeBatch();
+			mUpdatePlayerSettings.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+	}
+
+	/**
+	 * getPlayerIds
 	 * 
 	 * @param players
 	 *            : A set of players: Set<OfflinePlayer>
@@ -215,17 +264,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * @throws SQLException
 	 */
 	protected Map<UUID, Integer> getPlayerIds(Set<OfflinePlayer> players) throws SQLException {
-		
-		// make sure all players are in mh_Players.
-		openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_SETTINGS);
-		myAddPlayerStatement.clearBatch();
-		for (OfflinePlayer player : players) {
-			myAddPlayerStatement.setString(1, player.getPlayer().getUniqueId().toString());
-			myAddPlayerStatement.setString(2, player.getPlayer().getName());
-			myAddPlayerStatement.addBatch();
-		}
-		myAddPlayerStatement.executeBatch();
-		myAddPlayerStatement.close();
 
 		// Then select all players in batches of 10,5,2,1 into the HashMap ids
 		// and return ids.
@@ -240,16 +278,16 @@ public abstract class DatabaseDataStore implements IDataStore {
 			int size = 0;
 			if (left >= 10) {
 				size = 10;
-				statement = mGetPlayerStatement[3];
+				statement = mGetPlayerData[3];
 			} else if (left >= 5) {
 				size = 5;
-				statement = mGetPlayerStatement[2];
+				statement = mGetPlayerData[2];
 			} else if (left >= 2) {
 				size = 2;
-				statement = mGetPlayerStatement[1];
+				statement = mGetPlayerData[1];
 			} else {
 				size = 1;
-				statement = mGetPlayerStatement[0];
+				statement = mGetPlayerData[0];
 			}
 
 			left -= size;
@@ -299,8 +337,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	protected int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException {
 		openPreparedGetPlayerStatements();
-		mGetPlayerStatement[0].setString(1, player.getUniqueId().toString());
-		ResultSet result = mGetPlayerStatement[0].executeQuery();
+		mGetPlayerData[0].setString(1, player.getUniqueId().toString());
+		ResultSet result = mGetPlayerData[0].executeQuery();
 		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
 		ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
 
@@ -384,14 +422,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.LOAD_ARCHIEVEMENTS);
 			int playerId = getPlayerId(player);
-			mLoadAchievementsStatement.setInt(1, playerId);
-			ResultSet set = mLoadAchievementsStatement.executeQuery();
+			mLoadAchievements.setInt(1, playerId);
+			ResultSet set = mLoadAchievements.executeQuery();
 			HashSet<AchievementStore> achievements = new HashSet<AchievementStore>();
 			while (set.next()) {
 				achievements.add(new AchievementStore(set.getString(1), player, set.getInt(3)));
 			}
 			set.close();
-			mLoadAchievementsStatement.close();
+			mLoadAchievements.close();
 			return achievements;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -412,59 +450,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_ACHIEVEMENTS);
 			for (AchievementStore achievement : achievements) {
-				mSaveAchievementStatement.setInt(1, ids.get(achievement.player.getUniqueId()));
-				mSaveAchievementStatement.setString(2, achievement.id);
-				mSaveAchievementStatement.setDate(3, new Date(System.currentTimeMillis()));
-				mSaveAchievementStatement.setInt(4, achievement.progress);
+				mSaveAchievement.setInt(1, ids.get(achievement.player.getUniqueId()));
+				mSaveAchievement.setString(2, achievement.id);
+				mSaveAchievement.setDate(3, new Date(System.currentTimeMillis()));
+				mSaveAchievement.setInt(4, achievement.progress);
 
-				mSaveAchievementStatement.addBatch();
+				mSaveAchievement.addBatch();
 			}
-			mSaveAchievementStatement.executeBatch();
-			mSaveAchievementStatement.close();
+			mSaveAchievement.executeBatch();
+			mSaveAchievement.close();
 			mConnection.commit();
 		} catch (SQLException e) {
 
-			rollback();
-			throw new DataStoreException(e);
-		}
-	}
-
-	/**
-	 * insertPalayerData - insert a Set of player data into the Database.
-	 */
-	@Override
-	public void insertPlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
-		try {
-			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_DATA);
-			for (PlayerSettings playerData : playerDataSet) {
-				mInsertPlayerData.setString(1, playerData.getPlayer().getUniqueId().toString());
-				mInsertPlayerData.setInt(2, playerData.isLearningMode() ? 1 : 0);
-				mInsertPlayerData.setInt(3, playerData.isMuted() ? 1 : 0);
-				mInsertPlayerData.addBatch();
-			}
-			mInsertPlayerData.executeBatch();
-			mInsertPlayerData.close();
-			mConnection.commit();
-		} catch (SQLException e) {
-			rollback();
-			throw new DataStoreException(e);
-		}
-	}
-
-	@Override
-	public void updatePlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
-		try {
-			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_PLAYER_SETTINGS);
-			for (PlayerSettings playerData : playerDataSet) {
-				mUpdatePlayerSettings.setInt(1, playerData.isLearningMode() ? 1 : 0);
-				mUpdatePlayerSettings.setInt(2, playerData.isMuted() ? 1 : 0);
-				mUpdatePlayerSettings.setString(3, playerData.getPlayer().getUniqueId().toString());
-				mUpdatePlayerSettings.addBatch();
-			}
-			mUpdatePlayerSettings.executeBatch();
-			mUpdatePlayerSettings.close();
-			mConnection.commit();
-		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -506,5 +503,91 @@ public abstract class DatabaseDataStore implements IDataStore {
 			e.printStackTrace();
 		}
 	}
+
+	// ******************************************************************
+	// Bounties
+	// ******************************************************************
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<Bounty> requestBounties(OfflinePlayer wantedPlayer) throws DataStoreException, SQLException {
+		List<Bounty> bounties;
+		bounties = new ArrayList<Bounty>();
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.GET_BOUNTIES);
+			int playerId = getPlayerId(wantedPlayer);
+			mGetBounties.setInt(1, playerId);
+			mGetBounties.setInt(2, playerId);
+
+			ResultSet set = mGetBounties.executeQuery();
+
+			while (set.next()) {
+				Bounty b = new Bounty();
+				b.setBountyId(set.getInt(1));
+				b.setBountyOwnerId(set.getInt(2));
+				b.setMobtype(set.getString(3));
+				b.setWantedPlayerId(set.getInt(4));
+				b.setNpcId(set.getInt(5));
+				b.setMobId(set.getString(6));
+				b.setWorldGroup(set.getString(7));
+				b.setCreatedDate(set.getDate(8));
+				b.setEndDate(set.getLong(9));
+				b.setPrize(set.getDouble(10));
+				b.setMessage(set.getString(11));
+				b.setCompleted(set.getBoolean(12));
+				bounties.add(b);
+			}
+			set.close();
+			mGetBounties.close();
+			return (Set<Bounty>) bounties;
+		} catch (SQLException e) {
+			throw new DataStoreException(e);
+		}
+	};
+
+	@Override
+	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
+			for (Bounty bounty : bountyDataSet) {
+				mInsertBounty.setString(1, bounty.getMobtype());
+				mInsertBounty.setInt(2, getPlayerId(bounty.getBountyOwner()));
+				mInsertBounty.setInt(3, getPlayerId(bounty.getWantedPlayer()));
+				mInsertBounty.setInt(4, bounty.getNpcId());
+				mInsertBounty.setString(5, bounty.getMobId());
+				mInsertBounty.setString(6, bounty.getWorldGroup());
+				mInsertBounty.setDate(7, new Date(System.currentTimeMillis()));
+				mInsertBounty.setDate(8, new Date(bounty.getEndDate()));
+				mInsertBounty.setDouble(9, bounty.getPrize());
+				mInsertBounty.setString(10, bounty.getMessage());
+
+				mInsertBounty.addBatch();
+			}
+			mInsertBounty.executeBatch();
+			mInsertBounty.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+
+			rollback();
+			throw new DataStoreException(e);
+		}
+
+	};
+
+	@Override
+	public void updateBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_BOUNTY);
+			for (Bounty bounty : bountyDataSet) {
+				mUpdateBounty.setInt(1, bounty.isCompleted() ? 1 : 0);
+				mUpdateBounty.setInt(2, bounty.getBountyId());
+			}
+			mUpdatePlayerSettings.executeBatch();
+			mUpdatePlayerSettings.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+	};
 
 }

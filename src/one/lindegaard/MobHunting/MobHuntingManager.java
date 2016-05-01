@@ -147,7 +147,7 @@ public class MobHuntingManager {
 	 * @param world
 	 * @return true if MobHunting is allowed.
 	 */
-	public static boolean isHuntEnabledInWorld(World world) {
+	public boolean isHuntEnabledInWorld(World world) {
 		if (world != null)
 			for (String worldName : MobHunting.getConfigManager().disabledInWorlds) {
 				if (world.getName().equalsIgnoreCase(worldName))
