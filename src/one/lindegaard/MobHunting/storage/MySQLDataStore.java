@@ -82,22 +82,20 @@ public class MySQLDataStore extends DatabaseDataStore {
 					"INSERT IGNORE INTO mh_Players (UUID,NAME,LEARNING_MODE,MUTE_MODE) VALUES(?,?,?,?);");
 			break;
 		case GET_BOUNTIES:
-			mGetBounties = connection
-					.prepareStatement("SELECT * FROM mh_Bounties where COMPLETED=0;");
+			mGetBounties = connection.prepareStatement("SELECT * FROM mh_Bounties where COMPLETED=0;");
 			break;
 		case INSERT_BOUNTY:
-			mInsertBounty = connection
-					.prepareStatement("INSERT INTO mh_Bounties "
-							+ "(MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
-							+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE) "
-							+" VALUES (?,?,?,?,?,?,?,?,?,?);");
+			mInsertBounty = connection.prepareStatement("INSERT INTO mh_Bounties "
+					+ "(MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
+					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE) " + " VALUES (?,?,?,?,?,?,?,?,?,?);");
 			break;
 		case UPDATE_BOUNTY:
-			mUpdateBounty = connection
-					.prepareStatement("UPDATE mh_Bounties SET COMPLETED=? WHERE BOUNTY_ID=?;");
+			mUpdateBounty = connection.prepareStatement("UPDATE mh_Bounties SET COMPLETED=? WHERE BOUNTY_ID=?;");
 			break;
-		default:
-			break;
+		case GET_PLAYER_BY_PLAYER_ID:
+			mGetPlayerByPlayerId = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE PLAYER_ID=?;");
+		case DELETE_BOUNTY:
+			mDeleteBounty = connection.prepareStatement("DELETE FROM mh_Bounties WHERE BOUNTY_ID=?;");
 		}
 	}
 
@@ -232,33 +230,27 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE"
 						+ dataString + ", PRIMARY KEY(PLAYER_ID))");
-		create.executeUpdate(
-				"CREATE TABLE IF NOT EXISTS mh_Achievements "
-						+"(PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
-						+"ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, "
-						+"PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
-		//TODO: must be updated
-		create.executeUpdate(
-				"CREATE TABLE IF NOT EXISTS mh_Bounties ("
-						+"BOUNTY_ID INTEGER NOT NULL, "
-						+"BOUNTYOWNER_ID INTEGER NOT NULL, "
-						+"MOBTYPE TEXT, "
-						+"WANTEDPLAYER_ID INTEGER, "
-						+"NPC_ID INTEGER, "
-						+"MOB_ID TEXT, "
-						+"WORLDGROUP TEXT NOT NULL, "
-						+"CREATED_DATE INTEGER NOT NULL, "
-						+"END_DATE INTEGER NOT NULL, "
-						+"PRIZE FLOAT NOT NULL, "
-						+"MESSAGE VARCHAR(64), "
-						+"PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, "
-						+"COMPLETED INTEGER NOT NULL, "
-						+"PRIMARY KEY(WANTEDPLAYER_ID, NPC ,MOBTYPE, COMPLETED), "
-						+"FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID), "
-						+"FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID), "
-						+"FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID)"
-						+")");
-
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements "
+				+ "(PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
+				+ "ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, "
+				+ "PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
+		// TODO: must be updated
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties (" 
+				//new
+				+ "BOUNTY_ID INTEGER NOT NULL, "
+				+ "BOUNTYOWNER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, " 
+				+ "MOBTYPE TEXT, "
+				+ "WANTEDPLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID), " 
+				+ "NPC_ID INTEGER, " + "MOB_ID TEXT, "
+				+ "WORLDGROUP TEXT NOT NULL, " 
+				+ "CREATED_DATE INTEGER NOT NULL, " 
+				+ "END_DATE INTEGER NOT NULL, "
+				+ "PRIZE FLOAT NOT NULL, " 
+				+ "MESSAGE TEXT, " 
+				+ "COMPLETED INTEGER NOT NULL DEFAULT 0, "
+				+ "PRIMARY KEY(BOUNTY_ID, BOUNTYOWNER_ID, MOBTYPE, WANTEDPLAYER_ID, NPC_ID ,MOB_ID, COMPLETED), "
+				+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID), "
+				+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID)" + ")");
 
 		// Setup Database triggers
 		setupTrigger(connection);

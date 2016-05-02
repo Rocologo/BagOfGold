@@ -1,26 +1,16 @@
 package one.lindegaard.MobHunting.bounty;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.OfflinePlayer;
 
-import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.achievements.Achievement;
-import one.lindegaard.MobHunting.achievements.ProgressAchievement;
-import one.lindegaard.MobHunting.storage.AchievementStore;
-import one.lindegaard.MobHunting.storage.IDataCallback;
-import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask.BountyMode;
-
-public class Bounties {
+public class BountiesOld {
 
 	HashMap<OfflinePlayer, List<Bounty>> bounties = new HashMap<OfflinePlayer, List<Bounty>>();
 
-	Bounties() {
+	BountiesOld() {
 	}
 
 	/**

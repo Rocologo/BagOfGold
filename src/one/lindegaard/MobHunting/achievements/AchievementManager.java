@@ -168,7 +168,6 @@ public class AchievementManager implements Listener {
 			return;
 		}
 
-		MobHunting.getInstance();
 		// Look through the data store for offline players
 		MobHunting.getDataStoreManager().requestAllAchievements(player, new IDataCallback<Set<AchievementStore>>() {
 			@Override
@@ -429,7 +428,6 @@ public class AchievementManager implements Listener {
 
 		if (!player.hasPermission("mobhunting.achievements.disabled") || player.hasPermission("*")) {
 
-			MobHunting.getInstance();
 			MobHunting.getDataStoreManager().requestAllAchievements(player, new IDataCallback<Set<AchievementStore>>() {
 				@Override
 				public void onError(Throwable error) {

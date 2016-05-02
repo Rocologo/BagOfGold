@@ -3,15 +3,12 @@ package one.lindegaard.MobHunting;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.MobHunting.achievements.*;
-import one.lindegaard.MobHunting.bounty.Bounties;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
 import one.lindegaard.MobHunting.commands.BountyCommand;
@@ -143,7 +140,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			mConfig.saveConfig();
 		else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
-		
+
 		mWorldGroupManager = new WorldGroupManager();
 		mWorldGroupManager.load();
 
@@ -225,8 +222,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!mConfig.disablePlayerBounties) {
 			debug("Enabling Bounty command");
 			cmd.registerCommand(new BountyCommand());
-			//mBountyManager.initialize(this);
-			debug("BountyManager Size=%s",mBountyManager.getBounties().size());
+			// mBountyManager.initialize(this);
+			debug("BountyManager Size=%s", mBountyManager.getBounties().size());
 		}
 
 		registerModifiers();
@@ -404,12 +401,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	/**
 	 * Get all WorldGroups and their worlds
+	 * 
 	 * @return
 	 */
-	public static WorldGroupManager getWorldGroupManager(){
+	public static WorldGroupManager getWorldGroupManager() {
 		return mWorldGroupManager;
 	}
-	
+
 	public static PlayerSettingsManager getPlayerSettingsmanager() {
 		return mPlayerSettingsManager;
 	}
@@ -625,7 +623,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 		LivingEntity killed = event.getEntity();
-		debug("EntityDies=%s", killed.getName());
 		Player killer = killed.getKiller();
 		if (killer == null)
 			return;
@@ -945,17 +942,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killed instanceof Player && killer instanceof Player) {
 			debug("This was a Pvp kill (killed=%s) no af bounties=%s", killed.getName(),
 					mBountyManager.getBounties().size());
-			if (mBountyManager.hasBounties((OfflinePlayer) killed)) {
+			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
+			if (mBountyManager.hasBounties(wantedPlayer)) {
 				debug("There is a bounty on %s");
-				Bounties bounties = mBountyManager.getBounties().get(killed);
-				for (Entry<OfflinePlayer, List<Bounty>> entry : bounties.getBounties().entrySet()) {
-					reward += entry.getValue().getPrize();
-					OfflinePlayer bountyOwner = entry.getValue().getBountyOwner();
-					mBountyManager.removeBounty((OfflinePlayer) killed, entry.getKey());
-					debug("AcummulatedReward=%s removedBountyOwner=%s", reward, entry.getKey().getName());
+				Set<Bounty> bounties = mBountyManager.getBounties(wantedPlayer);
+				for (Bounty b : bounties) {
+					reward += b.getPrize();
+					OfflinePlayer bountyOwner = b.getBountyOwner();
+					mBountyManager.removeBounty(b);
+					debug("AcummulatedReward=%s removedBountyOwner=%s", reward, b.getBountyOwner().getName());
 					if (bountyOwner.isOnline())
 						((Player) bountyOwner).sendMessage(bountyOwner.getName() + " claimed the bounty ("
-								+ entry.getValue().getPrize() + ") you had put on " + killed.getName());
+								+ b.getPrize() + ") you had put on " + killed.getName());
 				}
 				// getEconomy().depositPlayer(killer, reward);
 				// killer.sendMessage(Messages.getString(key),"killer",killer);

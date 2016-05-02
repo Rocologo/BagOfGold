@@ -110,9 +110,22 @@ public class DataStoreManager {
 		}
 	}
 	
+	public void deleteBounty(Bounty bounty) {
+		synchronized (mWaiting) {
+			mWaiting.add(new Bounty(bounty));
+		}
+	}
+	
+	public void updateBounty(Bounty bounty) {
+		synchronized (mWaiting) {
+			mWaiting.add(new Bounty(bounty));
+		}
+	}
+	
 	public void requestBounties(BountyMode mode, OfflinePlayer player, IDataCallback<Set<Bounty>> callback) {
 		mTaskThread.addTask(new BountyRetrieverTask(mode, player, mWaiting), callback);
 	}
+	
 	
 	// *****************************************************************************
 	// PlayerSettings

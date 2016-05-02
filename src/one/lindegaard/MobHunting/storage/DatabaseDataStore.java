@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -64,19 +63,29 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected PreparedStatement mInsertPlayerData;
 
 	/**
-	 * Args: player uuid
+	 * Args: Player OfflinePLayer
 	 */
 	protected PreparedStatement mGetBounties;
 
 	/**
-	 * Args: player uuid
+	 * Args: Bounty
 	 */
 	protected PreparedStatement mInsertBounty;
 
 	/**
-	 * Args: player uuid
+	 * Args: Bounty
 	 */
 	protected PreparedStatement mUpdateBounty;
+	
+	/**
+	 * Args: Bounty ID
+	 */
+	protected PreparedStatement mDeleteBounty;
+
+	/**
+	 * Args: player player_id
+	 */
+	protected PreparedStatement mGetPlayerByPlayerId;
 
 	/**
 	 * Establish initial connection to Database
@@ -92,7 +101,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, 
 		UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, 
 		GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, 
-		GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY
+		GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID
 	};
 
 	/**
@@ -409,6 +418,32 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throw new DataStoreException(e);
 		}
 	}
+	
+	/**
+	 * getPlayerByName - get the player
+	 * 
+	 * @param name
+	 *            : String
+	 * @return player
+	 */
+	@Override
+	public OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_BY_PLAYER_ID);
+			mGetPlayerByPlayerId.setInt(1, playerId);
+			ResultSet set = mGetPlayerByPlayerId.executeQuery();
+
+			if (set.next()) {
+				UUID uid = UUID.fromString(set.getString(1));
+				set.close();
+				mGetPlayerByPlayerId.close();
+				return Bukkit.getOfflinePlayer(uid);
+			}
+			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
+		} catch (SQLException e) {
+			throw new DataStoreException(e);
+		}
+	}
 
 	/**
 	 * loadAchievements - loading the achievements for one player into memory
@@ -507,11 +542,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 	// ******************************************************************
 	// Bounties
 	// ******************************************************************
-	@SuppressWarnings("unchecked")
 	@Override
-	public Set<Bounty> requestBounties(OfflinePlayer wantedPlayer) throws DataStoreException, SQLException {
-		List<Bounty> bounties;
-		bounties = new ArrayList<Bounty>();
+	public Set<Bounty> loadBounties(OfflinePlayer wantedPlayer) throws DataStoreException {
+		Set<Bounty> bounties = new HashSet<Bounty>();
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.GET_BOUNTIES);
 			int playerId = getPlayerId(wantedPlayer);
@@ -524,8 +557,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Bounty b = new Bounty();
 				b.setBountyId(set.getInt(1));
 				b.setBountyOwnerId(set.getInt(2));
+				b.setBountyOwner(getPlayerByPlayerId(set.getInt(2)));
 				b.setMobtype(set.getString(3));
 				b.setWantedPlayerId(set.getInt(4));
+				b.setWantedPlayer(getPlayerByPlayerId(set.getInt(4)));
 				b.setNpcId(set.getInt(5));
 				b.setMobId(set.getString(6));
 				b.setWorldGroup(set.getString(7));
@@ -566,7 +601,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mInsertBounty.close();
 			mConnection.commit();
 		} catch (SQLException e) {
-
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -589,5 +623,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throw new DataStoreException(e);
 		}
 	};
+	
+	@Override
+	public void deleteBounty(Bounty bounty) throws DataStoreException{
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.DELETE_BOUNTY);
+			mDeleteBounty.setInt(1, bounty.getBountyId());
+			mDeleteBounty.executeBatch();
+			mConnection.commit();
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+	}
 
 }

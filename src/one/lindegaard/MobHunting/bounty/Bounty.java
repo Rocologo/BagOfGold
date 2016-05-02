@@ -4,8 +4,6 @@ import java.util.Date;
 
 import org.bukkit.OfflinePlayer;
 
-import one.lindegaard.MobHunting.WorldGroupManager;
-
 public class Bounty {
 
 	private int bountyId;
@@ -99,7 +97,25 @@ public class Bounty {
 		message = bounty.getMessage();
 		completed = bounty.isCompleted();
 	}
-	
+
+	public Bounty(int bountyOwnerId, Bounty bounty) {
+		this.bountyOwnerId = bounty.getBountyId();
+		this.bountyId = bounty.getBountyId();
+		this.bountyOwner = bounty.getBountyOwner();
+		this.mobtype = bounty.getMobtype();
+		this.wantedPlayerId = bounty.getWantedPlayerId();
+		this.wantedPlayer = bounty.getWantedPlayer();
+		this.npcId = bounty.getNpcId();
+		this.mobId = bounty.mobId;
+		this.worldGroup = bounty.getWorldGroup();
+		this.createdDate = bounty.getCreatedDate();
+		this.endDate = bounty.getEndDate();
+		this.prize = bounty.getPrize();
+		this.message = bounty.getMessage();
+		this.completed = bounty.isCompleted();
+	}
+
+
 	@Override
 	public int hashCode() {
 		//bountyId is uniqe
