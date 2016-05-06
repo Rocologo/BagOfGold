@@ -19,11 +19,13 @@ import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
+import one.lindegaard.MobHunting.storage.asynch.DeleteTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.StoreTask;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask.Mode;
 import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask.BountyMode;
+import one.lindegaard.MobHunting.storage.asynch.DataDeleteTask;
 
 public class DataStoreManager {
 	// Accessed on multiple threads
@@ -36,21 +38,26 @@ public class DataStoreManager {
 	// Accessed only from store thread
 	private StoreThread mStoreThread;
 
-	// Accessed only from retreive thread
+	// Accessed only from retrieve thread
 	private TaskThread mTaskThread;
+
+	// Accessed only from delete thread
+	//private DeleteThread mDeleteThread;
 
 	public DataStoreManager(IDataStore store) {
 		mStore = store;
 
 		mTaskThread = new TaskThread();
 		mStoreThread = new StoreThread(MobHunting.getConfigManager().savePeriod);
+		//mDeleteThread = new DeleteThread(MobHunting.getConfigManager().savePeriod);
 	}
-	
-	//**************************************************************************************
+
+	// **************************************************************************************
 	// PlayerStats
-	//**************************************************************************************
+	// **************************************************************************************
 	public void recordKill(OfflinePlayer player, ExtendedMobType type, boolean bonusMob) {
 		synchronized (mWaiting) {
+			MobHunting.debug("DataStoreManager: recordKill");
 			mWaiting.add(new StatStore(StatType.fromMobType(type, true), player));
 			mWaiting.add(new StatStore(StatType.KillsTotal, player));
 
@@ -73,9 +80,9 @@ public class DataStoreManager {
 		mTaskThread.addTask(new StatRetrieverTask(type, period, count, mWaiting), callback);
 	}
 
-	//**************************************************************************************
+	// **************************************************************************************
 	// Achievements
-	//**************************************************************************************
+	// **************************************************************************************
 	public void recordAchievement(OfflinePlayer player, Achievement achievement) {
 		synchronized (mWaiting) {
 			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
@@ -109,24 +116,38 @@ public class DataStoreManager {
 			mWaiting.add(new Bounty(bounty));
 		}
 	}
-	
+
 	public void deleteBounty(Bounty bounty) {
-		synchronized (mWaiting) {
-			mWaiting.add(new Bounty(bounty));
+		Set<Bounty> b = new HashSet<Bounty>();
+		b.add(bounty);
+		try {
+			mStore.deleteBounty(b);
+			// synchronized (mWaiting) {
+			// mTaskThread.addDeleteTask(new DeleteTask(mWaiting));
+			// mWaiting.add(new Bounty(bounty));
+			// }
+		} catch (DataDeleteException | DataStoreException e) {
+			e.printStackTrace();
 		}
 	}
-	
+
 	public void updateBounty(Bounty bounty) {
-		synchronized (mWaiting) {
-			mWaiting.add(new Bounty(bounty));
+		Set<Bounty> b = new HashSet<Bounty>();
+		b.add(bounty);
+		try {
+			mStore.updateBounty(b);
+			// synchronized (mWaiting) {
+			// mWaiting.add(new Bounty(bounty));
+			// }
+		} catch (DataStoreException e) {
+			e.printStackTrace();
 		}
 	}
-	
+
 	public void requestBounties(BountyMode mode, OfflinePlayer player, IDataCallback<Set<Bounty>> callback) {
 		mTaskThread.addTask(new BountyRetrieverTask(mode, player, mWaiting), callback);
 	}
-	
-	
+
 	// *****************************************************************************
 	// PlayerSettings
 	// *****************************************************************************
@@ -200,6 +221,7 @@ public class DataStoreManager {
 	public void flush() {
 		MobHunting.debug("Flushing waiting data to database...");
 		mTaskThread.addTask(new StoreTask(mWaiting), null);
+		mTaskThread.addDeleteTask(new DeleteTask(mWaiting));
 	}
 
 	public void shutdown() {
@@ -208,6 +230,7 @@ public class DataStoreManager {
 		mTaskThread.setWriteOnlyMode(true);
 
 		try {
+			// mDeleteThread.interrupt();
 			mStoreThread.interrupt();
 			mTaskThread.waitForEmptyQueue();
 			mTaskThread.interrupt();
@@ -229,7 +252,7 @@ public class DataStoreManager {
 		private int mSaveInterval;
 
 		public StoreThread(int interval) {
-			super("MH Data Storer");
+			super("MH StoreThread");
 			start();
 			mSaveInterval = interval;
 		}
@@ -243,7 +266,8 @@ public class DataStoreManager {
 							break;
 						}
 					}
-					mTaskThread.addTask(new StoreTask(mWaiting), null);
+
+					mTaskThread.addStoreTask(new StoreTask(mWaiting));
 
 					Thread.sleep(mSaveInterval * 50);
 				}
@@ -255,11 +279,26 @@ public class DataStoreManager {
 
 	private static class Task {
 		public Task(DataStoreTask<?> task, IDataCallback<?> callback) {
-			this.task = task;
+			this.storeTask = task;
+			this.deleteTask = null;
 			this.callback = callback;
 		}
 
-		public DataStoreTask<?> task;
+		public Task(DataDeleteTask<?> deleteTask, IDataCallback<?> callback) {
+			this.storeTask = null;
+			this.deleteTask = deleteTask;
+			this.callback = callback;
+		}
+
+		public Task(DataStoreTask<?> storeTask) {
+			this.storeTask = storeTask;
+			this.deleteTask = null;
+			this.callback = null;
+		}
+
+		public DataStoreTask<?> storeTask;
+
+		public DataDeleteTask<?> deleteTask;
 
 		public IDataCallback<?> callback;
 	}
@@ -292,7 +331,7 @@ public class DataStoreManager {
 		private Object mSignal = new Object();
 
 		public TaskThread() {
-			super("MH Data Retriever");
+			super("MH TaskThread");
 
 			mQueue = new LinkedBlockingQueue<Task>();
 
@@ -312,10 +351,25 @@ public class DataStoreManager {
 			mWritesOnly = writes;
 		}
 
-		
-		public <T> void addTask(DataStoreTask<T> task, IDataCallback<T> callback) {
+		public <T> void addTask(DataStoreTask<T> storeTask, IDataCallback<T> callback) {
 			try {
-				mQueue.put(new Task(task, callback));
+				mQueue.put(new Task(storeTask, callback));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public <T> void addDeleteTask(DataDeleteTask<T> deleteTask) {
+			try {
+				mQueue.put(new Task(deleteTask, null));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public <T> void addStoreTask(DataStoreTask<T> storeTask) {
+			try {
+				mQueue.put(new Task(storeTask));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -330,33 +384,48 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					}
+					} else {
 
-					Task task = mQueue.take();
+						Task task = mQueue.take();
 
-					if (mWritesOnly && task.task.readOnly())
-						continue;
+						if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
+								|| (task.deleteTask == null && task.storeTask.readOnly()))) {
+							// MobHunting.debug("writeOnly and task is readonly
+							// - so continue ");
+							continue;
+						}
 
-					try {
-						Object result = task.task.run(mStore);
+						try {
 
-						if (task.callback != null)
-							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
-					} catch (DataStoreException e) {
-						if (task.callback != null)
-							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-									new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
-						else
-							e.printStackTrace();
+							Object result;
+
+							if (task.storeTask != null) {
+								// MobHunting.debug("try to read/save data to
+								// db");
+								result = task.storeTask.run(mStore);
+							} else {
+								// MobHunting.debug("try to delete data from
+								// db");
+								result = task.deleteTask.run(mStore);
+							}
+
+							if (task.callback != null)
+								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+										new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
+						} catch (DataStoreException | DataDeleteException e) {
+							if (task.callback != null)
+								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+										new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
+							else
+								e.printStackTrace();
+						}
 					}
 				}
 			} catch (InterruptedException e) {
-				System.out.println("[MobHunting] MH Data Retriever thread was interrupted");
+				System.out.println("[MobHunting] MH TaskThread was interrupted");
 			}
 		}
 
-		
 	}
 
 }

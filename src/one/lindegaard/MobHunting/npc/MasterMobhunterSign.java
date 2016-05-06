@@ -93,7 +93,7 @@ public class MasterMobhunterSign implements Listener {
 
 	private static void setMHPower(Block b, byte power) {
 		if (power >= 0 && power <= POWER_FROM_SIGN) {
-			MobHunting.debug("MMHSign - setMHPower(%s) on %s ", power, b.getType());
+			//MobHunting.debug("MMHSign - setMHPower(%s) on %s ", power, b.getType());
 			b.setMetadata(MH_POWERED, new FixedMetadataValue(MobHunting.getInstance(), power));
 			if (isRedstoneWire(b))
 				setMHPowerOnRedstoneWire(b, power);

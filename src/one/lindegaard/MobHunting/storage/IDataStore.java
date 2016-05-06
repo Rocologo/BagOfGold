@@ -103,16 +103,15 @@ public interface IDataStore {
 	 */
 	public void databaseFixLeaderboard() throws SQLException;
 
-	//public Set<Bounty> requestBounties(OfflinePlayer offlinePlayer) throws DataStoreException;
-
 	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
 
 	public void updateBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
 
 	public OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException;
 
-	public void deleteBounty(Bounty bounty) throws DataStoreException;
+	public void deleteBounty(Set<Bounty> bounties) throws DataDeleteException, DataStoreException;
 
 	public Set<Bounty> loadBounties(OfflinePlayer mPlayer) throws DataStoreException;
 
+	
 }

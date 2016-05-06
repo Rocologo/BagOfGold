@@ -33,6 +33,10 @@
 		<libsdisguises.version>8.2.6-SNAPSHOT</libsdisguises.version>
 		<protocollib.version>3.7.0-SNAPSHOT</protocollib.version>
 		<battleArena.version>LATEST</battleArena.version>
+		<bossbarapi.version>2.3.8</bossbarapi.version>
+		<barapi.version>3.4</barapi.version>
+		<titleapi.version>LATEST</titleapi.version>
+		<vanishnopacket.version>LATEST</vanishnopacket.version>
 	</properties>
 
 	<organization>
@@ -261,8 +265,6 @@
 		</repository>
 
 		<!-- LibsDisguises -->
-		<!-- <repository> <id>libsdisguises-repo-new</id> <url>http://server.o2gaming.com/repo/</url> 
-			</repository> -->
 		<repository>
 			<id>libsdisguises-repo-old</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
@@ -283,9 +285,33 @@
 			<id>battleplugins-net</id>
 			<name>BattlePlugins</name>
 			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
-			<!-- <url>http://battleplugins.com/maven</url> 
-			<url>https://github.com/BattlePlugins/BattleArena.git</url>-->
+			<!-- <url>http://battleplugins.com/maven</url> <url>https://github.com/BattlePlugins/BattleArena.git</url> -->
 		</repository>
+
+		<!-- BossBarAPI -->
+		<repository>
+			<id>inventive-repo</id>
+			<url>https://repo.inventivetalent.org/content/groups/public/</url>
+		</repository>
+
+		<!-- TitleAPI -->
+		<repository>
+			<id>TitleAPI-github</id>
+			<url>https://github.com/ConnorLinfoot/TitleAPI.git</url>
+		</repository>
+
+		<!-- VanishNoPacket -->
+		<repository>
+			<id>VanishNoPacket-github</id>
+			<url>https://github.com/mbax/VanishNoPacket.git</url>
+		</repository>
+
+		<!-- BarAPI -->
+		<repository>
+			<id>confuser-repo</id>
+			<url>http://ci.frostcast.net/plugin/repository/everything</url>
+		</repository>
+
 
 	</repositories>
 
@@ -478,6 +504,38 @@
 				BattleArena
 			</artifactId>
 			<version>${battleArena.version}</version>
+		</dependency>
+
+		<!-- BossBarAPI -->
+		<dependency>
+			<groupId>org.inventivetalent</groupId>
+			<artifactId>bossbarapi</artifactId>
+			<version>${bossbarapi.version}</version>
+		</dependency>
+
+		<!-- TitleAPI -->
+		<dependency>
+			<groupId>com.connorlinfoot</groupId>
+			<artifactId>titleapi</artifactId>
+			<version>${titleapi.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/TitleAPI-1.7.3.jar</systemPath>
+		</dependency>
+
+		<!-- VanishNoPacket -->
+		<dependency>
+			<groupId>org.kitteh</groupId>
+			<artifactId>VanishNoPacket</artifactId>
+			<version>${vanishnopacket.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/VanishNoPacket3.20.jar</systemPath>
+		</dependency>
+
+		<!-- BarAPI -->
+		<dependency>
+			<groupId>me.confuser</groupId>
+			<artifactId>BarAPI</artifactId>
+			<version>${barapi.version}</version>
 		</dependency>
 
 	</dependencies>

@@ -25,6 +25,7 @@ public class StoreTask implements DataStoreTask<Void>
 			mWaitingPlayerStats.clear();
 			mWaitingAchievements.clear();
 			mWaitingPlayerSettings.clear();
+			mWaitingBounties.clear();
 			
 			for(Object obj : waiting)
 			{

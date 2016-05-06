@@ -19,6 +19,7 @@ public class Test {
 	
 	mobHuntingAPI = new MobHuntingAPI();
 	
+	@SuppressWarnings("unused")
 	int n=mobHuntingAPI.getMobHuntingManager().getOnlinePlayersAmount();
 	
 	return mobHuntingAPI.isMobHuntingEnabled(player);

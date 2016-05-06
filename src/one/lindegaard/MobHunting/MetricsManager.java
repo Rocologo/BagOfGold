@@ -20,7 +20,7 @@ public class MetricsManager {
 
 	// Metrics
 	private Metrics metrics;
-	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, leaderboardsGraph, masterMobHunterGraphs;
+	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph;
 
 	public MetricsManager() {
 	}
@@ -109,7 +109,7 @@ public class MetricsManager {
 				public int getValue() {
 					try {
 						@SuppressWarnings({ "rawtypes", "unused" })
-						Class cls = Class.forName("de.robingrether.idisguise");
+						Class cls = Class.forName("me.libraryaddict.disguise.DisguiseAPI");
 						return LibsDisguisesCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
 						return 0;
@@ -142,28 +142,6 @@ public class MetricsManager {
 				}
 			});
 			metrics.addGraph(integrationsGraph);
-
-			leaderboardsGraph = metrics.createGraph("Leaderboards");
-			leaderboardsGraph.addPlotter(new Metrics.Plotter("Amount") {
-				@Override
-				public int getValue() {
-					MobHunting.debug("Number of Leaderboards reported=%s",
-							MobHunting.getLeaderboardManager().getWorldLeaderBoards().size());
-					return MobHunting.getLeaderboardManager().getWorldLeaderBoards().size();
-				}
-			});
-			metrics.addGraph(leaderboardsGraph);
-
-			masterMobHunterGraphs = metrics.createGraph("MasterMobhunters");
-			masterMobHunterGraphs.addPlotter(new Metrics.Plotter("Amount") {
-				@Override
-				public int getValue() {
-					MobHunting.debug("Number of MasterMobHunters created=%s",
-							CitizensCompat.getManager().getAll().size());
-					return CitizensCompat.getManager().getAll().size();
-				}
-			});
-			metrics.addGraph(masterMobHunterGraphs);
 
 			metrics.enable();
 			metrics.start();

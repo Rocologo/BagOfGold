@@ -1,8 +1,10 @@
 package one.lindegaard.MobHunting.bounty;
 
-import java.util.Date;
+//import java.util.Date;
 
 import org.bukkit.OfflinePlayer;
+
+import one.lindegaard.MobHunting.MobHunting;
 
 public class Bounty {
 
@@ -15,27 +17,13 @@ public class Bounty {
 	private int npcId;
 	private String mobId;
 	private String worldGroup;
-	private Date createdDate;
+	private long createdDate;
 	private long endDate;
 	private double prize;
 	private String message;
 	private boolean completed;
 
 	public Bounty() {
-		bountyId=0;
-		bountyOwnerId=0;
-		bountyOwner=null;
-		mobtype="";
-		wantedPlayerId=0;
-		wantedPlayer=null;
-		npcId=0;
-		mobId="";
-		worldGroup="";
-		createdDate=null;
-		endDate=0;
-		prize=0;
-		message="";
-		completed=true;
 	}
 
 	/**
@@ -50,39 +38,46 @@ public class Bounty {
 	 */
 	public Bounty(String worldGroup, OfflinePlayer bountyOwner, OfflinePlayer wantedPlayer, double prize,
 			String message) {
-		//Bounty on a Player
+		// Bounty on a Player
 		this.worldGroup = worldGroup;
 		this.bountyOwner = bountyOwner;
 		this.mobtype = "Player";
 		this.wantedPlayer = wantedPlayer;
+		this.createdDate = System.currentTimeMillis();
+		this.endDate = this.createdDate + 30L * 86400000L;
+		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		this.prize = prize;
 		this.message = message;
 	}
-	
-	public Bounty(String worldGroup, OfflinePlayer bountyOwner, int npcId, double prize,
-			String message) {
-		//Bounty on a NPC
+
+	public Bounty(String worldGroup, OfflinePlayer bountyOwner, int npcId, double prize, String message) {
+		// Bounty on a NPC
 		this.worldGroup = worldGroup;
 		this.bountyOwner = bountyOwner;
 		this.mobtype = "NPC";
 		this.npcId = npcId;
+		this.createdDate = System.currentTimeMillis();
+		this.endDate = this.createdDate + 30L * 86400000L;
+		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		this.prize = prize;
 		this.message = message;
 	}
-	public Bounty(String worldGroup, OfflinePlayer bountyOwner, String mobId, double prize,
-			String message) {
-		//Bounty on a Mob
+
+	public Bounty(String worldGroup, OfflinePlayer bountyOwner, String mobId, double prize, String message) {
+		// Bounty on a Mob
 		this.worldGroup = worldGroup;
 		this.bountyOwner = bountyOwner;
 		this.mobtype = "Mob";
 		this.mobId = mobId;
+		this.createdDate = System.currentTimeMillis();
+		this.endDate = this.createdDate + 30L * 86400000L;
+		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		this.prize = prize;
 		this.message = message;
 	}
 
-
 	public Bounty(Bounty bounty) {
-		bountyOwnerId = bounty.getBountyId();
+		bountyOwnerId = bounty.getBountyOwnerId();
 		bountyId = bounty.getBountyId();
 		bountyOwner = bounty.getBountyOwner();
 		mobtype = bounty.getMobtype();
@@ -91,35 +86,12 @@ public class Bounty {
 		npcId = bounty.getNpcId();
 		mobId = bounty.mobId;
 		worldGroup = bounty.getWorldGroup();
-		createdDate = bounty.getCreatedDate();
-		endDate = bounty.getEndDate();
+		this.createdDate = System.currentTimeMillis();
+		this.endDate = this.createdDate + 30L * 86400000L;
+		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		prize = bounty.getPrize();
 		message = bounty.getMessage();
 		completed = bounty.isCompleted();
-	}
-
-	public Bounty(int bountyOwnerId, Bounty bounty) {
-		this.bountyOwnerId = bounty.getBountyId();
-		this.bountyId = bounty.getBountyId();
-		this.bountyOwner = bounty.getBountyOwner();
-		this.mobtype = bounty.getMobtype();
-		this.wantedPlayerId = bounty.getWantedPlayerId();
-		this.wantedPlayer = bounty.getWantedPlayer();
-		this.npcId = bounty.getNpcId();
-		this.mobId = bounty.mobId;
-		this.worldGroup = bounty.getWorldGroup();
-		this.createdDate = bounty.getCreatedDate();
-		this.endDate = bounty.getEndDate();
-		this.prize = bounty.getPrize();
-		this.message = bounty.getMessage();
-		this.completed = bounty.isCompleted();
-	}
-
-
-	@Override
-	public int hashCode() {
-		//bountyId is uniqe
-		return bountyId;
 	}
 
 	@Override
@@ -127,14 +99,15 @@ public class Bounty {
 		if (!(obj instanceof Bounty))
 			return false;
 		Bounty other = (Bounty) obj;
-		return bountyId==other.bountyId;
+		return (bountyOwner.equals(other.bountyOwner) && wantedPlayer.equals(other.wantedPlayer)
+				&& worldGroup.equals(other.worldGroup));
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Bounty: {Id:%s Owner:%s Wanted:%s NPC:%s Mob:%s Completed:%s}",
-				bountyId, bountyOwner.getName(), wantedPlayer.getName(),
-				npcId, mobId, completed);
+		return String.format(
+				"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
+				worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, prize, completed);
 	}
 
 	/**
@@ -275,7 +248,7 @@ public class Bounty {
 	/**
 	 * @return the createdDate
 	 */
-	public Date getCreatedDate() {
+	public long getCreatedDate() {
 		return createdDate;
 	}
 
@@ -283,7 +256,7 @@ public class Bounty {
 	 * @param createdDate
 	 *            the createdDate to set
 	 */
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(long createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -298,7 +271,7 @@ public class Bounty {
 	 * @param endDate
 	 *            the endDate to set
 	 */
-	public void setEndDate(Long endDate) {
+	public void setEndDate(long endDate) {
 		this.endDate = endDate;
 	}
 

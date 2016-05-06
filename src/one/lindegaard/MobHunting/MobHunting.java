@@ -28,8 +28,10 @@ import one.lindegaard.MobHunting.commands.TopCommand;
 import one.lindegaard.MobHunting.commands.UpdateCommand;
 import one.lindegaard.MobHunting.commands.VersionCommand;
 import one.lindegaard.MobHunting.commands.WhitelistAreaCommand;
+import one.lindegaard.MobHunting.compatability.BarAPICompat;
 import one.lindegaard.MobHunting.compatability.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatability.BattleArenaHelper;
+import one.lindegaard.MobHunting.compatability.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatability.CitizensCompat;
 import one.lindegaard.MobHunting.compatability.CompatibilityManager;
 import one.lindegaard.MobHunting.compatability.DisguiseCraftCompat;
@@ -44,6 +46,8 @@ import one.lindegaard.MobHunting.compatability.MyPetCompat;
 import one.lindegaard.MobHunting.compatability.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatability.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatability.PVPArenaHelper;
+import one.lindegaard.MobHunting.compatability.TitleAPICompat;
+import one.lindegaard.MobHunting.compatability.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatability.WorldEditCompat;
 import one.lindegaard.MobHunting.compatability.WorldGuardCompat;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
@@ -106,7 +110,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private static ParticleManager mParticleManager = new ParticleManager();
 	private static MetricsManager mMetricsManager;
 	private static PlayerSettingsManager mPlayerSettingsManager;
-	private static WorldGroupManager mWorldGroupManager;
+	private static WorldGroup mWorldGroupManager;
 
 	private static IDataStore mStore;
 	private static DataStoreManager mStoreManager;
@@ -141,7 +145,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
 
-		mWorldGroupManager = new WorldGroupManager();
+		mWorldGroupManager = new WorldGroup();
 		mWorldGroupManager.load();
 
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager()
@@ -192,6 +196,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
 		registerPlugin(IDisguiseCompat.class, "iDisguise");
 		registerPlugin(BattleArenaCompat.class, "BattleArena");
+		registerPlugin(VanishNoPacketCompat.class, "VanishNoPacket");
+		registerPlugin(BossBarAPICompat.class, "BossBarAPI");
+		registerPlugin(TitleAPICompat.class, "TitleAPI");
+		registerPlugin(BarAPICompat.class, "BarAPI");
 
 		// register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
@@ -218,14 +226,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 		cmd.registerCommand(new DatabaseCommand());
 
-		mBountyManager = new BountyManager(this);
 		if (!mConfig.disablePlayerBounties) {
-			debug("Enabling Bounty command");
-			cmd.registerCommand(new BountyCommand());
-			// mBountyManager.initialize(this);
-			debug("BountyManager Size=%s", mBountyManager.getBounties().size());
+			mBountyManager = new BountyManager(this);
+			if (!mConfig.disablePlayerBounties) {
+				cmd.registerCommand(new BountyCommand());
+			}
 		}
-
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
@@ -242,9 +248,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
-		mMetricsManager = new MetricsManager();
-		mMetricsManager.startMetrics();
-
 		UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
 		mPlayerSettingsManager = new PlayerSettingsManager();
@@ -255,6 +258,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			boolean muted = getDataStoreManager().getPlayerSettings(player).isMuted();
 			mPlayerSettingsManager.putPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
 		}
+
+		mMetricsManager = new MetricsManager();
+		mMetricsManager.startMetrics();
 
 		mInitialized = true;
 
@@ -280,8 +286,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		mLeaderboardManager.shutdown();
 		mAreaManager.shutdown();
-		// TODO: enable
-		mBountyManager.shutdown();
+		if (!mConfig.disablePlayerBounties)
+			mBountyManager.shutdown();
 
 		mModifiers.clear();
 
@@ -404,7 +410,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 * 
 	 * @return
 	 */
-	public static WorldGroupManager getWorldGroupManager() {
+	public static WorldGroup getWorldGroupManager() {
 		return mWorldGroupManager;
 	}
 
@@ -627,6 +633,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killer == null)
 			return;
 
+		// TODO: create these two methods
+		if (mMobHuntingManager.isKillRewareded(killer, killed, event))
+			mMobHuntingManager.rewardKill(killer, killed, event);
+
+		// MobHunting is Disabled in World
 		if (!mMobHuntingManager.isHuntEnabledInWorld(killed.getWorld())) {
 			if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 				if (killer instanceof Player || MyPetCompat.isMyPet(killer)) {
@@ -665,6 +676,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// Continue to ned if... (Do NOTHING).
 		}
 
+		// MyPet Compatibility
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 			if (killer instanceof Player || MyPetCompat.isMyPet(killer)) {
 
@@ -690,6 +702,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
+		// Player died while playing a Minigame: MobArena, PVPArena,
+		// BattleArena, PVP
 		if (killed instanceof Player) {
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
@@ -707,12 +721,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
+		// Player killed a MythicMob
 		if (MythicMobsCompat.isSupported()) {
 			if (killed.hasMetadata("MH:MythicMob"))
 				if (killer instanceof Player)
 					debug("%s killed a MythicMob", killer.getName());
 		}
 
+		// Player killed a Citizens2 NPC
 		if (CitizensCompat.isEnabledInConfig() && CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(killed)) {
 			if (CitizensCompat.isSentry(killed))
@@ -721,6 +737,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 							CitizensCompat.getNPCName(killed));
 		}
 
+		// Player killed a mob while playing a minigame: MobArena, PVPVArena,
+		// BattleArena
+		// Player is in Godmode or Vanished
+		// Player permission to Hunt (and get rewards)
+		// TODO: What about a PVP kill?
 		if (killer instanceof Player) {
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena(killer)
 					&& !mConfig.mobarenaGetRewards) {
@@ -746,7 +767,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 					learn(killer, Messages.getString("mobhunting.learn.vanished"));
 					return;
 				}
-
+			} else if (VanishNoPacketCompat.isSupported()) {
+				if (VanishNoPacketCompat.isVanishedModeEnabled(killer)) {
+					debug("KillBlocked: %s is in Vanished mode", killer.getName());
+					learn(killer, Messages.getString("mobhunting.learn.vanished"));
+					return;
+				}
 			}
 
 			if (!hasPermissionToKillMob(killer, killed)) {
@@ -756,6 +782,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
+		// There is no reard for this kill
 		if (mConfig.getBaseKillPrize(event.getEntity()) == 0 && mConfig.getKillConsoleCmd(killed).equals("")) {
 			debug("KillBlocked %s(%d): There is no reward for this Mob/Player", killed.getType(), killed.getEntityId());
 			if (killed != null)
@@ -763,6 +790,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
+		// The Mob/Player has MH:Blocked
 		if (killed.hasMetadata("MH:blocked")) {
 			debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)", killed.getType(),
 					killed.getEntityId());
@@ -772,18 +800,30 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
+		// MobHunting is disabled for the player
 		if (!mMobHuntingManager.isHuntEnabled(killer)) {
 			debug("KillBlocked %s: Hunting is disabled for player", killer.getName());
 			learn(killer, Messages.getString("mobhunting.learn.huntdisabled"));
 			return;
 		}
 
+		// The player is in Creative mode
 		if (killer.getGameMode() == GameMode.CREATIVE) {
 			debug("KillBlocked %s: In creative mode", killer.getName());
 			learn(killer, Messages.getString("mobhunting.learn.creative"));
 			return;
 		}
 
+		// Handle Muted mode
+		boolean killer_muted = false;
+		boolean killed_muted = false;
+		if (mPlayerSettingsManager.containsKey(killer)) {
+			killer_muted = mPlayerSettingsManager.getPlayerSettings(killer).isMuted();
+		}
+		if (mPlayerSettingsManager.containsKey(killed))
+			killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) killed).isMuted();
+
+		// Update DamageInformation
 		DamageInformation info = null;
 		if (killed instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity) killed)) {
 			info = mDamageHistory.get(killed);
@@ -793,12 +833,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			else if (killer == null)
 				killer = info.attacker;
 		}
-
 		EntityDamageByEntityEvent lastDamageCause = null;
-
 		if (killed.getLastDamageCause() instanceof EntityDamageByEntityEvent)
 			lastDamageCause = (EntityDamageByEntityEvent) killed.getLastDamageCause();
-
 		if (info == null) {
 			info = new DamageInformation();
 			info.time = System.currentTimeMillis();
@@ -807,24 +844,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 			info.attackerPosition = killer.getLocation();
 			info.usedWeapon = true;
 		}
-
 		if ((System.currentTimeMillis() - info.lastAttackTime) > mConfig.killTimeout * 1000) {
 			debug("KillBlocked %s: Last damage was too long ago", killer.getName());
 			return;
 		}
-
 		if (info.weapon == null)
 			info.weapon = new ItemStack(Material.AIR);
-
-		boolean killer_muted = false;
-		boolean killed_muted = false;
-		if (mPlayerSettingsManager.containsKey(killer)) {
-			killer_muted = mPlayerSettingsManager.getPlayerSettings(killer).isMuted();
-			debug("killer.getMuteMode=%s", killer_muted);
-		}
-		if (mPlayerSettingsManager.containsKey(killed))
-			killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) killed).isMuted();
-
+		// Player or killed Mob is disguised
 		if (!info.playerUndercover)
 			if (DisguisesHelper.isDisguised(killer)) {
 				if (DisguisesHelper.isDisguisedAsAgresiveMob(killer)) {
@@ -839,7 +865,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 								+ Messages.getString("bonus.undercover.message", "cause", killer.getName()));
 				}
 			}
-
 		if (!info.mobCoverBlown)
 			if (DisguisesHelper.isDisguised(killed)) {
 				if (DisguisesHelper.isDisguisedAsAgresiveMob(killed)) {
@@ -858,16 +883,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		HuntData data = mMobHuntingManager.getHuntData(killer);
 
+		// Killstreak
 		Misc.handleKillstreak(killer);
 
 		// Record kills that are still within a small area
 		Location loc = killed.getLocation();
 
+		// Grinding detection
 		Area detectedGrindingArea = mAreaManager.getGrindingArea(loc);
-
 		if (detectedGrindingArea == null)
 			detectedGrindingArea = data.getGrindingArea(loc);
-
 		// Slimes are except from grinding due to their splitting nature
 		if (!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable
 				&& !killed.hasMetadata("MH:reinforcement") && !mAreaManager.isWhitelisted(killed.getLocation())) {
@@ -905,11 +930,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
+		// Calculate basic the reward
 		double cash = mConfig.getBaseKillPrize(killed);
 		debug("Mob Basic Prize=%s", cash);
 		double multiplier = 1.0;
 
-		// Apply the modifiers
+		// Apply the modifiers to Basic reward
 		ArrayList<String> modifiers = new ArrayList<String>();
 		for (IModifier mod : mModifiers) {
 			if (mod.doesApply(killed, killer, data, info, lastDamageCause)) {
@@ -939,13 +965,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Handle Bounty Kills
 		double reward = 0;
-		if (killed instanceof Player && killer instanceof Player) {
+		if (!mConfig.disablePlayerBounties && killed instanceof Player && killer instanceof Player) {
 			debug("This was a Pvp kill (killed=%s) no af bounties=%s", killed.getName(),
 					mBountyManager.getBounties().size());
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
-			if (mBountyManager.hasBounties(wantedPlayer)) {
+			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
+			if (mBountyManager.hasBounties(worldGroupName, wantedPlayer)) {
 				debug("There is a bounty on %s");
-				Set<Bounty> bounties = mBountyManager.getBounties(wantedPlayer);
+				Set<Bounty> bounties = mBountyManager.getBounties(worldGroupName, wantedPlayer);
 				for (Bounty b : bounties) {
 					reward += b.getPrize();
 					OfflinePlayer bountyOwner = b.getBountyOwner();
@@ -955,30 +982,32 @@ public class MobHunting extends JavaPlugin implements Listener {
 						((Player) bountyOwner).sendMessage(bountyOwner.getName() + " claimed the bounty ("
 								+ b.getPrize() + ") you had put on " + killed.getName());
 				}
-				// getEconomy().depositPlayer(killer, reward);
-				// killer.sendMessage(Messages.getString(key),"killer",killer);
+				// OBS: Bounty will be added to the Reward for killing/Robbing
+				// the player
 				killer.sendMessage("You got " + reward + " in bounty for killing " + killed.getName());
 				// TODO: call bounty event, and check if canceled.
 				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));
-				// return;
 			} else {
 				debug("There is no Bounty on %s", killed.getName());
 			}
 		}
 
+		// Calculate the reward
 		cash += reward;
 
 		if ((cash >= 0.01) || (cash <= -0.01)) {
 			// TODO: This must be moved, only works for cash!=0
+
+			// Handle MobHuntKillEvent
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, killer);
 			Bukkit.getPluginManager().callEvent(event2);
-
 			if (event2.isCancelled()) {
 				debug("KillBlocked %s: MobHuntKillEvent was cancelled", killer.getName());
 				return;
 			}
 
+			// Handle reward on PVP kill. (Robbing)
 			if (killed instanceof Player && killer instanceof Player) {
 				if (CitizensCompat.isDisabledInConfig() || !CitizensCompat.isCitizensSupported()
 						|| !CitizensCompat.isNPC(killed)) {
@@ -992,6 +1021,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 
+			//Reward for assisted kill
 			if (info.assister == null) {
 				if (cash > 0) {
 					mEconomy.depositPlayer(killer, cash);
@@ -1002,7 +1032,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 					debug("%s got a penalty (%s)", killer.getName(), mEconomy.format(cash));
 
 				}
-
 			} else {
 				cash = cash / 2;
 				if (cash > 0) {
@@ -1016,11 +1045,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 
+			//MythicMob Kill - update PlayerStats
 			// TODO: record mythicmob kills as its own kind of mobs
 			if (ExtendedMobType.getExtendedMobType(killed) != null)
 				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));
 
+			//Tell the player that he got the reward, unless muted
 			if (!killer_muted)
 				if (extraString.trim().isEmpty()) {
 					if (cash > 0) {
@@ -1126,6 +1157,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}.runTaskLater(instance, 20L);
 		}
+		// BossBarAPICompat.addbar(player, "Welcome to MobHunting");
+		// TitleAPICompat.sendTabTitle(player, "MOBHUNTING header", "MOBHUNTING
+		// footer");
+		// TitleAPICompat.sendTitle(player, 10, 10, 10, "MOBHUNTING TITLE",
+		// "MOBHUNTING SUBTITLE");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -8,7 +8,9 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
@@ -155,6 +157,16 @@ public class MobHuntingManager {
 			}
 
 		return true;
+	}
+
+	public boolean isKillRewareded(Player killer, LivingEntity killed, EntityDeathEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void rewardKill(Player killer, LivingEntity killed, EntityDeathEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

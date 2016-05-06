@@ -2,9 +2,10 @@ name: MobHunting
 main: one.lindegaard.MobHunting.MobHunting
 version: ${version}
 description: A Mobhunting plugin
+dev-url: http://dev.bukkit.org/server-mods/mobhunting/
 author: Rocologo
 depend: [Vault]
-softdepend: [Essentials, WorldEdit, WorldGuard, MythicMobs, Citizens, Sentry, ProtocolLib, Minigames, MyPet, MobArena, PVPArena, LibsDisguises, DisguiseCraft, iDisguise, BattleArena]
+softdepend: [Essentials, WorldEdit, WorldGuard, MythicMobs, Citizens, Sentry, ProtocolLib, Minigames, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, TitleAPI, BarAPI]
 
 commands:
   mobhunt:

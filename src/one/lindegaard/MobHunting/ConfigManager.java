@@ -889,6 +889,18 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-battlearena", category = "plugins", comment = "Disable integration with BattleArena")
 	public boolean disableIntegrationBattleArena = false;
 
+	@ConfigField(name = "disable-integration-bossbarapi", category = "plugins", comment = "Disable integration with BossBarAPI")
+	public boolean disableIntegrationBossBarAPI = false;
+
+	@ConfigField(name = "disable-integration-barapi", category = "plugins", comment = "Disable integration with BarAPI")
+	public boolean disableIntegrationBarAPI = false;
+
+	@ConfigField(name = "disable-integration-titleapi", category = "plugins", comment = "Disable integration with TitleAPI")
+	public boolean disableIntegrationTitleAPI = false;
+
+	@ConfigField(name = "disable-integration-vanishnopacket", category = "plugins", comment = "Disable integration with VanishNoPacket")
+	public boolean disableIntegrationVanishNoPacket = false;
+
 	// #####################################################################################
 	// Database
 	// #####################################################################################

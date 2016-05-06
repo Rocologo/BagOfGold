@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.Bukkit;
@@ -74,18 +73,21 @@ public class BountyCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		@SuppressWarnings("deprecation")
 		OfflinePlayer bountyOwner = Bukkit.getOfflinePlayer(sender.getName());
+		String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup((Player) bountyOwner);
 		if (args.length == 0) {
 
 			// /mh bounty
 			// Show list of Bounties on all wantedPlayers
 			if (!MobHunting.getBountyManager().getBounties().isEmpty()) {
-				sender.sendMessage("|Bounty Owner   | Prize | Wanted Player |");
-				sender.sendMessage("|---------------|-------|---------------|");
+				sender.sendMessage("Bounties on all players");
+				sender.sendMessage("-----------------------");
 				Set<Bounty> bounties = MobHunting.getBountyManager().getBounties();
 				for (Bounty bounty : bounties) {
-						sender.sendMessage("|" + String.format("%1$15s", bounty.getBountyOwner().getName()) + "|"
-								+ String.format("%.2f", bounty.getPrize()) + "|"
-								+ String.format("%1$20s", bounty.getWantedPlayer().getName()) + "|");
+					sender.sendMessage(bounty.getBountyOwner().getName() + " has put "
+							+ String.format("%.2f", bounty.getPrize()) + " on " + bounty.getWantedPlayer().getName()
+							+ " ("
+							+ (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)
+							+ " days left)");
 				}
 			} else {
 				sender.sendMessage("There is currently no bounties at all.");
@@ -105,14 +107,16 @@ public class BountyCommand implements ICommand {
 			@SuppressWarnings("deprecation")
 			OfflinePlayer wantedPlayer = Bukkit.getOfflinePlayer(args[0]);
 			if (wantedPlayer != null) {
-				if (MobHunting.getBountyManager().hasBounties(wantedPlayer)) {
-					sender.sendMessage("|Bounty Owner   | Prize | Wanted Player |");
-					sender.sendMessage("|---------------|-------|---------------|");
-					Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(wantedPlayer);
+				if (MobHunting.getBountyManager().hasBounties(worldGroupName, wantedPlayer)) {
+					sender.sendMessage("Bounties ");
+					sender.sendMessage("---------------------");
+					Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer);
 					for (Bounty bounty : bounties) {
-						sender.sendMessage(
-								String.format("| %1$15s | %.2f | %1$20s |", bounty.getBountyOwner().getName(),
-										Double.valueOf(bounty.getPrize()), wantedPlayer.getName()));
+						sender.sendMessage(bounty.getBountyOwner().getName() + " has put "
+								+ String.format("%.2f", bounty.getPrize())
+								+ MobHunting.getEconomy().currencyNamePlural() + " on " + wantedPlayer.getName() + " ("
+								+ (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)
+								+ " days left)");
 					}
 				} else {
 					sender.sendMessage("There is no bounty on " + wantedPlayer.getName());
@@ -129,15 +133,18 @@ public class BountyCommand implements ICommand {
 			@SuppressWarnings("deprecation")
 			OfflinePlayer wantedPlayer = Bukkit.getOfflinePlayer(args[1]);
 			if (wantedPlayer != null) {
-				if (!MobHunting.getBountyManager().hasBounty(wantedPlayer, bountyOwner)) {
+				if (!MobHunting.getBountyManager().hasBounty(worldGroupName, wantedPlayer, bountyOwner)) {
+					MobHunting.debug("Remove Bounty:%s,%s,%s", worldGroupName, wantedPlayer, bountyOwner);
 					sender.sendMessage("You have not put a prize on " + wantedPlayer.getName());
 					return true;
 				}
-				Bounty bounty = MobHunting.getBountyManager().getBounty(wantedPlayer,bountyOwner);
+				Bounty bounty = MobHunting.getBountyManager().getBounty(worldGroupName, wantedPlayer, bountyOwner);
 				MobHunting.getBountyManager().removeBounty(bounty);
 
 				int pct = MobHunting.getConfigManager().bountyReturnPct;
 				MobHunting.getEconomy().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
+				sender.sendMessage("The bounty on " + wantedPlayer.getName() + " was removed. You got "
+						+ String.format("%.2f", bounty.getPrize() * pct / 100) + " back.");
 
 				return true;
 			} else {
@@ -180,25 +187,24 @@ public class BountyCommand implements ICommand {
 				}
 				// MobHunting.debug("args[0]=%s,args[1]=%s,args[2-]=%s",
 				// args[0], args[1], message);
-				Bounty bountyOld, newBounty;
-				double oldPrize = 0, newPrize = 0;
-				if (MobHunting.getBountyManager().hasBounty(wantedPlayer, bountyOwner)) {
-					bountyOld = MobHunting.getBountyManager().getBounty(wantedPlayer,bountyOwner);
-					oldPrize = bountyOld.getPrize();
-					sender.sendMessage("You have already put a prize on the players head. Prize wil be added.");
-				} else
-					sender.sendMessage("You have put a prize on the players head.");
-				MobHunting.getEconomy().withdrawPlayer(bountyOwner, prize);
-				sender.sendMessage(prize + "was withdrawed your accont");
+				Bounty bounty;
+				bounty = new Bounty(worldGroupName, bountyOwner, wantedPlayer, prize, message);
+				if (MobHunting.getBountyManager().hasBounty(worldGroupName, wantedPlayer, bountyOwner)) {
+					sender.sendMessage("You have already put a prize on " + wantedPlayer.getName()
+							+ "'s head. Prize will be added.");
+					// bounty.setPrize(MobHunting.getBountyManager().getBounty(worldGroupName,
+					// wantedPlayer, bountyOwner)
+					// .getPrize() + prize);
+				} else {
+					sender.sendMessage("You have put a prize on " + wantedPlayer.getName() + "'s head.");
+				}
 
-				newPrize = oldPrize + prize;
-				String worldName = MobHunting.getWorldGroupManager()
-						.getWorldGroup(((Player) bountyOwner).getWorld().getName());
-				newBounty = new Bounty(worldName, bountyOwner, wantedPlayer, newPrize, message);
-				MobHunting.getBountyManager().addBounty(newBounty);
-				MobHunting.debug("%s has put %s on %s with the message %s", bountyOwner.getName(), newPrize,
+				MobHunting.getBountyManager().addBounty(bounty);
+				MobHunting.getEconomy().withdrawPlayer(bountyOwner, prize);
+				sender.sendMessage(prize + " was withdrawed your accont");
+
+				MobHunting.debug("%s has put %s on %s with the message %s", bountyOwner.getName(), prize,
 						wantedPlayer.getName(), message);
-				//MobHunting.getBountyManager().saveBounties(wantedPlayer);
 				return true;
 			} else {
 				sender.sendMessage(args[0] + " is unknown!");
@@ -211,19 +217,20 @@ public class BountyCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		ArrayList<String> items = new ArrayList<String>();
 		if (args.length == 0) {
+			items.add("remove");
 			String partial = args[0].toLowerCase();
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.getName().toLowerCase().startsWith(partial))
 					items.add(player.getName());
 			}
-		} else if (args.length == 1) {
+		} else if (args.length == 1 && args[0] == "remove") {
 			String partial = args[0].toLowerCase();
+			// TODO: add correct list
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.getName().toLowerCase().startsWith(partial))
 					items.add(player.getName());
 			}
 			if (items.isEmpty()) {
-				items.add("remove");
 				items.add("<prize>");
 				items.add(" ");
 			}
