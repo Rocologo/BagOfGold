@@ -1,14 +1,9 @@
 package one.lindegaard.MobHunting.bounty;
 
-//import java.util.Date;
-
 import org.bukkit.OfflinePlayer;
-
-import one.lindegaard.MobHunting.MobHunting;
 
 public class Bounty {
 
-	private int bountyId;
 	private int bountyOwnerId;
 	private OfflinePlayer bountyOwner;
 	private String mobtype;
@@ -21,7 +16,7 @@ public class Bounty {
 	private long endDate;
 	private double prize;
 	private String message;
-	private boolean completed;
+	private BountyStatus status;
 
 	public Bounty() {
 	}
@@ -45,9 +40,9 @@ public class Bounty {
 		this.wantedPlayer = wantedPlayer;
 		this.createdDate = System.currentTimeMillis();
 		this.endDate = this.createdDate + 30L * 86400000L;
-		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		this.prize = prize;
 		this.message = message;
+		this.status = BountyStatus.open;
 	}
 
 	public Bounty(String worldGroup, OfflinePlayer bountyOwner, int npcId, double prize, String message) {
@@ -58,9 +53,9 @@ public class Bounty {
 		this.npcId = npcId;
 		this.createdDate = System.currentTimeMillis();
 		this.endDate = this.createdDate + 30L * 86400000L;
-		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		this.prize = prize;
 		this.message = message;
+		this.status = BountyStatus.open;
 	}
 
 	public Bounty(String worldGroup, OfflinePlayer bountyOwner, String mobId, double prize, String message) {
@@ -71,14 +66,14 @@ public class Bounty {
 		this.mobId = mobId;
 		this.createdDate = System.currentTimeMillis();
 		this.endDate = this.createdDate + 30L * 86400000L;
-		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		this.prize = prize;
 		this.message = message;
+		this.status = BountyStatus.open;
 	}
 
 	public Bounty(Bounty bounty) {
 		bountyOwnerId = bounty.getBountyOwnerId();
-		bountyId = bounty.getBountyId();
+		// bountyId = bounty.getBountyId();
 		bountyOwner = bounty.getBountyOwner();
 		mobtype = bounty.getMobtype();
 		wantedPlayerId = bounty.getWantedPlayerId();
@@ -88,10 +83,14 @@ public class Bounty {
 		worldGroup = bounty.getWorldGroup();
 		this.createdDate = System.currentTimeMillis();
 		this.endDate = this.createdDate + 30L * 86400000L;
-		MobHunting.debug("dates=%s,%s", this.createdDate, this.endDate);
 		prize = bounty.getPrize();
 		message = bounty.getMessage();
-		completed = bounty.isCompleted();
+		status = bounty.getStatus();
+	}
+
+	public int HashCode() {
+		return wantedPlayer.hashCode() | bountyOwner.hashCode() | worldGroup.hashCode();
+
 	}
 
 	@Override
@@ -107,22 +106,7 @@ public class Bounty {
 	public String toString() {
 		return String.format(
 				"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
-				worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, prize, completed);
-	}
-
-	/**
-	 * @return the bountyId
-	 */
-	public int getBountyId() {
-		return bountyId;
-	}
-
-	/**
-	 * @param bountyId
-	 *            the bountyId to set
-	 */
-	public void setBountyId(int bountyId) {
-		this.bountyId = bountyId;
+				worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, prize, status);
 	}
 
 	/**
@@ -308,16 +292,24 @@ public class Bounty {
 	/**
 	 * @return the completed
 	 */
-	public boolean isCompleted() {
-		return completed;
+	public BountyStatus getStatus() {
+		return status;
 	}
 
 	/**
 	 * @param completed
 	 *            the completed to set
 	 */
-	public void setCompleted(boolean completed) {
-		this.completed = completed;
+	public void setStatus(BountyStatus status) {
+		this.status = status;
+	}
+
+	public boolean isCompleted() {
+		return status.equals(BountyStatus.completed);
+	}
+
+	public boolean isOpen() {
+		return status.equals(BountyStatus.open);
 	}
 
 }

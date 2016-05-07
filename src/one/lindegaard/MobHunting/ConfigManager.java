@@ -889,10 +889,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-battlearena", category = "plugins", comment = "Disable integration with BattleArena")
 	public boolean disableIntegrationBattleArena = false;
 
-	@ConfigField(name = "disable-integration-bossbarapi", category = "plugins", comment = "Disable integration with BossBarAPI")
+	@ConfigField(name = "disable-integration-bossbarapi", category = "plugins", comment = "Disable integration with BossBarAPI. If you want messages in player chat you can set this to true.")
 	public boolean disableIntegrationBossBarAPI = false;
 
-	@ConfigField(name = "disable-integration-barapi", category = "plugins", comment = "Disable integration with BarAPI")
+	@ConfigField(name = "disable-integration-barapi", category = "plugins", comment = "Disable integration with BarAPI. If you want messages in player chat you can set this to true.")
 	public boolean disableIntegrationBarAPI = false;
 
 	@ConfigField(name = "disable-integration-titleapi", category = "plugins", comment = "Disable integration with TitleAPI")
@@ -900,6 +900,12 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "disable-integration-vanishnopacket", category = "plugins", comment = "Disable integration with VanishNoPacket")
 	public boolean disableIntegrationVanishNoPacket = false;
+
+	@ConfigField(name = "disable-integration-titlemanager", category = "plugins", comment = "Disable integration with TitleManger. If you want messages in player chat you can set this to true.")
+	public boolean disableIntegrationTitleManager = false;
+
+	@ConfigField(name = "disable-integration-actionbar", category = "plugins", comment = "Disable integration with ActionBar. If you want messages in player chat you can set this to true.")
+	public boolean disableIntegrationActionBar = false;
 
 	// #####################################################################################
 	// Database

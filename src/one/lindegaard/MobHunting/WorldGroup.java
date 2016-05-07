@@ -62,6 +62,10 @@ public class WorldGroup {
 	public String getCurrentWorldGroup(Player player) {
 		return getWorldGroup(player.getWorld().getName());
 	}
+	
+	public int HashCode(){
+		return worldGroups.hashCode();
+	}
 
 	// ***************************************************************
 	// write & read

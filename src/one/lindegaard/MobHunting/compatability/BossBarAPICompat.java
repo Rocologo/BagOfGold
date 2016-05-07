@@ -53,7 +53,7 @@ public class BossBarAPICompat {
 				      BossBarAPI.Color.BLUE, // Color of the bar
 				      BossBarAPI.Style.NOTCHED_20, // Bar style
 				      1.0f, // Progress (0.0 - 1.0)
-				      100, // Timeout
+				      100, // Timeout in ticks
 				      2); // Timeout-interval
 	}
 }

@@ -79,7 +79,7 @@ public class PlayerSettingsManager implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		save(player);
+		//save(player);
 		mPlayerSettings.remove(player);
 	}
 

@@ -14,7 +14,7 @@ public class BarAPICompat {
 
 	public BarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with arAPI in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatability with BarAPI in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
 
@@ -51,7 +51,7 @@ public class BarAPICompat {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void setMessage(Player player, String text, float percent) {
+	public static void setMessagePercent(Player player, String text, float percent) {
 		if (supported)
 			BarAPI.setMessage(player, text, percent);
 	}

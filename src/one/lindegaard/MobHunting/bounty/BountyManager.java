@@ -92,28 +92,34 @@ public class BountyManager implements Listener {
 	 */
 	public void addBounty(Bounty bounty) {
 		if (!hasBounty(bounty)) {
-			MobHunting.debug("Adding bounty=%s", bounty.toString());
+			//MobHunting.debug("Adding bounty=%s", bounty.toString());
 			mBounties.add(bounty);
 			MobHunting.getDataStoreManager().insertBounty(bounty);
 		} else {
-			MobHunting.debug("Updating bounty=%s", bounty.toString());
+			//MobHunting.debug("Updating bounty=%s", bounty.toString());
 			getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).setPrize(
 					getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).getPrize()
 							+ bounty.getPrize());
 			getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())
 					.setMessage(bounty.getMessage());
-			// getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(),
-			// bounty.getBountyOwner())
-			// .setEndDate(new Date(System.currentTimeMillis() + 30 * 1000 * 60
-			// * 60 * 24));
 			MobHunting.getDataStoreManager()
-					.updateBounty(getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()));
+					.insertBounty(getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()));
 		}
 
 	}
 
 	public Set<Bounty> getBounties() {
 		return mBounties;
+	}
+
+	public Set<OfflinePlayer> getWantedPlayers() {
+		Set<OfflinePlayer> wantedPlayers = new HashSet<OfflinePlayer>();
+		for (Bounty b : mBounties) {
+			if (!wantedPlayers.contains(b.getWantedPlayer()))
+				wantedPlayers.add(b.getWantedPlayer());
+
+		}
+		return wantedPlayers;
 	}
 
 	public Bounty getBounty(String worldGroup, OfflinePlayer wantedPlayer, OfflinePlayer bountyOwner) {
@@ -147,9 +153,28 @@ public class BountyManager implements Listener {
 		for (Bounty bounty : mBounties) {
 			if (bounty.getBountyOwner().equals(bountyOwner) && bounty.getWantedPlayer().equals(wantedPlayer)
 					&& bounty.getWorldGroup().equals(worldGroup)) {
-				bounty.setCompleted(true);
+				bounty.setStatus(BountyStatus.completed);
 				break;
 			}
+		}
+	}
+
+	public void cancelBounty(Bounty bounty) {
+		// bounty.setStatus(BountyStatus.canceled);
+		// MobHunting.getDataStoreManager().insertBounty(bounty);
+
+		getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())
+				.setStatus(BountyStatus.canceled);
+		//MobHunting.debug("BountyManager: Remove(insert) Bounty:%s",
+		//		getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).toString());
+		MobHunting.getDataStoreManager()
+				.insertBounty(getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()));
+
+		Iterator<Bounty> it = mBounties.iterator();
+		while (it.hasNext()) {
+			Bounty b = (Bounty) it.next();
+			if (b.equals(bounty))
+				it.remove();
 		}
 	}
 
@@ -248,7 +273,7 @@ public class BountyManager implements Listener {
 					public void onCompleted(Set<Bounty> data) {
 						boolean sort = false;
 						for (Bounty bounty : data) {
-							if (!bounty.isCompleted() && !hasBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(),
+							if (bounty.isOpen() && !hasBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(),
 									bounty.getBountyOwner())) {
 								mBounties.add(bounty);
 								sort = true;

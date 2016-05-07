@@ -44,7 +44,7 @@ public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
 					break;
 				}
 				case Open:
-					if (!cached.isCompleted())
+					if (cached.isOpen())
 						bounties.add(cached);
 					break;
 				}
@@ -71,7 +71,7 @@ public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
 				Iterator<Bounty> it = bounties.iterator();
 				while (it.hasNext()) {
 					Bounty bounty = it.next();
-					if (bounty.isCompleted())
+					if (!bounty.isOpen())
 						it.remove();
 				}
 				break;

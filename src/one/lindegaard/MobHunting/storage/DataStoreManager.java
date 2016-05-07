@@ -17,6 +17,7 @@ import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.achievements.Achievement;
 import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 import one.lindegaard.MobHunting.bounty.Bounty;
+import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
 import one.lindegaard.MobHunting.storage.asynch.DeleteTask;
@@ -42,14 +43,16 @@ public class DataStoreManager {
 	private TaskThread mTaskThread;
 
 	// Accessed only from delete thread
-	//private DeleteThread mDeleteThread;
+	// private DeleteThread mDeleteThread;
+	private HashSet<Object> mWaitingDelete = new HashSet<Object>();
 
 	public DataStoreManager(IDataStore store) {
 		mStore = store;
 
 		mTaskThread = new TaskThread();
 		mStoreThread = new StoreThread(MobHunting.getConfigManager().savePeriod);
-		//mDeleteThread = new DeleteThread(MobHunting.getConfigManager().savePeriod);
+		// mDeleteThread = new
+		// DeleteThread(MobHunting.getConfigManager().savePeriod);
 	}
 
 	// **************************************************************************************
@@ -118,29 +121,32 @@ public class DataStoreManager {
 	}
 
 	public void deleteBounty(Bounty bounty) {
-		Set<Bounty> b = new HashSet<Bounty>();
+		synchronized (mWaitingDelete) {
+			mWaitingDelete.add(new Bounty(bounty));
+		}
+		/**Set<Bounty> b = new HashSet<Bounty>();
 		b.add(bounty);
 		try {
 			mStore.deleteBounty(b);
 			// synchronized (mWaiting) {
-			// mTaskThread.addDeleteTask(new DeleteTask(mWaiting));
+			mTaskThread.addDeleteTask(new DeleteTask(b));
 			// mWaiting.add(new Bounty(bounty));
 			// }
 		} catch (DataDeleteException | DataStoreException e) {
 			e.printStackTrace();
+		}**/
+	}
+	
+	public void cancelBounty(Bounty bounty) {
+		bounty.setStatus(BountyStatus.canceled);
+		synchronized (mWaiting) {
+			mWaiting.add(new Bounty(bounty));
 		}
 	}
 
 	public void updateBounty(Bounty bounty) {
-		Set<Bounty> b = new HashSet<Bounty>();
-		b.add(bounty);
-		try {
-			mStore.updateBounty(b);
-			// synchronized (mWaiting) {
-			// mWaiting.add(new Bounty(bounty));
-			// }
-		} catch (DataStoreException e) {
-			e.printStackTrace();
+		synchronized (mWaiting) {
+			mWaiting.add(new Bounty(bounty));
 		}
 	}
 
@@ -215,13 +221,23 @@ public class DataStoreManager {
 
 	}
 
+	public int getPlayerId(OfflinePlayer offlinePlayer) throws UserNotFoundException {
+		try {
+			return mStore.getPlayerId(offlinePlayer);
+		} catch (SQLException | DataStoreException e) {
+			if (MobHunting.getConfigManager().killDebug)
+				e.printStackTrace();
+		}
+		throw new UserNotFoundException("[MobHunting] User " + offlinePlayer.getName() + " is not present in MobHunting database");
+	}
+
 	// *****************************************************************************
 	// Common
 	// *****************************************************************************
 	public void flush() {
 		MobHunting.debug("Flushing waiting data to database...");
 		mTaskThread.addTask(new StoreTask(mWaiting), null);
-		mTaskThread.addDeleteTask(new DeleteTask(mWaiting));
+		mTaskThread.addDeleteTask(new DeleteTask(mWaitingDelete));
 	}
 
 	public void shutdown() {
@@ -268,6 +284,7 @@ public class DataStoreManager {
 					}
 
 					mTaskThread.addStoreTask(new StoreTask(mWaiting));
+					mTaskThread.addDeleteTask(new DeleteTask(mWaitingDelete));
 
 					Thread.sleep(mSaveInterval * 50);
 				}
@@ -384,7 +401,7 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					} else {
+					} //else {
 
 						Task task = mQueue.take();
 
@@ -413,6 +430,7 @@ public class DataStoreManager {
 								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
 										new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
 						} catch (DataStoreException | DataDeleteException e) {
+							MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
 							if (task.callback != null)
 								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
 										new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
@@ -420,7 +438,7 @@ public class DataStoreManager {
 								e.printStackTrace();
 						}
 					}
-				}
+				//}
 			} catch (InterruptedException e) {
 				System.out.println("[MobHunting] MH TaskThread was interrupted");
 			}

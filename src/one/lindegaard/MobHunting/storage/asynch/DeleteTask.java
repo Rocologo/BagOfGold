@@ -28,6 +28,7 @@ public class DeleteTask implements DataDeleteTask<Void>
 			waiting.clear();
 		}
 	}
+	
 	@Override
 	public Void run( IDataStore store ) throws DataDeleteException, DataStoreException
 	{
