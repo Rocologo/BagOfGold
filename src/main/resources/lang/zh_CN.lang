@@ -264,3 +264,5 @@ mobhunting.learn.no-reward=There is no reward for killing this mob/player: ${kil
 mobhunting.learn.mobspawner=There is no rewards for killing this mob/player: ${killed} is was probaly spawned from a mob spawner
 mobhunting.learn.creative=You don't get MobHunting rewards, when you are in Creative mode.
 mobhunting.learn.huntdisabled=You are not allowed to get prizes for hunting.
+mobhunting.learn.suiside=Suiside is not rewarded
+mobhunting.learn.nopvp=PVP is not allowed.

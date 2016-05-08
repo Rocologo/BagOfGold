@@ -763,14 +763,23 @@ public class MobHunting extends JavaPlugin implements Listener {
 					&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
 				return;
-			} else if (killer instanceof Player && !mConfig.pvpAllowed) {
+			} else if (killer instanceof Player) {
+				if (killed.equals(killer)) {
+					learn(killer, Messages.getString("mobhunting.learn.suiside"));
+					debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(), killed.getName());
+					return;
+				}
+			} else if (!mConfig.pvpAllowed) {
+				learn(killer, Messages.getString("mobhunting.learn.nopvp"));
 				debug("KillBlocked: PVP not allowed. %s killed %s.", killer.getName(), killed.getName());
 				return;
 			}
 		}
 
 		// Player killed a MythicMob
-		if (MythicMobsCompat.isSupported()) {
+		if (MythicMobsCompat.isSupported())
+
+		{
 			if (killed.hasMetadata("MH:MythicMob"))
 				if (killer instanceof Player)
 					debug("%s killed a MythicMob", killer.getName());
@@ -998,6 +1007,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Calculate basic the reward
 		double cash = mConfig.getBaseKillPrize(killed);
+
 		debug("Mob Basic Prize=%s", cash);
 		double multiplier = 1.0;
 
