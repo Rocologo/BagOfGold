@@ -218,6 +218,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			closePreparedGetPlayerStatements();
 			return ps;
 		}
+		closePreparedGetPlayerStatements();
 		throw new UserNotFoundException("User " + player.toString() + " is not present in database");
 	}
 
@@ -225,16 +226,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * insertPalayerData - insert a Set of player data into the Database.
 	 */
 	@Override
-	public void insertPlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
+	public void insertPlayerSettings(PlayerSettings playerData) throws DataStoreException {
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_DATA);
-			for (PlayerSettings playerData : playerDataSet) {
-				mInsertPlayerData.setString(1, playerData.getPlayer().getUniqueId().toString());
-				mInsertPlayerData.setString(2, playerData.getPlayer().getName());
-				mInsertPlayerData.setInt(3, playerData.isLearningMode() ? 1 : 0);
-				mInsertPlayerData.setInt(4, playerData.isMuted() ? 1 : 0);
-				mInsertPlayerData.addBatch();
-			}
+			mInsertPlayerData.setString(1, playerData.getPlayer().getUniqueId().toString());
+			mInsertPlayerData.setString(2, playerData.getPlayer().getName());
+			mInsertPlayerData.setInt(3, playerData.isLearningMode() ? 1 : 0);
+			mInsertPlayerData.setInt(4, playerData.isMuted() ? 1 : 0);
+			mInsertPlayerData.addBatch();
 			mInsertPlayerData.executeBatch();
 			mInsertPlayerData.close();
 			mConnection.commit();
@@ -367,11 +366,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			closePreparedGetPlayerStatements();
 			return res;
-		} else
+		} else {
+			closePreparedGetPlayerStatements();
 			return 0;
-
-		// throw new UserNotFoundException("[MobHunting] User " +
-		// player.toString() + " is not present in database");
+		}
 	}
 
 	/**
@@ -414,6 +412,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerUUID.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
+			mGetPlayerUUID.close();
 			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -440,6 +439,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerByPlayerId.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
+			mGetPlayerByPlayerId.close();
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -499,7 +499,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mSaveAchievement.close();
 			mConnection.commit();
 		} catch (SQLException e) {
-
 			rollback();
 			throw new DataStoreException(e);
 		}
@@ -558,7 +557,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			while (set.next()) {
 				Bounty b = new Bounty();
-				// b.setBountyId(set.getInt(1));
 				b.setBountyOwnerId(set.getInt(1));
 				b.setBountyOwner(getPlayerByPlayerId(set.getInt(1)));
 				b.setMobtype(set.getString(2));

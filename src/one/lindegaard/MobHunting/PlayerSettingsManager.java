@@ -30,6 +30,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @return PlayerSettings
 	 */
 	public PlayerSettings getPlayerSettings(Player player) {
+		//TODO: cleanup - return mPlayerSettings.get(player); should be enough.
 		if (mPlayerSettings.containsKey(player))
 			return mPlayerSettings.get(player);
 		else // its not a player
@@ -88,11 +89,9 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	public void load(Player player) {
 		PlayerSettings ps = MobHunting.getDataStoreManager().getPlayerSettings(player);
-		boolean learning_mode = ps.isLearningMode();
-		boolean muted = ps.isMuted();
-		if (muted)
+		if (ps.isMuted())
 			MobHunting.debug("%s isMuted()", player.getName());
-		if (learning_mode)
+		if (ps.isLearningMode())
 			MobHunting.debug("%s is in LearningMode()", player.getName());
 		putPlayerSettings(player, ps);
 	}

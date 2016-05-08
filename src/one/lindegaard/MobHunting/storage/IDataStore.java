@@ -91,10 +91,10 @@ public interface IDataStore {
 	/**
 	 * Insert all PlayerData for one player into the Database
 	 * 
-	 * @param playerDataSet
+	 * @param ps
 	 * @throws DataStoreException
 	 */
-	public void insertPlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException;
+	public void insertPlayerSettings(PlayerSettings ps) throws DataStoreException;
 
 	/**
 	 * Fixes error in the database

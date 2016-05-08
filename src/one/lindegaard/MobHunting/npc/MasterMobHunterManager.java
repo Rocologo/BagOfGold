@@ -178,16 +178,17 @@ public class MasterMobHunterManager implements Listener {
 		if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
 			npc.setName("MasterMobHunter");
 			MasterMobHunterData mmhd = new MasterMobHunterData();
-			mmhd = mMasterMobHunterData.get(event.getNPC().getId());
 			if (mMasterMobHunterData.containsKey(event.getNPC().getId())) {
+				mmhd = mMasterMobHunterData.get(event.getNPC().getId());
 				mmhd.update();
 				event.getClicker()
 						.sendMessage("You LEFT clicked a MasterMobHunter NPC(" + npc.getId() + ") rank="
 								+ mmhd.getRank() + " kills=" + mmhd.getNumberOfKills() + " Period="
 								+ mmhd.getPeriod().translateName() + " StatType=" + mmhd.getStatType().translateName());
+				mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
 			} else
 				MobHunting.debug("ID=%s is missing in mMasterMobHunterData???", event.getNPC().getId());
-			mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
+
 		}
 	}
 
@@ -196,14 +197,18 @@ public class MasterMobHunterManager implements Listener {
 		MobHunting.debug("MasterMobHunterManager - Rightclick :" + event.getNPC().getId());
 		NPC npc = event.getNPC();
 		if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
-			MasterMobHunterData mmhd = new MasterMobHunterData();
-			mmhd = mMasterMobHunterData.get(npc.getId());
-			mmhd.update();
-			event.getClicker()
-					.sendMessage("You RIGHT clicked a MasterMobHunter NPC(" + npc.getId() + ") rank=" + mmhd.getRank()
-							+ " kills=" + mmhd.getNumberOfKills() + " Period=" + mmhd.getPeriod().translateName()
-							+ " StatType=" + mmhd.getStatType().translateName());
-			mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
+			if (mMasterMobHunterData.containsKey(event.getNPC().getId())) {
+				MasterMobHunterData mmhd = new MasterMobHunterData();
+				mmhd = mMasterMobHunterData.get(npc.getId());
+				mmhd.update();
+				event.getClicker()
+						.sendMessage("You RIGHT clicked a MasterMobHunter NPC(" + npc.getId() + ") rank="
+								+ mmhd.getRank() + " kills=" + mmhd.getNumberOfKills() + " Period="
+								+ mmhd.getPeriod().translateName() + " StatType=" + mmhd.getStatType().translateName());
+				mMasterMobHunterData.put(event.getNPC().getId(), mmhd);
+			} else
+				MobHunting.debug("ID=%s is missing in mMasterMobHunterData???", event.getNPC().getId());
+
 		}
 	}
 

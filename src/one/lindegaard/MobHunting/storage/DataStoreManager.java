@@ -124,19 +124,15 @@ public class DataStoreManager {
 		synchronized (mWaitingDelete) {
 			mWaitingDelete.add(new Bounty(bounty));
 		}
-		/**Set<Bounty> b = new HashSet<Bounty>();
-		b.add(bounty);
-		try {
-			mStore.deleteBounty(b);
-			// synchronized (mWaiting) {
-			mTaskThread.addDeleteTask(new DeleteTask(b));
-			// mWaiting.add(new Bounty(bounty));
-			// }
-		} catch (DataDeleteException | DataStoreException e) {
-			e.printStackTrace();
-		}**/
+		/**
+		 * Set<Bounty> b = new HashSet<Bounty>(); b.add(bounty); try {
+		 * mStore.deleteBounty(b); // synchronized (mWaiting) {
+		 * mTaskThread.addDeleteTask(new DeleteTask(b)); // mWaiting.add(new
+		 * Bounty(bounty)); // } } catch (DataDeleteException |
+		 * DataStoreException e) { e.printStackTrace(); }
+		 **/
 	}
-	
+
 	public void cancelBounty(Bounty bounty) {
 		bounty.setStatus(BountyStatus.canceled);
 		synchronized (mWaiting) {
@@ -182,36 +178,22 @@ public class DataStoreManager {
 		try {
 			return mStore.getPlayerSettings(player);
 		} catch (UserNotFoundException e) {
-			MobHunting.debug("Saving Player Settings for %s to database.", player.getName());
-			insertPlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
-			return new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
+			MobHunting.debug("Saving new PlayerSettings for %s to database.", player.getName());
+			PlayerSettings ps = new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
+			try {
+				mStore.insertPlayerSettings(ps);
+			} catch (DataStoreException e1) {
+				e1.printStackTrace();
+			}
+			// insertPlayerSettings(player,
+			// MobHunting.getConfigManager().learningMode, false);
+			return ps;
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 			return null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
-		}
-	}
-
-	/**
-	 * Insert new Players in the Database
-	 * 
-	 * @param player
-	 * @param learning_mode
-	 * @param muted
-	 */
-	private void insertPlayerSettings(OfflinePlayer player, boolean learning_mode, boolean muted) {
-		Set<PlayerSettings> ps = new HashSet<>();
-		ps.add(new PlayerSettings(player,learning_mode,muted));
-		try {
-			mStore.insertPlayerSettings(ps);
-		} catch (DataStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		synchronized (mWaiting) {
-			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
 		}
 	}
 
@@ -236,7 +218,8 @@ public class DataStoreManager {
 			if (MobHunting.getConfigManager().killDebug)
 				e.printStackTrace();
 		}
-		throw new UserNotFoundException("[MobHunting] User " + offlinePlayer.getName() + " is not present in MobHunting database");
+		throw new UserNotFoundException(
+				"[MobHunting] User " + offlinePlayer.getName() + " is not present in MobHunting database");
 	}
 
 	// *****************************************************************************
@@ -409,44 +392,44 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					} //else {
+					} // else {
 
-						Task task = mQueue.take();
+					Task task = mQueue.take();
 
-						if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
-								|| (task.deleteTask == null && task.storeTask.readOnly()))) {
-							// MobHunting.debug("writeOnly and task is readonly
-							// - so continue ");
-							continue;
-						}
-
-						try {
-
-							Object result;
-
-							if (task.storeTask != null) {
-								// MobHunting.debug("try to read/save data to
-								// db");
-								result = task.storeTask.run(mStore);
-							} else {
-								// MobHunting.debug("try to delete data from
-								// db");
-								result = task.deleteTask.run(mStore);
-							}
-
-							if (task.callback != null)
-								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-										new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
-						} catch (DataStoreException | DataDeleteException e) {
-							MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
-							if (task.callback != null)
-								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-										new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
-							else
-								e.printStackTrace();
-						}
+					if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
+							|| (task.deleteTask == null && task.storeTask.readOnly()))) {
+						// MobHunting.debug("writeOnly and task is readonly
+						// - so continue ");
+						continue;
 					}
-				//}
+
+					try {
+
+						Object result;
+
+						if (task.storeTask != null) {
+							// MobHunting.debug("try to read/save data to
+							// db");
+							result = task.storeTask.run(mStore);
+						} else {
+							// MobHunting.debug("try to delete data from
+							// db");
+							result = task.deleteTask.run(mStore);
+						}
+
+						if (task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
+					} catch (DataStoreException | DataDeleteException e) {
+						MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
+						if (task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+									new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
+						else
+							e.printStackTrace();
+					}
+				}
+				// }
 			} catch (InterruptedException e) {
 				System.out.println("[MobHunting] MH TaskThread was interrupted");
 			}
