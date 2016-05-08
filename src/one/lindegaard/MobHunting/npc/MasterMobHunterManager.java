@@ -67,8 +67,10 @@ public class MasterMobHunterManager implements Listener {
 		if (CitizensCompat.isMasterMobHunter(npc.getEntity())) {
 			MasterMobHunterData mmhd = new MasterMobHunterData();
 			mmhd = mMasterMobHunterData.get(npc.getId());
-			mmhd.update();
-			mMasterMobHunterData.put(npc.getId(), mmhd);
+			if (mmhd != null) {
+				mmhd.update();
+				mMasterMobHunterData.put(npc.getId(), mmhd);
+			}
 		}
 	}
 

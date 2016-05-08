@@ -54,28 +54,28 @@ public class CitizensCompat implements Listener {
 
 			TraitInfo trait = TraitInfo.create(MobHuntingTrait.class).withName("MasterMobHunter");
 			citizensAPI.getTraitFactory().registerTrait(trait);
+			
+			MobHunting.getInstance().getLogger().info("Enabling compatability with Citizens ("
+					+ getCitizensPlugin().getDescription().getVersion() + ")");
 
-			// wait 5 seconds or until Citizens is fully loaded.
+			supported = true;
+
+			loadCitizensData();
+			saveCitizensData();
+
+			masterMobHunterManager.initialize();
+			masterMobHunterManager.saveData();
+
+			findMissingNPC();
+			loadBountyDataForNPC();
+
+			// wait x seconds or until Citizens is fully loaded.
 			MobHunting.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(MobHunting.getInstance(),
 					new Runnable() {
 						public void run() {
 
-							MobHunting.getInstance().getLogger().info("Enabling compatability with Citizens ("
-									+ getCitizensPlugin().getDescription().getVersion() + ")");
-
-							supported = true;
-
-							loadCitizensData();
-							saveCitizensData();
-
-							masterMobHunterManager.initialize();
-							masterMobHunterManager.saveData();
-
-							findMissingNPC();
-							loadBountyDataForNPC();
-
 						}
-					}, 20 * 10); // 20ticks/sec * 5 sec.
+					}, 20 * 1); // 20ticks/sec * 1 sec.
 
 		}
 	}

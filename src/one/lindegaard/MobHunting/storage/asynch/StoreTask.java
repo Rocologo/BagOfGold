@@ -55,7 +55,7 @@ public class StoreTask implements DataStoreTask<Void>
 			store.updatePlayerSettings(mWaitingPlayerSettings);
 
 		if(!mWaitingBounties.isEmpty())
-			store.insertBounty(mWaitingBounties);
+			store.updateBounty(mWaitingBounties);
 		
 		return null;
 	}

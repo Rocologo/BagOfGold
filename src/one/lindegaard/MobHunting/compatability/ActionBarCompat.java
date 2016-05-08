@@ -49,6 +49,8 @@ public class ActionBarCompat {
 
 	public static void setMessage(Player player, String text) {
 		if (supported) {
+			MobHunting.debug("[WARNING] ActionBarCompat: setMessage() is not made yet");
+			player.sendMessage(text);
 			//TODO: I need a copy of ActionBar.jar before I can implement anything.
 			
 			//Show a specific actionbar group

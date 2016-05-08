@@ -167,6 +167,10 @@ public class ConfigManager extends AutoConfig {
 
 		setCategoryComment("updates", "########################################################################"
 				+ "\nUpdate settings" + "\n########################################################################");
+		setCategoryComment("dropmoneyonground",
+				"########################################################################"
+						+ "\nDropMoneyOnGroud Settings"
+						+ "\n########################################################################");
 		setCategoryComment("general", "########################################################################"
 				+ "\nGeneral Setting." + "\n########################################################################");
 
@@ -967,6 +971,20 @@ public class ConfigManager extends AutoConfig {
 			+ "\nin 'LEARNING MODE' and get extra information about when he get rewards and not,"
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mh learn'")
 	public boolean learningMode = false;
+
+	// #####################################################################################
+	// DropMoneyOnGrond settings
+	// #####################################################################################
+	@ConfigField(name = "drop-money-on-groud", category = "dropmoneyonground", 
+			comment = "When a player get a money reward for a kill, the money will go directly"
+			+ "\ninto his pocket. If you set dropMoneyOnGroud=true the reward will "
+			+ "\ndropped on ground to be picked up by the player."
+			+ "\nNegative rewards will always be taken from det player. ")
+	public boolean dropMoneyOnGroup = false;
+	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
+			+ "\nUse Minecraft Item names like: "
+			+ "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
+	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {

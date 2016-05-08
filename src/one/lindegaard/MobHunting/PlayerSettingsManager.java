@@ -63,11 +63,9 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		load(player);
-		// save(player);
+		save(player);
 		putPlayerSettings(player, new PlayerSettings(player, mPlayerSettings.get(player).isLearningMode(),
 				mPlayerSettings.get(player).isMuted()));
-		// MobHunting.getDataStoreManager().createPlayerSettings(player,
-		// learning_mode, muted);
 	}
 
 	/**
@@ -79,7 +77,7 @@ public class PlayerSettingsManager implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		//save(player);
+		save(player);
 		mPlayerSettings.remove(player);
 	}
 

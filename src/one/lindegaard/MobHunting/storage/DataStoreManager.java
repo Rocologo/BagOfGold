@@ -182,7 +182,7 @@ public class DataStoreManager {
 		try {
 			return mStore.getPlayerSettings(player);
 		} catch (UserNotFoundException e) {
-			MobHunting.debug("Saving Player Settings for %s to database.", player);
+			MobHunting.debug("Saving Player Settings for %s to database.", player.getName());
 			insertPlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
 			return new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
 		} catch (DataStoreException e) {
@@ -202,6 +202,14 @@ public class DataStoreManager {
 	 * @param muted
 	 */
 	private void insertPlayerSettings(OfflinePlayer player, boolean learning_mode, boolean muted) {
+		Set<PlayerSettings> ps = new HashSet<>();
+		ps.add(new PlayerSettings(player,learning_mode,muted));
+		try {
+			mStore.insertPlayerSettings(ps);
+		} catch (DataStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		synchronized (mWaiting) {
 			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
 		}

@@ -78,10 +78,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 					.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=? WHERE UUID=?;");
 			break;
 		case INSERT_PLAYER_DATA:
-			mInsertPlayerData = connection.prepareStatement("REPLACE INTO mh_Bounties "
-					+ "(MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
-					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE) "
-					+ " VALUES (?,?,?,?,?,?,?,?,?,?);");
+			mInsertPlayerData = connection.prepareStatement(
+					"INSERT INTO mh_Players (UUID,NAME,LEARNING_MODE,MUTE_MODE) " + "VALUES(?,?,?,?);");
 			break;
 		case GET_BOUNTIES:
 			mGetBounties = connection.prepareStatement(
@@ -90,14 +88,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 		case INSERT_BOUNTY:
 			mInsertBounty = connection.prepareStatement("REPLACE INTO mh_Bounties "
 					+ "(MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
-					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE, STATUS) "
-					+ " VALUES (?,?,?,?,?,?,?,?,?,?,?);"
-					);
+					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE, STATUS) " + " VALUES (?,?,?,?,?,?,?,?,?,?,?);");
 			break;
 		case UPDATE_BOUNTY:
-			mUpdateBounty = connection
-					.prepareStatement("UPDATE mh_Bounties SET PRIZE=?,MESSAGE=?,END_DATE=?,STATUS=?"
-							+ " WHERE WANTEDPLAYER_ID=? AND BOUNTYOWNER_ID=? AND WORLDGROUP=?;");
+			mUpdateBounty = connection.prepareStatement("UPDATE mh_Bounties SET PRIZE=?,MESSAGE=?,END_DATE=?,STATUS=?"
+					+ " WHERE WANTEDPLAYER_ID=? AND BOUNTYOWNER_ID=? AND WORLDGROUP=?;");
 			break;
 		case GET_PLAYER_BY_PLAYER_ID:
 			mGetPlayerByPlayerId = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE PLAYER_ID=?;");
@@ -161,26 +156,30 @@ public class MySQLDataStore extends DatabaseDataStore {
 				names.add(stat.getPlayer());
 			Map<UUID, Integer> ids = getPlayerIds(names);
 
-			// Make sure the stats are available for each player
-			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
-			mSavePlayerStats.clearBatch();
-			for (OfflinePlayer player : names) {
-				mSavePlayerStats.setInt(1, ids.get(player.getUniqueId()));
-				mSavePlayerStats.addBatch();
-			}
-			mSavePlayerStats.executeBatch();
-			mSavePlayerStats.close();
+			if (!ids.isEmpty()) {
+				// Make sure the stats are available for each player
+				openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
+				mSavePlayerStats.clearBatch();
+				for (OfflinePlayer player : names) {
+					mSavePlayerStats.setInt(1, ids.get(player.getUniqueId()));
+					mSavePlayerStats.addBatch();
+				}
+				mSavePlayerStats.executeBatch();
+				mSavePlayerStats.close();
 
-			// Now add each of the stats
-			Statement statement = mConnection.createStatement();
-			for (StatStore stat : stats)
-				statement.addBatch(String.format(
-						"UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
-						stat.getType().getDBColumn(), ids.get(stat.getPlayer().getUniqueId()), stat.getAmount()));
-			statement.executeBatch();
-			statement.close();
-			mConnection.commit();
-			MobHunting.debug("Saved.", "");
+				// Now add each of the stats
+				Statement statement = mConnection.createStatement();
+				for (StatStore stat : stats)
+					statement.addBatch(String.format(
+							"UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
+							stat.getType().getDBColumn(), ids.get(stat.getPlayer().getUniqueId()), stat.getAmount()));
+				statement.executeBatch();
+				statement.close();
+				mConnection.commit();
+				MobHunting.debug("Saved.");
+			} else {
+				MobHunting.debug("Nothing to save.");
+			}
 		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);
@@ -243,11 +242,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ "ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, "
 				+ "PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
 		if (!MobHunting.getConfigManager().disablePlayerBounties)
-			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties (" 
-					+ "BOUNTYOWNER_ID INTEGER NOT NULL, " + "MOBTYPE CHAR(6), " + "WANTEDPLAYER_ID INTEGER NOT NULL, "
-					+ "NPC_ID INTEGER, " + "MOB_ID CHAR(40), " + "WORLDGROUP CHAR(20) NOT NULL, "
-					+ "CREATED_DATE BIGINT NOT NULL, " + "END_DATE BIGINT NOT NULL, " + "PRIZE FLOAT NOT NULL, "
-					+ "MESSAGE CHAR(64), " + "STATUS INTEGER NOT NULL DEFAULT 0, "
+			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties (" + "BOUNTYOWNER_ID INTEGER NOT NULL, "
+					+ "MOBTYPE CHAR(6), " + "WANTEDPLAYER_ID INTEGER NOT NULL, " + "NPC_ID INTEGER, "
+					+ "MOB_ID CHAR(40), " + "WORLDGROUP CHAR(20) NOT NULL, " + "CREATED_DATE BIGINT NOT NULL, "
+					+ "END_DATE BIGINT NOT NULL, " + "PRIZE FLOAT NOT NULL, " + "MESSAGE CHAR(64), "
+					+ "STATUS INTEGER NOT NULL DEFAULT 0, "
 					+ "PRIMARY KEY(WORLDGROUP, WANTEDPLAYER_ID, BOUNTYOWNER_ID), "
 					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
 					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");

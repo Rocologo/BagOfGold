@@ -75,4 +75,5 @@ public class PlayerSettings {
 				"PlayerStore: {player: %s, Learning Mode: %s, Mute Mode: %s}",
 				player.getName(), learning_mode, mute);
 	}
+
 }

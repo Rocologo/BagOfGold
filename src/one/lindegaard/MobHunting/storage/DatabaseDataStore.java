@@ -230,8 +230,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_DATA);
 			for (PlayerSettings playerData : playerDataSet) {
 				mInsertPlayerData.setString(1, playerData.getPlayer().getUniqueId().toString());
-				mInsertPlayerData.setInt(2, playerData.isLearningMode() ? 1 : 0);
-				mInsertPlayerData.setInt(3, playerData.isMuted() ? 1 : 0);
+				mInsertPlayerData.setString(2, playerData.getPlayer().getName());
+				mInsertPlayerData.setInt(3, playerData.isLearningMode() ? 1 : 0);
+				mInsertPlayerData.setInt(4, playerData.isMuted() ? 1 : 0);
 				mInsertPlayerData.addBatch();
 			}
 			mInsertPlayerData.executeBatch();
@@ -366,10 +367,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			closePreparedGetPlayerStatements();
 			return res;
-		}
-		closePreparedGetPlayerStatements();
+		} else
+			return 0;
 
-		throw new UserNotFoundException("[MobHunting] User " + player.toString() + " is not present in database");
+		// throw new UserNotFoundException("[MobHunting] User " +
+		// player.toString() + " is not present in database");
 	}
 
 	/**
@@ -453,17 +455,19 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	@Override
 	public Set<AchievementStore> loadAchievements(OfflinePlayer player) throws DataStoreException {
+		HashSet<AchievementStore> achievements = new HashSet<AchievementStore>();
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.LOAD_ARCHIEVEMENTS);
 			int playerId = getPlayerId(player);
-			mLoadAchievements.setInt(1, playerId);
-			ResultSet set = mLoadAchievements.executeQuery();
-			HashSet<AchievementStore> achievements = new HashSet<AchievementStore>();
-			while (set.next()) {
-				achievements.add(new AchievementStore(set.getString(1), player, set.getInt(3)));
+			if (playerId != 0) {
+				mLoadAchievements.setInt(1, playerId);
+				ResultSet set = mLoadAchievements.executeQuery();
+				while (set.next()) {
+					achievements.add(new AchievementStore(set.getString(1), player, set.getInt(3)));
+				}
+				set.close();
+				mLoadAchievements.close();
 			}
-			set.close();
-			mLoadAchievements.close();
 			return achievements;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -476,15 +480,15 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void saveAchievements(Set<AchievementStore> achievements) throws DataStoreException {
 		try {
-			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
-			for (AchievementStore achievement : achievements)
-				names.add(achievement.player);
+			// HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
+			// for (AchievementStore achievement : achievements)
+			// names.add(achievement.player);
 
-			Map<UUID, Integer> ids = getPlayerIds(names);
+			// Map<UUID, Integer> ids = getPlayerIds(names);
 
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_ACHIEVEMENTS);
 			for (AchievementStore achievement : achievements) {
-				mSaveAchievement.setInt(1, ids.get(achievement.player.getUniqueId()));
+				mSaveAchievement.setInt(1, getPlayerId(achievement.player));
 				mSaveAchievement.setString(2, achievement.id);
 				mSaveAchievement.setDate(3, new Date(System.currentTimeMillis()));
 				mSaveAchievement.setInt(4, achievement.progress);
@@ -554,7 +558,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			while (set.next()) {
 				Bounty b = new Bounty();
-				//b.setBountyId(set.getInt(1));
+				// b.setBountyId(set.getInt(1));
 				b.setBountyOwnerId(set.getInt(1));
 				b.setBountyOwner(getPlayerByPlayerId(set.getInt(1)));
 				b.setMobtype(set.getString(2));
@@ -584,9 +588,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
 			for (Bounty bounty : bountyDataSet) {
-				//MobHunting.debug("DatabaseDataStore: insert data on disk - %s",bounty.toString());
+				// MobHunting.debug("DatabaseDataStore: insert data on disk -
+				// %s",bounty.toString());
 				int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
-				int wantedPlayerId=getPlayerId(bounty.getWantedPlayer());
+				int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
 				mInsertBounty.setString(1, bounty.getMobtype());
 				mInsertBounty.setInt(2, bountyOwnerId);
 				mInsertBounty.setInt(3, wantedPlayerId);

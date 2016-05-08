@@ -3,6 +3,7 @@ mobhunting.config.fail=There was a problem loading the MobHunting config
 mobhunting.hook.econ=Unable to hook into an economy! Make sure you have one available that Vault accepts.
 mobhunting.moneygain.bonuses=You gained ${prize}! With: ${bonuses}
 mobhunting.moneygain=You gained ${prize}!
+mobhunting.moneypickup=You found ${money}
 mobhunting.moneygain-for-killing=You got ${money} for killing ${killed}.
 mobhunting.moneylost=You lost ${prize}!
 mobhunting.moneygain.assist=Assist! You got ${prize}

@@ -241,6 +241,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
+		getServer().getPluginManager().registerEvents(new Rewards(), this);
 
 		mAchievementManager = new AchievementManager();
 
@@ -451,10 +452,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	public static void playerActionBarMessage(Player player, String message) {
-		debug("send message with TitleManager in ActionBar if supported integration=%s, supported=%s",
-				!mConfig.disableIntegrationTitleManager, TitleManagerCompat.isSupported());
 		if (!mConfig.disableIntegrationTitleManager && TitleManagerCompat.isSupported()) {
-			debug("send message with TitleManager in ActionBar");
 			TitleManagerCompat.setActionBar(player, message);
 		} else if (!mConfig.disableIntegrationActionBar && ActionBarCompat.isSupported()) {
 			ActionBarCompat.setMessage(player, message);
@@ -474,10 +472,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		HuntData data = mMobHuntingManager.getHuntData(event.getEntity());
 		if (data.getKillstreakLevel() != 0)
-			playerActionBarMessage((Player)event.getEntity(), 
+			playerActionBarMessage((Player) event.getEntity(),
 					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-			//event.getEntity().sendMessage(
-			//		ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
+		// event.getEntity().sendMessage(
+		// ChatColor.RED + "" + ChatColor.ITALIC +
+		// Messages.getString("mobhunting.killstreak.ended"));
 		data.setKillStreak(0);
 	}
 
@@ -493,9 +492,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Player player = (Player) event.getEntity();
 		HuntData data = mMobHuntingManager.getHuntData(player);
 		if (data.getKillstreakLevel() != 0)
-			playerActionBarMessage(player, ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-			//player.sendMessage(
-			//		ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
+			playerActionBarMessage(player,
+					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
+		// player.sendMessage(
+		// ChatColor.RED + "" + ChatColor.ITALIC +
+		// Messages.getString("mobhunting.killstreak.ended"));
 		data.setKillStreak(0);
 	}
 
@@ -628,13 +629,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 						if (cause instanceof Player)
 							playerActionBarMessage(cause, ChatColor.GREEN + "" + ChatColor.ITALIC
 									+ Messages.getString("bonus.undercover.message", "cause", cause.getName()));
-							//cause.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-							//		+ Messages.getString("bonus.undercover.message", "cause", cause.getName()));
+						// cause.sendMessage(ChatColor.GREEN + "" +
+						// ChatColor.ITALIC
+						// + Messages.getString("bonus.undercover.message",
+						// "cause", cause.getName()));
 						if (damaged instanceof Player)
 							playerActionBarMessage((Player) damaged, ChatColor.GREEN + "" + ChatColor.ITALIC
 									+ Messages.getString("bonus.undercover.message", "cause", cause.getName()));
-							//damaged.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-							//		+ Messages.getString("bonus.undercover.message", "cause", cause.getName()));
+						// damaged.sendMessage(ChatColor.GREEN + "" +
+						// ChatColor.ITALIC
+						// + Messages.getString("bonus.undercover.message",
+						// "cause", cause.getName()));
 					}
 				}
 
@@ -650,13 +655,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 						if (damaged instanceof Player)
 							playerActionBarMessage((Player) damaged, ChatColor.GREEN + "" + ChatColor.ITALIC
 									+ Messages.getString("bonus.coverblown.message", "damaged", damaged.getName()));
-							//damaged.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-							//		+ Messages.getString("bonus.coverblown.message", "damaged", damaged.getName()));
+						// damaged.sendMessage(ChatColor.GREEN + "" +
+						// ChatColor.ITALIC
+						// + Messages.getString("bonus.coverblown.message",
+						// "damaged", damaged.getName()));
 						if (cause instanceof Player)
 							playerActionBarMessage(cause, ChatColor.GREEN + "" + ChatColor.ITALIC
 									+ Messages.getString("bonus.coverblown.message", "damaged", damaged.getName()));
-							//cause.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-							//		+ Messages.getString("bonus.coverblown.message", "damaged", damaged.getName()));
+						// cause.sendMessage(ChatColor.GREEN + "" +
+						// ChatColor.ITALIC
+						// + Messages.getString("bonus.coverblown.message",
+						// "damaged", damaged.getName()));
 					}
 				}
 
@@ -899,13 +908,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (killer instanceof Player && !killer_muted)
 						playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ Messages.getString("bonus.undercover.message", "cause", killer.getName()));
-						//killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-						//		+ Messages.getString("bonus.undercover.message", "cause", killer.getName()));
+					// killer.sendMessage(ChatColor.GREEN + "" +
+					// ChatColor.ITALIC
+					// + Messages.getString("bonus.undercover.message", "cause",
+					// killer.getName()));
 					if (killed instanceof Player && !killed_muted)
-						playerActionBarMessage((Player)killed, ChatColor.GREEN + "" + ChatColor.ITALIC
+						playerActionBarMessage((Player) killed, ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ Messages.getString("bonus.undercover.message", "cause", killer.getName()));
-						//killed.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-						//		+ Messages.getString("bonus.undercover.message", "cause", killer.getName()));
+					// killed.sendMessage(ChatColor.GREEN + "" +
+					// ChatColor.ITALIC
+					// + Messages.getString("bonus.undercover.message", "cause",
+					// killer.getName()));
 				}
 			}
 		if (!info.mobCoverBlown)
@@ -916,15 +929,19 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (mConfig.removeDisguiseWhenAttacked) {
 					DisguisesHelper.undisguiseEntity(killed);
 					if (killed instanceof Player && !killed_muted)
-						playerActionBarMessage((Player)killed, ChatColor.GREEN + "" + ChatColor.ITALIC
+						playerActionBarMessage((Player) killed, ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ Messages.getString("bonus.coverblown.message", "damaged", killed.getName()));
-						//killed.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-						//		+ Messages.getString("bonus.coverblown.message", "damaged", killed.getName()));
+					// killed.sendMessage(ChatColor.GREEN + "" +
+					// ChatColor.ITALIC
+					// + Messages.getString("bonus.coverblown.message",
+					// "damaged", killed.getName()));
 					if (killer instanceof Player && !killer_muted)
 						playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ Messages.getString("bonus.coverblown.message", "damaged", killed.getName()));
-						//killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-						//		+ Messages.getString("bonus.coverblown.message", "damaged", killed.getName()));
+					// killer.sendMessage(ChatColor.GREEN + "" +
+					// ChatColor.ITALIC
+					// + Messages.getString("bonus.coverblown.message",
+					// "damaged", killed.getName()));
 				}
 			}
 
@@ -973,7 +990,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (data.getDampenedKills() > 14) {
 				if (data.getKillstreakLevel() != 0)
 					playerActionBarMessage(killer, ChatColor.RED + Messages.getString("mobhunting.killstreak.lost"));
-					//killer.sendMessage(ChatColor.RED + Messages.getString("mobhunting.killstreak.lost"));
+				// killer.sendMessage(ChatColor.RED +
+				// Messages.getString("mobhunting.killstreak.lost"));
 				data.setKillStreak(0);
 			}
 		}
@@ -1025,20 +1043,23 @@ public class MobHunting extends JavaPlugin implements Listener {
 					reward += b.getPrize();
 					OfflinePlayer bountyOwner = b.getBountyOwner();
 					mBountyManager.removeBounty(b);
-					//debug("AcummulatedReward=%s removedBountyOwner=%s", reward, b.getBountyOwner().getName());
+					// debug("AcummulatedReward=%s removedBountyOwner=%s",
+					// reward, b.getBountyOwner().getName());
 					if (bountyOwner.isOnline())
-						playerActionBarMessage((Player) bountyOwner, 
-								Messages.getString("mobhunting.bounty.bounty-claimed","killer",killer.getName(),
-										"prize",b.getPrize(),"killed",killed.getName()));
-						//playerActionBarMessage((Player) bountyOwner, bountyOwner.getName() + " claimed the bounty ("
-						//		+ b.getPrize() + ") you had put on " + killed.getName());
-						//((Player) bountyOwner).sendMessage(bountyOwner.getName() + " claimed the bounty ("
-						//		+ b.getPrize() + ") you had put on " + killed.getName());
+						playerActionBarMessage((Player) bountyOwner,
+								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
+										"prize", b.getPrize(), "killed", killed.getName()));
+					// playerActionBarMessage((Player) bountyOwner,
+					// bountyOwner.getName() + " claimed the bounty ("
+					// + b.getPrize() + ") you had put on " + killed.getName());
+					// ((Player) bountyOwner).sendMessage(bountyOwner.getName()
+					// + " claimed the bounty ("
+					// + b.getPrize() + ") you had put on " + killed.getName());
 				}
 				// OBS: Bounty will be added to the Reward for killing/Robbing
 				// the player
-				playerActionBarMessage(killer, Messages.getString("mobhunting.moneygain-for-killing", "money", reward,
-						"killed", killed.getName()));
+				playerActionBarMessage(killer, Messages.getString("mobhunting.moneygain-for-killing", "money",
+						mEconomy.format(reward), "killed", killed.getName()));
 				// killer.sendMessage("You got " + reward + " in bounty for
 				// killing " + killed.getName());
 				// TODO: call bounty event, and check if canceled.
@@ -1070,10 +1091,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (mConfig.robFromVictim) {
 						mEconomy.withdrawPlayer((Player) killed, cash);
 						if (!killed_muted)
-							playerActionBarMessage((Player)killed, ChatColor.RED + "" + ChatColor.ITALIC
+							playerActionBarMessage((Player) killed, ChatColor.RED + "" + ChatColor.ITALIC
 									+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
-							//killed.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
-							//		+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
+						// killed.sendMessage(ChatColor.RED + "" +
+						// ChatColor.ITALIC
+						// + Messages.getString("mobhunting.moneylost", "prize",
+						// mEconomy.format(cash)));
 						debug("%s lost %s", killed.getName(), mEconomy.format(cash));
 					}
 				}
@@ -1082,20 +1105,28 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// Reward for assisted kill
 			if (info.assister == null) {
 				if (cash > 0) {
-					mEconomy.depositPlayer(killer, cash);
-					debug("%s got a reward (%s)", killer.getName(), mEconomy.format(cash));
+					if (mConfig.dropMoneyOnGroup) {
+						Rewards.dropMoneyOnGround(killed, cash);
+						debug("%s was droped on the ground", mEconomy.format(cash));
+					} else {
+						mEconomy.depositPlayer(killer, cash);
+						debug("%s got a reward (%s)", killer.getName(), mEconomy.format(cash));
+					}
 				} else {
 					mEconomy.withdrawPlayer(killer, -cash);
-
 					debug("%s got a penalty (%s)", killer.getName(), mEconomy.format(cash));
-
 				}
 			} else {
 				cash = cash / 2;
 				if (cash > 0) {
-					mEconomy.depositPlayer(killer, cash);
-					onAssist(info.assister, killer, killed, info.lastAssistTime);
-					debug("%s got a ½ reward (%s)", killer.getName(), mEconomy.format(cash));
+					if (mConfig.dropMoneyOnGroup) {
+						Rewards.dropMoneyOnGround(killed, cash);
+						debug("%s was droped on the ground", mEconomy.format(cash));
+					} else {
+						mEconomy.depositPlayer(killer, cash);
+						onAssist(info.assister, killer, killed, info.lastAssistTime);
+						debug("%s got a ½ reward (%s)", killer.getName(), mEconomy.format(cash));
+					}
 				} else {
 					mEconomy.withdrawPlayer(killer, -cash);
 					onAssist(info.assister, killer, killed, info.lastAssistTime);
@@ -1122,16 +1153,20 @@ public class MobHunting extends JavaPlugin implements Listener {
 					} else {
 						playerActionBarMessage(killer, ChatColor.RED + "" + ChatColor.ITALIC
 								+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
-						//killer.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
-						//		+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
+						// killer.sendMessage(ChatColor.RED + "" +
+						// ChatColor.ITALIC
+						// + Messages.getString("mobhunting.moneylost", "prize",
+						// mEconomy.format(cash)));
 
 					}
 				} else
-					playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses",
-							"prize", mEconomy.format(cash), "bonuses", extraString.trim()));
-					//killer.sendMessage(
-					//		ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses",
-					//				"prize", mEconomy.format(cash), "bonuses", extraString.trim()));
+					playerActionBarMessage(killer,
+							ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses",
+									"prize", mEconomy.format(cash), "bonuses", extraString.trim()));
+			// killer.sendMessage(
+			// ChatColor.GREEN + "" + ChatColor.ITALIC +
+			// Messages.getString("mobhunting.moneygain.bonuses",
+			// "prize", mEconomy.format(cash), "bonuses", extraString.trim()));
 		} else
 			debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)", killer.getName(),
 					extraString);
@@ -1167,20 +1202,24 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (!mConfig.getKillRewardDescription(killed).equals("") && !killer_muted) {
 						playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ mConfig.getKillRewardDescription(killed).replaceAll("\\{player\\}", killer.getName())
-								.replaceAll("\\{killed_player\\}", killed.getName())
-								.replaceAll("\\{killer\\}", killer.getName())
-								.replaceAll("\\{killed\\}", killed.getName())
-								.replace("\\{prize\\}", mEconomy.format(cash))
-								.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
-								.replaceAll("\\{killedpos\\}", killedpos));
-						//killer.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-						//		+ mConfig.getKillRewardDescription(killed).replaceAll("\\{player\\}", killer.getName())
-						//				.replaceAll("\\{killed_player\\}", killed.getName())
-						//				.replaceAll("\\{killer\\}", killer.getName())
-						//				.replaceAll("\\{killed\\}", killed.getName())
-						//				.replace("\\{prize\\}", mEconomy.format(cash))
-						//				.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
-						//				.replaceAll("\\{killedpos\\}", killedpos));
+										.replaceAll("\\{killed_player\\}", killed.getName())
+										.replaceAll("\\{killer\\}", killer.getName())
+										.replaceAll("\\{killed\\}", killed.getName())
+										.replace("\\{prize\\}", mEconomy.format(cash))
+										.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
+										.replaceAll("\\{killedpos\\}", killedpos));
+						// killer.sendMessage(ChatColor.GREEN + "" +
+						// ChatColor.ITALIC
+						// +
+						// mConfig.getKillRewardDescription(killed).replaceAll("\\{player\\}",
+						// killer.getName())
+						// .replaceAll("\\{killed_player\\}", killed.getName())
+						// .replaceAll("\\{killer\\}", killer.getName())
+						// .replaceAll("\\{killed\\}", killed.getName())
+						// .replace("\\{prize\\}", mEconomy.format(cash))
+						// .replaceAll("\\{world\\}",
+						// worldname).replaceAll("\\{killerpos\\}", killerpos)
+						// .replaceAll("\\{killedpos\\}", killedpos));
 					}
 				}
 			}
@@ -1212,15 +1251,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (ks != 1.0)
 				playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
 						+ Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash)));
-				//player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-				//		+ Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash)));
+			// player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
+			// + Messages.getString("mobhunting.moneygain.assist", "prize",
+			// mEconomy.format(cash)));
 			else
-				playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
-						+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize", mEconomy.format(cash),
-								"bonuses", String.format("x%.1f", ks)));
-				//player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
-				//		+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize", mEconomy.format(cash),
-				//				"bonuses", String.format("x%.1f", ks)));
+				playerActionBarMessage(player,
+						ChatColor.GREEN + "" + ChatColor.ITALIC
+								+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
+										mEconomy.format(cash), "bonuses", String.format("x%.1f", ks)));
+			// player.sendMessage(ChatColor.GREEN + "" + ChatColor.ITALIC
+			// + Messages.getString("mobhunting.moneygain.assist.bonuses",
+			// "prize", mEconomy.format(cash),
+			// "bonuses", String.format("x%.1f", ks)));
 		}
 	}
 
@@ -1236,9 +1278,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}.runTaskLater(instance, 20L);
 		}
-		if (!mConfig.disablePlayerBounties){
+		if (!mConfig.disablePlayerBounties) {
 			String worldGroupName = mWorldGroupManager.getCurrentWorldGroup(player);
-			if (mBountyManager.hasBounties(worldGroupName, player)){
+			if (mBountyManager.hasBounties(worldGroupName, player)) {
 				playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
 			}
 		}
