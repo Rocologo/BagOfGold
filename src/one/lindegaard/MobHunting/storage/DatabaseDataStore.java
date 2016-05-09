@@ -215,6 +215,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 		if (result.next()) {
 			PlayerSettings ps = new PlayerSettings(player, result.getBoolean("LEARNING_MODE"),
 					result.getBoolean("MUTE_MODE"));
+			int id=result.getInt("PLAYER_ID");
+			if (id!=0)
+				ps.setPlayerId(id);
 			result.close();
 			//closePreparedGetPlayerStatements();
 			return ps;
@@ -468,8 +471,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 					achievements.add(new AchievementStore(set.getString(1), player, set.getInt(3)));
 				}
 				set.close();
-				mLoadAchievements.close();
 			}
+			mLoadAchievements.close();
 			return achievements;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);

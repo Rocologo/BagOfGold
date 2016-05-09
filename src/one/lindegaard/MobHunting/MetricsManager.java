@@ -84,9 +84,10 @@ public class MetricsManager {
 						@SuppressWarnings({ "rawtypes", "unused" })
 						// Class cls = Class
 						// .forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
-						Class cls = Class.forName("pgDev.bukkit.DisguiseCraft");
+						Class cls = Class.forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
 						return DisguiseCraftCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
+						//MobHunting.debug("DisguiseCraft is not installed - reported 0");
 						// DisguiseCraft is not present.
 						return 0;
 					}
@@ -97,9 +98,11 @@ public class MetricsManager {
 				public int getValue() {
 					try {
 						@SuppressWarnings({ "rawtypes", "unused" })
-						Class cls = Class.forName("de.robingrether.idisguise");
+						//de.robingrether.idisguise.disguise.DisguiseType
+						Class cls = Class.forName("de.robingrether.idisguise.disguise.DisguiseType");
 						return IDisguiseCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
+						//MobHunting.debug("iDisguise is not installed - reported 0");
 						return 0;
 					}
 				}
@@ -109,9 +112,10 @@ public class MetricsManager {
 				public int getValue() {
 					try {
 						@SuppressWarnings({ "rawtypes", "unused" })
-						Class cls = Class.forName("me.libraryaddict.disguise.DisguiseAPI");
+						Class cls = Class.forName("me.libraryaddict.disguise.disguisetypes.DisguiseType");
 						return LibsDisguisesCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
+						MobHunting.debug("LibsDisguises is not installed - reported 0");
 						return 0;
 					}
 				}
@@ -131,14 +135,7 @@ public class MetricsManager {
 			integrationsGraph.addPlotter(new Metrics.Plotter("WorldGuard") {
 				@Override
 				public int getValue() {
-					try {
-						@SuppressWarnings({ "rawtypes", "unused" })
-						Class cls = Class.forName("com.sk89q.worldguard");
 						return WorldGuardCompat.isSupported() ? 1 : 0;
-					} catch (ClassNotFoundException e) {
-						return 0;
-					}
-
 				}
 			});
 			metrics.addGraph(integrationsGraph);

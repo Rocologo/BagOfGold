@@ -12,7 +12,6 @@ import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.MobHunting;
 import pgDev.bukkit.DisguiseCraft.DisguiseCraft;
-import pgDev.bukkit.DisguiseCraft.api.DisguiseCraftAPI;
 import pgDev.bukkit.DisguiseCraft.disguise.Disguise;
 import pgDev.bukkit.DisguiseCraft.disguise.DisguiseType;
 
@@ -22,7 +21,7 @@ public class DisguiseCraftCompat implements Listener {
 	// http://dev.bukkit.org/bukkit-plugins/disguisecraft/pages/developer-api/
 
 	private static Plugin mPlugin;
-	private static DisguiseCraftAPI dcAPI;
+	//private static DisguiseCraftAPI dcAPI;
 	private static boolean supported = false;
 
 	public DisguiseCraftCompat() {
@@ -34,7 +33,7 @@ public class DisguiseCraftCompat implements Listener {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("DisguiseCraft");
 			if (mPlugin != null) {
-				dcAPI = DisguiseCraft.getAPI();
+				//dcAPI = DisguiseCraft.getAPI();
 
 				Bukkit.getPluginManager().registerEvents(this,
 						MobHunting.getInstance());
@@ -69,15 +68,15 @@ public class DisguiseCraftCompat implements Listener {
 	}
 
 	public static boolean isDisguised(Player player) {
-		return dcAPI.isDisguised(player);
+		return DisguiseCraft.getAPI().isDisguised(player);
 	}
 
 	public static Disguise getDisguise(Entity entiry) {
-		return dcAPI.getDisguise((Player) entiry);
+		return DisguiseCraft.getAPI().getDisguise((Player) entiry);
 	}
 
 	public static void disguisePlayer(Player player, Disguise disguise) {
-		dcAPI.disguisePlayer(player, disguise);
+		DisguiseCraft.getAPI().disguisePlayer(player, disguise);
 	}
 
 	// public static void changePlayerDisguise(Player player, Disguise
@@ -87,7 +86,7 @@ public class DisguiseCraftCompat implements Listener {
 
 	public static void undisguisePlayer(Entity entity) {
 		if (entity instanceof Player)
-			dcAPI.undisguisePlayer((Player) entity);
+			DisguiseCraft.getAPI().undisguisePlayer((Player) entity);
 	}
 
 	private static final DisguiseType aggresiveList[] = { DisguiseType.Blaze,

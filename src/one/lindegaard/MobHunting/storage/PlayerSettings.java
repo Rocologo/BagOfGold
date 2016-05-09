@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class PlayerSettings {
+	private int playerId;
 	private OfflinePlayer player;
 	private boolean learning_mode=false;
 	private boolean mute=false;
@@ -74,6 +75,14 @@ public class PlayerSettings {
 		return String.format(
 				"PlayerStore: {player: %s, Learning Mode: %s, Mute Mode: %s}",
 				player.getName(), learning_mode, mute);
+	}
+
+	public int getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
 	}
 
 }
