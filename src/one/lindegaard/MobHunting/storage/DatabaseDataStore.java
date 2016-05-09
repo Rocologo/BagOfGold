@@ -369,6 +369,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			return res;
 		} else {
 			//closePreparedGetPlayerStatements();
+			result.close();
 			return 0;
 		}
 	}
