@@ -102,7 +102,6 @@ public class MetricsManager {
 						Class cls = Class.forName("de.robingrether.idisguise.disguise.DisguiseType");
 						return IDisguiseCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
-						//MobHunting.debug("iDisguise is not installed - reported 0");
 						return 0;
 					}
 				}
@@ -115,7 +114,6 @@ public class MetricsManager {
 						Class cls = Class.forName("me.libraryaddict.disguise.disguisetypes.DisguiseType");
 						return LibsDisguisesCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
-						MobHunting.debug("LibsDisguises is not installed - reported 0");
 						return 0;
 					}
 				}
@@ -135,11 +133,16 @@ public class MetricsManager {
 			integrationsGraph.addPlotter(new Metrics.Plotter("WorldGuard") {
 				@Override
 				public int getValue() {
+					try {
+						@SuppressWarnings({ "rawtypes", "unused" })
+						Class cls = Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
 						return WorldGuardCompat.isSupported() ? 1 : 0;
+					} catch (ClassNotFoundException e) {
+						return 0;
+					}
+
 				}
 			});
-			metrics.addGraph(integrationsGraph);
-
 			metrics.enable();
 			metrics.start();
 			MobHunting.debug("Metrics started");
