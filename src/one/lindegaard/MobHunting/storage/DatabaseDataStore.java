@@ -125,6 +125,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mConnection.setAutoCommit(false);
 			setupTables(mConnection);
 			mGetPlayerData = new PreparedStatement[4];
+			openPreparedGetPlayerStatements();
 
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -175,7 +176,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void shutdown() throws DataStoreException {
 		try {
-			// closePreparedGetPlayerStatements();
+			closePreparedGetPlayerStatements();
 			if (mConnection != null) {
 				mConnection.commit();
 				try {
@@ -208,14 +209,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	@Override
 	public PlayerSettings getPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException {
-		openPreparedGetPlayerStatements();
+		//openPreparedGetPlayerStatements();
 		mGetPlayerData[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerData[0].executeQuery();
 		if (result.next()) {
 			PlayerSettings ps = new PlayerSettings(player, result.getBoolean("LEARNING_MODE"),
 					result.getBoolean("MUTE_MODE"));
 			result.close();
-			closePreparedGetPlayerStatements();
+			//closePreparedGetPlayerStatements();
 			return ps;
 		}
 		//closePreparedGetPlayerStatements();
@@ -280,7 +281,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
 		ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
 
-		openPreparedGetPlayerStatements();
+		//openPreparedGetPlayerStatements();
 		while (left > 0) {
 			PreparedStatement statement;
 			int size = 0;
@@ -330,7 +331,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				updatePlayerName(p.getPlayer());
 			}
 		}
-		closePreparedGetPlayerStatements();
+		//closePreparedGetPlayerStatements();
 		mConnection.commit();
 		return ids;
 	}
@@ -344,7 +345,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * @throws DataStoreException
 	 */
 	public int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException {
-		openPreparedGetPlayerStatements();
+		//openPreparedGetPlayerStatements();
 		mGetPlayerData[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerData[0].executeQuery();
 		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
@@ -364,10 +365,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				OfflinePlayer p = itr.next();
 				updatePlayerName(p.getPlayer());
 			}
-			closePreparedGetPlayerStatements();
+			//closePreparedGetPlayerStatements();
 			return res;
 		} else {
-			closePreparedGetPlayerStatements();
+			//closePreparedGetPlayerStatements();
 			return 0;
 		}
 	}
