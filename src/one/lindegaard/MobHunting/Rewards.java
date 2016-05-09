@@ -28,11 +28,12 @@ public class Rewards implements Listener {
 			for (MetadataValue mdv : metadata) {
 				if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
 					money = (Double) mdv.value();
-					e.getItem().remove();
 					Player player = e.getPlayer();
 					MobHunting.getEconomy().depositPlayer(player, money);
 					MobHunting.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
 							MobHunting.getEconomy().format(money)));
+					e.getItem().remove();
+					e.setCancelled(true);
 					break;
 				}
 			}
