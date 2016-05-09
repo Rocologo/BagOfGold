@@ -218,7 +218,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			closePreparedGetPlayerStatements();
 			return ps;
 		}
-		closePreparedGetPlayerStatements();
+		//closePreparedGetPlayerStatements();
 		throw new UserNotFoundException("User " + player.toString() + " is not present in database");
 	}
 
@@ -412,7 +412,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerUUID.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
-			mGetPlayerUUID.close();
+			//mGetPlayerUUID.close();
 			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -439,7 +439,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerByPlayerId.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
-			mGetPlayerByPlayerId.close();
+			//mGetPlayerByPlayerId.close();
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
