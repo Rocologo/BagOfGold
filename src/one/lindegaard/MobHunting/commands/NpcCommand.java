@@ -11,9 +11,9 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.compatability.CitizensCompat;
 import one.lindegaard.MobHunting.compatability.CompatibilityManager;
-import one.lindegaard.MobHunting.npc.MasterMobHunterData;
+import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
-import one.lindegaard.MobHunting.npc.MobHuntingTrait;
+import one.lindegaard.MobHunting.npc.MasterMobHunterTrait;
 import one.lindegaard.MobHunting.storage.TimePeriod;
 
 import org.bukkit.Bukkit;
@@ -53,13 +53,10 @@ public class NpcCommand implements ICommand, Listener {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				label + ChatColor.GOLD + " create" + ChatColor.RED
-						+ " <stattype> <period> <number>" + ChatColor.WHITE
+				label + ChatColor.GOLD + " create" + ChatColor.RED + " <stattype> <period> <number>" + ChatColor.WHITE
 						+ " -:to create a MasterMobHunter NPC",
-				label + ChatColor.GOLD + " remove" + ChatColor.WHITE
-						+ " -:to remove the MasterMobHunter",
-				label + ChatColor.GOLD + " update" + ChatColor.WHITE
-						+ " -:to update the MasterMobHunter NPC" };
+				label + ChatColor.GOLD + " remove" + ChatColor.WHITE + " -:to remove the MasterMobHunter",
+				label + ChatColor.GOLD + " update" + ChatColor.WHITE + " -:to update the MasterMobHunter NPC" };
 	}
 
 	@Override
@@ -78,8 +75,7 @@ public class NpcCommand implements ICommand, Listener {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, String label,
-			String[] args) {
+	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
@@ -116,14 +112,12 @@ public class NpcCommand implements ICommand, Listener {
 		Player p = (Player) sender;
 		NPC npc;
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			MasterMobHunterManager masterMobHunterManager = CitizensCompat
-					.getManager();
+			MasterMobHunterManager masterMobHunterManager = CitizensCompat.getManager();
 			npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
-			if (args.length == 1 && (args[0].equalsIgnoreCase("remove")||args[0].equalsIgnoreCase("delete"))) {
+			if (args.length == 1 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete"))) {
 				if (npc != null) {
 					if (masterMobHunterManager.contains(npc.getId())) {
 						masterMobHunterManager.remove(npc.getId());
-						masterMobHunterManager.saveData(npc.getId());
 					}
 					npc.destroy();
 				} else
@@ -132,7 +126,7 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
 				npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
 				// Location loc =p.getEyeLocation();
-				sender.sendMessage("NPC is " + npc.getName()+"(ID="+npc.getId()+")");
+				sender.sendMessage("NPC is " + npc.getName() + "(ID=" + npc.getId() + ")");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("spawn")) {
 				npc.spawn(npc.getStoredLocation());
@@ -148,40 +142,29 @@ public class NpcCommand implements ICommand, Listener {
 				StatType statType = StatType.fromColumnName(args[1]);
 				if (statType == null) {
 					sender.sendMessage(ChatColor.RED
-							+ Messages.getString(
-									"mobhunting.commands.npc.unknown_stattype",
-									"stattype", args[1]));
+							+ Messages.getString("mobhunting.commands.npc.unknown_stattype", "stattype", args[1]));
 					return true;
 				}
 				TimePeriod period = TimePeriod.parsePeriod(args[2]);
 				if (period == null) {
 					sender.sendMessage(ChatColor.RED
-							+ Messages
-									.getString(
-											"mobhunting.commands.npc.unknown_timeperiod",
-											"period", args[2]));
+							+ Messages.getString("mobhunting.commands.npc.unknown_timeperiod", "period", args[2]));
 					return true;
 				}
 				int rank = Integer.valueOf(args[3]);
 				if (rank < 1 || rank > 25) {
 					sender.sendMessage(ChatColor.RED
-							+ Messages.getString(
-									"mobhunting.commands.npc.unknown_rank",
-									"rank", args[3]));
+							+ Messages.getString("mobhunting.commands.npc.unknown_rank", "rank", args[3]));
 					return true;
 				}
 				NPCRegistry registry = CitizensAPI.getNPCRegistry();
 				npc = registry.createNPC(EntityType.PLAYER, "MasterMobHunter");
-				npc.addTrait(MobHuntingTrait.class);
-				masterMobHunterManager.put(npc.getId(),
-						new MasterMobHunterData(npc.getId(), statType, period,
-								0, rank));
-				masterMobHunterManager.saveData(npc.getId());
+				npc.addTrait(MasterMobHunterTrait.class);
+				masterMobHunterManager.put(npc.getId(), new MasterMobHunter(npc.getId(), statType, period, 0, rank));
 				npc.spawn(p.getEyeLocation());
 				masterMobHunterManager.update(npc);
-				MobHunting.debug("Creating NPC id=%s,stat=%s,per=%s,rank=%s",
-						npc.getId(), statType.translateName(), period, rank);
-				MobHunting.debug("No of NPCs=%s",masterMobHunterManager.getAll().size());
+				MobHunting.debug("Creating MasterMobHunter: id=%s,stat=%s,per=%s,rank=%s", npc.getId(),
+						statType.translateName(), period, rank);
 				return true;
 			}
 

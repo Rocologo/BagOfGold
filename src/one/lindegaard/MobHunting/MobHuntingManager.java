@@ -3,9 +3,11 @@ package one.lindegaard.MobHunting;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -16,10 +18,19 @@ import org.bukkit.metadata.MetadataValue;
 
 import one.lindegaard.MobHunting.compatability.CitizensCompat;
 import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
+import one.lindegaard.MobHunting.storage.UserNotFoundException;
 
 public class MobHuntingManager {
 
 	private MobHunting instance;
+	private static HashMap<OfflinePlayer, Integer> playerIds = new HashMap<OfflinePlayer, Integer>();
+
+	/**
+	 * @return the playerIds
+	 */
+	public HashMap<OfflinePlayer, Integer> getPlayerIds() {
+		return playerIds;
+	}
 
 	/**
 	 * Constructor for MobHuntingManager
@@ -166,7 +177,20 @@ public class MobHuntingManager {
 
 	public void rewardKill(Player killer, LivingEntity killed, EntityDeathEvent event) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public int getPlayerId(OfflinePlayer player) {
+		int id = 0;
+		if (playerIds.containsKey(player))
+			return playerIds.get(player);
+		else
+			try {
+				id = MobHunting.getDataStoreManager().getPlayerId(player);
+			} catch (UserNotFoundException e) {
+				e.printStackTrace();
+			}
+		return id;
 	}
 
 }

@@ -60,7 +60,6 @@ public class DataStoreManager {
 	// **************************************************************************************
 	public void recordKill(OfflinePlayer player, ExtendedMobType type, boolean bonusMob) {
 		synchronized (mWaiting) {
-			MobHunting.debug("DataStoreManager: recordKill");
 			mWaiting.add(new StatStore(StatType.fromMobType(type, true), player));
 			mWaiting.add(new StatStore(StatType.KillsTotal, player));
 
@@ -124,13 +123,6 @@ public class DataStoreManager {
 		synchronized (mWaitingDelete) {
 			mWaitingDelete.add(new Bounty(bounty));
 		}
-		/**
-		 * Set<Bounty> b = new HashSet<Bounty>(); b.add(bounty); try {
-		 * mStore.deleteBounty(b); // synchronized (mWaiting) {
-		 * mTaskThread.addDeleteTask(new DeleteTask(b)); // mWaiting.add(new
-		 * Bounty(bounty)); // } } catch (DataDeleteException |
-		 * DataStoreException e) { e.printStackTrace(); }
-		 **/
 	}
 
 	public void cancelBounty(Bounty bounty) {
@@ -185,8 +177,6 @@ public class DataStoreManager {
 			} catch (DataStoreException e1) {
 				e1.printStackTrace();
 			}
-			// insertPlayerSettings(player,
-			// MobHunting.getConfigManager().learningMode, false);
 			return ps;
 		} catch (DataStoreException e) {
 			e.printStackTrace();
@@ -398,8 +388,6 @@ public class DataStoreManager {
 
 					if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
 							|| (task.deleteTask == null && task.storeTask.readOnly()))) {
-						// MobHunting.debug("writeOnly and task is readonly
-						// - so continue ");
 						continue;
 					}
 
@@ -408,12 +396,8 @@ public class DataStoreManager {
 						Object result;
 
 						if (task.storeTask != null) {
-							// MobHunting.debug("try to read/save data to
-							// db");
 							result = task.storeTask.run(mStore);
 						} else {
-							// MobHunting.debug("try to delete data from
-							// db");
 							result = task.deleteTask.run(mStore);
 						}
 

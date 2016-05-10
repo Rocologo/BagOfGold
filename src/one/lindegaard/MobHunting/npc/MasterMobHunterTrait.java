@@ -1,5 +1,9 @@
 package one.lindegaard.MobHunting.npc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -8,9 +12,9 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import one.lindegaard.MobHunting.MobHunting;
 
-public class MobHuntingTrait extends Trait implements Listener {
+public class MasterMobHunterTrait extends Trait implements Listener {
 	// http://wiki.citizensnpcs.co/API
-
+	
 	// This is your trait that will be applied to a npc using the /trait
 	// mytraitname command. Each NPC gets its own instance of this class.
 	// the Trait class has a reference to the attached NPC class through the
@@ -20,14 +24,22 @@ public class MobHuntingTrait extends Trait implements Listener {
 
 	MobHunting plugin = null;
 
-	public MobHuntingTrait() {
+	public MasterMobHunterTrait() {
 		super("MasterMobHunter");
-		//plugin = MobHunting.getInstance();
+		plugin = MobHunting.getInstance();
 	}
 
 	// see the 'Persistence API' section
-	@Persist("mysettingname")
-	boolean automaticallyPersistedSetting = false;
+	@Persist("stattype") String stattype = "total_kill";
+	@Persist("period") String period = "AllTime";
+	@Persist("rank") int rank = 1;
+	@Persist("noOfKills") int noOfKills = 0;
+	@Persist("signLocations") List<Location> signLocations = new ArrayList<Location>();
+
+		//@Persist("mysettingname")
+	//boolean automaticallyPersistedSetting = false;
+	
+	//boolean SomeSetting = false;
 
 	// Here you should load up any values you have previously saved (optional).
 	// This does NOT get called when applying the trait for the first time, only
@@ -36,13 +48,13 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// they will be overridden here.
 	// This is called BEFORE onSpawn, npc.getBukkitEntity() will return null.
 	public void load(DataKey key) {
-		// MobHunting.debug("MobHuntingTrait.load(DataKey)");
+		//SomeSetting = key.getBoolean("SomeSetting", false);
 	}
 
 	// Save settings for this NPC (optional). These values will be persisted to
 	// the Citizens saves.yml file
 	public void save(DataKey key) {
-		// MobHunting.debug("MobHuntingTrait.save(DataKey)");
+		//key.setBoolean("SomeSetting",SomeSetting);
 	}
 
 	// An example event handler. All traits will be registered automatically as
@@ -57,7 +69,6 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// Called every tick
 	@Override
 	public void run() {
-		// MobHunting.debug("MobHuntingTrait is running each tick");
 	}
 
 	// Run code when your trait is attached to a NPC.
@@ -65,8 +76,6 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// This would be a good place to load configurable defaults for new NPCs.
 	@Override
 	public void onAttach() {
-		// plugin.getServer().getLogger()
-		// .info("npc.getName() + " has been assigned as a MasterMobHunter");
 		//load(new net.citizensnpcs.api.util.MemoryDataKey());
 	}
 
@@ -74,8 +83,6 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// actually despawns so npc.getBukkitEntity() is still valid.
 	@Override
 	public void onDespawn() {
-		// MobHunting.debug("MobHuntingTrait - NPC %s
-		// despawned",this.getNPC().getId());
 	}
 
 	// Run code when the NPC is spawned. Note that npc.getBukkitEntity() will be
@@ -83,16 +90,12 @@ public class MobHuntingTrait extends Trait implements Listener {
 	// This is called AFTER onAttach and AFTER Load when the server is started.
 	@Override
 	public void onSpawn() {
-		// MobHunting.debug("MobHuntingTrait - NPC %s
-		// spawned",this.getNPC().getId());
 	}
 
 	// run code when the NPC is removed. Use this to tear down any repeating
 	// tasks.
 	@Override
 	public void onRemove() {
-		// MobHunting.debug("MobHuntingTrait - NPC %s
-		// removed",this.getNPC().getId());
 	}
 
 }

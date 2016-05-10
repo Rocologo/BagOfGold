@@ -301,5 +301,13 @@ public class BountyManager implements Listener {
 
 				});
 	}
+	
+	//***********************************************************
+	// RANDOM BOUNTY
+	//***********************************************************
+	
+	public void randomBounty(){
+		
+	}
 
 }
