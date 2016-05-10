@@ -90,14 +90,14 @@ public class NpcCommand implements ICommand, Listener {
 				if (args[0].equalsIgnoreCase("create")) {
 					StatType[] values = StatType.values();
 					for (int i = 0; i < values.length; i++) {
-						items.add(values[i].getDBColumn());
+						items.add(values[i].translateName().replace(" ", "_"));
 					}
 				}
 			} else if (args.length == 3) {
 				if (args[0].equalsIgnoreCase("create")) {
 					TimePeriod[] values = TimePeriod.values();
 					for (int i = 0; i < values.length; i++) {
-						items.add(values[i].toString());
+						items.add(values[i].translateName().replace(" ","_"));
 					}
 				}
 			}
@@ -139,7 +139,7 @@ public class NpcCommand implements ICommand, Listener {
 				masterMobHunterManager.forceUpdate();
 				return true;
 			} else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
-				StatType statType = StatType.fromColumnName(args[1]);
+				StatType statType = StatType.parseStat(args[1]);
 				if (statType == null) {
 					sender.sendMessage(ChatColor.RED
 							+ Messages.getString("mobhunting.commands.npc.unknown_stattype", "stattype", args[1]));
@@ -163,6 +163,8 @@ public class NpcCommand implements ICommand, Listener {
 				masterMobHunterManager.put(npc.getId(), new MasterMobHunter(npc.getId(), statType, period, 0, rank));
 				npc.spawn(p.getEyeLocation());
 				masterMobHunterManager.update(npc);
+				sender.sendMessage(ChatColor.GREEN
+						+ Messages.getString("mobhunting.commands.npc.created","id",npc.getId()));
 				MobHunting.debug("Creating MasterMobHunter: id=%s,stat=%s,per=%s,rank=%s", npc.getId(),
 						statType.translateName(), period, rank);
 				return true;
