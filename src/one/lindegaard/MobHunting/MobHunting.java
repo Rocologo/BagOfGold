@@ -90,7 +90,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.inventivetalent.bossbar.BossBarAPI;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -136,10 +135,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 	public void onEnable() {
 		instance = this;
 
-		mMobHuntingManager = new MobHuntingManager(this);
-
-		UpdateHelper.setCurrentJarFile(instance.getFile().getName());
-
 		Messages.exportDefaultLanguages();
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
@@ -148,6 +143,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			mConfig.saveConfig();
 		else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
+
+		mMobHuntingManager = new MobHuntingManager(this);
 
 		mWorldGroupManager = new WorldGroup();
 		mWorldGroupManager.load();
@@ -184,16 +181,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		}
 
+		UpdateHelper.setCurrentJarFile(instance.getFile().getName());
+
 		mStoreManager = new DataStoreManager(mStore);
 		
 		mPlayerSettingsManager = new PlayerSettingsManager();
-		if (mMobHuntingManager.getOnlinePlayersAmount() > 0)
-			debug("onReload: loading %s players from the database", mMobHuntingManager.getOnlinePlayersAmount());
-		for (Player player : mMobHuntingManager.getOnlinePlayers()) {
-			boolean learning_mode = getDataStoreManager().getPlayerSettings(player).isLearningMode();
-			boolean muted = getDataStoreManager().getPlayerSettings(player).isMuted();
-			mPlayerSettingsManager.putPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
-		}
 
 		// Handle compatability stuff
 		registerPlugin(EssentialsCompat.class, "Essentials");
@@ -241,16 +233,31 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 		cmd.registerCommand(new DatabaseCommand());
 
+		registerModifiers();
+
+		MobHunting.debug("MobHunting: registerEvents");
+		getServer().getPluginManager().registerEvents(this, this);
+		//getServer().getPluginManager().registerEvents(new MobHuntingManager(this), this);
+		//getServer().getPluginManager().registerEvents(new PlayerSettingsManager(), this);
+		//getServer().getPluginManager().registerEvents(new BountyManager(this), this);
+		//getServer().getPluginManager().registerEvents(new AchievementManager(), this);
+		getServer().getPluginManager().registerEvents(new Rewards(), this);
+
+		if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
+			debug("onReload: loading %s players from the database", mMobHuntingManager.getOnlinePlayersAmount());
+			for (Player player : mMobHuntingManager.getOnlinePlayers()) {
+				boolean learning_mode = getDataStoreManager().getPlayerSettings(player).isLearningMode();
+				boolean muted = getDataStoreManager().getPlayerSettings(player).isMuted();
+				mPlayerSettingsManager.putPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
+			}
+		}
+
 		if (!mConfig.disablePlayerBounties) {
 			mBountyManager = new BountyManager(this);
 			if (!mConfig.disablePlayerBounties) {
 				cmd.registerCommand(new BountyCommand());
 			}
 		}
-		registerModifiers();
-
-		getServer().getPluginManager().registerEvents(this, this);
-		getServer().getPluginManager().registerEvents(new Rewards(), this);
 
 		mAchievementManager = new AchievementManager();
 
@@ -744,7 +751,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			} else if (killer instanceof Player) {
 				if (killed.equals(killer)) {
 					learn(killer, Messages.getString("mobhunting.learn.suiside"));
-					debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(), killed.getName());
+					debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(),
+							killed.getName());
 					return;
 				}
 			} else if (!mConfig.pvpAllowed) {
@@ -1192,26 +1200,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerJoin(PlayerJoinEvent event) {
-		final Player player = event.getPlayer();
-		setHuntEnabled(player, true);
-		if (player.hasPermission("mobhunting.update")) {
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					UpdateHelper.pluginUpdateCheck(player, true, true);
-				}
-			}.runTaskLater(instance, 20L);
-		}
-		if (!mConfig.disablePlayerBounties) {
-			String worldGroupName = mWorldGroupManager.getCurrentWorldGroup(player);
-			if (mBountyManager.hasBounties(worldGroupName, player)) {
-				playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
-			}
-		}
-		if (!mMobHuntingManager.getPlayerIds().containsKey(player)){
-			int id = mMobHuntingManager.getPlayerId(player);
-			mMobHuntingManager.getPlayerIds().put(player, id);
-		}
+		MobHunting.debug("MobHunting: onPlayerJoin");
+		// final Player player = event.getPlayer();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -1271,17 +1261,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		if (event.getSpawnReason() == SpawnReason.REINFORCEMENTS)
 			event.getEntity().setMetadata("MH:reinforcement", new FixedMetadataValue(this, true));
-	}
-
-	/**
-	 * Set if MobHunting is allowed for the player
-	 * 
-	 * @param player
-	 * @param enabled
-	 *            = true : means the MobHunting is allowed
-	 */
-	public void setHuntEnabled(Player player, boolean enabled) {
-		player.setMetadata("MH:enabled", new FixedMetadataValue(MobHunting.instance, enabled));
 	}
 
 	/**

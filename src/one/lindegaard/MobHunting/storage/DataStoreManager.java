@@ -195,10 +195,14 @@ public class DataStoreManager {
 	 * @param muted
 	 */
 	public void updatePlayerSettings(Player player, boolean learning_mode, boolean muted) {
-		synchronized (mWaiting) {
-			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
+		Set<PlayerSettings> ps = new HashSet<PlayerSettings>();
+		ps.add(new PlayerSettings(player, learning_mode, muted));
+		try {
+			mStore.updatePlayerSettings(ps);
+		} catch (DataStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 	}
 
 	public int getPlayerId(OfflinePlayer offlinePlayer) throws UserNotFoundException {
@@ -382,38 +386,38 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					} // else {
+					} else {
 
-					Task task = mQueue.take();
+						Task task = mQueue.take();
 
-					if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
-							|| (task.deleteTask == null && task.storeTask.readOnly()))) {
-						continue;
-					}
-
-					try {
-
-						Object result;
-
-						if (task.storeTask != null) {
-							result = task.storeTask.run(mStore);
-						} else {
-							result = task.deleteTask.run(mStore);
+						if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
+								|| (task.deleteTask == null && task.storeTask.readOnly()))) {
+							continue;
 						}
 
-						if (task.callback != null)
-							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
-					} catch (DataStoreException | DataDeleteException e) {
-						MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
-						if (task.callback != null)
-							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-									new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
-						else
-							e.printStackTrace();
+						try {
+
+							Object result;
+
+							if (task.storeTask != null) {
+								result = task.storeTask.run(mStore);
+							} else {
+								result = task.deleteTask.run(mStore);
+							}
+
+							if (task.callback != null)
+								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+										new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
+						} catch (DataStoreException | DataDeleteException e) {
+							MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
+							if (task.callback != null)
+								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+										new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
+							else
+								e.printStackTrace();
+						}
 					}
 				}
-				// }
 			} catch (InterruptedException e) {
 				System.out.println("[MobHunting] MH TaskThread was interrupted");
 			}

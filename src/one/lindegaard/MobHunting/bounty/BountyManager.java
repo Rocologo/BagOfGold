@@ -92,11 +92,11 @@ public class BountyManager implements Listener {
 	 */
 	public void addBounty(Bounty bounty) {
 		if (!hasBounty(bounty)) {
-			//MobHunting.debug("Adding bounty=%s", bounty.toString());
+			// MobHunting.debug("Adding bounty=%s", bounty.toString());
 			mBounties.add(bounty);
 			MobHunting.getDataStoreManager().insertBounty(bounty);
 		} else {
-			//MobHunting.debug("Updating bounty=%s", bounty.toString());
+			// MobHunting.debug("Updating bounty=%s", bounty.toString());
 			getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).setPrize(
 					getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).getPrize()
 							+ bounty.getPrize());
@@ -160,13 +160,8 @@ public class BountyManager implements Listener {
 	}
 
 	public void cancelBounty(Bounty bounty) {
-		// bounty.setStatus(BountyStatus.canceled);
-		// MobHunting.getDataStoreManager().insertBounty(bounty);
-
 		getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())
 				.setStatus(BountyStatus.canceled);
-		//MobHunting.debug("BountyManager: Remove(insert) Bounty:%s",
-		//		getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).toString());
 		MobHunting.getDataStoreManager()
 				.insertBounty(getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()));
 
@@ -253,8 +248,15 @@ public class BountyManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		addMarkOnWantedPlayer(e.getPlayer());
-		loadBounties(e.getPlayer());
+		Player player = e.getPlayer();
+		if (!MobHunting.getConfigManager().disablePlayerBounties) {
+			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(player);
+			if (MobHunting.getBountyManager().hasBounties(worldGroupName, player)) {
+				MobHunting.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
+			}
+			addMarkOnWantedPlayer(player);
+			loadBounties(player);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -301,13 +303,13 @@ public class BountyManager implements Listener {
 
 				});
 	}
-	
-	//***********************************************************
+
+	// ***********************************************************
 	// RANDOM BOUNTY
-	//***********************************************************
-	
-	public void randomBounty(){
-		
+	// ***********************************************************
+
+	public void randomBounty() {
+
 	}
 
 }

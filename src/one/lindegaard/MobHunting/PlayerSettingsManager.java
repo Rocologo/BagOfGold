@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +21,7 @@ public class PlayerSettingsManager implements Listener {
 	 * Contructor for the PlayerSettingsmanager
 	 */
 	PlayerSettingsManager() {
-		MobHunting.getInstance().getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
+		Bukkit.getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
 	/**
@@ -30,7 +31,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @return PlayerSettings
 	 */
 	public PlayerSettings getPlayerSettings(Player player) {
-		//TODO: cleanup - return mPlayerSettings.get(player); should be enough.
+		// TODO: cleanup - return mPlayerSettings.get(player); should be enough.
 		if (mPlayerSettings.containsKey(player))
 			return mPlayerSettings.get(player);
 		else // its not a player

@@ -10,59 +10,44 @@ import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
 
-public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementStore>>
-{
-	public enum Mode
-	{
-		All,
-		Completed,
-		InProgress
+public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementStore>> {
+	public enum Mode {
+		All, Completed, InProgress
 	}
-	
+
 	private Mode mMode;
 	private OfflinePlayer mPlayer;
 	private HashSet<Object> mWaiting;
-	
-	public AchievementRetrieverTask(Mode mode, OfflinePlayer player, HashSet<Object> waiting)
-	{
+
+	public AchievementRetrieverTask(Mode mode, OfflinePlayer player, HashSet<Object> waiting) {
 		mMode = mode;
 		mPlayer = player;
 		mWaiting = waiting;
 	}
-	
-	private void updateUsingCache(Set<AchievementStore> achievements)
-	{
-		for(Object obj : mWaiting)
-		{
-			if(obj instanceof AchievementStore)
-			{
-				AchievementStore cached = (AchievementStore)obj;
-				if(!cached.player.getUniqueId().equals(mPlayer.getUniqueId()))
+
+	private void updateUsingCache(Set<AchievementStore> achievements) {
+		for (Object obj : mWaiting) {
+			if (obj instanceof AchievementStore) {
+				AchievementStore cached = (AchievementStore) obj;
+				if (!cached.player.getUniqueId().equals(mPlayer.getUniqueId()))
 					continue;
-				
-				switch(mMode)
-				{
+
+				switch (mMode) {
 				case Completed:
-					if(cached.progress == -1)
+					if (cached.progress == -1)
 						achievements.add(cached);
 					break;
-				case All:
-				{
-					if(cached.progress == -1)
-					{
+				case All: {
+					if (cached.progress == -1) {
 						achievements.add(cached);
 						break;
 					}
 				}
-				case InProgress:
-				{
-					if(cached.progress != -1)
-					{
-						for(AchievementStore a : achievements)
-						{
-							if(a.id.equals(cached.id))
-							{
-								if(a.progress < cached.progress)
+				case InProgress: {
+					if (cached.progress != -1) {
+						for (AchievementStore a : achievements) {
+							if (a.id.equals(cached.id)) {
+								if (a.progress < cached.progress)
 									a.progress = cached.progress;
 								break;
 							}
@@ -74,48 +59,43 @@ public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementSt
 			}
 		}
 	}
-	
-	public Set<AchievementStore> run(IDataStore store) throws DataStoreException
-	{
-		synchronized(mWaiting)
-		{
-			Set<AchievementStore> achievements = store.loadAchievements(mPlayer);
-			switch(mMode)
-			{
-			case All:
-				break;
-			case Completed:
-			{
-				Iterator<AchievementStore> it = achievements.iterator();
-				while(it.hasNext())
-				{
-					AchievementStore achievement = it.next();
-					if(achievement.progress != -1)
-						it.remove();
+
+	public Set<AchievementStore> run(IDataStore store) throws DataStoreException {
+		Set<AchievementStore> achievements = new HashSet<AchievementStore>();
+		synchronized (mWaiting) {
+			achievements = store.loadAchievements(mPlayer);
+			if (!achievements.isEmpty()) {
+				switch (mMode) {
+				case All:
+					break;
+				case Completed: {
+					Iterator<AchievementStore> it = achievements.iterator();
+					while (it.hasNext()) {
+						AchievementStore achievement = it.next();
+						if (achievement.progress != -1)
+							it.remove();
+					}
+					break;
 				}
-				break;
-			}
-			case InProgress:
-			{
-				Iterator<AchievementStore> it = achievements.iterator();
-				while(it.hasNext())
-				{
-					AchievementStore achievement = it.next();
-					if(achievement.progress == -1)
-						it.remove();
+				case InProgress: {
+					Iterator<AchievementStore> it = achievements.iterator();
+					while (it.hasNext()) {
+						AchievementStore achievement = it.next();
+						if (achievement.progress == -1)
+							it.remove();
+					}
+					break;
 				}
-				break;
+				}
+
+				updateUsingCache(achievements);
 			}
-			}
-			
-			updateUsingCache(achievements);
 			return achievements;
 		}
 	}
-	
+
 	@Override
-	public boolean readOnly()
-	{
+	public boolean readOnly() {
 		return true;
 	}
 }

@@ -86,7 +86,7 @@ public interface IDataStore {
 	 * @param playerDataSet
 	 * @throws DataStoreException
 	 */
-	public void updatePlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException;
+	public void updatePlayerSettings(Set<PlayerSettings> ps) throws DataStoreException;
 
 	/**
 	 * Insert all PlayerData for one player into the Database

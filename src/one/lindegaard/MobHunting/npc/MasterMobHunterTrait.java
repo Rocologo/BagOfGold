@@ -11,8 +11,6 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.StatType;
-import one.lindegaard.MobHunting.storage.TimePeriod;
 
 public class MasterMobHunterTrait extends Trait implements Listener {
 	// http://wiki.citizensnpcs.co/API

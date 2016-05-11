@@ -356,11 +356,13 @@ public abstract class DatabaseDataStore implements IDataStore {
 		int res = 0;
 		if (result.next()) {
 			String name = result.getString(2);
-			if (player.getUniqueId().equals(result.getString(1)) && !player.getName().equals(name)) {
-				MobHunting.getInstance().getLogger().warning("[MobHunting] Name change detected(2): " + name + " -> "
-						+ player.getName() + " UUID=" + player.getUniqueId().toString());
-				ids.put(UUID.fromString(result.getString(1)), result.getInt(3));
-			}
+			UUID uuid = UUID.fromString(result.getString(1));
+			if (name != null && uuid != null)
+				if (player.getUniqueId().equals(uuid) && !player.getName().equals(name)) {
+					MobHunting.getInstance().getLogger().warning("[MobHunting] Name change detected(2): " + name
+							+ " -> " + player.getName() + " UUID=" + player.getUniqueId().toString());
+					ids.put(UUID.fromString(result.getString(1)), result.getInt(3));
+				}
 			res = result.getInt(3);
 			result.close();
 			Iterator<OfflinePlayer> itr = changedNames.iterator();
@@ -460,7 +462,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		HashSet<AchievementStore> achievements = new HashSet<AchievementStore>();
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.LOAD_ARCHIEVEMENTS);
-			int playerId = MobHunting.getMobHuntingManager().getPlayerId(player);
+			int playerId = getPlayerId(player);
 			if (playerId != 0) {
 				mLoadAchievements.setInt(1, playerId);
 				ResultSet set = mLoadAchievements.executeQuery();
@@ -490,7 +492,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_ACHIEVEMENTS);
 			for (AchievementStore achievement : achievements) {
-				mSaveAchievement.setInt(1, MobHunting.getMobHuntingManager().getPlayerId(achievement.player));
+				mSaveAchievement.setInt(1, getPlayerId(achievement.player));
 				mSaveAchievement.setString(2, achievement.id);
 				mSaveAchievement.setDate(3, new Date(System.currentTimeMillis()));
 				mSaveAchievement.setInt(4, achievement.progress);
@@ -550,7 +552,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	public Set<Bounty> loadBounties(OfflinePlayer offlinePlayer) throws DataStoreException {
 		Set<Bounty> bounties = new HashSet<Bounty>();
 		try {
-			int playerId = MobHunting.getMobHuntingManager().getPlayerId(offlinePlayer);
+			int playerId = getPlayerId(offlinePlayer);
 			openPreparedStatements(mConnection, PreparedConnectionType.GET_BOUNTIES);
 			mGetBounties.setInt(1, playerId);
 			mGetBounties.setInt(2, playerId);
@@ -590,8 +592,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			for (Bounty bounty : bountyDataSet) {
 				// MobHunting.debug("DatabaseDataStore: insert data on disk -
 				// %s",bounty.toString());
-				int bountyOwnerId = MobHunting.getMobHuntingManager().getPlayerId(bounty.getBountyOwner());
-				int wantedPlayerId = MobHunting.getMobHuntingManager().getPlayerId(bounty.getWantedPlayer());
+				int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
+				int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
 				mInsertBounty.setString(1, bounty.getMobtype());
 				mInsertBounty.setInt(2, bountyOwnerId);
 				mInsertBounty.setInt(3, wantedPlayerId);
@@ -626,8 +628,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mUpdateBounty.setString(2, bounty.getMessage());
 				mUpdateBounty.setLong(3, bounty.getEndDate());
 				mUpdateBounty.setInt(4, bounty.getStatus().getValue());
-				mUpdateBounty.setInt(5, MobHunting.getMobHuntingManager().getPlayerId(bounty.getWantedPlayer()));
-				mUpdateBounty.setInt(6, MobHunting.getMobHuntingManager().getPlayerId(bounty.getBountyOwner()));
+				mUpdateBounty.setInt(5, getPlayerId(bounty.getWantedPlayer()));
+				mUpdateBounty.setInt(6, getPlayerId(bounty.getBountyOwner()));
 				mUpdateBounty.setString(7, bounty.getWorldGroup());
 			}
 			mUpdateBounty.executeBatch();
@@ -646,10 +648,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			for (Bounty bounty : bounties) {
 				// MobHunting.debug("DatabaseDataStore: delete from disk:%s",
 				// bounty.toString());
-				mDeleteBounty.setString(1,
-						String.valueOf(MobHunting.getMobHuntingManager().getPlayerId(bounty.getWantedPlayer())));
-				mDeleteBounty.setString(2,
-						String.valueOf(MobHunting.getMobHuntingManager().getPlayerId(bounty.getBountyOwner())));
+				mDeleteBounty.setString(1, String.valueOf(getPlayerId(bounty.getWantedPlayer())));
+				mDeleteBounty.setString(2, String.valueOf(getPlayerId(bounty.getBountyOwner())));
 				mDeleteBounty.setString(3, bounty.getWorldGroup());
 			}
 			mDeleteBounty.executeBatch();

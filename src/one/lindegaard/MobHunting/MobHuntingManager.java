@@ -3,34 +3,29 @@ package one.lindegaard.MobHunting;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import one.lindegaard.MobHunting.compatability.CitizensCompat;
 import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
-import one.lindegaard.MobHunting.storage.UserNotFoundException;
+import one.lindegaard.MobHunting.update.UpdateHelper;
 
-public class MobHuntingManager {
+public class MobHuntingManager implements Listener {
 
 	private MobHunting instance;
-	private static HashMap<OfflinePlayer, Integer> playerIds = new HashMap<OfflinePlayer, Integer>();
-
-	/**
-	 * @return the playerIds
-	 */
-	public HashMap<OfflinePlayer, Integer> getPlayerIds() {
-		return playerIds;
-	}
 
 	/**
 	 * Constructor for MobHuntingManager
@@ -39,6 +34,32 @@ public class MobHuntingManager {
 	 */
 	public MobHuntingManager(MobHunting mobHunting) {
 		this.instance = mobHunting;
+		Bukkit.getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onPlayerJoin(PlayerJoinEvent event) {
+		final Player player = event.getPlayer();
+		setHuntEnabled(player, true);
+		if (player.hasPermission("mobhunting.update")) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					UpdateHelper.pluginUpdateCheck(player, true, true);
+				}
+			}.runTaskLater(instance, 20L);
+		}
+	}
+
+	/**
+	 * Set if MobHunting is allowed for the player
+	 * 
+	 * @param player
+	 * @param enabled
+	 *            = true : means the MobHunting is allowed
+	 */
+	public void setHuntEnabled(Player player, boolean enabled) {
+		player.setMetadata("MH:enabled", new FixedMetadataValue(MobHunting.getInstance(), enabled));
 	}
 
 	/**
@@ -178,19 +199,6 @@ public class MobHuntingManager {
 	public void rewardKill(Player killer, LivingEntity killed, EntityDeathEvent event) {
 		// TODO Auto-generated method stub
 
-	}
-
-	public int getPlayerId(OfflinePlayer player) {
-		int id = 0;
-		if (playerIds.containsKey(player))
-			return playerIds.get(player);
-		else
-			try {
-				id = MobHunting.getDataStoreManager().getPlayerId(player);
-			} catch (UserNotFoundException e) {
-				e.printStackTrace();
-			}
-		return id;
 	}
 
 }

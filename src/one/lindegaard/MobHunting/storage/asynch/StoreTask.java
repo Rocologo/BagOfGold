@@ -17,7 +17,6 @@ public class StoreTask implements DataStoreTask<Void>
 	private HashSet<PlayerSettings> mWaitingPlayerSettings = new HashSet<PlayerSettings>();
 	private HashSet<Bounty> mWaitingBounties = new HashSet<Bounty>();
 	
-	
 	public StoreTask(Set<Object> waiting)
 	{
 		synchronized(waiting)
@@ -29,12 +28,12 @@ public class StoreTask implements DataStoreTask<Void>
 			
 			for(Object obj : waiting)
 			{
-				if(obj instanceof StatStore)
-					mWaitingPlayerStats.add((StatStore)obj);
-				if(obj instanceof AchievementStore)
-					mWaitingAchievements.add((AchievementStore)obj);
 				if(obj instanceof PlayerSettings)
 					mWaitingPlayerSettings.add((PlayerSettings)obj);
+				if(obj instanceof AchievementStore)
+					mWaitingAchievements.add((AchievementStore)obj);
+				if(obj instanceof StatStore)
+					mWaitingPlayerStats.add((StatStore)obj);
 				if(obj instanceof Bounty)
 					mWaitingBounties.add((Bounty)obj);
 			}
@@ -45,14 +44,14 @@ public class StoreTask implements DataStoreTask<Void>
 	@Override
 	public Void run( IDataStore store ) throws DataStoreException
 	{
+		if(!mWaitingPlayerSettings.isEmpty())
+			store.updatePlayerSettings(mWaitingPlayerSettings);
+
 		if(!mWaitingPlayerStats.isEmpty())
 			store.savePlayerStats(mWaitingPlayerStats);
 
 		if(!mWaitingAchievements.isEmpty())
 			store.saveAchievements(mWaitingAchievements);
-
-		if(!mWaitingPlayerSettings.isEmpty())
-			store.updatePlayerSettings(mWaitingPlayerSettings);
 
 		if(!mWaitingBounties.isEmpty())
 			store.updateBounty(mWaitingBounties);
