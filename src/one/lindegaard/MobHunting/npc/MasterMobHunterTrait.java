@@ -11,6 +11,8 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.storage.TimePeriod;
 
 public class MasterMobHunterTrait extends Trait implements Listener {
 	// http://wiki.citizensnpcs.co/API
@@ -31,7 +33,7 @@ public class MasterMobHunterTrait extends Trait implements Listener {
 
 	// see the 'Persistence API' section
 	@Persist("stattype") String stattype = "total_kill";
-	@Persist("period") String period = "AllTime";
+	@Persist("period") String period = "alltime";
 	@Persist("rank") int rank = 1;
 	@Persist("noOfKills") int noOfKills = 0;
 	@Persist("signLocations") List<Location> signLocations = new ArrayList<Location>();

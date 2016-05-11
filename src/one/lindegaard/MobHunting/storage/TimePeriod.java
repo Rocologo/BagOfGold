@@ -27,10 +27,22 @@ public enum TimePeriod {
 
 	public static TimePeriod parsePeriod(String period) {
 		for (TimePeriod p : values()) {
-			if (period.equalsIgnoreCase(p.translateName().replaceAll(" ", "_")))
+			if (period.equalsIgnoreCase(p.translateName().replace(" ", "_")))
 				return p;
 		}
 
 		return null;
+	}
+	
+	public static TimePeriod getfromColumnName(String period){
+		for (TimePeriod p : values()) {
+			if (period.equalsIgnoreCase(p.toString()))
+				return p;
+		}
+		return null;
+	}
+	
+	public String getDBColumn() {
+		return name();
 	}
 }

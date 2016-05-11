@@ -168,9 +168,10 @@ public class MasterMobHunterManager implements Listener {
 			update(npc);
 			MasterMobHunter mmh = new MasterMobHunter(npc);
 			event.getClicker()
-					.sendMessage(Messages.getString("mobhunting.npc.clickednpc", "killer", mmh.getNpc().getName(), "rank",
-							mmh.getRank(), "numberofkills", mmh.getNumberOfKills(), "stattype",
-							mmh.getStatType().translateName(), "period", mmh.getPeriod().translateNameFriendly()));
+					.sendMessage(Messages.getString("mobhunting.npc.clickednpc", "killer",
+							CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(),
+							"numberofkills", mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(),
+							"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
 			MobHunting.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
@@ -185,9 +186,10 @@ public class MasterMobHunterManager implements Listener {
 			MasterMobHunter mmh = new MasterMobHunter(npc);
 			mmh.update();
 			event.getClicker()
-					.sendMessage(Messages.getString("mobhunting.npc.clickednpc", "killer", mmh.getNpc().getName(), "rank",
-							mmh.getRank(), "numberofkills", mmh.getNumberOfKills(), "stattype",
-							mmh.getStatType().translateName(), "period", mmh.getPeriod().translateNameFriendly()));
+					.sendMessage(Messages.getString("mobhunting.npc.clickednpc", "killer", mmh.getNpc().getName(),
+							"rank", mmh.getRank(), "numberofkills", mmh.getNumberOfKills(), "stattype",
+							mmh.getStatType().translateName(), "period", mmh.getPeriod().translateNameFriendly(),
+							"npcid", npc.getId()));
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
 			MobHunting.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());

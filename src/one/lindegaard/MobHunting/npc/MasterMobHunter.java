@@ -29,8 +29,8 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
 	public MasterMobHunter(int id, StatType statType, TimePeriod period, int numberOfKills, int rank) {
 		npc = CitizensAPI.getNPCRegistry().getById(id);
-		npc.getTrait(MasterMobHunterTrait.class).stattype = statType.getDBColumn();
-		npc.getTrait(MasterMobHunterTrait.class).period = period.toString();
+		npc.getTrait(MasterMobHunterTrait.class).stattype = statType.translateName();
+		npc.getTrait(MasterMobHunterTrait.class).period = period.translateName();
 		npc.getTrait(MasterMobHunterTrait.class).rank = rank;
 		npc.getTrait(MasterMobHunterTrait.class).noOfKills = numberOfKills;
 		npc.getTrait(MasterMobHunterTrait.class).signLocations = new ArrayList<Location>();
@@ -38,6 +38,18 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
 	public MasterMobHunter(NPC npc) {
 		this.npc = npc;
+		if (StatType.fromColumnName(npc.getTrait(MasterMobHunterTrait.class).stattype) == null) {
+			MobHunting.getInstance().getLogger()
+					.warning("NPC ID=" + npc.getId() + " has an invalid StatType. Resetting to "
+							+ StatType.KillsTotal.getDBColumn());
+			setStatType(StatType.KillsTotal);
+		}
+		if (TimePeriod.getfromColumnName(npc.getTrait(MasterMobHunterTrait.class).period) == null) {
+			MobHunting.getInstance().getLogger()
+					.warning("NPC ID=" + npc.getId() + " has an invalid TimePeriod. Resetting to "
+							+ TimePeriod.AllTime.getDBColumn());
+			setPeriod(TimePeriod.AllTime);
+		}
 	}
 
 	public int getId() {
@@ -53,11 +65,11 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 	}
 
 	public TimePeriod getPeriod() {
-		return TimePeriod.parsePeriod(npc.getTrait(MasterMobHunterTrait.class).period);
+		return TimePeriod.getfromColumnName(npc.getTrait(MasterMobHunterTrait.class).period);
 	}
 
 	public void setPeriod(TimePeriod period) {
-		npc.getTrait(MasterMobHunterTrait.class).period = period.toString();
+		npc.getTrait(MasterMobHunterTrait.class).period = period.getDBColumn();
 	}
 
 	public int getNumberOfKills() {

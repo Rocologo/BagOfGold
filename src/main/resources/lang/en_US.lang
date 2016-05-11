@@ -12,8 +12,8 @@ mobhunting.bounty.user-not-found=ERROR! Your player is missing in the MobHunting
 mobhunting.bounty.load-fail=ERROR! MobHunting could not load the bounties.
 mobhunting.bounty.bounty-claimed=${killer claimed the bounty (${prize}) you had put on ${killed}.
 mobhunting.bounty.youarewanted=Be careful, somebody has put a bounty on your head!
-mobhunting.npc.notamastermobhuner=Id=${id} is not a MasterMobHuner. 
-mobhunting.npc.clickednpc=${killer} is a MasterMobHunter with rank ${rank} with ${numberofkills} ${stattype} ${period}
+mobhunting.npc.notamastermobhuner=Id=${npcid} is not a MasterMobHuner. 
+mobhunting.npc.clickednpc=${killer} is a MasterMobHunter(id=${npcid}) with rank ${rank} for ${numberofkills} ${stattype} ${period}
 
 mobhunting.killstreak.activated=x${multiplier} Activated
 mobhunting.killstreak.ended=Killstreak ended
@@ -162,7 +162,7 @@ mobhunting.commands.npc.description=Creates a MasterMobHunter NPC
 mobhunting.commands.npc.unknown_stattype=Unknown StatType &b${stattype}
 mobhunting.commands.npc.unknown_timeperiod=Unknown TimePeriod &b${period}
 mobhunting.commands.npc.unknown_rank=Rank (&b${rank}&f)must be grather than 0 and less than 26
-mobhunting.commands.npc.created=NPC (${id}) was created.
+mobhunting.commands.npc.created=NPC (${npcid}) was created.
 
 stats.achievement_count=Achievement Count
 stats.total=Total

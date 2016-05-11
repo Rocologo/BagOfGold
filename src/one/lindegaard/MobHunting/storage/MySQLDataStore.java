@@ -110,8 +110,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException {
 		ArrayList<StatStore> list = new ArrayList<StatStore>();
 		String id;
-		// Check if databse is empty
-		if (period == null)
+		// If The NPC has an invalid period or timeperiod return and empty list
+		if (period == null || type == null)
 			return list;
 		switch (period) {
 		case Day:
