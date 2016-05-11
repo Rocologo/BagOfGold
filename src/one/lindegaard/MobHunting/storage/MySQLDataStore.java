@@ -108,7 +108,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	@Override
 	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException {
+		ArrayList<StatStore> list = new ArrayList<StatStore>();
 		String id;
+		// Check if databse is empty
+		if (period == null)
+			return list;
 		switch (period) {
 		case Day:
 			id = "DATE_FORMAT(NOW(), '%Y%j')";
@@ -133,7 +137,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 							+ period.getTable() + " inner join mh_Players on mh_Players.PLAYER_ID=mh_"
 							+ period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : " ") + " order by "
 							+ type.getDBColumn() + " desc limit " + count);
-			ArrayList<StatStore> list = new ArrayList<StatStore>();
 
 			while (results.next())
 				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2))),
