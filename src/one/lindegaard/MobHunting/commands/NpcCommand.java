@@ -79,7 +79,7 @@ public class NpcCommand implements ICommand, Listener {
 
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			if (args.length == 1) {
+			if (args.length < 2) {
 				items.add("create");
 				items.add("remove");
 				items.add("select");
@@ -90,14 +90,16 @@ public class NpcCommand implements ICommand, Listener {
 				if (args[0].equalsIgnoreCase("create")) {
 					StatType[] values = StatType.values();
 					for (int i = 0; i < values.length; i++) {
-						items.add(values[i].translateName().replace(" ", "_"));
+						if (values[i].translateName().replace(" ", "_").toLowerCase().startsWith(args[1].toLowerCase()))
+							items.add(values[i].translateName().replace(" ", "_"));
 					}
 				}
 			} else if (args.length == 3) {
 				if (args[0].equalsIgnoreCase("create")) {
 					TimePeriod[] values = TimePeriod.values();
 					for (int i = 0; i < values.length; i++) {
-						items.add(values[i].translateName().replace(" ","_"));
+						if (values[i].translateName().replace(" ", "_").toLowerCase().startsWith(args[2].toLowerCase()))
+							items.add(values[i].translateName().replace(" ", "_"));
 					}
 				}
 			}
@@ -163,8 +165,8 @@ public class NpcCommand implements ICommand, Listener {
 				masterMobHunterManager.put(npc.getId(), new MasterMobHunter(npc.getId(), statType, period, 0, rank));
 				npc.spawn(p.getEyeLocation());
 				masterMobHunterManager.update(npc);
-				sender.sendMessage(ChatColor.GREEN
-						+ Messages.getString("mobhunting.commands.npc.created","npcid",npc.getId()));
+				sender.sendMessage(
+						ChatColor.GREEN + Messages.getString("mobhunting.commands.npc.created", "npcid", npc.getId()));
 				MobHunting.debug("Creating MasterMobHunter: id=%s,stat=%s,per=%s,rank=%s", npc.getId(),
 						statType.translateName(), period, rank);
 				return true;

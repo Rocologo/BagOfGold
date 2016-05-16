@@ -42,13 +42,14 @@ public class MasterMobHunterManager implements Listener {
 
 	public void initialize() {
 		if (CitizensCompat.isCitizensSupported()) {
-			mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Updater(), 1L,
-					MobHunting.getConfigManager().masterMobHuntercheckEvery * 20);
+			loadData();
 			Bukkit.getPluginManager().registerEvents(new MasterMobHunterTrait(), MobHunting.getInstance());
 			Bukkit.getPluginManager().registerEvents(new MasterMobHunterManager(), MobHunting.getInstance());
 			Bukkit.getPluginManager().registerEvents(new MasterMobHunterSign(MobHunting.getInstance()),
 					MobHunting.getInstance());
-			loadData();
+			mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Updater(), 1L,
+					MobHunting.getConfigManager().masterMobHuntercheckEvery * 20);
+			
 		}
 	}
 
@@ -219,8 +220,7 @@ public class MasterMobHunterManager implements Listener {
 						MasterMobHunterSign.setPower(event.getBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
 				} else
 					MasterMobHunterSign.removePower(event.getBlock());
-			} else
-				p.sendMessage(Messages.getString("mobhunting.npc.notamastermobhunter", "id", npc.getId()));
+			} 
 		}
 	}
 

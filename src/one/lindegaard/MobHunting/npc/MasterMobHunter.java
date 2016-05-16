@@ -39,15 +39,13 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 	public MasterMobHunter(NPC npc) {
 		this.npc = npc;
 		if (StatType.fromColumnName(npc.getTrait(MasterMobHunterTrait.class).stattype) == null) {
-			MobHunting.getInstance().getLogger()
-					.warning("NPC ID=" + npc.getId() + " has an invalid StatType. Resetting to "
-							+ StatType.KillsTotal.getDBColumn());
+			MobHunting.getInstance().getLogger().warning("NPC ID=" + npc.getId()
+					+ " has an invalid StatType. Resetting to " + StatType.KillsTotal.getDBColumn());
 			setStatType(StatType.KillsTotal);
 		}
 		if (TimePeriod.getfromColumnName(npc.getTrait(MasterMobHunterTrait.class).period) == null) {
-			MobHunting.getInstance().getLogger()
-					.warning("NPC ID=" + npc.getId() + " has an invalid TimePeriod. Resetting to "
-							+ TimePeriod.AllTime.getDBColumn());
+			MobHunting.getInstance().getLogger().warning("NPC ID=" + npc.getId()
+					+ " has an invalid TimePeriod. Resetting to " + TimePeriod.AllTime.getDBColumn());
 			setPeriod(TimePeriod.AllTime);
 		}
 	}
@@ -148,25 +146,32 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 				}
 				setNumberOfKills(stats.get(getRank() - 1).getAmount());
 			}
-			if (getSignLocations().size() > 0) {
-				for (Location loc : getSignLocations()) {
-					Block sb = loc.getBlock();
-					if (isLoaded(sb)) {
-						if (MasterMobHunterSign.isSign(sb)) {
-							org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
-							s.setLine(1, (getRank() + ". " + npc.getName()));
-							s.setLine(2, (getPeriod().translateNameFriendly()));
-							s.setLine(3, (stats.get(getRank() - 1).getAmount() + " " + getStatType().translateName()));
-							s.update();
-							if (MasterMobHunterSign.isMHSign(sb)) {
-								@SuppressWarnings("deprecation")
-								OfflinePlayer player = Bukkit.getPlayer(npc.getName());
-								if (player != null && player.isOnline())
-									MasterMobHunterSign.setPower(sb, MasterMobHunterSign.POWER_FROM_SIGN);
-							}
-						} else {
-							loc.zero();
+		} else {
+			npc.setName("NO KILLS");
+			setNumberOfKills(0);
+		}
+		updateSigns();
+	}
+
+	private void updateSigns() {
+		if (getSignLocations().size() > 0) {
+			for (Location loc : getSignLocations()) {
+				Block sb = loc.getBlock();
+				if (isLoaded(sb)) {
+					if (MasterMobHunterSign.isSign(sb)) {
+						org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
+						s.setLine(1, (getRank() + ". " + npc.getName()));
+						s.setLine(2, (getPeriod().translateNameFriendly()));
+						s.setLine(3, (getNumberOfKills() + " " + getStatType().translateName()));
+						s.update();
+						if (MasterMobHunterSign.isMHSign(sb)) {
+							@SuppressWarnings("deprecation")
+							OfflinePlayer player = Bukkit.getPlayer(npc.getName());
+							if (player != null && player.isOnline())
+								MasterMobHunterSign.setPower(sb, MasterMobHunterSign.POWER_FROM_SIGN);
 						}
+					} else {
+						loc.zero();
 					}
 				}
 			}

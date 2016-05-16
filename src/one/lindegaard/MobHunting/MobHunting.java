@@ -1067,7 +1067,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			// Reward for assisted kill
-			if (info.assister == null) {
+			if (info.assister == null||mConfig.enableAssists==false) {
 				if (cash > 0) {
 					if (mConfig.dropMoneyOnGroup) {
 						Rewards.dropMoneyOnGround(killed, cash);
@@ -1200,7 +1200,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerJoin(PlayerJoinEvent event) {
-		MobHunting.debug("MobHunting: onPlayerJoin");
+		//MobHunting.debug("MobHunting: onPlayerJoin");
 		// final Player player = event.getPlayer();
 	}
 

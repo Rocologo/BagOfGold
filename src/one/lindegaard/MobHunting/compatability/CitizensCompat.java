@@ -63,7 +63,8 @@ public class CitizensCompat implements Listener {
 			loadCitizensData();
 			saveCitizensData();
 
-			// wait x seconds or until Citizens is fully loaded.
+			// wait x seconds or until Citizens is fully loaded. 
+			//TODO: wait until MasterMobHunterTrait is loaded.
 			MobHunting.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(MobHunting.getInstance(),
 					new Runnable() {
 						public void run() {
@@ -71,7 +72,7 @@ public class CitizensCompat implements Listener {
 							findMissingSentry();
 							loadBountyDataForSentry();
 						}
-					}, 20 * 5); // 20ticks/sec * 1 sec.
+					}, 20 * 3); // 20ticks/sec * 10 sec.
 
 		}
 	}

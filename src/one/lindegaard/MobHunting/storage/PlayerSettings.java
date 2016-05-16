@@ -73,8 +73,8 @@ public class PlayerSettings {
 	@Override
 	public String toString() {
 		return String.format(
-				"PlayerStore: {player: %s, Learning Mode: %s, Mute Mode: %s}",
-				player.getName(), learning_mode, mute);
+				"PlayerStore: {player: Id:%s Name:%s, Learning Mode: %s, Mute Mode: %s}",
+				playerId, player.getName(), learning_mode, mute);
 	}
 
 	public int getPlayerId() {

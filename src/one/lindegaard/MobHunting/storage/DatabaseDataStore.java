@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.bounty.Bounty;
@@ -218,8 +219,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			int id = result.getInt("PLAYER_ID");
 			if (id != 0)
 				ps.setPlayerId(id);
-			result.close();
-			// closePreparedGetPlayerStatements();
+			result.close();// closePreparedGetPlayerStatements();
+			MobHunting.debug("Read Playersettings from Database: %s", ps.toString());
 			return ps;
 		}
 		// closePreparedGetPlayerStatements();
@@ -342,37 +343,45 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * getPlayerID. get the player ID and check if the player has change name
 	 * 
-	 * @param player
+	 * @param offlinePlayer
 	 * @return PlayerID: int
 	 * @throws SQLException
 	 * @throws DataStoreException
 	 */
-	public int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException {
-		// openPreparedGetPlayerStatements();
-		mGetPlayerData[0].setString(1, player.getUniqueId().toString());
-		ResultSet result = mGetPlayerData[0].executeQuery();
-		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
-		ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
+	public int getPlayerId(OfflinePlayer offlinePlayer) throws SQLException, DataStoreException {
 		int res = 0;
-		if (result.next()) {
-			String name = result.getString(2);
-			UUID uuid = UUID.fromString(result.getString(1));
-			if (name != null && uuid != null)
-				if (player.getUniqueId().equals(uuid) && !player.getName().equals(name)) {
-					MobHunting.getInstance().getLogger().warning("[MobHunting] Name change detected(2): " + name
-							+ " -> " + player.getName() + " UUID=" + player.getUniqueId().toString());
-					ids.put(UUID.fromString(result.getString(1)), result.getInt(3));
-				}
-			res = result.getInt(3);
-			result.close();
-			Iterator<OfflinePlayer> itr = changedNames.iterator();
-			while (itr.hasNext()) {
-				OfflinePlayer p = itr.next();
-				updatePlayerName(p.getPlayer());
-			}
-			// closePreparedGetPlayerStatements();
+		if (offlinePlayer.isOnline()) {
+			PlayerSettings ps = MobHunting.getPlayerSettingsmanager().getPlayerSettings((Player) offlinePlayer);
+			if (ps != null && ps.getPlayerId() != 0)
+				res = ps.getPlayerId();
 		}
-		result.close();
+		if (res == 0) {
+			mGetPlayerData[0].setString(1, offlinePlayer.getUniqueId().toString());
+			ResultSet result = mGetPlayerData[0].executeQuery();
+			HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
+			ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
+
+			if (result.next()) {
+				String name = result.getString(2);
+				UUID uuid = UUID.fromString(result.getString(1));
+				if (name != null && uuid != null)
+					if (offlinePlayer.getUniqueId().equals(uuid) && !offlinePlayer.getName().equals(name)) {
+						MobHunting.getInstance().getLogger().warning("[MobHunting] Name change detected(2): " + name
+								+ " -> " + offlinePlayer.getName() + " UUID=" + offlinePlayer.getUniqueId().toString());
+						ids.put(UUID.fromString(result.getString(1)), result.getInt(3));
+					}
+				res = result.getInt(3);
+				result.close();
+				Iterator<OfflinePlayer> itr = changedNames.iterator();
+				while (itr.hasNext()) {
+					OfflinePlayer p = itr.next();
+					updatePlayerName(p.getPlayer());
+				}
+			}
+			result.close();
+		} else {
+			MobHunting.debug("Using PlayerId %s from memory.", res);
+		}
 		return res;
 	}
 
