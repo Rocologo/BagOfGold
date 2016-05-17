@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
@@ -99,6 +100,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	}
 
 	// *******************************************************************************
+	@SuppressWarnings("deprecation")
 	// LoadStats / SaveStats
 	// *******************************************************************************
 	@Override
@@ -127,13 +129,17 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		}
 		try {
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", mh_Players.UUID from mh_"
+			ResultSet results = statement.executeQuery("SELECT " + type.getDBColumn() + ", mh_Players.UUID, mh_Players.NAME from mh_"
 					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
 					+ (id != null ? " where mh_Players.NAME!='' and ID=" + id : "") + " order by " + type.getDBColumn()
 					+ " desc limit " + count);
-			while (results.next())
-				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2))),
-						results.getInt(1)));
+			while (results.next()) {
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(results.getString(3));
+				if (offlinePlayer == null)
+					MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
+				if (offlinePlayer != null)
+					list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
+			}
 			results.close();
 			statement.close();
 			return list;

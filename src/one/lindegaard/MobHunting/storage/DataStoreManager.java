@@ -386,36 +386,35 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					} else {
+					}
 
-						Task task = mQueue.take();
+					Task task = mQueue.take();
 
-						if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
-								|| (task.deleteTask == null && task.storeTask.readOnly()))) {
-							continue;
+					if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
+							|| (task.deleteTask == null && task.storeTask.readOnly()))) {
+						continue;
+					}
+
+					try {
+
+						Object result;
+
+						if (task.storeTask != null) {
+							result = task.storeTask.run(mStore);
+						} else {
+							result = task.deleteTask.run(mStore);
 						}
 
-						try {
-
-							Object result;
-
-							if (task.storeTask != null) {
-								result = task.storeTask.run(mStore);
-							} else {
-								result = task.deleteTask.run(mStore);
-							}
-
-							if (task.callback != null)
-								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-										new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
-						} catch (DataStoreException | DataDeleteException e) {
-							MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
-							if (task.callback != null)
-								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-										new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
-							else
-								e.printStackTrace();
-						}
+						if (task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
+					} catch (DataStoreException | DataDeleteException e) {
+						MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
+						if (task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+									new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
+						else
+							e.printStackTrace();
 					}
 				}
 			} catch (InterruptedException e) {

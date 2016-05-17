@@ -332,6 +332,8 @@ public class LeaderboardCommand implements ICommand, Listener {
 			BlockFace face = ((Sign) event.getClickedBlock().getState().getData()).getFacing();
 
 			try {
+				//MobHunting.debug("leaderBoardCommand: parm=%s,%s,%s,%s,%s,%s", face,state.type[0],
+				//		state.period[0],state.horizontal,state.width,state.height);
 				MobHunting.getLeaderboardManager().createLeaderboard(event.getClickedBlock().getLocation(),
 						face, state.type, state.period, state.horizontal, state.width, state.height);
 				// TODO: Create new strings in Message

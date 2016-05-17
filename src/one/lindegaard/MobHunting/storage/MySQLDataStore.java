@@ -7,9 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -106,13 +104,16 @@ public class MySQLDataStore extends DatabaseDataStore {
 	// LoadStats / SaveStats
 	// *******************************************************************************
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException {
 		ArrayList<StatStore> list = new ArrayList<StatStore>();
 		String id;
 		// If The NPC has an invalid period or timeperiod return and empty list
-		if (period == null || type == null)
+		if (period == null || type == null) {
+			MobHunting.debug("MySQLDataStore: period=%s, type=%s", period.getDBColumn(), type.getDBColumn());
 			return list;
+		}
 		switch (period) {
 		case Day:
 			id = "DATE_FORMAT(NOW(), '%Y%j')";
@@ -137,10 +138,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 							+ period.getTable() + " inner join mh_Players on mh_Players.PLAYER_ID=mh_"
 							+ period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : " ") + " order by "
 							+ type.getDBColumn() + " desc limit " + count);
-
-			while (results.next())
-				list.add(new StatStore(type, Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2))),
-						results.getInt(1)));
+			while (results.next()) {
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(results.getString(3));
+				if (offlinePlayer == null)
+					MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
+				if (offlinePlayer != null)
+					list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
+			}
 			results.close();
 			statement.close();
 			return list;
@@ -154,35 +158,33 @@ public class MySQLDataStore extends DatabaseDataStore {
 		try {
 			MobHunting.debug("Saving PlayerStats to Database.");
 
-			HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
-			for (StatStore stat : stats)
-				names.add(stat.getPlayer());
-			Map<UUID, Integer> ids = getPlayerIds(names);
+			// HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
+			// for (StatStore stat : stats)
+			// names.add(stat.getPlayer());
+			// Map<UUID, Integer> ids = getPlayerIds(names);
 
-			if (!ids.isEmpty()) {
-				// Make sure the stats are available for each player
-				openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
-				mSavePlayerStats.clearBatch();
-				for (OfflinePlayer player : names) {
-					mSavePlayerStats.setInt(1, ids.get(player.getUniqueId()));
-					mSavePlayerStats.addBatch();
-				}
-				mSavePlayerStats.executeBatch();
-				mSavePlayerStats.close();
-
-				// Now add each of the stats
-				Statement statement = mConnection.createStatement();
-				for (StatStore stat : stats)
-					statement.addBatch(String.format(
-							"UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
-							stat.getType().getDBColumn(), ids.get(stat.getPlayer().getUniqueId()), stat.getAmount()));
-				statement.executeBatch();
-				statement.close();
-				mConnection.commit();
-				MobHunting.debug("Saved.");
-			} else {
-				MobHunting.debug("Nothing to save.");
+			// if (!ids.isEmpty()) {
+			// Make sure the stats are available for each player
+			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
+			mSavePlayerStats.clearBatch();
+			for (StatStore st : stats) {
+				mSavePlayerStats.setInt(1, getPlayerId(st.getPlayer()));
+				mSavePlayerStats.addBatch();
 			}
+			mSavePlayerStats.executeBatch();
+			mSavePlayerStats.close();
+
+			// Now add each of the stats
+			Statement statement = mConnection.createStatement();
+			for (StatStore stat : stats)
+				statement.addBatch(String.format(
+						"UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
+						stat.getType().getDBColumn(), getPlayerId(stat.getPlayer()), stat.getAmount()));
+			statement.executeBatch();
+			statement.close();
+			mConnection.commit();
+			MobHunting.debug("Saved.");
+			// }
 		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);

@@ -178,23 +178,27 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 			it = mData.iterator();
 
 		// Update the label sign
-		Block labelSign = mLocation.getBlock();
-		if (isLoaded(labelSign)) {
-			if (labelSign.getType() != Material.WALL_SIGN) {
-				labelSign.setType(Material.WALL_SIGN);
+		Block signBlock = mLocation.getBlock();
+		if (isLoaded(signBlock)) {
+			if (signBlock.getType() != Material.WALL_SIGN) {
+				Sign sign = new Sign(Material.WALL_SIGN);
+				sign.setFacingDirection(mFacing);
+
+				BlockState state = signBlock.getState();
+				state.setType(Material.WALL_SIGN);
+				state.setData(sign);
+				state.update(true, false);
 			}
 
-			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) labelSign.getState();
-
+			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) signBlock.getState();
 			sign.setLine(0, ChatColor.BLUE + ChatColor.BOLD.toString() + "MobHunting");
-
 			String statName = getType().translateName();
 			if (statName.length() > 15) {
 				int splitPos = statName.indexOf(' ');
 
-				if (splitPos == -1 || splitPos >= 15) {
-					sign.setLine(1, statName.substring(0, 15).trim());
-					sign.setLine(2, statName.substring(15).trim());
+				if (splitPos == -1 || splitPos >= 14) {
+					sign.setLine(1, statName.substring(0, 14).trim());
+					sign.setLine(2, statName.substring(14).trim());
 				} else {
 					sign.setLine(1, statName.substring(0, splitPos).trim());
 					sign.setLine(2, statName.substring(splitPos).trim());
@@ -203,12 +207,11 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 				sign.setLine(1, statName);
 				sign.setLine(2, EMPTY_STRING);
 			}
-
-			sign.setLine(3, ChatColor.YELLOW + getPeriod().translateNameFriendly());
-			sign.setData(sign.getData());
-
-			((Sign) sign.getData()).setFacingDirection(mFacing);
-
+			String period = getPeriod().translateNameFriendly();
+			if (period.length() >= 12)
+				period = period.substring(0, 12).trim();
+			//sign.setLine(3, ChatColor.YELLOW + period.trim());
+			sign.setLine(3, period);
 			sign.update(true, false);
 		}
 
@@ -238,24 +241,33 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 					BlockState state = block.getState();
 					state.setType(Material.WALL_SIGN);
 					state.setData(sign);
-
 					state.update(true, false);
 				}
 
 				org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block.getState();
 
-				if (stat1 != null) {
-					sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + " " + ChatColor.BLACK
-							+ stat1.getPlayer().getName());
+				if (stat1 != null && stat1.getPlayer() != null) {
+					String name1 = stat1.getPlayer().getName();
+					if (name1.length() >= 14)
+						if (String.valueOf(place).length() == 1)
+							name1 = name1.substring(0, 13).trim();
+						else
+							name1 = name1.substring(0, 12).trim();
+					sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + " " + ChatColor.BLACK + name1);
 					sign.setLine(1, ChatColor.BLUE + String.valueOf(stat1.getAmount()));
 				} else {
 					sign.setLine(0, EMPTY_STRING);
 					sign.setLine(1, EMPTY_STRING);
 				}
 
-				if (stat2 != null) {
-					sign.setLine(2, ChatColor.GREEN + String.valueOf(place + 1) + " " + ChatColor.BLACK
-							+ stat2.getPlayer().getName());
+				if (stat2 != null && stat2.getPlayer() != null) {
+					String name2 = stat2.getPlayer().getName();
+					if (name2.length() >= 14)
+						if (String.valueOf(place + 1).length() == 1)
+							name2 = name2.substring(0, 13).trim();
+						else
+							name2 = name2.substring(0, 12).trim();
+					sign.setLine(2, ChatColor.GREEN + String.valueOf(place + 1) + " " + ChatColor.BLACK + name2);
 					sign.setLine(3, ChatColor.BLUE + String.valueOf(stat2.getAmount()));
 				} else {
 					sign.setLine(2, EMPTY_STRING);
@@ -404,9 +416,9 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	public void onCompleted(List<StatStore> data) {
 		ArrayList<StatStore> altData = new ArrayList<StatStore>(data.size());
 		for (StatStore stat : data) {
-			if (stat.getAmount() != 0)
-				// MobHunting.debug("StatStore=%s", stat.toString());
+			if (stat.getPlayer() != null && stat.getAmount() != 0) {
 				altData.add(stat);
+			}
 		}
 
 		mData = altData;
