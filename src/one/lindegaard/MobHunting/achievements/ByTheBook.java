@@ -3,6 +3,7 @@ package one.lindegaard.MobHunting.achievements;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -46,5 +47,10 @@ public class ByTheBook implements Achievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialByTheBookCmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.BOOK);
 	}
 }

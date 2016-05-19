@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
@@ -8,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
@@ -77,5 +79,10 @@ public class InFighting implements Achievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialInfightingCmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.IRON_SWORD);
 	}
 }

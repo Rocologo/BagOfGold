@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -8,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -75,5 +77,10 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialFangMasterCmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.STRING);
 	}
 }

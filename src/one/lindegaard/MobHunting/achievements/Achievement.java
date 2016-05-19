@@ -1,5 +1,7 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.inventory.ItemStack;
+
 public interface Achievement
 {
 	public String getName();
@@ -11,4 +13,6 @@ public interface Achievement
 	
 	public String getPrizeCmd();
 	public String getPrizeCmdDescription();
+	
+	public ItemStack getSymbol();
 }

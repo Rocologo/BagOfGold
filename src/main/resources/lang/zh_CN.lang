@@ -103,6 +103,7 @@ mobhunting.commands.listachievements.description=Lists all your special kills.
 mobhunting.commands.listachievements.player-not-exist=That player doesn't exist
 mobhunting.commands.listachievements.progress=In progress:
 mobhunting.commands.listachievements.player-empty=${player} has not completed any achievements
+mobhunting.commands.listachievements.notstarted=Not started. Go hunting to get this achievement.
 mobhunting.commands.reload.description=Reloads the configuration
 mobhunting.commands.reload.reload-complete=Configuration Reloaded
 mobhunting.commands.reload.reload-error=There is a problem with the config. Please check any changes you made

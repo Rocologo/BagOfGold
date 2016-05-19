@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.achievements;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -70,5 +72,10 @@ public class RecordHungry implements Achievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialRecordHungryCmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.BREAD);
 	}
 }

@@ -1,8 +1,10 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
@@ -63,5 +65,10 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialHunter4CmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.EMERALD);
 	}
 }

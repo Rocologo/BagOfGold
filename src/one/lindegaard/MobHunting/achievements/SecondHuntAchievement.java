@@ -1,5 +1,8 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -13,8 +16,7 @@ public class SecondHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.2.name", "mob",
-				mType.getName());
+		return Messages.getString("achievements.hunter.2.name", "mob", mType.getName());
 	}
 
 	@Override
@@ -24,9 +26,8 @@ public class SecondHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getDescription() {
-		return Messages
-				.getString(
-						"achievements.hunter.2.description", "count", getMaxProgress(), "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return Messages.getString("achievements.hunter.2.description", "count", getMaxProgress(), "mob",
+				mType.getName());
 	}
 
 	@Override
@@ -52,5 +53,10 @@ public class SecondHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialHunter2CmdDesc;
+	}
+
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.GOLD_INGOT);
 	}
 }

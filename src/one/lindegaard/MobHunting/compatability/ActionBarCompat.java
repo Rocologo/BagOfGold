@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-//import be.maximvdw.actionbar.api.ActionBarAPI;
-
 import one.lindegaard.MobHunting.MobHunting;
 
 public class ActionBarCompat {

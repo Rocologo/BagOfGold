@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -57,5 +58,10 @@ public class MasterSniper implements Achievement, Listener
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialMasterSniperCmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.BOW);
 	}
 }

@@ -2,9 +2,6 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -14,10 +11,6 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.achievements.Achievement;
-import one.lindegaard.MobHunting.achievements.ProgressAchievement;
-import one.lindegaard.MobHunting.storage.IDataCallback;
-import one.lindegaard.MobHunting.storage.UserNotFoundException;
 
 public class ListAchievementsCommand implements ICommand {
 
@@ -66,7 +59,7 @@ public class ListAchievementsCommand implements ICommand {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(final CommandSender sender, String label, String[] args) {
-		if (args.length > 1)
+		if (args.length > 2)
 			return false;
 
 		if (sender instanceof ConsoleCommandSender && args.length != 1)
@@ -77,110 +70,53 @@ public class ListAchievementsCommand implements ICommand {
 		if (sender instanceof Player)
 			player = (Player) sender;
 
+		final boolean self = (player == sender);
+
 		if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 			sender.sendMessage("list all archivement descriptions");
 			MobHunting.getAchievements().listAllAchievements(sender);
 
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("nogui")) {
+			MobHunting.getAchievements().showAllAchievements((Player) player, player, false, self);
+
 		} else {
 
-			if (args.length == 1) {
+			OfflinePlayer otherPlayer;
+			if (args.length == 1)
 				if (!sender.hasPermission("mobhunting.listachievements.other"))
 					return false;
 
+			// final String playerName = (player instanceof Player ? ((Player)
+			// player).getDisplayName()
+			// : player.getName());
+
+			if (args.length == 1 || (args.length == 2 && args[1].equalsIgnoreCase("nogui"))) {
 				String name = args[0];
+				otherPlayer = Bukkit.getOfflinePlayer(name);
 
-				player = Bukkit.getPlayer(name);
-				if (player == null)
-					player = MobHunting.getDataStoreManager().getPlayerByName(name);
+				if (otherPlayer == null)
+					otherPlayer = MobHunting.getDataStoreManager().getPlayerByName(name);
 
+				if (otherPlayer == null) {
+					sender.sendMessage(ChatColor.RED
+							+ Messages.getString("mobhunting.commands.listachievements.player-not-exist"));
+					return true;
+				}
+
+				// final String playerName = (player instanceof Player ?
+				// ((Player)
+				// player).getDisplayName()
+				// : player.getName());
+
+				if (args.length == 2 && args[1].equalsIgnoreCase("nogui"))
+					MobHunting.getAchievements().showAllAchievements((Player) player, otherPlayer, false, self);
+				else
+					MobHunting.getAchievements().showAllAchievements((Player) player, otherPlayer,
+							MobHunting.getConfigManager().useGuiForAchievements, self);
+			} else {
+				MobHunting.getAchievements().showAllAchievements((Player) player, player,
+						MobHunting.getConfigManager().useGuiForAchievements, self);
 			}
-
-			if (player == null) {
-				sender.sendMessage(
-						ChatColor.RED + Messages.getString("mobhunting.commands.listachievements.player-not-exist"));
-				return true;
-			}
-
-			final String playerName = (player instanceof Player ? ((Player) player).getDisplayName()
-					: player.getName());
-			final boolean self = (player == sender);
-
-			MobHunting.getAchievements().requestCompletedAchievements(player,
-					new IDataCallback<List<Entry<Achievement, Integer>>>() {
-						@Override
-						public void onError(Throwable error) {
-							if (error instanceof UserNotFoundException) {
-								sender.sendMessage(ChatColor.GRAY + Messages.getString(
-										"mobhunting.commands.listachievements.player-empty", "player", playerName));
-							} else {
-								sender.sendMessage(
-										ChatColor.RED + "An internal error occured while getting the achievements");
-								error.printStackTrace();
-							}
-						}
-
-						@Override
-						public void onCompleted(List<Entry<Achievement, Integer>> data) {
-							int outOf = 0;
-
-							for (Achievement achievement : MobHunting.getAchievements()
-									.getAllAchievements()) {
-								if (achievement instanceof ProgressAchievement) {
-									if (((ProgressAchievement) achievement).inheritFrom() == null)
-										++outOf;
-								} else
-									++outOf;
-							}
-
-							int count = 0;
-							for (Map.Entry<Achievement, Integer> achievement : data) {
-								if (achievement.getValue() == -1)
-									++count;
-							}
-
-							// Build the output
-							ArrayList<String> lines = new ArrayList<String>();
-
-							if (self)
-								lines.add(ChatColor.GRAY
-										+ Messages.getString("mobhunting.commands.listachievements.completed.self",
-												"num", ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
-												ChatColor.YELLOW + "" + outOf + ChatColor.GRAY));
-							else
-								lines.add(ChatColor.GRAY + Messages.getString(
-										"mobhunting.commands.listachievements.completed.other", "player", playerName,
-										"num", ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
-										ChatColor.YELLOW + "" + outOf + ChatColor.GRAY));
-
-							boolean inProgress = false;
-							for (Map.Entry<Achievement, Integer> achievement : data) {
-								if (achievement.getValue() == -1) {
-									lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
-									lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC
-											+ achievement.getKey().getDescription());
-								} else
-									inProgress = true;
-							}
-
-							if (inProgress) {
-								lines.add("");
-								lines.add(ChatColor.YELLOW
-										+ Messages.getString("mobhunting.commands.listachievements.progress"));
-
-								for (Map.Entry<Achievement, Integer> achievement : data) {
-									if (achievement.getValue() != -1
-											&& achievement.getKey() instanceof ProgressAchievement)
-										lines.add(ChatColor.GRAY + " " + achievement.getKey().getName()
-												+ ChatColor.WHITE + "  " + achievement.getValue() + " / "
-												+ ((ProgressAchievement) achievement.getKey()).getMaxProgress());
-									else
-										inProgress = true;
-								}
-							}
-
-							sender.sendMessage(lines.toArray(new String[lines.size()]));
-						}
-					});
 		}
 
 		return true;

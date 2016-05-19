@@ -1,5 +1,8 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -51,5 +54,10 @@ public class BasicHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialHunter1CmdDesc;
+	}
+
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.COAL);
 	}
 }

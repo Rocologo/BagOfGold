@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,6 +8,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
@@ -77,5 +80,14 @@ public class Creepercide implements Achievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialCreepercideCmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+	    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skullMeta.setOwner("MHF_Creeper");
+        skull.setItemMeta(skullMeta);
+		return skull;
 	}
 }

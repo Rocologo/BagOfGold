@@ -1,4 +1,7 @@
 package one.lindegaard.MobHunting.achievements;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -42,7 +45,7 @@ public class FifthHuntAchievement implements ProgressAchievement {
 	}
 
 	@Override
-	public String inheritFrom() { return "hunting-level4-" + mType.name().toLowerCase(); } //$NON-NLS-1$
+	public String inheritFrom() { return "hunting-level4-" + mType.name().toLowerCase(); } 
 	@Override
 	public String getPrizeCmd() {
 		return MobHunting.getConfigManager().specialHunter5Cmd;
@@ -50,5 +53,10 @@ public class FifthHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialHunter5CmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+		return new ItemStack(Material.DIAMOND);
 	}
 }

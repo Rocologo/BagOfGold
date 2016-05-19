@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.Bounty;
@@ -446,8 +445,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (mPlayerSettingsManager.getPlayerSettings(player).isLearningMode())
 				if (!mConfig.disableIntegrationBossBarAPI && BossBarAPICompat.isSupported()
 						&& BossBarAPICompat.isEnabledInConfig()) {
-					BossBarAPI.addBar(player, new TextComponent(text), BossBarAPI.Color.BLUE,
-							BossBarAPI.Style.NOTCHED_20, 1.0f, 30, 2);
+					BossBarAPICompat.addBar(player, text);
 				} else if (!mConfig.disableIntegrationBarAPI && BarAPICompat.isSupported()
 						&& BarAPICompat.isEnabledInConfig()) {
 					BarAPICompat.setMessageTime(player, text, 5);

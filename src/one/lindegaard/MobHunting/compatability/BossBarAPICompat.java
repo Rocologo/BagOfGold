@@ -45,7 +45,7 @@ public class BossBarAPICompat {
 		return !MobHunting.getConfigManager().disableIntegrationBossBarAPI;
 	}
 
-	public static void addbar(Player player, String text) {
+	public static void addBar(Player player, String text) {
 		if (supported)
 			// Create a new BossBar
 			BossBarAPI.addBar(player, // The receiver of the BossBar

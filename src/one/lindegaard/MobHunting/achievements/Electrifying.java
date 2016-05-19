@@ -1,8 +1,11 @@
 package one.lindegaard.MobHunting.achievements;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -44,5 +47,14 @@ public class Electrifying implements Achievement, Listener {
 	@Override
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialChargedCmdDesc;
+	}
+	
+	@Override
+	public ItemStack getSymbol() {
+	    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skullMeta.setOwner("MHF_Creeper");
+        skull.setItemMeta(skullMeta);
+		return skull;
 	}
 }
