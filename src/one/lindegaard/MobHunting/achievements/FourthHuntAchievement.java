@@ -49,6 +49,11 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener {
 	public String inheritFrom() {
 		return "hunting-level3-" + mType.name().toLowerCase();
 	}
+	
+	@Override
+	public String nextLevelId() {
+		return "hunting-level5-" + mType.name().toLowerCase();
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onKillCompleted(MobHuntKillEvent event) {

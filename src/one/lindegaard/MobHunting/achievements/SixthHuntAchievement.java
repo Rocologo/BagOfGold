@@ -17,12 +17,12 @@ public class SixthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.6.name", "mob", mType.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+		return Messages.getString("achievements.hunter.6.name", "mob", mType.getName());
 	}
 
 	@Override
 	public String getID() {
-		return "hunting-level6-" + mType.name().toLowerCase(); //$NON-NLS-1$
+		return "hunting-level6-" + mType.name().toLowerCase();
 	}
 
 	@Override
@@ -44,6 +44,11 @@ public class SixthHuntAchievement implements ProgressAchievement {
 	@Override
 	public String inheritFrom() {
 		return "hunting-level5-" + mType.name().toLowerCase(); //$NON-NLS-1$
+	}
+	
+	@Override
+	public String nextLevelId() {
+		return "hunting-level7-" + mType.name().toLowerCase();
 	}
 
 	@Override

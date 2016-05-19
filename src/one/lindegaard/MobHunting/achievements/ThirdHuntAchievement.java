@@ -44,6 +44,11 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 	public String inheritFrom() {
 		return "hunting-level2-" + mType.name().toLowerCase();
 	}
+	
+	@Override
+	public String nextLevelId() {
+		return "hunting-level4-" + mType.name().toLowerCase();
+	}
 
 	@Override
 	public String getPrizeCmd() {

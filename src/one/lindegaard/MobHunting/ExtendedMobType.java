@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
@@ -35,7 +36,7 @@ public enum ExtendedMobType {
 
 	private ExtendedMobType(String type, int max) {
 		mType = type;
-		mMax = max;
+		mMax = getMax();
 	}
 
 	public String getEntType() {
@@ -43,7 +44,85 @@ public enum ExtendedMobType {
 	}
 
 	public int getMax() {
-		return mMax;
+		switch (mType) {
+		case "GIANT":
+			return MobHunting.getConfigManager().giantLevel1;
+		case "ENDER_DRAGON":
+			return MobHunting.getConfigManager().enderdragonLevel1;
+		case "SLIME":
+			return MobHunting.getConfigManager().slimeLevel1;
+		case "MAGMA_CUBE":
+			return MobHunting.getConfigManager().magmaCubeLevel1;
+		case "GHAST":
+			return MobHunting.getConfigManager().ghastLevel1;
+		case "BLAZE":
+			return MobHunting.getConfigManager().blazeLevel1;
+		case "CREEPER":
+			return MobHunting.getConfigManager().creeperLevel1;
+		case "ENDERMAN":
+			return MobHunting.getConfigManager().endermanLevel1;
+		case "SILVERFISH":
+			return MobHunting.getConfigManager().silverfishLevel1;
+		case "SKELETON":
+			return MobHunting.getConfigManager().skeletonLevel1;
+		case "WITHERSKELETON":
+			return MobHunting.getConfigManager().witherSkeletonLevel1;
+		case "SPIDER":
+			return MobHunting.getConfigManager().spiderLevel1;
+		case "CAVE_SPIDER":
+			return MobHunting.getConfigManager().caveSpiderLevel1;
+		case "WITCH":
+			return MobHunting.getConfigManager().witchLevel1;
+		case "WITHER":
+			return MobHunting.getConfigManager().witherLevel1;
+		case "PIG_ZOMBIE":
+			return MobHunting.getConfigManager().zombiePigmanLevel1;
+		case "ZOMBIE":
+			return MobHunting.getConfigManager().zombieLevel1;
+		case "UNKNOWN":
+			return MobHunting.getConfigManager().bonusMobLevel1;
+		case "IRON_GOLEM":
+			return MobHunting.getConfigManager().ironGolemLevel1;
+		case "BAT":
+			return MobHunting.getConfigManager().batLevel1;
+		case "CHICKEN":
+			return MobHunting.getConfigManager().chickenLevel1;
+		case "COW":
+			return MobHunting.getConfigManager().cowLevel1;
+		case "HORSE":
+			return MobHunting.getConfigManager().horseLevel1;
+		case "MUSHROOM_COW":
+			return MobHunting.getConfigManager().mushroomCowLevel1;
+		case "OCELOT":
+			return MobHunting.getConfigManager().ocelotLevel1;
+		case "PIG":
+			return MobHunting.getConfigManager().pigLevel1;
+		case "RABBIT":
+			return MobHunting.getConfigManager().rabbitLevel1;
+		case "SHEEP": 
+			return MobHunting.getConfigManager().sheepLevel1;
+		case "SNOWMAN":
+			return MobHunting.getConfigManager().snowmanLevel1;
+		case "SQUID":
+			return MobHunting.getConfigManager().squidLevel1;
+		case "VILLAGER":
+			return MobHunting.getConfigManager().villagerLevel1;
+		case "WOLF":
+			return MobHunting.getConfigManager().wolfLevel1;
+		case "ENDERMITE":
+			return MobHunting.getConfigManager().endermiteLevel1;
+		case "GUARDIAN":
+			return MobHunting.getConfigManager().guardianLevel1;
+		case "KILLERRABBIT":
+			return MobHunting.getConfigManager().killerRabbitLevel1;
+		case "PLAYER":
+			return MobHunting.getConfigManager().pvpPlayerLevel1;
+		case "SHULKER":
+			return MobHunting.getConfigManager().shulkerLevel1;
+		default:
+			Bukkit.getLogger().warning("[MobHunting] WARNING: Missing type in ExtendedMobType:"+mType);
+		}
+		return 100;
 	}
 
 	@SuppressWarnings("rawtypes")

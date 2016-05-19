@@ -45,6 +45,11 @@ public class BasicHuntAchievement implements ProgressAchievement {
 	public String inheritFrom() {
 		return null;
 	}
+	
+	@Override
+	public String nextLevelId() {
+		return "hunting-level2-" + mType.name().toLowerCase();
+	}
 
 	@Override
 	public String getPrizeCmd() {

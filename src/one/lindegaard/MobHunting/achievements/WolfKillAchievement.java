@@ -45,6 +45,11 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	public String inheritFrom() {
 		return null;
 	}
+	
+	@Override
+	public String nextLevelId() {
+		return null;
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onWolfKillMob(EntityDeathEvent event) {
