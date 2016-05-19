@@ -132,9 +132,8 @@ public class UpdateHelper {
 		if (OS.indexOf("Win") >= 0) {
 			try {
 				downloadFile(getBukkitUpdate().getVersionLink(), "plugins/update/");
-				File downloadedJar = new File(
-						"plugins/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
-				File newJar = new File("plugins/updater/MobHunting.jar");
+				File downloadedJar = new File("plugins/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+				File newJar = new File("plugins/update/MobHunting.jar");
 				downloadedJar.renameTo(newJar);
 			} catch (IOException e) {
 				e.printStackTrace();
