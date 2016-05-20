@@ -29,8 +29,8 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
 	public MasterMobHunter(int id, StatType statType, TimePeriod period, int numberOfKills, int rank) {
 		npc = CitizensAPI.getNPCRegistry().getById(id);
-		npc.getTrait(MasterMobHunterTrait.class).stattype = statType.translateName();
-		npc.getTrait(MasterMobHunterTrait.class).period = period.translateName();
+		npc.getTrait(MasterMobHunterTrait.class).stattype = statType.getDBColumn();
+		npc.getTrait(MasterMobHunterTrait.class).period = period.getDBColumn();
 		npc.getTrait(MasterMobHunterTrait.class).rank = rank;
 		npc.getTrait(MasterMobHunterTrait.class).noOfKills = numberOfKills;
 		npc.getTrait(MasterMobHunterTrait.class).signLocations = new ArrayList<Location>();
@@ -43,7 +43,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 					+ " has an invalid StatType. Resetting to " + StatType.KillsTotal.getDBColumn());
 			setStatType(StatType.KillsTotal);
 		}
-		if (TimePeriod.getfromColumnName(npc.getTrait(MasterMobHunterTrait.class).period) == null) {
+		if (TimePeriod.fromColumnName(npc.getTrait(MasterMobHunterTrait.class).period) == null) {
 			MobHunting.getInstance().getLogger().warning("NPC ID=" + npc.getId()
 					+ " has an invalid TimePeriod. Resetting to " + TimePeriod.AllTime.getDBColumn());
 			setPeriod(TimePeriod.AllTime);
@@ -63,7 +63,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 	}
 
 	public TimePeriod getPeriod() {
-		return TimePeriod.getfromColumnName(npc.getTrait(MasterMobHunterTrait.class).period);
+		return TimePeriod.fromColumnName(npc.getTrait(MasterMobHunterTrait.class).period);
 	}
 
 	public void setPeriod(TimePeriod period) {
@@ -185,7 +185,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 	@SuppressWarnings("unchecked")
 	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
 		setStatType(StatType.fromColumnName(section.getString("stattype")));
-		setPeriod(TimePeriod.parsePeriod(section.getString("period")));
+		setPeriod(TimePeriod.fromColumnName(section.getString("period")));
 		setNumberOfKills(Integer.valueOf(section.getInt("kills")));
 		setRank(Integer.valueOf(section.getInt("rank")));
 		if (section.contains("signs")) {

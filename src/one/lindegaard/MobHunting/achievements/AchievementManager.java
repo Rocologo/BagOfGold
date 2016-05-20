@@ -714,14 +714,16 @@ public class AchievementManager implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		ItemStack clicked = event.getCurrentItem();
 		Inventory inv = event.getInventory();
-		if (inv.getName().equals(inventory.getName())) {
-			if (clicked != null && clicked.getType() == Material.DIRT) {
-				// TODO:
+		if (inv != null 
+				&& inventory!=null)
+			if (inv.getName().equals(inventory.getName())) {
+				if (clicked != null && clicked.getType() == Material.DIRT) {
+					// TODO:
+				}
+				event.setCancelled(true);
+				player.closeInventory();
+				// player.openInventory(inventory2);
 			}
-			event.setCancelled(true);
-			player.closeInventory();
-			// player.openInventory(inventory2);
-		}
 		// if (inv.getName().equals(inventory2.getName())) {
 		// if (clicked != null && clicked.getType() == Material.DIRT) {
 		// // TODO:

@@ -34,7 +34,7 @@ public enum TimePeriod {
 		return null;
 	}
 	
-	public static TimePeriod getfromColumnName(String period){
+	public static TimePeriod fromColumnName(String period){
 		for (TimePeriod p : values()) {
 			if (p.toString().equalsIgnoreCase(period))
 				return p;
