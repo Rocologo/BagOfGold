@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -177,4 +178,5 @@ public enum ExtendedMobType {
 						.toString());
 		return null;
 	}
+
 }

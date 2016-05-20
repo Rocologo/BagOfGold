@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
@@ -87,5 +88,10 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	@Override
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.STRING);
+	}
+	
+	@Override
+	public ExtendedMobType getExtendedMobType() {
+		return ExtendedMobType.Wolf;
 	}
 }

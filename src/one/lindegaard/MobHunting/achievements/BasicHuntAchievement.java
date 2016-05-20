@@ -65,4 +65,9 @@ public class BasicHuntAchievement implements ProgressAchievement {
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.COAL);
 	}
+	
+	@Override
+	public ExtendedMobType getExtendedMobType() {
+		return mType;
+	}
 }

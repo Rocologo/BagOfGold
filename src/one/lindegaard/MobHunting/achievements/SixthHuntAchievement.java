@@ -65,4 +65,9 @@ public class SixthHuntAchievement implements ProgressAchievement {
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.ENDER_PEARL);
 	}
+	
+	@Override
+	public ExtendedMobType getExtendedMobType() {
+		return mType;
+	}
 }

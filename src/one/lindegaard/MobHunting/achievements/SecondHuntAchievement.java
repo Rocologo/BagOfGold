@@ -64,4 +64,9 @@ public class SecondHuntAchievement implements ProgressAchievement {
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.GOLD_INGOT);
 	}
+	
+	@Override
+	public ExtendedMobType getExtendedMobType() {
+		return mType;
+	}
 }

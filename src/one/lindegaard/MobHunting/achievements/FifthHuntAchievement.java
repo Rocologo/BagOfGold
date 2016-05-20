@@ -65,4 +65,9 @@ public class FifthHuntAchievement implements ProgressAchievement {
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.DIAMOND);
 	}
+
+	@Override
+	public ExtendedMobType getExtendedMobType() {
+		return mType;
+	}
 }

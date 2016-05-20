@@ -76,4 +76,9 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener {
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.EMERALD);
 	}
+	
+	@Override
+	public ExtendedMobType getExtendedMobType() {
+		return mType;
+	}
 }

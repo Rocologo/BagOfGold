@@ -234,12 +234,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		registerModifiers();
 
-		MobHunting.debug("MobHunting: registerEvents");
 		getServer().getPluginManager().registerEvents(this, this);
-		//getServer().getPluginManager().registerEvents(new MobHuntingManager(this), this);
-		//getServer().getPluginManager().registerEvents(new PlayerSettingsManager(), this);
-		//getServer().getPluginManager().registerEvents(new BountyManager(this), this);
-		//getServer().getPluginManager().registerEvents(new AchievementManager(), this);
 		getServer().getPluginManager().registerEvents(new Rewards(), this);
 
 		if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
@@ -1198,7 +1193,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerJoin(PlayerJoinEvent event) {
-		//MobHunting.debug("MobHunting: onPlayerJoin");
 		// final Player player = event.getPlayer();
 	}
 

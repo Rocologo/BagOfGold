@@ -65,4 +65,9 @@ public class SeventhHuntAchievement implements ProgressAchievement {
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.DIAMOND_BLOCK);
 	}
+	
+	@Override
+	public ExtendedMobType getExtendedMobType() {
+		return mType;
+	}
 }

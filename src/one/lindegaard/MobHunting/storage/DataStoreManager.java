@@ -390,8 +390,14 @@ public class DataStoreManager {
 
 					Task task = mQueue.take();
 
-					if (mWritesOnly && ((task.storeTask == null && task.deleteTask.readOnly())
-							|| (task.deleteTask == null && task.storeTask.readOnly()))) {
+					// if (mWritesOnly && ((task.storeTask == null &&
+					// task.deleteTask.readOnly())
+					// || (task.deleteTask == null &&
+					// task.storeTask.readOnly()))) {
+					// continue;
+					// }
+
+					if (mWritesOnly && task.deleteTask.readOnly() && task.storeTask.readOnly()) {
 						continue;
 					}
 
