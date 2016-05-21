@@ -1099,6 +1099,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "use_gui_for_achievements", category = "general", comment = "When use_gui_for_archivements=true the status of players achievemens will"
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForAchievements = true;
+	@ConfigField(name = "use_gui_for_bounties", category = "general", comment = "When use_gui_for_bounties=true the open bounties and most wanted players will"
+			+ "\nbe showed in a Inventory GUI.")
+	public boolean useGuiForBounties = true;
 
 	// #####################################################################################
 	// DropMoneyOnGrond settings

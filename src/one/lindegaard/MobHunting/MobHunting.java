@@ -18,7 +18,7 @@ import one.lindegaard.MobHunting.commands.CommandDispatcher;
 import one.lindegaard.MobHunting.commands.DatabaseCommand;
 import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
-import one.lindegaard.MobHunting.commands.ListAchievementsCommand;
+import one.lindegaard.MobHunting.commands.AchievementsCommand;
 import one.lindegaard.MobHunting.commands.MuteCommand;
 import one.lindegaard.MobHunting.commands.NpcCommand;
 import one.lindegaard.MobHunting.commands.RegionCommand;
@@ -89,7 +89,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.inventivetalent.bossbar.BossBarAPI;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -183,7 +182,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		UpdateHelper.setCurrentJarFile(instance.getFile().getName());
 
 		mStoreManager = new DataStoreManager(mStore);
-		
+
 		mPlayerSettingsManager = new PlayerSettingsManager();
 
 		// Handle compatability stuff
@@ -212,7 +211,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
 		getCommand("mobhunt").setExecutor(cmd);
 		getCommand("mobhunt").setTabCompleter(cmd);
-		cmd.registerCommand(new ListAchievementsCommand());
+		cmd.registerCommand(new AchievementsCommand());
 		cmd.registerCommand(new CheckGrindingCommand());
 		cmd.registerCommand(new TopCommand());
 		cmd.registerCommand(new LeaderboardCommand());
@@ -729,7 +728,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// Player died while playing a Minigame: MobArena, PVPArena,
-		// BattleArena, PVP
+		// BattleArena, SUiside,PVP
 		if (killed instanceof Player) {
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
@@ -743,15 +742,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return;
 			} else if (killer instanceof Player) {
 				if (killed.equals(killer)) {
+					//Suiside
 					learn(killer, Messages.getString("mobhunting.learn.suiside"));
 					debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(),
 							killed.getName());
 					return;
+				} else if (!mConfig.pvpAllowed) {
+					// PVP
+					learn(killer, Messages.getString("mobhunting.learn.nopvp"));
+					debug("KillBlocked: PVP not allowed. %s killed %s.", killer.getName(), killed.getName());
+					return;
 				}
-			} else if (!mConfig.pvpAllowed) {
-				learn(killer, Messages.getString("mobhunting.learn.nopvp"));
-				debug("KillBlocked: PVP not allowed. %s killed %s.", killer.getName(), killed.getName());
-				return;
 			}
 		}
 
@@ -777,7 +778,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// BattleArena
 		// Player is in Godmode or Vanished
 		// Player permission to Hunt (and get rewards)
-		// TODO: What about a PVP kill?
 		if (killer instanceof Player) {
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena(killer)
 					&& !mConfig.mobarenaGetRewards) {
@@ -1060,7 +1060,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			// Reward for assisted kill
-			if (info.assister == null||mConfig.enableAssists==false) {
+			if (info.assister == null || mConfig.enableAssists == false) {
 				if (cash > 0) {
 					if (mConfig.dropMoneyOnGroup) {
 						Rewards.dropMoneyOnGround(killed, cash);

@@ -567,7 +567,7 @@ public class AchievementManager implements Listener {
 									lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC
 											+ achievement.getKey().getDescription());
 								} else if (self)
-									addAchievementDetails(achievement.getKey().getSymbol(), inventory, n,
+									addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
 											ChatColor.YELLOW + achievement.getKey().getName(),
 											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 													achievement.getKey().getDescription(), "",
@@ -576,7 +576,7 @@ public class AchievementManager implements Listener {
 															"num", ChatColor.YELLOW + "" + count + ChatColor.GRAY,
 															"max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
 								else
-									addAchievementDetails(achievement.getKey().getSymbol(), inventory, n,
+									addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
 											ChatColor.YELLOW + achievement.getKey().getName(),
 											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 													achievement.getKey().getDescription(), "",
@@ -603,7 +603,7 @@ public class AchievementManager implements Listener {
 												+ ChatColor.WHITE + "  " + achievement.getValue() + " / "
 												+ ((ProgressAchievement) achievement.getKey()).getMaxProgress());
 									else
-										addAchievementDetails(achievement.getKey().getSymbol(), inventory, n,
+										addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
 												ChatColor.YELLOW + achievement.getKey().getName(),
 												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 														achievement.getKey().getDescription(), "",
@@ -625,7 +625,7 @@ public class AchievementManager implements Listener {
 							if (!(achievement instanceof ProgressAchievement)) {
 								if (!isOnGoingOrCompleted(achievement, data)) {
 									if (achievement.getPrize() != 0) {
-										addAchievementDetails(achievement.getSymbol(), inventory, m,
+										addInventoryDetails(achievement.getSymbol(), inventory, m,
 												ChatColor.YELLOW + achievement.getName(),
 												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 														achievement.getDescription(), "", Messages.getString(
@@ -648,7 +648,7 @@ public class AchievementManager implements Listener {
 											(ProgressAchievement) achievement, data);
 									if (!nextLevelBegun && previousLevelCompleted) {
 										if (achievement.getPrize() != 0) {
-											addAchievementDetails(achievement.getSymbol(), inventory, m,
+											addInventoryDetails(achievement.getSymbol(), inventory, m,
 													ChatColor.YELLOW + achievement.getName(),
 													new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 															achievement.getDescription(), "", Messages.getString(
@@ -714,8 +714,7 @@ public class AchievementManager implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		ItemStack clicked = event.getCurrentItem();
 		Inventory inv = event.getInventory();
-		if (inv != null 
-				&& inventory!=null)
+		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
 				if (clicked != null && clicked.getType() == Material.DIRT) {
 					// TODO:
@@ -733,10 +732,8 @@ public class AchievementManager implements Listener {
 		// }
 	}
 
-	public static void addAchievementDetails(ItemStack itemStack, Inventory inv, int Slot, String name,
-			String[] lores) {
+	public static void addInventoryDetails(ItemStack itemStack, Inventory inv, int Slot, String name, String[] lores) {
 		final int max = 40;
-		// ItemStack item = new ItemStack(material);
 		ItemMeta meta = itemStack.getItemMeta();
 		meta.setDisplayName(name);
 		ArrayList<String> lore = new ArrayList<String>();

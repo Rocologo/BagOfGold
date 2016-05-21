@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
-public class ListAchievementsCommand implements ICommand {
+public class AchievementsCommand implements ICommand {
 
 	@Override
 	public String getName() {

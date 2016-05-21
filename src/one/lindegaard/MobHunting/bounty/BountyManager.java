@@ -7,17 +7,26 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.achievements.AchievementManager;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
 import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask.BountyMode;
@@ -31,6 +40,8 @@ public class BountyManager implements Listener {
 	// mBounties contains all bounties on the OfflinePlayer and the Bounties put
 	// on other players
 	private static Set<Bounty> mBounties = new HashSet<Bounty>();
+	// private static HashMap<OfflinePlayer,Inventory> inventory = new
+	// HashMap<OfflinePlayer,Inventory>();
 
 	public BountyManager(MobHunting instance) {
 		this.instance = instance;
@@ -310,6 +321,123 @@ public class BountyManager implements Listener {
 
 	public void randomBounty() {
 
+	}
+
+	// *************************************************************************************
+	// BOUNTY GUI
+	// *************************************************************************************
+
+	private static Inventory inventory;
+
+	public static void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
+			boolean useGui) {
+		if (MobHunting.getBountyManager().hasBounties(worldGroupName, wantedPlayer)) {
+			Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer);
+			if (useGui) {
+				inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
+						ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
+				int n = 0;
+				for (Bounty bounty : bounties) {
+					AchievementManager.addInventoryDetails(getPlayerHead(wantedPlayer), inventory, n,
+							ChatColor.GREEN + wantedPlayer.getName(),
+							new String[] { ChatColor.WHITE + "",
+									Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+											bounty.getBountyOwner().getName(), "prize",
+											String.format("%.2f", bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
+											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+					if (n < 52)
+						n++;
+				}
+				if (sender instanceof Player)
+					((Player) sender).openInventory(inventory);
+				else
+					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can not used in the console");
+
+			} else {
+				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
+				sender.sendMessage("-----------------------------------");
+				for (Bounty bounty : bounties) {
+					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+							bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
+							"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+							(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+				}
+			}
+		} else {
+			sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties-player", "wantedplayer",
+					wantedPlayer.getName()));
+		}
+	}
+
+	private static ItemStack getPlayerHead(OfflinePlayer wantedPlayer) {
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+		skull.setDurability((short) 3);
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		skullMeta.setOwner(wantedPlayer.getName());
+		skull.setItemMeta(skullMeta);
+		return skull;
+	}
+
+	public static void showMostWanted(CommandSender sender, String worldGroupName, boolean useGui) {
+		if (!MobHunting.getBountyManager().getBounties().isEmpty()) {
+			Set<Bounty> bounties = MobHunting.getBountyManager().getBounties();
+			if (useGui) {
+				Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
+						ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
+				int n = 0;
+				for (Bounty bounty : bounties) {
+					AchievementManager.addInventoryDetails(getPlayerHead(bounty.getWantedPlayer()), inventory, n,
+							ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+							new String[] { ChatColor.WHITE + "",
+									Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+											bounty.getBountyOwner().getName(), "prize",
+											String.format("%.2f", bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
+											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+					if (n < 52)
+						n++;
+				}
+				if (sender instanceof Player)
+					((Player) sender).openInventory(inventory);
+				else
+					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can not used in the console");
+			} else {
+				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
+				sender.sendMessage("-----------------------------------");
+				for (Bounty bounty : bounties) {
+					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+							bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
+							"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+							(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+				}
+			}
+		} else {
+			sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties"));
+		}
+	}
+
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		ItemStack clicked = event.getCurrentItem();
+		Inventory inv = event.getInventory();
+		if (inv != null && inventory != null)
+			if (inv.getName().equals(inventory.getName())) {
+				if (clicked != null && clicked.getType() == Material.DIRT) {
+					// TODO:
+				}
+				event.setCancelled(true);
+				player.closeInventory();
+				// player.openInventory(inventory2);
+			}
+		// if (inv.getName().equals(inventory2.getName())) {
+		// if (clicked != null && clicked.getType() == Material.DIRT) {
+		// // TODO:
+		// }
+		// event.setCancelled(true);
+		// player.closeInventory();
+		// }
 	}
 
 }

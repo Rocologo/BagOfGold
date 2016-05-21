@@ -13,53 +13,51 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class WorldEditCompat {
 	private static WorldEditPlugin mPlugin;
+	private static boolean supported = false;
 
 	public WorldEditCompat() {
-		mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin(
-				"WorldEdit");
+		mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 
-		MobHunting.getInstance().getLogger().info(
-				"Enabling compatability with WorldEdit ("
-						+ getWorldEdit().getDescription().getVersion() + ")");
+		MobHunting.getInstance().getLogger()
+				.info("Enabling compatability with WorldEdit (" + getWorldEdit().getDescription().getVersion() + ")");
+		supported = true;
 	}
 
 	public static WorldEditPlugin getWorldEdit() {
 		return mPlugin;
 	}
 
-	public static Location getPointA(Player player)
-			throws IllegalArgumentException {
+	public static Location getPointA(Player player) throws IllegalArgumentException {
 		if (mPlugin == null)
-			throw new IllegalArgumentException("WorldEdit is not present"); //$NON-NLS-1$
+			throw new IllegalArgumentException("WorldEdit is not present");
 
 		Selection sel = mPlugin.getSelection(player);
 
 		if (sel == null)
-			throw new IllegalArgumentException(
-					Messages.getString("mobhunting.commands.select.no-select")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.no-select"));
 
 		if (!(sel instanceof CuboidSelection))
-			throw new IllegalArgumentException(
-					Messages.getString("mobhunting.commands.select.select-type")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.select-type"));
 
 		return sel.getMinimumPoint();
 	}
 
-	public static Location getPointB(Player player)
-			throws IllegalArgumentException {
+	public static Location getPointB(Player player) throws IllegalArgumentException {
 		if (mPlugin == null)
-			throw new IllegalArgumentException("WorldEdit is not present"); //$NON-NLS-1$
+			throw new IllegalArgumentException("WorldEdit is not present");
 
 		Selection sel = mPlugin.getSelection(player);
 
 		if (sel == null)
-			throw new IllegalArgumentException(
-					Messages.getString("mobhunting.commands.select.no-select")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.no-select"));
 
 		if (!(sel instanceof CuboidSelection))
-			throw new IllegalArgumentException(
-					Messages.getString("mobhunting.commands.select.select-type")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Messages.getString("mobhunting.commands.select.select-type"));
 
 		return sel.getMaximumPoint();
+	}
+
+	public static boolean isSupported() {
+		return supported;
 	}
 }

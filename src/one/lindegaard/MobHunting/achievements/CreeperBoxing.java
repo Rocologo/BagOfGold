@@ -57,8 +57,8 @@ public class CreeperBoxing implements Achievement, Listener
 	
 	@Override
 	public ItemStack getSymbol() {
-	    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+	    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
+	    SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skullMeta.setOwner("MHF_Creeper");
         skull.setItemMeta(skullMeta);
 		return skull;

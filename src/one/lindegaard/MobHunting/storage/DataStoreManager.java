@@ -397,7 +397,8 @@ public class DataStoreManager {
 					// continue;
 					// }
 
-					if (mWritesOnly && task.deleteTask.readOnly() && task.storeTask.readOnly()) {
+					if (mWritesOnly && (task.deleteTask == null || task.deleteTask.readOnly())
+							&& (task.storeTask == null && task.storeTask.readOnly())) {
 						continue;
 					}
 
