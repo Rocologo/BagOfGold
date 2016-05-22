@@ -331,42 +331,49 @@ public class BountyManager implements Listener {
 
 	public static void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
 			boolean useGui) {
-		if (MobHunting.getBountyManager().hasBounties(worldGroupName, wantedPlayer)) {
-			Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer);
-			if (useGui) {
-				inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
-						ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
-				int n = 0;
-				for (Bounty bounty : bounties) {
-					AchievementManager.addInventoryDetails(getPlayerHead(wantedPlayer), inventory, n,
-							ChatColor.GREEN + wantedPlayer.getName(),
-							new String[] { ChatColor.WHITE + "",
-									Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-											bounty.getBountyOwner().getName(), "prize",
-											String.format("%.2f", bounty.getPrize()), "wantedplayer",
-											bounty.getWantedPlayer().getName(), "daysleft",
-											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
-					if (n < 52)
-						n++;
-				}
-				if (sender instanceof Player)
-					((Player) sender).openInventory(inventory);
-				else
-					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can not used in the console");
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
 
-			} else {
-				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
-				sender.sendMessage("-----------------------------------");
-				for (Bounty bounty : bounties) {
-					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-							bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
-							"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
-							(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+			if (MobHunting.getBountyManager().hasBounties(worldGroupName, wantedPlayer)) {
+				Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer);
+				if (useGui) {
+					inventory = Bukkit.createInventory(player, 54,
+							ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
+					int n = 0;
+					for (Bounty bounty : bounties) {
+						AchievementManager.addInventoryDetails(getPlayerHead(wantedPlayer), inventory, n,
+								ChatColor.GREEN + wantedPlayer.getName(),
+								new String[] { ChatColor.WHITE + "",
+										Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+												bounty.getBountyOwner().getName(), "prize",
+												String.format("%.2f", bounty.getPrize()), "wantedplayer",
+												bounty.getWantedPlayer().getName(), "daysleft",
+												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+						if (n < 52)
+							n++;
+					}
+					if (sender instanceof Player)
+						((Player) sender).openInventory(inventory);
+					else
+						Bukkit.getConsoleSender()
+								.sendMessage(ChatColor.RED + "This command can not used in the console");
+
+				} else {
+					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
+					sender.sendMessage("-----------------------------------");
+					for (Bounty bounty : bounties) {
+						sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+								bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
+								"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+								(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+					}
 				}
+			} else {
+				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties-player", "wantedplayer",
+						wantedPlayer.getName()));
 			}
 		} else {
-			sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties-player", "wantedplayer",
-					wantedPlayer.getName()));
+			sender.sendMessage("[MobHunting] You cant use this command in the console");
 		}
 	}
 
@@ -380,50 +387,60 @@ public class BountyManager implements Listener {
 	}
 
 	public static void showMostWanted(CommandSender sender, String worldGroupName, boolean useGui) {
-		if (!MobHunting.getBountyManager().getBounties().isEmpty()) {
-			Set<Bounty> bounties = MobHunting.getBountyManager().getBounties();
-			if (useGui) {
-				Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
-						ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
-				int n = 0;
-				for (Bounty bounty : bounties) {
-					AchievementManager.addInventoryDetails(getPlayerHead(bounty.getWantedPlayer()), inventory, n,
-							ChatColor.GREEN + bounty.getWantedPlayer().getName(),
-							new String[] { ChatColor.WHITE + "",
-									Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-											bounty.getBountyOwner().getName(), "prize",
-											String.format("%.2f", bounty.getPrize()), "wantedplayer",
-											bounty.getWantedPlayer().getName(), "daysleft",
-											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
-					if (n < 52)
-						n++;
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
+
+			if (!MobHunting.getBountyManager().getBounties().isEmpty()) {
+				Set<Bounty> bounties = MobHunting.getBountyManager().getBounties();
+				if (useGui) {
+					inventory = Bukkit.createInventory(player, 54,
+							ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
+					int n = 0;
+					for (Bounty bounty : bounties) {
+						AchievementManager.addInventoryDetails(getPlayerHead(bounty.getWantedPlayer()), inventory, n,
+								ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+								new String[] { ChatColor.WHITE + "",
+										Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+												bounty.getBountyOwner().getName(), "prize",
+												String.format("%.2f", bounty.getPrize()), "wantedplayer",
+												bounty.getWantedPlayer().getName(), "daysleft",
+												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+						if (n < 52)
+							n++;
+					}
+					if (sender instanceof Player)
+						((Player) sender).openInventory(inventory);
+					else
+						Bukkit.getConsoleSender()
+								.sendMessage(ChatColor.RED + "This command can not used in the console");
+				} else {
+					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
+					sender.sendMessage("-----------------------------------");
+					for (Bounty bounty : bounties) {
+						sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+								bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
+								"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+								(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+					}
 				}
-				if (sender instanceof Player)
-					((Player) sender).openInventory(inventory);
-				else
-					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can not used in the console");
 			} else {
-				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
-				sender.sendMessage("-----------------------------------");
-				for (Bounty bounty : bounties) {
-					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-							bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
-							"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
-							(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
-				}
+				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties"));
 			}
 		} else {
-			sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties"));
+			sender.sendMessage("[MobHunting] You cant use this command in the console");
 		}
 	}
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
+		MobHunting.debug("BountyManager: onInventoryClick: ...%s",event.getClick());
 		Player player = (Player) event.getWhoClicked();
 		ItemStack clicked = event.getCurrentItem();
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
+				MobHunting.debug("BountyManager: onInventoryClick: you clicked the inventory %s", inv.getName());
+
 				if (clicked != null && clicked.getType() == Material.DIRT) {
 					// TODO:
 				}
