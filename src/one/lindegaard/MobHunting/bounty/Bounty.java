@@ -45,6 +45,19 @@ public class Bounty {
 		this.status = BountyStatus.open;
 	}
 
+	public Bounty(String worldGroup, OfflinePlayer randomPlayer, double prize, String message) {
+		// Random Bounty on a Player
+		this.worldGroup = worldGroup;
+		this.bountyOwner = null;
+		this.mobtype = "Random";
+		this.wantedPlayer = randomPlayer;
+		this.createdDate = System.currentTimeMillis();
+		this.endDate = this.createdDate + 30L * 86400000L;
+		this.prize = prize;
+		this.message = message;
+		this.status = BountyStatus.open;
+	}
+
 	public Bounty(String worldGroup, OfflinePlayer bountyOwner, int npcId, double prize, String message) {
 		// Bounty on a NPC
 		this.worldGroup = worldGroup;
@@ -98,15 +111,26 @@ public class Bounty {
 		if (!(obj instanceof Bounty))
 			return false;
 		Bounty other = (Bounty) obj;
-		return (bountyOwner.equals(other.bountyOwner) && wantedPlayer.equals(other.wantedPlayer)
-				&& worldGroup.equals(other.worldGroup));
+		if (bountyOwner == null)
+			if (other.bountyOwner == null)
+				return true;
+			else
+				return false;
+		else
+			return (bountyOwner.equals(other.bountyOwner) && wantedPlayer.equals(other.wantedPlayer)
+					&& worldGroup.equals(other.worldGroup));
 	}
 
 	@Override
 	public String toString() {
-		return String.format(
-				"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
-				worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, prize, status);
+		if (bountyOwner != null)
+			return String.format(
+					"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
+					worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, prize, status);
+		else
+			return String.format(
+					"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
+					worldGroup, wantedPlayer.getName(), "Random Bounty", npcId, mobId, prize, status);
 	}
 
 	/**

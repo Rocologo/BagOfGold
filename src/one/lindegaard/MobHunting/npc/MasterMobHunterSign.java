@@ -172,7 +172,7 @@ public class MasterMobHunterSign implements Listener {
 
 	public static int getNPCIdOnSign(String str) {
 		if (!str.matches(MASTERMOBHUNTERSIGN)) {
-			return 0;
+			return -1;
 		}
 		Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
 		Matcher m = pattern.matcher(str);

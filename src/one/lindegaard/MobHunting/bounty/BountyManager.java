@@ -19,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -29,7 +28,6 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.achievements.AchievementManager;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
-import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask.BountyMode;
 
 public class BountyManager implements Listener {
 
@@ -39,60 +37,41 @@ public class BountyManager implements Listener {
 
 	// mBounties contains all bounties on the OfflinePlayer and the Bounties put
 	// on other players
-	private static Set<Bounty> mBounties = new HashSet<Bounty>();
-	// private static HashMap<OfflinePlayer,Inventory> inventory = new
-	// HashMap<OfflinePlayer,Inventory>();
+	private static Set<Bounty> mOpenBounties = new HashSet<Bounty>();
 
 	public BountyManager(MobHunting instance) {
 		this.instance = instance;
 		// if (MobHunting.ENABLE_TEST_BOUNTY)
 		// addTestData();
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+		initialize();
 	}
 
-	@SuppressWarnings("deprecation")
-	private void addTestData() {
-		OfflinePlayer p1 = Bukkit.getOfflinePlayer("Gabriel333");
-		OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
-		OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
-
-		MobHunting.debug("Loading p1,p2,p3 from database");
-		loadBounties(p1);
-		loadBounties(p2);
-		loadBounties(p3);
-
-		MobHunting.getInstance().getServer().getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
-			public void run() {
-
-				OfflinePlayer p1 = Bukkit.getOfflinePlayer("Gabriel333");
-				OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
-				OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
-
-				Bounty b1 = new Bounty("Default", p3, p2, 101, "he he he");
-				Bounty b2 = new Bounty("Default", p3, p1, 102, "ho ho ho");
-				Bounty b3 = new Bounty("Default", p2, p3, 200, "ha ha ha");
-				Bounty b4 = new Bounty("Default", p1, p3, 300, "hi hi hi");
-
-				MobHunting.debug("BountyManager AddTestData if not exist. Adding b1,b2,b3,b4 size=%s",
-						mBounties.size());
-				if (!hasBounty(b1))
-					addBounty(b1);
-				if (!hasBounty(b2))
-					addBounty(b2);
-				if (!hasBounty(b3))
-					addBounty(b3);
-				if (!hasBounty(b4))
-					addBounty(b4);
-			}
-		}, 300L);
-
+	private void initialize() {
+		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+		if (MobHunting.getConfigManager().enableRandomBounty) {
+			Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Runnable() {
+				public void run() {
+					createRandomBounty();
+				}
+			}, MobHunting.getConfigManager().timeBetweenRandomBounties * 20 * 60,
+					MobHunting.getConfigManager().timeBetweenRandomBounties * 20 * 60);
+			Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Runnable() {
+				public void run() {
+					for (Bounty bounty : mOpenBounties) {
+						if (bounty.getEndDate() < System.currentTimeMillis()) {
+							bounty.setStatus(BountyStatus.expired);
+							MobHunting.getDataStoreManager().updateBounty(bounty);
+							MobHunting.debug("BountyManager: Expired Bounty %s", bounty.toString());
+							mOpenBounties.remove(bounty);
+							MobHunting.debug("mOpenBounties.size=%s", mOpenBounties.size());
+						}
+					}
+				}
+			}, 600, 7200);
+		}
 	}
 
 	public void shutdown() {
-	}
-
-	public void insertBountyOnWantedPlayer(Bounty bounty) {
-		MobHunting.getDataStoreManager().insertBounty(bounty);
 	}
 
 	/**
@@ -103,11 +82,11 @@ public class BountyManager implements Listener {
 	 */
 	public void addBounty(Bounty bounty) {
 		if (!hasBounty(bounty)) {
-			// MobHunting.debug("Adding bounty=%s", bounty.toString());
-			mBounties.add(bounty);
+			MobHunting.debug("Insert bounty=%s", bounty.toString());
+			mOpenBounties.add(bounty);
 			MobHunting.getDataStoreManager().insertBounty(bounty);
 		} else {
-			// MobHunting.debug("Updating bounty=%s", bounty.toString());
+			MobHunting.debug("Updating bounty=%s", bounty.toString());
 			getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).setPrize(
 					getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).getPrize()
 							+ bounty.getPrize());
@@ -119,13 +98,13 @@ public class BountyManager implements Listener {
 
 	}
 
-	public Set<Bounty> getBounties() {
-		return mBounties;
+	public Set<Bounty> getAllBounties() {
+		return mOpenBounties;
 	}
 
 	public Set<OfflinePlayer> getWantedPlayers() {
 		Set<OfflinePlayer> wantedPlayers = new HashSet<OfflinePlayer>();
-		for (Bounty b : mBounties) {
+		for (Bounty b : mOpenBounties) {
 			if (!wantedPlayers.contains(b.getWantedPlayer()))
 				wantedPlayers.add(b.getWantedPlayer());
 
@@ -134,16 +113,16 @@ public class BountyManager implements Listener {
 	}
 
 	public Bounty getBounty(String worldGroup, OfflinePlayer wantedPlayer, OfflinePlayer bountyOwner) {
-		for (Bounty bounty : mBounties) {
-			if (bounty.getBountyOwner().equals(bountyOwner) && bounty.getWantedPlayer().equals(wantedPlayer)
-					&& bounty.getWorldGroup().equals(worldGroup))
+		for (Bounty bounty : mOpenBounties) {
+			if ((bounty.getBountyOwner() == null || bounty.getBountyOwner().equals(bountyOwner))
+					&& bounty.getWantedPlayer().equals(wantedPlayer) && bounty.getWorldGroup().equals(worldGroup))
 				return bounty;
 		}
 		return null;
 	}
 
 	public Bounty getBounty(Bounty bounty) {
-		for (Bounty b : mBounties) {
+		for (Bounty b : mOpenBounties) {
 			if (b.equals(bounty))
 				return bounty;
 		}
@@ -152,7 +131,7 @@ public class BountyManager implements Listener {
 
 	public Set<Bounty> getBounties(String worldGroup, OfflinePlayer wantedPlayer) {
 		Set<Bounty> bounties = new HashSet<Bounty>();
-		for (Bounty bounty : mBounties) {
+		for (Bounty bounty : mOpenBounties) {
 			if (bounty.getWantedPlayer().equals(wantedPlayer) && bounty.getWorldGroup().equals(worldGroup)) {
 				bounties.add(bounty);
 			}
@@ -160,11 +139,13 @@ public class BountyManager implements Listener {
 		return bounties;
 	}
 
-	public void markBountyCompleted(String worldGroup, OfflinePlayer wantedPlayer, OfflinePlayer bountyOwner) {
-		for (Bounty bounty : mBounties) {
-			if (bounty.getBountyOwner().equals(bountyOwner) && bounty.getWantedPlayer().equals(wantedPlayer)
-					&& bounty.getWorldGroup().equals(worldGroup)) {
+	public void markBountyCompleted2(String worldGroup, OfflinePlayer wantedPlayer, OfflinePlayer bountyOwner) {
+		for (Bounty bounty : mOpenBounties) {
+			if ((bounty.getBountyOwner() == null || bounty.getBountyOwner().equals(bountyOwner))
+					&& bounty.getWantedPlayer().equals(wantedPlayer) && bounty.getWorldGroup().equals(worldGroup)) {
 				bounty.setStatus(BountyStatus.completed);
+				mOpenBounties.remove(bounty);
+				MobHunting.getDataStoreManager().insertBounty(bounty);
 				break;
 			}
 		}
@@ -176,7 +157,7 @@ public class BountyManager implements Listener {
 		MobHunting.getDataStoreManager()
 				.insertBounty(getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()));
 
-		Iterator<Bounty> it = mBounties.iterator();
+		Iterator<Bounty> it = mOpenBounties.iterator();
 		while (it.hasNext()) {
 			Bounty b = (Bounty) it.next();
 			if (b.equals(bounty))
@@ -186,7 +167,7 @@ public class BountyManager implements Listener {
 
 	public void removeBounty(Bounty bounty) {
 		MobHunting.getDataStoreManager().deleteBounty(bounty);
-		Iterator<Bounty> it = mBounties.iterator();
+		Iterator<Bounty> it = mOpenBounties.iterator();
 		while (it.hasNext()) {
 			Bounty b = (Bounty) it.next();
 			if (b.equals(bounty))
@@ -196,8 +177,8 @@ public class BountyManager implements Listener {
 
 	public void sort() {
 		Set<Bounty> sortedSet = new TreeSet<Bounty>(new BountyComparator()).descendingSet();
-		sortedSet.addAll(mBounties);
-		mBounties = sortedSet;
+		sortedSet.addAll(mOpenBounties);
+		mOpenBounties = sortedSet;
 	}
 
 	class BountyComparator implements Comparator<Bounty> {
@@ -206,7 +187,12 @@ public class BountyManager implements Listener {
 			if (b1.equals(b2))
 				return Double.compare(b1.getPrize(), b2.getPrize());
 			else if (b1.getWantedPlayer().getName().equals(b2.getWantedPlayer().getName()))
-				return b1.getBountyOwner().getName().compareTo(b2.getBountyOwner().getName());
+				if (b1.getBountyOwner() == null)
+					return -1;
+				else if (b2.getBountyOwner() == null)
+					return 1;
+				else
+					return b1.getBountyOwner().getName().compareTo(b2.getBountyOwner().getName());
 			else
 				return b1.getWantedPlayer().getName().compareTo(b2.getWantedPlayer().getName());
 		}
@@ -214,24 +200,30 @@ public class BountyManager implements Listener {
 
 	// Tests
 	public boolean hasBounty(String worldGroup, OfflinePlayer wantedPlayer, OfflinePlayer bountyOwner) {
-		for (Bounty bounty : mBounties) {
-			if (bounty.getBountyOwner().equals(bountyOwner) && bounty.getWantedPlayer().equals(wantedPlayer)
-					&& bounty.getWorldGroup().equals(worldGroup))
+		for (Bounty bounty : mOpenBounties) {
+			if (bounty.getWantedPlayer().equals(wantedPlayer) && bounty.getWorldGroup().equals(worldGroup)) {
+				if (bountyOwner == null)
+					if (bounty.getBountyOwner() == null)
+						return true;
+					else
+						return bounty.getBountyOwner().equals(bountyOwner);
 				return true;
+			} else
+				return false;
 		}
 		return false;
 	}
 
 	public boolean hasBounty(Bounty bounty) {
-		for (Bounty b : mBounties) {
+		for (Bounty b : mOpenBounties) {
 			if (b.equals(bounty))
 				return true;
 		}
 		return false;
 	}
 
-	public boolean hasBounties(String worldGroup, OfflinePlayer wantedPlayer) {
-		for (Bounty bounty : mBounties) {
+	public static boolean hasBounties(String worldGroup, OfflinePlayer wantedPlayer) {
+		for (Bounty bounty : mOpenBounties) {
 			if (bounty.getWantedPlayer().equals(wantedPlayer))
 				return true;
 		}
@@ -262,11 +254,11 @@ public class BountyManager implements Listener {
 		Player player = e.getPlayer();
 		if (!MobHunting.getConfigManager().disablePlayerBounties) {
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(player);
-			if (MobHunting.getBountyManager().hasBounties(worldGroupName, player)) {
+			if (hasBounties(worldGroupName, player)) {
 				MobHunting.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
 			}
 			addMarkOnWantedPlayer(player);
-			loadBounties(player);
+			loadOpenBounties(player);
 		}
 	}
 
@@ -278,22 +270,32 @@ public class BountyManager implements Listener {
 	// ****************************************************************************
 	// Save & Load
 	// ****************************************************************************
-	public void loadBounties(final OfflinePlayer offlinePlayer) {
-		MobHunting.getDataStoreManager().requestBounties(BountyMode.Open, offlinePlayer,
+	public void loadOpenBounties(final OfflinePlayer offlinePlayer) {
+		MobHunting.getDataStoreManager().requestBounties(BountyStatus.open, offlinePlayer,
 				new IDataCallback<Set<Bounty>>() {
 
 					@Override
 					public void onCompleted(Set<Bounty> data) {
 						boolean sort = false;
+						MobHunting.debug("DataSet.size=%s", data.size());
 						for (Bounty bounty : data) {
-							if (bounty.isOpen() && !hasBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(),
-									bounty.getBountyOwner())) {
-								mBounties.add(bounty);
+							if (!hasBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())) {
+								if (bounty.getEndDate() > System.currentTimeMillis())
+									mOpenBounties.add(bounty);
+								else {
+									bounty.setStatus(BountyStatus.expired);
+									// removeBounty(bounty);
+									MobHunting.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
+									MobHunting.getDataStoreManager().updateBounty(bounty);
+								}
 								sort = true;
+							} else {
+								MobHunting.debug("Bounty is already loaded");
 							}
 						}
 						if (sort)
 							sort();
+						MobHunting.debug("mOpenBounties.size=%s", mOpenBounties.size());
 					}
 
 					@Override
@@ -315,14 +317,6 @@ public class BountyManager implements Listener {
 				});
 	}
 
-	// ***********************************************************
-	// RANDOM BOUNTY
-	// ***********************************************************
-
-	public void randomBounty() {
-
-	}
-
 	// *************************************************************************************
 	// BOUNTY GUI
 	// *************************************************************************************
@@ -334,21 +328,31 @@ public class BountyManager implements Listener {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 
-			if (MobHunting.getBountyManager().hasBounties(worldGroupName, wantedPlayer)) {
-				Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer);
+			if (hasBounties(worldGroupName, wantedPlayer)) {
+				Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getBounties(worldGroupName,
+						wantedPlayer);
 				if (useGui) {
 					inventory = Bukkit.createInventory(player, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
 					int n = 0;
-					for (Bounty bounty : bounties) {
-						AchievementManager.addInventoryDetails(getPlayerHead(wantedPlayer), inventory, n,
-								ChatColor.GREEN + wantedPlayer.getName(),
-								new String[] { ChatColor.WHITE + "",
-										Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-												bounty.getBountyOwner().getName(), "prize",
-												String.format("%.2f", bounty.getPrize()), "wantedplayer",
-												bounty.getWantedPlayer().getName(), "daysleft",
-												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+					for (Bounty bounty : bountiesOnWantedPlayer) {
+						if (bounty.getBountyOwner() != null)
+							AchievementManager.addInventoryDetails(getPlayerHead(wantedPlayer), inventory, n,
+									ChatColor.GREEN + wantedPlayer.getName(),
+									new String[] { ChatColor.WHITE + "", Messages.getString(
+											"mobhunting.commands.bounty.bounties", "bountyowner",
+											bounty.getBountyOwner().getName(), "prize",
+											String.format("%.2f", bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
+											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+						else
+							AchievementManager.addInventoryDetails(getPlayerHead(wantedPlayer), inventory, n,
+									ChatColor.GREEN + wantedPlayer.getName(),
+									new String[] { ChatColor.WHITE + "", Messages.getString(
+											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
+											"prize", String.format("%.2f", bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
+											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						if (n < 52)
 							n++;
 					}
@@ -361,11 +365,20 @@ public class BountyManager implements Listener {
 				} else {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
 					sender.sendMessage("-----------------------------------");
-					for (Bounty bounty : bounties) {
-						sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-								bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
-								"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
-								(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+					for (Bounty bounty : bountiesOnWantedPlayer) {
+						if (bounty.isOpen())
+							if (bounty.getBountyOwner() != null)
+								sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties",
+										"bountyowner", bounty.getBountyOwner().getName(), "prize",
+										String.format("%.2f", bounty.getPrize()), "wantedplayer",
+										bounty.getWantedPlayer().getName(), "daysleft",
+										(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+							else
+								sender.sendMessage(
+										Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+												"Random Bounty", "prize", String.format("%.2f", bounty.getPrize()),
+												"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
 					}
 				}
 			} else {
@@ -389,22 +402,32 @@ public class BountyManager implements Listener {
 	public static void showMostWanted(CommandSender sender, String worldGroupName, boolean useGui) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-
-			if (!MobHunting.getBountyManager().getBounties().isEmpty()) {
-				Set<Bounty> bounties = MobHunting.getBountyManager().getBounties();
+			// MobHunting.debug("mOpenBounties.size, args);
+			if (!mOpenBounties.isEmpty()) {
+				// Set<Bounty> bounties =
+				// MobHunting.getBountyManager().getAllBounties();
 				if (useGui) {
 					inventory = Bukkit.createInventory(player, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
 					int n = 0;
-					for (Bounty bounty : bounties) {
-						AchievementManager.addInventoryDetails(getPlayerHead(bounty.getWantedPlayer()), inventory, n,
-								ChatColor.GREEN + bounty.getWantedPlayer().getName(),
-								new String[] { ChatColor.WHITE + "",
-										Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-												bounty.getBountyOwner().getName(), "prize",
-												String.format("%.2f", bounty.getPrize()), "wantedplayer",
-												bounty.getWantedPlayer().getName(), "daysleft",
-												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+					for (Bounty bounty : mOpenBounties) {
+						if (bounty.getBountyOwner() != null)
+							AchievementManager.addInventoryDetails(getPlayerHead(bounty.getWantedPlayer()), inventory,
+									n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+									new String[] { ChatColor.WHITE + "", Messages.getString(
+											"mobhunting.commands.bounty.bounties", "bountyowner",
+											bounty.getBountyOwner().getName(), "prize",
+											String.format("%.2f", bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
+											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+						else
+							AchievementManager.addInventoryDetails(getPlayerHead(bounty.getWantedPlayer()), inventory,
+									n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+									new String[] { ChatColor.WHITE + "", Messages.getString(
+											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
+											"prize", String.format("%.2f", bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
+											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						if (n < 52)
 							n++;
 					}
@@ -416,11 +439,18 @@ public class BountyManager implements Listener {
 				} else {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties-header"));
 					sender.sendMessage("-----------------------------------");
-					for (Bounty bounty : bounties) {
-						sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-								bounty.getBountyOwner().getName(), "prize", String.format("%.2f", bounty.getPrize()),
-								"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
-								(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+					for (Bounty bounty : mOpenBounties) {
+						if (bounty.getBountyOwner() != null)
+							sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+									bounty.getBountyOwner().getName(), "prize",
+									String.format("%.2f", bounty.getPrize()), "wantedplayer",
+									bounty.getWantedPlayer().getName(), "daysleft",
+									(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+						else
+							sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
+									"Random Bounty", "prize", String.format("%.2f", bounty.getPrize()), "wantedplayer",
+									bounty.getWantedPlayer().getName(), "daysleft",
+									(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
 					}
 				}
 			} else {
@@ -433,14 +463,11 @@ public class BountyManager implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		MobHunting.debug("BountyManager: onInventoryClick: ...%s",event.getClick());
 		Player player = (Player) event.getWhoClicked();
 		ItemStack clicked = event.getCurrentItem();
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
-				MobHunting.debug("BountyManager: onInventoryClick: you clicked the inventory %s", inv.getName());
-
 				if (clicked != null && clicked.getType() == Material.DIRT) {
 					// TODO:
 				}
@@ -455,6 +482,88 @@ public class BountyManager implements Listener {
 		// event.setCancelled(true);
 		// player.closeInventory();
 		// }
+	}
+
+	// ***********************************************************
+	// RANDOM BOUNTY
+	// ***********************************************************
+
+	public void createRandomBounty() {
+		boolean createBounty = MobHunting.getInstance().mRand
+				.nextDouble() <= MobHunting.getConfigManager().chanceToCreateBounty;
+		if (createBounty) {
+			int noOfPlayers = MobHunting.getMobHuntingManager().getOnlinePlayersAmount();
+			Player randomPlayer = null;
+			if (MobHunting.getConfigManager().minimumNumberOfOnlinePlayers <= noOfPlayers) {
+
+				int random = MobHunting.getInstance().mRand.nextInt(noOfPlayers);
+				int n = 0;
+				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
+					if (n == random) {
+						randomPlayer = player;
+						break;
+					} else
+						n++;
+				}
+				if (randomPlayer != null) {
+					String worldGroup = MobHunting.getWorldGroupManager().getCurrentWorldGroup(randomPlayer);
+					Bounty randomBounty = new Bounty(worldGroup, randomPlayer,
+							MobHunting.getConfigManager().getRandomPrice(MobHunting.getConfigManager().randomBounty),
+							"Random Bounty");
+					addBounty(randomBounty);
+					for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
+						if (player.getName().equals(randomPlayer.getName()))
+							MobHunting.playerActionBarMessage(player, Messages.getString(
+									"mobhunting.bounty.randombounty.self", "prize", randomBounty.getPrize()));
+						else
+							MobHunting.playerActionBarMessage(player,
+									Messages.getString("mobhunting.bounty.randombounty", "prize",
+											randomBounty.getPrize(), "playername", randomPlayer.getName()));
+					}
+				}
+			}
+		}
+	}
+
+	// ***********************************************************
+	// TEST DATA
+	// ***********************************************************
+	@SuppressWarnings("deprecation")
+	private void addTestData() {
+		OfflinePlayer p1 = Bukkit.getOfflinePlayer("Gabriel333");
+		OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
+		OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
+
+		MobHunting.debug("Loading p1,p2,p3 from database");
+		loadOpenBounties(p1);
+		loadOpenBounties(p2);
+		loadOpenBounties(p3);
+
+		MobHunting.getInstance().getServer().getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
+			public void run() {
+
+				OfflinePlayer p1 = Bukkit.getOfflinePlayer("Gabriel333");
+				OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
+				OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
+
+				Bounty b1 = new Bounty("Default", p3, p2, 101, "he he he");
+				Bounty b2 = new Bounty("Default", p3, p1, 102, "ho ho ho");
+				Bounty b3 = new Bounty("Default", p2, p3, 200, "ha ha ha");
+				Bounty b4 = new Bounty("Default", p1, p3, 300, "hi hi hi");
+
+				MobHunting.debug("BountyManager AddTestData if not exist. Adding b1,b2,b3,b4 size=%s",
+						mOpenBounties.size());
+				if (!hasBounty(b1))
+					addBounty(b1);
+				if (!hasBounty(b2))
+					addBounty(b2);
+				if (!hasBounty(b3))
+					addBounty(b3);
+				if (!hasBounty(b4))
+					addBounty(b4);
+			}
+		}, 300L);
+
 	}
 
 }

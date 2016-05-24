@@ -109,7 +109,7 @@ public interface IDataStore {
 
 	public OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException;
 
-	public void deleteBounty(Set<Bounty> bounties) throws DataDeleteException, DataStoreException;
+	public void deleteBounty(Set<Bounty> bounties) throws DataStoreException;
 	
 	public void cancelBounty(Set<Bounty> bounties) throws DataStoreException;
 

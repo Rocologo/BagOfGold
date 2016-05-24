@@ -11,6 +11,7 @@ import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
+import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.commands.BountyCommand;
 import one.lindegaard.MobHunting.commands.CheckGrindingCommand;
 import one.lindegaard.MobHunting.commands.ClearGrindingCommand;
@@ -121,7 +122,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	private Set<IModifier> mModifiers = new HashSet<IModifier>();
 
-	private Random mRand = new Random();
+	public Random mRand = new Random();
 
 	private boolean mInitialized = false;
 
@@ -730,19 +731,24 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Player died while playing a Minigame: MobArena, PVPArena,
 		// BattleArena, SUiside,PVP
 		if (killed instanceof Player) {
-			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)) {
+			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)
+					&& !mConfig.mobarenaGetRewards) {
 				debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
+				learn(killer, Messages.getString("mobhunting.learn.mobarena"));
 				return;
-			} else if (PVPArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)) {
+			} else if (PVPArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)
+					&& !mConfig.pvparenaGetRewards) {
 				debug("KillBlocked: %s was killed while playing PvpArena.", killed.getName());
+				learn(killer, Messages.getString("mobhunting.learn.pvparena"));
 				return;
 			} else if (BattleArenaCompat.isEnabledInConfig()
 					&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
 				debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
+				learn(killer, Messages.getString("mobhunting.learn.battlearena"));
 				return;
 			} else if (killer instanceof Player) {
 				if (killed.equals(killer)) {
-					//Suiside
+					// Suiside
 					learn(killer, Messages.getString("mobhunting.learn.suiside"));
 					debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(),
 							killed.getName());
@@ -1004,7 +1010,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		double reward = 0;
 		if (!mConfig.disablePlayerBounties && killed instanceof Player && killer instanceof Player) {
 			debug("This was a Pvp kill (killed=%s) no af bounties=%s", killed.getName(),
-					mBountyManager.getBounties().size());
+					mBountyManager.getAllBounties().size());
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
 			if (mBountyManager.hasBounties(worldGroupName, wantedPlayer)) {
@@ -1018,6 +1024,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 						playerActionBarMessage((Player) bountyOwner,
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
 										"prize", b.getPrize(), "killed", killed.getName()));
+					b.setStatus(BountyStatus.completed);
+					getDataStoreManager().updateBounty(b);
 				}
 				// OBS: Bounty will be added to the Reward for killing/Robbing
 				// the player

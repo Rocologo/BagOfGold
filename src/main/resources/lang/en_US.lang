@@ -12,6 +12,8 @@ mobhunting.bounty.user-not-found=ERROR! Your player is missing in the MobHunting
 mobhunting.bounty.load-fail=ERROR! MobHunting could not load the bounties.
 mobhunting.bounty.bounty-claimed=${killer claimed the bounty (${prize}) you had put on ${killed}.
 mobhunting.bounty.youarewanted=Be careful, somebody has put a bounty on your head!
+mobhunting.bounty.randombounty=A Random Bounty (${prize}) was put on ${playername}, go get him!
+mobhunting.bounty.randombounty.self=A Random Bounty (${prize}) was put on your head!
 mobhunting.npc.notamastermobhuner=Id=${npcid} is not a MasterMobHuner. 
 mobhunting.npc.clickednpc=${killer} is a MasterMobHunter(id=${npcid}) with rank ${rank} for ${numberofkills} ${stattype} ${period}
 

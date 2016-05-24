@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -49,7 +50,7 @@ public class MasterMobHunterManager implements Listener {
 					MobHunting.getInstance());
 			mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Updater(), 1L,
 					MobHunting.getConfigManager().masterMobHuntercheckEvery * 20);
-			
+
 		}
 	}
 
@@ -201,26 +202,29 @@ public class MasterMobHunterManager implements Listener {
 	@EventHandler
 	public void onSignChangeEvent(SignChangeEvent event) {
 		Player p = event.getPlayer();
-		int id = MasterMobHunterSign.getNPCIdOnSign(event.getLine(0));
-		boolean powered = MasterMobHunterSign.isPowerSetOnSign(event.getLine(0));
-		NPC npc = CitizensAPI.getNPCRegistry().getById(id);
-		if (npc != null) {
-			if (isMasterMobHunter(npc)) {
-				update(npc);
-				MasterMobHunter mmh = new MasterMobHunter(npc);
-				mmh.putLocation(event.getBlock().getLocation());
-				mMasterMobHunter.put(id, mmh);
-				p.sendMessage(p.getName() + " placed a MobHunting Sign (ID=" + id + ")");
-				event.setLine(1, (mmh.getRank() + "." + npc.getName()));
-				event.setLine(2, (mmh.getPeriod().translateNameFriendly()));
-				event.setLine(3, (mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
-				if (powered) {
-					OfflinePlayer player = Bukkit.getPlayer(npc.getName());
-					if (player != null && player.isOnline())
-						MasterMobHunterSign.setPower(event.getBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
-				} else
-					MasterMobHunterSign.removePower(event.getBlock());
-			} 
+		Block b = event.getBlock();
+		if (MasterMobHunterSign.isSign(b) && MasterMobHunterSign.isMHSign(b)) {
+			int id = MasterMobHunterSign.getNPCIdOnSign(event.getLine(0));
+			boolean powered = MasterMobHunterSign.isPowerSetOnSign(event.getLine(0));
+			NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+			if (npc != null) {
+				if (isMasterMobHunter(npc)) {
+					update(npc);
+					MasterMobHunter mmh = new MasterMobHunter(npc);
+					mmh.putLocation(event.getBlock().getLocation());
+					mMasterMobHunter.put(id, mmh);
+					p.sendMessage(p.getName() + " placed a MobHunting Sign (ID=" + id + ")");
+					event.setLine(1, (mmh.getRank() + "." + npc.getName()));
+					event.setLine(2, (mmh.getPeriod().translateNameFriendly()));
+					event.setLine(3, (mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
+					if (powered) {
+						OfflinePlayer player = Bukkit.getPlayer(npc.getName());
+						if (player != null && player.isOnline())
+							MasterMobHunterSign.setPower(event.getBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
+					} else
+						MasterMobHunterSign.removePower(event.getBlock());
+				}
+			}
 		}
 	}
 

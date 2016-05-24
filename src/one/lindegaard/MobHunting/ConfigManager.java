@@ -855,7 +855,6 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "bonusmob_level1", category = "achievement_levels")
 	public int bonusMobLevel1 = 20;
 
-
 	// #####################################################################################
 	// Assists
 	// #####################################################################################
@@ -981,6 +980,31 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "bounty-return-pct", category = "bounties", comment = "Here you set how much of a bound the bounty owner get back if "
 			+ "\nhe drop the bounty on another player")
 	public int bountyReturnPct = 50;
+	@ConfigField(name = "enable_random_bounty", category = "bounties", comment = "Set enable_random_bounty=false to disable random bounties")
+	public boolean enableRandomBounty = true;
+	@ConfigField(name = "time_between_random_bounties", category = "bounties", comment = "Time between Random Bounty is created in minutes")
+	public int timeBetweenRandomBounties = 60;
+	@ConfigField(name = "minimum_number_of_online_players", category = "bounties", comment = "Minimum number of players before the server starts to make random bounties")
+	public int minimumNumberOfOnlinePlayers = 5;
+	@ConfigField(name = "chance_to_create_a_random_bounty", category = "bounties", comment = "Chance that a bounty is created on a player after the minimum time. Must be a number between 0 and 1. (0 = never, 0.5 = 50% 1 = always)")
+	public double chanceToCreateBounty = 0.5;
+	@ConfigField(name = "random_bounty_prize", category = "bounties", comment = "Random Bounty. Can be a number 100 or a range 100:200")
+	public String randomBounty = "100:200";
+
+	public double getRandomPrice(String str) {
+		if (str.contains(":")) {
+			String[] str1 = str.split(":");
+			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
+					+ Double.valueOf(str1[0]));
+			return round(prize);
+		} else if (str.equals("") || str == null || str.isEmpty()) {
+			instance.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting] [WARNING]"
+					+ ChatColor.RESET
+					+ " The random_bounty_prize is not set in config.yml. Please set the prize to 0 or a positive number.");
+			return 0;
+		} else
+			return Double.valueOf(str);
+	}
 
 	// #####################################################################################
 	// Plugin integration
@@ -1278,9 +1302,10 @@ public class ConfigManager extends AutoConfig {
 					+ Double.valueOf(str1[0]));
 			return round(prize);
 		} else if (str.equals("") || str == null || str.isEmpty()) {
-			instance.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting] [WARNING]"
-					+ ChatColor.RESET + " The prize for killing a " + mob.getName()
-					+ " is not set in config.yml. Please set the prize to 0 or an positive or negative number.");
+			instance.getServer().getConsoleSender()
+					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
+							+ " The prize for killing a " + mob.getName()
+							+ " is not set in config.yml. Please set the prize to 0 or a positive or negative number.");
 			return 0;
 		} else
 			return Double.valueOf(str);

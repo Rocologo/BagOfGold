@@ -8,19 +8,16 @@ import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.bounty.Bounty;
+import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
 
 public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
-	public enum BountyMode {
-		All, Completed, Open
-	}
-
-	private BountyMode mMode;
+	private BountyStatus mMode;
 	private OfflinePlayer mPlayer;
 	private HashSet<Object> mWaiting;
 
-	public BountyRetrieverTask(BountyMode mode, OfflinePlayer player, HashSet<Object> waiting) {
+	public BountyRetrieverTask(BountyStatus mode, OfflinePlayer player, HashSet<Object> waiting) {
 		mMode = mode;
 		mPlayer = player;
 		mWaiting = waiting;
@@ -35,18 +32,18 @@ public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
 				}
 
 				switch (mMode) {
-				case Completed:
+				case completed:
 					if (cached.isCompleted())
 						bounties.add(cached);
 					break;
-				case All: {
-					bounties.add(cached);
-					break;
-				}
-				case Open:
+				case open:
 					if (cached.isOpen())
 						bounties.add(cached);
 					break;
+				default: { // all
+					bounties.add(cached);
+					break;
+				}
 				}
 			}
 		}
@@ -56,9 +53,7 @@ public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
 		synchronized (mWaiting) {
 			Set<Bounty> bounties = store.loadBounties(mPlayer);
 			switch (mMode) {
-			case All:
-				break;
-			case Completed: {
+			case completed: {
 				Iterator<Bounty> it = bounties.iterator();
 				while (it.hasNext()) {
 					Bounty bounty = it.next();
@@ -67,7 +62,7 @@ public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
 				}
 				break;
 			}
-			case Open: {
+			case open: {
 				Iterator<Bounty> it = bounties.iterator();
 				while (it.hasNext()) {
 					Bounty bounty = it.next();
@@ -76,6 +71,8 @@ public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
 				}
 				break;
 			}
+			default:
+				break;
 			}
 			updateUsingCache(bounties);
 			return bounties;

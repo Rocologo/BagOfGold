@@ -39,7 +39,7 @@ public class MobArenaHelper {
 	 */
 	public static void stopPlayingMobArena(Player player) {
 		if(!playersPlayingMobArena.remove(player.getUniqueId())){
-			MobHunting.debug("Player: %s is not a the MobArena", player.getName());
+			MobHunting.debug("Player: %s is not playing MobArena", player.getName());
 		}
 	}
 

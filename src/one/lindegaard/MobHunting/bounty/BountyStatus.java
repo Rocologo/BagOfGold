@@ -1,7 +1,7 @@
 package one.lindegaard.MobHunting.bounty;
 
 public enum BountyStatus {
-	open("open", 0), completed("completed", 1), expired("expired", 2), canceled("canceled", 3);
+	open("open", 0), completed("completed", 1), expired("expired", 2), canceled("canceled", 3), deleted("deleted", 4);
 
 	private String mName;
 	private int mStatus;
