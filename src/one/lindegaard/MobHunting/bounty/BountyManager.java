@@ -63,7 +63,6 @@ public class BountyManager implements Listener {
 							MobHunting.getDataStoreManager().updateBounty(bounty);
 							MobHunting.debug("BountyManager: Expired Bounty %s", bounty.toString());
 							mOpenBounties.remove(bounty);
-							MobHunting.debug("mOpenBounties.size=%s", mOpenBounties.size());
 						}
 					}
 				}
@@ -277,7 +276,6 @@ public class BountyManager implements Listener {
 					@Override
 					public void onCompleted(Set<Bounty> data) {
 						boolean sort = false;
-						MobHunting.debug("DataSet.size=%s", data.size());
 						for (Bounty bounty : data) {
 							if (!hasBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())) {
 								if (bounty.getEndDate() > System.currentTimeMillis())
@@ -289,13 +287,10 @@ public class BountyManager implements Listener {
 									MobHunting.getDataStoreManager().updateBounty(bounty);
 								}
 								sort = true;
-							} else {
-								MobHunting.debug("Bounty is already loaded");
 							}
 						}
 						if (sort)
 							sort();
-						MobHunting.debug("mOpenBounties.size=%s", mOpenBounties.size());
 					}
 
 					@Override

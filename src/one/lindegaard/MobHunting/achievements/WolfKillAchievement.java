@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatability.MobArenaCompat;
+import one.lindegaard.MobHunting.compatability.MobArenaHelper;
 
 public class WolfKillAchievement implements ProgressAchievement, Listener {
 
@@ -46,7 +48,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	public String inheritFrom() {
 		return null;
 	}
-	
+
 	@Override
 	public String nextLevelId() {
 		return null;
@@ -69,7 +71,13 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 			Player owner = ((OfflinePlayer) killer.getOwner()).getPlayer();
 
 			if (owner != null && MobHunting.getMobHuntingManager().isHuntEnabled(owner)) {
-				MobHunting.getAchievements().awardAchievementProgress(this, owner, 1);
+				if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) owner)
+						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
+					MobHunting.debug("AchiveBlocked: FangMaster was achieved while %s was playing MobArena.",
+							owner.getName());
+					MobHunting.learn(owner, Messages.getString("mobhunting.learn.mobarena"));
+				} else
+					MobHunting.getAchievements().awardAchievementProgress(this, owner, 1);
 			}
 		}
 
@@ -84,12 +92,12 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialFangMasterCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.STRING);
 	}
-	
+
 	@Override
 	public ExtendedMobType getExtendedMobType() {
 		return ExtendedMobType.Wolf;

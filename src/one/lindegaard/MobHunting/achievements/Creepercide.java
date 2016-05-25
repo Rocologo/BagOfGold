@@ -14,6 +14,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatability.MobArenaCompat;
+import one.lindegaard.MobHunting.compatability.MobArenaHelper;
 
 public class Creepercide implements Achievement, Listener {
 
@@ -67,8 +69,16 @@ public class Creepercide implements Achievement, Listener {
 					initiator = b.attacker;
 			}
 
-			if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator))
-				MobHunting.getAchievements().awardAchievement("creepercide", initiator);
+			if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator)) {
+				// Check if player (initiator) is playing MobArena.
+				if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) initiator)
+						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
+					MobHunting.debug("AchiveBlocked: CreeperCide was achieved while %s was playing MobArena.",
+							initiator.getName());
+					MobHunting.learn(initiator, Messages.getString("mobhunting.learn.mobarena"));
+				} else
+					MobHunting.getAchievements().awardAchievement("creepercide", initiator);
+			}
 		}
 	}
 
@@ -81,13 +91,13 @@ public class Creepercide implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialCreepercideCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
-	    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skullMeta.setOwner("MHF_Creeper");
-        skull.setItemMeta(skullMeta);
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		skullMeta.setOwner("MHF_Creeper");
+		skull.setItemMeta(skullMeta);
 		return skull;
 	}
 }
