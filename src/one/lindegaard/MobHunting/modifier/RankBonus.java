@@ -34,7 +34,9 @@ public class RankBonus implements IModifier {
 					}
 				}
 			}
-			return (mul == 0) ? 1 : mul;
+			mul = (mul == 0) ? 1 : mul;
+			MobHunting.debug("RankMultiplier=%s", mul);
+			return mul;
 		} else if (MobHunting.getConfigManager().rankMultiplier.containsKey("mobhunting.multiplier.op"))
 			return Double.valueOf(MobHunting.getConfigManager().rankMultiplier.get("mobhunting.multiplier.op"));
 		return 1;
@@ -51,7 +53,7 @@ public class RankBonus implements IModifier {
 				if (!rank.getKey().equalsIgnoreCase("mobhunting")
 						&& !rank.getKey().equalsIgnoreCase("mobhunting.multiplier")) {
 					if (killer.hasPermission(rank.getKey())) {
-						MobHunting.debug("RankMultiplier Key=%s Value=%s", rank.getKey(), rank.getValue());
+						//MobHunting.debug("RankMultiplier Key=%s Value=%s", rank.getKey(), rank.getValue());
 						hasRank = true;
 					}
 				}

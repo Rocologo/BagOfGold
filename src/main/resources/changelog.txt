@@ -1,3 +1,8 @@
+V3.1.0
+- Added setting in config.yml to set the item color text when using DropMoneyOnGroup
+- Fixed freeze/crash server when stopping or restarting server
+- Fixed bug in MetricManager when starting the server and Citizens not installed
+- Changed Metrics SQL statistics 
 V3.0.8
 - Fixed bug: players could get achievement Creepercide and Fangmaster while playing MobArena
 - Fixed bug: added two database closing statements which could make the server hang after new players had joined the server.

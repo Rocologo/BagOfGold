@@ -180,14 +180,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			closePreparedGetPlayerStatements();
 			if (mConnection != null) {
 				mConnection.commit();
-				try {
-					TimeUnit.SECONDS.sleep(2);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				MobHunting.debug("Closing database connection.");
 				mConnection.close();
-
 			}
 		} catch (SQLException e) {
 			throw new DataStoreException(e);

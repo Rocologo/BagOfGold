@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -43,11 +44,12 @@ public class Rewards implements Listener {
 
 	public static void dropMoneyOnGround(Entity entity, double money) {
 		Location location = entity.getLocation();
-		//ItemStack is = new ItemStack(Material.GOLD_NUGGET, 1);
+		// ItemStack is = new ItemStack(Material.GOLD_NUGGET, 1);
 		ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
 		Item item = location.getWorld().dropItem(location, is);
 		item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
-		item.setCustomName(MobHunting.getEconomy().format(money));
+		item.setCustomName(
+				ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + MobHunting.getEconomy().format(money));
 		item.setCustomNameVisible(true);
 	}
 

@@ -188,8 +188,6 @@ public class MetricsManager {
 					return BossBarAPICompat.isSupported() ? 1 : 0;
 				}
 			});
-			
-			
 			titleManagerGraph.addPlotter(new Metrics.Plotter("TitleAPI") {
 				@Override
 				public int getValue() {

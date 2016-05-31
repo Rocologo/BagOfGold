@@ -54,7 +54,7 @@ import org.bukkit.metadata.MetadataValue;
 
 public class ConfigManager extends AutoConfig {
 	private static MobHunting instance;
-
+	
 	public ConfigManager(File file) {
 		super(file);
 		instance = MobHunting.getInstance();
@@ -1138,6 +1138,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
+
+	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item." )
+	public String dropMoneyOnGroundTextColor = "&0";
+
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {

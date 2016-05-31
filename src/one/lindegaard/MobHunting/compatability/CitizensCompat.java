@@ -162,7 +162,7 @@ public class CitizensCompat implements Listener {
 	}
 
 	public static boolean isCitizensSupported() {
-		if (CitizensAPI.hasImplementation())
+		if (citizensAPI != null && CitizensAPI.hasImplementation())
 			return supported;
 		else
 			return false;
@@ -299,5 +299,5 @@ public class CitizensCompat implements Listener {
 	private void onPlayerCreateNPCEvent(PlayerCreateNPCEvent event) {
 		// MobHunting.debug("NPCCreateNPCEvent");
 	}
-	
+
 }

@@ -158,12 +158,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		try {
 			MobHunting.debug("Saving PlayerStats to Database.");
 
-			// HashSet<OfflinePlayer> names = new HashSet<OfflinePlayer>();
-			// for (StatStore stat : stats)
-			// names.add(stat.getPlayer());
-			// Map<UUID, Integer> ids = getPlayerIds(names);
-
-			// if (!ids.isEmpty()) {
 			// Make sure the stats are available for each player
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
 			mSavePlayerStats.clearBatch();
