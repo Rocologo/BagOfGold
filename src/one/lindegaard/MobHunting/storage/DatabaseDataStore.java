@@ -425,6 +425,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerUUID.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
+			mGetPlayerUUID.close();
 			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -453,6 +454,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerByPlayerId.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
+			mGetPlayerByPlayerId.close();
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);

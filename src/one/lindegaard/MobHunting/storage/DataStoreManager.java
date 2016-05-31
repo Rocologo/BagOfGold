@@ -227,9 +227,15 @@ public class DataStoreManager {
 		mTaskThread.setWriteOnlyMode(true);
 
 		try {
+			MobHunting.debug("Interupting mStoreThread");
 			mStoreThread.interrupt();
+			MobHunting.debug("Waiting for Empty Queue: %s", mWaiting.size());
 			mTaskThread.waitForEmptyQueue();
-			mTaskThread.interrupt();
+			MobHunting.debug("Interupting mStoreThread(2)");
+			mStoreThread.interrupt();
+			//MobHunting.debug("Interupting mTaskThread");
+			//mTaskThread.interrupt();
+			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -268,7 +274,7 @@ public class DataStoreManager {
 					Thread.sleep(mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {
-
+				MobHunting.debug("MH StoreThread was interupted (size=%s)", mWaiting.size());
 			}
 		}
 	}
@@ -329,6 +335,7 @@ public class DataStoreManager {
 				return;
 
 			synchronized (mSignal) {
+				MobHunting.debug("Waiting for empty Queue: %s", mQueue.size());
 				mSignal.wait();
 			}
 		}
@@ -362,12 +369,16 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					}
+					} 
 
 					Task task = mQueue.take();
 
 					if (mWritesOnly && task.storeTask.readOnly()) {
+						// TODO: remove this.
+						MobHunting.debug("DataStoreManager: mQueue.size=%s, mWritesOnly=%s, task.storeTask.readOnly=%s",
+								mQueue.size(), mWritesOnly, task.storeTask.readOnly());
 						continue;
+
 					}
 
 					try {
@@ -375,7 +386,6 @@ public class DataStoreManager {
 						Object result;
 
 						result = task.storeTask.run(mStore);
-
 						if (task.callback != null)
 							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
 									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));

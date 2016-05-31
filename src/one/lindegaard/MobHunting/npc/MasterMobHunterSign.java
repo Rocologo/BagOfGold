@@ -11,9 +11,11 @@ import one.lindegaard.MobHunting.MobHunting;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,6 +23,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.material.MaterialData;
@@ -252,25 +255,42 @@ public class MasterMobHunterSign implements Listener {
 				int p = clickedBlock.getBlockPower(bf);
 				power2 = power2 > p ? power2 : p;
 			}
-		int power3 = 0;
-		if (clickedBlock.isBlockPowered())
-			power3 = clickedBlock.getBlockPower();
-		MobHunting.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s", power, power2, power3,
-				clickedBlock.getType());
+		//int power3 = 0;
+		//if (clickedBlock.isBlockPowered())
+		//	power3 = clickedBlock.getBlockPower();
+		//MobHunting.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s", power, power2, power3,
+		//		clickedBlock.getType());
 	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlaceEvent(BlockPlaceEvent e) {
+		// BlockPlaceEvent is called before the player enter the text on the
+		// sign
 		Block b = e.getBlock();
-		if (isSign(b) && isMHSign(b)) {
-			int id = MasterMobHunterSign.getNPCIdOnSign(((Sign) b.getState()).getLine(0));
-			NPC npc = CitizensAPI.getNPCRegistry().getById(id);
-			if (isPowerSetOnSign(((Sign) b.getState()).getLine(0)) && Bukkit.getPlayer(npc.getName()).isOnline())
-				setMHPower(b, POWER_FROM_SIGN);
-			else
-				removeMHPower(b);
-		} else if (isRedstoneWire(b)) {
+		// if (isSign(b) && isMHSign(b)) {
+		// int id = MasterMobHunterSign.getNPCIdOnSign(((Sign)
+		// b.getState()).getLine(0));
+		// NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+		// if (npc != null && MasterMobHunterManager.isMasterMobHunter(npc)) {
+		// MasterMobHunterManager.update(npc);
+		// MasterMobHunter mmh = new MasterMobHunter(npc);
+		// mmh.putLocation(e.getBlock().getLocation());
+		// mmh.update();
+		// MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
+		// MobHunting.debug("Updating sign");
+		// } else {
+		// MobHunting.debug("NPC with ID = %s is not a MasterMobHunter",
+		// npc.getId());
+		// }
+		//
+		// if (isPowerSetOnSign(((Sign) b.getState()).getLine(0)) &&
+		// Bukkit.getPlayer(npc.getName()).isOnline())
+		// setMHPower(b, POWER_FROM_SIGN);
+		// else
+		// removeMHPower(b);
+		// } else
+		if (isRedstoneWire(b)) {
 			if (isMHIndirectPoweredBySign(b)) {
 				// power on Redstone must be set immediately to work
 				setMHPower(b, POWER_FROM_SIGN);
@@ -281,6 +301,35 @@ public class MasterMobHunterSign implements Listener {
 			// power on Redstone Lamp and Piston must be set in next tick to
 			// work
 			setMHPowerLater(b);
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onSignChangeEvent(SignChangeEvent event) {
+		Player p = event.getPlayer();
+		if (isMHSign(event.getLine(0))) {
+			int id = getNPCIdOnSign(event.getLine(0));
+			boolean powered = isPowerSetOnSign(event.getLine(0));
+			NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+			if (npc != null) {
+				if (MasterMobHunterManager.isMasterMobHunter(npc)) {
+					MasterMobHunterManager.update(npc);
+					MasterMobHunter mmh = new MasterMobHunter(npc);
+					mmh.putLocation(event.getBlock().getLocation());
+					MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
+					p.sendMessage(p.getName() + " placed a MobHunting Sign (ID=" + id + ")");
+					event.setLine(1, (mmh.getRank() + "." + npc.getName()));
+					event.setLine(2, (mmh.getPeriod().translateNameFriendly()));
+					event.setLine(3, (mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
+					if (powered) {
+						OfflinePlayer player = Bukkit.getPlayer(npc.getName());
+						if (player != null && player.isOnline())
+							setPower(event.getBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
+					} else
+						removePower(event.getBlock());
+				}
+			}
 		}
 	}
 
@@ -408,6 +457,10 @@ public class MasterMobHunterSign implements Listener {
 				return true;
 		}
 		return false;
+	}
+
+	public static boolean isMHSign(String line) {
+		return line.matches(MASTERMOBHUNTERSIGN);
 	}
 
 	private static boolean isMHPoweredSign(Block block) {

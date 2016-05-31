@@ -48,6 +48,8 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 					+ " has an invalid TimePeriod. Resetting to " + TimePeriod.AllTime.getDBColumn());
 			setPeriod(TimePeriod.AllTime);
 		}
+		if (npc.getTrait(MasterMobHunterTrait.class).signLocations == null)
+			npc.getTrait(MasterMobHunterTrait.class).signLocations = new ArrayList<Location>();
 	}
 
 	public int getId() {
@@ -96,6 +98,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
 	public void putLocation(Location location) {
 		if (!npc.getTrait(MasterMobHunterTrait.class).signLocations.contains(location)) {
+			MobHunting.debug("put signLocation into npc=%s", npc.getId());
 			npc.getTrait(MasterMobHunterTrait.class).signLocations.add(location);
 		}
 	}
@@ -175,6 +178,8 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 					}
 				}
 			}
+		} else {
+			MobHunting.debug("No Signs created for npcId=%s", npc.getId());
 		}
 	}
 

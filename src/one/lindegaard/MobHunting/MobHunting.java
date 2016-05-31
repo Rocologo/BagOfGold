@@ -535,14 +535,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CitizensCompat.isNPC(damaged))
 			if (!CitizensCompat.isSentry(damaged))
 				return;
-		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)) {
+		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 			if ((damager instanceof Player) || MyPetCompat.isMyPet(damager)) {
 				RegionManager regionManager = WorldGuardCompat.getWorldGuardPlugin()
 						.getRegionManager(damager.getWorld());
 				ApplicableRegionSet set = regionManager.getApplicableRegions(damager.getLocation());
 				if (set != null) {
 					if (!set.allows(DefaultFlag.MOB_DAMAGE)) {
-						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s", damager.getName(),
+						debug("KillBlocked:(1) %s is hiding in WG region with MOB_DAMAGE %s", damager.getName(),
 								set.allows(DefaultFlag.MOB_DAMAGE));
 						return;
 					}
@@ -713,7 +713,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					debug("Found %s Worldguard region(s): MOB_DAMAGE flag is %s", set.size(),
 							set.allows(DefaultFlag.MOB_DAMAGE));
 					if (!set.allows(DefaultFlag.MOB_DAMAGE)) {
-						debug("KillBlocked: %s is hiding in WG region with MOB_DAMAGE %s", killer.getName(),
+						debug("KillBlocked:(2) %s is hiding in WG region with MOB_DAMAGE %s", killer.getName(),
 								set.allows(DefaultFlag.MOB_DAMAGE));
 						learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
 						return;
@@ -723,9 +723,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 						learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
 						return;
 					}
-
 				}
 			}
+		} else {
+			debug("WorldGuard is not present(%s) or disabled in Config.yml(%s)",
+					!CompatibilityManager.isPluginLoaded(WorldGuardCompat.class),
+					WorldGuardCompat.isDisabledInConfig());
 		}
 
 		// Player died while playing a Minigame: MobArena, PVPArena,

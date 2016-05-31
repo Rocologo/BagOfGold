@@ -1,0 +1,4 @@
+V3.0.8
+- Fixed bug: players could get achievement Creepercide and Fangmaster while playing MobArena
+- Fixed bug: added two database closing statements which could make the server hang after new players had joined the server.
+  

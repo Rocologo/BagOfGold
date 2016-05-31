@@ -36,35 +36,30 @@ public class MetricsManager {
 	public void startMetrics() {
 		try {
 			metrics = new Metrics(MobHunting.getInstance());
-			automaticUpdatesGraph = metrics.createGraph("Installations with automatic update");
-			automaticUpdatesGraph.addPlotter(new Metrics.Plotter("Amount") {
-				@Override
-				public int getValue() {
-					return MobHunting.getConfigManager().autoupdate ? 1 : 0;
-				}
-			});
-			metrics.addGraph(automaticUpdatesGraph);
 
 			databaseGraph = metrics.createGraph("Database used for MobHunting");
-			databaseGraph.addPlotter(new Metrics.Plotter("MySQL") {
-				@Override
-				public int getValue() {
-					return MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL") ? 1 : 0;
-				}
-			});
-			databaseGraph.addPlotter(new Metrics.Plotter("SQLite") {
-				@Override
-				public int getValue() {
-					return MobHunting.getConfigManager().databaseType.equalsIgnoreCase("SQLite") ? 1 : 0;
-				}
-			});
-			databaseGraph.addPlotter(new Metrics.Plotter("Other") {
-				@Override
-				public int getValue() {
-					return (!MobHunting.getConfigManager().databaseType.equalsIgnoreCase("SQLite")
-							&& !MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) ? 1 : 0;
-				}
-			});
+			if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL"))
+				databaseGraph.addPlotter(new Metrics.Plotter("MySQL") {
+					@Override
+					public int getValue() {
+						return 1;
+					}
+				});
+			else if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("SQLite"))
+				databaseGraph.addPlotter(new Metrics.Plotter("SQLite") {
+					@Override
+					public int getValue() {
+						return 1;
+					}
+				});
+			else {
+				databaseGraph.addPlotter(new Metrics.Plotter(MobHunting.getConfigManager().databaseType) {
+					@Override
+					public int getValue() {
+						return 1;
+					}
+				});
+			}
 			metrics.addGraph(databaseGraph);
 
 			integrationsGraph = metrics.createGraph("MobHunting integrations");
@@ -186,13 +181,15 @@ public class MetricsManager {
 			});
 			metrics.addGraph(integrationsGraph);
 
-			titleManagerGraph = metrics.createGraph("MobHunting Titlemanagers");
+			titleManagerGraph = metrics.createGraph("TitleManagers");
 			titleManagerGraph.addPlotter(new Metrics.Plotter("BossBarAPI") {
 				@Override
 				public int getValue() {
 					return BossBarAPICompat.isSupported() ? 1 : 0;
 				}
 			});
+			
+			
 			titleManagerGraph.addPlotter(new Metrics.Plotter("TitleAPI") {
 				@Override
 				public int getValue() {
@@ -218,6 +215,15 @@ public class MetricsManager {
 				}
 			});
 			metrics.addGraph(titleManagerGraph);
+
+			automaticUpdatesGraph = metrics.createGraph("Installations with automatic update");
+			automaticUpdatesGraph.addPlotter(new Metrics.Plotter("Amount") {
+				@Override
+				public int getValue() {
+					return MobHunting.getConfigManager().autoupdate ? 1 : 0;
+				}
+			});
+			metrics.addGraph(automaticUpdatesGraph);
 
 			metrics.enable();
 			metrics.start();
