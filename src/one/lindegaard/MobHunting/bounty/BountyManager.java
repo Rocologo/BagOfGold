@@ -467,6 +467,7 @@ public class BountyManager implements Listener {
 					// TODO:
 				}
 				event.setCancelled(true);
+				MobHunting.debug("BountyManager: Player clicked on inventory - closing now");
 				player.closeInventory();
 				// player.openInventory(inventory2);
 			}

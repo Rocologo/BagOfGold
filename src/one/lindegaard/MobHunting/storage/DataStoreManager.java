@@ -270,7 +270,7 @@ public class DataStoreManager {
 					}
 
 					mTaskThread.addStoreTask(new StoreTask(mWaiting));
-					
+
 					Thread.sleep(mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {
@@ -369,40 +369,39 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					} else {
+					} // else { DONT ENABLE THIS CAUSES 100 CPU USAGE
 
-						Task task = mQueue.take();
+					Task task = mQueue.take();
 
-						if (mWritesOnly && task.storeTask.readOnly()) {
-							// TODO: remove this.
-							MobHunting.debug(
-									"DataStoreManager: mQueue.size=%s, mWritesOnly=%s, task.storeTask.readOnly=%s",
-									mQueue.size(), mWritesOnly, task.storeTask.readOnly());
-							continue;
+					if (mWritesOnly && task.storeTask.readOnly()) {
+						// TODO: remove this.
+						MobHunting.debug("DataStoreManager: mQueue.size=%s, mWritesOnly=%s, task.storeTask.readOnly=%s",
+								mQueue.size(), mWritesOnly, task.storeTask.readOnly());
+						continue;
 
-						}
-
-						try {
-
-							Object result;
-
-							result = task.storeTask.run(mStore);
-							
-							if (task.callback != null)
-								Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-										new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
-						} catch (DataStoreException e) {
-							MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
-							// if (task.callback != null)
-							// Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-							// new CallbackCaller((IDataCallback<Object>)
-							// task.callback, e, false));
-							// else
-							e.printStackTrace();
-						}
 					}
 
+					try {
+
+						Object result;
+
+						result = task.storeTask.run(mStore);
+
+						if (task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
+					} catch (DataStoreException e) {
+						MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
+						// if (task.callback != null)
+						// Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+						// new CallbackCaller((IDataCallback<Object>)
+						// task.callback, e, false));
+						// else
+						e.printStackTrace();
+					}
 				}
+
+				// }
 			} catch (InterruptedException e) {
 				System.out.println("[MobHunting] MH TaskThread was interrupted");
 			}

@@ -720,6 +720,7 @@ public class AchievementManager implements Listener {
 					// TODO:
 				}
 				event.setCancelled(true);
+				MobHunting.debug("AchievemeneManager: Player clicked on inventory - closing now");
 				player.closeInventory();
 				// player.openInventory(inventory2);
 			}
