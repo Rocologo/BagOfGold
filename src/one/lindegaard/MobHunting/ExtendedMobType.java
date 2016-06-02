@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -33,6 +32,7 @@ public enum ExtendedMobType {
 			Shulker("SHULKER",100);
 
 	private String mType;
+	@SuppressWarnings("unused")
 	private int mMax;
 
 	private ExtendedMobType(String type, int max) {

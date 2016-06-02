@@ -6,18 +6,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -40,8 +36,8 @@ public class MasterMobHunterManager implements Listener {
 
 	public MasterMobHunterManager() {
 	}
-	
-	public static HashMap<Integer, MasterMobHunter> getMasterMobHunterManager(){
+
+	public static HashMap<Integer, MasterMobHunter> getMasterMobHunterManager() {
 		return mMasterMobHunter;
 	}
 
@@ -82,7 +78,7 @@ public class MasterMobHunterManager implements Listener {
 		}
 	}
 
-	public static void update(NPC npc) {
+	public void update(NPC npc) {
 		if (hasMasterMobHunterData(npc)) {
 			MasterMobHunter mmh = new MasterMobHunter(npc);
 			if (mmh != null) {

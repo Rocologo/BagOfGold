@@ -255,11 +255,12 @@ public class MasterMobHunterSign implements Listener {
 				int p = clickedBlock.getBlockPower(bf);
 				power2 = power2 > p ? power2 : p;
 			}
-		//int power3 = 0;
-		//if (clickedBlock.isBlockPowered())
-		//	power3 = clickedBlock.getBlockPower();
-		//MobHunting.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s", power, power2, power3,
-		//		clickedBlock.getType());
+		// int power3 = 0;
+		// if (clickedBlock.isBlockPowered())
+		// power3 = clickedBlock.getBlockPower();
+		// MobHunting.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s",
+		// power, power2, power3,
+		// clickedBlock.getType());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -314,7 +315,7 @@ public class MasterMobHunterSign implements Listener {
 			NPC npc = CitizensAPI.getNPCRegistry().getById(id);
 			if (npc != null) {
 				if (MasterMobHunterManager.isMasterMobHunter(npc)) {
-					MasterMobHunterManager.update(npc);
+					MasterMobHunterManager.getMasterMobHunterManager().get(npc).update();
 					MasterMobHunter mmh = new MasterMobHunter(npc);
 					mmh.putLocation(event.getBlock().getLocation());
 					MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);

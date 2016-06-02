@@ -1,12 +1,9 @@
 package one.lindegaard.MobHunting.compatability;
 
-import java.lang.reflect.Method;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.inventivetalent.bossbar.BossBarAPI;
-import org.inventivetalent.bossbar.BossBarAPI.Color;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import one.lindegaard.MobHunting.MobHunting;
@@ -52,8 +49,7 @@ public class BossBarAPICompat {
 		if (supported)
 
 			try {
-				@SuppressWarnings({})
-				Class<?> cls = Class.forName("org.inventivetalent.bossbar.BossBarAPI");
+				Class.forName("org.inventivetalent.bossbar.BossBarAPI");
 				// Create a new BossBar
 				BossBarAPI.addBar(player, // The receiver of the BossBar
 						new TextComponent(text), // Displayed message

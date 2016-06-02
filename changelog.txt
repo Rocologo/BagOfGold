@@ -1,3 +1,8 @@
+V3.1.4
+- Open initial connections was done twice
+- Found two missing closing commands in ResultSet's  
+V3.1.3
+- Fixed wrong color code format in config.yml (DropMoneyOnGroupItemColor)
 V3.1-2
 - Fixes error thrown when Citizens is not installed
 - Fixes error thrown when WorldGuard is not installed 

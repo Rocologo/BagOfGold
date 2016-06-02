@@ -167,15 +167,17 @@ public class MySQLDataStore extends DatabaseDataStore {
 			}
 			mSavePlayerStats.executeBatch();
 			mSavePlayerStats.close();
-
+			
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
+			
 			for (StatStore stat : stats)
 				statement.addBatch(String.format(
 						"UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
 						stat.getType().getDBColumn(), getPlayerId(stat.getPlayer()), stat.getAmount()));
 			statement.executeBatch();
 			statement.close();
+
 			mConnection.commit();
 			MobHunting.debug("Saved.");
 			// }
@@ -254,6 +256,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		setupTrigger(connection);
 
 		create.close();
+		
 		connection.commit();
 
 		performUUIDMigrate(connection);
@@ -318,6 +321,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	private void performUUIDMigrate(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
+		
 		try {
 			ResultSet rs = statement.executeQuery("SELECT UUID from `mh_Players` LIMIT 0");
 			rs.close();
@@ -339,6 +343,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		UUIDHelper.initialize();
 
 		PreparedStatement insert = connection.prepareStatement("update `mh_Players` set `UUID`=? where `NAME`=?");
+		
 		StringBuilder failString = new StringBuilder();
 		int failCount = 0;
 		while (rs.next()) {
@@ -382,6 +387,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	private void performAddNewMobs(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
+		
 		try {
 			ResultSet rs = statement.executeQuery("SELECT Bat_kill from `mh_Daily` LIMIT 0");
 			rs.close();
@@ -754,6 +760,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		setupTrigger(connection);
 
 		statement.close();
+		
 		connection.commit();
 	}
 

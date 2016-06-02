@@ -9,11 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
 import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
-import one.lindegaard.MobHunting.storage.MySQLDataStore;
-import one.lindegaard.MobHunting.storage.SQLiteDataStore;
 
 public class DatabaseCommand implements ICommand, Listener {
 
@@ -22,23 +18,6 @@ public class DatabaseCommand implements ICommand, Listener {
 	// private DataStoreManager mStoreManager;
 
 	public DatabaseCommand() {
-		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql"))
-			mStore = new MySQLDataStore();
-		else
-			mStore = new SQLiteDataStore();
-
-		try {
-			mStore.initialize();
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-
-			try {
-				mStore.shutdown();
-			} catch (DataStoreException e1) {
-				e1.printStackTrace();
-			}
-		}
-		// mStoreManager = new DataStoreManager(mStore);
 	}
 
 	@Override

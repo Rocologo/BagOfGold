@@ -34,6 +34,7 @@ public class DataStoreManager {
 	private boolean mExit = false;
 
 	// Accessed only from store thread
+	@SuppressWarnings("unused")
 	private StoreThread mStoreThread;
 
 	// Accessed only from retrieve thread
@@ -387,7 +388,7 @@ public class DataStoreManager {
 
 						result = task.storeTask.run(mStore);
 
-						if (task.callback != null)
+						if (task.callback != null && !mExit)
 							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
 									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
 					} catch (DataStoreException e) {

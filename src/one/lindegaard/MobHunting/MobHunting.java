@@ -232,8 +232,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
 			cmd.registerCommand(new NpcCommand());
 		}
+		
 		cmd.registerCommand(new DatabaseCommand());
-
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
@@ -247,7 +247,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 				mPlayerSettingsManager.putPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
 			}
 		}
-
 		if (!mConfig.disablePlayerBounties) {
 			mBountyManager = new BountyManager(this);
 			if (!mConfig.disablePlayerBounties) {
@@ -1014,7 +1013,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					mBountyManager.getAllBounties().size());
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
-			if (mBountyManager.hasBounties(worldGroupName, wantedPlayer)) {
+			if (BountyManager.hasBounties(worldGroupName, wantedPlayer)) {
 				debug("There is a bounty on %s");
 				Set<Bounty> bounties = mBountyManager.getBounties(worldGroupName, wantedPlayer);
 				for (Bounty b : bounties) {
@@ -1328,5 +1327,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	// }
 
 	// ************************************************************************************
+	
+	public static int openConnections=0;
 
 }
