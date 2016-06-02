@@ -1,3 +1,9 @@
+V3.1-2
+- Fixes error thrown when Citizens is not installed
+- Fixes error thrown when WorldGuard is not installed 
+V3.1.1
+- Fixes error causing the cpu usage to go 100%
+- Fixes error in RandomBounty
 V3.1.0
 - Added setting in config.yml to set the item color text when using DropMoneyOnGroup
 - Fixed freeze/crash server when stopping or restarting server

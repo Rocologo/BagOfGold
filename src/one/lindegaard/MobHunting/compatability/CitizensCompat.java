@@ -162,7 +162,7 @@ public class CitizensCompat implements Listener {
 	}
 
 	public static boolean isCitizensSupported() {
-		if (citizensAPI != null && CitizensAPI.hasImplementation())
+		if (supported && citizensAPI != null && CitizensAPI.hasImplementation())
 			return supported;
 		else
 			return false;

@@ -725,11 +725,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					}
 				}
 			}
-		} else {
-			debug("WorldGuard is not present(%s) or disabled in Config.yml(%s)",
-					!CompatibilityManager.isPluginLoaded(WorldGuardCompat.class),
-					WorldGuardCompat.isDisabledInConfig());
-		}
+		} 
 
 		// Player died while playing a Minigame: MobArena, PVPArena,
 		// BattleArena, SUiside,PVP
