@@ -138,8 +138,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
 
-		if (mConfig.loadConfig())
-			mConfig.saveConfig();
+		if (mConfig.loadConfig()){
+			if (mConfig.dropMoneyOnGroundTextColor.equals("&0"))
+				mConfig.dropMoneyOnGroundTextColor="WHITE";
+			mConfig.saveConfig();}
 		else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
 
