@@ -1139,8 +1139,8 @@ public class ConfigManager extends AutoConfig {
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
-	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item." )
-	public String dropMoneyOnGroundTextColor = "&0";
+	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE" )
+	public String dropMoneyOnGroundTextColor = "WHITE";
 
 
 	@Override
