@@ -1,3 +1,6 @@
+V3.1.5
+- Fixed NullPointerException in MasterMobHunterSign.java:318
+- Added extra user and debug information in the Anti - MobGrinding code. 
 V3.1.4
 - Open initial connections was done twice
 - Found two missing closing commands in ResultSet's  

@@ -211,8 +211,10 @@ public class AreaManager implements Listener {
 	public Area getGrindingArea(Location location) {
 		for (Area area : getKnownGrindingSpots()) {
 			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
+				if (area.center.distance(location) < area.range){
+					MobHunting.debug("Found a grinding area = %s", area.center);
 					return area;
+				}
 			}
 		}
 

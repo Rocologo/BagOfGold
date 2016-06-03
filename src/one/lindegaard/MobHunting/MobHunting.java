@@ -924,6 +924,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 		HuntData data = mMobHuntingManager.getHuntData(killer);
+		if (data==null)
+			MobHunting.debug("data is null");
+		else
+			MobHunting.debug("data is NOT null");
 
 		// Killstreak
 		Misc.handleKillstreak(killer);
@@ -936,18 +940,25 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (detectedGrindingArea == null)
 			detectedGrindingArea = data.getGrindingArea(loc);
 		// Slimes are except from grinding due to their splitting nature
-		if (!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable
-				&& !killed.hasMetadata("MH:reinforcement") && !mAreaManager.isWhitelisted(killed.getLocation())) {
+		if (!(event.getEntity() instanceof Slime) 
+				&& mConfig.penaltyGrindingEnable
+				&& !killed.hasMetadata("MH:reinforcement") 
+				&& !mAreaManager.isWhitelisted(killed.getLocation())
+				) {
+			MobHunting.debug("Checking if player is grinding mob in the same region within a range of %s blocks", data.getcDampnerRange());
+			MobHunting.debug("DampendKills=%s ", data.getDampenedKills());
+
 			if (detectedGrindingArea != null) {
 				data.lastKillAreaCenter = null;
 				data.setDampenedKills(detectedGrindingArea.count++);
-
 				if (data.getDampenedKills() == 20)
 					mAreaManager.registerKnownGrindingSpot(detectedGrindingArea);
 			} else {
 				if (data.lastKillAreaCenter != null) {
 					if (loc.getWorld().equals(data.lastKillAreaCenter.getWorld())) {
 						if (loc.distance(data.lastKillAreaCenter) < data.getcDampnerRange()) {
+							MobHunting.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
+							playerActionBarMessage(killer, ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
 							data.setDampenedKills(data.getDampenedKills() + 1);
 							if (data.getDampenedKills() == 10)
 								data.recordGrindingArea();
@@ -971,7 +982,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				data.setKillStreak(0);
 			}
 		}
-
+		
 		// Calculate basic the reward
 		double cash = mConfig.getBaseKillPrize(killed);
 

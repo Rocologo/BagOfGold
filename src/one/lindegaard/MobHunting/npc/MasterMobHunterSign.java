@@ -315,10 +315,12 @@ public class MasterMobHunterSign implements Listener {
 			NPC npc = CitizensAPI.getNPCRegistry().getById(id);
 			if (npc != null) {
 				if (MasterMobHunterManager.isMasterMobHunter(npc)) {
-					MasterMobHunterManager.getMasterMobHunterManager().get(npc).update();
+					MasterMobHunterManager.getMasterMobHunterManager().get(npc.getId()).update();
 					MasterMobHunter mmh = new MasterMobHunter(npc);
 					mmh.putLocation(event.getBlock().getLocation());
 					MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
+					//mmh.update();
+					//MasterMobHunterManager.getMasterMobHunterManager().get(npc).update();
 					p.sendMessage(p.getName() + " placed a MobHunting Sign (ID=" + id + ")");
 					event.setLine(1, (mmh.getRank() + "." + npc.getName()));
 					event.setLine(2, (mmh.getPeriod().translateNameFriendly()));

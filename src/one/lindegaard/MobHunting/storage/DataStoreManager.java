@@ -387,6 +387,9 @@ public class DataStoreManager {
 						Object result;
 
 						result = task.storeTask.run(mStore);
+						
+						if (mExit)
+							MobHunting.debug("mQueue=%s mwaiting=%s", mQueue.size(), mWaiting.size());
 
 						if (task.callback != null && !mExit)
 							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
