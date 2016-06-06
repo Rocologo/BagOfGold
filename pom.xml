@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.1.5</version>
+	<version>3.1.6</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -267,14 +267,10 @@
 
 		<!-- LibsDisguises -->
 		<repository>
-			<id>libsdisguises-repo-old</id>
+			<id>libsdisguises-repo</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
 		</repository>
-		<repository>
-			<id>libsdisguises-repo-github</id>
-			<url>https://github.com/libraryaddict/LibsDisguises.git</url>
-		</repository>
-
+		
 		<!-- Multiverse -->
 		<repository>
 			<id>onarandombox</id>
@@ -408,7 +404,7 @@
 			<groupId>org.mcstats.bukkit</groupId>
 			<artifactId>metrics</artifactId>
 			<version>${metrics.version}</version>
-			<!-- <scope>compile</scope> -->
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- MyPet -->

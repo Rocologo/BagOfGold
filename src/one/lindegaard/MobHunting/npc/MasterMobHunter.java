@@ -178,9 +178,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 					}
 				}
 			}
-		} else {
-			MobHunting.debug("No Signs created for npcId=%s", npc.getId());
-		}
+		} 
 	}
 
 	// ***************************************************************

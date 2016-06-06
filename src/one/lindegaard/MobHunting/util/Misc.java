@@ -103,4 +103,5 @@ public class Misc {
 		} else
 			return new Location(null, x, y, z, yaw, pitch);
 	}
+	
 }

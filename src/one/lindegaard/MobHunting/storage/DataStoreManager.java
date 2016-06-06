@@ -228,8 +228,8 @@ public class DataStoreManager {
 		mTaskThread.setWriteOnlyMode(true);
 
 		try {
-			// MobHunting.debug("Interupting mStoreThread");
-			// mStoreThread.interrupt();
+			MobHunting.debug("Interupting mStoreThread");
+			mStoreThread.interrupt();
 			mTaskThread.waitForEmptyQueue();
 			// MobHunting.debug("Interupting mStoreThread(2)");
 			// mStoreThread.interrupt();
@@ -275,6 +275,7 @@ public class DataStoreManager {
 					Thread.sleep(mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {
+				mTaskThread.addStoreTask(new StoreTask(mWaiting));
 				MobHunting.debug("MH StoreThread was interupted (Queue=%s)", mWaiting.size());
 			}
 		}
@@ -370,17 +371,19 @@ public class DataStoreManager {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-					} // else { DONT ENABLE THIS CAUSES 100 CPU USAGE
+						//Thread.sleep(5000L);
+						//MobHunting.debug("Checking queue....");
+					}  //else { //DONT ENABLE THIS CAUSES 100 CPU USAGE
 
 					Task task = mQueue.take();
 
-					if (mWritesOnly && task.storeTask.readOnly()) {
-						// TODO: remove this.
-						MobHunting.debug("DataStoreManager: mQueue.size=%s, mWritesOnly=%s, task.storeTask.readOnly=%s",
-								mQueue.size(), mWritesOnly, task.storeTask.readOnly());
-						continue;
+					//if (mWritesOnly && task.storeTask.readOnly()) {
+					//	// TODO: remove this.
+					//	MobHunting.debug("DataStoreManager: mQueue.size=%s, mWritesOnly=%s, task.storeTask.readOnly=%s",
+					//			mQueue.size(), mWritesOnly, task.storeTask.readOnly());
+					//	continue;
 
-					}
+					//}
 
 					try {
 

@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting;
+	package one.lindegaard.MobHunting;
 
 import java.io.IOException;
 
