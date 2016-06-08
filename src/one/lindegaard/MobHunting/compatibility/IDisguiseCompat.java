@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,7 +27,7 @@ public class IDisguiseCompat implements Listener {
 	public IDisguiseCompat() {
 		if (isDisabledInConfig()) {
 			MobHunting.getInstance().getLogger().info(
-					"Compatability with iDisguise is disabled in config.yml");
+					"Compatibility with iDisguise is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("iDisguise");
@@ -37,7 +37,7 @@ public class IDisguiseCompat implements Listener {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			MobHunting.getInstance().getLogger().info(
-					"Enabling compatability with iDisguise ("
+					"Enabling compatibility with iDisguise ("
 							+ getiDisguise().getDescription().getVersion()
 							+ ")");
 			supported = true;

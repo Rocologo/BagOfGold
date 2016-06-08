@@ -8,8 +8,8 @@ import java.util.Random;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
-import one.lindegaard.MobHunting.compatability.CitizensCompat;
-import one.lindegaard.MobHunting.compatability.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.util.AutoConfig;
 import one.lindegaard.MobHunting.util.ConfigField;
 
@@ -54,7 +54,7 @@ import org.bukkit.metadata.MetadataValue;
 
 public class ConfigManager extends AutoConfig {
 	private static MobHunting instance;
-	
+
 	public ConfigManager(File file) {
 		super(file);
 		instance = MobHunting.getInstance();
@@ -164,11 +164,21 @@ public class ConfigManager extends AutoConfig {
 		setCategoryComment("bounties",
 				"########################################################################" + "\nBounty settings"
 						+ "\n########################################################################"
-						+ "\nHere you can chnage the behavior of the Bounty Command or you can disable"
+						+ "\nHere you can change the behavior of the Bounty Command or you can disable"
 						+ "\nthe command completely.");
+		setCategoryComment("mobstacker",
+				"########################################################################" + "\nMobStacker settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of Mobstacker Integration, or you can disable"
+						+ "\nintegration completely.");
+		setCategoryComment("grinding",
+				"########################################################################" + "\nGrinding detection settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of the grinding detection.");
+
 		setCategoryComment("plugins",
 				"########################################################################"
-						+ "\nIntegration to otherplugins."
+						+ "\nIntegration to other plugins."
 						+ "\n########################################################################");
 
 		setCategoryComment("database",
@@ -869,10 +879,24 @@ public class ConfigManager extends AutoConfig {
 	public int assistTimeout = 4;
 
 	// #####################################################################################
+	// Grinding detection
+	// #####################################################################################
+	@ConfigField(name = "enable-grinding-penalty", category = "grinding", comment = "Grinding detection."
+			+ "\nEnabling this prevents a player from earning too much money from using a mob grinder"
+			+ "\nIf you enable kill_debug in config.yml you will get debug information when grinding appears.")
+	public boolean penaltyGrindingEnable = true;
+	@ConfigField(name = "grinding-range-detection", category = "grinding", comment = "For each kill MobHunting check number of kills within this number of blocks."
+			+ "\nIf number of kills exceeds 10, the reward will decrese with 10% until 20 kills with"
+			+ "\nthe range, whereafter the reward will be zero.")
+	public int grindingRangeDetection = 15;
+	@ConfigField(name = "grinding-stacked-mobs-allowed", category = "grinding", comment = "Killing stacked mobs (from the plugin MobStacker) "
+			+ "\nis by nature detected as grinding and by default allowed. If you want to the the grinding detection to detect"
+			+ "\nkillings of stacked to be detected as gring, you must set grinding-stacked-mobs-allowed to false.")
+	public boolean isGrindingStackedMobsAllowed = true;
+
+	// #####################################################################################
 	// Penalties
 	// #####################################################################################
-	@ConfigField(name = "enable-grinding-penalty", category = "penalty", comment = "Enabling this prevents a player from earning too much money from using a mob grinder")
-	public boolean penaltyGrindingEnable = true;
 	@ConfigField(name = "flyingPenalty", category = "penalty", comment = "If a player flies at any point in a fight, this penalty will be applied")
 	public double penaltyFlying = 0.5;
 
@@ -966,8 +990,10 @@ public class ConfigManager extends AutoConfig {
 	public double coverBlownMultiplier = 1.2;
 
 	// #####################################################################################
-	// MasterMobHunter Settings
+	// NPC / Citizens / MasterMobHunter Settings
 	// #####################################################################################
+	@ConfigField(name = "disable-integration-citizens", category = "npc", comment = "Disable integration with Citizens2")
+	public boolean disableIntegrationCitizens = false;
 	@ConfigField(name = "masterMobHunter_check_every", category = "npc", comment = "Set the number of seconds between each check. Recommended setting is"
 			+ "\nmasterMobHunter_check_every: 300 ~ to update all MasterMobHunters every 5th minute.")
 	public int masterMobHuntercheckEvery = 300;
@@ -1007,6 +1033,15 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	// #####################################################################################
+	// MobStacker Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-mobstacker", category = "mobstacker", comment = "Disable integration with MobStacker.")
+	public boolean disableIntegrationMobStacker = false;
+
+	@ConfigField(name = "get-reward-from-stacked-mobs", category = "mobstacker", comment = "Set to true if you want StackedMobs to pay a reward.")
+	public boolean getRewardFromStackedMobs = false;
+
+	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
 	@ConfigField(name = "disable-integration-mobarena", category = "plugins", comment = "Disable integration with MobArena")
@@ -1020,9 +1055,6 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "pvparena-get-rewards", category = "plugins", comment = "Set to true if you want the players to get rewards while playing pvpArena.")
 	public boolean pvparenaGetRewards = false;
-
-	@ConfigField(name = "disable-integration-citizens", category = "plugins", comment = "Disable integration with Citizens2")
-	public boolean disableIntegrationCitizens = false;
 
 	@ConfigField(name = "disable-integration-mythicmobs", category = "plugins", comment = "Disable integration with MythicMobs")
 	public boolean disableIntegrationMythicmobs = false;
@@ -1139,9 +1171,8 @@ public class ConfigManager extends AutoConfig {
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
-	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE" )
+	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE")
 	public String dropMoneyOnGroundTextColor = "WHITE";
-
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {

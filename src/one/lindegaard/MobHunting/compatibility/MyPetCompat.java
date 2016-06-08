@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,12 +19,12 @@ public class MyPetCompat implements Listener {
 
 	public MyPetCompat() {
 		if (MobHunting.getConfigManager().disableIntegrationMyPet) {
-			MobHunting.getInstance().getLogger().info("Compatability with MyPet is disabled in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with MyPet is disabled in config.yml");
 		} else {
 			mPlugin = (MyPetPlugin) Bukkit.getPluginManager().getPlugin("MyPet");
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 			MobHunting.getInstance().getLogger()
-					.info("Enabling compatability with MyPet (" + getMyPetPlugin().getDescription().getVersion() + ")");
+					.info("Enabling compatibility with MyPet (" + getMyPetPlugin().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

@@ -29,30 +29,31 @@ import one.lindegaard.MobHunting.commands.TopCommand;
 import one.lindegaard.MobHunting.commands.UpdateCommand;
 import one.lindegaard.MobHunting.commands.VersionCommand;
 import one.lindegaard.MobHunting.commands.WhitelistAreaCommand;
-import one.lindegaard.MobHunting.compatability.ActionBarCompat;
-import one.lindegaard.MobHunting.compatability.BarAPICompat;
-import one.lindegaard.MobHunting.compatability.BattleArenaCompat;
-import one.lindegaard.MobHunting.compatability.BattleArenaHelper;
-import one.lindegaard.MobHunting.compatability.BossBarAPICompat;
-import one.lindegaard.MobHunting.compatability.CitizensCompat;
-import one.lindegaard.MobHunting.compatability.CompatibilityManager;
-import one.lindegaard.MobHunting.compatability.DisguiseCraftCompat;
-import one.lindegaard.MobHunting.compatability.DisguisesHelper;
-import one.lindegaard.MobHunting.compatability.EssentialsCompat;
-import one.lindegaard.MobHunting.compatability.IDisguiseCompat;
-import one.lindegaard.MobHunting.compatability.LibsDisguisesCompat;
-import one.lindegaard.MobHunting.compatability.MinigamesCompat;
-import one.lindegaard.MobHunting.compatability.MobArenaCompat;
-import one.lindegaard.MobHunting.compatability.MobArenaHelper;
-import one.lindegaard.MobHunting.compatability.MyPetCompat;
-import one.lindegaard.MobHunting.compatability.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatability.PVPArenaCompat;
-import one.lindegaard.MobHunting.compatability.PVPArenaHelper;
-import one.lindegaard.MobHunting.compatability.TitleAPICompat;
-import one.lindegaard.MobHunting.compatability.TitleManagerCompat;
-import one.lindegaard.MobHunting.compatability.VanishNoPacketCompat;
-import one.lindegaard.MobHunting.compatability.WorldEditCompat;
-import one.lindegaard.MobHunting.compatability.WorldGuardCompat;
+import one.lindegaard.MobHunting.compatibility.ActionBarCompat;
+import one.lindegaard.MobHunting.compatibility.BarAPICompat;
+import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
+import one.lindegaard.MobHunting.compatibility.BattleArenaHelper;
+import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
+import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
+import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
+import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
+import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
+import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
+import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
+import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
+import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
+import one.lindegaard.MobHunting.compatibility.MyPetCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.PVPArenaHelper;
+import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
+import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
+import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
+import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
+import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.modifier.*;
@@ -91,6 +92,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.kiwifisher.mobstacker.MobStacker;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -138,11 +140,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
 
-		if (mConfig.loadConfig()){
+		if (mConfig.loadConfig()) {
 			if (mConfig.dropMoneyOnGroundTextColor.equals("&0"))
-				mConfig.dropMoneyOnGroundTextColor="WHITE";
-			mConfig.saveConfig();}
-		else
+				mConfig.dropMoneyOnGroundTextColor = "WHITE";
+			mConfig.saveConfig();
+		} else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
 
 		mMobHuntingManager = new MobHuntingManager(this);
@@ -208,6 +210,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerPlugin(BarAPICompat.class, "BarAPI");
 		registerPlugin(TitleManagerCompat.class, "TitleManager");
 		registerPlugin(ActionBarCompat.class, "ActionBar");
+		registerPlugin(MobStackerCompat.class, "MobStacker");
 
 		// register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
@@ -232,7 +235,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
 			cmd.registerCommand(new NpcCommand());
 		}
-		
+
 		cmd.registerCommand(new DatabaseCommand());
 		registerModifiers();
 
@@ -333,6 +336,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			mModifiers.add(new MountedBonus());
 		} catch (ClassNotFoundException e) {
 		}
+		mModifiers.add(new StackedMobBonus());
 	}
 
 	// ************************************************************************************
@@ -726,7 +730,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					}
 				}
 			}
-		} 
+		}
 
 		// Player died while playing a Minigame: MobArena, PVPArena,
 		// BattleArena, SUiside,PVP
@@ -763,12 +767,31 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// Player killed a MythicMob
-		if (MythicMobsCompat.isSupported())
-
-		{
+		if (MythicMobsCompat.isSupported()) {
 			if (killed.hasMetadata("MH:MythicMob"))
 				if (killer instanceof Player)
 					debug("%s killed a MythicMob", killer.getName());
+		}
+
+		// Player killed a Stacked Mob
+		if (MobStackerCompat.isSupported()) {
+			if (MobStackerCompat.isStackedMob(killed)) {
+				if (mConfig.getRewardFromStackedMobs) {
+					if (killer instanceof Player) {
+						debug("%s killed a stacked mob (%s) No=%s", ((Player) killer).getName(), killed.getType(),
+								MobStackerCompat.getStackSize(killed));
+						if (MobStackerCompat.killHoleStackOnDeath(killed) && MobStackerCompat.multiplyLoot()) {
+							debug("Pay reward for no x mob");
+						} else {
+							// pay reward for one mob, if config allows
+							debug("Pay reward for one mob");
+						}
+					}
+				} else {
+					debug("KillBlocked: Rewards from StackedMobs is disabled in Config.yml");
+					return;
+				}
+			} 
 		}
 
 		// Player killed a Citizens2 NPC
@@ -924,7 +947,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 		HuntData data = mMobHuntingManager.getHuntData(killer);
-		if (data==null)
+		if (data == null)
 			MobHunting.debug("data is null");
 		else
 			MobHunting.debug("data is NOT null");
@@ -940,12 +963,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (detectedGrindingArea == null)
 			detectedGrindingArea = data.getGrindingArea(loc);
 		// Slimes are except from grinding due to their splitting nature
-		if (!(event.getEntity() instanceof Slime) 
-				&& mConfig.penaltyGrindingEnable
-				&& !killed.hasMetadata("MH:reinforcement") 
-				&& !mAreaManager.isWhitelisted(killed.getLocation())
-				) {
-			MobHunting.debug("Checking if player is grinding mob in the same region within a range of %s blocks", data.getcDampnerRange());
+		if (!(event.getEntity() instanceof Slime) && mConfig.penaltyGrindingEnable
+				&& !killed.hasMetadata("MH:reinforcement") && !mAreaManager.isWhitelisted(killed.getLocation())) {
+			MobHunting.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
+					data.getcDampnerRange());
 			MobHunting.debug("DampendKills=%s ", data.getDampenedKills());
 
 			if (detectedGrindingArea != null) {
@@ -957,11 +978,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (data.lastKillAreaCenter != null) {
 					if (loc.getWorld().equals(data.lastKillAreaCenter.getWorld())) {
 						if (loc.distance(data.lastKillAreaCenter) < data.getcDampnerRange()) {
-							MobHunting.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
-							playerActionBarMessage(killer, ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
-							data.setDampenedKills(data.getDampenedKills() + 1);
-							if (data.getDampenedKills() == 10)
-								data.recordGrindingArea();
+							if (MobStackerCompat.isSupported() && MobStackerCompat.isStackedMob(killed)
+									&& !MobStackerCompat.isGrindingStackedMobsAllowed()) {
+								MobHunting.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
+								learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
+								playerActionBarMessage(killer,
+										ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
+								data.setDampenedKills(data.getDampenedKills() + 1);
+								if (data.getDampenedKills() == 10) {
+									data.recordGrindingArea();
+								}
+							}
 						} else {
 							data.lastKillAreaCenter = loc.clone();
 							data.setDampenedKills(0);
@@ -976,13 +1003,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (data.getDampenedKills() > 14) {
+			if (data.getDampenedKills() > 10 + 4) {
 				if (data.getKillstreakLevel() != 0)
 					playerActionBarMessage(killer, ChatColor.RED + Messages.getString("mobhunting.killstreak.lost"));
 				data.setKillStreak(0);
 			}
 		}
-		
+
 		// Calculate basic the reward
 		double cash = mConfig.getBaseKillPrize(killed);
 
@@ -1338,7 +1365,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	// }
 
 	// ************************************************************************************
-	
-	public static int openConnections=0;
+
+	public static int openConnections = 0;
 
 }

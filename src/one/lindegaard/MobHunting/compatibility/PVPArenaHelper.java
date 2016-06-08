@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import java.util.ArrayList;
 import java.util.List;

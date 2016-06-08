@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.1.6</version>
+	<version>3.1.7</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -314,6 +314,12 @@
 			<id>puha-repo</id>
 			<url>http://repo.puha.io/nexus/content/repositories/releases/</url>
 		</repository>
+		
+		<!-- MobStacker -->
+		<repository>
+			<id>TitleAPI-github</id>
+			<url>https://github.com/KiwiFisher/MobStacker.git</url>
+		</repository>
 
 
 	</repositories>
@@ -546,6 +552,15 @@
 			<groupId>io.puharesource.mc</groupId>
 			<artifactId>TitleManager</artifactId>
 			<version>${titlemanager.version}</version>
+		</dependency>
+		
+		<!-- MobStacker -->
+		<dependency>
+			<groupId>com.kiwifisher.mobstacker</groupId>
+			<artifactId>MobStacker</artifactId>
+			<version>${mobstacker.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/MobStacker_v2.0.0.jar</systemPath>
 		</dependency>
 
 	</dependencies>

@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

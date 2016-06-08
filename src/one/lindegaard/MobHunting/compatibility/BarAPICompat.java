@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,12 +14,12 @@ public class BarAPICompat {
 
 	public BarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with BarAPI in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with BarAPI in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
 
 			MobHunting.getInstance().getLogger()
-					.info("Enabling compatability with BarAPI (" + getBarAPI().getDescription().getVersion() + ")");
+					.info("Enabling compatibility with BarAPI (" + getBarAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

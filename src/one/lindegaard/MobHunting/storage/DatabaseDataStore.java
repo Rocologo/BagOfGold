@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -19,7 +20,7 @@ import one.lindegaard.MobHunting.bounty.BountyStatus;
 
 public abstract class DatabaseDataStore implements IDataStore {
 	/**
-	 * Connection to the DatabasePreparedConnectionTypePreparedConnectionType
+	 * Connection to the Database
 	 */
 	protected Connection mConnection;
 
@@ -215,7 +216,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			MobHunting.debug("Read Playersettings from Database: %s", ps.toString());
 			return ps;
 		}
-		result.close();
 		throw new UserNotFoundException("User " + player.toString() + " is not present in database");
 	}
 
@@ -419,7 +419,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerUUID.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
-			set.close();
 			mGetPlayerUUID.close();
 			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
 		} catch (SQLException e) {
@@ -449,7 +448,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mGetPlayerByPlayerId.close();
 				return Bukkit.getOfflinePlayer(uid);
 			}
-			set.close();
 			mGetPlayerByPlayerId.close();
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {

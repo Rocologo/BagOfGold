@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.compatability.MobArenaCompat;
-import one.lindegaard.MobHunting.compatability.MobArenaHelper;
+import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
+import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
 
 public class WolfKillAchievement implements ProgressAchievement, Listener {
 

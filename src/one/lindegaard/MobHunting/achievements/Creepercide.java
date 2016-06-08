@@ -14,8 +14,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.compatability.MobArenaCompat;
-import one.lindegaard.MobHunting.compatability.MobArenaHelper;
+import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
+import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
 
 public class Creepercide implements Achievement, Listener {
 

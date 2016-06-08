@@ -1,34 +1,36 @@
-	package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting;
 
 import java.io.IOException;
 
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
-import one.lindegaard.MobHunting.compatability.ActionBarCompat;
-import one.lindegaard.MobHunting.compatability.BarAPICompat;
-import one.lindegaard.MobHunting.compatability.BattleArenaCompat;
-import one.lindegaard.MobHunting.compatability.BossBarAPICompat;
-import one.lindegaard.MobHunting.compatability.CitizensCompat;
-import one.lindegaard.MobHunting.compatability.DisguiseCraftCompat;
-import one.lindegaard.MobHunting.compatability.EssentialsCompat;
-import one.lindegaard.MobHunting.compatability.IDisguiseCompat;
-import one.lindegaard.MobHunting.compatability.LibsDisguisesCompat;
-import one.lindegaard.MobHunting.compatability.MobArenaCompat;
-import one.lindegaard.MobHunting.compatability.MyPetCompat;
-import one.lindegaard.MobHunting.compatability.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatability.PVPArenaCompat;
-import one.lindegaard.MobHunting.compatability.TitleAPICompat;
-import one.lindegaard.MobHunting.compatability.TitleManagerCompat;
-import one.lindegaard.MobHunting.compatability.VanishNoPacketCompat;
-import one.lindegaard.MobHunting.compatability.WorldEditCompat;
-import one.lindegaard.MobHunting.compatability.WorldGuardCompat;
+import one.lindegaard.MobHunting.compatibility.ActionBarCompat;
+import one.lindegaard.MobHunting.compatibility.BarAPICompat;
+import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
+import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
+import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
+import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
+import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
+import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
+import one.lindegaard.MobHunting.compatibility.MyPetCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
+import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
+import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
+import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
+import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
+import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 
 public class MetricsManager {
 
 	// Metrics
 	private Metrics metrics;
-	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph;
+	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph, usageGraph;
 
 	public MetricsManager() {
 	}
@@ -179,6 +181,13 @@ public class MetricsManager {
 					return VanishNoPacketCompat.isSupported() ? 1 : 0;
 				}
 			});
+			integrationsGraph.addPlotter(new Metrics.Plotter("MobStacker") {
+				@Override
+				public int getValue() {
+					return MobStackerCompat.isSupported() ? 1 : 0;
+				}
+			});
+
 			metrics.addGraph(integrationsGraph);
 
 			titleManagerGraph = metrics.createGraph("TitleManagers");
@@ -214,7 +223,7 @@ public class MetricsManager {
 			});
 			metrics.addGraph(titleManagerGraph);
 
-			automaticUpdatesGraph = metrics.createGraph("Installations with automatic update");
+			automaticUpdatesGraph = metrics.createGraph("# of installations with automatic update");
 			automaticUpdatesGraph.addPlotter(new Metrics.Plotter("Amount") {
 				@Override
 				public int getValue() {
@@ -222,6 +231,27 @@ public class MetricsManager {
 				}
 			});
 			metrics.addGraph(automaticUpdatesGraph);
+
+			usageGraph = metrics.createGraph("Usage");
+			usageGraph.addPlotter(new Metrics.Plotter("# of Leaderboards") {
+				@Override
+				public int getValue() {
+					return MobHunting.getLeaderboardManager().getWorldLeaderBoards().size();
+				}
+			});
+			usageGraph.addPlotter(new Metrics.Plotter("# of MasterMobHunters") {
+				@Override
+				public int getValue() {
+					return MasterMobHunterManager.getMasterMobHunterManager().size();
+				}
+			});
+			usageGraph.addPlotter(new Metrics.Plotter("# of Bounties") {
+				@Override
+				public int getValue() {
+					return MobHunting.getBountyManager().getAllBounties().size();
+				}
+			});
+			metrics.addGraph(usageGraph);
 
 			metrics.enable();
 			metrics.start();

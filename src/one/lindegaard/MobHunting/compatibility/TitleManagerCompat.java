@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,11 +16,11 @@ public class TitleManagerCompat {
 
 	public TitleManagerCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with TitleManager in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with TitleManager in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TitleManager");
 
-			MobHunting.getInstance().getLogger().info("Enabling compatability with TitleManager ("
+			MobHunting.getInstance().getLogger().info("Enabling compatibility with TitleManager ("
 					+ getTtitleManager().getDescription().getVersion() + ")");
 			supported = true;
 		}

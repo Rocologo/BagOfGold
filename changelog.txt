@@ -1,5 +1,12 @@
+V3.1.7
+- Refactored one.lindegaard.MobHunting.compatability to Refactored one.lindegaard.MobHunting.compatibility
+- Basic compatibility for MobStacker added. 
+- Changed number format in BountyManager
+- Added Usage graph to MetricsManager
+- Added Basic settings for grinding detection
+- Added Grinding detection to learning and debug mode.
 V3.1.6
-- Fixed compability with CraftBukkit
+- Fixed compatibility with CraftBukkit
 - Change Store queue system
 V3.1.5
 - Fixed NullPointerException in MasterMobHunterSign.java:318

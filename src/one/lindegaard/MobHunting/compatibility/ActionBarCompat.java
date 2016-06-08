@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,12 +15,12 @@ public class ActionBarCompat {
 	
 	public ActionBarCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with ActionBar in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with ActionBar in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("ActionBar");
 
 			MobHunting.getInstance().getLogger()
-					.info("Enabling compatability with ActionBar (" + getActionBar().getDescription().getVersion() + ")");
+					.info("Enabling compatibility with ActionBar (" + getActionBar().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

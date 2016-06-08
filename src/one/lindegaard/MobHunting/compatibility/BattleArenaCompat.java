@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -17,14 +17,14 @@ public class BattleArenaCompat implements Listener {
 
 	public BattleArenaCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with BattleArena is disabled in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with BattleArena is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BattleArena");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			MobHunting.getInstance().getLogger().info(
-					"Enabling compatability with BattleArena (" + getBattleArena().getDescription().getVersion() + ")");
+					"Enabling compatibility with BattleArena (" + getBattleArena().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

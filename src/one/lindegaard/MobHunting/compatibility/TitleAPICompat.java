@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,12 +14,12 @@ public class TitleAPICompat {
 
 	public TitleAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with TitelAPI in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with TitelAPI in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TitleAPI");
 
 			MobHunting.getInstance().getLogger()
-					.info("Enabling compatability with TitleAPI (" + getTitleAPI().getDescription().getVersion() + ")");
+					.info("Enabling compatibility with TitleAPI (" + getTitleAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

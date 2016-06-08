@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class DisguiseCraftCompat implements Listener {
 		if (isDisabledInConfig()) {
 			MobHunting.getInstance()
 					.getLogger()
-					.info("Compatability with DisguiseCraft is disabled in config.yml");
+					.info("Compatibility with DisguiseCraft is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("DisguiseCraft");
@@ -39,7 +39,7 @@ public class DisguiseCraftCompat implements Listener {
 						MobHunting.getInstance());
 
 				MobHunting.getInstance().getLogger().info(
-						"Enabling compatability with DisguiseCraft ("
+						"Enabling compatibility with DisguiseCraft ("
 								+ getDisguiseCraft().getDescription()
 										.getVersion() + ")");
 				supported = true;

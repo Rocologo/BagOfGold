@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import one.lindegaard.MobHunting.compatability.WorldEditCompat;
+import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
 
 public class SelectionHelper {
 	private static WeakHashMap<Player, Entry<Location, Location>> mPoints = new WeakHashMap<Player, Entry<Location, Location>>();

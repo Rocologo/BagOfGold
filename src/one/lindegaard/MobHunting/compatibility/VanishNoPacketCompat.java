@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,14 +14,14 @@ public class VanishNoPacketCompat implements Listener {
 
 	public VanishNoPacketCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with VanishNoPacket is disabled in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with VanishNoPacket is disabled in config.yml");
 		} else {
 
 			mPlugin = (VanishPlugin) Bukkit.getServer().getPluginManager().getPlugin("VanishNoPacket");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			MobHunting.getInstance().getLogger().info("Enabling compatability with VanishNoPacket ("
+			MobHunting.getInstance().getLogger().info("Enabling compatibility with VanishNoPacket ("
 					+ getVanishNoPacket().getDescription().getVersion() + ")");
 			supported = true;
 		}

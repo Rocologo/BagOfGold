@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,7 +19,7 @@ public class WorldEditCompat {
 		mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 
 		MobHunting.getInstance().getLogger()
-				.info("Enabling compatability with WorldEdit (" + getWorldEdit().getDescription().getVersion() + ")");
+				.info("Enabling compatibility with WorldEdit (" + getWorldEdit().getDescription().getVersion() + ")");
 		supported = true;
 	}
 

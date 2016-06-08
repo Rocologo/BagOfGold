@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
@@ -18,11 +18,11 @@ public class PVPArenaCompat implements Listener {
 	public PVPArenaCompat() {
 		if (isDisabledInConfig()) {
 			MobHunting.getInstance().getLogger().info(
-					"Compatability with PvpArena is disabled in config.yml");
+					"Compatibility with PvpArena is disabled in config.yml");
 		} else {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 			MobHunting.getInstance().getLogger().info(
-					"Enabling PVPArena Compatability");
+					"Enabling PVPArena Compatibility");
 			supported = true;
 		}
 	}

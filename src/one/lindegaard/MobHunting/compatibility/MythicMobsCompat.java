@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,14 +39,14 @@ public class MythicMobsCompat implements Listener {
 	public MythicMobsCompat() {
 		if (isDisabledInConfig()) {
 			MobHunting.getInstance().getLogger().info(
-					"Compatability with MythicMobs is disabled in config.yml");
+					"Compatibility with MythicMobs is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			MobHunting.getInstance().getLogger().info(
-					"Enabling Compatability with MythicMobs ("
+					"Enabling Compatibility with MythicMobs ("
 							+ getMythicMobs().getDescription().getVersion()
 							+ ")");
 			// API:

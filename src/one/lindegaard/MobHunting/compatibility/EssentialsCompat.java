@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class EssentialsCompat implements Listener {
 	public EssentialsCompat() {
 		if (isDisabledInConfig()) {
 			MobHunting.getInstance().getLogger().info(
-					"Compatability with Essentials is disabled in config.yml");
+					"Compatibility with Essentials is disabled in config.yml");
 		} else {
 			mPlugin = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
 
@@ -24,7 +24,7 @@ public class EssentialsCompat implements Listener {
 
 			MobHunting.getInstance()
 					.getLogger()
-					.info("Enabling compatability with Essentials ("
+					.info("Enabling compatibility with Essentials ("
 							+ getEssentials().getDescription().getVersion() + ")");
 			supported=true;
 		}

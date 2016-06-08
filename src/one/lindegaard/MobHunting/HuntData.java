@@ -11,7 +11,7 @@ public class HuntData {
 	MobHunting instance;
 	private int killStreak = 0;
 	private int dampenedKills = 0;
-	private static double cDampnerRange = 15;
+	private static double cDampnerRange = MobHunting.getConfigManager().grindingRangeDetection;
 	public Location lastKillAreaCenter;
 	public ArrayList<Area> lastGridingAreas = new ArrayList<Area>();
 	private double reward = 0;

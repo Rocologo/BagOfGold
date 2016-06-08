@@ -18,9 +18,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.compatability.CompatibilityManager;
-import one.lindegaard.MobHunting.compatability.MyPetCompat;
-import one.lindegaard.MobHunting.compatability.WorldGuardCompat;
+import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
+import one.lindegaard.MobHunting.compatibility.MyPetCompat;
+import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 
 public class RegionCommand implements ICommand, Listener {
 

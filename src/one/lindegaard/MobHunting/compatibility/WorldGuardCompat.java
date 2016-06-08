@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class WorldGuardCompat implements Listener {
 	public WorldGuardCompat() {
 		if (isDisabledInConfig()) {
 			MobHunting.getInstance().getLogger().info(
-					"Compatability with WorldGuard is disabled in config.yml");
+					"Compatibility with WorldGuard is disabled in config.yml");
 		} else {
 			mPlugin = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin(
 					"WorldGuard");
@@ -72,7 +72,7 @@ public class WorldGuardCompat implements Listener {
 				} else {
 
 					MobHunting.getInstance().getLogger().info(
-							"Enabling compatability with WorldGuard ("
+							"Enabling compatibility with WorldGuard ("
 									+ getWorldGuardPlugin().getDescription()
 											.getVersion() + ")");
 					supported = true;

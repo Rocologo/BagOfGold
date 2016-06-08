@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,12 +13,12 @@ public class BossBarAPICompat {
 
 	public BossBarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with BossBarAPI in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with BossBarAPI in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BossBarAPI");
 
 			MobHunting.getInstance().getLogger().info(
-					"Enabling compatability with BossBarAPI (" + getBossBarAPI().getDescription().getVersion() + ")");
+					"Enabling compatibility with BossBarAPI (" + getBossBarAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +50,7 @@ public class CitizensCompat implements Listener {
 
 	private void initialize() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatability with Citizens2 is disabled in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with Citizens2 is disabled in config.yml");
 		} else {
 			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin("Citizens");
 			if (citizensAPI == null)
@@ -60,7 +60,7 @@ public class CitizensCompat implements Listener {
 			citizensAPI.getTraitFactory().registerTrait(trait);
 
 			MobHunting.getInstance().getLogger().info(
-					"Enabling compatability with Citizens (" + getCitizensPlugin().getDescription().getVersion() + ")");
+					"Enabling compatibility with Citizens (" + getCitizensPlugin().getDescription().getVersion() + ")");
 
 			supported = true;
 

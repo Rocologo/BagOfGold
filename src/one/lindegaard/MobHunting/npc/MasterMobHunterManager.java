@@ -23,7 +23,7 @@ import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.compatability.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 
 public class MasterMobHunterManager implements Listener {
 

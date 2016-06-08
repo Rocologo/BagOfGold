@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.compatability;
+package one.lindegaard.MobHunting.compatibility;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public class LibsDisguisesCompat implements Listener {
 		if (isDisabledInConfig()) {
 			MobHunting.getInstance()
 					.getLogger()
-					.info("Compatability with LibsDisguises is disabled in config.yml");
+					.info("Compatibility with LibsDisguises is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("LibsDisguises");
@@ -37,7 +37,7 @@ public class LibsDisguisesCompat implements Listener {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			MobHunting.getInstance().getLogger().info(
-					"Enabling compatability with LibsDisguises ("
+					"Enabling compatibility with LibsDisguises ("
 							+ getLibsDisguises().getDescription().getVersion()
 							+ ")");
 			supported=true;
