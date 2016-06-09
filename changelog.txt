@@ -1,3 +1,7 @@
+V3.1.8
+- Added Support for MineCraft 1.10 and the new mob Polar Bear 
+- Added debugSQL setting in config.yml - to be used by the developer.
+- Changed Queue system on Shutdown
 V3.1.7
 - Refactored one.lindegaard.MobHunting.compatability to Refactored one.lindegaard.MobHunting.compatibility
 - Basic compatibility for MobStacker added. 

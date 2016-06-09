@@ -239,6 +239,7 @@ mobs.PvpPlayer.name=PvP Player
 mobs.IronGolem.name=Iron Golem
 mobs.EnderDragon.name=EnderDragon
 mobs.Shulker.name=Shulker
+mobs.PolarBear.name=Polar Bear
 
 mobs.Bat.name=Bat
 mobs.Chicken.name=Chicken

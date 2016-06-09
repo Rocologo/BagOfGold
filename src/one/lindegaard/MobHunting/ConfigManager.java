@@ -36,6 +36,7 @@ import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.PolarBear;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Shulker;
@@ -172,7 +173,8 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere you can change the behavior of Mobstacker Integration, or you can disable"
 						+ "\nintegration completely.");
 		setCategoryComment("grinding",
-				"########################################################################" + "\nGrinding detection settings"
+				"########################################################################"
+						+ "\nGrinding detection settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of the grinding detection.");
 
@@ -416,8 +418,19 @@ public class ConfigManager extends AutoConfig {
 	private String shulkerCmdDesc = "You got a Shulker skull and an Iron ingot.";
 	@ConfigField(name = "shulker-cmd-run-frequency", category = "mobs")
 	private int shulkerFrequency = 50;
-	@ConfigField(name = "slime-cmd-run-frequency-base", category = "mobs")
+	@ConfigField(name = "shulker-cmd-run-frequency-base", category = "mobs")
 	private int shulkerFrequencyBase = 100;
+	
+	@ConfigField(name = "polar-bear", category = "mobs")
+	private String polarBearPrize = "25";
+	@ConfigField(name = "polar-bear-cmd", category = "mobs")
+	private String polarBearCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Polar_Bear\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "polar-bear-cmd-desc", category = "mobs")
+	private String polarBearCmdDesc = "You got a Polar Bear skull and an Iron ingot.";
+	@ConfigField(name = "polar-bear-cmd-run-frequency", category = "mobs")
+	private int polarBearFrequency = 50;
+	@ConfigField(name = "polar-bear-cmd-run-frequency-base", category = "mobs")
+	private int polarBearFrequencyBase = 100;
 
 	// #####################################################################################
 	// Bosses
@@ -864,6 +877,9 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "bonusmob_level1", category = "achievement_levels")
 	public int bonusMobLevel1 = 20;
+	
+	@ConfigField(name = "polar_bear_level1", category = "achievement_levels")
+	public int polarBearLevel1 = 100;
 
 	// #####################################################################################
 	// Assists
@@ -1105,6 +1121,8 @@ public class ConfigManager extends AutoConfig {
 	public String databaseHost = "localhost:3306";
 	@ConfigField(name = "database", category = "database")
 	public String databaseName = "mobhunting";
+	@ConfigField(name = "debug_sql", category = "database", comment = "sql_debug is only meant to be used by the developer. Setting this to to true can produre a a big log file!")
+	public boolean debugSQL = false;
 
 	// #####################################################################################
 	// Update Settings
@@ -1320,6 +1338,15 @@ public class ConfigManager extends AutoConfig {
 			} catch (ClassNotFoundException e) {
 				// This is not a MC 1.9 entity
 			}
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return getPrice(mob, polarBearPrize);
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
 
 		}
 		return 0;
@@ -1466,6 +1493,15 @@ public class ConfigManager extends AutoConfig {
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.9
 			}
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearCmd;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
 		}
 		return "";
 	}
@@ -1590,6 +1626,15 @@ public class ConfigManager extends AutoConfig {
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.9
 			}
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearCmdDesc;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
 		}
 		return "";
 	}
@@ -1708,6 +1753,15 @@ public class ConfigManager extends AutoConfig {
 					return shulkerFrequency;
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.9
+			}
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearFrequency;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
 			}
 		}
 		return 100;
@@ -1829,6 +1883,15 @@ public class ConfigManager extends AutoConfig {
 					return shulkerFrequencyBase;
 			} catch (ClassNotFoundException e) {
 				// This is not MC 1.9
+			}
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearFrequencyBase;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
 			}
 		}
 		return 100;

@@ -99,6 +99,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	protected abstract void setupTables(Connection connection) throws SQLException;
 
+	public static int connections = 0;
+
 	public enum PreparedConnectionType {
 		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID
 	};
@@ -126,7 +128,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mConnection.setAutoCommit(false);
 			setupTables(mConnection);
 			mGetPlayerData = new PreparedStatement[4];
-			openPreparedGetPlayerStatements();
+			// openPreparedGetPlayerStatements();
 
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -155,6 +157,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 		mGetPlayerData[1].close();
 		mGetPlayerData[2].close();
 		mGetPlayerData[3].close();
+		if (MobHunting.getConfigManager().debugSQL) {
+			DatabaseDataStore.connections = DatabaseDataStore.connections - 4;
+			if (DatabaseDataStore.connections > 10)
+				MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+		}
 	}
 
 	/**
@@ -177,7 +184,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void shutdown() throws DataStoreException {
 		try {
-			closePreparedGetPlayerStatements();
+			//closePreparedGetPlayerStatements();
 			if (mConnection != null) {
 				mConnection.commit();
 				MobHunting.debug("Closing database connection.");
@@ -204,6 +211,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	@Override
 	public PlayerSettings getPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException {
+		openPreparedGetPlayerStatements();
 		mGetPlayerData[0].setString(1, player.getUniqueId().toString());
 		ResultSet result = mGetPlayerData[0].executeQuery();
 		if (result.next()) {
@@ -214,8 +222,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				ps.setPlayerId(id);
 			result.close();
 			MobHunting.debug("Read Playersettings from Database: %s", ps.toString());
+			closePreparedGetPlayerStatements();
 			return ps;
 		}
+		closePreparedGetPlayerStatements();
 		throw new UserNotFoundException("User " + player.toString() + " is not present in database");
 	}
 
@@ -233,6 +243,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mInsertPlayerData.addBatch();
 			mInsertPlayerData.executeBatch();
 			mInsertPlayerData.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
@@ -252,6 +267,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mUpdatePlayerSettings.executeBatch();
 			mUpdatePlayerSettings.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
@@ -279,6 +299,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 		while (left > 0) {
 			PreparedStatement statement;
+			openPreparedGetPlayerStatements();
 			int size = 0;
 			if (left >= 10) {
 				size = 10;
@@ -326,6 +347,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				updatePlayerName(p.getPlayer());
 			}
 		}
+		closePreparedGetPlayerStatements();
 		mConnection.commit();
 		return ids;
 	}
@@ -348,6 +370,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				res = ps.getPlayerId();
 		}
 		if (res == 0) {
+			openPreparedGetPlayerStatements();
 			mGetPlayerData[0].setString(1, offlinePlayer.getUniqueId().toString());
 			ResultSet result = mGetPlayerData[0].executeQuery();
 			HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
@@ -371,6 +394,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				}
 			}
 			result.close();
+			closePreparedGetPlayerStatements();
 		} else {
 			MobHunting.debug("Using PlayerId %s from memory.", res);
 		}
@@ -391,6 +415,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mUpdatePlayerName.setString(2, player.getUniqueId().toString());
 			mUpdatePlayerName.executeUpdate();
 			mUpdatePlayerName.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			mConnection.commit();
 		} finally {
 			mConnection.rollback();
@@ -417,9 +446,19 @@ public abstract class DatabaseDataStore implements IDataStore {
 				UUID uid = UUID.fromString(set.getString(1));
 				set.close();
 				mGetPlayerUUID.close();
+				if (MobHunting.getConfigManager().debugSQL) {
+					DatabaseDataStore.connections--;
+					if (DatabaseDataStore.connections > 10)
+						MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				}
 				return Bukkit.getOfflinePlayer(uid);
 			}
 			mGetPlayerUUID.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -446,9 +485,19 @@ public abstract class DatabaseDataStore implements IDataStore {
 				UUID uid = UUID.fromString(set.getString(1));
 				set.close();
 				mGetPlayerByPlayerId.close();
+				if (MobHunting.getConfigManager().debugSQL) {
+					DatabaseDataStore.connections--;
+					if (DatabaseDataStore.connections > 10)
+						MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				}
 				return Bukkit.getOfflinePlayer(uid);
 			}
 			mGetPlayerByPlayerId.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -477,6 +526,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 				set.close();
 			}
 			mLoadAchievements.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			return achievements;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -500,6 +554,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mSaveAchievement.executeBatch();
 			mSaveAchievement.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
+
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
@@ -515,6 +575,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void databaseFixLeaderboard() throws SQLException {
 		Statement statement = mConnection.createStatement();
+		if (MobHunting.getConfigManager().debugSQL) {
+			DatabaseDataStore.connections++;
+			if (DatabaseDataStore.connections > 10)
+				MobHunting.debug("DatabaseDatastore: Open - connections=%s", DatabaseDataStore.connections);
+		}
 		try {
 			MobHunting.debug("Beginning cleaning of database");
 			int result;
@@ -537,6 +602,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Yearly.PLAYER_ID=mh_Players.PLAYER_ID);");
 			MobHunting.debug("%s rows was deleted from Mh_Yearly", result);
 			statement.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			mConnection.commit();
 			MobHunting.debug("MobHunting Database was cleaned");
 		} catch (SQLException e) {
@@ -577,6 +647,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			set.close();
 			mGetBounties.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			return (Set<Bounty>) bounties;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -606,6 +681,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mInsertBounty.executeBatch();
 			mInsertBounty.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
@@ -629,6 +709,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mUpdateBounty.executeBatch();
 			mUpdateBounty.close();
+			if (MobHunting.getConfigManager().debugSQL) {
+				DatabaseDataStore.connections--;
+				if (DatabaseDataStore.connections > 10)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			}
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();

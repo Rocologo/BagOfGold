@@ -791,7 +791,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					debug("KillBlocked: Rewards from StackedMobs is disabled in Config.yml");
 					return;
 				}
-			} 
+			}  
 		}
 
 		// Player killed a Citizens2 NPC
