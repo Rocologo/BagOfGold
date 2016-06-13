@@ -4,13 +4,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Zombie;
 import org.bukkit.entity.Skeleton.SkeletonType;
+import org.bukkit.entity.Villager.Profession;
 
 public enum ExtendedMobType {
-	// Minecraft 1.0.0
-	// Giant is unsupported by in the original game and Giants can only be
-	// spawnwed through plugins.
-	Giant("GIANT", 100), EnderDragon("ENDER_DRAGON", 80),
+	// Minecraft 1.10
+	PolarBear("POLAR_BEAR", 100), Husk("HUSK", 100), Stray("STRAY", 100),
+	// Minecraft 1.9 Entity
+	Shulker("SHULKER", 100),
+	// Minecraft 1.8 Entity's
+	Endermite("ENDERMITE", 100), Guardian("GUARDIAN", 100), KillerRabbit("RABBIT", 100), PvpPlayer("PLAYER", 100),
 	// Minecraft 1.7
 	Slime("SLIME", 100), MagmaCube("MAGMA_CUBE", 100), Ghast("GHAST", 80), Blaze("BLAZE", 80), Creeper("CREEPER",
 			100), Enderman("ENDERMAN", 100), Silverfish("SILVERFISH", 100), Skeleton("SKELETON",
@@ -21,12 +25,11 @@ public enum ExtendedMobType {
 	Bat("BAT", 100), Chicken("CHICKEN", 100), Cow("COW", 100), Horse("HORSE", 100), MushroomCow("MUSHROOM_COW",
 			100), Ocelot("OCELOT", 100), Pig("PIG", 100), PassiveRabbit("RABBIT", 100), Sheep("SHEEP",
 					100), Snowman("SNOWMAN", 100), Squid("SQUID", 100), Villager("VILLAGER", 100), Wolf("WOLF", 100),
-	// Minecraft 1.8 Entity's
-	Endermite("ENDERMITE", 100), Guardian("GUARDIAN", 100), KillerRabbit("RABBIT", 100), PvpPlayer("PLAYER", 100),
-	// Minecraft 1.9 Entity
-	Shulker("SHULKER", 100),
-	// Minecraft 1.10
-	PolarBear("POLAR_BEAR", 100);
+
+	// Minecraft 1.0.0
+	// Giant is unsupported by in the original game and Giants can only be
+	// spawnwed through plugins.
+	Giant("GIANT", 100), EnderDragon("ENDER_DRAGON", 80);
 
 	private String mType;
 	@SuppressWarnings("unused")
@@ -119,6 +122,10 @@ public enum ExtendedMobType {
 			return MobHunting.getConfigManager().shulkerLevel1;
 		case "POLAR_BEAR":
 			return MobHunting.getConfigManager().polarBearLevel1;
+		case "STRAY":
+			return MobHunting.getConfigManager().strayLevel1;
+		case "HUSK":
+			return MobHunting.getConfigManager().huskLevel1;
 		default:
 			Bukkit.getLogger().warning("[MobHunting] WARNING: Missing type in ExtendedMobType:" + mType);
 		}
@@ -127,6 +134,23 @@ public enum ExtendedMobType {
 
 	@SuppressWarnings("rawtypes")
 	public boolean matches(Entity ent) {
+		// test if MC 1.10 classes exists
+		try {
+			@SuppressWarnings("unused")
+			Class cls = Class.forName("org.bukkit.entity.PolarBear");
+			if (this == PolarBear)
+				return ent instanceof org.bukkit.entity.PolarBear;
+			else if (this == Stray)
+				return ent instanceof org.bukkit.entity.Skeleton
+						&& (((Skeleton) ent).getSkeletonType() == SkeletonType.STRAY);
+			else if (this == Husk) {
+				return ent instanceof org.bukkit.entity.Zombie
+						&& ((Zombie) ent).getVillagerProfession() == Profession.HUSK;
+			}
+		} catch (ClassNotFoundException e) {
+			// not MC 1.10
+		}
+
 		// test if MC 1.9 classes exists
 		try {
 			@SuppressWarnings("unused")
@@ -136,6 +160,7 @@ public enum ExtendedMobType {
 		} catch (ClassNotFoundException e) {
 			// not MC 1.9
 		}
+
 		// test if MC 1.8 classes exists
 		try {
 			@SuppressWarnings("unused")
@@ -147,6 +172,8 @@ public enum ExtendedMobType {
 		} catch (ClassNotFoundException e) {
 			// not MC 1.8
 		}
+
+		// MC 1.7.10 and older entities
 		if (this == WitherSkeleton)
 			return ent instanceof Skeleton && ((Skeleton) ent).getSkeletonType() == SkeletonType.WITHER;
 		else if (this == Skeleton)
@@ -163,10 +190,9 @@ public enum ExtendedMobType {
 	}
 
 	public static ExtendedMobType getExtendedMobType(Entity entity) {
-		for (ExtendedMobType type : values()) {
+		for (ExtendedMobType type : values()) 
 			if (type.matches(entity))
 				return type;
-		}
 		MobHunting.debug("ERROR!!! - Unhandled Entity: %s(%s) Type:%s", entity.getName(), entity.getCustomName(),
 				entity.getType().toString());
 		return null;

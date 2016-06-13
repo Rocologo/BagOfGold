@@ -34,7 +34,6 @@ public class DataStoreManager {
 	private boolean mExit = false;
 
 	// Accessed only from store thread
-	@SuppressWarnings("unused")
 	private StoreThread mStoreThread;
 
 	// Accessed only from retrieve thread
@@ -45,6 +44,8 @@ public class DataStoreManager {
 		mTaskThread = new TaskThread();
 		mStoreThread = new StoreThread(MobHunting.getConfigManager().savePeriod);
 	}
+
+	//private static Thread sleepingThread = new Thread();
 
 	// **************************************************************************************
 	// PlayerStats
@@ -230,10 +231,20 @@ public class DataStoreManager {
 		mTaskThread.setWriteOnlyMode(true);
 
 		try {
-			// MobHunting.debug("Interupting mStoreThread");
-			// mStoreThread.interrupt();
+			//MobHunting.debug("State of StoreTread: %s", mStoreThread.getState());
+			//MobHunting.debug("State of TaskTread: %s", mTaskThread.getState());
+			//MobHunting.debug("State of sleepingTread: %s", sleepingThread.getState());
+
 			// MobHunting.debug("Interupting mTaskThread");
 			// mTaskThread.interrupt();
+			while (mTaskThread.getState() != Thread.State.WAITING)
+				Thread.sleep(500);
+			//MobHunting.debug("State of TaskTread(2): %s", mTaskThread.getState());
+			//MobHunting.debug("Interupting sleepingThread");
+			//sleepingThread.interrupt();
+			MobHunting.debug("Interupting mStoreThread");
+			mStoreThread.interrupt();
+
 			mTaskThread.waitForEmptyQueue();
 
 		} catch (InterruptedException e) {
@@ -264,35 +275,38 @@ public class DataStoreManager {
 			try {
 				while (true) {
 					synchronized (this) {
-						if (mExit) {
-							mTaskThread.addStoreTask(new StoreTask(mWaiting));
+						if (mExit && mWaiting.size() == 0) {
+							//MobHunting.debug("MH StoreThread - break");
 							break;
 						}
 					}
 
-					mTaskThread.addStoreTask(new StoreTask(mWaiting));
+					//if (mExit) {
+					//	MobHunting.debug("MH StoreThread - addStoreTask");
+					//}
+					mTaskThread.addTask(new StoreTask(mWaiting), null);
 
 					Thread.sleep(mSaveInterval * 50);
+					
+					//if (!mExit)
+					//	sleepingThread.sleep(mSaveInterval * 50);
+				//	else
+					//	Thread.sleep(1000L);
 				}
 			} catch (InterruptedException e) {
-				mTaskThread.addStoreTask(new StoreTask(mWaiting));
-				MobHunting.debug("MH StoreThread was interupted (Queue=%s)", mWaiting.size());
+				//MobHunting.debug("MH StoreThread was interupted (mwaiting.size=%s)", mWaiting.size());
+				MobHunting.debug("MH StoreThread was interupted");
 			}
 		}
 	}
 
 	private static class Task {
 		public Task(DataStoreTask<?> task, IDataCallback<?> callback) {
-			this.storeTask = task;
+			this.task = task;
 			this.callback = callback;
 		}
 
-		public Task(DataStoreTask<?> storeTask) {
-			this.storeTask = storeTask;
-			this.callback = null;
-		}
-
-		public DataStoreTask<?> storeTask;
+		public DataStoreTask<?> task;
 
 		public IDataCallback<?> callback;
 	}
@@ -333,12 +347,14 @@ public class DataStoreManager {
 		}
 
 		public void waitForEmptyQueue() throws InterruptedException {
+			if (mQueue.isEmpty())
+				return;
+
 			synchronized (mSignal) {
-				if (mQueue.size() != 0 || mWaiting.size() != 0) {
-					MobHunting.debug("waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
-							mQueue.size(), mWaiting.size());
+				MobHunting.debug("waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
+						mQueue.size(), mWaiting.size());
+				while (!mQueue.isEmpty())
 					mSignal.wait();
-				}
 			}
 		}
 
@@ -349,14 +365,9 @@ public class DataStoreManager {
 		public <T> void addTask(DataStoreTask<T> storeTask, IDataCallback<T> callback) {
 			try {
 				mQueue.put(new Task(storeTask, callback));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-		public <T> void addStoreTask(DataStoreTask<T> storeTask) {
-			try {
-				mQueue.put(new Task(storeTask));
+				//if (mExit) {
+				//	MobHunting.debug("addTask - mQueue.size=%s", mQueue.size());
+				//}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -367,59 +378,40 @@ public class DataStoreManager {
 		public void run() {
 			try {
 				while (true) {
-					// TODO: remove this.
-					if (MobHunting.getConfigManager().debugSQL && (mQueue.size() > 20 || mWaiting.size() > 5))
-						MobHunting.debug("Queue.size=%s, mWaiting.size=%s", mQueue.size(), mWaiting.size());
-					if (mQueue.isEmpty() && mWaiting.isEmpty()) {
+					//if (MobHunting.getConfigManager().debugSQL)
+					//	MobHunting.debug("BBB mQueue.size=%s, mWaiting.size=%s", mQueue.size(), mWaiting.size());
+					if (mQueue.isEmpty()) {
 						synchronized (mSignal) {
 							mSignal.notifyAll();
 						}
-						if (mExit) {
-							MobHunting.debug("DataStoreManager: TaskThread - break1");
-							break;
-						}
 					} // else { //DONT ENABLE THIS CAUSES 100 CPU USAGE
+
+					//if (mExit)
+					//	MobHunting.debug("AAA mQueue=%s mwaiting=%s", mQueue.size(), mWaiting.size());
 
 					Task task = mQueue.take();
 
-					// if (mWritesOnly && task.storeTask.readOnly()) {
-					//
-					// MobHunting.debug("DataStoreManager: mQueue.size=%s,
-					// mWritesOnly=%s, task.storeTask.readOnly=%s",
-					// mQueue.size(), mWritesOnly, task.storeTask.readOnly());
-					// continue;
-
-					// }
+					if (mWritesOnly && task.task.readOnly()) {
+						//MobHunting.debug("DataStoreManager: mQueue.size=%s, mWritesOnly=%s, task.storeTask.readOnly=%s",
+						//		mQueue.size(), mWritesOnly, task.task.readOnly());
+						continue;
+					}
 
 					try {
 
-						Object result;
-
-						result = task.storeTask.run(mStore);
-
-						if (mExit)
-							MobHunting.debug("mQueue=%s mwaiting=%s", mQueue.size(), mWaiting.size());
+						Object result = task.task.run(mStore);
 
 						if (task.callback != null && !mExit)
 							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
 									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
 
-						if (mQueue.isEmpty() && mWaiting.isEmpty() && mExit) {
-							synchronized (mSignal) {
-								mSignal.notifyAll();
-							}
-							MobHunting.debug("DataStoreManager: TaskThread - break2");
-							break;
-						}
-
 					} catch (DataStoreException e) {
 						MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
-						// if (task.callback != null)
-						// Bukkit.getScheduler().runTask(MobHunting.getInstance(),
-						// new CallbackCaller((IDataCallback<Object>)
-						// task.callback, e, false));
-						// else
-						e.printStackTrace();
+						if (task.callback != null)
+							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
+									new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
+						else
+							e.printStackTrace();
 					}
 				}
 

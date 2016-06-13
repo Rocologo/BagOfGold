@@ -42,11 +42,13 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Silverfish;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
@@ -420,7 +422,7 @@ public class ConfigManager extends AutoConfig {
 	private int shulkerFrequency = 50;
 	@ConfigField(name = "shulker-cmd-run-frequency-base", category = "mobs")
 	private int shulkerFrequencyBase = 100;
-	
+
 	@ConfigField(name = "polar-bear", category = "mobs")
 	private String polarBearPrize = "25";
 	@ConfigField(name = "polar-bear-cmd", category = "mobs")
@@ -431,6 +433,28 @@ public class ConfigManager extends AutoConfig {
 	private int polarBearFrequency = 50;
 	@ConfigField(name = "polar-bear-cmd-run-frequency-base", category = "mobs")
 	private int polarBearFrequencyBase = 100;
+
+	@ConfigField(name = "stray", category = "mobs")
+	private String strayPrize = "15:35";
+	@ConfigField(name = "stray-cmd", category = "mobs")
+	private String strayCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Stray\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "stray-cmd-desc", category = "mobs")
+	private String strayCmdDesc = "You got a Skeleton Stray skull and an Iron ingot.";
+	@ConfigField(name = "stray-cmd-run-frequency", category = "mobs")
+	private int strayFrequency = 50;
+	@ConfigField(name = "stray-cmd-run-frequency-base", category = "mobs")
+	private int strayFrequencyBase = 100;
+
+	@ConfigField(name = "husk", category = "mobs")
+	private String huskPrize = "9:13";
+	@ConfigField(name = "husk-cmd", category = "mobs")
+	private String huskCmd = "give {player} 397 1 3 {SkullOwner:\"MHF_Husk\"}|give {player} iron_ingot 1";
+	@ConfigField(name = "husk-cmd-desc", category = "mobs")
+	private String huskCmdDesc = "You got a Zombie Husk skull and an Iron ingot.";
+	@ConfigField(name = "husk-cmd-run-frequency", category = "mobs")
+	private int huskFrequency = 50;
+	@ConfigField(name = "husk-cmd-run-frequency-base", category = "mobs")
+	private int huskFrequencyBase = 100;
 
 	// #####################################################################################
 	// Bosses
@@ -877,9 +901,15 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "bonusmob_level1", category = "achievement_levels")
 	public int bonusMobLevel1 = 20;
-	
+
 	@ConfigField(name = "polar_bear_level1", category = "achievement_levels")
 	public int polarBearLevel1 = 100;
+
+	@ConfigField(name = "stray_level1", category = "achievement_levels")
+	public int strayLevel1 = 100;
+
+	@ConfigField(name = "husk_level1", category = "achievement_levels")
+	public int huskLevel1 = 100;
 
 	// #####################################################################################
 	// Assists
@@ -1220,6 +1250,50 @@ public class ConfigManager extends AutoConfig {
 			} else
 				return 0;
 		} else {
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return getPrice(mob, polarBearPrize);
+				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
+					return getPrice(mob, strayPrize);
+				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
+					return getPrice(mob, huskPrize);
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
+
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return getPrice(mob, shulkerPrize);
+			} catch (ClassNotFoundException e) {
+				// This is not a MC 1.9 entity
+			}
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return getPrice(mob, guardianPrize);
+				else if (mob instanceof Endermite)
+					return getPrice(mob, endermitePrize);
+				// if (mob instanceof Rabbit)
+				// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
+				if (mob instanceof Rabbit)
+					if (((Rabbit) mob).getRabbitType() == Rabbit.Type.THE_KILLER_BUNNY)
+						return getPrice(mob, killerrabbitPrize);
+					else
+						return getPrice(mob, rabbitPrize);
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+
+			// Minecraft 1.7.10 and older entities
 			if (mob instanceof Player) {
 				if (pvpKillPrize.endsWith("%")) {
 					double prize = Math.floor(Double.valueOf(pvpKillPrize.substring(0, pvpKillPrize.length() - 1))
@@ -1242,14 +1316,11 @@ public class ConfigManager extends AutoConfig {
 				return getPrice(mob, endermanPrize);
 			else if (mob instanceof Giant)
 				return getPrice(mob, giantPrize);
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return getPrice(mob, skeletonPrize);
-				case WITHER:
-					return getPrice(mob, witherSkeletonPrize);
-				}
-			} else if (mob instanceof Spider)
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
+				return getPrice(mob, skeletonPrize);
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
+				return getPrice(mob, witherSkeletonPrize);
+			else if (mob instanceof Spider)
 				if (mob instanceof CaveSpider)
 					return getPrice(mob, caveSpiderPrize);
 				else
@@ -1310,44 +1381,6 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Wolf)
 				return getPrice(mob, wolfPrize);
 
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return getPrice(mob, guardianPrize);
-				else if (mob instanceof Endermite)
-					return getPrice(mob, endermitePrize);
-				// if (mob instanceof Rabbit)
-				// debug("RabbitType=" + ((Rabbit) mob).getRabbitType());
-				if (mob instanceof Rabbit)
-					if (((Rabbit) mob).getRabbitType() == Rabbit.Type.THE_KILLER_BUNNY)
-						return getPrice(mob, killerrabbitPrize);
-					else
-						return getPrice(mob, rabbitPrize);
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-
-			// Test if Minecraft 1.9 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Shulker");
-				if (mob instanceof Shulker)
-					return getPrice(mob, shulkerPrize);
-			} catch (ClassNotFoundException e) {
-				// This is not a MC 1.9 entity
-			}
-			// Test if Minecraft 1.10 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.PolarBear");
-				if (mob instanceof PolarBear)
-					return getPrice(mob, polarBearPrize);
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.10
-			}
-
 		}
 		return 0;
 	}
@@ -1394,6 +1427,47 @@ public class ConfigManager extends AutoConfig {
 			} else
 				return "";
 		} else {
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearCmd;
+				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
+					return strayCmd;
+				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
+					return huskCmd;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
+
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerCmd;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
+			}
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianCmd;
+				else if (mob instanceof Endermite)
+					return endermiteCmd;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitCmd;
+					else
+						return rabbitCmd;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+
 			if (mob instanceof Player)
 				return pvpKillCmd;
 			else if (mob instanceof Blaze)
@@ -1406,14 +1480,11 @@ public class ConfigManager extends AutoConfig {
 				return endermanCmd;
 			else if (mob instanceof Giant)
 				return giantCmd;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return skeletonCmd;
-				case WITHER:
-					return witherSkeletonCmd;
-				}
-			} else if (mob instanceof Spider)
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
+				return skeletonCmd;
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
+				return witherSkeletonCmd;
+			else if (mob instanceof Spider)
 				if (mob instanceof CaveSpider)
 					// CaveSpider is a sub class of Spider
 					return caveSpiderCmd;
@@ -1468,40 +1539,6 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Wolf)
 				return wolfCmd;
 
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return guardianCmd;
-				else if (mob instanceof Endermite)
-					return endermiteCmd;
-				else if (mob instanceof Rabbit)
-					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return killerrabbitCmd;
-					else
-						return rabbitCmd;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-			// Test if Minecraft 1.9 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Shulker");
-				if (mob instanceof Shulker)
-					return shulkerCmd;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.9
-			}
-			// Test if Minecraft 1.10 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.PolarBear");
-				if (mob instanceof PolarBear)
-					return polarBearCmd;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.10
-			}
 		}
 		return "";
 	}
@@ -1526,6 +1563,46 @@ public class ConfigManager extends AutoConfig {
 			} else
 				return "";
 		} else {
+
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearCmdDesc;
+				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
+					return strayCmdDesc;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
+
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerCmdDesc;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
+			}
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianCmdDesc;
+				else if (mob instanceof Endermite)
+					return endermiteCmdDesc;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitCmdDesc;
+					else
+						return rabbitCmdDesc;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+
 			if (mob instanceof Player)
 				return pvpKillCmdDesc;
 			else if (mob instanceof Blaze)
@@ -1538,33 +1615,29 @@ public class ConfigManager extends AutoConfig {
 				return endermanCmdDesc;
 			else if (mob instanceof Giant)
 				return giantCmdDesc;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return skeletonCmdDesc;
-				case WITHER:
-					return witherSkeletonCmdDesc;
-				}
-			} else if (mob instanceof Spider)
-				if (mob instanceof CaveSpider)
-					return caveSpiderCmdDesc;
-				else
-					return spiderCmdDesc;
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
+				return skeletonCmdDesc;
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
+				return witherSkeletonCmdDesc;
+			else if (mob instanceof CaveSpider)
+				//CaveSpider is a Subclass of Spider
+				return caveSpiderCmdDesc;
+			else if (mob instanceof Spider)
+				return spiderCmdDesc;
 			else if (mob instanceof Witch)
 				return witchCmdDesc;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie
+				return zombiePigmanCmdDesc;
 			else if (mob instanceof Zombie)
-				if (mob instanceof PigZombie)
-					return zombiePigmanCmdDesc;
-				else
-					return zombieCmdDesc;
+				return zombieCmdDesc;
 			else if (mob instanceof Ghast)
 				return ghastCmdDesc;
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime
+				return magmaCubeCmdDesc;
 			else if (mob instanceof Slime)
-				if (mob instanceof MagmaCube)
-					// MagmaCube is a subclass of Slime
-					return magmaCubeCmdDesc;
-				else
-					return slimeCmdDesc;
+				return slimeCmdDesc;
 			else if (mob instanceof EnderDragon)
 				return enderdragonCmdDesc;
 			else if (mob instanceof Wither)
@@ -1600,41 +1673,6 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Wolf)
 				return wolfCmdDesc;
 
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return guardianCmdDesc;
-				else if (mob instanceof Endermite)
-					return endermiteCmdDesc;
-				else if (mob instanceof Rabbit)
-					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return killerrabbitCmdDesc;
-					else
-						return rabbitCmdDesc;
-
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-			// Test if Minecraft 1.9 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Shulker");
-				if (mob instanceof Shulker)
-					return shulkerCmdDesc;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.9
-			}
-			// Test if Minecraft 1.10 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.PolarBear");
-				if (mob instanceof PolarBear)
-					return polarBearCmdDesc;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.10
-			}
 		}
 		return "";
 	}
@@ -1653,6 +1691,47 @@ public class ConfigManager extends AutoConfig {
 			} else
 				return 100;
 		} else {
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearFrequency;
+				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
+					return strayFrequency;
+				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
+					return huskFrequency;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
+
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerFrequency;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
+			}
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianFrequency;
+				else if (mob instanceof Endermite)
+					return endermiteFrequency;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitFrequency;
+					else
+						return rabbitFrequency;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+
 			if (mob instanceof Player)
 				return 100;
 			else if (mob instanceof Blaze)
@@ -1665,26 +1744,22 @@ public class ConfigManager extends AutoConfig {
 				return endermanFrequency;
 			else if (mob instanceof Giant)
 				return giantFrequency;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return skeletonFrequency;
-				case WITHER:
-					return witherSkeletonFrequency;
-				}
-			} else if (mob instanceof Spider)
-				if (mob instanceof CaveSpider)
-					return caveSpiderFrequency;
-				else
-					return spiderFrequency;
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
+				return skeletonFrequency;
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
+				return witherSkeletonFrequency;
+			else if (mob instanceof CaveSpider)
+				// CaveSpider is a subclass of Spider
+				return caveSpiderFrequency;
+			else if (mob instanceof Spider)
+				return spiderFrequency;
 			else if (mob instanceof Witch)
 				return witchFrequency;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie.
+				return zombiePigmanFrequency;
 			else if (mob instanceof Zombie)
-				if (mob instanceof PigZombie)
-					// PigZombie is a subclass of Zombie.
-					return zombiePigmanFrequency;
-				else
-					return zombieFrequency;
+				return zombieFrequency;
 			else if (mob instanceof Ghast)
 				return ghastFrequency;
 			else if (mob instanceof Slime)
@@ -1728,41 +1803,6 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Wolf)
 				return wolfFequency;
 
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return guardianFrequency;
-				else if (mob instanceof Endermite)
-					return endermiteFrequency;
-				else if (mob instanceof Rabbit)
-					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return killerrabbitFrequency;
-					else
-						return rabbitFrequency;
-
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-			// Test if Minecraft 1.9 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Shulker");
-				if (mob instanceof Shulker)
-					return shulkerFrequency;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.9
-			}
-			// Test if Minecraft 1.10 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.PolarBear");
-				if (mob instanceof PolarBear)
-					return polarBearFrequency;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.10
-			}
 		}
 		return 100;
 	}
@@ -1781,6 +1821,49 @@ public class ConfigManager extends AutoConfig {
 			} else
 				return 100;
 		} else {
+			// Test if Minecraft 1.10 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.PolarBear");
+				if (mob instanceof PolarBear)
+					return polarBearFrequencyBase;
+				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
+					return strayFrequencyBase;
+				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
+					return huskFrequencyBase;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.10
+			}
+
+			// Test if Minecraft 1.9 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Shulker");
+				if (mob instanceof Shulker)
+					return shulkerFrequencyBase;
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.9
+			}
+
+			// Test if Minecraft 1.8 Mob Classes exists
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("org.bukkit.entity.Guardian");
+				if (mob instanceof Guardian)
+					return guardianFrequencyBase;
+				else if (mob instanceof Endermite)
+					return endermiteFrequencyBase;
+				else if (mob instanceof Rabbit)
+					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return killerrabbitFrequencyBase;
+					else
+						return rabbitFrequencyBase;
+
+			} catch (ClassNotFoundException e) {
+				// This is not MC 1.8
+			}
+
+			// Minecraft 1.7.10 and older
 			if (mob instanceof Player)
 				return 100;
 			else if (mob instanceof Blaze)
@@ -1793,27 +1876,22 @@ public class ConfigManager extends AutoConfig {
 				return endermanFrequencyBase;
 			else if (mob instanceof Giant)
 				return giantFrequencyBase;
-			else if (mob instanceof Skeleton) {
-				switch (((Skeleton) mob).getSkeletonType()) {
-				case NORMAL:
-					return skeletonFrequencyBase;
-				case WITHER:
-					return witherSkeletonFrequencyBase;
-				}
-			} else if (mob instanceof Spider)
-				if (mob instanceof CaveSpider)
-					// Cavespider is a sub class of Spider
-					return caveSpiderFrequencyBase;
-				else
-					return spiderFrequencyBase;
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
+				return skeletonFrequencyBase;
+			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
+				return witherSkeletonFrequencyBase;
+			else if (mob instanceof CaveSpider)
+				// Cavespider is a sub class of Spider
+				return caveSpiderFrequencyBase;
+			else if (mob instanceof Spider)
+				return spiderFrequencyBase;
 			else if (mob instanceof Witch)
 				return witchFrequencyBase;
+			else if (mob instanceof PigZombie)
+				// PigZombie is a subclass of Zombie.
+				return zombiePigmanFrequencyBase;
 			else if (mob instanceof Zombie)
-				if (mob instanceof PigZombie)
-					// PigZombie is a subclass of Zombie.
-					return zombiePigmanFrequencyBase;
-				else
-					return zombieFrequencyBase;
+				return zombieFrequencyBase;
 			else if (mob instanceof Ghast)
 				return ghastFrequencyBase;
 			else if (mob instanceof Slime)
@@ -1858,41 +1936,6 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Wolf)
 				return wolfFrequencyBase;
 
-			// Test if Minecraft 1.8 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Guardian");
-				if (mob instanceof Guardian)
-					return guardianFrequencyBase;
-				else if (mob instanceof Endermite)
-					return endermiteFrequencyBase;
-				else if (mob instanceof Rabbit)
-					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return killerrabbitFrequencyBase;
-					else
-						return rabbitFrequencyBase;
-
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.8
-			}
-			// Test if Minecraft 1.9 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.Shulker");
-				if (mob instanceof Shulker)
-					return shulkerFrequencyBase;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.9
-			}
-			// Test if Minecraft 1.10 Mob Classes exists
-			try {
-				@SuppressWarnings({ "rawtypes", "unused" })
-				Class cls = Class.forName("org.bukkit.entity.PolarBear");
-				if (mob instanceof PolarBear)
-					return polarBearFrequencyBase;
-			} catch (ClassNotFoundException e) {
-				// This is not MC 1.10
-			}
 		}
 		return 100;
 	}

@@ -791,7 +791,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					debug("KillBlocked: Rewards from StackedMobs is disabled in Config.yml");
 					return;
 				}
-			}  
+			}
 		}
 
 		// Player killed a Citizens2 NPC
@@ -947,10 +947,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 		HuntData data = mMobHuntingManager.getHuntData(killer);
-		if (data == null)
-			MobHunting.debug("data is null");
-		else
-			MobHunting.debug("data is NOT null");
 
 		// Killstreak
 		Misc.handleKillstreak(killer);
@@ -978,14 +974,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (data.lastKillAreaCenter != null) {
 					if (loc.getWorld().equals(data.lastKillAreaCenter.getWorld())) {
 						if (loc.distance(data.lastKillAreaCenter) < data.getcDampnerRange()) {
-							if (MobStackerCompat.isSupported() && MobStackerCompat.isStackedMob(killed)
-									&& !MobStackerCompat.isGrindingStackedMobsAllowed()) {
-								MobHunting.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
-								learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
-								playerActionBarMessage(killer,
-										ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
+							if (!MobStackerCompat.isSupported()
+									|| (MobStackerCompat.isSupported() && MobStackerCompat.isStackedMob(killed)
+											&& !MobStackerCompat.isGrindingStackedMobsAllowed())) {
 								data.setDampenedKills(data.getDampenedKills() + 1);
 								if (data.getDampenedKills() == 10) {
+									MobHunting.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
+									learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
+									playerActionBarMessage(killer,
+											ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
 									data.recordGrindingArea();
 								}
 							}
@@ -1137,6 +1134,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 
+			if (killer instanceof Player)
+				debug ( "RecordKill: %s killed a %s", ((Player)killer).getName(),ExtendedMobType.getExtendedMobType(killed));
 			// MythicMob Kill - update PlayerStats
 			// TODO: record mythicmob kills as its own kind of mobs
 			if (ExtendedMobType.getExtendedMobType(killed) != null)

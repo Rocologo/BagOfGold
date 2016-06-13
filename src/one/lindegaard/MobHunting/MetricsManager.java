@@ -248,7 +248,10 @@ public class MetricsManager {
 			usageGraph.addPlotter(new Metrics.Plotter("# of Bounties") {
 				@Override
 				public int getValue() {
-					return MobHunting.getBountyManager().getAllBounties().size();
+					if (MobHunting.getBountyManager().getAllBounties()==null)
+						return 0;
+					else
+						return MobHunting.getBountyManager().getAllBounties().size();
 				}
 			});
 			metrics.addGraph(usageGraph);

@@ -239,6 +239,8 @@ mobs.IronGolem.name=Iron Golem
 mobs.EnderDragon.name=EnderDragon
 mobs.Shulker.name=Shulker
 mobs.PolarBear.name=Polar Bear
+mobs.Stray.name=Stray
+mobs.Husk.name=Husk
 
 mobs.Bat.name=Bat
 mobs.Chicken.name=Chicken

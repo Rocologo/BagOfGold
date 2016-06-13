@@ -845,6 +845,41 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 		
 		try {
+			ResultSet rs = statement.executeQuery("SELECT Stray_kill from mh_Daily LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+
+			System.out.println("[MobHunting] Adding new 1.10 Mobs (Stray + Husk) to MobHunting Database.");
+
+			statement.executeUpdate("alter table `mh_Daily` add column `Stray_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Daily` add column `Stray_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Weekly` add column `Stray_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Weekly` add column `Stray_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Monthly` add column `Stray_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Monthly` add column `Stray_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Yearly` add column `Stray_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Yearly` add column `Stray_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_AllTime` add column `Stray_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_AllTime` add column `Stray_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			statement.executeUpdate("alter table `mh_Daily` add column `Husk_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Daily` add column `Husk_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Weekly` add column `Husk_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Weekly` add column `Husk_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Monthly` add column `Husk_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Monthly` add column `Husk_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Yearly` add column `Husk_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Yearly` add column `Husk_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_AllTime` add column `Husk_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_AllTime` add column `Husk_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			
+			System.out.println("[MobHunting] Adding new 1.10 Mobs (Stray + Husk) complete.");
+		}
+
+		
+		
+		try {
 			ResultSet rs = statement.executeQuery("SELECT LEARNING_MODE from mh_Players LIMIT 0");
 			rs.close();
 		} catch (SQLException e) {
