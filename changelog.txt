@@ -1,5 +1,5 @@
 V3.1.9
-- Added new Mobs Husk and Stray
+- Added new Mobs Husk and Stray 
 - Fixed bug when MobStacker was not installed 
 - Fixed bug in MetricsManager when Bounties was null.
 - Another fix trying to solve the SQL bug shutting down. 
