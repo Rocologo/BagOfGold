@@ -23,6 +23,7 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
+import one.lindegaard.MobHunting.util.Misc;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -257,14 +258,22 @@ public class AchievementManager implements Listener {
 	}
 
 	/**
-	 * Award the player when he make an Achievement
+	 * Award the player if/when he make an Achievement
 	 * 
 	 * @param achievement
 	 * @param player
 	 */
 	public void awardAchievement(Achievement achievement, Player player) {
-		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player))
+		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player)) {
+			MobHunting.debug("AchievementBlocked] Achievements is disabled for player %s", player.getName());
 			return;
+		}
+
+		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
+			if (world.equalsIgnoreCase(player.getWorld().getName())) {
+				MobHunting.debug("AchievementBlocked] Achievements is disabled in this world");
+				return;
+			}
 
 		PlayerStorage storage = mStorage.get(player);
 		if (storage == null)
@@ -315,13 +324,10 @@ public class AchievementManager implements Listener {
 					.replaceAll("\\{player\\}", playername).replaceAll("\\{world\\}", worldname));
 		}
 
-		try {
-			// Minecraft 1.9
+		if (Misc.isMC19OrNewer())
 			player.getWorld().playSound(player.getLocation(), Sound.valueOf("ENTITY_PLAYER_LEVELUP"), 1.0f, 1.0f);
-		} catch (Exception e) {
-			// Minecraft 1.8.8
+		else
 			player.getWorld().playSound(player.getLocation(), Sound.valueOf("LEVEL_UP"), 1.0f, 1.0f);
-		}
 
 		FireworkEffect effect = FireworkEffect.builder().withColor(Color.ORANGE, Color.YELLOW).flicker(true)
 				.trail(false).build();
@@ -723,13 +729,14 @@ public class AchievementManager implements Listener {
 				player.closeInventory();
 				player.openInventory(inventory2);
 			}
-		if (inv.getName().equals(inventory2.getName())) {
-			if (clicked != null && clicked.getType() == Material.DIRT) {
-				// TODO:
+		if (inv != null && inventory2 != null)
+			if (inv.getName().equals(inventory2.getName())) {
+				if (clicked != null && clicked.getType() == Material.DIRT) {
+					// TODO:
+				}
+				event.setCancelled(true);
+				player.closeInventory();
 			}
-			event.setCancelled(true);
-			player.closeInventory();
-		}
 	}
 
 	public static void addInventoryDetails(ItemStack itemStack, Inventory inv, int Slot, String name, String[] lores) {

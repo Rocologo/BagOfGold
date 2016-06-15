@@ -24,6 +24,7 @@ import one.lindegaard.MobHunting.MobRewardData;
 import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 import one.lindegaard.MobHunting.npc.MasterMobHunterTrait;
+import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -150,7 +151,8 @@ public class CitizensCompat implements Listener {
 		if (supported) {
 			masterMobHunterManager.shutdown();
 			TraitInfo trait = TraitInfo.create(MasterMobHunterTrait.class).withName("MasterMobHunter");
-			citizensAPI.getTraitFactory().deregisterTrait(trait);
+			if (Misc.isMC18OrNewer())
+				citizensAPI.getTraitFactory().deregisterTrait(trait);
 		}
 	}
 

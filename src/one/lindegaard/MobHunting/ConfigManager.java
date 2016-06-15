@@ -83,11 +83,13 @@ public class ConfigManager extends AutoConfig {
 				+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
 				+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
 				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
+		
 		setCategoryComment("boss",
 				"########################################################################"
 						+ "\nRewards for killing bosses"
 						+ "\n########################################################################"
 						+ "\nHere is where you set the base prize in $ for killing the bosses");
+		
 		setCategoryComment("passive",
 				"########################################################################"
 						+ "\nRewards for killing passive mobs"
@@ -95,15 +97,18 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere is where you set the base prize in $ for killing passive/friendly mobs."
 						+ "\nBy default the player does not get a reward for killing friendly mobs."
 						+ "\nIf you make the number negative, the reward will be a fine for killing a passive animal.");
+		
 		setCategoryComment("bonus", "########################################################################"
 				+ "\n Bonus multipliers" + "\n########################################################################"
 				+ "\nThese are bonus multipliers that can modify the base prize. "
 				+ "\nREMEMBER: These are not in $ but they are a multiplier. " + "\nSetting to 1 will disable them.");
+		
 		setCategoryComment("penalty", "########################################################################"
 				+ "\nPenalty multipliers" + "\n########################################################################"
 				+ "\nThese are penalty multipliers that can modify the base prize. "
 				+ "\nREMEMBER: These are not in $ but they are a multiplier. " + "\nSetting to 1 will disable them.");
-		setCategoryComment("special", "########################################################################"
+		
+		setCategoryComment("achievements", "########################################################################"
 				+ "\nSpecial / Achievements rewards"
 				+ "\n########################################################################"
 				+ "\nHere is where you set the prize in $ for achieving a special kill. "
@@ -113,6 +118,7 @@ public class ConfigManager extends AutoConfig {
 				+ "\nfor 1 hour or use give command to the player items."
 				+ "\nYou can also specify the message send to the player."
 				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |");
+		
 		setCategoryComment("achievement_levels",
 				"########################################################################"
 						+ "\n Achievement Hunter levels"
@@ -123,16 +129,19 @@ public class ConfigManager extends AutoConfig {
 						+ "\nLevel 2: x 2.5 (250 kills)" + "\nLevel 3: x 5   (500 kills)"
 						+ "\nLevel 4: x 10  (1000 kills)" + "\nLevel 5: x 25  (2500 kills)"
 						+ "\nLevel 6: x 50  (5000 kills)" + "\nLevel 7: x 100 (10000 kills)");
+		
 		setCategoryComment("assists",
 				"########################################################################"
 						+ "\nRewards for assisting killings"
 						+ "\n########################################################################"
 						+ "\nThey players can get an extra reward if they help each other killing mobs.");
+		
 		setCategoryComment("killstreak",
 				"########################################################################"
 						+ "\nReward for kills in a row"
 						+ "\n########################################################################"
 						+ "\nSet the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
+		
 		setCategoryComment("multiplier", "########################################################################"
 				+ "\nRank multipliers and world difficulty multipliers"
 				+ "\n########################################################################"
@@ -155,6 +164,7 @@ public class ConfigManager extends AutoConfig {
 				+ "\nfor 1 hour or use give command to the player items."
 				+ "\nYou can also specify the message send to the player."
 				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |");
+		
 		setCategoryComment("disguises",
 				"########################################################################" + "\nDisguises rewards"
 						+ "\n########################################################################"
@@ -170,11 +180,13 @@ public class ConfigManager extends AutoConfig {
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of the Bounty Command or you can disable"
 						+ "\nthe command completely.");
+		
 		setCategoryComment("mobstacker",
 				"########################################################################" + "\nMobStacker settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of Mobstacker Integration, or you can disable"
 						+ "\nintegration completely.");
+		
 		setCategoryComment("grinding",
 				"########################################################################"
 						+ "\nGrinding detection settings"
@@ -186,16 +198,17 @@ public class ConfigManager extends AutoConfig {
 						+ "\nIntegration to other plugins."
 						+ "\n########################################################################");
 
+		setCategoryComment("dropmoneyonground",
+				"########################################################################"
+						+ "\nDropMoneyOnGroud Settings"
+						+ "\n########################################################################");
 		setCategoryComment("database",
 				"########################################################################" + "\nDatabase Settings."
 						+ "\n########################################################################");
 
 		setCategoryComment("updates", "########################################################################"
 				+ "\nUpdate settings" + "\n########################################################################");
-		setCategoryComment("dropmoneyonground",
-				"########################################################################"
-						+ "\nDropMoneyOnGroud Settings"
-						+ "\n########################################################################");
+		
 		setCategoryComment("general", "########################################################################"
 				+ "\nGeneral Setting." + "\n########################################################################");
 
@@ -668,125 +681,128 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Specials / Achievements
 	// #####################################################################################
-	@ConfigField(name = "charged-kill", category = "special")
+	@ConfigField(name = "disable-achievements-in-worlds", category = "achievements", comment = "Put the names of the worlds here where you want to disable achievements."
+			+ "\nPlayers will still get rewards for killings.")
+	public String[] disableAchievementsInWorlds = {"worldname"};
+	@ConfigField(name = "charged-kill", category = "achievements", comment = "Achievements")
 	public double specialCharged = 1000;
-	@ConfigField(name = "charged-kill-cmd", category = "special")
+	@ConfigField(name = "charged-kill-cmd", category = "achievements")
 	public String specialChargedCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "charged-kill-cmd-desc", category = "special")
+	@ConfigField(name = "charged-kill-cmd-desc", category = "achievements")
 	public String specialChargedCmdDesc = "";
-	@ConfigField(name = "creeper-punch", category = "special")
+	@ConfigField(name = "creeper-punch", category = "achievements")
 	public double specialCreeperPunch = 1000;
-	@ConfigField(name = "creeper-punch-cmd", category = "special")
+	@ConfigField(name = "creeper-punch-cmd", category = "achievements")
 	public String specialCreeperPunchCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "creeper-punch-cmd-desc", category = "special")
+	@ConfigField(name = "creeper-punch-cmd-desc", category = "achievements")
 	public String specialCreeperPunchCmdDesc = "";
-	@ConfigField(name = "axe-murderer", category = "special")
+	@ConfigField(name = "axe-murderer", category = "achievements")
 	public double specialAxeMurderer = 1000;
-	@ConfigField(name = "axe-murderer-cmd", category = "special")
+	@ConfigField(name = "axe-murderer-cmd", category = "achievements")
 	public String specialAxeMurdererCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "axe-murderer-cmd-desc", category = "special")
+	@ConfigField(name = "axe-murderer-cmd-desc", category = "achievements")
 	public String specialAxeMurdererCmdDesc = "";
-	@ConfigField(name = "recordhungry", category = "special")
+	@ConfigField(name = "recordhungry", category = "achievements")
 	public double specialRecordHungry = 1000;
-	@ConfigField(name = "recordhungry-cmd", category = "special")
+	@ConfigField(name = "recordhungry-cmd", category = "achievements")
 	public String specialRecordHungryCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "recordhungry-cmd-desc", category = "special")
+	@ConfigField(name = "recordhungry-cmd-desc", category = "achievements")
 	public String specialRecordHungryCmdDesc = "";
-	@ConfigField(name = "infighting", category = "special")
+	@ConfigField(name = "infighting", category = "achievements")
 	public double specialInfighting = 2000;
-	@ConfigField(name = "infighting-cmd", category = "special")
+	@ConfigField(name = "infighting-cmd", category = "achievements")
 	public String specialInfightingCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "infighting-cmd-desc", category = "special")
+	@ConfigField(name = "infighting-cmd-desc", category = "achievements")
 	public String specialInfightingCmdDesc = "";
-	@ConfigField(name = "by-the-book", category = "special")
+	@ConfigField(name = "by-the-book", category = "achievements")
 	public double specialByTheBook = 1000;
-	@ConfigField(name = "by-the-book-cmd", category = "special")
+	@ConfigField(name = "by-the-book-cmd", category = "achievements")
 	public String specialByTheBookCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "by-the-book-cmd-desc", category = "special")
+	@ConfigField(name = "by-the-book-cmd-desc", category = "achievements")
 	public String specialByTheBookCmdDesc = "";
-	@ConfigField(name = "creepercide", category = "special")
+	@ConfigField(name = "creepercide", category = "achievements")
 	public double specialCreepercide = 1000;
-	@ConfigField(name = "creepercide-cmd", category = "special")
+	@ConfigField(name = "creepercide-cmd", category = "achievements")
 	public String specialCreepercideCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "creepercide-cmd-desc", category = "special")
+	@ConfigField(name = "creepercide-cmd-desc", category = "achievements")
 	public String specialCreepercideCmdDesc = "";
-	@ConfigField(name = "hunt-begins", category = "special")
+	@ConfigField(name = "hunt-begins", category = "achievements")
 	public double specialHuntBegins = 500;
-	@ConfigField(name = "hunt-begins-cmd", category = "special")
+	@ConfigField(name = "hunt-begins-cmd", category = "achievements")
 	public String specialHuntBeginsCmd = "";
-	@ConfigField(name = "hunt-begins-cmd-desc", category = "special")
+	@ConfigField(name = "hunt-begins-cmd-desc", category = "achievements")
 	public String specialHuntBeginsCmdDesc = "";
-	@ConfigField(name = "itsmagic", category = "special")
+	@ConfigField(name = "itsmagic", category = "achievements")
 	public double specialItsMagic = 2000;
-	@ConfigField(name = "itsmagic-cmd", category = "special")
+	@ConfigField(name = "itsmagic-cmd", category = "achievements")
 	public String specialItsMagicCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "itsmagic-cmd-desc", category = "special")
+	@ConfigField(name = "itsmagic-cmd-desc", category = "achievements")
 	public String specialItsMagicCmdDesc = "Enjoy you Gold Ingot";
-	@ConfigField(name = "fancypants", category = "special")
+	@ConfigField(name = "fancypants", category = "achievements")
 	public double specialFancyPants = 1000;
-	@ConfigField(name = "fancypants-cmd", category = "special")
+	@ConfigField(name = "fancypants-cmd", category = "achievements")
 	public String specialFancyPantsCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "fancypants-cmd-desc", category = "special")
+	@ConfigField(name = "fancypants-cmd-desc", category = "achievements")
 	public String specialFancyPantsCmdDesc = "Enjoy you Gold Ingots";
-	@ConfigField(name = "master-sniper", category = "special")
+	@ConfigField(name = "master-sniper", category = "achievements")
 	public double specialMasterSniper = 2000;
-	@ConfigField(name = "master-sniper-cmd", category = "special")
+	@ConfigField(name = "master-sniper-cmd", category = "achievements")
 	public String specialMasterSniperCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "master-sniper-cmd-desc", category = "special")
+	@ConfigField(name = "master-sniper-cmd-desc", category = "achievements")
 	public String specialMasterSniperCmdDesc = "Enjoy you Gold Ingots";
-	@ConfigField(name = "justintime", category = "special")
+	@ConfigField(name = "justintime", category = "achievements")
 	public double specialJustInTime = 1000;
-	@ConfigField(name = "justintime-cmd", category = "special")
+	@ConfigField(name = "justintime-cmd", category = "achievements")
 	public String specialJustInTimeCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "justintime-cmd-desc", category = "special")
+	@ConfigField(name = "justintime-cmd-desc", category = "achievements")
 	public String specialJustInTimeCmdDesc = "Enjoy you Gold Ingots";
-	@ConfigField(name = "fangmaster", category = "special")
+	@ConfigField(name = "fangmaster", category = "achievements")
 	public double specialFangMaster = 1000;
-	@ConfigField(name = "fangmaster-cmd", category = "special")
+	@ConfigField(name = "fangmaster-cmd", category = "achievements")
 	public String specialFangMasterCmd = "give {player} gold_ingot 1";
-	@ConfigField(name = "fangmaster-cmd-desc", category = "special")
+	@ConfigField(name = "fangmaster-cmd-desc", category = "achievements")
 	public String specialFangMasterCmdDesc = "Enjoy your Gold Ingot";
-	@ConfigField(name = "hunter1", category = "special")
+	@ConfigField(name = "hunter1", category = "achievements")
 	public double specialHunter1 = 1000;
-	@ConfigField(name = "hunter1-cmd", category = "special")
+	@ConfigField(name = "hunter1-cmd", category = "achievements")
 	public String specialHunter1Cmd = "give {player} gold_ingot 5";
-	@ConfigField(name = "hunter1-cmd-desc", category = "special")
+	@ConfigField(name = "hunter1-cmd-desc", category = "achievements")
 	public String specialHunter1CmdDesc = "Enjoy your 5 Gold Ingots";
-	@ConfigField(name = "hunter2", category = "special")
+	@ConfigField(name = "hunter2", category = "achievements")
 	public double specialHunter2 = 2500;
-	@ConfigField(name = "hunter2-cmd", category = "special")
+	@ConfigField(name = "hunter2-cmd", category = "achievements")
 	public String specialHunter2Cmd = "give {player} gold_ingot 10";
-	@ConfigField(name = "hunter2-cmd-desc", category = "special")
+	@ConfigField(name = "hunter2-cmd-desc", category = "achievements")
 	public String specialHunter2CmdDesc = "Enjoy your 10 Gold Ingots";
-	@ConfigField(name = "hunter3", category = "special")
+	@ConfigField(name = "hunter3", category = "achievements")
 	public double specialHunter3 = 5000;
-	@ConfigField(name = "hunter3-cmd", category = "special")
+	@ConfigField(name = "hunter3-cmd", category = "achievements")
 	public String specialHunter3Cmd = "give {player} gold_ingot 20";
-	@ConfigField(name = "hunter3-cmd-desc", category = "special")
+	@ConfigField(name = "hunter3-cmd-desc", category = "achievements")
 	public String specialHunter3CmdDesc = "Enjoy your 20 Gold Ingots";
-	@ConfigField(name = "hunter4", category = "special")
+	@ConfigField(name = "hunter4", category = "achievements")
 	public double specialHunter4 = 10000;
-	@ConfigField(name = "hunter4-cmd", category = "special")
+	@ConfigField(name = "hunter4-cmd", category = "achievements")
 	public String specialHunter4Cmd = "give {player} gold_ingot 25";
-	@ConfigField(name = "hunter4-cmd-desc", category = "special")
+	@ConfigField(name = "hunter4-cmd-desc", category = "achievements")
 	public String specialHunter4CmdDesc = "Enjoy your 25 Gold Ingots";
-	@ConfigField(name = "hunter5", category = "special")
+	@ConfigField(name = "hunter5", category = "achievements")
 	public double specialHunter5 = 20000;
-	@ConfigField(name = "hunter5-cmd", category = "special")
+	@ConfigField(name = "hunter5-cmd", category = "achievements")
 	public String specialHunter5Cmd = "give {player} gold_ingot 40";
-	@ConfigField(name = "hunter5-cmd-desc", category = "special")
+	@ConfigField(name = "hunter5-cmd-desc", category = "achievements")
 	public String specialHunter5CmdDesc = "Enjoy your 40 Gold Ingots";
-	@ConfigField(name = "hunter6", category = "special")
+	@ConfigField(name = "hunter6", category = "achievements")
 	public double specialHunter6 = 40000;
-	@ConfigField(name = "hunter6-cmd", category = "special")
+	@ConfigField(name = "hunter6-cmd", category = "achievements")
 	public String specialHunter6Cmd = "give {player} gold_ingot 50";
-	@ConfigField(name = "hunter6-cmd-desc", category = "special")
+	@ConfigField(name = "hunter6-cmd-desc", category = "achievements")
 	public String specialHunter6CmdDesc = "Enjoy your 50 Gold Ingots";
-	@ConfigField(name = "hunter7", category = "special")
+	@ConfigField(name = "hunter7", category = "achievements")
 	public double specialHunter7 = 80000;
-	@ConfigField(name = "hunter7-cmd", category = "special")
+	@ConfigField(name = "hunter7-cmd", category = "achievements")
 	public String specialHunter7Cmd = "give {player} gold_ingot 60";
-	@ConfigField(name = "hunter7-cmd-desc", category = "special")
+	@ConfigField(name = "hunter7-cmd-desc", category = "achievements")
 	public String specialHunter7CmdDesc = "Enjoy your 60 Gold Ingots";
 
 	// #####################################################################################
@@ -1171,7 +1187,7 @@ public class ConfigManager extends AutoConfig {
 	// Generel settings
 	// #####################################################################################
 	@ConfigField(name = "disabled-in-worlds", category = "general", comment = "Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
-	public String[] disabledInWorlds = new String[0];
+	public String[] disabledInWorlds = {"worldname"};
 	@ConfigField(name = "language", category = "general", comment = "The language (file) to use. You can put the name of the language file as the language code "
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
@@ -1251,7 +1267,7 @@ public class ConfigManager extends AutoConfig {
 			} else
 				return 0;
 		} else {
-			if (Misc.isMC110OrNewer()) 
+			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
 					return getPrice(mob, polarBearPrize);
 				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
@@ -1259,11 +1275,11 @@ public class ConfigManager extends AutoConfig {
 				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
 					return getPrice(mob, huskPrize);
 
-			if (Misc.isMC19OrNewer()) 
+			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
 					return getPrice(mob, shulkerPrize);
 
-			if (Misc.isMC18OrNewer()) 
+			if (Misc.isMC18OrNewer())
 				if (mob instanceof Guardian)
 					return getPrice(mob, guardianPrize);
 				else if (mob instanceof Endermite)
@@ -1551,7 +1567,7 @@ public class ConfigManager extends AutoConfig {
 					else
 						return rabbitCmdDesc;
 
-			//MC1.7 or older
+			// MC1.7 or older
 			if (mob instanceof Player)
 				return pvpKillCmdDesc;
 			else if (mob instanceof Blaze)
@@ -1663,7 +1679,7 @@ public class ConfigManager extends AutoConfig {
 					else
 						return rabbitFrequency;
 
-			//MC1.7 or older
+			// MC1.7 or older
 			if (mob instanceof Player)
 				return 100;
 			else if (mob instanceof Blaze)
@@ -1764,7 +1780,6 @@ public class ConfigManager extends AutoConfig {
 			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
 					return shulkerFrequencyBase;
-
 
 			if (Misc.isMC18OrNewer())
 				if (mob instanceof Guardian)

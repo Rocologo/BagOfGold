@@ -1,3 +1,7 @@
+V3.2.1
+- Fixed java.lang.NoSuchMethodError: net.citizensnpcs.api.trait.TraitFactory.deregisterTrait on MC 1.7 servers
+- Added new feature. You can now disable achievements in specific worlds in config.yml, but still get rewards for killings.
+- Fixed java.lang.NullPointerException at one.lindegaard.MobHunting.achievements.AchievementManager.onInventoryClick(AchievementManager.java:732) ~[?:?]
 V3.2.0
 - Fixed bugs
   - ProSniper bonus was not added when sing LEFT hand
