@@ -38,6 +38,7 @@
 		<titleapi.version>LATEST</titleapi.version>
 		<vanishnopacket.version>LATEST</vanishnopacket.version>
 		<titlemanager.version>1.5.11</titlemanager.version>
+		<mobstacker.version>2.0.0</mobstacker.version>
 	</properties>
 
 	<organization>
