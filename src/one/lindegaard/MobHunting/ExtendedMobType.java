@@ -5,6 +5,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
+
+import one.lindegaard.MobHunting.util.Misc;
+
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Villager.Profession;
 
@@ -132,46 +135,26 @@ public enum ExtendedMobType {
 		return 100;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public boolean matches(Entity ent) {
-		// test if MC 1.10 classes exists
-		try {
-			@SuppressWarnings("unused")
-			Class cls = Class.forName("org.bukkit.entity.PolarBear");
+		if (Misc.isMC110OrNewer())
 			if (this == PolarBear)
 				return ent instanceof org.bukkit.entity.PolarBear;
 			else if (this == Stray)
 				return ent instanceof org.bukkit.entity.Skeleton
 						&& (((Skeleton) ent).getSkeletonType() == SkeletonType.STRAY);
-			else if (this == Husk) {
+			else if (this == Husk)
 				return ent instanceof org.bukkit.entity.Zombie
 						&& ((Zombie) ent).getVillagerProfession() == Profession.HUSK;
-			}
-		} catch (ClassNotFoundException e) {
-			// not MC 1.10
-		}
 
-		// test if MC 1.9 classes exists
-		try {
-			@SuppressWarnings("unused")
-			Class cls = Class.forName("org.bukkit.entity.Shulker");
+		if (Misc.isMC19OrNewer())
 			if (this == Shulker)
 				return ent instanceof org.bukkit.entity.Shulker;
-		} catch (ClassNotFoundException e) {
-			// not MC 1.9
-		}
 
-		// test if MC 1.8 classes exists
-		try {
-			@SuppressWarnings("unused")
-			Class cls = Class.forName("org.bukkit.entity.Rabbit");
+		if (Misc.isMC18OrNewer())
 			if (this == KillerRabbit)
 				return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY;
 			else if (this == PassiveRabbit)
 				return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType()) != Rabbit.Type.THE_KILLER_BUNNY;
-		} catch (ClassNotFoundException e) {
-			// not MC 1.8
-		}
 
 		// MC 1.7.10 and older entities
 		if (this == WitherSkeleton)
@@ -180,9 +163,8 @@ public enum ExtendedMobType {
 			return ent instanceof Skeleton && ((Skeleton) ent).getSkeletonType() == SkeletonType.NORMAL;
 		else if (this == BonusMob)
 			return ent.hasMetadata("MH:hasBonus");
-		else {
+		else
 			return ent.getType().toString() == mType;
-		}
 	}
 
 	public String getName() {
@@ -190,7 +172,7 @@ public enum ExtendedMobType {
 	}
 
 	public static ExtendedMobType getExtendedMobType(Entity entity) {
-		for (ExtendedMobType type : values()) 
+		for (ExtendedMobType type : values())
 			if (type.matches(entity))
 				return type;
 		MobHunting.debug("ERROR!!! - Unhandled Entity: %s(%s) Type:%s", entity.getName(), entity.getCustomName(),

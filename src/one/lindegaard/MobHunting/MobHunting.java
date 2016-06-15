@@ -86,13 +86,13 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.kiwifisher.mobstacker.MobStacker;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -127,6 +127,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 	public Random mRand = new Random();
 
 	private boolean mInitialized = false;
+
+	// TODO: Remove this when SQL Database connections is stable. (After V3.2.5)
+	public static int openConnections = 0;
 
 	@Override
 	public void onLoad() {
@@ -330,12 +333,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mModifiers.add(new CoverBlown());
 		mModifiers.add(new RankBonus());
 		mModifiers.add(new DifficultyBonus());
-		// Check if horses exist
-		try {
-			Class.forName("org.bukkit.entity.Horse");
-			mModifiers.add(new MountedBonus());
-		} catch (ClassNotFoundException e) {
-		}
+		mModifiers.add(new MountedBonus());
 		mModifiers.add(new StackedMobBonus());
 	}
 
@@ -591,8 +589,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 			info.wolfAssist = true;
 		}
 
-		if (weapon == null && cause != null)
-			weapon = cause.getItemInHand();
+		if (weapon == null && cause != null) {
+			if (Misc.isMC19OrNewer() && projectile) {
+				PlayerInventory pi = cause.getInventory();
+				if (pi.getItemInMainHand().getType() == Material.BOW)
+					weapon = pi.getItemInMainHand();
+				else
+					weapon = pi.getItemInOffHand();
+			} else {
+				weapon = cause.getItemInHand();
+				debug("Damaged with a %s", weapon.getType());
+			}
+		}
 
 		if (weapon != null)
 			info.weapon = weapon;
@@ -915,6 +923,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 		if (info.weapon == null)
 			info.weapon = new ItemStack(Material.AIR);
+
 		// Player or killed Mob is disguised
 		if (!info.playerUndercover)
 			if (DisguisesHelper.isDisguised(killer)) {
@@ -979,7 +988,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 											&& !MobStackerCompat.isGrindingStackedMobsAllowed())) {
 								data.setDampenedKills(data.getDampenedKills() + 1);
 								if (data.getDampenedKills() == 10) {
-									MobHunting.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
+									MobHunting
+											.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
 									learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
 									playerActionBarMessage(killer,
 											ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
@@ -1022,6 +1032,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					modifiers.add(mod.getName());
 					multiplier *= amt;
 					data.addModifier(mod.getName(), amt);
+					debug("Multiplier: %s = %s", mod.getName(), amt);
 				}
 			}
 		}
@@ -1044,7 +1055,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Handle Bounty Kills
 		double reward = 0;
 		if (!mConfig.disablePlayerBounties && killed instanceof Player && killer instanceof Player) {
-			debug("This was a Pvp kill (killed=%s) no af bounties=%s", killed.getName(),
+			debug("This was a Pvp kill (killed=%s) no of bounties=%s", killed.getName(),
 					mBountyManager.getAllBounties().size());
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
@@ -1135,7 +1146,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			if (killer instanceof Player)
-				debug ( "RecordKill: %s killed a %s", ((Player)killer).getName(),ExtendedMobType.getExtendedMobType(killed));
+				debug("RecordKill: %s killed a %s", ((Player) killer).getName(),
+						ExtendedMobType.getExtendedMobType(killed));
 			// MythicMob Kill - update PlayerStats
 			// TODO: record mythicmob kills as its own kind of mobs
 			if (ExtendedMobType.getExtendedMobType(killed) != null)
@@ -1336,35 +1348,5 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 	}
-
-	// ************************************************************************************
-	// SPONGE PROJECT
-	// ************************************************************************************
-
-	// private Logger logger;
-
-	// @Plugin(id = "mobhuntingSponge", name = "MobHunting Project", version =
-	// "1.0")
-	// public class MobHuntingProject implements Listener {
-	// @Subscribe
-	// public void onServerStart(ServerStartedEvent event) {
-	// Hey!The server has started!
-	// Try instantiating your logger in here.
-	// (There's a guide for that)
-	// logger.info("Hello World!");
-	// }
-
-	// @Subscribe
-	// public void onServerStop(ServerStoppedEvent event) {
-	// Hey! The server has started!
-	// Try instantiating your logger in here.
-	// (There's a guide for that)
-	// logger.info("Goodbye World!");
-	// }
-	// }
-
-	// ************************************************************************************
-
-	public static int openConnections = 0;
 
 }

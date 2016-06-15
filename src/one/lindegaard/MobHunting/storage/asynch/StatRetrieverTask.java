@@ -17,8 +17,7 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>> {
 	private int mCount;
 	private HashSet<Object> mWaiting;
 
-	public StatRetrieverTask(StatType type, TimePeriod period, int count,
-			HashSet<Object> waiting) {
+	public StatRetrieverTask(StatType type, TimePeriod period, int count, HashSet<Object> waiting) {
 		mType = type;
 		mPeriod = period;
 		mCount = count;
@@ -36,13 +35,9 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>> {
 				if (!it.hasNext())
 					while (it.hasNext()) {
 						StatStore stat = it.next();
-						if (cached.getPlayer().getUniqueId()
-								.equals(stat.getPlayer().getUniqueId())
+						if (cached.getPlayer().getUniqueId().equals(stat.getPlayer().getUniqueId())
 								&& cached.getType().equals(stat.getType())) {
-							stat.setAmount(stat.getAmount()
-									+ cached.getAmount());
-							// stat.amount += cached.amount;
-
+							stat.setAmount(stat.getAmount() + cached.getAmount());
 							found = true;
 							break;
 						}

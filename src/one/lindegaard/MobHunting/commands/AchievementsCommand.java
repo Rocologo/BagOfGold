@@ -35,9 +35,9 @@ public class AchievementsCommand implements ICommand {
 			return new String[] { label + ChatColor.GOLD + " <player>" };
 		else {
 			if (sender.hasPermission("mobhunting.listachievements.other"))
-				return new String[] { label + ChatColor.GREEN + " [<player>]" };
+				return new String[] { label + ChatColor.GREEN + " [<player>] [nogui|gui]" };
 			else
-				return new String[] { label };
+				return new String[] { label + ChatColor.GREEN + " [nogui|gui]" };
 		}
 	}
 
@@ -76,8 +76,9 @@ public class AchievementsCommand implements ICommand {
 			sender.sendMessage("list all archivement descriptions");
 			MobHunting.getAchievements().listAllAchievements(sender);
 
-		} else if (args.length == 1 && args[0].equalsIgnoreCase("nogui")) {
-			MobHunting.getAchievements().showAllAchievements((Player) player, player, false, self);
+		} else if (args.length == 1 && (args[0].equalsIgnoreCase("nogui") || args[0].equalsIgnoreCase("gui"))) {
+			MobHunting.getAchievements().showAllAchievements((Player) player, player, args[0].equalsIgnoreCase("gui"),
+					self);
 
 		} else {
 
@@ -86,11 +87,8 @@ public class AchievementsCommand implements ICommand {
 				if (!sender.hasPermission("mobhunting.listachievements.other"))
 					return false;
 
-			// final String playerName = (player instanceof Player ? ((Player)
-			// player).getDisplayName()
-			// : player.getName());
-
-			if (args.length == 1 || (args.length == 2 && args[1].equalsIgnoreCase("nogui"))) {
+			if (args.length == 1
+					|| (args.length == 2 && (args[1].equalsIgnoreCase("nogui") || args[1].equalsIgnoreCase("gui")))) {
 				String name = args[0];
 				otherPlayer = Bukkit.getOfflinePlayer(name);
 
@@ -103,13 +101,9 @@ public class AchievementsCommand implements ICommand {
 					return true;
 				}
 
-				// final String playerName = (player instanceof Player ?
-				// ((Player)
-				// player).getDisplayName()
-				// : player.getName());
-
-				if (args.length == 2 && args[1].equalsIgnoreCase("nogui"))
-					MobHunting.getAchievements().showAllAchievements((Player) player, otherPlayer, false, self);
+				if (args.length == 2 && (args[1].equalsIgnoreCase("nogui") || args[1].equalsIgnoreCase("gui")))
+					MobHunting.getAchievements().showAllAchievements((Player) player, otherPlayer,
+							args[1].equalsIgnoreCase("gui"), self);
 				else
 					MobHunting.getAchievements().showAllAchievements((Player) player, otherPlayer,
 							MobHunting.getConfigManager().useGuiForAchievements, self);

@@ -1,3 +1,20 @@
+V3.2.0
+- Fixed bugs
+  - ProSniper bonus was not added when sing LEFT hand
+  - NullPointerException bug in MetricsManager
+  - /mh achievements show disabled mobs (passive mobs / peaceful mobs)
+- /mv achievements is separated in two inventories. Achieved and in progress/not begun.
+- Added gui/nogui parameter
+  - /mv achievements nogui
+  - /mv achievements gui
+  - /mv achievements playername nogui
+  - /mv achievements playername gui
+  - /mv bounty nogui
+  - /mv bounty gui
+  - /mv bounty playername nogui
+  - /mv bounty playername gui
+- Improved Minecraft version test, now using a faster method. The old method could cause a sort lag, when killing a Mob!  
+  
 V3.1.9
 - Added new Mobs Husk and Stray 
 - Fixed bug when MobStacker was not installed 

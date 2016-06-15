@@ -1,17 +1,13 @@
 package one.lindegaard.MobHunting.achievements;
 
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
-public class FourthHuntAchievement implements ProgressAchievement, Listener {
+public class FourthHuntAchievement implements ProgressAchievement {
 	private ExtendedMobType mType;
 
 	public FourthHuntAchievement(ExtendedMobType entity) {
@@ -53,13 +49,6 @@ public class FourthHuntAchievement implements ProgressAchievement, Listener {
 	@Override
 	public String nextLevelId() {
 		return "hunting-level5-" + mType.name().toLowerCase();
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	private void onKillCompleted(MobHuntKillEvent event) {
-		if (mType.matches(event.getKilledEntity()))
-			MobHunting.getAchievements().awardAchievementProgress(
-					this, event.getPlayer(), 1);
 	}
 
 	@Override

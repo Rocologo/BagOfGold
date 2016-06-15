@@ -499,15 +499,14 @@ public class AchievementManager implements Listener {
 	// *************************************************************************************
 	// ACHIEVEMENTS GUI
 	// *************************************************************************************
-	Inventory inventory;// , inventory2;
+	Inventory inventory, inventory2;
 
 	public void showAllAchievements(final Player player, final OfflinePlayer otherPlayer, final boolean gui,
 			final boolean self) {
 
 		inventory = Bukkit.createInventory(player, 54,
 				ChatColor.BLUE + "" + ChatColor.BOLD + "Achievements:" + player.getName());
-		// inventory2 = Bukkit.createInventory(player, 54, ChatColor.BLUE + "" +
-		// ChatColor.BOLD + "Not started");
+		inventory2 = Bukkit.createInventory(player, 54, ChatColor.BLUE + "" + ChatColor.BOLD + "Not started");
 
 		MobHunting.getAchievements().requestCompletedAchievements(otherPlayer,
 				new IDataCallback<List<Entry<Achievement, Integer>>>() {
@@ -561,7 +560,7 @@ public class AchievementManager implements Listener {
 						boolean inProgress = false;
 						int n = 0;
 						for (Map.Entry<Achievement, Integer> achievement : data) {
-							if (achievement.getValue() == -1) {
+							if (achievement.getValue() == -1 && achievement.getKey().getPrize() != 0) {
 								if (!gui) {
 									lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
 									lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC
@@ -596,8 +595,8 @@ public class AchievementManager implements Listener {
 									+ Messages.getString("mobhunting.commands.listachievements.progress"));
 
 							for (Map.Entry<Achievement, Integer> achievement : data) {
-								if (achievement.getValue() != -1
-										&& achievement.getKey() instanceof ProgressAchievement) {
+								if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
+										&& achievement.getKey().getPrize() != 0) {
 									if (!gui)
 										lines.add(ChatColor.GRAY + " " + achievement.getKey().getName()
 												+ ChatColor.WHITE + "  " + achievement.getValue() + " / "
@@ -619,19 +618,19 @@ public class AchievementManager implements Listener {
 							}
 						}
 						// Achievements NOT started.
-						int m = 53;
+						int m = 0;
 						// Normal Achievement
 						for (Achievement achievement : getAllAchievements()) {
 							if (!(achievement instanceof ProgressAchievement)) {
 								if (!isOnGoingOrCompleted(achievement, data)) {
 									if (achievement.getPrize() != 0) {
-										addInventoryDetails(achievement.getSymbol(), inventory, m,
+										addInventoryDetails(achievement.getSymbol(), inventory2, m,
 												ChatColor.YELLOW + achievement.getName(),
 												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 														achievement.getDescription(), "", Messages.getString(
 																"mobhunting.commands.listachievements.notstarted") });
-										if (m > n)
-											m--;
+										if (m < 52)
+											m++;
 										else
 											MobHunting.debug("No room for achievement: %s", achievement.getName());
 									}
@@ -648,13 +647,13 @@ public class AchievementManager implements Listener {
 											(ProgressAchievement) achievement, data);
 									if (!nextLevelBegun && previousLevelCompleted) {
 										if (achievement.getPrize() != 0) {
-											addInventoryDetails(achievement.getSymbol(), inventory, m,
+											addInventoryDetails(achievement.getSymbol(), inventory2, m,
 													ChatColor.YELLOW + achievement.getName(),
 													new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 															achievement.getDescription(), "", Messages.getString(
 																	"mobhunting.commands.listachievements.notstarted") });
-											if (m > 0)
-												m--;
+											if (m < 52)
+												m++;
 											else
 												MobHunting.debug("No room for achievement: %s", achievement.getName());
 										}
@@ -722,15 +721,15 @@ public class AchievementManager implements Listener {
 				event.setCancelled(true);
 				MobHunting.debug("AchievemeneManager: Player clicked on inventory - closing now");
 				player.closeInventory();
-				// player.openInventory(inventory2);
+				player.openInventory(inventory2);
 			}
-		// if (inv.getName().equals(inventory2.getName())) {
-		// if (clicked != null && clicked.getType() == Material.DIRT) {
-		// // TODO:
-		// }
-		// event.setCancelled(true);
-		// player.closeInventory();
-		// }
+		if (inv.getName().equals(inventory2.getName())) {
+			if (clicked != null && clicked.getType() == Material.DIRT) {
+				// TODO:
+			}
+			event.setCancelled(true);
+			player.closeInventory();
+		}
 	}
 
 	public static void addInventoryDetails(ItemStack itemStack, Inventory inv, int Slot, String name, String[] lores) {

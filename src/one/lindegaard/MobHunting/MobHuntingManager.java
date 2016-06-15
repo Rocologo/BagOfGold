@@ -198,7 +198,6 @@ public class MobHuntingManager implements Listener {
 
 	public void rewardKill(Player killer, LivingEntity killed, EntityDeathEvent event) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

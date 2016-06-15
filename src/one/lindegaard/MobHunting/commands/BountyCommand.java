@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
@@ -21,7 +22,7 @@ public class BountyCommand implements ICommand {
 	}
 
 	// Used case
-	// /mh bounty - to show a list of player with a bounty
+	// /mh bounty [gui|nogui]- to show a list of player with a bounty
 	// /mh bounty <player> - to check if there is a bounty on <player>
 	// /mh bounty <player> <prize> - to put a prize on the player
 	// /mh bounty remove <player> - to remove a bounty from player
@@ -48,12 +49,16 @@ public class BountyCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + ChatColor.RED + " " + ChatColor.GREEN + "       - to show a list",
-				label + ChatColor.RED + " <player>" + ChatColor.GREEN + " - to check if there is a bounty on <player>",
+		return new String[] {
+				label + ChatColor.RED + ChatColor.YELLOW + " [gui|nogui]" + ChatColor.GREEN
+						+ "       - to show a list.",
+				label + ChatColor.RED + " <player>" + ChatColor.YELLOW + " [gui|nogui]" + ChatColor.GREEN
+						+ " - to check if there is a bounty on <player>",
 				label + ChatColor.RED + " <player> <prize> <message>" + ChatColor.GREEN
 						+ " - put a bounty on <player> deliver the message when killed.",
 				label + ChatColor.RED + " <player>" + ChatColor.WHITE + " drop" + ChatColor.GREEN
-						+ " - to remove bounty on <player> with a 50% reduction" };
+						+ " - to remove bounty on <player> with a " + MobHunting.getConfigManager().bountyReturnPct
+						+ "% reduction" };
 	}
 
 	@Override
@@ -73,6 +78,10 @@ public class BountyCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
+		if (sender instanceof ConsoleCommandSender) {
+			sender.sendMessage("You can't use /mh bounty from the console");
+			return true;
+		}
 		@SuppressWarnings("deprecation")
 		OfflinePlayer bountyOwner = Bukkit.getOfflinePlayer(sender.getName());
 		String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup((Player) bountyOwner);
@@ -90,6 +99,12 @@ public class BountyCommand implements ICommand {
 			if (args[0].equalsIgnoreCase("help"))
 				return false;
 
+			// /mh bounty [gui|nogui]
+			if (args[0].equalsIgnoreCase("gui") || args[0].equalsIgnoreCase("nogui")) {
+				BountyManager.showMostWanted(sender, worldGroupName, args[0].equalsIgnoreCase("gui"));
+				return true;
+			}
+
 			// /mh bounty <player>
 			// Show list of Bounties on for player <player>
 			// check if args[0] is a known playername
@@ -98,6 +113,22 @@ public class BountyCommand implements ICommand {
 			if (wantedPlayer != null) {
 				BountyManager.showOpenBounties(sender, worldGroupName, wantedPlayer,
 						MobHunting.getConfigManager().useGuiForBounties);
+				return true;
+			} else {
+				sender.sendMessage(
+						Messages.getString("mobhunting.commands.bounty.unknown-player", "wantedplayer", args[0]));
+				return true;
+			}
+
+		} else if (args.length == 2 && (args[1].equalsIgnoreCase("gui") || args[1].equalsIgnoreCase("nogui"))) {
+			// /mh bounty <player>
+			// Show list of Bounties on for player <player> [gui|nogui]
+			// check if args[0] is a known playername
+
+			@SuppressWarnings("deprecation")
+			OfflinePlayer wantedPlayer = Bukkit.getOfflinePlayer(args[0]);
+			if (wantedPlayer != null) {
+				BountyManager.showOpenBounties(sender, worldGroupName, wantedPlayer, args[1].equalsIgnoreCase("gui"));
 				return true;
 			} else {
 				sender.sendMessage(

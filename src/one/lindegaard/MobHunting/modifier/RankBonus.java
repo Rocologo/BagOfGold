@@ -35,7 +35,6 @@ public class RankBonus implements IModifier {
 				}
 			}
 			mul = (mul == 0) ? 1 : mul;
-			MobHunting.debug("RankMultiplier=%s", mul);
 			return mul;
 		} else if (MobHunting.getConfigManager().rankMultiplier.containsKey("mobhunting.multiplier.op"))
 			return Double.valueOf(MobHunting.getConfigManager().rankMultiplier.get("mobhunting.multiplier.op"));

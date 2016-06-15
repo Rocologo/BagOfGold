@@ -43,7 +43,7 @@ public class SixthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String inheritFrom() {
-		return "hunting-level5-" + mType.name().toLowerCase(); //$NON-NLS-1$
+		return "hunting-level5-" + mType.name().toLowerCase(); 
 	}
 	
 	@Override

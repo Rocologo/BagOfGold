@@ -94,8 +94,6 @@ public class MetricsManager {
 				public int getValue() {
 					try {
 						@SuppressWarnings({ "rawtypes", "unused" })
-						// Class cls = Class
-						// .forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
 						Class cls = Class.forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
 						return DisguiseCraftCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
@@ -111,7 +109,6 @@ public class MetricsManager {
 				public int getValue() {
 					try {
 						@SuppressWarnings({ "rawtypes", "unused" })
-						// de.robingrether.idisguise.disguise.DisguiseType
 						Class cls = Class.forName("de.robingrether.idisguise.disguise.DisguiseType");
 						return IDisguiseCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
@@ -248,7 +245,7 @@ public class MetricsManager {
 			usageGraph.addPlotter(new Metrics.Plotter("# of Bounties") {
 				@Override
 				public int getValue() {
-					if (MobHunting.getBountyManager().getAllBounties()==null)
+					if (MobHunting.getConfigManager().disablePlayerBounties)
 						return 0;
 					else
 						return MobHunting.getBountyManager().getAllBounties().size();
