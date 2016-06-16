@@ -275,7 +275,7 @@
 		<!-- BossBarAPI -->
 		<repository>
 			<id>inventive-repo</id>
-			<url>https://repo.inventivetalent.org/content/groups/public/</url>
+			<url>http://repo.inventivetalent.org/content/groups/public/</url>
 		</repository>
 
 		<!-- TitleAPI -->
@@ -307,7 +307,6 @@
 			<id>MobStacker-github</id>
 			<url>https://github.com/KiwiFisher/MobStacker.git</url>
 		</repository>
-
 
 	</repositories>
 
