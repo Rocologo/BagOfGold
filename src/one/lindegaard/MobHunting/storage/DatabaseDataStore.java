@@ -363,7 +363,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			return 0;
 		int res = 0;
 		if (offlinePlayer.isOnline()) {
-			PlayerSettings ps = MobHunting.getPlayerSettingsmanager().getPlayerSettings((Player) offlinePlayer);
+			PlayerSettings ps = MobHunting.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
 			if (ps != null && ps.getPlayerId() != 0)
 				res = ps.getPlayerId();
 		}

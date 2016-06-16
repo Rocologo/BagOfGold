@@ -264,8 +264,12 @@ public class AchievementManager implements Listener {
 	 * @param player
 	 */
 	public void awardAchievement(Achievement achievement, Player player) {
-		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player)) {
+		if (!achievementsEnabledFor(player)) {
 			MobHunting.debug("AchievementBlocked] Achievements is disabled for player %s", player.getName());
+			return;
+		}
+		
+		if (hasAchievement(achievement, player)) {
 			return;
 		}
 

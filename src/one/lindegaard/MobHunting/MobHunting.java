@@ -598,7 +598,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 					weapon = pi.getItemInOffHand();
 			} else {
 				weapon = cause.getItemInHand();
-				debug("Damaged with a %s", weapon.getType());
 			}
 		}
 
@@ -1060,14 +1059,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
 			if (BountyManager.hasBounties(worldGroupName, wantedPlayer)) {
-				debug("There is a bounty on %s");
 				Set<Bounty> bounties = mBountyManager.getBounties(worldGroupName, wantedPlayer);
 				for (Bounty b : bounties) {
 					reward += b.getPrize();
 					OfflinePlayer bountyOwner = b.getBountyOwner();
 					mBountyManager.removeBounty(b);
 					if (bountyOwner.isOnline())
-						playerActionBarMessage((Player) bountyOwner,
+						playerActionBarMessage(getOnLinePlayer(bountyOwner),
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
 										"prize", b.getPrize(), "killed", killed.getName()));
 					b.setStatus(BountyStatus.completed);
@@ -1077,7 +1075,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 				// the player
 				playerActionBarMessage(killer, Messages.getString("mobhunting.moneygain-for-killing", "money",
 						mEconomy.format(reward), "killed", killed.getName()));
+				debug("%s got %s for killing %s", killer.getName(),reward, killed.getName());
 				// TODO: call bounty event, and check if canceled.
+				getEconomy().depositPlayer(killer, reward);
 				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));
 			} else {
@@ -1086,7 +1086,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// Calculate the reward
-		cash += reward;
+		//cash += reward;
 
 		if ((cash >= 0.01) || (cash <= -0.01)) {
 			// TODO: This must be moved, only works for cash!=0
@@ -1347,6 +1347,14 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return true;
 			}
 		}
+	}
+	
+	public static Player getOnLinePlayer(OfflinePlayer offlinePlayer){
+		for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()){
+			if (player.getName().equals(offlinePlayer.getName()))
+				return player;
+		}
+		return null;
 	}
 
 }

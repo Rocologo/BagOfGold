@@ -3,6 +3,7 @@ package one.lindegaard.MobHunting;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +16,7 @@ import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class PlayerSettingsManager implements Listener {
 
-	private static HashMap<Player, PlayerSettings> mPlayerSettings = new HashMap<Player, PlayerSettings>();
+	private static HashMap<OfflinePlayer, PlayerSettings> mPlayerSettings = new HashMap<OfflinePlayer, PlayerSettings>();
 
 	/**
 	 * Contructor for the PlayerSettingsmanager
@@ -30,7 +31,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @param player
 	 * @return PlayerSettings
 	 */
-	public PlayerSettings getPlayerSettings(Player player) {
+	public PlayerSettings getPlayerSettings(OfflinePlayer player) {
 		// TODO: cleanup - return mPlayerSettings.get(player); should be enough.
 		if (mPlayerSettings.containsKey(player))
 			return mPlayerSettings.get(player);
