@@ -33,7 +33,7 @@
 		<libsdisguises.version>8.2.6-SNAPSHOT</libsdisguises.version>
 		<protocollib.version>4.0.1-SNAPSHOT</protocollib.version>
 		<battleArena.version>LATEST</battleArena.version>
-		<bossbarapi.version>2.4.0</bossbarapi.version>
+		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titleapi.version>LATEST</titleapi.version>
 		<vanishnopacket.version>LATEST</vanishnopacket.version>
