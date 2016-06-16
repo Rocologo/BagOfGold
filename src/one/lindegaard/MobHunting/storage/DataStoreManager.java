@@ -229,10 +229,17 @@ public class DataStoreManager {
 		mExit = true;
 		flush();
 		mTaskThread.setWriteOnlyMode(true);
-
+		int n = 0;
 		try {
-			while (mTaskThread.getState() != Thread.State.WAITING)
+			while (mTaskThread.getState() != Thread.State.WAITING && n < 40) {
 				Thread.sleep(500);
+				n++;
+			}
+			MobHunting.debug("mTaskThread.state=%s",mTaskThread.getState());
+			if (mTaskThread.getState() == Thread.State.RUNNABLE){
+				MobHunting.debug("Interupting mTaskThread");
+				mTaskThread.interrupt();
+			}
 			MobHunting.debug("Interupting mStoreThread");
 			mStoreThread.interrupt();
 			mTaskThread.waitForEmptyQueue();
@@ -354,6 +361,9 @@ public class DataStoreManager {
 		public void run() {
 			try {
 				while (true) {
+					if (MobHunting.getConfigManager().debugSQL&&mQueue.size()>20){
+						MobHunting.debug("TaskThread: mQueue.size()=%s",mQueue.size());
+					}
 					if (mQueue.isEmpty())
 						synchronized (mSignal) {
 							mSignal.notifyAll();

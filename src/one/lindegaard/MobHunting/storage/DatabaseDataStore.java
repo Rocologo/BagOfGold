@@ -99,6 +99,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract void setupTables(Connection connection) throws SQLException;
 
 	public static int connections = 0;
+	public static final int MAX_CONNECTIONS=2;
 
 	public enum PreparedConnectionType {
 		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID
@@ -157,9 +158,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 		mGetPlayerData[2].close();
 		mGetPlayerData[3].close();
 		if (MobHunting.getConfigManager().debugSQL) {
-			DatabaseDataStore.connections = DatabaseDataStore.connections - 4;
-			if (DatabaseDataStore.connections > 10)
-				MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+			connections = connections - 4;
+			if (connections >= MAX_CONNECTIONS)
+				MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 		}
 	}
 
@@ -242,9 +243,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mInsertPlayerData.executeBatch();
 			mInsertPlayerData.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			mConnection.commit();
 		} catch (SQLException e) {
@@ -266,9 +267,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mUpdatePlayerSettings.executeBatch();
 			mUpdatePlayerSettings.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			mConnection.commit();
 		} catch (SQLException e) {
@@ -414,9 +415,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mUpdatePlayerName.executeUpdate();
 			mUpdatePlayerName.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			mConnection.commit();
 		} finally {
@@ -445,17 +446,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 				set.close();
 				mGetPlayerUUID.close();
 				if (MobHunting.getConfigManager().debugSQL) {
-					DatabaseDataStore.connections--;
-					if (DatabaseDataStore.connections > 10)
-						MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+					connections--;
+					if (connections >= MAX_CONNECTIONS)
+						MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 				}
 				return Bukkit.getOfflinePlayer(uid);
 			}
 			mGetPlayerUUID.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
 		} catch (SQLException e) {
@@ -484,17 +485,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 				set.close();
 				mGetPlayerByPlayerId.close();
 				if (MobHunting.getConfigManager().debugSQL) {
-					DatabaseDataStore.connections--;
-					if (DatabaseDataStore.connections > 10)
-						MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+					connections--;
+					if (connections >= MAX_CONNECTIONS)
+						MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 				}
 				return Bukkit.getOfflinePlayer(uid);
 			}
 			mGetPlayerByPlayerId.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {
@@ -525,9 +526,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mLoadAchievements.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			return achievements;
 		} catch (SQLException e) {
@@ -553,9 +554,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mSaveAchievement.executeBatch();
 			mSaveAchievement.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 
 			mConnection.commit();
@@ -574,9 +575,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 	public void databaseFixLeaderboard() throws SQLException {
 		Statement statement = mConnection.createStatement();
 		if (MobHunting.getConfigManager().debugSQL) {
-			DatabaseDataStore.connections++;
-			if (DatabaseDataStore.connections > 10)
-				MobHunting.debug("DatabaseDatastore: Open - connections=%s", DatabaseDataStore.connections);
+			connections++;
+			if (connections >= MAX_CONNECTIONS)
+				MobHunting.debug("DatabaseDatastore: Open - connections=%s", connections);
 		}
 		try {
 			MobHunting.debug("Beginning cleaning of database");
@@ -601,9 +602,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			MobHunting.debug("%s rows was deleted from Mh_Yearly", result);
 			statement.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			mConnection.commit();
 			MobHunting.debug("MobHunting Database was cleaned");
@@ -646,9 +647,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			set.close();
 			mGetBounties.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			return (Set<Bounty>) bounties;
 		} catch (SQLException e) {
@@ -680,9 +681,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mInsertBounty.executeBatch();
 			mInsertBounty.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			mConnection.commit();
 		} catch (SQLException e) {
@@ -708,9 +709,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mUpdateBounty.executeBatch();
 			mUpdateBounty.close();
 			if (MobHunting.getConfigManager().debugSQL) {
-				DatabaseDataStore.connections--;
-				if (DatabaseDataStore.connections > 10)
-					MobHunting.debug("DatabaseDatastore: Close - connections=%s", DatabaseDataStore.connections);
+				connections--;
+				if (connections >= MAX_CONNECTIONS)
+					MobHunting.debug("DatabaseDatastore: Close - connections=%s", connections);
 			}
 			mConnection.commit();
 		} catch (SQLException e) {
