@@ -5,7 +5,7 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-@Plugin(id = "mobhuntingPlugin", name = "MobHunting Project", version = "1.0")
+@Plugin(id = "mobhunting_plugin", name = "MobHunting Project", version = "1.0")
 public class MobHuntingPlugin {
 
 	// ************************************************************************************

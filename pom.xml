@@ -37,7 +37,7 @@
 		<barapi.version>3.4</barapi.version>
 		<titleapi.version>LATEST</titleapi.version>
 		<vanishnopacket.version>LATEST</vanishnopacket.version>
-		<titlemanager.version>1.5.11</titlemanager.version>
+		<titlemanager.version>1.5.12</titlemanager.version>
 		<mobstacker.version>2.0.0</mobstacker.version>
 	</properties>
 
