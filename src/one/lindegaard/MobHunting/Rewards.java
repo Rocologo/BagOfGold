@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
@@ -52,6 +50,7 @@ public class Rewards implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onMobPickupMoney(EntityInteractEvent e) {
 		if (e.getEntity() instanceof Item) {

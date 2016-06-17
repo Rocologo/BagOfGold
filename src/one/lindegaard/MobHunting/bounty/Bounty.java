@@ -103,7 +103,6 @@ public class Bounty {
 
 	public int HashCode() {
 		return wantedPlayer.hashCode() | bountyOwner.hashCode() | worldGroup.hashCode();
-
 	}
 
 	@Override

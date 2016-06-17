@@ -62,19 +62,20 @@ public class DatabaseCommand implements ICommand, Listener {
 		ArrayList<String> items = new ArrayList<String>();
 		if (args.length == 1) {
 			items.add("fixLeaderboard");
-			items.add("backup");
-			items.add("restore");
-			items.add("deletebackup");
-		} else if (args.length == 2) {
-			if (args[0].equalsIgnoreCase("backup")) {
-				// TODO: set items do defaultname
-				// items.add(today);
-			} else if (args[0].equalsIgnoreCase("backup")) {
-				// TODO: list posible backups
-			} else if (args[0].equalsIgnoreCase("deletebackup")) {
-				// TODO: list posible backups
-			}
-		}
+			//items.add("backup");
+			//items.add("restore");
+			//items.add("deletebackup");
+		} 
+		//else if (args.length == 2) {
+		//	if (args[0].equalsIgnoreCase("backupxxx")) {
+		//		// TODO: set items do defaultname
+		//		// items.add(today);
+		//	} else if (args[0].equalsIgnoreCase("backupyyy")) {
+		//		// TODO: list posible backups
+		//	} else if (args[0].equalsIgnoreCase("deletebackup")) {
+		//		// TODO: list posible backups
+		//	}
+		//}
 		return items;
 	}
 

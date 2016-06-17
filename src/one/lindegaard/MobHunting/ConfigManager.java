@@ -58,6 +58,7 @@ import org.bukkit.metadata.MetadataValue;
 
 public class ConfigManager extends AutoConfig {
 	private static MobHunting instance;
+	public Random mRand = new Random();
 
 	public ConfigManager(File file) {
 		super(file);
@@ -83,13 +84,13 @@ public class ConfigManager extends AutoConfig {
 				+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
 				+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
 				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
-		
+
 		setCategoryComment("boss",
 				"########################################################################"
 						+ "\nRewards for killing bosses"
 						+ "\n########################################################################"
 						+ "\nHere is where you set the base prize in $ for killing the bosses");
-		
+
 		setCategoryComment("passive",
 				"########################################################################"
 						+ "\nRewards for killing passive mobs"
@@ -97,17 +98,17 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere is where you set the base prize in $ for killing passive/friendly mobs."
 						+ "\nBy default the player does not get a reward for killing friendly mobs."
 						+ "\nIf you make the number negative, the reward will be a fine for killing a passive animal.");
-		
+
 		setCategoryComment("bonus", "########################################################################"
 				+ "\n Bonus multipliers" + "\n########################################################################"
 				+ "\nThese are bonus multipliers that can modify the base prize. "
 				+ "\nREMEMBER: These are not in $ but they are a multiplier. " + "\nSetting to 1 will disable them.");
-		
+
 		setCategoryComment("penalty", "########################################################################"
 				+ "\nPenalty multipliers" + "\n########################################################################"
 				+ "\nThese are penalty multipliers that can modify the base prize. "
 				+ "\nREMEMBER: These are not in $ but they are a multiplier. " + "\nSetting to 1 will disable them.");
-		
+
 		setCategoryComment("achievements", "########################################################################"
 				+ "\nSpecial / Achievements rewards"
 				+ "\n########################################################################"
@@ -118,7 +119,7 @@ public class ConfigManager extends AutoConfig {
 				+ "\nfor 1 hour or use give command to the player items."
 				+ "\nYou can also specify the message send to the player."
 				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |");
-		
+
 		setCategoryComment("achievement_levels",
 				"########################################################################"
 						+ "\n Achievement Hunter levels"
@@ -129,19 +130,19 @@ public class ConfigManager extends AutoConfig {
 						+ "\nLevel 2: x 2.5 (250 kills)" + "\nLevel 3: x 5   (500 kills)"
 						+ "\nLevel 4: x 10  (1000 kills)" + "\nLevel 5: x 25  (2500 kills)"
 						+ "\nLevel 6: x 50  (5000 kills)" + "\nLevel 7: x 100 (10000 kills)");
-		
+
 		setCategoryComment("assists",
 				"########################################################################"
 						+ "\nRewards for assisting killings"
 						+ "\n########################################################################"
 						+ "\nThey players can get an extra reward if they help each other killing mobs.");
-		
+
 		setCategoryComment("killstreak",
 				"########################################################################"
 						+ "\nReward for kills in a row"
 						+ "\n########################################################################"
 						+ "\nSet the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
-		
+
 		setCategoryComment("multiplier", "########################################################################"
 				+ "\nRank multipliers and world difficulty multipliers"
 				+ "\n########################################################################"
@@ -164,7 +165,7 @@ public class ConfigManager extends AutoConfig {
 				+ "\nfor 1 hour or use give command to the player items."
 				+ "\nYou can also specify the message send to the player."
 				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |");
-		
+
 		setCategoryComment("disguises",
 				"########################################################################" + "\nDisguises rewards"
 						+ "\n########################################################################"
@@ -180,13 +181,13 @@ public class ConfigManager extends AutoConfig {
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of the Bounty Command or you can disable"
 						+ "\nthe command completely.");
-		
+
 		setCategoryComment("mobstacker",
 				"########################################################################" + "\nMobStacker settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of Mobstacker Integration, or you can disable"
 						+ "\nintegration completely.");
-		
+
 		setCategoryComment("grinding",
 				"########################################################################"
 						+ "\nGrinding detection settings"
@@ -208,7 +209,7 @@ public class ConfigManager extends AutoConfig {
 
 		setCategoryComment("updates", "########################################################################"
 				+ "\nUpdate settings" + "\n########################################################################");
-		
+
 		setCategoryComment("general", "########################################################################"
 				+ "\nGeneral Setting." + "\n########################################################################");
 
@@ -683,7 +684,7 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "disable-achievements-in-worlds", category = "achievements", comment = "Put the names of the worlds here where you want to disable achievements."
 			+ "\nPlayers will still get rewards for killings.")
-	public String[] disableAchievementsInWorlds = {"worldname"};
+	public String[] disableAchievementsInWorlds = { "worldname" };
 	@ConfigField(name = "charged-kill", category = "achievements", comment = "Achievements")
 	public double specialCharged = 1000;
 	@ConfigField(name = "charged-kill-cmd", category = "achievements")
@@ -1081,16 +1082,16 @@ public class ConfigManager extends AutoConfig {
 	public String randomBounty = "100:200";
 
 	public double getRandomPrice(String str) {
-		if (str.contains(":")) {
-			String[] str1 = str.split(":");
-			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
-					+ Double.valueOf(str1[0]));
-			return round(prize);
-		} else if (str.equals("") || str == null || str.isEmpty()) {
+		if (str == null || str.equals("") || str.isEmpty()) {
 			instance.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting] [WARNING]"
 					+ ChatColor.RESET
 					+ " The random_bounty_prize is not set in config.yml. Please set the prize to 0 or a positive number.");
 			return 0;
+		} else if (str.contains(":")) {
+			String[] str1 = str.split(":");
+			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
+					+ Double.valueOf(str1[0]));
+			return round(prize);
 		} else
 			return Double.valueOf(str);
 	}
@@ -1187,7 +1188,7 @@ public class ConfigManager extends AutoConfig {
 	// Generel settings
 	// #####################################################################################
 	@ConfigField(name = "disabled-in-worlds", category = "general", comment = "Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
-	public String[] disabledInWorlds = {"worldname"};
+	public String[] disabledInWorlds = { "worldname" };
 	@ConfigField(name = "language", category = "general", comment = "The language (file) to use. You can put the name of the language file as the language code "
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
@@ -1243,8 +1244,6 @@ public class ConfigManager extends AutoConfig {
 	protected void onPostLoad() throws InvalidConfigurationException {
 		Messages.setLanguage(language);
 	}
-
-	private Random mRand = new Random();
 
 	/**
 	 * Return the reward money for a given mob
@@ -1388,17 +1387,17 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	private double getPrice(LivingEntity mob, String str) {
-		if (str.contains(":")) {
-			String[] str1 = str.split(":");
-			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
-					+ Double.valueOf(str1[0]));
-			return round(prize);
-		} else if (str.equals("") || str == null || str.isEmpty()) {
+		if (str == null || str.equals("") || str.isEmpty()) {
 			instance.getServer().getConsoleSender()
 					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
 							+ " The prize for killing a " + mob.getName()
 							+ " is not set in config.yml. Please set the prize to 0 or a positive or negative number.");
 			return 0;
+		} else if (str.contains(":")) {
+			String[] str1 = str.split(":");
+			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
+					+ Double.valueOf(str1[0]));
+			return round(prize);
 		} else
 			return Double.valueOf(str);
 	}

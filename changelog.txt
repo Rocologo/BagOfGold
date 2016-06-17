@@ -1,5 +1,6 @@
 V3.2.3
--
+- Changed pom.xml, preparing for development releases on http://jenkins.lindegaard.one:8180/job/MobHunting/
+- Changed the way random numbers are generated, to produce better random numbers.
 V3.2.2
 - Fixed bug where two money items on ground was merged and one lost.
 - Fixed error which caused Bounties not to be paid.
@@ -12,16 +13,16 @@ V3.2.0
   - ProSniper bonus was not added when sing LEFT hand
   - NullPointerException bug in MetricsManager
   - /mh achievements show disabled mobs (passive mobs / peaceful mobs)
-- /mv achievements is separated in two inventories. Achieved and in progress/not begun.
+- /mh achievements is separated in two inventories. Achieved and in progress/not begun.
 - Added gui/nogui parameter
-  - /mv achievements nogui
-  - /mv achievements gui
-  - /mv achievements playername nogui
-  - /mv achievements playername gui
-  - /mv bounty nogui
-  - /mv bounty gui
-  - /mv bounty playername nogui
-  - /mv bounty playername gui
+  - /mh achievements nogui
+  - /mh achievements gui
+  - /mh achievements playername nogui
+  - /mh achievements playername gui
+  - /mh bounty nogui
+  - /mh bounty gui
+  - /mh bounty playername nogui
+  - /mh bounty playername gui
 - Improved Minecraft version test, now using a faster method. The old method could cause a sort lag, when killing a Mob!  
   
 V3.1.9

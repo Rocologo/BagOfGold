@@ -3,7 +3,6 @@ package one.lindegaard.MobHunting;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -124,7 +123,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	private Set<IModifier> mModifiers = new HashSet<IModifier>();
 
-	public Random mRand = new Random();
+	//public Random mRand = new Random();
 
 	private boolean mInitialized = false;
 
@@ -667,6 +666,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 		LivingEntity killed = event.getEntity();
+
+		//TODO: Handle Mob kills a Mob. 
 		Player killer = killed.getKiller();
 		if (killer == null)
 			return;
@@ -740,7 +741,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// Player died while playing a Minigame: MobArena, PVPArena,
-		// BattleArena, SUiside,PVP
+		// BattleArena, Suiside,PVP
 		if (killed instanceof Player) {
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)
 					&& !mConfig.mobarenaGetRewards) {
@@ -854,7 +855,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		// There is no reard for this kill
+		// There is no reward for this kill
 		if (mConfig.getBaseKillPrize(event.getEntity()) == 0 && mConfig.getKillConsoleCmd(killed).equals("")) {
 			debug("KillBlocked %s(%d): There is no reward for this Mob/Player", killed.getType(), killed.getEntityId());
 			if (killed != null)
@@ -1075,7 +1076,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				// the player
 				playerActionBarMessage(killer, Messages.getString("mobhunting.moneygain-for-killing", "money",
 						mEconomy.format(reward), "killed", killed.getName()));
-				debug("%s got %s for killing %s", killer.getName(),reward, killed.getName());
+				debug("%s got %s for killing %s", killer.getName(), reward, killed.getName());
 				// TODO: call bounty event, and check if canceled.
 				getEconomy().depositPlayer(killer, reward);
 				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
@@ -1086,7 +1087,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// Calculate the reward
-		//cash += reward;
+		// cash += reward;
 
 		if ((cash >= 0.01) || (cash <= -0.01)) {
 			// TODO: This must be moved, only works for cash!=0
@@ -1175,7 +1176,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Run console commands as a reward
 		if (data.getDampenedKills() < 10) {
 			if (!mConfig.getKillConsoleCmd(killed).equals("") && mConfig.getCmdRunProbabilityBase(killed) != 0) {
-				if (mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig.getCmdRunProbability(killed)) {
+				if (getConfigManager().mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig.getCmdRunProbability(killed)) {
 					String worldname = killer.getWorld().getName();
 					String killerpos = killer.getLocation().getBlockX() + " " + killer.getLocation().getBlockY() + " "
 							+ killer.getLocation().getBlockZ();
@@ -1272,9 +1273,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
 			return;
 
-		if (mRand.nextDouble() * 100 < mConfig.bonusMobChance) {
+		if (getConfigManager().mRand.nextDouble() * 100 < mConfig.bonusMobChance) {
 			mParticleManager.attachEffect(event.getEntity(), Effect.MOBSPAWNER_FLAMES);
-			if (mRand.nextBoolean())
+			if (getConfigManager().mRand.nextBoolean())
 				event.getEntity()
 						.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 3));
 			else
@@ -1348,9 +1349,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
-	public static Player getOnLinePlayer(OfflinePlayer offlinePlayer){
-		for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()){
+
+	public static Player getOnLinePlayer(OfflinePlayer offlinePlayer) {
+		for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
 			if (player.getName().equals(offlinePlayer.getName()))
 				return player;
 		}

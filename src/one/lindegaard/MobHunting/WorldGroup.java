@@ -63,10 +63,6 @@ public class WorldGroup {
 		return getWorldGroup(player.getWorld().getName());
 	}
 	
-	public int HashCode(){
-		return worldGroups.hashCode();
-	}
-
 	// ***************************************************************
 	// write & read
 	// ***************************************************************

@@ -59,7 +59,6 @@ public class IconMenu implements Listener {
         return this;
     }
  
-    @SuppressWarnings("deprecation")
 	public List<Player> getViewers() {
         List<Player> viewers = new ArrayList<Player>();
         for (String s : viewing)

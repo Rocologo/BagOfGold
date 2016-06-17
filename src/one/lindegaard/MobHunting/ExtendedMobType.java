@@ -164,7 +164,7 @@ public enum ExtendedMobType {
 		else if (this == BonusMob)
 			return ent.hasMetadata("MH:hasBonus");
 		else
-			return ent.getType().toString() == mType;
+			return ent.getType().toString().equals(mType);
 	}
 
 	public String getName() {
