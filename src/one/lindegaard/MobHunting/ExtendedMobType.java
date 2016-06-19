@@ -13,34 +13,30 @@ import org.bukkit.entity.Villager.Profession;
 
 public enum ExtendedMobType {
 	// Minecraft 1.10
-	PolarBear("POLAR_BEAR", 100), Husk("HUSK", 100), Stray("STRAY", 100),
+	PolarBear("POLAR_BEAR"), Husk("HUSK"), Stray("STRAY"),
 	// Minecraft 1.9 Entity
-	Shulker("SHULKER", 100),
+	Shulker("SHULKER"),
 	// Minecraft 1.8 Entity's
-	Endermite("ENDERMITE", 100), Guardian("GUARDIAN", 100), KillerRabbit("RABBIT", 100), PvpPlayer("PLAYER", 100),
+	Endermite("ENDERMITE"), Guardian("GUARDIAN"), KillerRabbit("RABBIT"), PvpPlayer("PLAYER"),
 	// Minecraft 1.7
-	Slime("SLIME", 100), MagmaCube("MAGMA_CUBE", 100), Ghast("GHAST", 80), Blaze("BLAZE", 80), Creeper("CREEPER",
-			100), Enderman("ENDERMAN", 100), Silverfish("SILVERFISH", 100), Skeleton("SKELETON",
-					100), WitherSkeleton("SKELETON", 80), Spider("SPIDER", 100), CaveSpider("CAVE_SPIDER",
-							100), Witch("WITCH", 80), Wither("WITHER", 20), ZombiePigman("PIG_ZOMBIE",
-									100), Zombie("ZOMBIE", 100), BonusMob("UNKNOWN", 20), IronGolem("IRON_GOLEM", 100),
+	Slime("SLIME"), MagmaCube("MAGMA_CUBE"), Ghast("GHAST"), Blaze("BLAZE"), Creeper("CREEPER"), Enderman(
+			"ENDERMAN"), Silverfish("SILVERFISH"), Skeleton("SKELETON"), WitherSkeleton("SKELETON"), Spider(
+					"SPIDER"), CaveSpider("CAVE_SPIDER"), Witch("WITCH"), Wither("WITHER"), ZombiePigman(
+							"PIG_ZOMBIE"), Zombie("ZOMBIE"), BonusMob("UNKNOWN"), IronGolem("IRON_GOLEM"),
 	// Passive Mobs
-	Bat("BAT", 100), Chicken("CHICKEN", 100), Cow("COW", 100), Horse("HORSE", 100), MushroomCow("MUSHROOM_COW",
-			100), Ocelot("OCELOT", 100), Pig("PIG", 100), PassiveRabbit("RABBIT", 100), Sheep("SHEEP",
-					100), Snowman("SNOWMAN", 100), Squid("SQUID", 100), Villager("VILLAGER", 100), Wolf("WOLF", 100),
+	Bat("BAT"), Chicken("CHICKEN"), Cow("COW"), Horse("HORSE"), MushroomCow("MUSHROOM_COW"), Ocelot("OCELOT"), Pig(
+			"PIG"), PassiveRabbit(
+					"RABBIT"), Sheep("SHEEP"), Snowman("SNOWMAN"), Squid("SQUID"), Villager("VILLAGER"), Wolf("WOLF"),
 
 	// Minecraft 1.0.0
 	// Giant is unsupported by in the original game and Giants can only be
 	// spawnwed through plugins.
-	Giant("GIANT", 100), EnderDragon("ENDER_DRAGON", 80);
+	Giant("GIANT"), EnderDragon("ENDER_DRAGON");
 
 	private String mType;
-	@SuppressWarnings("unused")
-	private int mMax;
 
-	private ExtendedMobType(String type, int max) {
+	private ExtendedMobType(String type) {
 		mType = type;
-		mMax = getMax();
 	}
 
 	public String getEntType() {

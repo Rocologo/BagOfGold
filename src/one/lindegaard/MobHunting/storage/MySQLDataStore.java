@@ -98,26 +98,24 @@ public class MySQLDataStore extends DatabaseDataStore {
 			mDeleteBounty = connection.prepareStatement(
 					"DELETE FROM mh_Bounties WHERE WANTEDPLAYER_ID=? AND BOUNTYOWNER_ID=? AND WORLDGROUP=?;");
 		}
-		if (MobHunting.getConfigManager().debugSQL){
+		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
 				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
-			
+
 	}
-	
+
 	// *******************************************************************************
 	// LoadStats / SaveStats
 	// *******************************************************************************
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException {
 		ArrayList<StatStore> list = new ArrayList<StatStore>();
 		String id;
 		// If The NPC has an invalid period or timeperiod return and empty list
 		if (period == null || type == null) {
-			MobHunting.debug("MySQLDataStore: period=%s, type=%s", period.getDBColumn(), type.getDBColumn());
 			return list;
 		}
 		switch (period) {
@@ -139,7 +137,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 		try {
 			Statement statement = mConnection.createStatement();
-			if (MobHunting.getConfigManager().debugSQL){
+			if (MobHunting.getConfigManager().debugSQL) {
 				connections++;
 				if (connections >= MAX_CONNECTIONS)
 					MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
@@ -150,7 +148,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 							+ period.getTable() + ".PLAYER_ID" + (id != null ? " where ID=" + id : " ") + " order by "
 							+ type.getDBColumn() + " desc limit " + count);
 			while (results.next()) {
-				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(results.getString(3));
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2)));
 				if (offlinePlayer == null)
 					MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
 				if (offlinePlayer != null)
@@ -183,21 +181,20 @@ public class MySQLDataStore extends DatabaseDataStore {
 			}
 			mSavePlayerStats.executeBatch();
 			mSavePlayerStats.close();
-			if (MobHunting.getConfigManager().debugSQL){
+			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= MAX_CONNECTIONS)
 					MobHunting.debug("MySQLDatastore: Close - connections=%s", connections);
 			}
-			
+
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
-			if (MobHunting.getConfigManager().debugSQL){
+			if (MobHunting.getConfigManager().debugSQL) {
 				connections++;
 				if (connections >= MAX_CONNECTIONS)
 					MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
 			}
 
-			
 			for (StatStore stat : stats)
 				statement.addBatch(String.format(
 						"UPDATE mh_Daily SET %1$s = %1$s + %3$d WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND PLAYER_ID = %2$d;",
@@ -227,7 +224,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected void setupTables(Connection connection) throws SQLException {
 
 		Statement create = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL){
+		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
 				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
@@ -293,13 +290,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 		setupTrigger(connection);
 
 		create.close();
-		if (MobHunting.getConfigManager().debugSQL){
+		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= MAX_CONNECTIONS)
 				MobHunting.debug("MySQLDatastore: Close - connections=%s", connections);
 		}
 
-		
 		connection.commit();
 
 		performUUIDMigrate(connection);
@@ -309,7 +305,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	private void setupTrigger(Connection connection) throws SQLException {
 
 		Statement create = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL){
+		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
 				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
@@ -374,12 +370,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	private void performUUIDMigrate(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL){
+		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
 				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
-		
+
 		try {
 			ResultSet rs = statement.executeQuery("SELECT UUID from `mh_Players` LIMIT 0");
 			rs.close();
@@ -406,12 +402,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 		UUIDHelper.initialize();
 
 		PreparedStatement insert = connection.prepareStatement("update `mh_Players` set `UUID`=? where `NAME`=?");
-		if (MobHunting.getConfigManager().debugSQL){
+		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
 				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
-		
+
 		StringBuilder failString = new StringBuilder();
 		int failCount = 0;
 		while (rs.next()) {
@@ -465,12 +461,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	private void performAddNewMobs(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL){
+		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
 				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
-		
+
 		try {
 			ResultSet rs = statement.executeQuery("SELECT Bat_kill from `mh_Daily` LIMIT 0");
 			rs.close();
@@ -819,7 +815,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			System.out.println("[MobHunting] Adding new 1.9 Mobs (Shulker) complete.");
 
 		}
-		
+
 		try {
 			ResultSet rs = statement.executeQuery("SELECT PolarBear_kill from `mh_Daily` LIMIT 0");
 			rs.close();
@@ -831,18 +827,22 @@ public class MySQLDataStore extends DatabaseDataStore {
 			statement.executeUpdate("alter table `mh_Daily` add column `PolarBear_kill`  INTEGER NOT NULL DEFAULT 0");
 			statement.executeUpdate("alter table `mh_Daily` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement.executeUpdate("alter table `mh_Weekly` add column `PolarBear_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Weekly` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Weekly` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement.executeUpdate("alter table `mh_Monthly` add column `PolarBear_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Monthly` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Monthly` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement.executeUpdate("alter table `mh_Yearly` add column `PolarBear_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Yearly` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement
+					.executeUpdate("alter table `mh_Yearly` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
 			statement.executeUpdate("alter table `mh_AllTime` add column `PolarBear_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_AllTime` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_AllTime` add column `PolarBear_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			System.out.println("[MobHunting] Adding new 1.10 Mobs (Polar Bear) complete.");
 
 		}
-		
+
 		try {
 			ResultSet rs = statement.executeQuery("SELECT Stray_kill from mh_Daily LIMIT 0");
 			rs.close();
@@ -872,12 +872,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			statement.executeUpdate("alter table `mh_AllTime` add column `Husk_kill`  INTEGER NOT NULL DEFAULT 0");
 			statement.executeUpdate("alter table `mh_AllTime` add column `Husk_assist`  INTEGER NOT NULL DEFAULT 0");
 
-			
 			System.out.println("[MobHunting] Adding new 1.10 Mobs (Stray + Husk) complete.");
 		}
 
-		
-		
 		try {
 			ResultSet rs = statement.executeQuery("SELECT LEARNING_MODE from mh_Players LIMIT 0");
 			rs.close();

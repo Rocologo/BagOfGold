@@ -133,7 +133,7 @@ public class LibsDisguisesCompat implements Listener {
 
 	public static boolean isPlayerDisguise(Entity entity) {
 		
-		if (DisguiseAPI.getDisguise(entity).equals(DisguiseType.PLAYER))
+		if (DisguiseAPI.getDisguise(entity).getType().equals(DisguiseType.PLAYER))
 			return true;
 		else
 			return false;

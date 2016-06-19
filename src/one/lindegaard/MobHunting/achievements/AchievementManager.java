@@ -69,7 +69,8 @@ public class AchievementManager implements Listener {
 		Validate.notNull(achievement);
 
 		if (achievement instanceof ProgressAchievement) {
-			if (((ProgressAchievement) achievement).inheritFrom() != null) {
+			if (((ProgressAchievement) achievement).inheritFrom() != null
+					&& ((ProgressAchievement) achievement).getMaxProgress() != 0) {
 				Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
 				Validate.isTrue(mAchievements
 						.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
@@ -268,7 +269,7 @@ public class AchievementManager implements Listener {
 			MobHunting.debug("AchievementBlocked] Achievements is disabled for player %s", player.getName());
 			return;
 		}
-		
+
 		if (hasAchievement(achievement, player)) {
 			return;
 		}
@@ -538,7 +539,8 @@ public class AchievementManager implements Listener {
 						int outOf = 0;
 
 						for (Achievement achievement : getAllAchievements()) {
-							if (achievement instanceof ProgressAchievement) {
+							if (achievement instanceof ProgressAchievement
+									&& ((ProgressAchievement) achievement).getMaxProgress() != 0) {
 								if (((ProgressAchievement) achievement).inheritFrom() == null)
 									++outOf;
 							} else
@@ -606,7 +608,8 @@ public class AchievementManager implements Listener {
 
 							for (Map.Entry<Achievement, Integer> achievement : data) {
 								if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
-										&& achievement.getKey().getPrize() != 0) {
+										&& achievement.getKey().getPrize() != 0
+										&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0) {
 									if (!gui)
 										lines.add(ChatColor.GRAY + " " + achievement.getKey().getName()
 												+ ChatColor.WHITE + "  " + achievement.getValue() + " / "
@@ -649,24 +652,23 @@ public class AchievementManager implements Listener {
 						}
 						// ProgressAchivement
 						for (Achievement achievement : getAllAchievements()) {
-							if ((achievement instanceof ProgressAchievement)) {
+							if ((achievement instanceof ProgressAchievement && achievement.getPrize() != 0
+									&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
 								boolean ongoing = isOnGoingOrCompleted(achievement, data);
 								if (!ongoing) {
 									boolean nextLevelBegun = isNextLevelBegun((ProgressAchievement) achievement, data);
 									boolean previousLevelCompleted = isPreviousLevelCompleted3(
 											(ProgressAchievement) achievement, data);
 									if (!nextLevelBegun && previousLevelCompleted) {
-										if (achievement.getPrize() != 0) {
-											addInventoryDetails(achievement.getSymbol(), inventory2, m,
-													ChatColor.YELLOW + achievement.getName(),
-													new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-															achievement.getDescription(), "", Messages.getString(
-																	"mobhunting.commands.listachievements.notstarted") });
-											if (m < 52)
-												m++;
-											else
-												MobHunting.debug("No room for achievement: %s", achievement.getName());
-										}
+										addInventoryDetails(achievement.getSymbol(), inventory2, m,
+												ChatColor.YELLOW + achievement.getName(),
+												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+														achievement.getDescription(), "", Messages.getString(
+																"mobhunting.commands.listachievements.notstarted") });
+										if (m < 52)
+											m++;
+										else
+											MobHunting.debug("No room for achievement: %s", achievement.getName());
 									}
 								}
 							}
@@ -729,7 +731,6 @@ public class AchievementManager implements Listener {
 					// TODO:
 				}
 				event.setCancelled(true);
-				MobHunting.debug("AchievemeneManager: Player clicked on inventory - closing now");
 				player.closeInventory();
 				player.openInventory(inventory2);
 			}

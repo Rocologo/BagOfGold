@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -103,9 +104,10 @@ public class Rewards implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryPickupItemEvent(InventoryPickupItemEvent e) {
 		Item item = e.getItem();
-		if (item.hasMetadata(MH_MONEY)) {
+		if (item.hasMetadata(MH_MONEY) && e.getInventory().getType()!=InventoryType.HOPPER) {
 			Bukkit.getServer().getLogger().warning("[MobHunting] WARNING! The money was picked up by "
 					+ e.getInventory().getHolder().toString() + ", event was cancelled. Please show log to Developer.");
+			//TODO: Handle what happens if picked up by hopper. setCancelled is unsupported for hopper.
 			e.setCancelled(true);
 		}
 	}

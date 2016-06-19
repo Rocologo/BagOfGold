@@ -299,7 +299,7 @@ public abstract class AutoConfig {
 					else if (field.getType().getComponentType()
 							.equals(HashMap.class)) {
 						config.createSection(path,
-								(HashMap<String, String>) Arrays.asList(field
+								(Map<String, String>) Arrays.asList(field
 										.get(this)));
 					} else
 						throw new IllegalArgumentException(

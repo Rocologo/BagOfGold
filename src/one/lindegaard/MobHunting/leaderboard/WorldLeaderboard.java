@@ -210,7 +210,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 			String period = getPeriod().translateNameFriendly();
 			if (period.length() >= 12)
 				period = period.substring(0, 12).trim();
-			//sign.setLine(3, ChatColor.YELLOW + period.trim());
+			// sign.setLine(3, ChatColor.YELLOW + period.trim());
 			sign.setLine(3, period);
 			sign.update(true, false);
 		}
@@ -248,6 +248,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 				if (stat1 != null && stat1.getPlayer() != null) {
 					String name1 = stat1.getPlayer().getName();
+					if (name1 == null)
+						name1 = "Unknown";
 					if (name1.length() >= 14)
 						if (String.valueOf(place).length() == 1)
 							name1 = name1.substring(0, 13).trim();
@@ -262,6 +264,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 				if (stat2 != null && stat2.getPlayer() != null) {
 					String name2 = stat2.getPlayer().getName();
+					if (name2 == null)
+						name2 = "Unknown";
 					if (name2.length() >= 14)
 						if (String.valueOf(place + 1).length() == 1)
 							name2 = name2.substring(0, 13).trim();

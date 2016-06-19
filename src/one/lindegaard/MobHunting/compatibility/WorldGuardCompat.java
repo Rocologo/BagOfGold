@@ -252,8 +252,8 @@ public class WorldGuardCompat implements Listener {
 				ProtectedRegion pr = i.next();
 				if (pr.getFlags().containsKey(MOBHUNTINGFLAG)) {
 					if (!mobHuntingRegions.containsKey(pr.getId())
-							|| pr.getFlag(MOBHUNTINGFLAG).name() != mobHuntingRegions
-									.get(pr.getId())) {
+							|| !pr.getFlag(MOBHUNTINGFLAG).name().equals(mobHuntingRegions
+									.get(pr.getId()))) {
 						MobHunting
 								.debug("Found unregistered flag or flag with changed State found in region '%s' with value %s",
 										pr.getId(), pr.getFlag(MOBHUNTINGFLAG)

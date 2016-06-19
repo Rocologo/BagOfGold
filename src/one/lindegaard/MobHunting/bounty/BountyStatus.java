@@ -28,10 +28,6 @@ public enum BountyStatus {
 		return null;
 	}
 
-	public boolean equals(BountyStatus bountyStatus) {
-		return mName.equals(bountyStatus.mName);
-	}
-
 	public String getName() {
 		return mName;
 	}

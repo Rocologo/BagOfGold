@@ -1,6 +1,11 @@
 V3.2.3
+- Removed the moneygain'ed message when money is dropped on the groupd.
+- Added display name for hostile Mobs in config.yml 
 - Changed pom.xml, preparing for development releases on http://jenkins.lindegaard.one:8180/job/MobHunting/
 - Changed the way random numbers are generated, to produce better random numbers.
+- Changed hashCode() in Bounty.java. (Bug fix)
+- Changed HashMap to Map in AutoConfig.java (Bug fix)
+- Achievements can now be disabled per Mob by setting the level to 0.
 V3.2.2
 - Fixed bug where two money items on ground was merged and one lost.
 - Fixed error which caused Bounties not to be paid.

@@ -86,6 +86,8 @@ public class Messages {
 
 		while (reader.ready()) {
 			String line = reader.readLine();
+			if (line == null)
+				continue;
 			int index = line.indexOf('=');
 			if (index == -1)
 				continue;
@@ -111,7 +113,7 @@ public class Messages {
 
 			while (reader.ready()) {
 				line = reader.readLine();
-				if (line.trim().isEmpty())
+				if (line == null || line.trim().isEmpty())
 					continue;
 
 				if (!mDetectEncodingPattern.matcher(line.trim()).matches())

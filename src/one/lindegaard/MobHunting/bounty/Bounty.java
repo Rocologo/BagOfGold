@@ -101,8 +101,12 @@ public class Bounty {
 		status = bounty.getStatus();
 	}
 
-	public int HashCode() {
-		return wantedPlayer.hashCode() | bountyOwner.hashCode() | worldGroup.hashCode();
+	@Override
+	public int hashCode() {
+		if (bountyOwner == null)
+			return wantedPlayer.hashCode() | worldGroup.hashCode();
+		else
+			return wantedPlayer.hashCode() | bountyOwner.hashCode() | worldGroup.hashCode();
 	}
 
 	@Override
@@ -112,8 +116,7 @@ public class Bounty {
 		Bounty other = (Bounty) obj;
 		if (bountyOwner == null)
 			if (other.bountyOwner == null)
-				return wantedPlayer.equals(other.wantedPlayer)
-						&& worldGroup.equals(other.worldGroup);
+				return wantedPlayer.equals(other.wantedPlayer) && worldGroup.equals(other.worldGroup);
 			else
 				return false;
 		else

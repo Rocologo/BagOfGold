@@ -9,11 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.storage.IDataStore;
 
 public class DatabaseCommand implements ICommand, Listener {
 
-	private IDataStore mStore;
+	//private IDataStore mStore;
 
 	// private DataStoreManager mStoreManager;
 
@@ -85,7 +86,7 @@ public class DatabaseCommand implements ICommand, Listener {
 			return false;
 		if (args.length == 1 && (args[0].equalsIgnoreCase("fixleaderboard"))) {
 			try {
-				mStore.databaseFixLeaderboard();
+				MobHunting.getStoreManager().databaseFixLeaderboard();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
