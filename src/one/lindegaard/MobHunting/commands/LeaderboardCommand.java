@@ -48,9 +48,11 @@ public class LeaderboardCommand implements ICommand, Listener {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + ChatColor.GOLD + " create <type> <period> [isHorizonal?] [<width> <height>]",
-				label + ChatColor.GOLD + " delete <id>",
-				label + ChatColor.GOLD + " edit (type|period|horizontal|addtype|addperiod) <value>" };
+		return new String[] {
+				ChatColor.GOLD + label + ChatColor.GREEN + " create <type> <period> [isHorizonal?] " + ChatColor.YELLOW
+						+ "[<width> <height>]",
+						ChatColor.GOLD +label + ChatColor.GREEN + " delete <id>",
+						ChatColor.GOLD +label + ChatColor.GREEN + " edit (type|period|horizontal|addtype|addperiod) <value>" };
 	}
 
 	@Override
@@ -332,10 +334,11 @@ public class LeaderboardCommand implements ICommand, Listener {
 			BlockFace face = ((Sign) event.getClickedBlock().getState().getData()).getFacing();
 
 			try {
-				//MobHunting.debug("leaderBoardCommand: parm=%s,%s,%s,%s,%s,%s", face,state.type[0],
-				//		state.period[0],state.horizontal,state.width,state.height);
-				MobHunting.getLeaderboardManager().createLeaderboard(event.getClickedBlock().getLocation(),
-						face, state.type, state.period, state.horizontal, state.width, state.height);
+				// MobHunting.debug("leaderBoardCommand:
+				// parm=%s,%s,%s,%s,%s,%s", face,state.type[0],
+				// state.period[0],state.horizontal,state.width,state.height);
+				MobHunting.getLeaderboardManager().createLeaderboard(event.getClickedBlock().getLocation(), face,
+						state.type, state.period, state.horizontal, state.width, state.height);
 				// TODO: Create new strings in Message
 				event.getPlayer().sendMessage(ChatColor.GREEN + "Leaderboard created");
 			} catch (IllegalArgumentException e) {

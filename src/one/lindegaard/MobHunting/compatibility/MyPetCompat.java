@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -49,6 +50,43 @@ public class MyPetCompat implements Listener {
 		return !MobHunting.getConfigManager().disableIntegrationMyPet;
 	}
 
+	public static boolean isKilledByMyPet(Entity entity) {
+		if (!(entity instanceof EntityDamageByEntityEvent))
+			return false;
+
+		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) entity.getLastDamageCause();
+
+		if (!(dmg.getDamager() instanceof MyPetBukkitEntity))
+			return false;
+
+		MyPetBukkitEntity killer = (MyPetBukkitEntity) dmg.getDamager();
+
+		if (killer.getPetType() != MyPetType.Wolf)
+			return false;
+
+		MobHunting.debug("MyPetCompat: A Wolf Killed a mob");
+
+		return true;
+	}
+
+	public static Player getMyPetOwner(Entity entity) {
+		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) entity.getLastDamageCause();
+
+		if (!(dmg.getDamager() instanceof MyPetBukkitEntity))
+			return null;
+
+		MyPetBukkitEntity killer = (MyPetBukkitEntity) dmg.getDamager();
+
+		// TODO: Handle other PetTypes
+		if (killer.getPetType() != MyPetType.Wolf)
+			return null;
+
+		if (killer.getOwner() == null)
+			return null;
+
+		return killer.getOwner().getPlayer();
+	}
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
@@ -68,7 +106,7 @@ public class MyPetCompat implements Listener {
 		if (killer.getPetType() != MyPetType.Wolf)
 			return;
 
-		MobHunting.debug("A Wolf Killed a mob");
+		MobHunting.debug("MyPetCompat: A Wolf Killed a mob");
 
 		if (killer.getOwner() != null) {
 			Player owner = killer.getOwner().getPlayer();

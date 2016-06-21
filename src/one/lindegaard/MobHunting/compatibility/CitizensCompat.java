@@ -134,10 +134,10 @@ public class CitizensCompat implements Listener {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);
 				mMobRewardData.get(key).save(section);
-				MobHunting.debug("Saving Sentry Trait Reward data for ID=%s.", key);
+				MobHunting.debug("Saving Sentry/Sentinel Trait Reward data for ID=%s.", key);
 				config.save(fileMobRewardData);
 			} else {
-				MobHunting.debug("ERROR! Mob ID (%s) is not found in mMobRewardData", key);
+				MobHunting.debug("ERROR! Sentry/Sentinel ID (%s) is not found in mMobRewardData", key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -190,10 +190,12 @@ public class CitizensCompat implements Listener {
 		return CitizensAPI.getNPCRegistry().getNPC(entity);
 	}
 
-	public static boolean isSentry(Entity entity) {
+	public static boolean isSentryOrSentinel(Entity entity) {
 		if (CitizensAPI.getNPCRegistry().isNPC(entity))
 			return CitizensAPI.getNPCRegistry().getNPC(entity)
-					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"));
+					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
+					|| CitizensAPI.getNPCRegistry().getNPC(entity)
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("sentinel"));
 		else
 			return false;
 	}
@@ -214,9 +216,9 @@ public class CitizensCompat implements Listener {
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
 			NPC npc = npcList.next();
-			if (isSentry(npc.getEntity())) {
+			if (isSentryOrSentinel(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
-					MobHunting.debug("A new Sentry NPC found. ID=%s,%s", npc.getId(), npc.getName());
+					MobHunting.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
 							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "10",
 									"give {player} iron_sword 1", "You got an Iron sword.", 100, 100));
@@ -230,7 +232,7 @@ public class CitizensCompat implements Listener {
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
 			NPC npc = npcList.next();
-			if (isSentry(npc.getEntity())) {
+			if (isSentryOrSentinel(npc.getEntity())) {
 				// MobHunting.getBountyManager().loadBounties(npc);
 			}
 		}
@@ -268,9 +270,9 @@ public class CitizensCompat implements Listener {
 	private void onNPCSpawnEvent(NPCSpawnEvent event) {
 		NPC npc = event.getNPC();
 		if (npc.getId() == event.getNPC().getId()) {
-			if (isSentry(npc.getEntity())) {
+			if (isSentryOrSentinel(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
-					MobHunting.debug("A new Sentry NPC found. ID=%s,%s", npc.getId(), npc.getName());
+					MobHunting.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
 							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "10",
 									"give {player} iron_sword 1", "You got an Iron sword.", 100, 100));
@@ -279,12 +281,9 @@ public class CitizensCompat implements Listener {
 			}
 			if (masterMobHunterManager.isMasterMobHunter(npc.getEntity())) {
 				if (!masterMobHunterManager.contains(npc.getId())) {
-					MobHunting.debug("A New MasterMobHunter NPC found. ID=%s,%s", npc.getId(), npc.getName());
+					MobHunting.debug("A New MasterMobHunter NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					masterMobHunterManager.put(npc.getId(), new MasterMobHunter(npc));
 				}
-			} else {
-				MobHunting.debug("The spawned NPC was not Sentry and MasterMobHunter. Traits=s%",
-						npc.getTraits().toString());
 			}
 		}
 	}

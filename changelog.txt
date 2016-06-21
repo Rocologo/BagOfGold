@@ -1,5 +1,8 @@
+V3.2.4
+- Support for Citizens Sentinel added. Sentry has been discontinued by Citizens Developer and is replaced by Sentinel.
+- The owner of a MyPet will now get a reward if the Pet kills a mob. This feature has been broken for while, but is now fixed.   
 V3.2.3
-- Removed the moneygain'ed message when money is dropped on the groupd.
+- Removed the moneygain'ed message when money is dropped on the group.
 - Added display name for hostile Mobs in config.yml 
 - Changed pom.xml, preparing for development releases on http://jenkins.lindegaard.one:8180/job/MobHunting/
 - Changed the way random numbers are generated, to produce better random numbers.

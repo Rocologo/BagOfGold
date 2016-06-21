@@ -1261,7 +1261,7 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
+			if (CitizensCompat.isSentryOrSentinel(mob)) {
 				return getPrice(mob,
 						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
@@ -1419,7 +1419,7 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
+			if (CitizensCompat.isSentryOrSentinel(mob)) {
 				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getConsoleRunCommand();
 			} else
 				return "";
@@ -1538,7 +1538,7 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
+			if (CitizensCompat.isSentryOrSentinel(mob)) {
 				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardDescription();
 			} else
 				return "";
@@ -1651,7 +1651,7 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
+			if (CitizensCompat.isSentryOrSentinel(mob)) {
 				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getPropability();
 			} else
 				return 100;
@@ -1764,7 +1764,7 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentry(mob)) {
+			if (CitizensCompat.isSentryOrSentinel(mob)) {
 				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getPropabilityBase();
 			} else
 				return 100;

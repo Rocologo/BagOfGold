@@ -543,12 +543,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
-		// check if damager or damaged is Sentry. Only Sentry gives a reward.
+		// check if damager or damaged is Sentry / Sentinel. Only Sentry gives a
+		// reward.
 		if (CitizensCompat.isNPC(damager))
-			if (!CitizensCompat.isSentry(damager))
+			if (!CitizensCompat.isSentryOrSentinel(damager))
 				return;
 		if (CitizensCompat.isNPC(damaged))
-			if (!CitizensCompat.isSentry(damaged))
+			if (!CitizensCompat.isSentryOrSentinel(damaged))
 				return;
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 			if ((damager instanceof Player) || MyPetCompat.isMyPet(damager)) {
@@ -577,8 +578,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		if (damager instanceof Player) {
 			cause = (Player) damager;
-			// TODO:
-			// if (cause.is
 		}
 
 		boolean projectile = false;
@@ -682,10 +681,34 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// TODO: Handle Mob kills a Mob or what if MyPet kills a mob?.
 		Player killer = event.getEntity().getKiller();
-		if (killer == null)
+
+		Entity damager = event.getEntity().getLastDamageCause().getEntity();
+		debug("MobHunting: lastDamageCause.entity=%s", damager);
+
+		// ItemStack weapon;
+
+		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
+			debug("onMobDeath: Not killed by Player and MyPet.");
 			return;
-		else
-			debug("MobHunting: %s killed %s", killer.getName(), killed.getName());
+		}
+
+		// Player cause=null;
+
+		/**
+		 * boolean projectile = false; if (damager instanceof Projectile) { if
+		 * (((Projectile) damager).getShooter() instanceof Player) { cause =
+		 * (Player) ((Projectile) damager).getShooter(); killer = cause; }
+		 * 
+		 * if (damager instanceof ThrownPotion) weapon = ((ThrownPotion)
+		 * damager).getItem();
+		 * 
+		 * info.mele = false; projectile = true; } else info.mele = true;
+		 * 
+		 * if (damager instanceof Wolf && ((Wolf) damager).isTamed() && ((Wolf)
+		 * damager).getOwner() instanceof Player) { cause = (Player) ((Wolf)
+		 * damager).getOwner(); killer = cause; info.mele = false;
+		 * info.wolfAssist = true; }
+		 **/
 
 		// TODO: create these two methods
 		if (mMobHuntingManager.isKillRewareded(killer, killed, event))
@@ -822,10 +845,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Player killed a Citizens2 NPC
 		if (CitizensCompat.isEnabledInConfig() && CitizensCompat.isCitizensSupported()
 				&& CitizensCompat.isNPC(killed)) {
-			if (CitizensCompat.isSentry(killed))
+			if (CitizensCompat.isSentryOrSentinel(killed))
 				if (killer != null)
-					debug("%s killed Sentry npc-%s (name=%s)", killer.getName(), CitizensCompat.getNPCId(killed),
-							CitizensCompat.getNPCName(killed));
+					debug("%s killed Sentinel or a Sentry npc-%s (name=%s)", killer.getName(),
+							CitizensCompat.getNPCId(killed), CitizensCompat.getNPCName(killed));
 		}
 
 		// Player killed a mob while playing a minigame: MobArena, PVPVArena,
@@ -916,6 +939,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Update DamageInformation
 		DamageInformation info = null;
+		info = mDamageHistory.get(event.getEntity());
+
+		// DamageInformation info = null;
 		if (killed instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity) killed)) {
 			info = mDamageHistory.get(killed);
 
@@ -937,8 +963,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 			info.usedWeapon = true;
 		}
-		if ((System.currentTimeMillis() - info.lastAttackTime) > mConfig.killTimeout * 1000) {
-			debug("KillBlocked %s: Last damage was too long ago", killer.getName());
+		if (((System.currentTimeMillis() - info.lastAttackTime) > mConfig.killTimeout * 1000) && (info.wolfAssist
+				&& ((System.currentTimeMillis() - info.lastAttackTime) > mConfig.assistTimeout * 1000))) {
+			debug("KillBlocked %s: Last damage was too long ago (%s sec.)", killer.getName(),
+					(System.currentTimeMillis() - info.lastAttackTime) / 1000);
 			return;
 		}
 		if (info.weapon == null)
@@ -975,7 +1003,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 
-		HuntData data = mMobHuntingManager.getHuntData(killer);
+		HuntData data;
+
+		// if (killer != null)
+		data = mMobHuntingManager.getHuntData(killer);
+		// else
+		// data = mMobHuntingManager.getHuntData(damager);
 
 		// Killstreak
 		Misc.handleKillstreak(killer);
@@ -1350,7 +1383,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				MobHunting.debug("Permission mobhunting.mobs.mythicmobtype not set, defaulting to True.");
 				return true;
 			}
-		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isSentry(mob)) {
+		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isSentryOrSentinel(mob)) {
 			permission_prefix = "npc-" + CitizensCompat.getNPCId(mob);
 			if (player.isPermissionSet("mobhunting.mobs." + permission_prefix))
 				return player.hasPermission("mobhunting.mobs." + permission_prefix);

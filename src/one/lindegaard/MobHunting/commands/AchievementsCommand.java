@@ -32,12 +32,12 @@ public class AchievementsCommand implements ICommand {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		if (sender instanceof ConsoleCommandSender)
-			return new String[] { label + ChatColor.GOLD + " <player>" };
+			return new String[] { ChatColor.GOLD +label + ChatColor.GREEN + " <player>" };
 		else {
 			if (sender.hasPermission("mobhunting.listachievements.other"))
-				return new String[] { label + ChatColor.GREEN + " [<player>] [nogui|gui]" };
+				return new String[] { ChatColor.GOLD +label + ChatColor.GREEN + " [<player>] [nogui|gui]" };
 			else
-				return new String[] { label + ChatColor.GREEN + " [nogui|gui]" };
+				return new String[] { ChatColor.GOLD +label + ChatColor.GREEN + " [nogui|gui]" };
 		}
 	}
 

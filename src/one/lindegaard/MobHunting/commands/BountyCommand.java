@@ -68,7 +68,7 @@ public class BountyCommand implements ICommand {
 
 	@Override
 	public boolean canBeConsole() {
-		return true;
+		return false;
 	}
 
 	@Override
