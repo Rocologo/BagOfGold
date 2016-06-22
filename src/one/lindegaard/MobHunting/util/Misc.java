@@ -8,8 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
@@ -44,25 +46,19 @@ public class Misc {
 		if (data.getKillstreakLevel() != lastKillstreakLevel) {
 			switch (data.getKillstreakLevel()) {
 			case 1:
-				//player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1"));
 				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1"));
 				break;
 			case 2:
-				//player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2"));
 				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2"));
 				break;
 			case 3:
-				//player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3"));
 				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3"));
 				break;
 			default:
-				//player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4"));
 				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4"));
 				break;
 			}
 
-			//player.sendMessage(ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier",
-			//		String.format("%.1f", data.getKillstreakMultiplier())));
 			MobHunting.playerActionBarMessage(player, ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier",
 					String.format("%.1f", data.getKillstreakMultiplier())));
 		}
@@ -144,4 +140,21 @@ public class Misc {
 		return true;
 	}
 	
+	public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+		skull.setDurability((short) 3);
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		skullMeta.setOwner(offlinePlayer.getName());
+		skull.setItemMeta(skullMeta);
+		return skull;
+	}
+
+	public static Player getOnLinePlayer(OfflinePlayer offlinePlayer) {
+		for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
+			if (player.getName().equals(offlinePlayer.getName()))
+				return player;
+		}
+		return null;
+	}
+
 }

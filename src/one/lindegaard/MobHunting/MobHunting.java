@@ -16,6 +16,7 @@ import one.lindegaard.MobHunting.commands.CheckGrindingCommand;
 import one.lindegaard.MobHunting.commands.ClearGrindingCommand;
 import one.lindegaard.MobHunting.commands.CommandDispatcher;
 import one.lindegaard.MobHunting.commands.DatabaseCommand;
+import one.lindegaard.MobHunting.commands.HeadCommand;
 import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
 import one.lindegaard.MobHunting.commands.AchievementsCommand;
@@ -83,6 +84,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -225,28 +227,31 @@ public class MobHunting extends JavaPlugin implements Listener {
 		getCommand("mobhunt").setTabCompleter(cmd);
 		cmd.registerCommand(new AchievementsCommand());
 		cmd.registerCommand(new CheckGrindingCommand());
-		cmd.registerCommand(new TopCommand());
-		cmd.registerCommand(new LeaderboardCommand());
 		cmd.registerCommand(new ClearGrindingCommand());
-		cmd.registerCommand(new WhitelistAreaCommand());
-		if (CompatibilityManager.isPluginLoaded(WorldEditCompat.class))
-			cmd.registerCommand(new SelectCommand());
-		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class))
-			cmd.registerCommand(new RegionCommand());
-		cmd.registerCommand(new ReloadCommand());
-		cmd.registerCommand(new UpdateCommand());
-		cmd.registerCommand(new VersionCommand());
+		cmd.registerCommand(new DatabaseCommand());
+		cmd.registerCommand(new HeadCommand());
+		cmd.registerCommand(new LeaderboardCommand());
 		cmd.registerCommand(new LearnCommand());
 		cmd.registerCommand(new MuteCommand());
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
 			cmd.registerCommand(new NpcCommand());
 		}
+		cmd.registerCommand(new ReloadCommand());
+		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class))
+			cmd.registerCommand(new RegionCommand());
+		if (CompatibilityManager.isPluginLoaded(WorldEditCompat.class))
+			cmd.registerCommand(new SelectCommand());
+		cmd.registerCommand(new TopCommand());
+		cmd.registerCommand(new WhitelistAreaCommand());
+		cmd.registerCommand(new UpdateCommand());
+		cmd.registerCommand(new VersionCommand());
 
-		cmd.registerCommand(new DatabaseCommand());
 		registerModifiers();
 
 		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(new Rewards(), this);
+		// getServer().getPluginManager().registerEvents(new HeadCommand(),
+		// this);
 
 		if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
 			debug("onReload: loading %s players from the database", mMobHuntingManager.getOnlinePlayersAmount());
@@ -1119,7 +1124,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					OfflinePlayer bountyOwner = b.getBountyOwner();
 					mBountyManager.removeBounty(b);
 					if (bountyOwner.isOnline())
-						playerActionBarMessage(getOnLinePlayer(bountyOwner),
+						playerActionBarMessage(Misc.getOnLinePlayer(bountyOwner),
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
 										"prize", b.getPrize(), "killed", killed.getName()));
 					b.setStatus(BountyStatus.completed);
@@ -1403,12 +1408,41 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static Player getOnLinePlayer(OfflinePlayer offlinePlayer) {
-		for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
-			if (player.getName().equals(offlinePlayer.getName()))
-				return player;
-		}
-		return null;
+	/**
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onIventoryPickUp(InventoryPickupItemEvent event) {
+		MobHunting.debug("HeadCommand: InventorPickupEvent=%s,s%", event.getItem().getName(),
+				event.getItem().getCustomName());
+
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void PickupItem(PlayerPickupItemEvent event) {
+		MobHunting.debug("HeadCommand: PlayerPickUp=%s,%s", event.getItem().getName(), event.getItem().getCustomName());
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onIventoryDropUp(DropItemEvent event) {
+		MobHunting.debug("HeadCommand: Itemdropped=%s", event.getCause());
+
+	}
+	**/
+	
+	@EventHandler
+	public void PickupItem2(PlayerPickupItemEvent event) {
+		MobHunting.debug("HeadCommand: PlayerPickUp=%s,%s", event.getItem().getName(), event.getItem().getCustomName());
+		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)){
+			debug("It was a MH Head");
+			//if ()
+		}
+		Player player = event.getPlayer();
+		player.sendMessage(ChatColor.GOLD + "Event was called.");
+
+		if (event.getItem().getItemStack().getType() == Material.GOLDEN_APPLE) {
+			player.sendMessage(ChatColor.GOLD + "Apple.");
+		}
+
+	}
+
+	
 }
