@@ -1,6 +1,8 @@
 package one.lindegaard.MobHunting;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -94,14 +96,11 @@ public class MobHuntingManager implements Listener {
 		try {
 			method = Bukkit.class.getDeclaredMethod("getOnlinePlayers");
 			Object players = method.invoke(null);
-			Collection<Player> newPlayers = Collections.emptyList();
-			if (players instanceof Player[]) {
-				Player[] oldPlayers = (Player[]) players;
-				for (int i = 0; i < oldPlayers.length; i++)
-					newPlayers.add(oldPlayers[i]);
-			} else {
+			Collection<Player> newPlayers;
+			if (players instanceof Player[])
+				newPlayers = Arrays.asList((Player[]) players);
+			else
 				newPlayers = (Collection<Player>) players;
-			}
 			return newPlayers;
 		} catch (Exception ex) {
 			ex.printStackTrace();

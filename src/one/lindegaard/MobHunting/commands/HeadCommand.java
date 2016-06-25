@@ -22,6 +22,7 @@ import one.lindegaard.MobHunting.util.Misc;
 public class HeadCommand implements ICommand {
 
 	public static final String MH_HEAD = "MH:Head";
+	public static final String MH_REWARD = "MobHunting Reward";
 
 	public HeadCommand() {
 	}
@@ -143,7 +144,9 @@ public class HeadCommand implements ICommand {
 				for (int i = 1; i <= amount; i++) {
 					ItemMeta im = itemHead.getItemMeta();
 					im.setDisplayName(displayName);
-
+					ArrayList<String> lore = new ArrayList<String>();
+					lore.add(MH_REWARD);
+					im.setLore(lore);
 					Item item = location.getWorld().dropItem(location, itemHead);
 					item.setMetadata(MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(), displayName));
 					item.setCustomName(displayName);

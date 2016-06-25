@@ -151,6 +151,7 @@ public enum ExtendedMobType {
 
 	private String mType;
 	private String mPlayerName;
+	@SuppressWarnings({ "unused" })
 	private String mTexture;
 
 	private ExtendedMobType(String type, String playerName, String texture) {

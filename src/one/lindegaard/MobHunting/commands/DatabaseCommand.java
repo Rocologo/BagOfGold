@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.storage.IDataStore;
 
 public class DatabaseCommand implements ICommand, Listener {
 
