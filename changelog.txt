@@ -1,5 +1,6 @@
 V3.2.4
 - Support for Citizens Sentinel added. Sentry has been discontinued by Citizens Developer and is replaced by Sentinel.
+- New feature: Players can loose money if the get killed by a mob. Can be enabled in config.yml
 - The owner of a MyPet will now get a reward if the Pet kills a mob. This feature has been broken for while, but is now fixed.
 - Fixed bug: WitherSkeleton kills is now counted.
 - Fixed bug when DisguiseCraft is too old. I version is before DisguiseCraft V5.0 the compatibility is disabled.

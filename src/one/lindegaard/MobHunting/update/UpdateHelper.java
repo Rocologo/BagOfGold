@@ -172,6 +172,8 @@ public class UpdateHelper {
 		// Version format on Bukkit.org: "MobHunting Vn.n.n"
 		// Version format in jar file: "n.n.n" | "n.n.n-SNAPSHOT-Bn"
 
+		int updateCheck = 0, pluginCheck = 0;
+		boolean snapshot = false;
 		// Check to see if the latest file is newer that this one
 		String[] split = UpdateHelper.getBukkitUpdate().getVersionName().split(" V");
 		// Only do this if the format is what we expect
@@ -180,7 +182,6 @@ public class UpdateHelper {
 			String[] updateVer = split[1].split("\\.");
 			// Check the version #'s
 			String[] pluginVerSNAPSHOT = MobHunting.getInstance().getDescription().getVersion().split("\\-");
-			boolean snapshot = false;
 			if (pluginVerSNAPSHOT.length > 1)
 				snapshot = pluginVerSNAPSHOT[1].equals("SNAPSHOT");
 			if (snapshot)
@@ -190,11 +191,11 @@ public class UpdateHelper {
 			// Run through major, minor, sub
 			for (int i = 0; i < Math.max(updateVer.length, pluginVer.length); i++) {
 				try {
-					int updateCheck = 0;
+					updateCheck = 0;
 					if (i < updateVer.length) {
 						updateCheck = Integer.valueOf(updateVer[i]);
 					}
-					int pluginCheck = 0;
+					pluginCheck = 0;
 					if (i < pluginVer.length) {
 						pluginCheck = Integer.valueOf(pluginVer[i]);
 					}
@@ -217,8 +218,12 @@ public class UpdateHelper {
 					.warning("Installed plugin version: " + MobHunting.getInstance().getDescription().getVersion());
 			MobHunting.getInstance().getLogger()
 					.warning("Newest version on Bukkit.org: " + UpdateHelper.getBukkitUpdate().getVersionName());
+			return UpdateStatus.UNKNOWN;
 		}
-		return UpdateStatus.NOT_AVAILABLE;
+		if ((updateCheck == pluginCheck && snapshot))
+			return UpdateStatus.AVAILABLE;
+		else
+			return UpdateStatus.NOT_AVAILABLE;
 	}
 
 	private static final int BUFFER_SIZE = 4096;
