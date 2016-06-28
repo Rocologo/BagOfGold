@@ -965,6 +965,35 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "flyingPenalty", category = "penalty", comment = "If a player flies at any point in a fight, this penalty will be applied")
 	public double penaltyFlying = 0.5;
 
+	@ConfigField(name = "mob-rob-from-player", category = "penalty", comment = "This is the penalty if the player gets killed by a mob."
+			+ "\nSet mob-kills-player-penalty=10 to let the mob steal 10 dollars"
+			+ "\n or 10% to let the mob steal 10% of the players balance."
+			+ "\nSet mob-kills-player-penalty=0 to disable this")
+	public String mobKillsPlayerPenalty = "0%";
+
+	public double getPlayerKilledByMobPenalty(Player player) {
+		if (mobKillsPlayerPenalty == null || mobKillsPlayerPenalty.equals("") || mobKillsPlayerPenalty.equals("0%")
+				|| mobKillsPlayerPenalty.equals("0") || mobKillsPlayerPenalty.isEmpty()) {
+			return 0;
+		} else if (mobKillsPlayerPenalty.contains(":")) {
+			String[] str1 = mobKillsPlayerPenalty.split(":");
+			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
+					+ Double.valueOf(str1[0]));
+			return round(prize);
+		} else if (mobKillsPlayerPenalty.endsWith("%")) {
+			double prize = Math
+					.floor(Double.valueOf(mobKillsPlayerPenalty.substring(0, mobKillsPlayerPenalty.length() - 1))
+							* MobHunting.getEconomy().getBalance(player) / 100);
+			return round(prize);
+		} else if (mobKillsPlayerPenalty.contains(":")) {
+			String[] str1 = mobKillsPlayerPenalty.split(":");
+			double prize2 = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))
+					+ Double.valueOf(str1[0]));
+			return round(Double.valueOf(prize2));
+		} else
+			return Double.valueOf(mobKillsPlayerPenalty);
+	}
+
 	// #####################################################################################
 	// Killstreaks
 	// #####################################################################################

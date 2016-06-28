@@ -169,14 +169,24 @@ public class UpdateHelper {
 	}
 
 	public static UpdateStatus isUpdateNewerVersion() {
+		// Version format on Bukkit.org: "MobHunting Vn.n.n"
+		// Version format in jar file: "n.n.n" | "n.n.n-SNAPSHOT-Bn"
+
 		// Check to see if the latest file is newer that this one
 		String[] split = UpdateHelper.getBukkitUpdate().getVersionName().split(" V");
 		// Only do this if the format is what we expect
 		if (split.length == 2) {
 			// Need to escape the period in the regex expression
 			String[] updateVer = split[1].split("\\.");
-			// CHeck the version #'s
-			String[] pluginVer = MobHunting.getInstance().getDescription().getVersion().split("\\.");
+			// Check the version #'s
+			String[] pluginVerSNAPSHOT = MobHunting.getInstance().getDescription().getVersion().split("\\-");
+			boolean snapshot = false;
+			if (pluginVerSNAPSHOT.length > 1)
+				snapshot = pluginVerSNAPSHOT[1].equals("SNAPSHOT");
+			if (snapshot)
+				MobHunting.debug("You are using a development version (%s)",
+						MobHunting.getInstance().getDescription().getVersion());
+			String[] pluginVer = pluginVerSNAPSHOT[0].split("\\.");
 			// Run through major, minor, sub
 			for (int i = 0; i < Math.max(updateVer.length, pluginVer.length); i++) {
 				try {
@@ -194,13 +204,19 @@ public class UpdateHelper {
 						return UpdateStatus.NOT_AVAILABLE;
 				} catch (Exception e) {
 					MobHunting.getInstance().getLogger().warning("Could not determine update's version # ");
-					MobHunting.getInstance().getLogger()
-							.warning("Plugin version: " + MobHunting.getInstance().getDescription().getVersion());
-					MobHunting.getInstance().getLogger()
-							.warning("Update version: " + UpdateHelper.getBukkitUpdate().getVersionName());
+					MobHunting.getInstance().getLogger().warning(
+							"Installed plugin version: " + MobHunting.getInstance().getDescription().getVersion());
+					MobHunting.getInstance().getLogger().warning(
+							"Newest version on Bukkit.org: " + UpdateHelper.getBukkitUpdate().getVersionName());
 					return UpdateStatus.UNKNOWN;
 				}
 			}
+		} else {
+			MobHunting.getInstance().getLogger().warning("Could not determine update's version # ");
+			MobHunting.getInstance().getLogger()
+					.warning("Installed plugin version: " + MobHunting.getInstance().getDescription().getVersion());
+			MobHunting.getInstance().getLogger()
+					.warning("Newest version on Bukkit.org: " + UpdateHelper.getBukkitUpdate().getVersionName());
 		}
 		return UpdateStatus.NOT_AVAILABLE;
 	}

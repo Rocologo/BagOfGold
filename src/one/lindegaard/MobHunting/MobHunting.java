@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -83,6 +82,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -94,16 +95,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -467,19 +467,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	public static void learn(Player player, String text, Object... args) {
-		if (player != null && !CitizensCompat.isNPC(player)) {
-			if (mPlayerSettingsManager.getPlayerSettings(player).isLearningMode())
-				if (!mConfig.disableIntegrationBossBarAPI && BossBarAPICompat.isSupported()
-						&& BossBarAPICompat.isEnabledInConfig()) {
-					BossBarAPICompat.addBar(player, text);
-				} else if (!mConfig.disableIntegrationBarAPI && BarAPICompat.isSupported()
-						&& BarAPICompat.isEnabledInConfig()) {
-					BarAPICompat.setMessageTime(player, text, 5);
-				} else {
-					player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
-							+ String.format(text, args));
-				}
-		}
+		if (player != null && !CitizensCompat.isNPC(player)
+				&& mPlayerSettingsManager.getPlayerSettings(player).isLearningMode())
+			if (!mConfig.disableIntegrationBossBarAPI && BossBarAPICompat.isSupported()
+					&& BossBarAPICompat.isEnabledInConfig()) {
+				BossBarAPICompat.addBar(player, text);
+			} else if (!mConfig.disableIntegrationBarAPI && BarAPICompat.isSupported()
+					&& BarAPICompat.isEnabledInConfig()) {
+				BarAPICompat.setMessageTime(player, text, 5);
+			} else {
+				player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
+						+ String.format(text, args));
+			}
 	}
 
 	public static void playerActionBarMessage(Player player, String message) {
@@ -506,6 +505,32 @@ public class MobHunting extends JavaPlugin implements Listener {
 			playerActionBarMessage((Player) event.getEntity(),
 					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
 		data.setKillStreak(0);
+
+		double playerPenalty = 0;
+		Player player = event.getEntity();
+
+		if (CitizensCompat.isNPC(player))
+			return;
+
+		EntityDamageEvent cause = player.getLastDamageCause();
+		Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
+		Entity killer = (damager instanceof Projectile) ? (Entity) ((Projectile) damager).getShooter() : damager;
+
+		if (!(killer instanceof Player)) {
+			playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(player);
+			if (playerPenalty != 0) {
+				boolean killed_muted = false;
+				if (mPlayerSettingsManager.containsKey(player))
+					killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) player).isMuted();
+
+				mEconomy.withdrawPlayer((Player) player, playerPenalty);
+				if (!killed_muted)
+					playerActionBarMessage((Player) player, ChatColor.RED + "" + ChatColor.ITALIC
+							+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(playerPenalty)));
+				debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
+						mEconomy.format(playerPenalty));
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -559,14 +584,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
+
 		// check if damager or damaged is Sentry / Sentinel. Only Sentry gives a
 		// reward.
-		if (CitizensCompat.isNPC(damager))
-			if (!CitizensCompat.isSentryOrSentinel(damager))
-				return;
-		if (CitizensCompat.isNPC(damaged))
-			if (!CitizensCompat.isSentryOrSentinel(damaged))
-				return;
+		if (CitizensCompat.isNPC(damager) && !CitizensCompat.isSentryOrSentinel(damager))
+			return;
+
+		if (CitizensCompat.isNPC(damaged) && !CitizensCompat.isSentryOrSentinel(damaged))
+			return;
+
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 			if ((damager instanceof Player) || MyPetCompat.isMyPet(damager)) {
 				RegionManager regionManager = WorldGuardCompat.getWorldGuardPlugin()
@@ -693,42 +719,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@SuppressWarnings({ "deprecation" })
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
+
 		LivingEntity killed = event.getEntity();
 
 		// TODO: Handle Mob kills a Mob or what if MyPet kills a mob?.
 		Player killer = event.getEntity().getKiller();
 
-		// Entity damager = event.getEntity().getLastDamageCause().getEntity();
-		// debug("MobHunting: lastDamageCause.entity=%s", damager);
-
-		// ItemStack weapon;
-
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
-			debug("onMobDeath: Not killed by Player and MyPet.");
+			debug("onMobDeath: Mob not killed by Player or MyPet.");
 			return;
 		}
-
-		// Player cause=null;
-
-		/**
-		 * boolean projectile = false; if (damager instanceof Projectile) { if
-		 * (((Projectile) damager).getShooter() instanceof Player) { cause =
-		 * (Player) ((Projectile) damager).getShooter(); killer = cause; }
-		 * 
-		 * if (damager instanceof ThrownPotion) weapon = ((ThrownPotion)
-		 * damager).getItem();
-		 * 
-		 * info.mele = false; projectile = true; } else info.mele = true;
-		 * 
-		 * if (damager instanceof Wolf && ((Wolf) damager).isTamed() && ((Wolf)
-		 * damager).getOwner() instanceof Player) { cause = (Player) ((Wolf)
-		 * damager).getOwner(); killer = cause; info.mele = false;
-		 * info.wolfAssist = true; }
-		 **/
-
-		// TODO: create these two methods
-		if (mMobHuntingManager.isKillRewareded(killer, killed, event))
-			mMobHuntingManager.rewardKill(killer, killed, event);
 
 		// MobHunting is Disabled in World
 		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())) {
@@ -770,9 +770,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// MyPet Compatibility
-		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig())
-
-		{
+		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
 			if (killer != null || MyPetCompat.isMyPet(killer)) {
 
 				ApplicableRegionSet set = WorldGuardCompat.getWorldGuardPlugin().getRegionManager(killer.getWorld())
@@ -796,8 +794,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
+		// Handle Muted mode
+		boolean killer_muted = false;
+		boolean killed_muted = false;
+		if (mPlayerSettingsManager.containsKey(killer)) {
+			killer_muted = mPlayerSettingsManager.getPlayerSettings(killer).isMuted();
+		}
+		if (mPlayerSettingsManager.containsKey(killed))
+			killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) killed).isMuted();
+
 		// Player died while playing a Minigame: MobArena, PVPArena,
-		// BattleArena, Suiside,PVP
+		// BattleArena, Suiside, PVP, penalty when Mobs kills player
 		if (killed instanceof Player) {
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)
 					&& !mConfig.mobarenaGetRewards) {
@@ -859,12 +866,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// Player killed a Citizens2 NPC
-		if (CitizensCompat.isEnabledInConfig() && CitizensCompat.isCitizensSupported()
-				&& CitizensCompat.isNPC(killed)) {
-			if (CitizensCompat.isSentryOrSentinel(killed))
-				if (killer != null)
-					debug("%s killed Sentinel or a Sentry npc-%s (name=%s)", killer.getName(),
-							CitizensCompat.getNPCId(killed), CitizensCompat.getNPCName(killed));
+		if (killer != null && CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinel(killed)) {
+			debug("%s killed Sentinel or a Sentry npc-%s (name=%s)", killer.getName(), CitizensCompat.getNPCId(killed),
+					CitizensCompat.getNPCName(killed));
 		}
 
 		// Player killed a mob while playing a minigame: MobArena, PVPVArena,
@@ -911,11 +915,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		// There is no reward for this kill
+		// There is no reward and no penalty for this kill
 		if (mConfig.getBaseKillPrize(event.getEntity()) == 0 && mConfig.getKillConsoleCmd(killed).equals("")) {
-			if (killed != null)
-				debug("KillBlocked %s(%d): There is no reward for this Mob/Player", killed.getType(),
-						killed.getEntityId());
+			// if (killed != null)
+			debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player", killed.getType(),
+					killed.getEntityId());
 			learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", killed.getName()));
 			return;
 		}
@@ -943,15 +947,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 			learn(killer, Messages.getString("mobhunting.learn.creative"));
 			return;
 		}
-
-		// Handle Muted mode
-		boolean killer_muted = false;
-		boolean killed_muted = false;
-		if (mPlayerSettingsManager.containsKey(killer)) {
-			killer_muted = mPlayerSettingsManager.getPlayerSettings(killer).isMuted();
-		}
-		if (mPlayerSettingsManager.containsKey(killed))
-			killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) killed).isMuted();
 
 		// Update DamageInformation
 		DamageInformation info = null;
@@ -1170,17 +1165,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			// Handle reward on PVP kill. (Robbing)
-			if (killer != null && killed instanceof Player) {
-				if (CitizensCompat.isDisabledInConfig() || !CitizensCompat.isCitizensSupported()
-						|| !CitizensCompat.isNPC(killed)) {
-					if (mConfig.robFromVictim) {
-						mEconomy.withdrawPlayer((Player) killed, cash);
-						if (!killed_muted)
-							playerActionBarMessage((Player) killed, ChatColor.RED + "" + ChatColor.ITALIC
-									+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
-						debug("%s lost %s", killed.getName(), mEconomy.format(cash));
-					}
-				}
+			if (killer != null && killed instanceof Player && !CitizensCompat.isNPC(killed) && mConfig.robFromVictim) {
+				mEconomy.withdrawPlayer((Player) killed, cash);
+				if (!killed_muted)
+					playerActionBarMessage((Player) killed, ChatColor.RED + "" + ChatColor.ITALIC
+							+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
+				debug("%s lost %s", killed.getName(), mEconomy.format(cash));
 			}
 
 			// Reward for assisted kill
@@ -1330,7 +1320,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
-		if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(event.getEntity()))
+		if (CitizensCompat.isNPC(event.getEntity()))
 			return;
 
 		if (event.getEntityType() == EntityType.ENDER_DRAGON)
@@ -1356,7 +1346,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void spawnerMobSpawn(CreatureSpawnEvent event) {
 
-		if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(event.getEntity()))
+		if (CitizensCompat.isNPC(event.getEntity()))
 			return;
 
 		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getLocation().getWorld())
@@ -1419,20 +1409,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	/**
-	 * 
-	 * @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	 *                        public void onIventoryDropUp(DropItemEvent event)
-	 *                        { MobHunting.debug("HeadCommand: Itemdropped=%s",
-	 *                        event.getCause());
-	 * 
-	 *                        }
-	 **/
-
 	@EventHandler
 	public void PickupItem(PlayerPickupItemEvent event) {
 		Item item = event.getItem();
-		MobHunting.debug("HeadCommand: PlayerPickUp=%s,%s", item.getName(), event.getItem().getCustomName());
 		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)) {
 			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
 			debug("It was a MH Head DisplayName=%s", displayName);
@@ -1446,17 +1425,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (event.getItem().getItemStack().hasItemMeta() && event.getItem().getItemStack().getItemMeta().hasLore()
 				&& event.getItem().getItemStack().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
 			debug("It was a MH Head DisplayName(2)=%s", event.getItem().getItemStack().getItemMeta().getDisplayName());
-			debug("Add MetaData to block");
 			event.getItem().setMetadata(HeadCommand.MH_HEAD,
 					new FixedMetadataValue(this, event.getItem().getItemStack().getItemMeta().getDisplayName()));
 		}
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
 		Item item = event.getItemDrop();
-		MobHunting.debug("HeadCommand: PlayerDropItem=%s,%s", item.getName(), event.getItemDrop().getCustomName());
 		if (event.getItemDrop().hasMetadata(HeadCommand.MH_HEAD)) {
 			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
 			debug("It was a MH Head DisplayName=%s", displayName);
@@ -1481,15 +1459,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onInventoryPickUp(InventoryPickupItemEvent event) {
-		MobHunting.debug("HeadCommand: InventorPickupEvent=%s,s%", event.getItem().getName(),
-				event.getItem().getCustomName());
 		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)) {
 			String displayName = event.getItem().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
 			debug("It was a MH Head DisplayName=%s", displayName);
 			ItemMeta im = event.getItem().getItemStack().getItemMeta();
 			im.setDisplayName(displayName);
 			ArrayList<String> lore = new ArrayList<String>();
-			lore.add("MobHunting Reward");
+			lore.add(HeadCommand.MH_REWARD);
 			im.setLore(lore);
 			event.getItem().getItemStack().setItemMeta(im);
 		}
@@ -1497,48 +1473,40 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onBlockPlaceEvent(PlayerInteractEntityEvent event) {
-		MobHunting.debug("HeadCommand: PlayerInteractEntityEvent=%s", event.getPlayer().getItemInHand().getType());
+		// MobHunting.debug("HeadCommand: PlayerInteractEntityEvent=%s",
+		// event.getPlayer().getItemInHand().getType());
 	}
 
 	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent event) {
-		MobHunting.debug("HeadCommand: BlockBreakEvent=%s", event.getBlock().getType());
 		if (event.getBlock().hasMetadata(HeadCommand.MH_HEAD)) {
 			String displayName = event.getBlock().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
-			debug("It was a MH Head DisplayName=%s", displayName);
+			// debug("It was a MH Head DisplayName=%s", displayName);
 			Collection<ItemStack> drops = event.getBlock().getDrops();
 			for (ItemStack is : drops) {
-				// if (is.hasItemMeta() && is.getItemMeta().hasLore()
-				// && is.getItemMeta().getLore().equals(HeadCommand.MH_REWARD))
-				// {
-				MobHunting.debug("is.setItemMeta %s - lore", is);
+				// MobHunting.debug("is.setItemMeta %s - lore", is);
 				ItemMeta im = is.getItemMeta();
 				ArrayList<String> lore = new ArrayList<String>();
-				lore.add("MobHunting Reward");
+				lore.add(HeadCommand.MH_REWARD);
 				im.setLore(lore);
 				im.setDisplayName(displayName);
 				is.setItemMeta(im);
-
-				// }
 			}
 		}
-
 	}
 
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent event) {
-		MobHunting.debug("HeadCommand: BlockPlaceEvent=%s", event.getBlock().getType());
-
-		if (event.getItemInHand().hasItemMeta()) {
+		if (event.getItemInHand() != null && event.getItemInHand().hasItemMeta()) {
 			ItemMeta im = event.getItemInHand().getItemMeta();
-			if (im.hasLore() && im.getLore().get(0).equalsIgnoreCase("MobHunting reward")
+			if (im.hasLore() && im.getLore().get(0).equalsIgnoreCase(HeadCommand.MH_REWARD)
 					&& !im.getDisplayName().isEmpty()) {
-				debug("Add MetaData to block");
+				// debug("Add MetaData to block");
 				event.getBlockPlaced().setMetadata(HeadCommand.MH_HEAD,
 						new FixedMetadataValue(this, im.getDisplayName()));
 			}
 		}
-		if (event.getBlock().hasMetadata(HeadCommand.MH_HEAD)) {
+		if (event.getBlock() != null && event.getBlock().hasMetadata(HeadCommand.MH_HEAD)) {
 			String displayName = event.getBlock().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
 			debug("It was a MH Head DisplayName=%s", displayName);
 		}
@@ -1546,28 +1514,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		// This is called when the player places a SKULL_ITEM
-		MobHunting.debug("HeadCommand: PlayerInteractEvent=%s", event.getPlayer().getItemInHand().getType());
 		if (event.getItem() != null)
 			if (event.getMaterial() == Material.SKULL_ITEM || event.getMaterial() == Material.SKULL) {
-				MobHunting.debug("HeadCommand: PlayerInteractEvent=%s", event.getPlayer().getItemInHand().getType());
-				if (event.getItem().hasItemMeta()) {
+				if (event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore()
+						&& event.getItem().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
 					String displayName = event.getItem().getItemMeta().getDisplayName();
 					debug("It was a MH Head DisplayName=%s", displayName);
-					debug("Add MetaData to block");
-					if (event.getClickedBlock().hasMetadata(HeadCommand.MH_HEAD))
-						debug("Clicked block is a MH_HEAD");
-					else
-						debug("Clicked block is NOT a MH_HEAD");
-					// ItemMeta im =
-					// event.getItem().getItemStack().getItemMeta();
-					// im.setDisplayName(displayName);
-					// event.getItem().getItemStack().setItemMeta(im);
+					// debug("Add MetaData to block");
 				}
-
 			}
-		if (event.getClickedBlock().hasMetadata(HeadCommand.MH_HEAD))
+		if (event.getClickedBlock() != null && event.getClickedBlock().hasMetadata(HeadCommand.MH_HEAD))
 			debug("The clicked blow is a MH HEAD");
 	}
-
 }

@@ -11,7 +11,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.bounty.Bounty;

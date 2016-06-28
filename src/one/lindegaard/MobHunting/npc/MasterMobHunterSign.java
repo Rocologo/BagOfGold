@@ -305,7 +305,6 @@ public class MasterMobHunterSign implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onSignChangeEvent(SignChangeEvent event) {
 		Player p = event.getPlayer();

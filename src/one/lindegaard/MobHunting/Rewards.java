@@ -61,8 +61,8 @@ public class Rewards implements Listener {
 						e.getEntityType(), e.getBlock().getType());
 		}
 		if (e.getEntity() instanceof Zombie){
-			MobHunting.debug("A Zombie did something");
 			Zombie z = (Zombie) e.getEntity();
+			MobHunting.debug("A Zombie did something, with %s",e.getBlock());
 			if (Misc.isMC19OrNewer()){
 				MobHunting.debug("Zombie hands = %s,%s",z.getEquipment().getItemInMainHand(),z.getEquipment().getItemInOffHand());
 			} else {
