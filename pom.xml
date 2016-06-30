@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.2.4</version>
+	<version>3.2.5</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -47,8 +47,8 @@
 	</organization>
 
 	<scm>
-		<connection>scm:svn:http://127.0.0.1/dummy</connection>
-		<developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+		<connection>scm:svn:https://github.com/Rocologo/MobHunting.git</connection>
+		<developerConnection>scm:svn:https://github.com/Rocologo/MobHunting.git</developerConnection>
 		<tag>HEAD</tag>
 		<url>http://127.0.0.1/dummy</url>
 	</scm>
@@ -121,9 +121,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 				<version>1.4</version>
-				<configuration>
-					<revisionOnScmFailure>no.scm.config.in.pom</revisionOnScmFailure>
-				</configuration>
 				<executions>
 					<execution>
 						<id>buildNumber</id>

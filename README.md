@@ -18,8 +18,8 @@ Websites - more info
 * MasterMobHunters (Citizens2) and Signs
 * Leaderboards
 * Mob grinder detection
-* [Supports Minecraft 1.7.9 - 1.9.4](http://dev.bukkit.org/bukkit-plugins/mobhunting/pages/compability/)
+* [Supports Minecraft 1.7.9 - 1.10.2](http://dev.bukkit.org/bukkit-plugins/mobhunting/pages/compability/)
 * Heavily customizable
 * Language support
-* Tested on SpigotMC, CraftBukkit, Glowstone and Cauldron
+* Tested on SpigotMC, CraftBukkit, PaperSpigot/PaperClip, Glowstone and Cauldron
 * NEW Learning mode so players understand why they didn't get a reward when killing a mod.

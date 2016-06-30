@@ -31,13 +31,15 @@ public class MetricsManager {
 	// Metrics
 	private Metrics metrics;
 	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph, usageGraph;
+	private MobHunting instance;
 
-	public MetricsManager() {
+	public MetricsManager(MobHunting instance) {
+		this.instance = instance;
 	}
 
 	public void startMetrics() {
 		try {
-			metrics = new Metrics(MobHunting.getInstance());
+			metrics = new Metrics(instance);
 
 			databaseGraph = metrics.createGraph("Database used for MobHunting");
 			if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL"))
@@ -97,9 +99,6 @@ public class MetricsManager {
 						Class cls = Class.forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
 						return DisguiseCraftCompat.isSupported() ? 1 : 0;
 					} catch (ClassNotFoundException e) {
-						// MobHunting.debug("DisguiseCraft is not installed -
-						// reported 0");
-						// DisguiseCraft is not present.
 						return 0;
 					}
 				}

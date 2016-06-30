@@ -1,10 +1,15 @@
+V3.2.5
+- New feature /mh head spawn [mobname] [displayname] [amount] [xpos] [ypos] [zpos]|[playername]
+- New feature /mh head rename newDisplayname
+- Bugfix. The compatibility with the Glowstone++ Server was broken. Now fixed.
+- Bugfix. Error when closing the server which could cause the server to hang is fixed.
 V3.2.4
 - Support for Citizens Sentinel added. Sentry has been discontinued by Citizens Developer and is replaced by Sentinel.
 - New feature: Players can loose money if the get killed by a mob. Can be enabled in config.yml
 - The owner of a MyPet will now get a reward if the Pet kills a mob. This feature has been broken for while, but is now fixed.
 - Fixed bug: WitherSkeleton kills is now counted.
-- Fixed bug when DisguiseCraft is too old. I version is before DisguiseCraft V5.0 the compatibility is disabled.
-- The update checker now handle Development versions from the Jenkins server.      
+- Fixed bug when DisguiseCraft is too old. If version is before DisguiseCraft V5.0 the compatibility is disabled.
+- The update checker now handle Development versions from the Jenkins server.     
 V3.2.3
 - Removed the moneygain'ed message when money is dropped on the group.
 - Added display name for hostile Mobs in config.yml 

@@ -45,7 +45,13 @@ public class DataStoreManager {
 		mStoreThread = new StoreThread(MobHunting.getConfigManager().savePeriod);
 	}
 
-	// private static Thread sleepingThread = new Thread();
+	public boolean isRunning() {
+		return mTaskThread.getState() != Thread.State.WAITING && mTaskThread.getState() != Thread.State.TERMINATED
+				&& mStoreThread.getState() != Thread.State.WAITING
+				&& mStoreThread.getState() != Thread.State.TERMINATED;
+
+		// mTaskThread.isAlive() && mStoreThread.isAlive();
+	}
 
 	// **************************************************************************************
 	// PlayerStats
@@ -241,9 +247,16 @@ public class DataStoreManager {
 				MobHunting.debug("Interupting mTaskThread");
 				mTaskThread.interrupt();
 			}
+			MobHunting.debug("mStoreThread.state=%s", mStoreThread.getState());
 			MobHunting.debug("Interupting mStoreThread");
 			mStoreThread.interrupt();
-			mTaskThread.waitForEmptyQueue();
+			MobHunting.debug("mTaskThread.state=%s", mTaskThread.getState());
+			if (mTaskThread.getState() != Thread.State.WAITING) {
+				mTaskThread.waitForEmptyQueue();
+			} else {
+				MobHunting.debug("Interupting mTaskThread");
+				mTaskThread.interrupt();
+			}
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -282,7 +295,7 @@ public class DataStoreManager {
 					Thread.sleep(mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {
-				MobHunting.debug("MH StoreThread was interupted");
+				System.out.println("[MobHunting] StoreThread was interrupted");
 			}
 		}
 	}
@@ -395,10 +408,9 @@ public class DataStoreManager {
 				}
 
 			} catch (InterruptedException e) {
-				System.out.println("[MobHunting] MH TaskThread was interrupted");
+				System.out.println("[MobHunting] TaskThread was interrupted");
 			}
 		}
-
 	}
 
 }

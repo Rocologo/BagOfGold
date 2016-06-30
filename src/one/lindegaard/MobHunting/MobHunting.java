@@ -83,7 +83,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -103,7 +102,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.projectiles.ProjectileSource;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -293,8 +291,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
-		mMetricsManager = new MetricsManager();
-		mMetricsManager.startMetrics();
+		if (!getServer().getName().toLowerCase().contains("glowstone")) {
+			mMetricsManager = new MetricsManager(this);
+			mMetricsManager.startMetrics();
+		}
 
 		mInitialized = true;
 
@@ -726,7 +726,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Player killer = event.getEntity().getKiller();
 
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
-			debug("onMobDeath: Mob not killed by Player or MyPet.");
+			//debug("onMobDeath: Mob not killed by Player or MyPet.");
 			return;
 		}
 

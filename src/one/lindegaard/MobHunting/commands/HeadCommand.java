@@ -156,10 +156,25 @@ public class HeadCommand implements ICommand {
 
 			return true;
 
+		} else if (args.length > 1 && (args[0].equalsIgnoreCase("rename"))) {
 			// /mh head rename [displayname] - to rename the head holding in the
 			// hand.
-		} else if (args.length >= 1 && (args[0].equalsIgnoreCase("rename"))) {
-
+			if (sender instanceof Player) {
+				Player player = (Player) sender;
+				ItemStack itemInHand = player.getItemInHand();
+				String displayname = "";
+				for (int i = 1; i < args.length; i++) {
+					if (i != (args.length - 1))
+						displayname = displayname + args[i] + " ";
+					else
+						displayname = displayname + args[i];
+				}
+				ItemMeta im = itemInHand.getItemMeta();
+				im.setDisplayName(displayname);
+				itemInHand.setItemMeta(im);
+			} else {
+				sender.sendMessage("You can only rename an item you have inthe hand ingame");
+			}
 			return true;
 		}
 		// show help

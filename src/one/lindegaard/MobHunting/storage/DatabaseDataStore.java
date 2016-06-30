@@ -98,7 +98,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract void setupTables(Connection connection) throws SQLException;
 
 	public static int connections = 0;
-	public static final int MAX_CONNECTIONS=2;
+	public static final int MAX_CONNECTIONS = 2;
 
 	public enum PreparedConnectionType {
 		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID
@@ -185,7 +185,16 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			if (mConnection != null) {
 				mConnection.commit();
-				MobHunting.debug("Closing database connection.");
+				int n = 0;
+				do {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					n++;
+				} while (MobHunting.getDataStoreManager().isRunning() && n < 40);
+				System.out.println("[MobHunting] Closing database connection.");
 				mConnection.close();
 			}
 		} catch (SQLException e) {
