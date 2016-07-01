@@ -95,11 +95,11 @@ public class MuteCommand implements ICommand, Listener {
 		boolean lm = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode();
 		if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted()) {
 			ds.updatePlayerSettings(player, lm, false);
-			MobHunting.getPlayerSettingsmanager().putPlayerSettings(player, new PlayerSettings(player, lm, false));
+			MobHunting.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, false));
 			player.sendMessage(Messages.getString("mobhunting.commands.mute.unmuted", "player", player.getName()));
 		} else {
 			ds.updatePlayerSettings(player, lm, true);
-			MobHunting.getPlayerSettingsmanager().putPlayerSettings(player, new PlayerSettings(player, lm, true));
+			MobHunting.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, true));
 			player.sendMessage(Messages.getString("mobhunting.commands.mute.muted", "player", player.getName()));
 		}
 	}

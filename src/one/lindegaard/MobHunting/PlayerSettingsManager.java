@@ -19,7 +19,7 @@ public class PlayerSettingsManager implements Listener {
 	private static HashMap<OfflinePlayer, PlayerSettings> mPlayerSettings = new HashMap<OfflinePlayer, PlayerSettings>();
 
 	/**
-	 * Contructor for the PlayerSettingsmanager
+	 * Constructor for the PlayerSettingsmanager
 	 */
 	PlayerSettingsManager() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
@@ -28,15 +28,11 @@ public class PlayerSettingsManager implements Listener {
 	/**
 	 * Get playerSettings from memory
 	 * 
-	 * @param player
+	 * @param offlinePlayer
 	 * @return PlayerSettings
 	 */
-	public PlayerSettings getPlayerSettings(OfflinePlayer player) {
-		// TODO: cleanup - return mPlayerSettings.get(player); should be enough.
-		if (mPlayerSettings.containsKey(player))
-			return mPlayerSettings.get(player);
-		else // its not a player
-			return new PlayerSettings(player, false, true);
+	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) {
+		return mPlayerSettings.get(offlinePlayer);
 	}
 
 	/**
@@ -44,7 +40,7 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param playerSettings
 	 */
-	public void putPlayerSettings(Player player, PlayerSettings playerSettings) {
+	public void setPlayerSettings(Player player, PlayerSettings playerSettings) {
 		mPlayerSettings.put(player, playerSettings);
 	}
 
@@ -66,9 +62,6 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		load(player);
-		save(player);
-		putPlayerSettings(player, new PlayerSettings(player, mPlayerSettings.get(player).isLearningMode(),
-				mPlayerSettings.get(player).isMuted()));
 	}
 
 	/**
@@ -81,7 +74,6 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		save(player);
-		mPlayerSettings.remove(player);
 	}
 
 	/**
@@ -95,7 +87,7 @@ public class PlayerSettingsManager implements Listener {
 			MobHunting.debug("%s isMuted()", player.getName());
 		if (ps.isLearningMode())
 			MobHunting.debug("%s is in LearningMode()", player.getName());
-		putPlayerSettings(player, ps);
+		setPlayerSettings(player, ps);
 	}
 
 	/**

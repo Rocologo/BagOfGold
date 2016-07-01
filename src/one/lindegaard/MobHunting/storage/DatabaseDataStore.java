@@ -127,7 +127,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mConnection.setAutoCommit(false);
 			setupTables(mConnection);
 			mGetPlayerData = new PreparedStatement[4];
-			// openPreparedGetPlayerStatements();
 
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -209,7 +208,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * getPlayerSettings
 	 * 
-	 * @param player
+	 * @param offlinePlayer
 	 *            :OfflinePlayer
 	 * @return PlayerData
 	 * @throws DataStoreException
@@ -217,36 +216,36 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	@Override
-	public PlayerSettings getPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException {
+	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
 		openPreparedGetPlayerStatements();
-		mGetPlayerData[0].setString(1, player.getUniqueId().toString());
+		mGetPlayerData[0].setString(1, offlinePlayer.getUniqueId().toString());
 		ResultSet result = mGetPlayerData[0].executeQuery();
 		if (result.next()) {
-			PlayerSettings ps = new PlayerSettings(player, result.getBoolean("LEARNING_MODE"),
+			PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getBoolean("LEARNING_MODE"),
 					result.getBoolean("MUTE_MODE"));
 			int id = result.getInt("PLAYER_ID");
 			if (id != 0)
 				ps.setPlayerId(id);
 			result.close();
-			MobHunting.debug("Read Playersettings from Database: %s", ps.toString());
+			MobHunting.debug("Reading Playersettings from Database: %s", ps.toString());
 			closePreparedGetPlayerStatements();
 			return ps;
 		}
 		closePreparedGetPlayerStatements();
-		throw new UserNotFoundException("User " + player.toString() + " is not present in database");
+		throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
 	}
 
 	/**
-	 * insertPalayerData - insert a Set of player data into the Database.
+	 * insertPlayerSettings to database
 	 */
 	@Override
-	public void insertPlayerSettings(PlayerSettings playerData) throws DataStoreException {
+	public void insertPlayerSettings(PlayerSettings playerSettings) throws DataStoreException {
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_DATA);
-			mInsertPlayerData.setString(1, playerData.getPlayer().getUniqueId().toString());
-			mInsertPlayerData.setString(2, playerData.getPlayer().getName());
-			mInsertPlayerData.setInt(3, playerData.isLearningMode() ? 1 : 0);
-			mInsertPlayerData.setInt(4, playerData.isMuted() ? 1 : 0);
+			mInsertPlayerData.setString(1, playerSettings.getPlayer().getUniqueId().toString());
+			mInsertPlayerData.setString(2, playerSettings.getPlayer().getName());
+			mInsertPlayerData.setInt(3, playerSettings.isLearningMode() ? 1 : 0);
+			mInsertPlayerData.setInt(4, playerSettings.isMuted() ? 1 : 0);
 			mInsertPlayerData.addBatch();
 			mInsertPlayerData.executeBatch();
 			mInsertPlayerData.close();
@@ -295,7 +294,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 *         the Database.
 	 * @throws SQLException
 	 */
-	protected Map<UUID, Integer> getPlayerIds(Set<OfflinePlayer> players) throws SQLException {
+	protected Map<UUID, Integer> getPlayerIdsNotUsed(Set<OfflinePlayer> players) throws SQLException {
 
 		// Then select all players in batches of 10,5,2,1 into the HashMap ids
 		// and return ids.
@@ -351,6 +350,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Iterator<OfflinePlayer> itr = changedNames.iterator();
 			while (itr.hasNext()) {
 				OfflinePlayer p = itr.next();
+				MobHunting.debug("Updating playername in database and in memory (%s)", p.getName());
 				updatePlayerName(p.getPlayer());
 			}
 		}
@@ -370,19 +370,15 @@ public abstract class DatabaseDataStore implements IDataStore {
 	public int getPlayerId(OfflinePlayer offlinePlayer) throws SQLException, DataStoreException {
 		if (offlinePlayer == null)
 			return 0;
-		int res = 0;
-		if (offlinePlayer.isOnline()) {
-			PlayerSettings ps = MobHunting.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
-			if (ps != null && ps.getPlayerId() != 0)
-				res = ps.getPlayerId();
-		}
-		if (res == 0) {
+		int playerId = 0;
+		PlayerSettings ps = MobHunting.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		if (ps != null)
+			playerId = ps.getPlayerId();
+		if (playerId == 0) {
 			openPreparedGetPlayerStatements();
 			mGetPlayerData[0].setString(1, offlinePlayer.getUniqueId().toString());
 			ResultSet result = mGetPlayerData[0].executeQuery();
-			HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
 			ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
-
 			if (result.next()) {
 				String name = result.getString(2);
 				UUID uuid = UUID.fromString(result.getString(1));
@@ -390,36 +386,35 @@ public abstract class DatabaseDataStore implements IDataStore {
 					if (offlinePlayer.getUniqueId().equals(uuid) && !offlinePlayer.getName().equals(name)) {
 						MobHunting.getInstance().getLogger().warning("[MobHunting] Name change detected(2): " + name
 								+ " -> " + offlinePlayer.getName() + " UUID=" + offlinePlayer.getUniqueId().toString());
-						ids.put(UUID.fromString(result.getString(1)), result.getInt(3));
+						changedNames.add(offlinePlayer);
 					}
-				res = result.getInt(3);
+				playerId = result.getInt(3);
 				result.close();
 				Iterator<OfflinePlayer> itr = changedNames.iterator();
 				while (itr.hasNext()) {
 					OfflinePlayer p = itr.next();
+					MobHunting.debug("Updating playername in database and in memory (%s)", p.getName());
 					updatePlayerName(p.getPlayer());
 				}
 			}
 			result.close();
 			closePreparedGetPlayerStatements();
-		} else {
-			MobHunting.debug("Using PlayerId %s from memory.", res);
 		}
-		return res;
+		return playerId;
 	}
 
 	/**
 	 * updatePlayerName - update the players name in the Database
 	 * 
-	 * @param player
+	 * @param offlinePlayer
 	 *            : OfflinePlayer
 	 * @throws SQLException
 	 */
-	protected void updatePlayerName(OfflinePlayer player) throws SQLException {
+	protected void updatePlayerName(OfflinePlayer offlinePlayer) throws SQLException {
 		openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_PLAYER_NAME);
 		try {
-			mUpdatePlayerName.setString(1, player.getName());
-			mUpdatePlayerName.setString(2, player.getUniqueId().toString());
+			mUpdatePlayerName.setString(1, offlinePlayer.getName());
+			mUpdatePlayerName.setString(2, offlinePlayer.getUniqueId().toString());
 			mUpdatePlayerName.executeUpdate();
 			mUpdatePlayerName.close();
 			if (MobHunting.getConfigManager().debugSQL) {

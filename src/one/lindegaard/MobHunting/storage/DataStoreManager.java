@@ -210,6 +210,13 @@ public class DataStoreManager {
 		}
 	}
 
+	/**
+	 * Get the playerId from the database
+	 * 
+	 * @param offlinePlayer
+	 * @return
+	 * @throws UserNotFoundException
+	 */
 	public int getPlayerId(OfflinePlayer offlinePlayer) throws UserNotFoundException {
 		try {
 			return mStore.getPlayerId(offlinePlayer);
@@ -224,6 +231,9 @@ public class DataStoreManager {
 	// *****************************************************************************
 	// Common
 	// *****************************************************************************
+	/**
+	 * Flush all waiting data to the database
+	 */
 	public void flush() {
 		if (mWaiting.size() != 0) {
 			MobHunting.debug("Flushing waiting %s data to database...", mWaiting.size());
@@ -231,6 +241,9 @@ public class DataStoreManager {
 		}
 	}
 
+	/**
+	 * Shutdown the DataStoreManager
+	 */
 	public void shutdown() {
 		mExit = true;
 		flush();
@@ -263,6 +276,9 @@ public class DataStoreManager {
 		}
 	}
 
+	/**
+	 * Wait until all data has been updated  
+	 */
 	public void waitForUpdates() {
 		flush();
 		try {
@@ -272,6 +288,11 @@ public class DataStoreManager {
 		}
 	}
 
+	/**
+	 * Constructor for the StoreThread
+	 * @author Rocologo
+	 *
+	 */
 	private class StoreThread extends Thread {
 		private int mSaveInterval;
 
@@ -287,7 +308,6 @@ public class DataStoreManager {
 				while (true) {
 					synchronized (this) {
 						if (mExit && mWaiting.size() == 0) {
-							// MobHunting.debug("MH StoreThread - break");
 							break;
 						}
 					}

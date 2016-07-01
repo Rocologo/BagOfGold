@@ -62,7 +62,6 @@ import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
 import one.lindegaard.MobHunting.storage.IDataStore;
 import one.lindegaard.MobHunting.storage.MySQLDataStore;
-import one.lindegaard.MobHunting.storage.PlayerSettings;
 import one.lindegaard.MobHunting.storage.SQLiteDataStore;
 import one.lindegaard.MobHunting.update.UpdateHelper;
 import one.lindegaard.MobHunting.util.Misc;
@@ -259,15 +258,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(new Rewards(), this);
-		// getServer().getPluginManager().registerEvents(new HeadCommand(),
-		// this);
+		getServer().getPluginManager().registerEvents(new HeadCommand(),this);
 
 		if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
-			debug("onReload: loading %s players from the database", mMobHuntingManager.getOnlinePlayersAmount());
+			debug("Reloading %s online player settings from the database", mMobHuntingManager.getOnlinePlayersAmount());
 			for (Player player : mMobHuntingManager.getOnlinePlayers()) {
-				boolean learning_mode = getDataStoreManager().getPlayerSettings(player).isLearningMode();
-				boolean muted = getDataStoreManager().getPlayerSettings(player).isMuted();
-				mPlayerSettingsManager.putPlayerSettings(player, new PlayerSettings(player, learning_mode, muted));
+				mPlayerSettingsManager.load(player);
 			}
 		}
 		if (!mConfig.disablePlayerBounties) {
@@ -513,22 +509,24 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 
 		EntityDamageEvent cause = player.getLastDamageCause();
-		Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
-		Entity killer = (damager instanceof Projectile) ? (Entity) ((Projectile) damager).getShooter() : damager;
+		if (cause instanceof EntityDamageByEntityEvent) {
+			Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
+			Entity killer = (damager instanceof Projectile) ? (Entity) ((Projectile) damager).getShooter() : damager;
 
-		if (!(killer instanceof Player)) {
-			playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(player);
-			if (playerPenalty != 0) {
-				boolean killed_muted = false;
-				if (mPlayerSettingsManager.containsKey(player))
-					killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) player).isMuted();
+			if (!(killer instanceof Player)) {
+				playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(player);
+				if (playerPenalty != 0) {
+					boolean killed_muted = false;
+					if (mPlayerSettingsManager.containsKey(player))
+						killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) player).isMuted();
 
-				mEconomy.withdrawPlayer((Player) player, playerPenalty);
-				if (!killed_muted)
-					playerActionBarMessage((Player) player, ChatColor.RED + "" + ChatColor.ITALIC
-							+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(playerPenalty)));
-				debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
-						mEconomy.format(playerPenalty));
+					mEconomy.withdrawPlayer((Player) player, playerPenalty);
+					if (!killed_muted)
+						playerActionBarMessage((Player) player, ChatColor.RED + "" + ChatColor.ITALIC
+								+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(playerPenalty)));
+					debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
+							mEconomy.format(playerPenalty));
+				}
 			}
 		}
 	}
@@ -726,7 +724,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Player killer = event.getEntity().getKiller();
 
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
-			//debug("onMobDeath: Mob not killed by Player or MyPet.");
+			// debug("onMobDeath: Mob not killed by Player or MyPet.");
 			return;
 		}
 
@@ -752,7 +750,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 						debug("KillBlocked %s(%d): Mobhunting disabled in world %s, "
 								+ "WG is supported, but player not in a WG region.", killed.getType(),
 								killed.getEntityId(), killed.getWorld().getName());
-						learn(killer, Messages.getString("mobhunting.learn.disabled2"));
+						// learn(killer,
+						// Messages.getString("mobhunting.learn.disabled2"));
 						return;
 					}
 				}
@@ -761,7 +760,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 				// MobHunting is NOT allowed in world and no support for WG
 				// reject.
 				debug("KillBlocked: MobHunting disabled in world and Worldguard is not supported");
-				learn(killer, Messages.getString("mobhunting.learn.disabled2"));
+				// learn(killer,
+				// Messages.getString("mobhunting.learn.disabled2"));
 				return;
 			}
 
@@ -1409,121 +1409,4 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void PickupItem(PlayerPickupItemEvent event) {
-		Item item = event.getItem();
-		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)) {
-			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
-			debug("It was a MH Head DisplayName=%s", displayName);
-			ItemMeta im = item.getItemStack().getItemMeta();
-			im.setDisplayName(displayName);
-			ArrayList<String> lore = new ArrayList<String>();
-			lore.add(HeadCommand.MH_REWARD);
-			im.setLore(lore);
-			event.getItem().getItemStack().setItemMeta(im);
-		}
-		if (event.getItem().getItemStack().hasItemMeta() && event.getItem().getItemStack().getItemMeta().hasLore()
-				&& event.getItem().getItemStack().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
-			debug("It was a MH Head DisplayName(2)=%s", event.getItem().getItemStack().getItemMeta().getDisplayName());
-			event.getItem().setMetadata(HeadCommand.MH_HEAD,
-					new FixedMetadataValue(this, event.getItem().getItemStack().getItemMeta().getDisplayName()));
-		}
-
-	}
-
-	@SuppressWarnings("deprecation")
-	@EventHandler
-	public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
-		Item item = event.getItemDrop();
-		if (event.getItemDrop().hasMetadata(HeadCommand.MH_HEAD)) {
-			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
-			debug("It was a MH Head DisplayName=%s", displayName);
-			ItemMeta im = item.getItemStack().getItemMeta();
-			im.setDisplayName(displayName);
-			ArrayList<String> lore = new ArrayList<String>();
-			lore.add(HeadCommand.MH_REWARD);
-			im.setLore(lore);
-			event.getItemDrop().getItemStack().setItemMeta(im);
-		}
-		if (event.getPlayer().getItemInHand().hasItemMeta() && event.getPlayer().getItemInHand().getItemMeta().hasLore()
-				&& event.getPlayer().getItemInHand().getItemMeta().getLore().get(0)
-						.equalsIgnoreCase(HeadCommand.MH_REWARD)) {
-			MobHunting.debug("HeadCommand: PlayerDropItem(2)=%s,%s", item.getName(),
-					event.getItemDrop().getCustomName());
-			debug("Add MetaData to block");
-			event.getItemDrop().setMetadata(HeadCommand.MH_HEAD,
-					new FixedMetadataValue(this, event.getPlayer().getItemInHand().getItemMeta().getDisplayName()));
-		}
-
-	}
-
-	@EventHandler
-	public void onInventoryPickUp(InventoryPickupItemEvent event) {
-		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)) {
-			String displayName = event.getItem().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
-			debug("It was a MH Head DisplayName=%s", displayName);
-			ItemMeta im = event.getItem().getItemStack().getItemMeta();
-			im.setDisplayName(displayName);
-			ArrayList<String> lore = new ArrayList<String>();
-			lore.add(HeadCommand.MH_REWARD);
-			im.setLore(lore);
-			event.getItem().getItemStack().setItemMeta(im);
-		}
-	}
-
-	@EventHandler
-	public void onBlockPlaceEvent(PlayerInteractEntityEvent event) {
-		// MobHunting.debug("HeadCommand: PlayerInteractEntityEvent=%s",
-		// event.getPlayer().getItemInHand().getType());
-	}
-
-	@EventHandler
-	public void onBlockBreakEvent(BlockBreakEvent event) {
-		if (event.getBlock().hasMetadata(HeadCommand.MH_HEAD)) {
-			String displayName = event.getBlock().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
-			// debug("It was a MH Head DisplayName=%s", displayName);
-			Collection<ItemStack> drops = event.getBlock().getDrops();
-			for (ItemStack is : drops) {
-				// MobHunting.debug("is.setItemMeta %s - lore", is);
-				ItemMeta im = is.getItemMeta();
-				ArrayList<String> lore = new ArrayList<String>();
-				lore.add(HeadCommand.MH_REWARD);
-				im.setLore(lore);
-				im.setDisplayName(displayName);
-				is.setItemMeta(im);
-			}
-		}
-	}
-
-	@EventHandler
-	public void onBlockPlaceEvent(BlockPlaceEvent event) {
-		if (event.getItemInHand() != null && event.getItemInHand().hasItemMeta()) {
-			ItemMeta im = event.getItemInHand().getItemMeta();
-			if (im.hasLore() && im.getLore().get(0).equalsIgnoreCase(HeadCommand.MH_REWARD)
-					&& !im.getDisplayName().isEmpty()) {
-				// debug("Add MetaData to block");
-				event.getBlockPlaced().setMetadata(HeadCommand.MH_HEAD,
-						new FixedMetadataValue(this, im.getDisplayName()));
-			}
-		}
-		if (event.getBlock() != null && event.getBlock().hasMetadata(HeadCommand.MH_HEAD)) {
-			String displayName = event.getBlock().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
-			debug("It was a MH Head DisplayName=%s", displayName);
-		}
-	}
-
-	@EventHandler
-	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		if (event.getItem() != null)
-			if (event.getMaterial() == Material.SKULL_ITEM || event.getMaterial() == Material.SKULL) {
-				if (event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore()
-						&& event.getItem().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
-					String displayName = event.getItem().getItemMeta().getDisplayName();
-					debug("It was a MH Head DisplayName=%s", displayName);
-					// debug("Add MetaData to block");
-				}
-			}
-		if (event.getClickedBlock() != null && event.getClickedBlock().hasMetadata(HeadCommand.MH_HEAD))
-			debug("The clicked blow is a MH HEAD");
-	}
 }

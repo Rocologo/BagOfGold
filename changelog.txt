@@ -1,3 +1,8 @@
+V3.2.6
+- Fixed name change detecting spam in the console
+- Optimized the use of playerIds, so they are kept in memory for fast access.
+- Fixed bug "org.bukkit.event.entity.EntityDamageEvent cannot be cast to org.bukkit.event.entity.EntityDamageByEntityEvent"
+- Removed "MobHunting is disabled in this world" from the player screen, to reduce the spam. The message is kept in the server console.
 V3.2.5
 - New feature /mh head spawn [mobname] [displayname] [amount] [xpos] [ypos] [zpos]|[playername]
 - New feature /mh head rename newDisplayname

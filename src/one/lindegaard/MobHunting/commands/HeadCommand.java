@@ -1,15 +1,26 @@
 package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -19,7 +30,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.util.Misc;
 
-public class HeadCommand implements ICommand {
+public class HeadCommand implements ICommand, Listener {
 
 	public static final String MH_HEAD = "MH:Head";
 	public static final String MH_REWARD = "MobHunting Reward";
@@ -206,6 +217,122 @@ public class HeadCommand implements ICommand {
 			}
 		}
 		return items;
+	}
+
+	@EventHandler
+	public void PickupItem(PlayerPickupItemEvent event) {
+		Item item = event.getItem();
+		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)) {
+			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
+			MobHunting.debug("It was a MH Head DisplayName=%s", displayName);
+			ItemMeta im = item.getItemStack().getItemMeta();
+			im.setDisplayName(displayName);
+			ArrayList<String> lore = new ArrayList<String>();
+			lore.add(HeadCommand.MH_REWARD);
+			im.setLore(lore);
+			event.getItem().getItemStack().setItemMeta(im);
+		}
+		if (event.getItem().getItemStack().hasItemMeta() && event.getItem().getItemStack().getItemMeta().hasLore()
+				&& event.getItem().getItemStack().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
+			MobHunting.debug("It was a MH Head DisplayName(2)=%s",
+					event.getItem().getItemStack().getItemMeta().getDisplayName());
+			event.getItem().setMetadata(HeadCommand.MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
+					event.getItem().getItemStack().getItemMeta().getDisplayName()));
+		}
+
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
+		Item item = event.getItemDrop();
+		if (event.getItemDrop().hasMetadata(HeadCommand.MH_HEAD)) {
+			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
+			MobHunting.debug("It was a MH Head DisplayName=%s", displayName);
+			ItemMeta im = item.getItemStack().getItemMeta();
+			im.setDisplayName(displayName);
+			ArrayList<String> lore = new ArrayList<String>();
+			lore.add(HeadCommand.MH_REWARD);
+			im.setLore(lore);
+			event.getItemDrop().getItemStack().setItemMeta(im);
+		}
+		if (event.getPlayer().getItemInHand().hasItemMeta() && event.getPlayer().getItemInHand().getItemMeta().hasLore()
+				&& event.getPlayer().getItemInHand().getItemMeta().getLore().get(0)
+						.equalsIgnoreCase(HeadCommand.MH_REWARD)) {
+			MobHunting.debug("HeadCommand: PlayerDropItem(2)=%s,%s", item.getName(),
+					event.getItemDrop().getCustomName());
+			MobHunting.debug("Add MetaData to block");
+			event.getItemDrop().setMetadata(HeadCommand.MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
+					event.getPlayer().getItemInHand().getItemMeta().getDisplayName()));
+		}
+
+	}
+
+	@EventHandler
+	public void onInventoryPickUp(InventoryPickupItemEvent event) {
+		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)) {
+			String displayName = event.getItem().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
+			MobHunting.debug("It was a MH Head DisplayName=%s", displayName);
+			ItemMeta im = event.getItem().getItemStack().getItemMeta();
+			im.setDisplayName(displayName);
+			ArrayList<String> lore = new ArrayList<String>();
+			lore.add(HeadCommand.MH_REWARD);
+			im.setLore(lore);
+			event.getItem().getItemStack().setItemMeta(im);
+		}
+	}
+
+	@EventHandler
+	public void onBlockPlaceEvent(PlayerInteractEntityEvent event) {
+		// MobHunting.debug("HeadCommand: PlayerInteractEntityEvent=%s",
+		// event.getPlayer().getItemInHand().getType());
+	}
+
+	@EventHandler
+	public void onBlockBreakEvent(BlockBreakEvent event) {
+		if (event.getBlock().hasMetadata(HeadCommand.MH_HEAD)) {
+			String displayName = event.getBlock().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
+			Collection<ItemStack> drops = event.getBlock().getDrops();
+			for (ItemStack is : drops) {
+				ItemMeta im = is.getItemMeta();
+				ArrayList<String> lore = new ArrayList<String>();
+				lore.add(HeadCommand.MH_REWARD);
+				im.setLore(lore);
+				im.setDisplayName(displayName);
+				is.setItemMeta(im);
+			}
+		}
+	}
+
+	@EventHandler
+	public void onBlockPlaceEvent(BlockPlaceEvent event) {
+		if (event.getItemInHand() != null && event.getItemInHand().hasItemMeta()) {
+			ItemMeta im = event.getItemInHand().getItemMeta();
+			if (im.hasLore() && im.getLore().get(0).equalsIgnoreCase(HeadCommand.MH_REWARD)
+					&& !im.getDisplayName().isEmpty()) {
+				event.getBlockPlaced().setMetadata(HeadCommand.MH_HEAD,
+						new FixedMetadataValue(MobHunting.getInstance(), im.getDisplayName()));
+			}
+		}
+		if (event.getBlock() != null && event.getBlock().hasMetadata(HeadCommand.MH_HEAD)) {
+			String displayName = event.getBlock().getMetadata(HeadCommand.MH_HEAD).get(0).asString();
+			MobHunting.debug("It was a MH Head DisplayName=%s", displayName);
+		}
+	}
+
+	@EventHandler
+	public void onPlayerInteractEvent(PlayerInteractEvent event) {
+		if (event.getItem() != null)
+			if (event.getMaterial() == Material.SKULL_ITEM || event.getMaterial() == Material.SKULL) {
+				if (event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore()
+						&& event.getItem().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
+					String displayName = event.getItem().getItemMeta().getDisplayName();
+					MobHunting.debug("It was a MH Head DisplayName=%s", displayName);
+					// debug("Add MetaData to block");
+				}
+			}
+		if (event.getClickedBlock() != null && event.getClickedBlock().hasMetadata(HeadCommand.MH_HEAD))
+			MobHunting.debug("The clicked blow is a MH HEAD");
 	}
 
 }
