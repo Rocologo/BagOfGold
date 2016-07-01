@@ -4,15 +4,15 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.2.6</version>
+	<version>3.2.7-SNAPSHOT</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.10-R0.1-SNAPSHOT</bukkit.version>
-		<spigotmc.version>1.10-R0.1-SNAPSHOT</spigotmc.version>
+		<bukkit.version>1.10.2-R0.1-SNAPSHOT</bukkit.version>
+		<spigotmc.version>1.10.2-R0.1-SNAPSHOT</spigotmc.version>
 		<metrics.version>R8-SNAPSHOT</metrics.version>
 		<vault.version>1.5.6</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
@@ -29,9 +29,9 @@
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<slf4j.version>1.7.20</slf4j.version>
 		<essentials.version>LATEST</essentials.version>
-		<disguisecraft.version>5.2</disguisecraft.version>
+		<disguisecraft.version>5.1</disguisecraft.version>
 		<libsdisguises.version>9.0.7-SNAPSHOT</libsdisguises.version>
-		<protocollib.version>4.0.1-SNAPSHOT</protocollib.version>
+		<protocollib.version>4.0.2-SNAPSHOT</protocollib.version>
 		<battleArena.version>LATEST</battleArena.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
@@ -184,16 +184,6 @@
 		<repository>
 			<id>addstar-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
-		</repository>
-		<repository>
-			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
 		</repository>
 
 		<!-- Maven repository -->
