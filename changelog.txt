@@ -1,3 +1,5 @@
+V3.2.7
+-
 V3.2.6
 - Fixed name change detecting spam in the console
 - Optimized the use of playerIds, so they are kept in memory for fast access.
