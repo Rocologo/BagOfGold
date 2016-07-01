@@ -4,15 +4,15 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.2.7-SNAPSHOT</version>
+	<version>3.2.6</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.10.2-R0.1-SNAPSHOT</bukkit.version>
-		<spigotmc.version>1.10.2-R0.1-SNAPSHOT</spigotmc.version>
+		<bukkit.version>1.10-R0.1-SNAPSHOT</bukkit.version>
+		<spigotmc.version>1.10-R0.1-SNAPSHOT</spigotmc.version>
 		<metrics.version>R8-SNAPSHOT</metrics.version>
 		<vault.version>1.5.6</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
