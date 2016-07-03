@@ -72,7 +72,7 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onPlayerQuit(PlayerQuitEvent event) {
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		save(player);
 	}
 
@@ -87,7 +87,7 @@ public class PlayerSettingsManager implements Listener {
 			MobHunting.debug("%s isMuted()", player.getName());
 		if (ps.isLearningMode())
 			MobHunting.debug("%s is in LearningMode()", player.getName());
-		setPlayerSettings(player, ps);
+		mPlayerSettings.put(player, ps);
 	}
 
 	/**
@@ -103,12 +103,12 @@ public class PlayerSettingsManager implements Listener {
 	/**
 	 * Test if PlayerSettings contains data for Player
 	 * 
-	 * @param killed
+	 * @param entity
 	 * @return true if player exists in PlayerSettings in Memory
 	 */
-	public boolean containsKey(LivingEntity killed) {
-		if (killed instanceof Player)
-			return mPlayerSettings.containsKey(killed);
+	public boolean containsKey(LivingEntity entity) {
+		if (entity instanceof Player)
+			return mPlayerSettings.containsKey((Player) entity);
 		else
 			return false;
 	}

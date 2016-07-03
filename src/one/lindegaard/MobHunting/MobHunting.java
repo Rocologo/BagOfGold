@@ -1309,16 +1309,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onPlayerJoin(PlayerJoinEvent event) {
-		// final Player player = event.getPlayer();
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onPlayerQuit(PlayerQuitEvent event) {
-		// Player player = event.getPlayer();
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
 		if (CitizensCompat.isNPC(event.getEntity()))
 			return;
