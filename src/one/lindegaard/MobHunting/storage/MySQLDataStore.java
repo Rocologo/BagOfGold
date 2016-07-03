@@ -149,10 +149,17 @@ public class MySQLDataStore extends DatabaseDataStore {
 							+ type.getDBColumn() + " desc limit " + count);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2)));
-				if (offlinePlayer == null)
-					MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
-				if (offlinePlayer != null)
-					list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
+				try {
+					offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2)));
+					if (offlinePlayer == null)
+						MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
+					else
+						list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
+				} catch (Exception e) {
+					Bukkit.getLogger().warning("Something went wrong when trying to find player: "
+							+ results.getString(3) + " (" + results.getString(3) + ")");
+					// e.printStackTrace();
+				}
 			}
 			results.close();
 			statement.close();

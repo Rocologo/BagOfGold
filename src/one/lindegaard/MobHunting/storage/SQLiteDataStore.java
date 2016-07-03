@@ -145,11 +145,18 @@ public class SQLiteDataStore extends DatabaseDataStore {
 							+ (id != null ? " where mh_Players.NAME!='' and ID=" + id : "") + " order by "
 							+ type.getDBColumn() + " desc limit " + count);
 			while (results.next()) {
-				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2)));
-				if (offlinePlayer == null)
+				OfflinePlayer offlinePlayer;
+				try {
+					offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(results.getString(2)));
+					if (offlinePlayer == null)
+						MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
+					else
+						list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
+				} catch (Exception e) {
 					MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
-				else
-					list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
+					//e.printStackTrace();
+				}
+				
 			}
 			results.close();
 			statement.close();
