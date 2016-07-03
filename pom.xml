@@ -11,8 +11,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.10.2-R0.1-SNAPSHOT</bukkit.version>
-		<spigotmc.version>1.10.2-R0.1-SNAPSHOT</spigotmc.version>
+		<bukkit.version>1.10-R0.1-SNAPSHOT</bukkit.version>
+		<spigotmc.version>1.10-R0.1-SNAPSHOT</spigotmc.version>
 		<metrics.version>R8-SNAPSHOT</metrics.version>
 		<vault.version>1.5.6</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
@@ -31,7 +31,7 @@
 		<essentials.version>LATEST</essentials.version>
 		<disguisecraft.version>5.2</disguisecraft.version>
 		<libsdisguises.version>9.0.7-SNAPSHOT</libsdisguises.version>
-		<protocollib.version>4.0.2-SNAPSHOT</protocollib.version>
+		<protocollib.version>4.0.1-SNAPSHOT</protocollib.version>
 		<battleArena.version>LATEST</battleArena.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
