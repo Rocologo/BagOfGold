@@ -1,5 +1,5 @@
 V3.2.8
--
+- Fixed bug. "/mh achievements playername" can now be run from the console.
 V3.2.7
 - Made a work around to fix bug in getOfflinePlayer() 
 V3.2.6

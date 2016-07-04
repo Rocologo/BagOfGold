@@ -512,23 +512,25 @@ public class AchievementManager implements Listener {
 	// *************************************************************************************
 	Inventory inventory, inventory2;
 
-	public void showAllAchievements(final Player player, final OfflinePlayer otherPlayer, final boolean gui,
+	public void showAllAchievements(final CommandSender sender, final OfflinePlayer otherPlayer, final boolean gui,
 			final boolean self) {
 
-		inventory = Bukkit.createInventory(player, 54,
-				ChatColor.BLUE + "" + ChatColor.BOLD + "Achievements:" + player.getName());
-		inventory2 = Bukkit.createInventory(player, 54, ChatColor.BLUE + "" + ChatColor.BOLD + "Not started");
-
+		if (sender instanceof Player) {
+			inventory = Bukkit.createInventory((Player) sender, 54,
+					ChatColor.BLUE + "" + ChatColor.BOLD + "Achievements:" + otherPlayer.getName());
+			inventory2 = Bukkit.createInventory((Player) sender, 54,
+					ChatColor.BLUE + "" + ChatColor.BOLD + "Not started");
+		}
 		MobHunting.getAchievements().requestCompletedAchievements(otherPlayer,
 				new IDataCallback<List<Entry<Achievement, Integer>>>() {
 					@Override
 					public void onError(Throwable error) {
 						if (error instanceof UserNotFoundException) {
-							player.sendMessage(ChatColor.GRAY
+							sender.sendMessage(ChatColor.GRAY
 									+ Messages.getString("mobhunting.commands.listachievements.player-empty", "player",
 											otherPlayer.getName()));
 						} else {
-							player.sendMessage(
+							sender.sendMessage(
 									ChatColor.RED + "An internal error occured while getting the achievements");
 							error.printStackTrace();
 						}
@@ -556,7 +558,7 @@ public class AchievementManager implements Listener {
 						// Build the output
 						ArrayList<String> lines = new ArrayList<String>();
 
-						if (!gui) {
+						if (!gui || sender instanceof CommandSender) {
 							if (self)
 								lines.add(ChatColor.GRAY
 										+ Messages.getString("mobhunting.commands.listachievements.completed.self",
@@ -573,7 +575,7 @@ public class AchievementManager implements Listener {
 						int n = 0;
 						for (Map.Entry<Achievement, Integer> achievement : data) {
 							if (achievement.getValue() == -1 && achievement.getKey().getPrize() != 0) {
-								if (!gui) {
+								if (!gui || sender instanceof CommandSender) {
 									lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
 									lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC
 											+ achievement.getKey().getDescription());
@@ -602,15 +604,17 @@ public class AchievementManager implements Listener {
 								inProgress = true;
 						}
 						if (inProgress) {
-							lines.add("");
-							lines.add(ChatColor.YELLOW
-									+ Messages.getString("mobhunting.commands.listachievements.progress"));
+							if (!gui || sender instanceof CommandSender) {
+								lines.add("");
+								lines.add(ChatColor.YELLOW
+										+ Messages.getString("mobhunting.commands.listachievements.progress"));
+							}
 
 							for (Map.Entry<Achievement, Integer> achievement : data) {
 								if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
 										&& achievement.getKey().getPrize() != 0
 										&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0) {
-									if (!gui)
+									if (!gui || sender instanceof CommandSender)
 										lines.add(ChatColor.GRAY + " " + achievement.getKey().getName()
 												+ ChatColor.WHITE + "  " + achievement.getValue() + " / "
 												+ ((ProgressAchievement) achievement.getKey()).getMaxProgress());
@@ -633,50 +637,53 @@ public class AchievementManager implements Listener {
 						// Achievements NOT started.
 						int m = 0;
 						// Normal Achievement
-						for (Achievement achievement : getAllAchievements()) {
-							if (!(achievement instanceof ProgressAchievement)) {
-								if (!isOnGoingOrCompleted(achievement, data)) {
-									if (achievement.getPrize() != 0) {
-										addInventoryDetails(achievement.getSymbol(), inventory2, m,
-												ChatColor.YELLOW + achievement.getName(),
-												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-														achievement.getDescription(), "", Messages.getString(
-																"mobhunting.commands.listachievements.notstarted") });
-										if (m < 52)
-											m++;
-										else
-											MobHunting.debug("No room for achievement: %s", achievement.getName());
+						if (!(sender instanceof CommandSender)) {
+							for (Achievement achievement : getAllAchievements()) {
+								if (!(achievement instanceof ProgressAchievement)) {
+									if (!isOnGoingOrCompleted(achievement, data)) {
+										if (achievement.getPrize() != 0) {
+											addInventoryDetails(achievement.getSymbol(), inventory2, m,
+													ChatColor.YELLOW + achievement.getName(),
+													new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+															achievement.getDescription(), "", Messages.getString(
+																	"mobhunting.commands.listachievements.notstarted") });
+											if (m < 52)
+												m++;
+											else
+												MobHunting.debug("No room for achievement: %s", achievement.getName());
+										}
+									}
+								}
+							}
+							// ProgressAchivement
+							for (Achievement achievement : getAllAchievements()) {
+								if ((achievement instanceof ProgressAchievement && achievement.getPrize() != 0
+										&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
+									boolean ongoing = isOnGoingOrCompleted(achievement, data);
+									if (!ongoing) {
+										boolean nextLevelBegun = isNextLevelBegun((ProgressAchievement) achievement,
+												data);
+										boolean previousLevelCompleted = isPreviousLevelCompleted3(
+												(ProgressAchievement) achievement, data);
+										if (!nextLevelBegun && previousLevelCompleted) {
+											addInventoryDetails(achievement.getSymbol(), inventory2, m,
+													ChatColor.YELLOW + achievement.getName(),
+													new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+															achievement.getDescription(), "", Messages.getString(
+																	"mobhunting.commands.listachievements.notstarted") });
+											if (m < 52)
+												m++;
+											else
+												MobHunting.debug("No room for achievement: %s", achievement.getName());
+										}
 									}
 								}
 							}
 						}
-						// ProgressAchivement
-						for (Achievement achievement : getAllAchievements()) {
-							if ((achievement instanceof ProgressAchievement && achievement.getPrize() != 0
-									&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
-								boolean ongoing = isOnGoingOrCompleted(achievement, data);
-								if (!ongoing) {
-									boolean nextLevelBegun = isNextLevelBegun((ProgressAchievement) achievement, data);
-									boolean previousLevelCompleted = isPreviousLevelCompleted3(
-											(ProgressAchievement) achievement, data);
-									if (!nextLevelBegun && previousLevelCompleted) {
-										addInventoryDetails(achievement.getSymbol(), inventory2, m,
-												ChatColor.YELLOW + achievement.getName(),
-												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-														achievement.getDescription(), "", Messages.getString(
-																"mobhunting.commands.listachievements.notstarted") });
-										if (m < 52)
-											m++;
-										else
-											MobHunting.debug("No room for achievement: %s", achievement.getName());
-									}
-								}
-							}
-						}
-						if (!gui)
-							player.sendMessage(lines.toArray(new String[lines.size()]));
+						if (!gui || sender instanceof CommandSender)
+							sender.sendMessage(lines.toArray(new String[lines.size()]));
 						else {
-							player.openInventory(inventory);
+							((Player) sender).openInventory(inventory);
 						}
 					}
 				});

@@ -32,12 +32,12 @@ public class AchievementsCommand implements ICommand {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		if (sender instanceof ConsoleCommandSender)
-			return new String[] { ChatColor.GOLD +label + ChatColor.GREEN + " <player>" };
+			return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " <player>" };
 		else {
 			if (sender.hasPermission("mobhunting.listachievements.other"))
-				return new String[] { ChatColor.GOLD +label + ChatColor.GREEN + " [<player>] [nogui|gui]" };
+				return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " [<player>] [nogui|gui]" };
 			else
-				return new String[] { ChatColor.GOLD +label + ChatColor.GREEN + " [nogui|gui]" };
+				return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " [nogui|gui]" };
 		}
 	}
 
@@ -102,13 +102,15 @@ public class AchievementsCommand implements ICommand {
 				}
 
 				if (args.length == 2 && (args[1].equalsIgnoreCase("nogui") || args[1].equalsIgnoreCase("gui")))
-					MobHunting.getAchievements().showAllAchievements((Player) player, otherPlayer,
+					MobHunting.getAchievements().showAllAchievements(sender, otherPlayer,
 							args[1].equalsIgnoreCase("gui"), self);
+				else if (sender instanceof ConsoleCommandSender)
+					MobHunting.getAchievements().showAllAchievements(sender, otherPlayer, false, self);
 				else
-					MobHunting.getAchievements().showAllAchievements((Player) player, otherPlayer,
+					MobHunting.getAchievements().showAllAchievements(sender, otherPlayer,
 							MobHunting.getConfigManager().useGuiForAchievements, self);
 			} else {
-				MobHunting.getAchievements().showAllAchievements((Player) player, player,
+				MobHunting.getAchievements().showAllAchievements(sender, player,
 						MobHunting.getConfigManager().useGuiForAchievements, self);
 			}
 		}
