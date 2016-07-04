@@ -21,7 +21,7 @@
 		<pvparena.version>1.3.0.548</pvparena.version>
 		<worldedit.version>LATEST</worldedit.version>
 		<worldguard.version>LATEST</worldguard.version>
-		<citizensapi.version>2.0.19-SNAPSHOT</citizensapi.version>
+		<citizensapi.version>2.0.18-SNAPSHOT</citizensapi.version>
 		<mythicmobs.jar.version>MythicMobs-2.4.0.jar</mythicmobs.jar.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
@@ -94,7 +94,7 @@
 				<configuration>
 					<finalName>${project.name}</finalName>
 					<minimizeJar>true</minimizeJar>
-					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
 					<artifactSet>
 						<includes>
 							<include>org.mcstats.bukkit:metrics</include>
@@ -115,6 +115,23 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.Maven.plugins</groupId>
+				<artifactId>Maven-jar-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<archive>
+						<index>true</index>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Version>${build.number}</Implementation-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
 			</plugin>
 
 			<plugin>
