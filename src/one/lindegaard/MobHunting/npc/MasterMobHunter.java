@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.storage.IDataCallback;
@@ -98,7 +99,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
 	public void putLocation(Location location) {
 		if (!npc.getTrait(MasterMobHunterTrait.class).signLocations.contains(location)) {
-			MobHunting.debug("put signLocation into npc=%s", npc.getId());
+			Messages.debug("put signLocation into npc=%s", npc.getId());
 			npc.getTrait(MasterMobHunterTrait.class).signLocations.add(location);
 		}
 	}

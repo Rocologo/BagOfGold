@@ -292,7 +292,7 @@ public enum ExtendedMobType {
 		for (ExtendedMobType type : values())
 			if (type.matches(entity))
 				return type;
-		MobHunting.debug("ERROR!!! - Unhandled Entity: %s(%s) Type:%s", entity.getName(), entity.getCustomName(),
+		Messages.debug("ERROR!!! - Unhandled Entity: %s(%s) Type:%s", entity.getName(), entity.getCustomName(),
 				entity.getType().toString());
 		return null;
 	}

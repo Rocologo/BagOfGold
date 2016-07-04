@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.util.Misc;
 
@@ -259,7 +260,7 @@ public class MasterMobHunterSign implements Listener {
 		// int power3 = 0;
 		// if (clickedBlock.isBlockPowered())
 		// power3 = clickedBlock.getBlockPower();
-		// MobHunting.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s",
+		// Messages.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s",
 		// power, power2, power3,
 		// clickedBlock.getType());
 	}
@@ -280,9 +281,9 @@ public class MasterMobHunterSign implements Listener {
 		// mmh.putLocation(e.getBlock().getLocation());
 		// mmh.update();
 		// MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
-		// MobHunting.debug("Updating sign");
+		// Messages.debug("Updating sign");
 		// } else {
-		// MobHunting.debug("NPC with ID = %s is not a MasterMobHunter",
+		// Messages.debug("NPC with ID = %s is not a MasterMobHunter",
 		// npc.getId());
 		// }
 		//
@@ -498,8 +499,7 @@ public class MasterMobHunterSign implements Listener {
 				if (isSign(b)) {
 					sign = (Sign) b.getState();
 				} else {
-					MobHunting
-							.debug("Block at " + b.getX() + "," + b.getY() + "," + b.getZ() + ", is no longer a sign.");
+					Messages.debug("Block at " + b.getX() + "," + b.getY() + "," + b.getZ() + ", is no longer a sign.");
 					return;
 				}
 				String coords = b.getX() + "," + b.getY() + "," + b.getZ();
@@ -583,7 +583,7 @@ public class MasterMobHunterSign implements Listener {
 					// }
 					// plugin.poweredsigns.put(sign.getWorld(),
 					// coordsforpoweredsigns);
-					MobHunting.debug("Does this happen!!!");
+					Messages.debug("Does this happen!!!");
 					setPower(b, (byte) 0);
 				}
 				// return true;

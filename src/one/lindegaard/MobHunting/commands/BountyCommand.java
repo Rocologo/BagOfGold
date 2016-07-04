@@ -203,7 +203,7 @@ public class BountyCommand implements ICommand {
 				for (int i = 2; i < args.length; i++) {
 					message = message + args[i] + " ";
 				}
-				// MobHunting.debug("args[0]=%s,args[1]=%s,args[2-]=%s",
+				// Messages.debug("args[0]=%s,args[1]=%s,args[2-]=%s",
 				// args[0], args[1], message);
 				Bounty bounty;
 				bounty = new Bounty(worldGroupName, bountyOwner, wantedPlayer, prize, message);
@@ -219,7 +219,7 @@ public class BountyCommand implements ICommand {
 				MobHunting.getEconomy().withdrawPlayer(bountyOwner, prize);
 				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.money-withdrawn", "money", prize));
 
-				MobHunting.debug("%s has put %s on %s with the message %s", bountyOwner.getName(), prize,
+				Messages.debug("%s has put %s on %s with the message %s", bountyOwner.getName(), prize,
 						wantedPlayer.getName(), message);
 				return true;
 			} else {
@@ -238,7 +238,7 @@ public class BountyCommand implements ICommand {
 			items.add(" top");
 			items.add(" gui");
 		} else if (args.length == 1) {
-			// MobHunting.debug("arg[0]=(%s)", args[0]);
+			// Messages.debug("arg[0]=(%s)", args[0]);
 			if (items.isEmpty()) {
 				items.add("remove");
 				items.add("top");
@@ -250,7 +250,7 @@ public class BountyCommand implements ICommand {
 					items.add(player.getName());
 			}
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-			// MobHunting.debug("arg[0,1]=(%s,%s)", args[0], args[1]);
+			// Messages.debug("arg[0,1]=(%s,%s)", args[0], args[1]);
 			String partial = args[1].toLowerCase();
 			for (OfflinePlayer wantedPlayer : MobHunting.getBountyManager().getWantedPlayers()) {
 				if (wantedPlayer.getName().toLowerCase().startsWith(partial))

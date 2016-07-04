@@ -77,7 +77,7 @@ public class MobHuntingManager implements Listener {
 				return ((Player[]) method.invoke(Bukkit.getServer())).length;
 			}
 		} catch (Exception ex) {
-			MobHunting.debug(ex.getMessage().toString());
+			Messages.debug(ex.getMessage().toString());
 		}
 		return 0;
 	}
@@ -118,7 +118,7 @@ public class MobHuntingManager implements Listener {
 			return false;
 
 		if (!player.hasMetadata("MH:enabled")) {
-			MobHunting.debug("KillBlocked %s: Player doesnt have MH:enabled", player.getName());
+			Messages.debug("KillBlocked %s: Player doesnt have MH:enabled", player.getName());
 			return false;
 		}
 
@@ -132,12 +132,12 @@ public class MobHuntingManager implements Listener {
 		}
 
 		if (enabled && !player.hasPermission("mobhunting.enable")) {
-			MobHunting.debug("KillBlocked %s: Player doesnt have permission mobhunting.enable", player.getName());
+			Messages.debug("KillBlocked %s: Player doesnt have permission mobhunting.enable", player.getName());
 			return false;
 		}
 
 		if (!enabled) {
-			MobHunting.debug("KillBlocked %s: MH:enabled is false", player.getName());
+			Messages.debug("KillBlocked %s: MH:enabled is false", player.getName());
 			return false;
 		}
 
@@ -145,7 +145,7 @@ public class MobHuntingManager implements Listener {
 		Bukkit.getPluginManager().callEvent(event);
 
 		if (!event.isEnabled())
-			MobHunting.debug("KillBlocked %s: Plugin cancelled check", player.getName());
+			Messages.debug("KillBlocked %s: Plugin cancelled check", player.getName());
 		return event.isEnabled();
 	}
 

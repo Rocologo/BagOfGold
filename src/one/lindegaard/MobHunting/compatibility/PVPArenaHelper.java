@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class PVPArenaHelper {
@@ -39,7 +40,7 @@ public class PVPArenaHelper {
 	 */
 	public static void stopPlayingPVPArena(Player player) {
 		if(!playersPlayingPVPArena.remove(player.getUniqueId())){
-			MobHunting.debug("Player: %s is not in PVPArena", player.getName());
+			Messages.debug("Player: %s is not in PVPArena", player.getName());
 		}
 	}
 

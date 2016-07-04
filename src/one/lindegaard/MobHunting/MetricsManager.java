@@ -254,9 +254,9 @@ public class MetricsManager {
 
 			metrics.enable();
 			metrics.start();
-			MobHunting.debug("Metrics started");
+			Messages.debug("Metrics started");
 		} catch (IOException e) {
-			MobHunting.debug("Failed to start Metrics!");
+			Messages.debug("Failed to start Metrics!");
 		}
 
 	}

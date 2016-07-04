@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.Messages;
 
 public class MobArenaHelper {
 
@@ -39,7 +39,7 @@ public class MobArenaHelper {
 	 */
 	public static void stopPlayingMobArena(Player player) {
 		if(!playersPlayingMobArena.remove(player.getUniqueId())){
-			MobHunting.debug("Player: %s is not playing MobArena", player.getName());
+			Messages.debug("Player: %s is not playing MobArena", player.getName());
 		}
 	}
 

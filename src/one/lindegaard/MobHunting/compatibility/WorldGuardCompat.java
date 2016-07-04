@@ -35,6 +35,7 @@ import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class WorldGuardCompat implements Listener {
@@ -254,8 +255,7 @@ public class WorldGuardCompat implements Listener {
 					if (!mobHuntingRegions.containsKey(pr.getId())
 							|| !pr.getFlag(MOBHUNTINGFLAG).name().equals(mobHuntingRegions
 									.get(pr.getId()))) {
-						MobHunting
-								.debug("Found unregistered flag or flag with changed State found in region '%s' with value %s",
+						Messages.debug("Found unregistered flag or flag with changed State found in region '%s' with value %s",
 										pr.getId(), pr.getFlag(MOBHUNTINGFLAG)
 												.name());
 						mobHuntingRegions.put(pr.getId(),

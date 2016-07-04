@@ -61,7 +61,7 @@ public class DifficultyBonus implements IModifier {
 					&& (difficulty.getKey().equals("difficulty.multiplier."
 							+ dif.name().toLowerCase()))) {
 				valueStr = difficulty.getValue();
-				MobHunting.debug("DifficultyMultiplier: %s=%s",difficulty.getKey(),valueStr);
+				Messages.debug("DifficultyMultiplier: %s=%s",difficulty.getKey(),valueStr);
 				break;
 			}
 		}

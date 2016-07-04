@@ -200,7 +200,7 @@ public class LeaderboardManager implements Listener {
 				board.refresh();
 				mLeaderboards.put(world, board);
 			}
-			MobHunting.debug("%s Leaderboards loaded from file: %s!", mLeaderboards.size(),
+			Messages.debug("%s Leaderboards loaded from file: %s!", mLeaderboards.size(),
 					MobHunting.getInstance().getDataFolder(), "boards-" + world.getName() + ".yml");
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
@@ -220,7 +220,7 @@ public class LeaderboardManager implements Listener {
 			ConfigurationSection section = config.createSection(String.valueOf(i++));
 			board.save(section);
 		}
-		MobHunting.debug("Leaderboards saved to file: %s!", MobHunting.getInstance().getDataFolder(),
+		Messages.debug("Leaderboards saved to file: %s!", MobHunting.getInstance().getDataFolder(),
 				"boards-" + world.getName() + ".yml");
 
 		try {
@@ -343,7 +343,7 @@ public class LeaderboardManager implements Listener {
 				board.removeSigns();
 				mLeaderboards.remove(block.getWorld(), board);
 				saveWorld(board.getWorld());
-				MobHunting.debug("Leaderboard removed: %s", block.getLocation().toString());
+				Messages.debug("Leaderboard removed: %s", block.getLocation().toString());
 				return;
 			}
 		}

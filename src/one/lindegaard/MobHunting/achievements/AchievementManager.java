@@ -243,22 +243,6 @@ public class AchievementManager implements Listener {
 	}
 
 	/**
-	 * Broadcast message to all players except Player.
-	 * 
-	 * @param message
-	 * @param except
-	 */
-	public void broadcast(String message, Player except) {
-		Iterator<Player> players = MobHunting.getMobHuntingManager().getOnlinePlayers().iterator();
-		while (players.hasNext()) {
-			Player player = players.next();
-			if (player.equals(except))
-				continue;
-			player.sendMessage(message);
-		}
-	}
-
-	/**
 	 * Award the player if/when he make an Achievement
 	 * 
 	 * @param achievement
@@ -266,7 +250,7 @@ public class AchievementManager implements Listener {
 	 */
 	public void awardAchievement(Achievement achievement, Player player) {
 		if (!achievementsEnabledFor(player)) {
-			MobHunting.debug("AchievementBlocked] Achievements is disabled for player %s", player.getName());
+			Messages.debug("AchievementBlocked] Achievements is disabled for player %s", player.getName());
 			return;
 		}
 
@@ -276,7 +260,7 @@ public class AchievementManager implements Listener {
 
 		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
 			if (world.equalsIgnoreCase(player.getWorld().getName())) {
-				MobHunting.debug("AchievementBlocked] Achievements is disabled in this world");
+				Messages.debug("AchievementBlocked] Achievements is disabled in this world");
 				return;
 			}
 
@@ -301,7 +285,7 @@ public class AchievementManager implements Listener {
 
 		if (MobHunting.getConfigManager().broadcastAchievement
 				&& (!(achievement instanceof TheHuntBegins) || MobHunting.getConfigManager().broadcastFirstAchievement))
-			broadcast(
+			Messages.broadcast(
 					ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player",
 							player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()),
 					player);
@@ -496,7 +480,7 @@ public class AchievementManager implements Listener {
 				}
 			});
 		} else {
-			MobHunting.debug(
+			Messages.debug(
 					"achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",
 					player.getName());
 		}
@@ -655,7 +639,7 @@ public class AchievementManager implements Listener {
 											if (m < 52)
 												m++;
 											else
-												MobHunting.debug("No room for achievement: %s", achievement.getName());
+												Messages.debug("No room for achievement: %s", achievement.getName());
 										}
 									}
 								}
@@ -681,7 +665,7 @@ public class AchievementManager implements Listener {
 											if (m < 52)
 												m++;
 											else
-												MobHunting.debug("No room for achievement: %s", achievement.getName());
+												Messages.debug("No room for achievement: %s", achievement.getName());
 										}
 									}
 								}
@@ -689,7 +673,7 @@ public class AchievementManager implements Listener {
 						}
 						if (!gui)
 							sender.sendMessage(lines.toArray(new String[lines.size()]));
-						else if (sender instanceof Player){
+						else if (sender instanceof Player) {
 							((Player) sender).openInventory(inventory);
 						}
 					}

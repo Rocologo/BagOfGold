@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.ExtendedMobType;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.achievements.Achievement;
@@ -176,7 +177,7 @@ public class DataStoreManager {
 		try {
 			return mStore.getPlayerSettings(player);
 		} catch (UserNotFoundException e) {
-			MobHunting.debug("Saving new PlayerSettings for %s to database.", player.getName());
+			Messages.debug("Saving new PlayerSettings for %s to database.", player.getName());
 			PlayerSettings ps = new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
 			try {
 				mStore.insertPlayerSettings(ps);
@@ -236,7 +237,7 @@ public class DataStoreManager {
 	 */
 	public void flush() {
 		if (mWaiting.size() != 0) {
-			MobHunting.debug("Flushing waiting %s data to database...", mWaiting.size());
+			Messages.debug("Flushing waiting %s data to database...", mWaiting.size());
 			mTaskThread.addTask(new StoreTask(mWaiting), null);
 		}
 	}
@@ -255,19 +256,19 @@ public class DataStoreManager {
 				Thread.sleep(500);
 				n++;
 			}
-			MobHunting.debug("mTaskThread.state=%s", mTaskThread.getState());
+			Messages.debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() == Thread.State.RUNNABLE) {
-				MobHunting.debug("Interupting mTaskThread");
+				Messages.debug("Interupting mTaskThread");
 				mTaskThread.interrupt();
 			}
-			MobHunting.debug("mStoreThread.state=%s", mStoreThread.getState());
-			MobHunting.debug("Interupting mStoreThread");
+			Messages.debug("mStoreThread.state=%s", mStoreThread.getState());
+			Messages.debug("Interupting mStoreThread");
 			mStoreThread.interrupt();
-			MobHunting.debug("mTaskThread.state=%s", mTaskThread.getState());
+			Messages.debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() != Thread.State.WAITING) {
 				mTaskThread.waitForEmptyQueue();
 			} else {
-				MobHunting.debug("Interupting mTaskThread");
+				Messages.debug("Interupting mTaskThread");
 				mTaskThread.interrupt();
 			}
 
@@ -371,7 +372,7 @@ public class DataStoreManager {
 				return;
 
 			synchronized (mSignal) {
-				MobHunting.debug("waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
+				Messages.debug("waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
 						mQueue.size(), mWaiting.size());
 				while (!mQueue.isEmpty())
 					mSignal.wait();
@@ -396,7 +397,7 @@ public class DataStoreManager {
 			try {
 				while (true) {
 					if (MobHunting.getConfigManager().debugSQL && mQueue.size() > 20) {
-						MobHunting.debug("TaskThread: mQueue.size()=%s", mQueue.size());
+						Messages.debug("TaskThread: mQueue.size()=%s", mQueue.size());
 					}
 					if (mQueue.isEmpty())
 						synchronized (mSignal) {
@@ -418,7 +419,7 @@ public class DataStoreManager {
 									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
 
 					} catch (DataStoreException e) {
-						MobHunting.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
+						Messages.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
 						if (task.callback != null)
 							Bukkit.getScheduler().runTask(MobHunting.getInstance(),
 									new CallbackCaller((IDataCallback<Object>) task.callback, e, false));

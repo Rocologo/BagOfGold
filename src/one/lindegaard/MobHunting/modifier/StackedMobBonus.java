@@ -8,7 +8,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 
 public class StackedMobBonus implements IModifier {
@@ -22,10 +21,10 @@ public class StackedMobBonus implements IModifier {
 	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (MobStackerCompat.killHoleStackOnDeath(deadEntity) && MobStackerCompat.multiplyLoot()) {
-			MobHunting.debug("StackedMobBonus: Pay reward for no %s mob", MobStackerCompat.getStackSize(deadEntity));
+			Messages.debug("StackedMobBonus: Pay reward for no %s mob", MobStackerCompat.getStackSize(deadEntity));
 			return MobStackerCompat.getStackSize(deadEntity);
 		} else {
-			MobHunting.debug("StackedMobBonus: Pay reward for one mob");
+			Messages.debug("StackedMobBonus: Pay reward for one mob");
 			return 1;
 		}
 	}

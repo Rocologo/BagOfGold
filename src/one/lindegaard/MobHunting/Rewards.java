@@ -41,7 +41,7 @@ public class Rewards implements Listener {
 					money = (Double) mdv.value();
 					Player player = e.getPlayer();
 					MobHunting.getEconomy().depositPlayer(player, money);
-					MobHunting.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
+					Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
 							MobHunting.getEconomy().format(money)));
 					e.getItem().remove();
 					e.setCancelled(true);
@@ -58,24 +58,24 @@ public class Rewards implements Listener {
 		if (e.getEntity() instanceof Item) {
 			Item item = (Item) e.getEntity();
 			if (item.hasMetadata(MH_MONEY))
-				MobHunting.debug("Rewards: EventInteractEvent MH_MONEY - %s, %s, %s ", e.getEntity().getType(),
+				Messages.debug("Rewards: EventInteractEvent MH_MONEY - %s, %s, %s ", e.getEntity().getType(),
 						e.getEntityType(), e.getBlock().getType());
 		}
 		if (e.getEntity() instanceof Zombie) {
 			Zombie z = (Zombie) e.getEntity();
 			if (e.getBlock().hasMetadata(HeadCommand.MH_HEAD))
-				MobHunting.debug("A Zombie did something, with a MobHuntingHead %s", e.getBlock());
+				Messages.debug("A Zombie did something, with a MobHuntingHead %s", e.getBlock());
 			if (Misc.isMC19OrNewer()) {
 				if ((z.getEquipment().getItemInMainHand().hasItemMeta()
 						&& z.getEquipment().getItemInMainHand().getItemMeta().equals(HeadCommand.MH_HEAD))
 						|| (z.getEquipment().getItemInOffHand().hasItemMeta()
 								&& z.getEquipment().getItemInOffHand().getItemMeta().equals(HeadCommand.MH_HEAD)))
-					MobHunting.debug("Zombie hands = %s,%s", z.getEquipment().getItemInMainHand(),
+					Messages.debug("Zombie hands = %s,%s", z.getEquipment().getItemInMainHand(),
 							z.getEquipment().getItemInOffHand());
 			} else {
 				if (z.getEquipment().getItemInHand().hasItemMeta()
 						&& z.getEquipment().getItemInHand().getItemMeta().equals(HeadCommand.MH_HEAD))
-					MobHunting.debug("Zombie hand = %s", z.getEquipment().getItemInHand());
+					Messages.debug("Zombie hand = %s", z.getEquipment().getItemInHand());
 			}
 		}
 	}
@@ -97,14 +97,14 @@ public class Rewards implements Listener {
 			item2.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 					+ MobHunting.getEconomy().format(value1 + value2));
 			item2.setCustomNameVisible(true);
-			MobHunting.debug("Rewards: Items merged - new value=%s", value1 + value2);
+			Messages.debug("Rewards: Items merged - new value=%s", value1 + value2);
 		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onItemDespawnEvent(ItemDespawnEvent e) {
 		if (e.getEntity().hasMetadata(MH_MONEY)) {
-			MobHunting.debug("The money was lost - despawned");
+			Messages.debug("The money was lost - despawned");
 			// e.getEntity().setCancelled(true);
 			// too many items can cause lag, dont cancel this event.
 		}

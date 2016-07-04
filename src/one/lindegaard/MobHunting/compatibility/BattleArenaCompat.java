@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 
 import mc.alk.arena.events.players.ArenaPlayerJoinEvent;
 import mc.alk.arena.events.players.ArenaPlayerLeaveEvent;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class BattleArenaCompat implements Listener {
@@ -54,13 +55,13 @@ public class BattleArenaCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerJoinEvent(ArenaPlayerJoinEvent event) {
-		MobHunting.debug("BattleArenaCompat.StartEvent s%", event.getEventName());
+		Messages.debug("BattleArenaCompat.StartEvent s%", event.getEventName());
 		BattleArenaHelper.startPlayingBattleArena(event.getPlayer());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerLeaveEvent(ArenaPlayerLeaveEvent event) {
-		MobHunting.debug("BattleArenaCompat.StartEvent s%", event.getEventName());
+		Messages.debug("BattleArenaCompat.StartEvent s%", event.getEventName());
 		BattleArenaHelper.stopPlayingBattleArena(event.getPlayer());
 	}
 

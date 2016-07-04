@@ -185,7 +185,7 @@ public class UpdateHelper {
 			if (pluginVerSNAPSHOT.length > 1)
 				snapshot = pluginVerSNAPSHOT[1].equals("SNAPSHOT");
 			if (snapshot)
-				MobHunting.debug("You are using a development version (%s)",
+				Messages.debug("You are using a development version (%s)",
 						MobHunting.getInstance().getDescription().getVersion());
 			String[] pluginVer = pluginVerSNAPSHOT[0].split("\\.");
 			// Run through major, minor, sub

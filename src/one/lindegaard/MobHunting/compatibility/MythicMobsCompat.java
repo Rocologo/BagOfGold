@@ -23,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 //import net.elseland.xikage.MythicMobs.API.Events.MythicMobSpawnEvent;
 //import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
 import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.MobPlugins;
 import one.lindegaard.MobHunting.MobRewardData;
@@ -75,7 +76,7 @@ public class MythicMobsCompat implements Listener {
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
 			}
-			MobHunting.debug("Loaded %s MythicMobs", mMobRewardData.size());
+			Messages.debug("Loaded %s MythicMobs", mMobRewardData.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -116,8 +117,7 @@ public class MythicMobsCompat implements Listener {
 				}
 
 				if (n != 0) {
-					MobHunting
-							.debug("Saving Mobhunting extra MythicMobs data.");
+					Messages.debug("Saving Mobhunting extra MythicMobs data.");
 					config.save(file);
 				}
 			}
@@ -131,10 +131,10 @@ public class MythicMobsCompat implements Listener {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);
 				mMobRewardData.get(key).save(section);
-				MobHunting.debug("Saving Mobhunting extra MythicMobs data.");
+				Messages.debug("Saving Mobhunting extra MythicMobs data.");
 				config.save(file);
 			} else {
-				MobHunting.debug(
+				Messages.debug(
 						"ERROR! MythicMobs ID (%s) is not found in mNPCData",
 						key);
 			}
@@ -181,17 +181,17 @@ public class MythicMobsCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
-		//MobHunting.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
+		//Messages.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
 		//		.getLivingEntity().getType(), event.getMobType().getInternalName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
-		MobHunting.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
+		Messages.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
 				.getLivingEntity().getType(), event.getMobType().getInternalName());
 		if (mMobRewardData != null
 				&& !mMobRewardData.containsKey(event.getMobType().getInternalName())) {
-			MobHunting.debug("New MythicMobType found=%s,%s", event
+			Messages.debug("New MythicMobType found=%s,%s", event
 					.getMobType().getInternalName(), event.getMobType().getDisplayName());
 			mMobRewardData.put(event.getMobType().getInternalName(), new MobRewardData(
 					MobPlugins.MobPluginNames.MythicMobs, event.getMobType().getInternalName(), 
@@ -209,12 +209,12 @@ public class MythicMobsCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSkillEvent(MythicMobSkillEvent event) {
-		// MobHunting.debug("MythicMob Skill event");
+		// Messages.debug("MythicMob Skill event");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobCustomSkillEvent(MythicMobCustomSkillEvent event) {
-		// MobHunting.debug("MythicMob Custom Skill event");
+		// Messages.debug("MythicMob Custom Skill event");
 	}
 
 }

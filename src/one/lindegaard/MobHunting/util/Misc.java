@@ -46,24 +46,24 @@ public class Misc {
 		if (data.getKillstreakLevel() != lastKillstreakLevel) {
 			switch (data.getKillstreakLevel()) {
 			case 1:
-				MobHunting.playerActionBarMessage(player,
+				Messages.playerActionBarMessage(player,
 						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1"));
 				break;
 			case 2:
-				MobHunting.playerActionBarMessage(player,
+				Messages.playerActionBarMessage(player,
 						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2"));
 				break;
 			case 3:
-				MobHunting.playerActionBarMessage(player,
+				Messages.playerActionBarMessage(player,
 						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3"));
 				break;
 			default:
-				MobHunting.playerActionBarMessage(player,
+				Messages.playerActionBarMessage(player,
 						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4"));
 				break;
 			}
 
-			MobHunting.playerActionBarMessage(player,
+			Messages.playerActionBarMessage(player,
 					ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier",
 							String.format("%.1f", data.getKillstreakMultiplier())));
 		}
@@ -165,5 +165,6 @@ public class Misc {
 	public static String trimSignText(String string) {
 		return string.length() > 15 ? string.substring(0, 14).trim() : string;
 	}
-
+	
+	
 }

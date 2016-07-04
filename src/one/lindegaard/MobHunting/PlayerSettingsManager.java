@@ -84,9 +84,9 @@ public class PlayerSettingsManager implements Listener {
 	public void load(Player player) {
 		PlayerSettings ps = MobHunting.getDataStoreManager().getPlayerSettings(player);
 		if (ps.isMuted())
-			MobHunting.debug("%s isMuted()", player.getName());
+			Messages.debug("%s isMuted()", player.getName());
 		if (ps.isLearningMode())
-			MobHunting.debug("%s is in LearningMode()", player.getName());
+			Messages.debug("%s is in LearningMode()", player.getName());
 		mPlayerSettings.put(player, ps);
 	}
 

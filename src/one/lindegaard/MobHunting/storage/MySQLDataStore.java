@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.util.UUIDHelper;
@@ -101,7 +102,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
 
 	}
@@ -140,7 +141,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections++;
 				if (connections >= MAX_CONNECTIONS)
-					MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+					Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 			}
 			ResultSet results = statement
 					.executeQuery("SELECT " + type.getDBColumn() + ", mh_Players.UUID, mh_Players.NAME from mh_"
@@ -157,7 +158,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 					// e.printStackTrace();
 				}
 				if (offlinePlayer == null)
-					MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
+					Messages.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
 				else
 					list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
 			}
@@ -166,7 +167,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= MAX_CONNECTIONS)
-					MobHunting.debug("MySQLDataStore: close - connections=%s", connections);
+					Messages.debug("MySQLDataStore: close - connections=%s", connections);
 			}
 			return list;
 		} catch (SQLException e) {
@@ -177,7 +178,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
 		try {
-			MobHunting.debug("Saving PlayerStats to Database.");
+			Messages.debug("Saving PlayerStats to Database.");
 
 			// Make sure the stats are available for each player
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
@@ -191,7 +192,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= MAX_CONNECTIONS)
-					MobHunting.debug("MySQLDatastore: Close - connections=%s", connections);
+					Messages.debug("MySQLDatastore: Close - connections=%s", connections);
 			}
 
 			// Now add each of the stats
@@ -199,7 +200,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections++;
 				if (connections >= MAX_CONNECTIONS)
-					MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+					Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 			}
 
 			for (StatStore stat : stats)
@@ -211,11 +212,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= MAX_CONNECTIONS)
-					MobHunting.debug("MySQLDataStore: close - connections=%s", connections);
+					Messages.debug("MySQLDataStore: close - connections=%s", connections);
 			}
 
 			mConnection.commit();
-			MobHunting.debug("Saved.");
+			Messages.debug("Saved.");
 			// }
 		} catch (SQLException e) {
 			rollback();
@@ -234,7 +235,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
 
 		// Prefix tables to mh_
@@ -300,7 +301,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDatastore: Close - connections=%s", connections);
+				Messages.debug("MySQLDatastore: Close - connections=%s", connections);
 		}
 
 		connection.commit();
@@ -315,7 +316,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
 
 		// Workaround for no create trigger if not exists
@@ -370,7 +371,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDataStore: close - connections=%s", connections);
+				Messages.debug("MySQLDataStore: close - connections=%s", connections);
 		}
 		connection.commit();
 	}
@@ -380,7 +381,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
 
 		try {
@@ -390,7 +391,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= MAX_CONNECTIONS)
-					MobHunting.debug("MySQLDataStore: close - connections=%s", connections);
+					Messages.debug("MySQLDataStore: close - connections=%s", connections);
 			}
 			return; // UUIDs are in place
 
@@ -412,7 +413,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
 
 		StringBuilder failString = new StringBuilder();
@@ -446,7 +447,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDataStore: close - connections=%s", connections);
+				Messages.debug("MySQLDataStore: close - connections=%s", connections);
 		}
 
 		int modified = statement.executeUpdate("delete from `mh_Players` where `UUID`='**UNSPEC**'");
@@ -461,7 +462,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDataStore: close - connections=%s", connections);
+				Messages.debug("MySQLDataStore: close - connections=%s", connections);
 		}
 		connection.commit();
 	}
@@ -471,7 +472,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDatastore: Open - connections=%s", connections);
+				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
 		}
 
 		try {
@@ -909,7 +910,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= MAX_CONNECTIONS)
-				MobHunting.debug("MySQLDataStore: close - connections=%s", connections);
+				Messages.debug("MySQLDataStore: close - connections=%s", connections);
 		}
 		connection.commit();
 	}

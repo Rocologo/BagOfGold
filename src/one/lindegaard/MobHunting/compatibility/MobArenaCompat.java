@@ -16,6 +16,7 @@ import com.garbagemule.MobArena.events.ArenaPlayerReadyEvent;
 import com.garbagemule.MobArena.events.ArenaStartEvent;
 import com.garbagemule.MobArena.events.NewWaveEvent;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class MobArenaCompat implements Listener {
@@ -66,7 +67,7 @@ public class MobArenaCompat implements Listener {
 	// Happens when the player joins the Arena /ma join
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerJoinEvent(ArenaPlayerJoinEvent event) {
-		MobHunting.debug("[MH]Player %s joined MobArena: %s", event.getPlayer()
+		Messages.debug("[MH]Player %s joined MobArena: %s", event.getPlayer()
 				.getName(), event.getArena());
 		MobArenaHelper.startPlayingMobArena(event.getPlayer());
 	}
@@ -74,7 +75,7 @@ public class MobArenaCompat implements Listener {
 	// Happens when the player leave the Arena /ma leave
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerLeaveEvent(ArenaPlayerLeaveEvent event) {
-		MobHunting.debug("[MH]Player %s left MobArena: %s", event.getPlayer()
+		Messages.debug("[MH]Player %s left MobArena: %s", event.getPlayer()
 				.getName(), event.getArena());
 		MobArenaHelper.stopPlayingMobArena(event.getPlayer());
 	}
@@ -82,44 +83,44 @@ public class MobArenaCompat implements Listener {
 	// Happens when the player dies
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerDeathEvent(ArenaPlayerDeathEvent event) {
-		// MobHunting.debug("[MH]Eventname: %s", event.getEventName());
+		// Messages.debug("[MH]Eventname: %s", event.getEventName());
 	}
 
 	// Happens when the player hits the Iron block (waiting for other player to
 	// do the same)
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerReadyEvent(ArenaPlayerReadyEvent event) {
-		// MobHunting.debug("[MH]Eventname: %s", event.getEventName());
+		// Messages.debug("[MH]Eventname: %s", event.getEventName());
 	}
 
 	// Happens when???
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaCompleteEvent(ArenaCompleteEvent event) {
-		// MobHunting.debug("[MH]Eventname: %s", event.getEventName());
+		// Messages.debug("[MH]Eventname: %s", event.getEventName());
 	}
 
 	// Happens when a/the player kill a Mob
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaKillEvent(ArenaKillEvent event) {
-		// MobHunting.debug("[MH]Eventname: %s", event.getEventName());
+		// Messages.debug("[MH]Eventname: %s", event.getEventName());
 	}
 
 	// Happens when the all players are ready and they enter the Arena
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaStartEvent(ArenaStartEvent event) {
-		// MobHunting.debug("[MH]Eventname: %s", event.getEventName());
+		// Messages.debug("[MH]Eventname: %s", event.getEventName());
 	}
 
 	// Happens when the all players are dead and in "Jail"
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaEndEvent(ArenaEndEvent event) {
-		// MobHunting.debug("[MH]Eventname: %s", event.getEventName());
+		// Messages.debug("[MH]Eventname: %s", event.getEventName());
 	}
 
 	// Happens everytime a new wave begin
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onNewWareEvent(NewWaveEvent event) {
-		// MobHunting.debug("[MH]Eventname: %s", event.getEventName());
+		// Messages.debug("[MH]Eventname: %s", event.getEventName());
 	}
 
 }

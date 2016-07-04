@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Map.Entry;
@@ -17,6 +18,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import one.lindegaard.MobHunting.compatibility.ActionBarCompat;
+import one.lindegaard.MobHunting.compatibility.BarAPICompat;
+import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
 
 public class Messages {
 	private static Map<String, String> mTranslationTable;
@@ -237,4 +245,51 @@ public class Messages {
 			return key;
 		}
 	}
+
+	/**
+	 * Broadcast message to all players except Player.
+	 * 
+	 * @param message
+	 * @param except
+	 */
+	public static void broadcast(String message, Player except) {
+		Iterator<Player> players = MobHunting.getMobHuntingManager().getOnlinePlayers().iterator();
+		while (players.hasNext()) {
+			Player player = players.next();
+			if (player.equals(except))
+				continue;
+			player.sendMessage(message);
+		}
+	}
+
+	public static void debug(String text, Object... args) {
+		if (MobHunting.getConfigManager().killDebug)
+			MobHunting.getInstance().getLogger().info("[Debug] " + String.format(text, args));
+	}
+
+	public static void learn(Player player, String text, Object... args) {
+		if (player != null && !CitizensCompat.isNPC(player)
+				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode())
+			if (!MobHunting.getConfigManager().disableIntegrationBossBarAPI && BossBarAPICompat.isSupported()
+					&& BossBarAPICompat.isEnabledInConfig()) {
+				BossBarAPICompat.addBar(player, text);
+			} else if (!MobHunting.getConfigManager().disableIntegrationBarAPI && BarAPICompat.isSupported()
+					&& BarAPICompat.isEnabledInConfig()) {
+				BarAPICompat.setMessageTime(player, text, 5);
+			} else {
+				player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
+						+ String.format(text, args));
+			}
+	}
+
+	public static void playerActionBarMessage(Player player, String message) {
+		if (!MobHunting.getConfigManager().disableIntegrationTitleManager && TitleManagerCompat.isSupported()) {
+			TitleManagerCompat.setActionBar(player, message);
+		} else if (!MobHunting.getConfigManager().disableIntegrationActionBar && ActionBarCompat.isSupported()) {
+			ActionBarCompat.setMessage(player, message);
+		} else {
+			player.sendMessage(message);
+		}
+	}
+
 }

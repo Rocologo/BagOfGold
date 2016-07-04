@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import mc.alk.arena.objects.ArenaPlayer;
-import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.Messages;
 
 public class BattleArenaHelper {
 
@@ -42,7 +42,7 @@ public class BattleArenaHelper {
 	 */
 	public static void stopPlayingBattleArena(ArenaPlayer arenaPlayer) {
 		if (!playersPlayingBattleArena.remove(arenaPlayer.getID())) {
-			MobHunting.debug("Player: %s is not a the BattleArena", arenaPlayer.getName());
+			Messages.debug("Player: %s is not a the BattleArena", arenaPlayer.getName());
 		}
 	}
 

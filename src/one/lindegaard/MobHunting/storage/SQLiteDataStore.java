@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.util.UUIDHelper;
@@ -100,12 +101,11 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 		}
 	}
 
 	// *******************************************************************************
-	@SuppressWarnings("deprecation")
 	// LoadStats / SaveStats
 	// *******************************************************************************
 	@Override
@@ -137,7 +137,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections++;
 				if (connections >= 10)
-					MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+					Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 			}
 			ResultSet results = statement
 					.executeQuery("SELECT " + type.getDBColumn() + ", mh_Players.UUID, mh_Players.NAME from mh_"
@@ -154,7 +154,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					// e.printStackTrace();
 				}
 				if (offlinePlayer == null)
-					MobHunting.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
+					Messages.debug("getOfflinePlayer(%s) was not in cache.", results.getString(3));
 				else
 					list.add(new StatStore(type, offlinePlayer, results.getInt(1)));
 			}
@@ -163,7 +163,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= 10)
-					MobHunting.debug("SQLiteDataStore: close - connections=%s", connections);
+					Messages.debug("SQLiteDataStore: close - connections=%s", connections);
 			}
 
 			return list;
@@ -175,7 +175,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	@Override
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
 		try {
-			MobHunting.debug("Saving PlayerStats to Database.");
+			Messages.debug("Saving PlayerStats to Database.");
 
 			// Make sure the stats are available for each player
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
@@ -189,7 +189,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= 10)
-					MobHunting.debug("SQLiteDataStore: close - connections=%s", connections);
+					Messages.debug("SQLiteDataStore: close - connections=%s", connections);
 			}
 
 			// Now add each of the stats
@@ -197,7 +197,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections++;
 				if (connections >= 10)
-					MobHunting.debug("SQLiteDataStore(xxx): Open - connections=%s", connections);
+					Messages.debug("SQLiteDataStore(xxx): Open - connections=%s", connections);
 			}
 			for (StatStore stat : stats)
 				statement.addBatch(String.format(
@@ -208,11 +208,11 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= 10)
-					MobHunting.debug("SQLiteDataStore(xxx): close - connections=%s", connections);
+					Messages.debug("SQLiteDataStore(xxx): close - connections=%s", connections);
 			}
 
 			mConnection.commit();
-			MobHunting.debug("Saved.");
+			Messages.debug("Saved.");
 		} catch (
 
 		SQLException e) {
@@ -231,7 +231,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 		}
 		// Prefix tables to mh_
 		try {
@@ -294,7 +294,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Close - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Close - connections=%s", connections);
 		}
 		connection.commit();
 
@@ -308,7 +308,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 		}
 
 		create.executeUpdate(
@@ -357,7 +357,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Close - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Close - connections=%s", connections);
 		}
 
 		connection.commit();
@@ -368,7 +368,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 		}
 		try {
 			ResultSet rs = statement.executeQuery("SELECT UUID from mh_Players LIMIT 0");
@@ -377,7 +377,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= 10)
-					MobHunting.debug("SQLiteDataStore: close - connections=%s", connections);
+					Messages.debug("SQLiteDataStore: close - connections=%s", connections);
 			}
 
 			return; // Tables will be fine
@@ -436,7 +436,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: close - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: close - connections=%s", connections);
 		}
 	}
 
@@ -445,7 +445,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 		}
 		try {
 			ResultSet rs = statement.executeQuery("SELECT UUID from mh_Players LIMIT 0");
@@ -454,7 +454,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (MobHunting.getConfigManager().debugSQL) {
 				connections--;
 				if (connections >= 10)
-					MobHunting.debug("SQLiteDataStore: close - connections=%s", connections);
+					Messages.debug("SQLiteDataStore: close - connections=%s", connections);
 			}
 
 			return; // UUIDs are in place
@@ -475,7 +475,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 		}
 		StringBuilder failString = new StringBuilder();
 		int failCount = 0;
@@ -509,7 +509,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Close - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Close - connections=%s", connections);
 		}
 
 		System.out.println("[MobHunting] Player UUID migration complete.");
@@ -518,7 +518,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: close - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: close - connections=%s", connections);
 		}
 		connection.commit();
 	}
@@ -528,7 +528,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections++;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: Open - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: Open - connections=%s", connections);
 		}
 
 		try {
@@ -950,7 +950,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement.executeUpdate("alter table `mh_Players` add column `MUTE_MODE` INTEGER NOT NULL DEFAULT 0");
 		}
 
-		MobHunting.debug("Updating database triggers.");
+		Messages.debug("Updating database triggers.");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 		setupTrigger(connection);
@@ -959,7 +959,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (MobHunting.getConfigManager().debugSQL) {
 			connections--;
 			if (connections >= 10)
-				MobHunting.debug("SQLiteDataStore: close - connections=%s", connections);
+				Messages.debug("SQLiteDataStore: close - connections=%s", connections);
 		}
 
 		connection.commit();

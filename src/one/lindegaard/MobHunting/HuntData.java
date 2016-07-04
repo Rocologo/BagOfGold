@@ -25,7 +25,7 @@ public class HuntData {
 		for (Area area : lastGridingAreas) {
 			if (area.center.getWorld().equals(location.getWorld())) {
 				if (area.center.distance(location) < area.range) {
-					MobHunting.debug("HuntData has a grinding area = %s", area.center);
+					Messages.debug("HuntData has a grinding area = %s", area.center);
 					return area;
 				}
 			}

@@ -167,7 +167,7 @@ public class NpcCommand implements ICommand, Listener {
 				masterMobHunterManager.update(npc);
 				sender.sendMessage(
 						ChatColor.GREEN + Messages.getString("mobhunting.commands.npc.created", "npcid", npc.getId()));
-				MobHunting.debug("Creating MasterMobHunter: id=%s,stat=%s,per=%s,rank=%s", npc.getId(),
+				Messages.debug("Creating MasterMobHunter: id=%s,stat=%s,per=%s,rank=%s", npc.getId(),
 						statType.translateName(), period, rank);
 				return true;
 			}

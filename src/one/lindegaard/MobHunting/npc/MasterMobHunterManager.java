@@ -71,9 +71,9 @@ public class MasterMobHunterManager implements Listener {
 					}
 				}
 				if (n > 0)
-					MobHunting.debug("Refreshed %s MasterMobHunters", n);
+					Messages.debug("Refreshed %s MasterMobHunters", n);
 			} else {
-				MobHunting.debug("MasterMobHunterManager: Citizens is disabled.");
+				Messages.debug("MasterMobHunterManager: Citizens is disabled.");
 			}
 		}
 	}
@@ -152,9 +152,9 @@ public class MasterMobHunterManager implements Listener {
 					mMasterMobHunter.put(Integer.valueOf(key), mmh);
 				}
 			}
-			MobHunting.debug("The file citizens-MasterMobHunter.yml is not used anymore and can be deleted.");
+			Messages.debug("The file citizens-MasterMobHunter.yml is not used anymore and can be deleted.");
 			if (n > 0)
-				MobHunting.debug("Loaded %s MasterMobHunter Traits's from file.", n);
+				Messages.debug("Loaded %s MasterMobHunter Traits's from file.", n);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -180,7 +180,7 @@ public class MasterMobHunterManager implements Listener {
 							"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
-			MobHunting.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
+			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
 		}
 	}
 
@@ -198,7 +198,7 @@ public class MasterMobHunterManager implements Listener {
 							"npcid", npc.getId()));
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
-			MobHunting.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
+			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
 		}
 	}
 

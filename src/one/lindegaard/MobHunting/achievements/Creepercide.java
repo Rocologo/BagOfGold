@@ -73,9 +73,9 @@ public class Creepercide implements Achievement, Listener {
 				// Check if player (initiator) is playing MobArena.
 				if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) initiator)
 						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
-					MobHunting.debug("AchiveBlocked: CreeperCide was achieved while %s was playing MobArena.",
+					Messages.debug("AchiveBlocked: CreeperCide was achieved while %s was playing MobArena.",
 							initiator.getName());
-					MobHunting.learn(initiator, Messages.getString("mobhunting.learn.mobarena"));
+					Messages.learn(initiator, Messages.getString("mobhunting.learn.mobarena"));
 				} else
 					MobHunting.getAchievements().awardAchievement("creepercide", initiator);
 			}

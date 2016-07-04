@@ -72,7 +72,7 @@ public class WorldGroup {
 					.header("----------------------------------------------------------"
 							+ "\nWorldGroups. New world are added in the Default Group"
 							+ "\n----------------------------------------------------------");
-			MobHunting.debug("Saving worldGroups");
+			Messages.debug("Saving worldGroups");
 			ConfigurationSection section = config.createSection("WorldGroups");
 			section.set("WorldGroups", worldGroups);
 			config.save(file);
@@ -84,7 +84,7 @@ public class WorldGroup {
 	public void load() {
 		if (!file.exists())
 			return;
-		MobHunting.debug("Loading WorldGroups");
+		Messages.debug("Loading WorldGroups");
 		try {
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection("WorldGroups");

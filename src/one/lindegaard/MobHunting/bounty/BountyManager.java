@@ -61,7 +61,7 @@ public class BountyManager implements Listener {
 						if (bounty.getEndDate() < System.currentTimeMillis()) {
 							bounty.setStatus(BountyStatus.expired);
 							MobHunting.getDataStoreManager().updateBounty(bounty);
-							MobHunting.debug("BountyManager: Expired Bounty %s", bounty.toString());
+							Messages.debug("BountyManager: Expired Bounty %s", bounty.toString());
 							mOpenBounties.remove(bounty);
 						}
 					}
@@ -81,11 +81,11 @@ public class BountyManager implements Listener {
 	 */
 	public void addBounty(Bounty bounty) {
 		if (!hasBounty(bounty)) {
-			MobHunting.debug("Insert bounty=%s", bounty.toString());
+			Messages.debug("Insert bounty=%s", bounty.toString());
 			mOpenBounties.add(bounty);
 			MobHunting.getDataStoreManager().insertBounty(bounty);
 		} else {
-			MobHunting.debug("Updating bounty=%s", bounty.toString());
+			Messages.debug("Updating bounty=%s", bounty.toString());
 			getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).setPrize(
 					getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).getPrize()
 							+ bounty.getPrize());
@@ -253,16 +253,18 @@ public class BountyManager implements Listener {
 		Player player = e.getPlayer();
 		if (!MobHunting.getConfigManager().disablePlayerBounties) {
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(player);
-			if (hasBounties(worldGroupName, player)) {
-				MobHunting.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
-			}
 			addMarkOnWantedPlayer(player);
 			loadOpenBounties(player);
+			if (hasBounties(worldGroupName, player)) {
+				Messages.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
+				Messages.broadcast(Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()),
+						player);
+			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerLeave(PlayerQuitEvent e) {
+	public void onPlayerQuit(PlayerQuitEvent e) {
 		// saveBounties(e.getPlayer());
 	}
 
@@ -283,7 +285,7 @@ public class BountyManager implements Listener {
 								else {
 									bounty.setStatus(BountyStatus.expired);
 									// removeBounty(bounty);
-									MobHunting.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
+									Messages.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
 									MobHunting.getDataStoreManager().updateBounty(bounty);
 								}
 								sort = true;
@@ -369,11 +371,11 @@ public class BountyManager implements Listener {
 										bounty.getWantedPlayer().getName(), "daysleft",
 										(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
 							else
-								sender.sendMessage(
-										Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-												"Random Bounty", "prize", MobHunting.getEconomy().format(bounty.getPrize()),
-												"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
-												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
+								sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties",
+										"bountyowner", "Random Bounty", "prize",
+										MobHunting.getEconomy().format(bounty.getPrize()), "wantedplayer",
+										bounty.getWantedPlayer().getName(), "daysleft",
+										(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
 					}
 				}
 			} else {
@@ -388,7 +390,7 @@ public class BountyManager implements Listener {
 	public static void showMostWanted(CommandSender sender, String worldGroupName, boolean useGui) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			// MobHunting.debug("mOpenBounties.size, args);
+			// Messages.debug("mOpenBounties.size, args);
 			if (!mOpenBounties.isEmpty()) {
 				// Set<Bounty> bounties =
 				// MobHunting.getBountyManager().getAllBounties();
@@ -398,8 +400,8 @@ public class BountyManager implements Listener {
 					int n = 0;
 					for (Bounty bounty : mOpenBounties) {
 						if (bounty.getBountyOwner() != null)
-							AchievementManager.addInventoryDetails(Misc.getPlayerHead(bounty.getWantedPlayer()), inventory,
-									n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+							AchievementManager.addInventoryDetails(Misc.getPlayerHead(bounty.getWantedPlayer()),
+									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner",
 											bounty.getBountyOwner().getName(), "prize",
@@ -407,8 +409,8 @@ public class BountyManager implements Listener {
 											bounty.getWantedPlayer().getName(), "daysleft",
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						else
-							AchievementManager.addInventoryDetails(Misc.getPlayerHead(bounty.getWantedPlayer()), inventory,
-									n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+							AchievementManager.addInventoryDetails(Misc.getPlayerHead(bounty.getWantedPlayer()),
+									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
 											"prize", MobHunting.getEconomy().format(bounty.getPrize()), "wantedplayer",
@@ -434,8 +436,8 @@ public class BountyManager implements Listener {
 									(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
 						else
 							sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-									"Random Bounty", "prize", MobHunting.getEconomy().format(bounty.getPrize()), "wantedplayer",
-									bounty.getWantedPlayer().getName(), "daysleft",
+									"Random Bounty", "prize", MobHunting.getEconomy().format(bounty.getPrize()),
+									"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
 									(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
 					}
 				}
@@ -458,7 +460,7 @@ public class BountyManager implements Listener {
 					// TODO:
 				}
 				event.setCancelled(true);
-				MobHunting.debug("BountyManager: Player clicked on inventory - closing now");
+				Messages.debug("BountyManager: Player clicked on inventory - closing now");
 				player.closeInventory();
 				// player.openInventory(inventory2);
 			}
@@ -500,12 +502,14 @@ public class BountyManager implements Listener {
 					addBounty(randomBounty);
 					for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
 						if (player.getName().equals(randomPlayer.getName()))
-							MobHunting.playerActionBarMessage(player, Messages.getString(
-									"mobhunting.bounty.randombounty.self", "prize", MobHunting.getEconomy().format(randomBounty.getPrize())));
+							Messages.playerActionBarMessage(player,
+									Messages.getString("mobhunting.bounty.randombounty.self", "prize",
+											MobHunting.getEconomy().format(randomBounty.getPrize())));
 						else
-							MobHunting.playerActionBarMessage(player,
+							Messages.playerActionBarMessage(player,
 									Messages.getString("mobhunting.bounty.randombounty", "prize",
-											MobHunting.getEconomy().format(randomBounty.getPrize()), "playername", randomPlayer.getName()));
+											MobHunting.getEconomy().format(randomBounty.getPrize()), "playername",
+											randomPlayer.getName()));
 					}
 				}
 			}
@@ -521,7 +525,7 @@ public class BountyManager implements Listener {
 		OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
 		OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
 
-		MobHunting.debug("Loading p1,p2,p3 from database");
+		Messages.debug("Loading p1,p2,p3 from database");
 		loadOpenBounties(p1);
 		loadOpenBounties(p2);
 		loadOpenBounties(p3);
@@ -538,7 +542,7 @@ public class BountyManager implements Listener {
 				Bounty b3 = new Bounty("Default", p2, p3, 200, "ha ha ha");
 				Bounty b4 = new Bounty("Default", p1, p3, 300, "hi hi hi");
 
-				MobHunting.debug("BountyManager AddTestData if not exist. Adding b1,b2,b3,b4 size=%s",
+				Messages.debug("BountyManager AddTestData if not exist. Adding b1,b2,b3,b4 size=%s",
 						mOpenBounties.size());
 				if (!hasBounty(b1))
 					addBounty(b1);

@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import de.Keyle.MyPet.MyPetPlugin;
 import de.Keyle.MyPet.api.entity.MyPetBukkitEntity;
 import de.Keyle.MyPet.api.entity.MyPetType;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class MyPetCompat implements Listener {
@@ -64,7 +65,7 @@ public class MyPetCompat implements Listener {
 		if (killer.getPetType() != MyPetType.Wolf)
 			return false;
 
-		MobHunting.debug("MyPetCompat: A Wolf Killed a mob");
+		Messages.debug("MyPetCompat: A Wolf Killed a mob");
 
 		return true;
 	}
@@ -106,7 +107,7 @@ public class MyPetCompat implements Listener {
 		if (killer.getPetType() != MyPetType.Wolf)
 			return;
 
-		MobHunting.debug("MyPetCompat: A Wolf Killed a mob");
+		Messages.debug("MyPetCompat: A Wolf Killed a mob");
 
 		if (killer.getOwner() != null) {
 			Player owner = killer.getOwner().getPlayer();
