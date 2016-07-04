@@ -94,7 +94,7 @@
 				<configuration>
 					<finalName>${project.name}</finalName>
 					<minimizeJar>true</minimizeJar>
-					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
 					<artifactSet>
 						<includes>
 							<include>org.mcstats.bukkit:metrics</include>
@@ -170,7 +170,6 @@
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 
-
 		<!-- SpongeAPI Repository -->
 		<repository>
 			<id>sponge</id>
@@ -224,7 +223,6 @@
 			<id>pvparena-repo</id>
 			<url>https://github.com/slipcor/pvparena.git</url>
 		</repository>
-
 
 		<!-- Spout Repository -->
 		<repository>
