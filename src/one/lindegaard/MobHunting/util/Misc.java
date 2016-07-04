@@ -46,21 +46,26 @@ public class Misc {
 		if (data.getKillstreakLevel() != lastKillstreakLevel) {
 			switch (data.getKillstreakLevel()) {
 			case 1:
-				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1"));
+				MobHunting.playerActionBarMessage(player,
+						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1"));
 				break;
 			case 2:
-				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2"));
+				MobHunting.playerActionBarMessage(player,
+						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2"));
 				break;
 			case 3:
-				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3"));
+				MobHunting.playerActionBarMessage(player,
+						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3"));
 				break;
 			default:
-				MobHunting.playerActionBarMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4"));
+				MobHunting.playerActionBarMessage(player,
+						ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4"));
 				break;
 			}
 
-			MobHunting.playerActionBarMessage(player, ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier",
-					String.format("%.1f", data.getKillstreakMultiplier())));
+			MobHunting.playerActionBarMessage(player,
+					ChatColor.GRAY + Messages.getString("mobhunting.killstreak.activated", "multiplier",
+							String.format("%.1f", data.getKillstreakMultiplier())));
 		}
 
 		return data.getKillstreakMultiplier();
@@ -99,47 +104,47 @@ public class Misc {
 		} else
 			return new Location(null, x, y, z, yaw, pitch);
 	}
-	
-	public static boolean isMC110(){
+
+	public static boolean isMC110() {
 		return Bukkit.getBukkitVersion().contains("1.10");
 	}
-	
-	public static boolean isMC19(){
+
+	public static boolean isMC19() {
 		return Bukkit.getBukkitVersion().contains("1.9");
 	}
-	
-	public static boolean isMC18(){
+
+	public static boolean isMC18() {
 		return Bukkit.getBukkitVersion().contains("1.8");
 	}
-	
-	public static boolean isMC17(){
+
+	public static boolean isMC17() {
 		return Bukkit.getBukkitVersion().contains("1.7");
 	}
-	
-	public static boolean isMC110OrNewer(){
-		if (isMC110()) 
+
+	public static boolean isMC110OrNewer() {
+		if (isMC110())
 			return true;
-		else if (isMC19()||isMC18()||isMC17())
+		else if (isMC19() || isMC18() || isMC17())
 			return false;
 		return true;
 	}
-	
-	public static boolean isMC19OrNewer(){
-		if (isMC19()) 
+
+	public static boolean isMC19OrNewer() {
+		if (isMC19())
 			return true;
-		else if (isMC18()||isMC17())
+		else if (isMC18() || isMC17())
 			return false;
 		return true;
 	}
-	
-	public static boolean isMC18OrNewer(){
-		if (isMC18()) 
+
+	public static boolean isMC18OrNewer() {
+		if (isMC18())
 			return true;
 		else if (isMC17())
 			return false;
 		return true;
 	}
-	
+
 	public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
 		skull.setDurability((short) 3);
@@ -155,6 +160,10 @@ public class Misc {
 				return player;
 		}
 		return null;
+	}
+
+	public static String trimSignText(String string) {
+		return string.length() > 15 ? string.substring(0, 14).trim() : string;
 	}
 
 }

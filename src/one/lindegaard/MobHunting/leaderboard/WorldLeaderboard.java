@@ -26,6 +26,7 @@ import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	private static String EMPTY_STRING = "";
@@ -207,11 +208,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 				sign.setLine(1, statName);
 				sign.setLine(2, EMPTY_STRING);
 			}
-			String period = getPeriod().translateNameFriendly();
-			if (period.length() >= 12)
-				period = period.substring(0, 12).trim();
-			// sign.setLine(3, ChatColor.YELLOW + period.trim());
-			sign.setLine(3, period);
+			sign.setLine(3, Misc.trimSignText(getPeriod().translateNameFriendly()));
 			sign.update(true, false);
 		}
 

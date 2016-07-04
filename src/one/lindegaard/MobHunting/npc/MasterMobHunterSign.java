@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -318,12 +319,11 @@ public class MasterMobHunterSign implements Listener {
 					MasterMobHunter mmh = new MasterMobHunter(npc);
 					mmh.putLocation(event.getBlock().getLocation());
 					MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
-					//mmh.update();
-					//MasterMobHunterManager.getMasterMobHunterManager().get(npc).update();
 					p.sendMessage(p.getName() + " placed a MobHunting Sign (ID=" + id + ")");
-					event.setLine(1, (mmh.getRank() + "." + npc.getName()));
-					event.setLine(2, (mmh.getPeriod().translateNameFriendly()));
-					event.setLine(3, (mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
+					event.setLine(1, Misc.trimSignText(mmh.getRank() + "." + npc.getName()));
+					event.setLine(2, Misc.trimSignText(mmh.getPeriod().translateNameFriendly()));
+					event.setLine(3,
+							Misc.trimSignText(mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
 					if (powered) {
 						OfflinePlayer player = Bukkit.getPlayer(npc.getName());
 						if (player != null && player.isOnline())

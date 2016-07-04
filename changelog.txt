@@ -1,5 +1,7 @@
 V3.2.8
 - Fixed bug. "/mh achievements playername" can now be run from the console.
+- Fixed bug. MasterMobHunterSigns does now partly show the playername if rank + name are longer than 15 chars.
+- Added a new setting "show-achievements-without-reward" to show rewards even if the prize is 0.  
 V3.2.7
 - Made a work around to fix bug in getOfflinePlayer() 
 V3.2.6

@@ -118,7 +118,8 @@ public class ConfigManager extends AutoConfig {
 				+ "\nAn example could be to give the player permission to fly "
 				+ "\nfor 1 hour or use give command to the player items."
 				+ "\nYou can also specify the message send to the player."
-				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |");
+				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
+				+ "\nAchievements will not be shown if the prize is 0, unless you set show-achievements-without-reward=true.");
 
 		setCategoryComment("achievement_levels",
 				"########################################################################"
@@ -686,6 +687,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-achievements-in-worlds", category = "achievements", comment = "Put the names of the worlds here where you want to disable achievements."
 			+ "\nPlayers will still get rewards for killings.")
 	public String[] disableAchievementsInWorlds = { "worldname" };
+	@ConfigField(name = "show-achievements-without-reward", category = "achievements", comment = "Set this to true if you want to see achievements when you use /mh achievements"
+			+ "\nallthough there is no reward for this.")
+	public boolean showAchievementsWithoutAReward = false;
 	@ConfigField(name = "charged-kill", category = "achievements", comment = "Achievements")
 	public double specialCharged = 1000;
 	@ConfigField(name = "charged-kill-cmd", category = "achievements")
