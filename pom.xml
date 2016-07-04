@@ -106,6 +106,15 @@
 							<shadedPattern>one.lindegaard.HobHunting</shadedPattern>
 						</relocation>
 					</relocations>
+					<archive>
+						<index>true</index>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Version>${build.number}</Implementation-Version>
+						</manifestEntries>
+					</archive>
 				</configuration>
 				<executions>
 					<execution>
@@ -341,13 +350,16 @@
 	</repositories>
 
 	<distributionManagement>
+		<!-- <repository> <id>md_5-releases</id> <url>http://repo.md-5.net/content/repositories/releases/</url> 
+			</repository> <snapshotRepository> <id>md_5-snapshots</id> <url>http://repo.md-5.net/content/repositories/snapshots/</url> 
+			</snapshotRepository> -->
 		<repository>
-			<id>md_5-releases</id>
-			<url>http://repo.md-5.net/content/repositories/releases/</url>
+			<id>rocologo-releases</id>
+			<url>http://artifactory.lindegaard.one:8185/artifactory/ext-releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>md_5-snapshots</id>
-			<url>http://repo.md-5.net/content/repositories/snapshots/</url>
+			<id>rocologo-snapshots</id>
+			<url>http://artifactory.lindegaard.one:8185/artifactory/ext-snapshot/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
