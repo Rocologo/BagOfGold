@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import one.lindegaard.MobHunting.commands.HeadCommand;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class Rewards implements Listener {
@@ -60,13 +61,21 @@ public class Rewards implements Listener {
 				MobHunting.debug("Rewards: EventInteractEvent MH_MONEY - %s, %s, %s ", e.getEntity().getType(),
 						e.getEntityType(), e.getBlock().getType());
 		}
-		if (e.getEntity() instanceof Zombie){
+		if (e.getEntity() instanceof Zombie) {
 			Zombie z = (Zombie) e.getEntity();
-			MobHunting.debug("A Zombie did something, with %s",e.getBlock());
-			if (Misc.isMC19OrNewer()){
-				MobHunting.debug("Zombie hands = %s,%s",z.getEquipment().getItemInMainHand(),z.getEquipment().getItemInOffHand());
+			if (e.getBlock().hasMetadata(HeadCommand.MH_HEAD))
+				MobHunting.debug("A Zombie did something, with a MobHuntingHead %s", e.getBlock());
+			if (Misc.isMC19OrNewer()) {
+				if ((z.getEquipment().getItemInMainHand().hasItemMeta()
+						&& z.getEquipment().getItemInMainHand().getItemMeta().equals(HeadCommand.MH_HEAD))
+						|| (z.getEquipment().getItemInOffHand().hasItemMeta()
+								&& z.getEquipment().getItemInOffHand().getItemMeta().equals(HeadCommand.MH_HEAD)))
+					MobHunting.debug("Zombie hands = %s,%s", z.getEquipment().getItemInMainHand(),
+							z.getEquipment().getItemInOffHand());
 			} else {
-				MobHunting.debug("Zombie hand = %s",z.getEquipment().getItemInHand());
+				if (z.getEquipment().getItemInHand().hasItemMeta()
+						&& z.getEquipment().getItemInHand().getItemMeta().equals(HeadCommand.MH_HEAD))
+					MobHunting.debug("Zombie hand = %s", z.getEquipment().getItemInHand());
 			}
 		}
 	}
@@ -104,10 +113,11 @@ public class Rewards implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryPickupItemEvent(InventoryPickupItemEvent e) {
 		Item item = e.getItem();
-		if (item.hasMetadata(MH_MONEY) && e.getInventory().getType()!=InventoryType.HOPPER) {
+		if (item.hasMetadata(MH_MONEY) && e.getInventory().getType() != InventoryType.HOPPER) {
 			Bukkit.getServer().getLogger().warning("[MobHunting] WARNING! The money was picked up by "
 					+ e.getInventory().getHolder().toString() + ", event was cancelled. Please show log to Developer.");
-			//TODO: Handle what happens if picked up by hopper. setCancelled is unsupported for hopper.
+			// TODO: Handle what happens if picked up by hopper. setCancelled is
+			// unsupported for hopper.
 			e.setCancelled(true);
 		}
 	}

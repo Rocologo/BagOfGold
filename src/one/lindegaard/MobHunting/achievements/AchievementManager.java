@@ -558,7 +558,7 @@ public class AchievementManager implements Listener {
 						// Build the output
 						ArrayList<String> lines = new ArrayList<String>();
 
-						if (!gui || sender instanceof CommandSender) {
+						if (!gui) {
 							if (self)
 								lines.add(ChatColor.GRAY
 										+ Messages.getString("mobhunting.commands.listachievements.completed.self",
@@ -576,36 +576,38 @@ public class AchievementManager implements Listener {
 						for (Map.Entry<Achievement, Integer> achievement : data) {
 							if (achievement.getValue() == -1 && (achievement.getKey().getPrize() != 0
 									|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
-								if (!gui || sender instanceof CommandSender) {
+								if (!gui) {
 									lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
 									lines.add(ChatColor.GRAY + "    " + ChatColor.ITALIC
 											+ achievement.getKey().getDescription());
-								} else if (self)
-									addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
-											ChatColor.YELLOW + achievement.getKey().getName(),
-											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-													achievement.getKey().getDescription(), "",
-													Messages.getString(
-															"mobhunting.commands.listachievements.completed.self",
-															"num", ChatColor.YELLOW + "" + count + ChatColor.GRAY,
-															"max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
-								else
-									addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
-											ChatColor.YELLOW + achievement.getKey().getName(),
-											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-													achievement.getKey().getDescription(), "",
-													Messages.getString(
-															"mobhunting.commands.listachievements.completed.other",
-															"player", otherPlayer.getName(), "num",
-															ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
-															ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
+								} else if (sender instanceof Player)
+									if (self)
+										addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
+												ChatColor.YELLOW + achievement.getKey().getName(),
+												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+														achievement.getKey().getDescription(), "",
+														Messages.getString(
+																"mobhunting.commands.listachievements.completed.self",
+																"num", ChatColor.YELLOW + "" + count + ChatColor.GRAY,
+																"max",
+																ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
+									else
+										addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
+												ChatColor.YELLOW + achievement.getKey().getName(),
+												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+														achievement.getKey().getDescription(), "",
+														Messages.getString(
+																"mobhunting.commands.listachievements.completed.other",
+																"player", otherPlayer.getName(), "num",
+																ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
+																ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
 								if (n < 52)
 									n++;
 							} else
 								inProgress = true;
 						}
 						if (inProgress) {
-							if (!gui || sender instanceof CommandSender) {
+							if (!gui) {
 								lines.add("");
 								lines.add(ChatColor.YELLOW
 										+ Messages.getString("mobhunting.commands.listachievements.progress"));
@@ -613,13 +615,14 @@ public class AchievementManager implements Listener {
 
 							for (Map.Entry<Achievement, Integer> achievement : data) {
 								if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
-										&& (achievement.getKey().getPrize() != 0 || MobHunting.getConfigManager().showAchievementsWithoutAReward)
+										&& (achievement.getKey().getPrize() != 0
+												|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 										&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0) {
-									if (!gui || sender instanceof CommandSender)
+									if (!gui)
 										lines.add(ChatColor.GRAY + " " + achievement.getKey().getName()
 												+ ChatColor.WHITE + "  " + achievement.getValue() + " / "
 												+ ((ProgressAchievement) achievement.getKey()).getMaxProgress());
-									else
+									else if (sender instanceof Player)
 										addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
 												ChatColor.YELLOW + achievement.getKey().getName(),
 												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
@@ -638,11 +641,12 @@ public class AchievementManager implements Listener {
 						// Achievements NOT started.
 						int m = 0;
 						// Normal Achievement
-						if (!(sender instanceof CommandSender)) {
+						if (sender instanceof Player) {
 							for (Achievement achievement : getAllAchievements()) {
 								if (!(achievement instanceof ProgressAchievement)) {
 									if (!isOnGoingOrCompleted(achievement, data)) {
-										if (achievement.getPrize() != 0|| MobHunting.getConfigManager().showAchievementsWithoutAReward) {
+										if (achievement.getPrize() != 0
+												|| MobHunting.getConfigManager().showAchievementsWithoutAReward) {
 											addInventoryDetails(achievement.getSymbol(), inventory2, m,
 													ChatColor.YELLOW + achievement.getName(),
 													new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
@@ -658,7 +662,9 @@ public class AchievementManager implements Listener {
 							}
 							// ProgressAchivement
 							for (Achievement achievement : getAllAchievements()) {
-								if ((achievement instanceof ProgressAchievement && (achievement.getPrize() != 0 || MobHunting.getConfigManager().showAchievementsWithoutAReward)
+								if ((achievement instanceof ProgressAchievement
+										&& (achievement.getPrize() != 0
+												|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 										&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
 									boolean ongoing = isOnGoingOrCompleted(achievement, data);
 									if (!ongoing) {
@@ -681,9 +687,9 @@ public class AchievementManager implements Listener {
 								}
 							}
 						}
-						if (!gui || sender instanceof CommandSender)
+						if (!gui)
 							sender.sendMessage(lines.toArray(new String[lines.size()]));
-						else {
+						else if (sender instanceof Player){
 							((Player) sender).openInventory(inventory);
 						}
 					}
