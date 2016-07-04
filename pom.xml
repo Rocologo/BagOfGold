@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.2.7</version>
+	<version>3.2.8-SNAPSHOT</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -176,8 +176,8 @@
 
 		<!-- mypet repository -->
 		<repository>
-			<id>mypet-repo1</id>
-			<url>http://repo.keyle.de/</url>
+			<id>mypet-repo</id>
+			<url>https://nexus.keyle.de/content/groups/public/</url>
 		</repository>
 
 		<!-- Addstar repo -->
@@ -365,6 +365,12 @@
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>de.keyle</groupId>
+					<artifactId>mypet</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- SpongeAPI -->
@@ -418,20 +424,20 @@
 			<version>${worldedit.version}</version>
 		</dependency>
 
-		<!-- MCStats / Plugin Metrics -->
-		<dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics</artifactId>
-			<version>${metrics.version}</version>
-			<scope>compile</scope>
-		</dependency>
-
 		<!-- MyPet -->
 		<dependency>
 			<groupId>de.keyle</groupId>
 			<artifactId>mypet</artifactId>
 			<version>${mypet.version}</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- MCStats / Plugin Metrics -->
+		<dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics</artifactId>
+			<version>${metrics.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- MobArena -->
