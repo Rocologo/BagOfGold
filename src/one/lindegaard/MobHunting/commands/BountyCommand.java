@@ -147,7 +147,7 @@ public class BountyCommand implements ICommand {
 					bounty.setStatus(BountyStatus.canceled);
 					MobHunting.getBountyManager().cancelBounty(bounty);
 					int pct = MobHunting.getConfigManager().bountyReturnPct;
-					MobHunting.getEconomy().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
+					MobHunting.getRewardManager().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounty-removed", "wantedplayer",
 							wantedPlayer.getName(), "money", String.format("%.2f", bounty.getPrize() * pct / 100)));
 					return true;
@@ -193,7 +193,7 @@ public class BountyCommand implements ICommand {
 					return true;
 				}
 				double prize = Double.valueOf(args[1]);
-				if (!MobHunting.getEconomy().has(bountyOwner, prize)) {
+				if (!MobHunting.getRewardManager().has(bountyOwner, prize)) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-money", "money", prize));
 					return true;
 				}
@@ -216,7 +216,7 @@ public class BountyCommand implements ICommand {
 				}
 
 				MobHunting.getBountyManager().addBounty(bounty);
-				MobHunting.getEconomy().withdrawPlayer(bountyOwner, prize);
+				MobHunting.getRewardManager().withdrawPlayer(bountyOwner, prize);
 				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.money-withdrawn", "money", prize));
 
 				Messages.debug("%s has put %s on %s with the message %s", bountyOwner.getName(), prize,

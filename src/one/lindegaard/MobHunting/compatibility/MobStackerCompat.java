@@ -14,7 +14,7 @@ import one.lindegaard.MobHunting.MobHunting;
 public class MobStackerCompat implements Listener {
 
 	// https://www.spigotmc.org/resources/mobstacker.15596/
-	// Soruce code: https://github.com/Rocologo/MobStacker
+	// Source code: https://github.com/Rocologo/MobStacker
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;

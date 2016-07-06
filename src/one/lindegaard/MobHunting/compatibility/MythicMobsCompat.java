@@ -26,7 +26,7 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.MobPlugins;
-import one.lindegaard.MobHunting.MobRewardData;
+import one.lindegaard.MobHunting.rewards.MobRewardData;
 
 public class MythicMobsCompat implements Listener {
 

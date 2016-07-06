@@ -39,6 +39,7 @@ import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
@@ -57,6 +58,8 @@ import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.modifier.*;
+import one.lindegaard.MobHunting.rewards.RewardManager;
+import one.lindegaard.MobHunting.rewards.Rewards;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
 import one.lindegaard.MobHunting.storage.IDataStore;
@@ -101,9 +104,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private final static String pluginName = "mobhunting";
 	// private String pluginVersion = "";
 
-	private static Economy mEconomy;
 	private static MobHunting instance;
 
+	private static RewardManager mRewardManager;
 	private static MobHuntingManager mMobHuntingManager;
 	private static AreaManager mAreaManager;
 	private static LeaderboardManager mLeaderboardManager;
@@ -157,17 +160,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mWorldGroupManager = new WorldGroup();
 		mWorldGroupManager.load();
 
-		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager()
-				.getRegistration(Economy.class);
-		if (economyProvider == null) {
-			instance = null;
-			getLogger().severe(Messages.getString(pluginName + ".hook.econ"));
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-
-		mEconomy = economyProvider.getProvider();
-
+		mRewardManager = new RewardManager(this);
 		mAreaManager = new AreaManager(this);
 
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
@@ -216,6 +209,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerPlugin(TitleManagerCompat.class, "TitleManager");
 		registerPlugin(ActionBarCompat.class, "ActionBar");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
+		registerPlugin(GringottsCompat.class, "Gringotts");
 
 		// register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
@@ -348,10 +342,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return instance;
 	}
 
-	public static Economy getEconomy() {
-		return mEconomy;
-	}
-
 	public static ConfigManager getConfigManager() {
 		return mConfig;
 	}
@@ -438,8 +428,20 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return mWorldGroupManager;
 	}
 
+	/**
+	 * Get the PlayerSettingsManager
+	 * @return
+	 */
 	public static PlayerSettingsManager getPlayerSettingsmanager() {
 		return mPlayerSettingsManager;
+	}
+	
+	/**
+	 * Get the RewardManager 
+	 * @return
+	 */
+	public static RewardManager getRewardManager(){
+		return mRewardManager;
 	}
 
 	public void registerModifier(IModifier modifier) {
@@ -479,12 +481,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (mPlayerSettingsManager.containsKey(player))
 						killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) player).isMuted();
 
-					mEconomy.withdrawPlayer((Player) player, playerPenalty);
+					mRewardManager.withdrawPlayer(player, playerPenalty);
 					if (!killed_muted)
 						Messages.playerActionBarMessage((Player) player, ChatColor.RED + "" + ChatColor.ITALIC
-								+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(playerPenalty)));
+								+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(playerPenalty)));
 					Messages.debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
-							mEconomy.format(playerPenalty));
+							mRewardManager.format(playerPenalty));
 				}
 			}
 		}
@@ -1088,7 +1090,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					OfflinePlayer bountyOwner = b.getBountyOwner();
 					mBountyManager.removeBounty(b);
 					if (bountyOwner.isOnline())
-						Messages.playerActionBarMessage(Misc.getOnLinePlayer(bountyOwner),
+						Messages.playerActionBarMessage(Misc.getOnlinePlayer(bountyOwner),
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
 										"prize", b.getPrize(), "killed", killed.getName()));
 					b.setStatus(BountyStatus.completed);
@@ -1097,10 +1099,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 				// OBS: Bounty will be added to the Reward for killing/Robbing
 				// the player
 				Messages.playerActionBarMessage(killer, Messages.getString("mobhunting.moneygain-for-killing", "money",
-						mEconomy.format(reward), "killed", killed.getName()));
+						mRewardManager.format(reward), "killed", killed.getName()));
 				Messages.debug("%s got %s for killing %s", killer.getName(), reward, killed.getName());
 				// TODO: call bounty event, and check if canceled.
-				getEconomy().depositPlayer(killer, reward);
+				mRewardManager.depositPlayer(killer, reward);
 				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));
 			} else {
@@ -1124,11 +1126,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			// Handle reward on PVP kill. (Robbing)
 			if (killer != null && killed instanceof Player && !CitizensCompat.isNPC(killed) && mConfig.robFromVictim) {
-				mEconomy.withdrawPlayer((Player) killed, cash);
+				mRewardManager.withdrawPlayer((Player) killed, cash);
 				if (!killed_muted)
 					Messages.playerActionBarMessage((Player) killed, ChatColor.RED + "" + ChatColor.ITALIC
-							+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
-				Messages.debug("%s lost %s", killed.getName(), mEconomy.format(cash));
+							+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
+				Messages.debug("%s lost %s", killed.getName(), mRewardManager.format(cash));
 			}
 
 			// Reward for assisted kill
@@ -1136,30 +1138,30 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (cash > 0) {
 					if (mConfig.dropMoneyOnGroup) {
 						Rewards.dropMoneyOnGround(killed, cash);
-						Messages.debug("%s was droped on the ground", mEconomy.format(cash));
+						Messages.debug("%s was droped on the ground", mRewardManager.format(cash));
 					} else {
-						mEconomy.depositPlayer(killer, cash);
-						Messages.debug("%s got a reward (%s)", killer.getName(), mEconomy.format(cash));
+						mRewardManager.depositPlayer(killer, cash);
+						Messages.debug("%s got a reward (%s)", killer.getName(), mRewardManager.format(cash));
 					}
 				} else {
-					mEconomy.withdrawPlayer(killer, -cash);
-					Messages.debug("%s got a penalty (%s)", killer.getName(), mEconomy.format(cash));
+					mRewardManager.withdrawPlayer(killer, -cash);
+					Messages.debug("%s got a penalty (%s)", killer.getName(), mRewardManager.format(cash));
 				}
 			} else {
 				cash = cash / 2;
 				if (cash > 0) {
 					if (mConfig.dropMoneyOnGroup) {
 						Rewards.dropMoneyOnGround(killed, cash);
-						Messages.debug("%s was droped on the ground", mEconomy.format(cash));
+						Messages.debug("%s was droped on the ground", mRewardManager.format(cash));
 					} else {
-						mEconomy.depositPlayer(killer, cash);
+						mRewardManager.depositPlayer(killer, cash);
 						onAssist(info.assister, killer, killed, info.lastAssistTime);
-						Messages.debug("%s got a ½ reward (%s)", killer.getName(), mEconomy.format(cash));
+						Messages.debug("%s got a ½ reward (%s)", killer.getName(), mRewardManager.format(cash));
 					}
 				} else {
-					mEconomy.withdrawPlayer(killer, -cash);
+					mRewardManager.withdrawPlayer(killer, -cash);
 					onAssist(info.assister, killer, killed, info.lastAssistTime);
-					Messages.debug("%s got a ½ penalty (%s)", killer.getName(), mEconomy.format(cash));
+					Messages.debug("%s got a ½ penalty (%s)", killer.getName(), mRewardManager.format(cash));
 				}
 			}
 
@@ -1176,15 +1178,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (extraString.trim().isEmpty()) {
 					if (cash > 0) {
 						Messages.playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
-								+ Messages.getString("mobhunting.moneygain", "prize", mEconomy.format(cash)));
+								+ Messages.getString("mobhunting.moneygain", "prize", mRewardManager.format(cash)));
 					} else {
 						Messages.playerActionBarMessage(killer, ChatColor.RED + "" + ChatColor.ITALIC
-								+ Messages.getString("mobhunting.moneylost", "prize", mEconomy.format(cash)));
+								+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
 					}
 				} else
 					Messages.playerActionBarMessage(killer,
 							ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses",
-									"prize", mEconomy.format(cash), "bonuses", extraString.trim()));
+									"prize", mRewardManager.format(cash), "bonuses", extraString.trim()));
 		} else
 			Messages.debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)", killer.getName(),
 					extraString);
@@ -1202,7 +1204,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					String prizeCommand = mConfig.getKillConsoleCmd(killed).replaceAll("\\{player\\}", killer.getName())
 							.replaceAll("\\{killed_player\\}", killed.getName())
 							.replaceAll("\\{killer\\}", killer.getName()).replaceAll("\\{killed\\}", killed.getName())
-							.replaceAll("\\{world\\}", worldname).replace("\\{prize\\}", mEconomy.format(cash))
+							.replaceAll("\\{world\\}", worldname).replace("\\{prize\\}", mRewardManager.format(cash))
 							.replaceAll("\\{killerpos\\}", killerpos).replaceAll("\\{killedpos\\}", killedpos);
 					Messages.debug("command to be run is:" + prizeCommand);
 					if (!mConfig.getKillConsoleCmd(killed).equals("")) {
@@ -1224,7 +1226,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 										.replaceAll("\\{killed_player\\}", killed.getName())
 										.replaceAll("\\{killer\\}", killer.getName())
 										.replaceAll("\\{killed\\}", killed.getName())
-										.replace("\\{prize\\}", mEconomy.format(cash))
+										.replace("\\{prize\\}", mRewardManager.format(cash))
 										.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
 										.replaceAll("\\{killedpos\\}", killedpos));
 					}
@@ -1252,17 +1254,17 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (cash >= 0.01) {
 			getDataStoreManager().recordAssist(player, killer, ExtendedMobType.getExtendedMobType(killed),
 					killed.hasMetadata("MH:hasBonus"));
-			mEconomy.depositPlayer(player, cash);
-			Messages.debug("%s got a on assist reward (%s)", player.getName(), mEconomy.format(cash));
+			mRewardManager.depositPlayer(player, cash);
+			Messages.debug("%s got a on assist reward (%s)", player.getName(), mRewardManager.format(cash));
 
 			if (ks != 1.0)
 				Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
-						+ Messages.getString("mobhunting.moneygain.assist", "prize", mEconomy.format(cash)));
+						+ Messages.getString("mobhunting.moneygain.assist", "prize", mRewardManager.format(cash)));
 			else
 				Messages.playerActionBarMessage(player,
 						ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
-										mEconomy.format(cash), "bonuses", String.format("x%.1f", ks)));
+										mRewardManager.format(cash), "bonuses", String.format("x%.1f", ks)));
 		}
 	}
 

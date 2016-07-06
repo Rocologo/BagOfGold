@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting.rewards;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
+import one.lindegaard.MobHunting.MobPlugins;
 import one.lindegaard.MobHunting.MobPlugins.MobPluginNames;
 
 public class MobRewardData {

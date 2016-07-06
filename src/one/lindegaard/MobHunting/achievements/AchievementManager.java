@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.milkbowl.vault.economy.EconomyResponse;
 import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -277,11 +276,9 @@ public class AchievementManager implements Listener {
 		player.sendMessage(ChatColor.BLUE + "" + ChatColor.ITALIC + achievement.getDescription());
 		player.sendMessage(
 				ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize",
-						"prize", MobHunting.getEconomy().format(achievement.getPrize())));
+						"prize", MobHunting.getRewardManager().format(achievement.getPrize())));
 
-		EconomyResponse result = MobHunting.getEconomy().depositPlayer(player, achievement.getPrize());
-		if (!result.transactionSuccess())
-			player.sendMessage(ChatColor.RED + "Unable to add prize money: " + result.errorMessage);
+		MobHunting.getRewardManager().depositPlayer(player, achievement.getPrize());
 
 		if (MobHunting.getConfigManager().broadcastAchievement
 				&& (!(achievement instanceof TheHuntBegins) || MobHunting.getConfigManager().broadcastFirstAchievement))

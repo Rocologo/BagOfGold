@@ -154,7 +154,7 @@ public class Misc {
 		return skull;
 	}
 
-	public static Player getOnLinePlayer(OfflinePlayer offlinePlayer) {
+	public static Player getOnlinePlayer(OfflinePlayer offlinePlayer) {
 		for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
 			if (player.getName().equals(offlinePlayer.getName()))
 				return player;

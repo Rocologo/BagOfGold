@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting.rewards;
 
 import java.util.List;
 
@@ -22,8 +22,13 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.gestern.gringotts.Configuration;
+import org.gestern.gringotts.currency.Denomination;
 
+import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.commands.HeadCommand;
+import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class Rewards implements Listener {
@@ -40,9 +45,9 @@ public class Rewards implements Listener {
 				if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
 					money = (Double) mdv.value();
 					Player player = e.getPlayer();
-					MobHunting.getEconomy().depositPlayer(player, money);
+					MobHunting.getRewardManager().depositPlayer(player, money);
 					Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
-							MobHunting.getEconomy().format(money)));
+							MobHunting.getRewardManager().format(money)));
 					e.getItem().remove();
 					e.setCancelled(true);
 					break;
@@ -95,7 +100,7 @@ public class Rewards implements Listener {
 			}
 			item2.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), value1 + value2));
 			item2.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-					+ MobHunting.getEconomy().format(value1 + value2));
+					+ MobHunting.getRewardManager().format(value1 + value2));
 			item2.setCustomNameVisible(true);
 			Messages.debug("Rewards: Items merged - new value=%s", value1 + value2);
 		}
@@ -123,13 +128,27 @@ public class Rewards implements Listener {
 	}
 
 	public static void dropMoneyOnGround(Entity entity, double money) {
-		Location location = entity.getLocation();
-		ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
-		Item item = location.getWorld().dropItem(location, is);
-		item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
-		item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-				+ MobHunting.getEconomy().format(money));
-		item.setCustomNameVisible(true);
+		if (GringottsCompat.isSupported()) {
+			List<Denomination> denoms = Configuration.CONF.currency.denominations();
+			int unit = Configuration.CONF.currency.unit;
+			double rest = money;
+			Location location = entity.getLocation();
+			for (Denomination d : denoms) {
+				ItemStack is = new ItemStack(d.key.type.getType(), 1);
+				while (rest >= (d.value / unit)) {
+					location.getWorld().dropItem(location, is);
+					rest = rest - (d.value / unit);
+				}
+			}
+		} else {
+			Location location = entity.getLocation();
+			ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
+			Item item = location.getWorld().dropItem(location, is);
+			item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
+			item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+					+ MobHunting.getRewardManager().format(money));
+			item.setCustomNameVisible(true);
+		}
 	}
 
 }

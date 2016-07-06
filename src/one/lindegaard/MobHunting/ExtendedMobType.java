@@ -1,5 +1,8 @@
 package one.lindegaard.MobHunting;
 
+import java.lang.reflect.Field;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -8,7 +11,9 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-
+import net.minecraft.util.com.mojang.authlib.GameProfile;
+import net.minecraft.util.com.mojang.authlib.properties.Property;
+import net.minecraft.util.org.apache.commons.codec.binary.Base64;
 import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -22,142 +27,155 @@ public enum ExtendedMobType {
 	// Minecraft 1.10
 	// ******************************************************************
 	// Polar Bear
-	PolarBear("POLAR_BEAR", "UNKNOWN", ""),
+	PolarBear("POLAR_BEAR", "polarbar101", "Polar Bear",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDQ2ZDIzZjA0ODQ2MzY5ZmEyYTM3MDJjMTBmNzU5MTAxYWY3YmZlODQxOTk2NjQyOTUzM2NkODFhMTFkMmIifX19"),
+
 	// Husk
-	Husk("HUSK", "UNKNOWN", ""),
+	Husk("HUSK", "Husk", "Husk",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjM5YmMxNzc3M2E2NjhiYTExZjc0MmYxZmM5ZGUxODk2NjU5MjY4YmQ2MmQ5YTM3NjEwMzdkOWIyY2RiMSJ9fX0="),
 	// Stray
-	Stray("STRAY", "UNKNOWN", ""),
+	Stray("STRAY", "Stray", "Stray",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjc4MGQxZjAyMTZlMjRlMmEzM2ZjYTQ3YjNlZjJjYmM0ZjM3Njg5ZGFkNTNmYWFmZDM0NDUxZDBkYmY4MTFmIn19fQ=="),
 	// ******************************************************************
 	// Minecraft 1.9
 	// *******************************************************************
 	// Shulker
-	Shulker("SHULKER", "MHF_Shulker",
+	Shulker("SHULKER", "MHF_Shulker", "Shulker",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjFkMzUzNGQyMWZlODQ5OTI2MmRlODdhZmZiZWFjNGQyNWZmZGUzNWM4YmRjYTA2OWU2MWUxNzg3ZmYyZiJ9fX0="),
 	// ******************************************************************
 	// Minecraft 1.8
 	// *******************************************************************
 	// Endermite
-	Endermite("ENDERMITE", "MHF_Endermite",
+	Endermite("ENDERMITE", "MHF_Endermite", "Entermite",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZThjNmNiOGNlYWFkNWEyYWQ1Y2M5YTY3YmNlNmQ1YmRiZjVjYmI3ZTMxMjk1NWNjZjlmMTYyNTA5MzU1YjEifX19"),
 	// Guardian
-	Guardian("GUARDIAN", "MHF_Guardian",
+	Guardian("GUARDIAN", "MHF_Guardian", "Guardian",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTMyYzI0NTI0YzgyYWIzYjNlNTdjMjA1MmM1MzNmMTNkZDhjMGJlYjhiZGQwNjM2OWJiMjU1NGRhODZjMTIzIn19fQ=="),
 	// KillerRabbit
-	KillerRabbit("RABBIT", "MHF_KillerRabbit",
+	KillerRabbit("RABBIT", "MHF_KillerRabbit", "Killer Rabbit",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzA4OGNkNjE0MTg5NDU4ZDk5YzJmYmVkNTg0NDg4OTVlYTZiMjZmYzY2N2EyYzU5MTlmNzE0Y2VlNjQ4ZDExIn19fQ=="),
 	// Player
-	PvpPlayer("PLAYER", "MHF_Alex",
+	PvpPlayer("PLAYER", "MHF_Alex", "",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjNiMDk4OTY3MzQwZGFhYzUyOTI5M2MyNGUwNDkxMDUwOWIyMDhlN2I5NDU2M2MzZWYzMWRlYzdiMzc1MCJ9fX0="),
 	// ******************************************************************
 	// Minecraft 1.7
 	// ******************************************************************
 	// Slime
-	Slime("SLIME", "MHF_Slime",
+	Slime("SLIME", "MHF_Slime", "Slime",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTZhZDIwZmMyZDU3OWJlMjUwZDNkYjY1OWM4MzJkYTJiNDc4YTczYTY5OGI3ZWExMGQxOGM5MTYyZTRkOWI1In19fQ=="),
 	// MagmaCube
-	MagmaCube("MAGMA_CUBE", "MHF_LavaSlime",
+	MagmaCube("MAGMA_CUBE", "MHF_LavaSlime", "Lava Slime",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzgyMTk0MTEyZDVmNzA3NTIwNThlZGQ3Mzc0NTdmOGFmNjFmMmFiMWE5MmI2MjRmYjFjOWUyMjkzODYxMjE0In19fQ=="),
 	// Ghast
-	Ghast("GHAST", "MHF_Ghast",
+	Ghast("GHAST", "MHF_Ghast", "Ghast",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI2YTcyMTM4ZDY5ZmJiZDJmZWEzZmEyNTFjYWJkODcxNTJlNGYxYzk3ZTVmOTg2YmY2ODU1NzFkYjNjYzAifX19"),
 	// Blaze
-	Blaze("BLAZE", "MHF_Blaze",
+	Blaze("BLAZE", "MHF_Blaze", "Blaze",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4ZWYyZTRjZjJjNDFhMmQxNGJmZGU5Y2FmZjEwMjE5ZjViMWJmNWIzNWE0OWViNTFjNjQ2Nzg4MmNiNWYwIn19fQ=="),
 	// Creeper
-	Creeper("CREEPER", "MHF_Creeper",
+	Creeper("CREEPER", "MHF_Creeper", "Creeper",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjk1ZWY4MzYzODlhZjk5MzE1OGFiYTI3ZmYzN2I2NTY3MTg1ZjdhNzIxY2E5MGZkZmViOTM3YTdjYjU3NDcifX19"),
 	// Enderman
-	Enderman("ENDERMAN", "MHF_Enderman",
+	Enderman("ENDERMAN", "MHF_Enderman", "Enderman",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2E1OWJiMGE3YTMyOTY1YjNkOTBkOGVhZmE4OTlkMTgzNWY0MjQ1MDllYWRkNGU2YjcwOWFkYTUwYjljZiJ9fX0="),
 	// Silverfish
-	Silverfish("SILVERFISH", "MHF_Silverfish",
+	Silverfish("SILVERFISH", "MHF_Silverfish", "Silverfish",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTBlOTE5ZDE5MTJlM2Q4YTNmNmZlNGRkNmVlYWYxMTk5NTIxNGY3ZmM4OWUzM2U0NDU2MDhiZjQ1M2QzZTAifX19"),
 	// Skeleton
-	Skeleton("SKELETON", "MHF_Skeleton",
+	Skeleton("SKELETON", "MHF_Skeleton", "Skeleton",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmU1YmU2YTNjMDE1OWQyYzFmM2IxZTRlMWQ4Mzg0YjZmN2ViYWM5OTNkNThiMTBiOWY4OTg5Yzc4YTIzMiJ9fX0="),
 	// WitherSkeleton
-	WitherSkeleton("WITHERSKELETON", "MHF_WSkeleton",
+	WitherSkeleton("WITHERSKELETON", "MHF_WSkeleton", "Wither Skeleton",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjMzYjQxZmE3OWNkNTNhMjMwZTJkYjk0Mjg2Mzg0MzE4M2E3MDQwNDUzM2JiYzAxZmFiNzQ0NzY5YmNiIn19fQ=="),
 	// Spider
-	Spider("SPIDER", "MHF_Spider",
+	Spider("SPIDER", "MHF_Spider", "Spider",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Q1NDE1NDFkYWFmZjUwODk2Y2QyNThiZGJkZDRjZjgwYzNiYTgxNjczNTcyNjA3OGJmZTM5MzkyN2U1N2YxIn19fQ=="),
 	// CaveSpider
-	CaveSpider("CAVE_SPIDER", "MHF_CaveSpider",
+	CaveSpider("CAVE_SPIDER", "MHF_CaveSpider", "Cave Spider",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDE2NDVkZmQ3N2QwOTkyMzEwN2IzNDk2ZTk0ZWViNWMzMDMyOWY5N2VmYzk2ZWQ3NmUyMjZlOTgyMjQifX19"),
 	// Witch
-	Witch("WITCH", "ScrafBrothers4",
+	Witch("WITCH", "ScrafBrothers4", "Witch",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWVjNThiNWVmZDJiYjcyODEzYTRlYWMwZDY2YTgyMTcyZmQ0NjY0YTE0MzNkYjUxOTU5MzRiNzY0YjM5NyJ9fX0="),
 	// Wither
-	Wither("WITHER", "MHF_Wither",
+	Wither("WITHER", "MHF_Wither", "Wither",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2RmNzRlMzIzZWQ0MTQzNjk2NWY1YzU3ZGRmMjgxNWQ1MzMyZmU5OTllNjhmYmI5ZDZjZjVjOGJkNDEzOWYifX19"),
 	// Zombie Pigman
-	ZombiePigman("PIG_ZOMBIE", "MHF_PigZombie",
+	ZombiePigman("PIG_ZOMBIE", "MHF_PigZombie", "Zombie Pig",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRlOWM2ZTk4NTgyZmZkOGZmOGZlYjMzMjJjZDE4NDljNDNmYjE2YjE1OGFiYjExY2E3YjQyZWRhNzc0M2ViIn19fQ=="),
 	// Zombie
-	Zombie("ZOMBIE", "MHF_Zombie",
+	Zombie("ZOMBIE", "MHF_Zombie", "Zombie",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZmYzg1NGJiODRjZjRiNzY5NzI5Nzk3M2UwMmI3OWJjMTA2OTg0NjBiNTFhNjM5YzYwZTVlNDE3NzM0ZTExIn19fQ=="),
 	// BonusMob
-	BonusMob("UNKNOWN", "UNKNOWN", ""),
+	BonusMob("BonusMob", "BonusMob", "Bonus Mob",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjY3YjI3ZmI3ZTI5ZWM5OGUxY2Q0YThmODQ2Njg1NmQ5ZWYzZjJlOWZiZDlhZWQ2MzExZjhhYmU1NGI2YWIyIn19fQ=="),
 	// Golem
-	IronGolem("IRON_GOLEM", "MHF_Golem",
+	IronGolem("IRON_GOLEM", "MHF_Golem", "Golem",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkwOTFkNzllYTBmNTllZjdlZjk0ZDdiYmE2ZTVmMTdmMmY3ZDQ1NzJjNDRmOTBmNzZjNDgxOWE3MTQifX19"),
 	// Passive Mobs
 	// Bat
-	Bat("BAT", "UNKNOWN", ""),
+	Bat("BAT", "XXXBat", "XXXBat",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWI3ZTk2ODU5N2VmZjI4Y2UwNDU2ZTIwNzFmMTIzNThiODk2YzA3ZTE2YTk1ZDkwNTAzZWNiY2Y5NGQ1MTMwIn19fQ=="),
 	// Chicken
-	Chicken("CHICKEN", "MHF_Chicken",
+	Chicken("CHICKEN", "MHF_Chicken", "Chicken",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTYzODQ2OWE1OTljZWVmNzIwNzUzNzYwMzI0OGE5YWIxMWZmNTkxZmQzNzhiZWE0NzM1YjM0NmE3ZmFlODkzIn19fQ=="),
 	// Cow
-	Cow("COW", "MHF_Cow",
+	Cow("COW", "MHF_Cow", "Cow",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWQ2YzZlZGE5NDJmN2Y1ZjcxYzMxNjFjNzMwNmY0YWVkMzA3ZDgyODk1ZjlkMmIwN2FiNDUyNTcxOGVkYzUifX19"),
 	// Horse
-	Horse("HORSE", "UNKNOWN", ""),
+	Horse("HORSE", "Horse", "Horse",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU3OGM0NzYyNjc0ZGRlOGIxYTVhMWU4NzNiMzNmMjhlMTNlN2MxMDJiMTkzZjY4MzU0OWIzOGRjNzBlMCJ9fX0="),
 	// Mushroom
-	MushroomCow("MUSHROOM_COW", "MHF_MushroomCow",
+	MushroomCow("MUSHROOM_COW", "MHF_MushroomCow", "Mushroom Cow",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBiYzYxYjk3NTdhN2I4M2UwM2NkMjUwN2EyMTU3OTEzYzJjZjAxNmU3YzA5NmE0ZDZjZjFmZTFiOGRiIn19fQ=="),
 	// Ocelot
-	Ocelot("OCELOT", "MHF_Ocelot",
+	Ocelot("OCELOT", "MHF_Ocelot", "Ocelot",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTY1N2NkNWMyOTg5ZmY5NzU3MGZlYzRkZGNkYzY5MjZhNjhhMzM5MzI1MGMxYmUxZjBiMTE0YTFkYjEifX19"),
 	// Pig
-	Pig("PIG", "MHF_Pig",
+	Pig("PIG", "MHF_Pig", "Pig",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjIxNjY4ZWY3Y2I3OWRkOWMyMmNlM2QxZjNmNGNiNmUyNTU5ODkzYjZkZjRhNDY5NTE0ZTY2N2MxNmFhNCJ9fX0="),
 	// Rabbit
-	PassiveRabbit("RABBIT", "MH_Rabbit",
+	PassiveRabbit("RABBIT", "MHF_Rabbit", "Rabbit",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2VjMjQyZTY2N2FlZTQ0NDkyNDEzZWY0NjFiODEwY2FjMzU2Yjc0ZDg3MThlNWNlYzFmODkyYTZiNDNlNWUxIn19fQ=="),
 	// Sheep
-	Sheep("SHEEP", "MHF_Sheep",
+	Sheep("SHEEP", "MHF_Sheep", "Sheep",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjMxZjljY2M2YjNlMzJlY2YxM2I4YTExYWMyOWNkMzNkMThjOTVmYzczZGI4YTY2YzVkNjU3Y2NiOGJlNzAifX19"),
 	// Snowman
-	Snowman("SNOWMAN", "", ""),
+	Snowman("SNOWMAN", "Snowman", "Snowman",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThlMzM0ZTRiZWUwNDI2NDc1OWE3NjZiYzE5NTVjZmFmM2Y1NjIwMTQyOGZhZmVjOGQ0YmYxYmIzNmFlNiJ9fX0="),
 	// Squid
-	Squid("SQUID", "MHF_Squid",
+	Squid("SQUID", "MHF_Squid", "Squid",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMDE0MzNiZTI0MjM2NmFmMTI2ZGE0MzRiODczNWRmMWViNWIzY2IyY2VkZTM5MTQ1OTc0ZTljNDgzNjA3YmFjIn19fQ=="),
 	// Villager
-	Villager("VILLAGER", "MHF_Villager",
+	Villager("VILLAGER", "MHF_Villager", "Villager",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIyZDhlNzUxYzhmMmZkNGM4OTQyYzQ0YmRiMmY1Y2E0ZDhhZThlNTc1ZWQzZWIzNGMxOGE4NmU5M2IifX19"),
 	// Wolf
-	Wolf("WOLF", "MHF_Wolf",
-			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjc2OGNiZDUyMWNiMTg1YjI3NjcyY2U0MzBmYzQ4NTBkNzU5NWM2ZTg3NzhlMDcyNzFjOTU3OWVkMWY1YWZiNSJ9fX0="),
+	Wolf("WOLF", "MHF_Wolf", "Wolf",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWRjNjQyOWNmYWJhY2YyMTFkZDNkYjI2YzVjYTdiNTk0MmRkODI1OTlmYmIxZDUzN2NmNzJlNDk1MmUyYzdiIn19fQ=="),
 
 	// Minecraft 1.0.0
 	// Giant is unsupported by in the original game and Giants can only be
 	// spawnwed through plugins.
 	// Giant
-	Giant("GIANT", "MHF_Giant",
+	Giant("GIANT", "MHF_Giant", "Giant",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTViNDczNGY4MTY5ZjE5NDU4NjJjNzU1YjM5NWE4YTIxMmIzMzhmYmY1MDc4MDMyYzFkNjNhYTlhZGFlZiJ9fX0="),
 	// EnderDragon
-	EnderDragon("ENDER_DRAGON", "MHF_EnderDragon",
+	EnderDragon("ENDER_DRAGON", "MHF_EnderDragon", "Ender Dragon",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBmMWI3ZGQzZWIxZGNiZjJmZTZkZTk2ZWVjYjM0MjZkNGM2NTlhZDljZDM0MWRiM2M2MzljMmQ1ZGY2NWE2In19fQ==");
 
 	private String mType;
-	private String mPlayerName;
-	@SuppressWarnings({ "unused" })
+	private String mPlayerProfile;
+	private String mDisplayName;
 	private String mTexture;
 
-	private ExtendedMobType(String type, String playerName, String texture) {
+	private ExtendedMobType(String type, String playerName, String displayName, String texture) {
 		mType = type;
-		mPlayerName = playerName;
+		mPlayerProfile = playerName;
+		mDisplayName = displayName;
 		mTexture = texture;
+	}
+
+	public String getDisplayName() {
+		return mDisplayName;
 	}
 
 	public String getEntType() {
@@ -299,7 +317,7 @@ public enum ExtendedMobType {
 
 	public static ExtendedMobType getExtendedMobType(String name) {
 		for (ExtendedMobType type : values())
-			if (type.getName().equals(name))
+			if (type.getName().equalsIgnoreCase(name))
 				return type;
 		return null;
 	}
@@ -324,14 +342,81 @@ public enum ExtendedMobType {
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
 			break;
 		default:
-			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-			//skull = new ItemStack(Material.SKULL);
+			// skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			skull = getSkull(mTexture);
+			// skull = new ItemStack(Material.SKULL);
 		}
-		//GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-		
+		// GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		// getNonPlayerProfile(mTexture);
+
 		skullMeta = (SkullMeta) skull.getItemMeta();
-		skullMeta.setOwner(mPlayerName);
+		skullMeta.setOwner(mPlayerProfile);
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
+
+	// public static GameProfile getNonPlayerProfile(String skinURL) {
+	// GameProfile newSkinProfile = new GameProfile(UUID.randomUUID(), null);
+	// newSkinProfile.getProperties().put("textures", new Property("textures",
+	// Base64Coder.encodeString("{textures:{SKIN:{url:\"" + skinURL +
+	// "\"}}}")));
+	// return newSkinProfile;
+	// }
+
+	// public static void setSkullUrl(String skinUrl, Block block) {
+	// block.setType(Material.SKULL);
+	// Skull skullData = (Skull)block.getState();
+	// skullData.setSkullType(SkullType.PLAYER);
+	// //TileEntitySkull skullTile =
+	// (TileEntitySkull)((CraftWorld)block.getWorld()).getHandle().getTileEntity(new
+	// BlockPosition(block.getX(), block.getY(), block.getZ()));
+	// //skullTile.setGameProfile(getNonPlayerProfile(skinUrl));
+	// block.getState().update(true);
+	//
+	// }
+
+	private ItemStack getSkull(String texture) {
+		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		if (texture.isEmpty())
+			return head;
+
+		SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		byte[] encodedData = Base64.encodeBase64(String.format("{textures:[{Value:\"%s\"}]}", texture).getBytes());
+		profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
+		Field profileField = null;
+		try {
+			profileField = headMeta.getClass().getDeclaredField("profile");
+			profileField.setAccessible(true);
+			profileField.set(headMeta, profile);
+		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
+			e1.printStackTrace();
+		}
+		head.setItemMeta(headMeta);
+		return head;
+	}
+
+	@SuppressWarnings("unused")
+	private ItemStack getSkullFromURL(String texture) {
+		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		if (texture.isEmpty())
+			return head;
+
+		SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		byte[] encodedData = Base64
+				.encodeBase64(String.format("{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}", texture).getBytes());
+		profile.getProperties().put("textures", new Property("textures", new String(encodedData)));
+		Field profileField = null;
+		try {
+			profileField = headMeta.getClass().getDeclaredField("profile");
+			profileField.setAccessible(true);
+			profileField.set(headMeta, profile);
+		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
+			e1.printStackTrace();
+		}
+		head.setItemMeta(headMeta);
+		return head;
+	}
+
 }

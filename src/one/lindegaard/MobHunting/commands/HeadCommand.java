@@ -100,6 +100,7 @@ public class HeadCommand implements ICommand, Listener {
 				Location location;
 				ExtendedMobType mob = ExtendedMobType.getExtendedMobType(args[1]);
 				if (mob != null) {
+					Messages.debug("mob=%s", mob.getName());
 					itemHead = mob.getHead();
 				} else {
 					offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
@@ -115,7 +116,7 @@ public class HeadCommand implements ICommand, Listener {
 					displayName = args[2];
 				} else {
 					if (mob != null)
-						displayName = mob.getName();
+						displayName = mob.getDisplayName().replace("_", " ");
 					else
 						displayName = offlinePlayer.getName();
 				}
@@ -132,7 +133,7 @@ public class HeadCommand implements ICommand, Listener {
 				if (sender instanceof Player)
 					world = ((Player) sender).getWorld();
 				else if (offlinePlayer != null && offlinePlayer.isOnline()) {
-					world = Misc.getOnLinePlayer(offlinePlayer).getWorld();
+					world = Misc.getOnlinePlayer(offlinePlayer).getWorld();
 				} else {
 					sender.sendMessage("You can only spawn heads of online players from the console");
 					return false;
@@ -158,6 +159,7 @@ public class HeadCommand implements ICommand, Listener {
 					ArrayList<String> lore = new ArrayList<String>();
 					lore.add(MH_REWARD);
 					im.setLore(lore);
+					itemHead.setItemMeta(im);
 					Item item = location.getWorld().dropItem(location, itemHead);
 					item.setMetadata(MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(), displayName));
 					item.setCustomName(displayName);
@@ -184,7 +186,7 @@ public class HeadCommand implements ICommand, Listener {
 				im.setDisplayName(displayname);
 				itemInHand.setItemMeta(im);
 			} else {
-				sender.sendMessage("You can only rename an item you have inthe hand ingame");
+				sender.sendMessage("You can only rename an item you have it in your hand ingame");
 			}
 			return true;
 		}
@@ -203,18 +205,26 @@ public class HeadCommand implements ICommand, Listener {
 				items.add("spawn");
 				items.add("rename");
 			}
-			String partial = args[0].toLowerCase();
+			
+		} else if (args.length == 2 && args[0].equalsIgnoreCase("spawn")) {
+			String partial = args[1].toLowerCase();
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.getName().toLowerCase().startsWith(partial))
 					items.add(player.getName());
 			}
-		} else if (args.length == 2 && args[0].equalsIgnoreCase("spawn")) {
+			for (ExtendedMobType mob : ExtendedMobType.values()) {
+				if (mob.getName().toLowerCase().startsWith(partial)
+						|| mob.getDisplayName().toLowerCase().startsWith(partial))
+					items.add(mob.getName().replace(" ", "_"));
+			}
+		} else if (args.length == 22 && args[0].equalsIgnoreCase("spawn")) {
 			// Messages.debug("arg[0,1]=(%s,%s)", args[0], args[1]);
 			String partial = args[1].toLowerCase();
 			for (OfflinePlayer wantedPlayer : MobHunting.getBountyManager().getWantedPlayers()) {
 				if (wantedPlayer.getName().toLowerCase().startsWith(partial))
 					items.add(wantedPlayer.getName());
 			}
+
 		}
 		return items;
 	}
@@ -259,8 +269,7 @@ public class HeadCommand implements ICommand, Listener {
 		if (event.getPlayer().getItemInHand().hasItemMeta() && event.getPlayer().getItemInHand().getItemMeta().hasLore()
 				&& event.getPlayer().getItemInHand().getItemMeta().getLore().get(0)
 						.equalsIgnoreCase(HeadCommand.MH_REWARD)) {
-			Messages.debug("HeadCommand: PlayerDropItem(2)=%s,%s", item.getName(),
-					event.getItemDrop().getCustomName());
+			Messages.debug("HeadCommand: PlayerDropItem(2)=%s,%s", item.getName(), event.getItemDrop().getCustomName());
 			Messages.debug("Add MetaData to block");
 			event.getItemDrop().setMetadata(HeadCommand.MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
 					event.getPlayer().getItemInHand().getItemMeta().getDisplayName()));

@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting.rewards;
 
 import java.util.List;
 

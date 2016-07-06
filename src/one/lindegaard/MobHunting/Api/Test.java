@@ -1,8 +1,6 @@
-package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting.Api;
 
 import org.bukkit.entity.Player;
-
-import one.lindegaard.MobHunting.Api.MobHuntingAPI;
 
 public class Test {
 	

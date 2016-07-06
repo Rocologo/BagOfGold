@@ -10,6 +10,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.rewards.MobRewardData;
 import one.lindegaard.MobHunting.util.AutoConfig;
 import one.lindegaard.MobHunting.util.ConfigField;
 import one.lindegaard.MobHunting.util.Misc;
@@ -987,7 +988,7 @@ public class ConfigManager extends AutoConfig {
 		} else if (mobKillsPlayerPenalty.endsWith("%")) {
 			double prize = Math
 					.floor(Double.valueOf(mobKillsPlayerPenalty.substring(0, mobKillsPlayerPenalty.length() - 1))
-							* MobHunting.getEconomy().getBalance(player) / 100);
+							* MobHunting.getRewardManager().getBalance(player) / 100);
 			return round(prize);
 		} else if (mobKillsPlayerPenalty.contains(":")) {
 			String[] str1 = mobKillsPlayerPenalty.split(":");
@@ -1190,6 +1191,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-actionbar", category = "plugins", comment = "Disable integration with ActionBar. If you want messages in player chat you can set this to true.")
 	public boolean disableIntegrationActionBar = false;
 
+	@ConfigField(name = "disable-integration-gringotts", category = "plugins", comment = "Disable integration with Gringotts Economy.")
+	public boolean disableIntegrationGringotts = false;
+
 	// #####################################################################################
 	// Database
 	// #####################################################################################
@@ -1327,7 +1331,7 @@ public class ConfigManager extends AutoConfig {
 			if (mob instanceof Player) {
 				if (pvpKillPrize.endsWith("%")) {
 					double prize = Math.floor(Double.valueOf(pvpKillPrize.substring(0, pvpKillPrize.length() - 1))
-							* MobHunting.getEconomy().getBalance((Player) mob) / 100);
+							* MobHunting.getRewardManager().getBalance((Player) mob) / 100);
 					return round(prize);
 				} else if (pvpKillPrize.contains(":")) {
 					String[] str1 = pvpKillPrize.split(":");
