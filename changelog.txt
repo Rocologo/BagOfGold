@@ -1,3 +1,10 @@
+V3.2.9
+- Added "/mh head spawn [mob|playername] [displayName] [amount]"
+- Added "/mh head rename [newName]" Renaming the head in hand. 
+- Gringotts added to Metrics.
+- Hided MH tag on MasterMobHunter signs
+- MasterMobHunter Signs can now be clicked to get npc id.
+- Fix a bug in MasterMobHunterSign, which stored a "zero signLocation" on the NPC if the sign was broken. 
 V3.2.8
 - Added support for Gringotts. DropMoneyOnGround now drop money in Gringott currency. 
 - Fixed bug. "/mh achievements playername" can now be run from the console.

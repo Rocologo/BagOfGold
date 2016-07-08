@@ -13,7 +13,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -172,12 +171,12 @@ public class MasterMobHunterManager implements Listener {
 		if (isMasterMobHunter(npc)) {
 			npc.setName("UPDATING...");
 			update(npc);
-			MasterMobHunter mmh = new MasterMobHunter(npc);
-			event.getClicker()
-					.sendMessage(Messages.getString("mobhunting.npc.clickednpc", "killer",
-							CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(),
-							"numberofkills", mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(),
-							"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
+			MasterMobHunter mmh = mMasterMobHunter.get(npc.getId());
+			mmh.update();
+			Messages.getString("mobhunting.npc.clickednpc", "killer",
+					CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(), "numberofkills",
+					mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(), "period",
+					mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId());
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
 			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
@@ -189,22 +188,16 @@ public class MasterMobHunterManager implements Listener {
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
 			update(npc);
-			MasterMobHunter mmh = new MasterMobHunter(npc);
+			MasterMobHunter mmh = mMasterMobHunter.get(npc.getId());
 			mmh.update();
-			event.getClicker()
-					.sendMessage(Messages.getString("mobhunting.npc.clickednpc", "killer", mmh.getNpc().getName(),
-							"rank", mmh.getRank(), "numberofkills", mmh.getNumberOfKills(), "stattype",
-							mmh.getStatType().translateName(), "period", mmh.getPeriod().translateNameFriendly(),
-							"npcid", npc.getId()));
+			Messages.getString("mobhunting.npc.clickednpc", "killer",
+					CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(), "numberofkills",
+					mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(), "period",
+					mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId());
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
 			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
 		}
-	}
-
-	@EventHandler
-	public void onBlockBreak(final BlockBreakEvent event) {
-		// TODO: Test if MMH sign at remove from NPC list. Maybe.
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

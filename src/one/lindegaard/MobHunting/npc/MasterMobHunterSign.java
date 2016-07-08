@@ -39,6 +39,7 @@ public class MasterMobHunterSign implements Listener {
 	@SuppressWarnings("unused")
 	private MobHunting plugin;
 
+	final static String MH_SIGN = "MH:sign";
 	private final static String MH_POWERED = "MH:powered";
 	public final static byte POWER_FROM_SIGN = 15;
 
@@ -85,7 +86,7 @@ public class MasterMobHunterSign implements Listener {
 
 	public static void setPower(Block b, byte power) {
 		if (isMHSign(b)) {
-			if (isPowerSetOnSign(((Sign) b.getState()).getLine(0)))
+			if (isPowerSetOnSign(b))
 				setMHPower(b, POWER_FROM_SIGN);
 			else
 				removeMHPower(b);
@@ -175,24 +176,52 @@ public class MasterMobHunterSign implements Listener {
 	// GETTERS
 	// ****************************************************************************'
 
-	public static int getNPCIdOnSign(String str) {
-		if (!str.matches(MASTERMOBHUNTERSIGN)) {
+	public static int getNPCIdOnSign(Block block) {
+		if (!isSign(block))
 			return -1;
+		String str = ((Sign) block.getState()).getLine(0);
+
+		if (str.matches(MASTERMOBHUNTERSIGN)) {
+			block.setMetadata(MH_SIGN, new FixedMetadataValue(MobHunting.getInstance(), str));
+		} else if (block.hasMetadata(MH_SIGN)) {
+			String md = block.getMetadata(MH_SIGN).get(0).asString();
+			if (md.matches(MASTERMOBHUNTERSIGN))
+				str = md;
 		}
-		Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
-		Matcher m = pattern.matcher(str);
-		m.find();
-		return Integer.valueOf(m.group(2));
+		if (str.matches(MASTERMOBHUNTERSIGN)) {
+			Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
+			Matcher m = pattern.matcher(str);
+			m.find();
+			return Integer.valueOf(m.group(2));
+		} else
+			return -1;
 	}
 
-	public static boolean isPowerSetOnSign(String str) {
-		if (!str.matches(MASTERMOBHUNTERSIGN)) {
-			return false;
+	public static int getNPCIdOnSign(String str) {
+		if (str.matches(MASTERMOBHUNTERSIGN)) {
+			Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
+			Matcher m = pattern.matcher(str);
+			m.find();
+			return Integer.valueOf(m.group(2));
+		} else
+			return -1;
+	}
+
+	public static boolean isPowerSetOnSign(Block block) {
+		String str;
+		if (isMHSign(block)) {
+			if (block.hasMetadata(MH_SIGN))
+				str = block.getMetadata(MH_SIGN).get(0).asString();
+			else
+				str = ((Sign) block.getState()).getLine(0);
+			if (str.matches(MASTERMOBHUNTERSIGN)) {
+				Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
+				Matcher m = pattern.matcher(str);
+				m.find();
+				return (m.group(3) == null) ? false : true;
+			}
 		}
-		Pattern pattern = Pattern.compile(MASTERMOBHUNTERSIGN);
-		Matcher m = pattern.matcher(str);
-		m.find();
-		return (m.group(3) == null) ? false : true;
+		return false;
 	}
 
 	// ****************************************************************************'
@@ -230,39 +259,79 @@ public class MasterMobHunterSign implements Listener {
 			return;
 		if (event.getClickedBlock() == null)
 			return;
-		try {
-			@SuppressWarnings({ "rawtypes", "unused" })
-			Class cls = Class.forName("org.bukkit.event.player.PlayerInteractEvent.getHand");
-			// This only works on Minecraft 1.9
-			if (event.getHand().equals(EquipmentSlot.OFF_HAND))
-				return;
-		} catch (ClassNotFoundException e) {
-			// This is not a MC 1.9
-		}
 
-		if (!event.getPlayer().getItemInHand().getType().equals(Material.STICK))
+		if (Misc.isMC19OrNewer() && event.getHand().equals(EquipmentSlot.OFF_HAND))
 			return;
 
-		Block clickedBlock = event.getClickedBlock();
-		int power = 0;
-		if (clickedBlock.hasMetadata(MH_POWERED)) {
-			for (MetadataValue mdv : clickedBlock.getMetadata(MH_POWERED)) {
-				int p = mdv.asInt();
-				power = power > p ? power : p;
+		if (event.getPlayer().getItemInHand().getType().equals(Material.STICK)) {
+
+			// Check if Block is powered or indirectly powered
+			int power = 0;
+			if (event.getClickedBlock().hasMetadata(MH_POWERED)) {
+				for (MetadataValue mdv : event.getClickedBlock().getMetadata(MH_POWERED)) {
+					int p = mdv.asInt();
+					power = power > p ? power : p;
+				}
+			}
+
+			// Check if block is MMH Sign
+			if (isMHSign(event.getClickedBlock())) {
+				if (event.getPlayer().getItemInHand().getType().equals(Material.STICK)) {
+					if (isMHSign(((org.bukkit.block.Sign) event.getClickedBlock().getState()).getLine(0))) {
+						((org.bukkit.block.Sign) event.getClickedBlock().getState()).setMetadata(
+								MasterMobHunterSign.MH_SIGN, new FixedMetadataValue(MobHunting.getInstance(),
+										((org.bukkit.block.Sign) event.getClickedBlock().getState()).getLine(0)));
+					}
+					int id = getNPCIdOnSign(event.getClickedBlock());
+					if (id != -1) {
+						if (power > 0)
+							Messages.playerActionBarMessage(event.getPlayer(),
+									Messages.getString("mobhunting.npc.clickednpcsignpowered", "npcid", id));
+						else
+							Messages.playerActionBarMessage(event.getPlayer(),
+									Messages.getString("mobhunting.npc.clickednpcsign", "npcid", id));
+
+						NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+						if (npc != null) {
+							if (MasterMobHunterManager.isMasterMobHunter(npc)) {
+								MasterMobHunter mmh = new MasterMobHunter(npc);
+								mmh.putLocation(event.getClickedBlock().getLocation());
+								MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
+								if (isMHSign(((org.bukkit.block.Sign) event.getClickedBlock().getState()).getLine(0)))
+									event.getClickedBlock().setMetadata(MH_SIGN, new FixedMetadataValue(
+											MobHunting.getInstance(),
+											((org.bukkit.block.Sign) event.getClickedBlock().getState()).getLine(0)));
+								((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(0,
+										mmh.getRank() + ".");
+								((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(1,
+										Misc.trimSignText(npc.getName()));
+								((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(2,
+										Misc.trimSignText(mmh.getPeriod().translateNameFriendly()));
+								((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(3,
+										Misc.trimSignText(
+												mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
+								boolean powered = isPowerSetOnSign(event.getClickedBlock());
+
+								if (powered) {
+									OfflinePlayer offlinePlayer = Bukkit.getPlayer(npc.getName());
+									if (offlinePlayer != null && offlinePlayer.isOnline())
+										setPower(event.getClickedBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
+								} else
+									removePower(event.getClickedBlock());
+								MasterMobHunterManager.getMasterMobHunterManager().get(npc.getId()).update();
+
+							}
+						}
+					} else {
+						((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(1,
+								"Id=" + id + " is not a");
+						((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(2, "MasterMobHunter");
+						((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(3, "");
+						((org.bukkit.block.Sign) event.getClickedBlock().getState()).update();
+					}
+				}
 			}
 		}
-		int power2 = 0;
-		if (clickedBlock.isBlockIndirectlyPowered())
-			for (BlockFace bf : possibleBlockface) {
-				int p = clickedBlock.getBlockPower(bf);
-				power2 = power2 > p ? power2 : p;
-			}
-		// int power3 = 0;
-		// if (clickedBlock.isBlockPowered())
-		// power3 = clickedBlock.getBlockPower();
-		// Messages.debug("PowerStatus: MH:pow=%s, Ipow=%s, Dpow=%s on %s",
-		// power, power2, power3,
-		// clickedBlock.getType());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -271,28 +340,6 @@ public class MasterMobHunterSign implements Listener {
 		// BlockPlaceEvent is called before the player enter the text on the
 		// sign
 		Block b = e.getBlock();
-		// if (isSign(b) && isMHSign(b)) {
-		// int id = MasterMobHunterSign.getNPCIdOnSign(((Sign)
-		// b.getState()).getLine(0));
-		// NPC npc = CitizensAPI.getNPCRegistry().getById(id);
-		// if (npc != null && MasterMobHunterManager.isMasterMobHunter(npc)) {
-		// MasterMobHunterManager.update(npc);
-		// MasterMobHunter mmh = new MasterMobHunter(npc);
-		// mmh.putLocation(e.getBlock().getLocation());
-		// mmh.update();
-		// MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
-		// Messages.debug("Updating sign");
-		// } else {
-		// Messages.debug("NPC with ID = %s is not a MasterMobHunter",
-		// npc.getId());
-		// }
-		//
-		// if (isPowerSetOnSign(((Sign) b.getState()).getLine(0)) &&
-		// Bukkit.getPlayer(npc.getName()).isOnline())
-		// setMHPower(b, POWER_FROM_SIGN);
-		// else
-		// removeMHPower(b);
-		// } else
 		if (isRedstoneWire(b)) {
 			if (isMHIndirectPoweredBySign(b)) {
 				// power on Redstone must be set immediately to work
@@ -305,33 +352,50 @@ public class MasterMobHunterSign implements Listener {
 			// work
 			setMHPowerLater(b);
 		}
+
 	}
 
 	@EventHandler
 	public void onSignChangeEvent(SignChangeEvent event) {
-		Player p = event.getPlayer();
-		if (isMHSign(event.getLine(0))) {
+		Player player = event.getPlayer();
+		if (isMHSign(event.getBlock()) || isMHSign(event.getLine(0))) {
 			int id = getNPCIdOnSign(event.getLine(0));
-			boolean powered = isPowerSetOnSign(event.getLine(0));
-			NPC npc = CitizensAPI.getNPCRegistry().getById(id);
-			if (npc != null) {
-				if (MasterMobHunterManager.isMasterMobHunter(npc)) {
-					MasterMobHunterManager.getMasterMobHunterManager().get(npc.getId()).update();
-					MasterMobHunter mmh = new MasterMobHunter(npc);
-					mmh.putLocation(event.getBlock().getLocation());
-					MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
-					p.sendMessage(p.getName() + " placed a MobHunting Sign (ID=" + id + ")");
-					event.setLine(1, Misc.trimSignText(mmh.getRank() + "." + npc.getName()));
-					event.setLine(2, Misc.trimSignText(mmh.getPeriod().translateNameFriendly()));
-					event.setLine(3,
-							Misc.trimSignText(mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
-					if (powered) {
-						OfflinePlayer player = Bukkit.getPlayer(npc.getName());
-						if (player != null && player.isOnline())
-							setPower(event.getBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
-					} else
-						removePower(event.getBlock());
+			if (id != -1) {
+				boolean powered = isPowerSetOnSign(event.getBlock());
+				NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+				if (npc != null) {
+					if (MasterMobHunterManager.isMasterMobHunter(npc)) {
+						MasterMobHunter mmh = new MasterMobHunter(npc);
+						mmh.putLocation(event.getBlock().getLocation());
+						MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
+						player.sendMessage(player.getName() + " placed a MobHunting Sign (ID=" + id + ")");
+						if (isMHSign(event.getLine(0)))
+							event.getBlock().setMetadata(MH_SIGN,
+									new FixedMetadataValue(MobHunting.getInstance(), event.getLine(0)));
+						event.setLine(0, mmh.getRank() + ".");
+						event.setLine(1, Misc.trimSignText(npc.getName()));
+						event.setLine(2, Misc.trimSignText(mmh.getPeriod().translateNameFriendly()));
+						event.setLine(3,
+								Misc.trimSignText(mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
+						if (powered) {
+							OfflinePlayer offlinePlayer = Bukkit.getPlayer(npc.getName());
+							if (offlinePlayer != null && offlinePlayer.isOnline())
+								setPower(event.getBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
+						} else
+							removePower(event.getBlock());
+						MasterMobHunterManager.getMasterMobHunterManager().get(npc.getId()).update();
+					} else {
+						event.setLine(1, "ID=" + id + " is not a");
+						event.setLine(2, "MasterMobHunter");
+						event.setLine(3, "");
+					}
+				} else {
+					event.setLine(1, "Invalid npc id");
+					event.setLine(2, "");
+					event.setLine(3, "");
 				}
+			} else {
+				Messages.debug("The sign does not have a valid NPC id!(%s)", id);
 			}
 		}
 	}
@@ -345,7 +409,6 @@ public class MasterMobHunterSign implements Listener {
 				else if (isPistonBase(block))
 					setPowerOnPiston(block);
 				block.setMetadata(MH_POWERED, new FixedMetadataValue(MobHunting.getInstance(), (byte) 15));
-
 			}
 		}, 1L);
 	}
@@ -458,6 +521,8 @@ public class MasterMobHunterSign implements Listener {
 			Sign sign = (Sign) block.getState();
 			if (sign.getLine(0).matches(MASTERMOBHUNTERSIGN))
 				return true;
+			else if (block.hasMetadata(MH_SIGN))
+				return true;
 		}
 		return false;
 	}
@@ -483,112 +548,6 @@ public class MasterMobHunterSign implements Listener {
 				return true;
 		}
 		return false;
-	}
-
-	// ********************************************************************************************
-	// UNUSED
-	// ********************************************************************************************
-
-	// This method was used to format the sign.
-	@SuppressWarnings("unused")
-	private static void update(final Block b) {
-		MobHunting.getInstance().getServer().getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				Sign sign;
-				if (isSign(b)) {
-					sign = (Sign) b.getState();
-				} else {
-					Messages.debug("Block at " + b.getX() + "," + b.getY() + "," + b.getZ() + ", is no longer a sign.");
-					return;
-				}
-				String coords = b.getX() + "," + b.getY() + "," + b.getZ();
-				// if (!isStoredSign(sign.getBlock())) {
-				// setMetadata(sign, type);
-				// }
-				// List<String> info =
-				// plugin.signs.getStringList(SignTypetoString(type)+"."+w.getName()+"."+coords);
-				// boolean dopower = false;
-				// if (info.get(0).equalsIgnoreCase("true")) {
-				// dopower = true;
-				// }
-				// String format = info.get(1);
-				// List<String> lines = new ArrayList<String>();
-				// if (plugin.formats.containsKey(format)) {
-				// lines = new
-				// ArrayList<String>(plugin.formats.get(format));
-				// } else {
-				// lines.add("&cError!");
-				// lines.add("The format:");
-				// lines.add("&c" + format);
-				// lines.add("does not exist.");
-				// }
-				// Random rand = new Random();
-				// int nextint = rand.nextInt(1000000000);
-				// boolean plural = false;
-				// boolean power = false;
-				// if (dopower) {
-				// for (int i = 0; i < 4; i++) {
-				// String newline = variableize(lines.get(i), type,
-				// sign,
-				// info, nextint);
-				// if (isMHPowered(b) && power == false) {
-				// power = true;
-				// }
-				/*
-				 * Pattern newp = Pattern.compile("\\(s\\)"); Matcher newm =
-				 * newp.matcher(newline); Pattern newpp =
-				 * Pattern.compile("[0-9][0-9]*"); Matcher newmm =
-				 * newpp.matcher(newline); if (newm.find()) { if (newmm.find())
-				 * { if (newmm.group().equalsIgnoreCase("1")) { newline =
-				 * newline.replaceAll(newp.pattern(), ""); } else { newline =
-				 * newline.replaceAll(newp.pattern(), "s"); plural = true; } } }
-				 */
-				// newline = removePowered(newline);
-				// lines.set(i, newline);
-				// }
-				// } else {
-				// for (int i = 0; i < 4; i++) {
-				// String newline = variableize(lines.get(i), type,
-				// sign,
-				// info, nextint);
-				// newline = removePowered(newline);
-				// lines.set(i, newline);
-				// }
-				// }
-				// for (int i = 0; i < 4; i++) {
-				// sign.setLine(i, lines.get(i));
-				// }
-				// sign.update();
-				if (isMHSign(b)) {
-					// List<String> coordsforpoweredsigns;
-					// coordsforpoweredsigns =
-					// plugin.poweredsigns.get(sign
-					// .getWorld());
-					// if (coordsforpoweredsigns == null) {
-					// coordsforpoweredsigns = new ArrayList<String>();
-					// }
-					// coordsforpoweredsigns.add(coords);
-					// plugin.poweredsigns.put(sign.getWorld(),
-					// coordsforpoweredsigns);
-					setPower(b, POWER_FROM_SIGN);
-				} else {
-					// List<String> coordsforpoweredsigns = new
-					// ArrayList<String>();
-					// coordsforpoweredsigns =
-					// plugin.poweredsigns.get(sign
-					// .getWorld());
-					// if (coordsforpoweredsigns != null) {
-					// coordsforpoweredsigns.remove(coords);
-					// }
-					// plugin.poweredsigns.put(sign.getWorld(),
-					// coordsforpoweredsigns);
-					Messages.debug("Does this happen!!!");
-					setPower(b, (byte) 0);
-				}
-				// return true;
-			}
-		}, 2L);
 	}
 
 }

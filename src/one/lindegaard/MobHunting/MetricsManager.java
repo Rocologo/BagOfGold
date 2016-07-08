@@ -12,6 +12,7 @@ import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
@@ -77,6 +78,12 @@ public class MetricsManager {
 				@Override
 				public int getValue() {
 					return EssentialsCompat.isSupported() ? 1 : 0;
+				}
+			});
+			integrationsGraph.addPlotter(new Metrics.Plotter("Gringotts") {
+				@Override
+				public int getValue() {
+					return GringottsCompat.isSupported() ? 1 : 0;
 				}
 			});
 			integrationsGraph.addPlotter(new Metrics.Plotter("MyPet") {

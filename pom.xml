@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.2.8</version>
+	<version>3.2.9-SNAPSHOT</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -129,7 +129,8 @@
 							<goal>create</goal>
 						</goals>
 						<configuration>
-							<!-- <timestampFormat>yyyy-MM-dd HH:mm:ss.S</timestampFormat> <timestampPropertyName>myBuildNumberVariable</timestampPropertyName> -->
+							<timestampFormat>yyyy-MM-dd HH:mm:ss.S</timestampFormat>
+							<timestampPropertyName>myBuildNumberVariable</timestampPropertyName>
 							<!-- formats the timestamp all together like 2016-04-04 14:17:05.123 
 								and puts it in the ${myBuildNumberVariable} buildProperty -->
 							<format>{0,number}</format>
@@ -579,7 +580,7 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/MobStacker_v2.0.0.jar</systemPath>
 		</dependency>
-		
+
 		<!-- Gringotts -->
 		<dependency>
 			<groupId>org.gestern</groupId>

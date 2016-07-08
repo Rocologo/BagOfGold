@@ -17,7 +17,9 @@ mobhunting.bounty.randombounty=A Random Bounty (${prize}) was put on ${playernam
 mobhunting.bounty.randombounty.self=A Random Bounty (${prize}) was put on your head!
 mobhunting.grinding.detected=Grinding detected. You are not allowed to grind mobs.
 mobhunting.npc.notamastermobhuner=Id=${id} is not a MasterMobHuner.
-mobhunting.npc.clickednpc=${killer} is a MasterMobHunter(id=${npcid}) with rank ${rank} for ${numberofkills} ${stattype} ${period}
+mobhunting.npc.clickednpc=&4${killer}&2 is a MasterMobHunter(&4${npcid}&2) - Rank &4${rank}&2 for &4${numberofkills}&2 ${stattype} ${period}
+mobhunting.npc.clickednpcsign=&2This is a MasterMobHunter sign connected to NPC &4${npcid}&2.
+mobhunting.npc.clickednpcsignpowered=&2This is a &4powered &2MasterMobHunter sign connected to NPC &4${npcid}&2.
 
 mobhunting.killstreak.activated=x${multiplier} 奖励。
 mobhunting.killstreak.ended=Killstreak ended
@@ -84,6 +86,8 @@ mobhunting.commands.base.unknowncommand=Unknown command: ${command}
 mobhunting.commands.base.usage=Usage: ${usage}
 mobhunting.commands.base.validcommands=Valid commands are:
 mobhunting.commands.base.error=An internal error occurred while executing that command.
+mobhunting.commands.base.not_a_number=${number} is not a number
+mobhunting.commands.base.not_a_location=${xpos} ${ypos} ${zpos} is not a proper location
 mobhunting.commands.bounty.description=Put a bounty on your enemy and get him killed.
 mobhunting.commands.bounty.bounties-header=Bounties
 mobhunting.commands.bounty.bounties=${bountyowner} has put ${prize} on ${wantedplayer} (${daysleft} days left)

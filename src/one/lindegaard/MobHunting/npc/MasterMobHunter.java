@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting.npc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -12,6 +13,7 @@ import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;
+import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,6 +21,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
@@ -159,14 +162,20 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
 	private void updateSigns() {
 		if (getSignLocations().size() > 0) {
-			for (Location loc : getSignLocations()) {
+			Iterator<Location> itr = getSignLocations().iterator();
+			while (itr.hasNext()) {
+				Location loc = itr.next();
 				Block sb = loc.getBlock();
 				if (isLoaded(sb)) {
-					if (MasterMobHunterSign.isSign(sb)) {
+					if (MasterMobHunterSign.isMHSign(sb)) {
 						org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
-						s.setLine(1, (getRank() + ". " + npc.getName()));
-						s.setLine(2, (getPeriod().translateNameFriendly()));
-						s.setLine(3, (getNumberOfKills() + " " + getStatType().translateName()));
+						if (MasterMobHunterSign.isMHSign(s.getLine(0)))
+							s.setMetadata(MasterMobHunterSign.MH_SIGN,
+									new FixedMetadataValue(MobHunting.getInstance(), s.getLine(0)));
+						s.setLine(0, (getRank() + "."));
+						s.setLine(1, (Misc.trimSignText(npc.getName())));
+						s.setLine(2, (Misc.trimSignText(getPeriod().translateNameFriendly())));
+						s.setLine(3, (Misc.trimSignText(getNumberOfKills() + " " + getStatType().translateName())));
 						s.update();
 						if (MasterMobHunterSign.isMHSign(sb)) {
 							OfflinePlayer player = Bukkit.getPlayer(npc.getName());
@@ -174,11 +183,11 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 								MasterMobHunterSign.setPower(sb, MasterMobHunterSign.POWER_FROM_SIGN);
 						}
 					} else {
-						loc.zero();
+						itr.remove();
 					}
 				}
 			}
-		} 
+		}
 	}
 
 	// ***************************************************************

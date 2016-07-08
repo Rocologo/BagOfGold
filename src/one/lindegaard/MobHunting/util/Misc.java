@@ -165,6 +165,6 @@ public class Misc {
 	public static String trimSignText(String string) {
 		return string.length() > 15 ? string.substring(0, 14).trim() : string;
 	}
-	
-	
+	//XXX1.Gabriel333
+	//123456789012345
 }
