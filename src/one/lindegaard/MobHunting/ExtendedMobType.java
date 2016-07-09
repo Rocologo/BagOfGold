@@ -26,12 +26,17 @@ public enum ExtendedMobType {
 	PolarBear("POLAR_BEAR", "Enderr_", "87324464-1700-468f-8333-e7779ec8c21e", "Polar Bear",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDQ2ZDIzZjA0ODQ2MzY5ZmEyYTM3MDJjMTBmNzU5MTAxYWY3YmZlODQxOTk2NjQyOTUzM2NkODFhMTFkMmIifX19"),
 	// Husk
-	Husk("HUSK", "Husk", "", "Husk", ""),
+	// give @p skull 1 3
+	// {display:{Name:"Husk"},SkullOwner:{Id:"d550dd2a-6da3-4de1-8ac9-d64f3578a126",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlMjgyMjk1YjJhN2VhNWVkOWUyNDk3NjRjMzhjYTE4OTEyYWUwMjdkY2VhOWRkZDZkZDAzZDVhNmJmZTgwIn19fQ=="}]}}}
+	Husk("HUSK", "Gabriel333", "d550dd2a-6da3-4de1-8ac9-d64f3578a126", "Husk",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlMjgyMjk1YjJhN2VhNWVkOWUyNDk3NjRjMzhjYTE4OTEyYWUwMjdkY2VhOWRkZDZkZDAzZDVhNmJmZTgwIn19fQ=="),
 	// Stray
 	// give @p skull 1 3
 	// {display:{Name:"Stray"},SkullOwner:{Id:"c1798c29-982c-4107-be32-a0646a729fb2",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjc4MGQxZjAyMTZlMjRlMmEzM2ZjYTQ3YjNlZjJjYmM0ZjM3Njg5ZGFkNTNmYWFmZDM0NDUxZDBkYmY4MTFmIn19fQ=="}]}}}
-	Stray("STRAY", "Gabriel333", "c1798c29-982c-4107-be32-a0646a729fb2", "Stray",
-			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjc4MGQxZjAyMTZlMjRlMmEzM2ZjYTQ3YjNlZjJjYmM0ZjM3Njg5ZGFkNTNmYWFmZDM0NDUxZDBkYmY4MTFmIn19fQ=="),
+	// Frozen Zombie: /give @p skull 1 3
+	// {display:{Name:"frozenzombie"},SkullOwner:{Id:"cb6dad6a-20ea-41a6-a0a5-450ab51cb5e6",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTljNTlkOWI4ODNmMjkyNWFjZmZlNDkzZWE4MzI3NmFkYTM3NzlkM2I0OTI0ZjRlZWI2MDdkYTRkYzI2NGIifX19"}]}}}
+	Stray("STRAY", "frozenzombie", "cb6dad6a-20ea-41a6-a0a5-450ab51cb5e6", "Stray",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTljNTlkOWI4ODNmMjkyNWFjZmZlNDkzZWE4MzI3NmFkYTM3NzlkM2I0OTI0ZjRlZWI2MDdkYTRkYzI2NGIifX19"),
 	// ******************************************************************
 	// Minecraft 1.9
 	// *******************************************************************
@@ -56,7 +61,7 @@ public enum ExtendedMobType {
 	// KillerRabbit
 	// give @p skull 1 3 {display:{Name:"Killer
 	// Rabbit"},SkullOwner:{Id:"b9aa36fd-8584-4d2d-948c-278a58ac1a54",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzA4OGNkNjE0MTg5NDU4ZDk5YzJmYmVkNTg0NDg4OTVlYTZiMjZmYzY2N2EyYzU5MTlmNzE0Y2VlNjQ4ZDExIn19fQ=="}]}}}
-	KillerRabbit("RABBIT", "MHF_KillerRabbit", "b9aa36fd-8584-4d2d-948c-278a58ac1a54", "Killer Rabbit",
+	KillerRabbit("KILLERRABBIT", "MHF_KillerRabbit", "b9aa36fd-8584-4d2d-948c-278a58ac1a54", "Killer Rabbit",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzA4OGNkNjE0MTg5NDU4ZDk5YzJmYmVkNTg0NDg4OTVlYTZiMjZmYzY2N2EyYzU5MTlmNzE0Y2VlNjQ4ZDExIn19fQ=="),
 	// Player
 	// give @p skull 1 3
@@ -151,10 +156,13 @@ public enum ExtendedMobType {
 	// {display:{Name:"Golem"},SkullOwner:{Id:"7cb6e9a5-994f-40d5-9bfc-4ba5d796d21e",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkwOTFkNzllYTBmNTllZjdlZjk0ZDdiYmE2ZTVmMTdmMmY3ZDQ1NzJjNDRmOTBmNzZjNDgxOWE3MTQifX19"}]}}}
 	IronGolem("IRON_GOLEM", "MHF_Golem", "7cb6e9a5-994f-40d5-9bfc-4ba5d796d21e", "Golem",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkwOTFkNzllYTBmNTllZjdlZjk0ZDdiYmE2ZTVmMTdmMmY3ZDQ1NzJjNDRmOTBmNzZjNDgxOWE3MTQifX19"),
+
 	// Passive Mobs
 	// Bat
-	Bat("BAT", "ThatDudeBlakeMC", "", "Bat",
-			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWI3ZTk2ODU5N2VmZjI4Y2UwNDU2ZTIwNzFmMTIzNThiODk2YzA3ZTE2YTk1ZDkwNTAzZWNiY2Y5NGQ1MTMwIn19fQ=="),
+	// give @p skull 1 3 {display:{Name:"Bat
+	// Head"},SkullOwner:{Id:"4ec40126-5a2d-4d6a-a0a3-125744548f0d",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmZmZDgwOGY4MTI3YjRhZDQ1OGQ5ZDJlMTgxYzY5MGFkZjQ4OWE2YWQzMmVlMmFhNGFjZmE2MzQxZmU4NDIifX19"}]}}}
+	Bat("BAT", "Bat", "4ec40126-5a2d-4d6a-a0a3-125744548f0d", "Bat",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmZmZDgwOGY4MTI3YjRhZDQ1OGQ5ZDJlMTgxYzY5MGFkZjQ4OWE2YWQzMmVlMmFhNGFjZmE2MzQxZmU4NDIifX19"),
 	// Chicken
 	// give @p skull 1 3
 	// {display:{Name:"Chicken"},SkullOwner:{Id:"7d3a8ace-e045-4eba-ab71-71dbf525daf1",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTYzODQ2OWE1OTljZWVmNzIwNzUzNzYwMzI0OGE5YWIxMWZmNTkxZmQzNzhiZWE0NzM1YjM0NmE3ZmFlODkzIn19fQ=="}]}}}
@@ -374,7 +382,7 @@ public enum ExtendedMobType {
 			return ent.getType().toString().equals(mType);
 	}
 
-	public String getName() {
+	public String getFriendlyName() {
 		return Messages.getString("mobs." + name() + ".name");
 	}
 
@@ -389,15 +397,15 @@ public enum ExtendedMobType {
 
 	public static ExtendedMobType getExtendedMobType(String name) {
 		for (ExtendedMobType type : values())
-			if (type.getName().equalsIgnoreCase(name))
+			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name)
+					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name)
+					|| type.name().equalsIgnoreCase(name))
 				return type;
 		return null;
 	}
 
 	public String getCommandString() {
 		switch (this) {
-		case Husk:
-		case Bat:
 		case PvpPlayer:
 			return "give {player} skull {amount} 3 {display:{Name:\"{displayname}\",Lore:[{lore}]},SkullOwner:\"{playername}\"}";
 		default:

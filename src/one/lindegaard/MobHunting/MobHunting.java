@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
@@ -16,6 +15,7 @@ import one.lindegaard.MobHunting.commands.CheckGrindingCommand;
 import one.lindegaard.MobHunting.commands.ClearGrindingCommand;
 import one.lindegaard.MobHunting.commands.CommandDispatcher;
 import one.lindegaard.MobHunting.commands.DatabaseCommand;
+import one.lindegaard.MobHunting.commands.DebugCommand;
 import one.lindegaard.MobHunting.commands.HeadCommand;
 import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
@@ -89,7 +89,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -236,6 +235,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		cmd.registerCommand(new WhitelistAreaCommand());
 		cmd.registerCommand(new UpdateCommand());
 		cmd.registerCommand(new VersionCommand());
+		cmd.registerCommand(new DebugCommand());
 
 		registerModifiers();
 

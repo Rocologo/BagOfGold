@@ -30,7 +30,7 @@ public class LearnCommand implements ICommand, Listener {
 
 	@Override
 	public String[] getAliases() {
-		return new String[] { "debug", "learnmode" };
+		return new String[] { "learnmode" };
 	}
 
 	@Override

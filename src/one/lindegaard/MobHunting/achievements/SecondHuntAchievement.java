@@ -16,7 +16,7 @@ public class SecondHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.2.name", "mob", mType.getName());
+		return Messages.getString("achievements.hunter.2.name", "mob", mType.getFriendlyName());
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class SecondHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getDescription() {
 		return Messages.getString("achievements.hunter.2.description", "count", getMaxProgress(), "mob",
-				mType.getName());
+				mType.getFriendlyName());
 	}
 
 	@Override

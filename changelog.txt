@@ -1,6 +1,9 @@
-V3.2.9
-- Added "/mh head spawn [mob|playername] [displayName] [amount]"
-- Added "/mh head rename [newName]" Renaming the head in hand. 
+V3.3.0
+- All MobHeads are now updated. You should rename config.yml to config.yml.old and restart server to get all new settings.
+- Changed the syntax of "/mh head"
+- Added "/mh head give [toPlayer] [mob|playername] [displayName] [amount]"
+- Added "/mh head rename [newName]" Renaming the head in hand.
+- Added "/mh debug" to toggle/enable/disable console debug information.
 - Gringotts added to Metrics.
 - Hided MH tag on MasterMobHunter signs
 - MasterMobHunter Signs can now be clicked to get npc id.

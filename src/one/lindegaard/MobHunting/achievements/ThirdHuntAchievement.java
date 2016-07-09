@@ -16,7 +16,7 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.3.name", "mob", mType.getName()); 
+		return Messages.getString("achievements.hunter.3.name", "mob", mType.getFriendlyName()); 
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getDescription() {
 		return Messages.getString("achievements.hunter.3.description", "count", getMaxProgress(), "mob",
-				mType.getName());
+				mType.getFriendlyName());
 	}
 
 	@Override

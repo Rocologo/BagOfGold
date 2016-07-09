@@ -17,7 +17,7 @@ public class FourthHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.hunter.4.name", "mob",
-				mType.getName());
+				mType.getFriendlyName());
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class FourthHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getDescription() {
 		return Messages.getString("achievements.hunter.4.description", "count",
-				getMaxProgress(), "mob", mType.getName());
+				getMaxProgress(), "mob", mType.getFriendlyName());
 	}
 
 	@Override

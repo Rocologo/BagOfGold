@@ -17,7 +17,7 @@ public class BasicHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.hunter.1.name", "mob",
-				mType.getName());
+				mType.getFriendlyName());
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class BasicHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getDescription() {
 		return Messages.getString("achievements.hunter.1.description", "count",
-				getMaxProgress(), "mob", mType.getName());
+				getMaxProgress(), "mob", mType.getFriendlyName());
 	}
 
 	@Override

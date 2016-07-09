@@ -21,7 +21,7 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.7.name", "mob", mType.getName());
+		return Messages.getString("achievements.hunter.7.name", "mob", mType.getFriendlyName());
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 	@Override
 	public String getDescription() {
 		return Messages.getString("achievements.hunter.7.description", "count", getMaxProgress(), "mob",
-				mType.getName());
+				mType.getFriendlyName());
 	}
 
 	@Override
