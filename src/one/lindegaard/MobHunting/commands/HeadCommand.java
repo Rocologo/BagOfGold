@@ -85,14 +85,15 @@ public class HeadCommand implements ICommand, Listener {
 		// [amount]
 		if (args.length >= 2 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
 			if (args.length >= 3) {
-				OfflinePlayer offlinePlayer = null, toOfflinePlayer = null;
+				OfflinePlayer offlinePlayer = null, toPlayer = null;
 				String displayName;
 				int amount = 1;
 
 				// get toPlayerName
-				toOfflinePlayer = Bukkit.getOfflinePlayer(args[1]);
-				if (toOfflinePlayer == null) {
+				toPlayer = Bukkit.getOfflinePlayer(args[1]);
+				if (toPlayer == null || !toPlayer.isOnline()) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.head.online", "playername", args[1]));
+					return true;
 				}
 
 				// get MobType / PlayerName
@@ -104,7 +105,7 @@ public class HeadCommand implements ICommand, Listener {
 					} else {
 						sender.sendMessage(
 								Messages.getString("mobhunting.commands.head.unknown_name", "playername", args[2]));
-						return false;
+						return true;
 					}
 				}
 				// get displayname
@@ -126,7 +127,7 @@ public class HeadCommand implements ICommand, Listener {
 						return false;
 					}
 				}
-				String cmdString = mob.getCommandString().replace("{player}", ((Player) sender).getName())
+				String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
 						.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
 						.replace("{playerid}", mob.getPlayerId()).replace("{texturevalue}", mob.getTextureValue())
 						.replace("{amount}", String.valueOf(amount))

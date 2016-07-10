@@ -1,3 +1,8 @@
+V3.3.1
+- Change: Players which has decided to mute MobHunting does not receive Broadcast messages from others players when they achieve something.
+- Fixed NullPointerException when when "mh head ..." was executed from console .
+- Fixed NullPointerException when player clicked on a MH sign without something in the hand.
+- OBS. Plugin does not work with WorldGuard 6.1.3 SNAPSHOTS (Development builds) Changes has been made in WorldGuard. I have contacted the developer to get this fixed. 
 V3.3.0
 - All MobHeads are now updated. You should rename config.yml to config.yml.old and restart server to get all new settings.
 - Changed the syntax of "/mh head"

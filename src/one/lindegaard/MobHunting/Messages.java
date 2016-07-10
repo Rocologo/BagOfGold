@@ -25,6 +25,7 @@ import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class Messages {
 	private static Map<String, String> mTranslationTable;
@@ -256,7 +257,7 @@ public class Messages {
 		Iterator<Player> players = MobHunting.getMobHuntingManager().getOnlinePlayers().iterator();
 		while (players.hasNext()) {
 			Player player = players.next();
-			if (player.equals(except))
+			if (player.equals(except) || MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted())
 				continue;
 			player.sendMessage(message);
 		}

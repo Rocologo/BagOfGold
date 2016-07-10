@@ -260,7 +260,7 @@ public class MasterMobHunterSign implements Listener {
 		if (event.getClickedBlock() == null)
 			return;
 
-		if (Misc.isMC19OrNewer() && event.getHand().equals(EquipmentSlot.OFF_HAND))
+		if (Misc.isMC19OrNewer() && (event.getHand() == null || event.getHand().equals(EquipmentSlot.OFF_HAND)))
 			return;
 
 		if (event.getPlayer().getItemInHand().getType().equals(Material.STICK)) {
