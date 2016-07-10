@@ -25,7 +25,6 @@ import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
-import one.lindegaard.MobHunting.util.Misc;
 
 public class Messages {
 	private static Map<String, String> mTranslationTable;

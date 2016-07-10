@@ -72,14 +72,20 @@ public class Rewards implements Listener {
 				Messages.debug("A Zombie did something, with a MobHuntingHead %s", e.getBlock());
 			if (Misc.isMC19OrNewer()) {
 				if ((z.getEquipment().getItemInMainHand().hasItemMeta()
-						&& z.getEquipment().getItemInMainHand().getItemMeta().equals(HeadCommand.MH_HEAD))
+						&& z.getEquipment().getItemInMainHand().getItemMeta().hasLore()
+						&& z.getEquipment().getItemInMainHand().getItemMeta().getLore().get(0)
+								.equals(HeadCommand.MH_HEAD))
 						|| (z.getEquipment().getItemInOffHand().hasItemMeta()
-								&& z.getEquipment().getItemInOffHand().getItemMeta().equals(HeadCommand.MH_HEAD)))
+								&& z.getEquipment().getItemInOffHand().getItemMeta().hasLore()
+								&& z.getEquipment().getItemInOffHand().getItemMeta().getLore().get(0)
+										.equals(HeadCommand.MH_REWARD)))
 					Messages.debug("Zombie hands = %s,%s", z.getEquipment().getItemInMainHand(),
 							z.getEquipment().getItemInOffHand());
 			} else {
 				if (z.getEquipment().getItemInHand().hasItemMeta()
-						&& z.getEquipment().getItemInHand().getItemMeta().equals(HeadCommand.MH_HEAD))
+						&& z.getEquipment().getItemInHand().getItemMeta().hasLore() 
+						&& z.getEquipment().getItemInHand()
+								.getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD))
 					Messages.debug("Zombie hand = %s", z.getEquipment().getItemInHand());
 			}
 		}
