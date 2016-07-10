@@ -702,14 +702,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_BOUNTY);
 			for (Bounty bounty : bountyDataSet) {
-				int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
-				int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
 				mUpdateBounty.setDouble(1, bounty.getPrize());
 				mUpdateBounty.setString(2, bounty.getMessage());
 				mUpdateBounty.setLong(3, bounty.getEndDate());
 				mUpdateBounty.setInt(4, bounty.getStatus().getValue());
-				mUpdateBounty.setInt(5, wantedPlayerId);
-				mUpdateBounty.setInt(6, bountyOwnerId);
+				mUpdateBounty.setInt(5, getPlayerId(bounty.getWantedPlayer()));
+				mUpdateBounty.setInt(6, getPlayerId(bounty.getBountyOwner()));
 				mUpdateBounty.setString(7, bounty.getWorldGroup());
 				mUpdateBounty.addBatch();
 			}

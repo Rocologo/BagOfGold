@@ -58,8 +58,7 @@ public class BountyManager implements Listener {
 			Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Runnable() {
 				public void run() {
 					for (Bounty bounty : mOpenBounties) {
-						if (bounty.getEndDate() < System.currentTimeMillis()
-								&& bounty.getStatus().equals(BountyStatus.open)) {
+						if (bounty.getEndDate() < System.currentTimeMillis()) {
 							bounty.setStatus(BountyStatus.expired);
 							MobHunting.getDataStoreManager().updateBounty(bounty);
 							Messages.debug("BountyManager: Expired Bounty %s", bounty.toString());
@@ -258,8 +257,8 @@ public class BountyManager implements Listener {
 			loadOpenBounties(player);
 			if (hasBounties(worldGroupName, player)) {
 				Messages.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
-				Messages.broadcast(
-						Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()), player);
+				Messages.broadcast(Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()),
+						player);
 			}
 		}
 	}
@@ -267,16 +266,6 @@ public class BountyManager implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		// saveBounties(e.getPlayer());
-		Iterator<Bounty> itr = getAllBounties().iterator();
-		int n = 0;
-		while (itr.hasNext()) {
-			Bounty bounty = itr.next();
-			if (bounty.getWantedPlayer().equals(e.getPlayer())) {
-				mOpenBounties.remove(bounty);
-				n++;
-			} 
-		}
-		Messages.debug("%s bounties on %s was removed when player quit", n, e.getPlayer().getName());
 	}
 
 	// ****************************************************************************
@@ -289,28 +278,21 @@ public class BountyManager implements Listener {
 					@Override
 					public void onCompleted(Set<Bounty> data) {
 						boolean sort = false;
-						int n = 0;
-						Iterator<Bounty> itr = data.iterator();
-						while (itr.hasNext()){
-						Bounty bounty = itr.next();
+						for (Bounty bounty : data) {
 							if (!hasBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())) {
-								if (bounty.getEndDate() > System.currentTimeMillis()
-										&& bounty.getStatus().equals(BountyStatus.open)) {
+								if (bounty.getEndDate() > System.currentTimeMillis())
 									mOpenBounties.add(bounty);
-									n++;
-								} else {
-									//
-									Messages.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
+								else {
 									bounty.setStatus(BountyStatus.expired);
+									// removeBounty(bounty);
+									Messages.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
 									MobHunting.getDataStoreManager().updateBounty(bounty);
-									removeBounty(bounty);
 								}
 								sort = true;
 							}
 						}
 						if (sort)
 							sort();
-						Messages.debug("%s bounties for %s was loaded.", n, offlinePlayer.getName());
 					}
 
 					@Override
@@ -365,8 +347,8 @@ public class BountyManager implements Listener {
 									ChatColor.GREEN + wantedPlayer.getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
-											"prize", MobHunting.getRewardManager().format(bounty.getPrize()),
-											"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+											"prize", MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						if (n < 52)
 							n++;
@@ -431,8 +413,8 @@ public class BountyManager implements Listener {
 									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
-											"prize", MobHunting.getRewardManager().format(bounty.getPrize()),
-											"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+											"prize", MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+											bounty.getWantedPlayer().getName(), "daysleft",
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						if (n < 52)
 							n++;
