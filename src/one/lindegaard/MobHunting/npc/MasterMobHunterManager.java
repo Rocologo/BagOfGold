@@ -165,7 +165,7 @@ public class MasterMobHunterManager implements Listener {
 	// Events
 	// ****************************************************************************
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onClick(NPCLeftClickEvent event) {
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
@@ -173,27 +173,29 @@ public class MasterMobHunterManager implements Listener {
 			update(npc);
 			MasterMobHunter mmh = mMasterMobHunter.get(npc.getId());
 			mmh.update();
-			Messages.getString("mobhunting.npc.clickednpc", "killer",
-					CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(), "numberofkills",
-					mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(), "period",
-					mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId());
+			Messages.playerActionBarMessage(event.getClicker(),
+					Messages.getString("mobhunting.npc.clickednpc", "killer",
+							CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(),
+							"numberofkills", mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(),
+							"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
 			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onClick(NPCRightClickEvent event) {
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
 			update(npc);
 			MasterMobHunter mmh = mMasterMobHunter.get(npc.getId());
 			mmh.update();
-			Messages.getString("mobhunting.npc.clickednpc", "killer",
-					CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(), "numberofkills",
-					mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(), "period",
-					mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId());
+			Messages.playerActionBarMessage(event.getClicker(),
+					Messages.getString("mobhunting.npc.clickednpc", "killer",
+							CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(),
+							"numberofkills", mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(),
+							"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
 		} else {
 			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());

@@ -29,7 +29,7 @@ import one.lindegaard.MobHunting.commands.TopCommand;
 import one.lindegaard.MobHunting.commands.UpdateCommand;
 import one.lindegaard.MobHunting.commands.VersionCommand;
 import one.lindegaard.MobHunting.commands.WhitelistAreaCommand;
-import one.lindegaard.MobHunting.compatibility.ActionBarCompat;
+import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaHelper;
@@ -206,7 +206,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerPlugin(TitleAPICompat.class, "TitleAPI");
 		registerPlugin(BarAPICompat.class, "BarAPI");
 		registerPlugin(TitleManagerCompat.class, "TitleManager");
-		registerPlugin(ActionBarCompat.class, "ActionBar");
+		registerPlugin(ActionbarCompat.class, "Actionbar");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(GringottsCompat.class, "Gringotts");
 

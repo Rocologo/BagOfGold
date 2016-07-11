@@ -1189,7 +1189,7 @@ public class ConfigManager extends AutoConfig {
 	public boolean disableIntegrationTitleManager = false;
 
 	@ConfigField(name = "disable-integration-actionbar", category = "plugins", comment = "Disable integration with ActionBar. If you want messages in player chat you can set this to true.")
-	public boolean disableIntegrationActionBar = false;
+	public boolean disableIntegrationActionbar = false;
 
 	@ConfigField(name = "disable-integration-gringotts", category = "plugins", comment = "Disable integration with Gringotts Economy.")
 	public boolean disableIntegrationGringotts = false;

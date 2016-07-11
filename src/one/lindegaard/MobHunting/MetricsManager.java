@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
-import one.lindegaard.MobHunting.compatibility.ActionBarCompat;
+import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
@@ -221,7 +221,7 @@ public class MetricsManager {
 			titleManagerGraph.addPlotter(new Metrics.Plotter("ActionBar") {
 				@Override
 				public int getValue() {
-					return ActionBarCompat.isSupported() ? 1 : 0;
+					return ActionbarCompat.isSupported() ? 1 : 0;
 				}
 			});
 			metrics.addGraph(titleManagerGraph);

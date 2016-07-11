@@ -20,12 +20,11 @@ import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import one.lindegaard.MobHunting.compatibility.ActionBarCompat;
+import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
-import one.lindegaard.MobHunting.util.Misc;
 
 public class Messages {
 	private static Map<String, String> mTranslationTable;
@@ -286,8 +285,8 @@ public class Messages {
 	public static void playerActionBarMessage(Player player, String message) {
 		if (!MobHunting.getConfigManager().disableIntegrationTitleManager && TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.setActionBar(player, message);
-		} else if (!MobHunting.getConfigManager().disableIntegrationActionBar && ActionBarCompat.isSupported()) {
-			ActionBarCompat.setMessage(player, message);
+		} else if (!MobHunting.getConfigManager().disableIntegrationActionbar && ActionbarCompat.isSupported()) {
+			ActionbarCompat.setMessage(player, message);
 		} else {
 			player.sendMessage(message);
 		}
