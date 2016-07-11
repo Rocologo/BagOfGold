@@ -6,7 +6,6 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-import one.lindegaard.MobHunting.MobPlugins;
 import one.lindegaard.MobHunting.MobPlugins.MobPluginNames;
 
 public class MobRewardData {
@@ -23,9 +22,8 @@ public class MobRewardData {
 		super();
 	}
 
-	public MobRewardData(MobPluginNames pluginName, String mobType,
-			String mobName, String rewardPrize, String cmd, String cmdDesc,
-			int propability, int propabilityBase) {
+	public MobRewardData(MobPluginNames pluginName, String mobType, String mobName, String rewardPrize, String cmd,
+			String cmdDesc, int propability, int propabilityBase) {
 		this.mobPluginName = pluginName;
 		this.mobType = mobType;
 		this.mobName = mobName;
@@ -172,11 +170,9 @@ public class MobRewardData {
 		propabilityBase = toInt(data.get("propabilityBase"));
 	}
 
-	public void read(ConfigurationSection section)
-			throws InvalidConfigurationException, IllegalStateException {
-		
-		mobPluginName = MobPluginNames
-				.valueOf(section.get("plugin").toString());
+	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
+
+		mobPluginName = MobPluginNames.valueOf(section.get("plugin").toString());
 		mobName = section.getString("mobName");
 		reward = section.getString("rewardPrize");
 		consoleRunCommand = section.getString("consoleRunCommand");

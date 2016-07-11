@@ -134,15 +134,30 @@ public class DataStoreManager {
 
 	public void cancelBounty(Bounty bounty) {
 		bounty.setStatus(BountyStatus.canceled);
-		synchronized (mWaiting) {
-			mWaiting.add(new Bounty(bounty));
+		//synchronized (mWaiting) {
+		//	mWaiting.add(new Bounty(bounty));
+		//}
+		HashSet<Bounty> bounties = new HashSet<Bounty>();
+		bounties.add(bounty);
+		try {
+			mStore.cancelBounty(bounties);
+		} catch (DataStoreException e) {
+			e.printStackTrace();
 		}
 	}
 
 	public void updateBounty(Bounty bounty) {
-		synchronized (mWaiting) {
-			mWaiting.add(new Bounty(bounty));
+		//synchronized (mWaiting) {
+		//	mWaiting.add(new Bounty(bounty));
+		//}
+		HashSet<Bounty> bounties = new HashSet<Bounty>();
+		bounties.add(bounty);
+		try {
+			mStore.updateBounty(bounties);
+		} catch (DataStoreException e) {
+			e.printStackTrace();
 		}
+		
 	}
 
 	public void requestBounties(BountyStatus mode, OfflinePlayer player, IDataCallback<Set<Bounty>> callback) {

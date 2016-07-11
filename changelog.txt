@@ -1,5 +1,7 @@
 V3.3.2
--
+- Giant Head updated
+- Snowman head updated
+- mh bounty bug fixing.
 V3.3.1
 - Change: Players which has decided to mute MobHunting does not receive Broadcast messages from others players when they achieve something.
 - Fixed NullPointerException when when "mh head ..." was executed from console .
