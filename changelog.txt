@@ -1,3 +1,7 @@
+V3.3.3
+- Fixed ConcurrentModification onPlayerQuit bug
+- Add parameter "deny-hoppers-to-pickup-money-on-ground=true" to deny Hoppers to pickup reward money. (In the fight against "Dark Room Mobspawners");
+- added code to configManager to catch if prize in config.yml starts with ":" and through a warning in Server Console.
 V3.3.2
 - Rollback Hidden MasterMobHunter Sign Tag.
 - Giant Head updated

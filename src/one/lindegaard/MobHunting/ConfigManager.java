@@ -1271,6 +1271,12 @@ public class ConfigManager extends AutoConfig {
 			+ "\ndropped on ground to be picked up by the player."
 			+ "\nNegative rewards will always be taken from det player. ")
 	public boolean dropMoneyOnGroup = false;
+
+	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is denied by default."
+			+ "\nIf you want HOPPERS to collect MobHunting Money rewards "
+			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=true")
+	public boolean denyHoppersToPickUpMoney = true;
+
 	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
@@ -1431,6 +1437,15 @@ public class ConfigManager extends AutoConfig {
 							+ " The prize for killing a " + mob.getName()
 							+ " is not set in config.yml. Please set the prize to 0 or a positive or negative number.");
 			return 0;
+		} else if (str.startsWith(":")) {
+			instance.getServer().getConsoleSender()
+					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
+							+ " The prize for killing a " + mob.getName()
+							+ " in config.yml has a wrong format. The prize can't start with \":\"");
+			if (str.length() > 1)
+				return getPrice(mob, str.substring(1, str.length()));
+			else
+				return 0;
 		} else if (str.contains(":")) {
 			String[] str1 = str.split(":");
 			double prize = (mRand.nextDouble() * (Double.valueOf(str1[1]) - Double.valueOf(str1[0]))

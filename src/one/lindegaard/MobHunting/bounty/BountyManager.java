@@ -267,15 +267,18 @@ public class BountyManager implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		// saveBounties(e.getPlayer());
+		Set<Bounty> toBeRemoved = new HashSet<Bounty>();
+		
 		Iterator<Bounty> itr = getAllBounties().iterator();
 		int n = 0;
 		while (itr.hasNext()) {
 			Bounty bounty = itr.next();
 			if (bounty.getWantedPlayer().equals(e.getPlayer())) {
-				mOpenBounties.remove(bounty);
+				toBeRemoved.add(bounty);
 				n++;
 			}
 		}
+		mOpenBounties.removeAll(toBeRemoved);
 		Messages.debug("%s bounties on %s was removed when player quit", n, e.getPlayer().getName());
 	}
 

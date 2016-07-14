@@ -144,7 +144,7 @@ public class HeadCommand implements ICommand, Listener {
 				Player player = (Player) sender;
 				ItemStack itemInHand = player.getItemInHand();
 				if (itemInHand.hasItemMeta() && itemInHand.getItemMeta().hasLore()
-						&&itemInHand.getItemMeta().getLore().get(0).equals(MH_REWARD)) {
+						&& itemInHand.getItemMeta().getLore().get(0).equals(MH_REWARD)) {
 					String displayname = "";
 					for (int i = 1; i < args.length; i++) {
 						if (i != (args.length - 1))
@@ -203,7 +203,7 @@ public class HeadCommand implements ICommand, Listener {
 	@EventHandler
 	public void PickupItem(PlayerPickupItemEvent event) {
 		Item item = event.getItem();
-		if (event.getItem().hasMetadata(HeadCommand.MH_HEAD)) {
+		if (item.hasMetadata(HeadCommand.MH_HEAD)) {
 			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
 			Messages.debug("You picked up a MH Head DisplayName=%s", displayName);
 			ItemMeta im = item.getItemStack().getItemMeta();
@@ -213,21 +213,20 @@ public class HeadCommand implements ICommand, Listener {
 			im.setLore(lore);
 			event.getItem().getItemStack().setItemMeta(im);
 		}
-		if (event.getItem().getItemStack().hasItemMeta() && event.getItem().getItemStack().getItemMeta().hasLore()
-				&& event.getItem().getItemStack().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
+		if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasLore()
+				&& item.getItemStack().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
 			Messages.debug("You picked up a MH Head DisplayName.2=%s",
-					event.getItem().getItemStack().getItemMeta().getDisplayName());
+					item.getItemStack().getItemMeta().getDisplayName());
 			event.getItem().setMetadata(HeadCommand.MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
-					event.getItem().getItemStack().getItemMeta().getDisplayName()));
+					item.getItemStack().getItemMeta().getDisplayName()));
 		}
 	}
 
 	@EventHandler
 	public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
 		Item item = event.getItemDrop();
-		if (event.getItemDrop().getItemStack().hasItemMeta()
-				&& event.getItemDrop().getItemStack().getItemMeta().hasLore()
-				&& event.getItemDrop().getItemStack().getItemMeta().getLore().get(0).equals(MH_REWARD)) {
+		if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasLore()
+				&& item.getItemStack().getItemMeta().getLore().get(0).equals(MH_REWARD)) {
 			String displayName = item.getItemStack().getItemMeta().getDisplayName();
 			Messages.debug("You dropped a MH Head DisplayName=%s", displayName);
 			ItemMeta im = item.getItemStack().getItemMeta();
@@ -236,24 +235,30 @@ public class HeadCommand implements ICommand, Listener {
 			lore.add(HeadCommand.MH_REWARD);
 			im.setLore(lore);
 			event.getItemDrop().setMetadata(MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
-					event.getItemDrop().getItemStack().getItemMeta().getDisplayName()));
+					item.getItemStack().getItemMeta().getDisplayName()));
 			event.getItemDrop().getItemStack().setItemMeta(im);
 		}
 	}
 
 	@EventHandler
 	public void onInventoryPickUp(InventoryPickupItemEvent event) {
-		if (event.getItem().hasMetadata(MH_HEAD) || event.getItem().getItemStack().hasItemMeta()
-				&& event.getItem().getItemStack().getItemMeta().hasLore()
-				&& event.getItem().getItemStack().getItemMeta().getLore().get(0).equals(MH_REWARD)) {
+		Item item = event.getItem();
+		if (item.hasMetadata(MH_HEAD)) {
 			String displayName = event.getItem().getMetadata(MH_HEAD).get(0).asString();
 			Messages.debug("A Inventory picked up a MH Head DisplayName=%s", displayName);
-			ItemMeta im = event.getItem().getItemStack().getItemMeta();
+			ItemMeta im = item.getItemStack().getItemMeta();
 			im.setDisplayName(displayName);
 			ArrayList<String> lore = new ArrayList<String>();
 			lore.add(MH_REWARD);
 			im.setLore(lore);
 			event.getItem().getItemStack().setItemMeta(im);
+		}
+		if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasLore()
+				&& item.getItemStack().getItemMeta().getLore().get(0).equals(MH_REWARD)) {
+			Messages.debug("An Inventory picked up a MH Head DisplayName.2=%s",
+					item.getItemStack().getItemMeta().getDisplayName());
+			event.getItem().setMetadata(HeadCommand.MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
+					item.getItemStack().getItemMeta().getDisplayName()));
 		}
 	}
 

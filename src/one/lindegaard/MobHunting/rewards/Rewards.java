@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.rewards;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,9 +44,11 @@ public class Rewards implements Listener {
 				if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
 					money = (Double) mdv.value();
 					Player player = e.getPlayer();
-					MobHunting.getRewardManager().depositPlayer(player, money);
-					Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
-							MobHunting.getRewardManager().format(money)));
+					if (money != 0) {
+						MobHunting.getRewardManager().depositPlayer(player, money);
+						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
+								MobHunting.getRewardManager().format(money)));
+					}
 					e.getItem().remove();
 					e.setCancelled(true);
 					break;
@@ -102,11 +103,13 @@ public class Rewards implements Listener {
 			if (item2.hasMetadata(MH_MONEY)) {
 				value2 = item2.getMetadata(MH_MONEY).get(0).asDouble();
 			}
-			item2.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), value1 + value2));
-			item2.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-					+ MobHunting.getRewardManager().format(value1 + value2));
-			item2.setCustomNameVisible(true);
-			Messages.debug("Rewards: Items merged - new value=%s", value1 + value2);
+			if (value1 + value2 != 0) {
+				item2.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), value1 + value2));
+				item2.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ MobHunting.getRewardManager().format(value1 + value2));
+				item2.setCustomNameVisible(true);
+				Messages.debug("Rewards: Items merged - new value=%s", value1 + value2);
+			}
 		}
 	}
 
@@ -122,11 +125,10 @@ public class Rewards implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryPickupItemEvent(InventoryPickupItemEvent e) {
 		Item item = e.getItem();
-		if (item.hasMetadata(MH_MONEY) && e.getInventory().getType() != InventoryType.HOPPER) {
-			Bukkit.getServer().getLogger().warning("[MobHunting] WARNING! The money was picked up by "
-					+ e.getInventory().getHolder().toString() + ", event was cancelled. Please show log to Developer.");
-			// TODO: Handle what happens if picked up by hopper. setCancelled is
-			// unsupported for hopper.
+		if (MobHunting.getConfigManager().denyHoppersToPickUpMoney && item.hasMetadata(MH_MONEY)
+				&& e.getInventory().getType() == InventoryType.HOPPER) {
+			Messages.debug("A %s tried to pick up the the reward, but this is disabled in config.yml",
+					e.getInventory().getType());
 			e.setCancelled(true);
 		}
 	}
@@ -140,7 +142,8 @@ public class Rewards implements Listener {
 			for (Denomination d : denoms) {
 				ItemStack is = new ItemStack(d.key.type.getType(), 1);
 				while (rest >= (d.value / unit)) {
-					location.getWorld().dropItem(location, is);
+					Item item = location.getWorld().dropItem(location, is);
+					item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), (double) 0));
 					rest = rest - (d.value / unit);
 				}
 			}
