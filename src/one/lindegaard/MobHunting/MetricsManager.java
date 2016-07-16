@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
+import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
+import one.lindegaard.MobHunting.compatibility.ActionBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
@@ -218,10 +220,22 @@ public class MetricsManager {
 					return TitleManagerCompat.isSupported() ? 1 : 0;
 				}
 			});
-			titleManagerGraph.addPlotter(new Metrics.Plotter("ActionBar") {
+			titleManagerGraph.addPlotter(new Metrics.Plotter("Actionbar") {
 				@Override
 				public int getValue() {
 					return ActionbarCompat.isSupported() ? 1 : 0;
+				}
+			});
+			titleManagerGraph.addPlotter(new Metrics.Plotter("ActionBarAPI") {
+				@Override
+				public int getValue() {
+					return ActionBarAPICompat.isSupported() ? 1 : 0;
+				}
+			});
+			titleManagerGraph.addPlotter(new Metrics.Plotter("ActionAnnouncer") {
+				@Override
+				public int getValue() {
+					return ActionAnnouncerCompat.isSupported() ? 1 : 0;
 				}
 			});
 			metrics.addGraph(titleManagerGraph);

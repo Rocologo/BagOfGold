@@ -281,7 +281,6 @@ public class MasterMobHunterSign implements Listener {
 
 			// Check if block is MMH Sign
 			if (isMHSign(event.getClickedBlock())) {
-				Messages.debug("This is a MMH sign");
 				if (event.getPlayer().getItemInHand().getType().equals(Material.STICK)) {
 					int id = getNPCIdOnSign(event.getClickedBlock());
 					if (id != -1) {
@@ -313,8 +312,8 @@ public class MasterMobHunterSign implements Listener {
 									mmh.putLocation(event.getClickedBlock().getLocation());
 									MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
 
-									event.getPlayer().sendMessage(
-											event.getPlayer().getName() + " placed a MobHunting Sign (ID=" + id + ")");
+									//event.getPlayer().sendMessage(
+									//		event.getPlayer().getName() + " placed a MobHunting Sign (ID=" + id + ")");
 
 								}
 								// ((org.bukkit.block.Sign)
@@ -351,9 +350,7 @@ public class MasterMobHunterSign implements Listener {
 						((org.bukkit.block.Sign) event.getClickedBlock().getState()).update();
 					}
 				}
-			} else {
-				//Messages.debug("This is NOT a MMH sign");
-			}
+			} 
 		}
 	}
 

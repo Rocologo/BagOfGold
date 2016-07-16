@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
+import one.lindegaard.MobHunting.compatibility.ActionBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
@@ -258,7 +260,10 @@ public class Messages {
 			Player player = players.next();
 			if (player.equals(except) || MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted())
 				continue;
-			player.sendMessage(message);
+			if (MobHunting.getConfigManager().useActionBarforBroadcasts)
+				playerActionBarMessage(player, message);
+			else
+				player.sendMessage(message);
 		}
 	}
 
@@ -287,6 +292,11 @@ public class Messages {
 			TitleManagerCompat.setActionBar(player, message);
 		} else if (!MobHunting.getConfigManager().disableIntegrationActionbar && ActionbarCompat.isSupported()) {
 			ActionbarCompat.setMessage(player, message);
+		} else if (!MobHunting.getConfigManager().disableIntegrationActionAnnouncer
+				&& ActionAnnouncerCompat.isSupported()) {
+			ActionAnnouncerCompat.setMessage(player, message);
+		} else if (!MobHunting.getConfigManager().disableIntegrationActionBarAPI && ActionBarAPICompat.isSupported()) {
+			ActionBarAPICompat.setMessage(player, message);
 		} else {
 			player.sendMessage(message);
 		}

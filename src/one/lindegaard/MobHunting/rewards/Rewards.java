@@ -48,7 +48,7 @@ public class Rewards implements Listener {
 						MobHunting.getRewardManager().depositPlayer(player, money);
 						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
 								MobHunting.getRewardManager().format(money)));
-					}
+					} 
 					e.getItem().remove();
 					e.setCancelled(true);
 					break;

@@ -1114,7 +1114,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "chance_to_create_a_random_bounty", category = "bounties", comment = "Chance that a bounty is created on a player after the minimum time. Must be a number between 0 and 1. (0 = never, 0.5 = 50% 1 = always)")
 	public double chanceToCreateBounty = 0.5;
 	@ConfigField(name = "random_bounty_prize", category = "bounties", comment = "Random Bounty. Can be a number 100 or a range 100:200")
-	public String randomBounty = "100:200";
+	public String randomBounty = "50:100";
 
 	public double getRandomPrice(String str) {
 		if (str == null || str.equals("") || str.isEmpty()) {
@@ -1139,6 +1139,27 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "get-reward-from-stacked-mobs", category = "mobstacker", comment = "Set to true if you want StackedMobs to pay a reward.")
 	public boolean getRewardFromStackedMobs = false;
+
+	// #####################################################################################
+	// DropMoneyOnGrond settings
+	// #####################################################################################
+	@ConfigField(name = "drop-money-on-groud", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
+			+ "\ninto his pocket. If you set dropMoneyOnGroud=true the reward will "
+			+ "\ndropped on ground to be picked up by the player."
+			+ "\nNegative rewards will always be taken from det player. ")
+	public boolean dropMoneyOnGroup = false;
+
+	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is denied by default."
+			+ "\nIf you want HOPPERS to collect MobHunting Money rewards "
+			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=true")
+	public boolean denyHoppersToPickUpMoney = true;
+
+	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
+			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
+	public String dropMoneyOnGroundItem = "GOLD_INGOT";
+
+	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE")
+	public String dropMoneyOnGroundTextColor = "WHITE";
 
 	// #####################################################################################
 	// Plugin integration
@@ -1167,7 +1188,8 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-worldguard", category = "plugins", comment = "Disable integration with WorldGuard")
 	public boolean disableIntegrationWorldGuard = false;
 
-	@ConfigField(name = "disable-integration-essentials", category = "plugins", comment = "Disable integration with Essentials")
+	@ConfigField(name = "disable-integration-essentials", category = "plugins", comment = "Disable integration with Essentials"
+			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
 	public boolean disableIntegrationEssentials = false;
 
 	@ConfigField(name = "disable-integration-battlearena", category = "plugins", comment = "Disable integration with BattleArena")
@@ -1185,13 +1207,23 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-vanishnopacket", category = "plugins", comment = "Disable integration with VanishNoPacket")
 	public boolean disableIntegrationVanishNoPacket = false;
 
-	@ConfigField(name = "disable-integration-titlemanager", category = "plugins", comment = "Disable integration with TitleManger. If you want messages in player chat you can set this to true.")
+	@ConfigField(name = "disable-integration-titlemanager", category = "plugins", comment = "Disable integration with TitleManger. If you want messages in player chat you can set this to true."
+			+ "\nhttps://www.spigotmc.org/resources/titlemanager.1049/")
 	public boolean disableIntegrationTitleManager = false;
 
-	@ConfigField(name = "disable-integration-actionbar", category = "plugins", comment = "Disable integration with ActionBar. If you want messages in player chat you can set this to true.")
+	@ConfigField(name = "disable-integration-actionbar", category = "plugins", comment = "Disable integration with Actionbar. If you want messages in player chat you can set this to true.")
 	public boolean disableIntegrationActionbar = false;
 
-	@ConfigField(name = "disable-integration-gringotts", category = "plugins", comment = "Disable integration with Gringotts Economy.")
+	@ConfigField(name = "disable-integration-actionbarapi", category = "plugins", comment = "Disable integration with ActionBarAPI. If you want messages in player chat you can set this to true."
+			+ "\nhttps://www.spigotmc.org/resources/actionbarapi-1-8-1-9-1-10.1315/")
+	public boolean disableIntegrationActionBarAPI = false;
+
+	@ConfigField(name = "disable-integration-actionannouncer", category = "plugins", comment = "Disable integration with ActionAnnouncer. If you want messages in player chat you can set this to true."
+			+ "\nhttps://www.spigotmc.org/resources/actionannouncer.1320/")
+	public boolean disableIntegrationActionAnnouncer = false;
+
+	@ConfigField(name = "disable-integration-gringotts", category = "plugins", comment = "Disable integration with Gringotts Economy."
+			+ "\nhttp://dev.bukkit.org/bukkit-plugins/gringotts/")
 	public boolean disableIntegrationGringotts = false;
 
 	// #####################################################################################
@@ -1199,14 +1231,19 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "type", category = "database", comment = "Type of database to use. Valid values are: sqlite, mysql")
 	public String databaseType = "sqlite";
+
 	@ConfigField(name = "username", category = "database")
 	public String databaseUsername = "user";
+
 	@ConfigField(name = "password", category = "database")
 	public String databasePassword = "password";
+
 	@ConfigField(name = "host", category = "database")
 	public String databaseHost = "localhost:3306";
+
 	@ConfigField(name = "database", category = "database")
 	public String databaseName = "mobhunting";
+
 	@ConfigField(name = "debug_sql", category = "database", comment = "sql_debug is only meant to be used by the developer. Setting this to to true can produre a a big log file!")
 	public boolean debugSQL = false;
 
@@ -1215,9 +1252,11 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "update-check", category = "updates", comment = "Check if there is a new version of the plugin available.")
 	public boolean updateCheck = true;
+
 	@ConfigField(name = "check_every", category = "updates", comment = "Set the number of seconds between each check. Recommended setting is"
 			+ "\ncheck_every: 3600 ~ to check every hour.")
 	public int checkEvery = 3600;
+
 	@ConfigField(name = "autoupdate", category = "updates", comment = "Set 'autoupdate: true' if you want new updates downloaded and installed."
 			+ "\nYou will still have to reboot the server manually.")
 	public boolean autoupdate = false;
@@ -1227,21 +1266,32 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "disabled-in-worlds", category = "general", comment = "Put the names of the worlds here that you do not wish for mobhunting to be enabled in.")
 	public String[] disabledInWorlds = { "worldname" };
+
 	@ConfigField(name = "language", category = "general", comment = "The language (file) to use. You can put the name of the language file as the language code "
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
+
 	@ConfigField(name = "allow_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners and eggs?")
 	public boolean allowMobSpawners = false;
+
+	@ConfigField(name = "use-actionbar-for-broadcasts", category = "general", comment = "Broadcast messages will be send in the ActionBar if MobHunting finds a supported ActionBar plugin.")
+	public boolean useActionBarforBroadcasts = true;
+
 	@ConfigField(name = "broadcast-achievement", category = "general", comment = "Should achievements be broadcasted?")
 	public boolean broadcastAchievement = true;
+
 	@ConfigField(name = "broadcast-first-achievement", category = "general", comment = "Should the hunt begins achievement be broadcasted?")
 	public boolean broadcastFirstAchievement = true;
+
 	@ConfigField(name = "save-period", category = "general", comment = "Time between saves in ticks (20 ticks ~ 1 sec)")
 	public int savePeriod = 6000;
+
 	@ConfigField(name = "leaderboard-update-period", category = "general", comment = "Time between leaderboard updates in ticks (20 ticks ~ 1 sec)")
 	public int leaderboardUpdatePeriod = 1200;
+
 	@ConfigField(name = "kill-timeout", category = "general", comment = "Time in seconds after attacking a mob that can be counted as a kill")
 	public int killTimeout = 4;
+
 	@ConfigField(name = "kill-debug", category = "general", comment = "If kills are not being registered in mob hunting. Enable this to see why they arent")
 	public boolean killDebug = false;
 
@@ -1252,37 +1302,19 @@ public class ConfigManager extends AutoConfig {
 			+ "\nSet rounding_reward=5 if you want multipla of 5 IE. 10,15,20,25..."
 			+ "\nSet rounding_reward=2 if you want multipla of 2 IE. 10,12,14,16...")
 	public double rewardRounding = 0.01;
+
 	@ConfigField(name = "newplayer_learning_mode", category = "general", comment = "When a new playerjoins the server he will by default start"
 			+ "\nin 'LEARNING MODE' and get extra information about when he get rewards and not,"
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mh learn'")
 	public boolean learningMode = false;
+
 	@ConfigField(name = "use_gui_for_achievements", category = "general", comment = "When use_gui_for_archivements=true the status of players achievemens will"
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForAchievements = true;
+
 	@ConfigField(name = "use_gui_for_bounties", category = "general", comment = "When use_gui_for_bounties=true the open bounties and most wanted players will"
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForBounties = true;
-
-	// #####################################################################################
-	// DropMoneyOnGrond settings
-	// #####################################################################################
-	@ConfigField(name = "drop-money-on-groud", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
-			+ "\ninto his pocket. If you set dropMoneyOnGroud=true the reward will "
-			+ "\ndropped on ground to be picked up by the player."
-			+ "\nNegative rewards will always be taken from det player. ")
-	public boolean dropMoneyOnGroup = false;
-
-	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is denied by default."
-			+ "\nIf you want HOPPERS to collect MobHunting Money rewards "
-			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=true")
-	public boolean denyHoppersToPickUpMoney = true;
-
-	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
-			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
-	public String dropMoneyOnGroundItem = "GOLD_INGOT";
-
-	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE")
-	public String dropMoneyOnGroundTextColor = "WHITE";
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {

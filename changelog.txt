@@ -1,3 +1,8 @@
+V3.3.4
+- Added integration to ActionAnnouncer
+- Added integration to ActionBarAPI
+- Parameter added to enable/disable Broadcasts in the ActionBar. (If possible).
+- Cleaned up pom.xml
 V3.3.3
 - Fixed ConcurrentModification onPlayerQuit bug
 - Add parameter "deny-hoppers-to-pickup-money-on-ground=true" to deny Hoppers to pickup reward money. (In the fight against "Dark Room Mobspawners");
