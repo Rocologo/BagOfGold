@@ -499,14 +499,14 @@ public class BountyManager implements Listener {
 	// ***********************************************************
 
 	public void createRandomBounty() {
-		boolean createBounty = MobHunting.getConfigManager().mRand
+		boolean createBounty = MobHunting.getMobHuntingManager().mRand
 				.nextDouble() <= MobHunting.getConfigManager().chanceToCreateBounty;
 		if (createBounty) {
 			int noOfPlayers = MobHunting.getMobHuntingManager().getOnlinePlayersAmount();
 			Player randomPlayer = null;
 			if (MobHunting.getConfigManager().minimumNumberOfOnlinePlayers <= noOfPlayers) {
 
-				int random = MobHunting.getConfigManager().mRand.nextInt(noOfPlayers);
+				int random = MobHunting.getMobHuntingManager().mRand.nextInt(noOfPlayers);
 				int n = 0;
 				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
 					if (n == random) {

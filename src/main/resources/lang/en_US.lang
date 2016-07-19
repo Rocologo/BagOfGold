@@ -244,6 +244,7 @@ mobs.ZombiePigman.name=Zombie Pigman
 mobs.Endermite.name=Endermite
 mobs.Giant.name=Giant
 mobs.Guardian.name=Guardian
+mobs.ElderGuardian.name=Elder Guardian
 mobs.KillerRabbit.name=Killer Rabbit
 mobs.PassiveRabbit.name=Rabbit
 mobs.BonusMob.name=Bonus Mob

@@ -401,19 +401,19 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			dataString += ", " + type.getDBColumn() + " INTEGER NOT NULL DEFAULT 0";
 		statement.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Daily (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" //$NON-NLS-1$
-						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$
+						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); 
 		statement.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Weekly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" //$NON-NLS-1$
-						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$
+						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); 
 		statement.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Monthly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" //$NON-NLS-1$
-						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$
+						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); 
 		statement.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Yearly (ID CHAR(6) NOT NULL, PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" //$NON-NLS-1$
-						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); //$NON-NLS-1$
+						+ dataString + ", PRIMARY KEY(ID, PLAYER_ID))"); 
 		statement.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_AllTime (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)" + dataString //$NON-NLS-1$
-						+ ", PRIMARY KEY(PLAYER_ID))"); //$NON-NLS-1$
+						+ ", PRIMARY KEY(PLAYER_ID))"); 
 		statement.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Achievements (PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, ACHIEVEMENT TEXT NOT NULL, DATE INTEGER NOT NULL, PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))"); //$NON-NLS-1$
 
@@ -932,6 +932,27 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			System.out.println("[MobHunting] Adding new 1.10 Mobs (Stray + Husk) complete.");
 		}
 
+		try {
+			ResultSet rs = statement.executeQuery("SELECT ElderGuardian_kill from mh_Daily LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+
+			System.out.println("[MobHunting] Adding 1.8 Mob (Elder Guardian) to MobHunting Database.");
+
+			statement.executeUpdate("alter table `mh_Daily` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Daily` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Weekly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Weekly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Monthly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Monthly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Yearly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_Yearly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_AllTime` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate("alter table `mh_AllTime` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+
+			System.out.println("[MobHunting] Adding 1.8 Mob (Elder Guardian) complete.");
+		}
+		
 		try {
 			ResultSet rs = statement.executeQuery("SELECT LEARNING_MODE from mh_Players LIMIT 0");
 			rs.close();
