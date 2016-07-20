@@ -1,3 +1,8 @@
+V3.3.6
+- Fixed a possible NullPointerException bug in WorldGuardHelper.
+- Fixed "Could not pass event PlayerMoveEvent to MobHunting v3.3.5" error
+- Learning messages is updated to fit into the Bossbar.
+- pom.xml update with time stamp in filename yyyyMMddHHmmss. 
 V3.3.5
 - Stray Head updated
 - Elder Guardian Mob Added. (Strange that nobody has noticed that Elder Guardian was missing???)

@@ -274,22 +274,21 @@ leaderboard.exists=The leaderboard ${leaderboard} already exists
 leaderboard.notexists=The leaderboard ${leaderboard} does not exist
 
 mobhunting.learn.prefix=[MobHunting]
-mobhunting.learn.disabled1=MobHunting is disabled in this world by Admin, and you are not in a WorldGuard region where MobHunting is set to 'ALLOW'.
-mobhunting.learn.disabled2=MobHunting is disabled in this world by Admin.
-mobhunting.learn.mob-damage-flag=You don't get a reward because you are in a WorldGuard region with 'MOB-DAMAGE DENY' flag set.
-mobhunting.learn.mobhunting-deny=You don't get a reward because you are in a WorldGuard region with 'MOBHUNTING DENY' flag set.
+mobhunting.learn.disabled=MobHunting is disabled in this world by Admin.
+mobhunting.learn.mob-damage-flag=No reward: You are in a protected region with mob-damage=DENY
+mobhunting.learn.mobhunting-deny=No reward: You are in a protected region with MobHunting=DENY
 mobhunting.learn.mobarena=You don't get rewards while playing MobArena
 mobhunting.learn.pvparena=You don't get rewards while playing PvpArena
 mobhunting.learn.battlearena=You don't get rewards while playing BattleArena
 mobhunting.learn.godmode=You don't get rewards while you are in God mode
 mobhunting.learn.vanished=You don't get rewards while you are Vanished
-mobhunting.learn.no-permission=You don't have permission to get reward for killing this mob: ${killed-mob}
+mobhunting.learn.no-permission=No permission to get rewards for killing this mob: ${killed-mob}
 mobhunting.learn.no-reward=There is no reward for killing this mob/player: ${killed}
-mobhunting.learn.mobspawner=There is no rewards for killing this mob/player: ${killed} is was probaly spawned from a mob spawner
-mobhunting.learn.creative=You don't get MobHunting rewards, when you are in Creative mode.
-mobhunting.learn.killedcreative=You don't get MobHunting rewards, when the killed player is in Creative mode.
-mobhunting.learn.huntdisabled=You are not allowed to get prizes for hunting.
-mobhunting.learn.suiside=Suiside is not rewarded
+mobhunting.learn.mobspawner=No reward:${killed} was probably spawned from a mob spawner
+mobhunting.learn.creative=No MobHunting rewards, while you are in Creative mode.
+mobhunting.learn.killedcreative=No MobHunting reward for killing a player who is in Creative mode.
+mobhunting.learn.huntdisabled=Admin has disabled MobHunting.
+mobhunting.learn.suiside=Suicide is not rewarded
 mobhunting.learn.nopvp=PVP is not allowed.
 mobhunting.learn.grindingnotallowed=Grinding is detected and not allowed on this server.
 

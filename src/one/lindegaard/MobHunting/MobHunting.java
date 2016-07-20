@@ -57,6 +57,7 @@ import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
+import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.modifier.*;
@@ -95,9 +96,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 
 public class MobHunting extends JavaPlugin implements Listener {
 
@@ -231,7 +230,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new NpcCommand());
 		}
 		cmd.registerCommand(new ReloadCommand());
-		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isSupported())
+		// if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) &&
+		// WorldGuardCompat.isSupported()){
+		if (WorldGuardCompat.isSupported())
 			cmd.registerCommand(new RegionCommand());
 		if (CompatibilityManager.isPluginLoaded(WorldEditCompat.class) && WorldEditCompat.isSupported())
 			cmd.registerCommand(new SelectCommand());
@@ -560,19 +561,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (CitizensCompat.isNPC(damaged) && !CitizensCompat.isSentryOrSentinel(damaged))
 			return;
 
-		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
-			if ((damager instanceof Player) || MyPetCompat.isMyPet(damager)) {
-				RegionManager regionManager = WorldGuardCompat.getWorldGuardPlugin()
-						.getRegionManager(damager.getWorld());
-				ApplicableRegionSet set = regionManager.getApplicableRegions(damager.getLocation());
-				if (set != null) {
-					if (!set.allows(DefaultFlag.MOB_DAMAGE)) {
-						Messages.debug("KillBlocked:(1) %s is hiding in WG region with MOB_DAMAGE %s",
-								damager.getName(), set.allows(DefaultFlag.MOB_DAMAGE));
-						return;
-					}
-				}
-			}
+		if (WorldGuardCompat.isSupported()
+				&& !WorldGuardHelper.isAllowedByWorldGuard(damager, damaged, DefaultFlag.MOB_DAMAGE)) {
+			Messages.debug("KillBlocked:(1) %s is hiding in WG region with mob-damage=DENY");
+			return;
 		}
 
 		DamageInformation info = null;
@@ -684,59 +676,40 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 
 		LivingEntity killed = event.getEntity();
 
-		// TODO: Handle Mob kills a Mob or what if MyPet kills a mob?.
 		Player killer = event.getEntity().getKiller();
 
+		// Killer is not a player and not a MyPet.
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
-			// Messages.debug("onMobDeath: Mob not killed by Player or MyPet.");
 			return;
 		}
 
 		// MobHunting is Disabled in World
 		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())) {
-			if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
+			if (WorldGuardCompat.isSupported()) {
 				if (killer != null || MyPetCompat.isMyPet(killer)) {
-					ApplicableRegionSet set = WorldGuardCompat.getWorldGuardPlugin().getRegionManager(killer.getWorld())
-							.getApplicableRegions(killer.getLocation());
-					if (set.size() > 0) {
-						if (set.allows(WorldGuardCompat.getMobHuntingFlag())) {
-							Messages.debug(
-									"KillBlocked %s(%d): Mobhunting disabled in world '%s'"
-											+ ",but MobHunting flag is (%s)",
-									killed.getType(), killed.getEntityId(), killed.getWorld().getName(),
-									set.allows(WorldGuardCompat.getMobHuntingFlag()));
-						} else {
-							Messages.debug(
-									"KillBlocked %s(%d): Mobhunting disabled in world '%s',"
-											+ " and MobHunting flag is '%s')",
-									killed.getType(), killed.getEntityId(), killed.getWorld().getName(),
-									set.allows(WorldGuardCompat.getMobHuntingFlag()));
-							Messages.learn(killer, Messages.getString("mobhunting.learn.disabled1"));
-							return;
-						}
-					} else {
+					if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag())) {
 						Messages.debug(
-								"KillBlocked %s(%d): Mobhunting disabled in world %s, "
-										+ "WG is supported, but player not in a WG region.",
+								"KillBlocked %s(%d): Mobhunting disabled in world '%s'"
+										+ ",but MobHunting=allow overrules.",
 								killed.getType(), killed.getEntityId(), killed.getWorld().getName());
-						// Messages.learn(killer,
-						// Messages.getString("mobhunting.learn.disabled2"));
+					} else {
+						Messages.debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'", killed.getType(),
+								killed.getEntityId(), killed.getWorld().getName());
+						Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
 						return;
 					}
+
 				}
 				// killer is not a player - MobHunting is allowed
 			} else {
 				// MobHunting is NOT allowed in world and no support for WG
 				// reject.
 				Messages.debug("KillBlocked: MobHunting disabled in world and Worldguard is not supported");
-				// Messages.learn(killer,
-				// Messages.getString("mobhunting.learn.disabled2"));
 				return;
 			}
 
@@ -745,32 +718,24 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// MyPet Compatibility
-		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class) && WorldGuardCompat.isEnabledInConfig()) {
-			if (killer != null || MyPetCompat.isMyPet(killer)) {
-
-				ApplicableRegionSet set = WorldGuardCompat.getWorldGuardPlugin().getRegionManager(killer.getWorld())
-						.getApplicableRegions(killer.getLocation());
-
-				if (set.size() > 0) {
-					Messages.debug("Found %s Worldguard region(s): MOB_DAMAGE flag is %s", set.size(),
-							set.allows(DefaultFlag.MOB_DAMAGE));
-					if (!set.allows(DefaultFlag.MOB_DAMAGE)) {
-						if (set.allows(WorldGuardCompat.getMobHuntingFlag())) {
-							Messages.debug(
-									"KillAllowed:(1) %s is hiding in WG region with MOB_DAMAGE %s but this is overruled with MobHunting=allow",
-									killer.getName(), set.allows(DefaultFlag.MOB_DAMAGE));
-						} else {
-							Messages.debug("KillBlocked:(2) %s is hiding in WG region with MOB_DAMAGE %s",
-									killer.getName(), set.allows(DefaultFlag.MOB_DAMAGE));
-							Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
-							return;
-						}
-					} else if (!set.allows(WorldGuardCompat.getMobHuntingFlag())) {
-						Messages.debug("KillBlocked: %s is hiding in WG region with MOBHUNTING FLAG %s",
-								killer.getName(), set.allows(WorldGuardCompat.getMobHuntingFlag()));
-						Messages.learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
+		if (WorldGuardCompat.isSupported()) {
+			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
+				if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, DefaultFlag.MOB_DAMAGE)) {
+					if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag())) {
+						Messages.debug(
+								"KillAllowed:(1) %s is hiding in WG region, but this is overruled with MobHunting=allow",
+								killer.getName());
+					} else {
+						Messages.debug("KillBlocked:(2) %s is hiding in WG region with mob-damage=DENY",
+								killer.getName());
+						Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
 						return;
 					}
+				} else if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed,
+						WorldGuardHelper.getMobHuntingFlag())) {
+					Messages.debug("KillBlocked: %s is in a protected region mobhunting=DENY", killer.getName());
+					Messages.learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
+					return;
 				}
 			}
 		}
@@ -804,7 +769,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				return;
 			} else if (killer != null) {
 				if (killed.equals(killer)) {
-					// Suiside
+					// Suicide
 					Messages.learn(killer, Messages.getString("mobhunting.learn.suiside"));
 					Messages.debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(),
 							killed.getName());
@@ -1136,7 +1101,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// cash += reward;
 
 		if ((cash >= 0.01) || (cash <= -0.01)) {
-			// TODO: This must be moved, only works for cash!=0
 
 			// Handle MobHuntKillEvent
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, killer);

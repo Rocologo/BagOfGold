@@ -127,13 +127,15 @@ public class HeadCommand implements ICommand, Listener {
 						return false;
 					}
 				}
-				String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
-						.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
-						.replace("{playerid}", mob.getPlayerId()).replace("{texturevalue}", mob.getTextureValue())
-						.replace("{amount}", String.valueOf(amount))
-						.replace("{playername}", offlinePlayer != null ? offlinePlayer.getName() : "MHF_Alex");
-				Messages.debug("Head cmdString=%s", cmdString);
-				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
+				if (mob != null) {
+					String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
+							.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
+							.replace("{playerid}", mob.getPlayerId()).replace("{texturevalue}", mob.getTextureValue())
+							.replace("{amount}", String.valueOf(amount))
+							.replace("{playername}", offlinePlayer != null ? offlinePlayer.getName() : "MHF_Alex");
+					Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
+					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
+				}
 			}
 
 			return true;
