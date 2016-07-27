@@ -142,7 +142,8 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################"
 						+ "\nReward for kills in a row"
 						+ "\n########################################################################"
-						+ "\nSet the multiplier when the player kills 1,2,3,4 mob in a row without getting damage.");
+						+ "\nSet the multiplier when the player kills 1,2,3,4 mob in a row without getting damage."
+						+ "\nKillstreak will be disabled if you set the multiplier: 1.0");
 
 		setCategoryComment("multiplier", "########################################################################"
 				+ "\nRank multipliers and world difficulty multipliers"
@@ -266,9 +267,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "enderman", category = "mobs")
 	public String endermanPrize = "20:40";
 	@ConfigField(name = "enderman-cmd", category = "mobs")
-	public String endermanCmd = "mh head give {player} Enderman|give {player} iron_ingot 1";
+	public String endermanCmd = "mh head give {player} Enderman|give {player} gold_ingot 1";
 	@ConfigField(name = "enderman-cmd-desc", category = "mobs")
-	public String endermanCmdDesc = "You got a Enderman skull and an Iron ingot.";
+	public String endermanCmdDesc = "You got a Enderman skull and an Gold ingot.";
 	@ConfigField(name = "enderman-cmd-run-frequency", category = "mobs")
 	public int endermanFrequency = 20;
 	@ConfigField(name = "enderman-cmd-run-frequency-base", category = "mobs")
@@ -288,9 +289,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "skeleton", category = "mobs")
 	public String skeletonPrize = "10:30";
 	@ConfigField(name = "skeleton-cmd", category = "mobs")
-	public String skeletonCmd = "mh head give {player} Skeleton|give {player} iron_ingot 1";
+	public String skeletonCmd = "mh head give {player} Skeleton|give {player} 351:4 1";
 	@ConfigField(name = "skeleton-cmd-desc", category = "mobs")
-	public String skeletonCmdDesc = "You got a Skeleton skull and an Iron ingot.";
+	public String skeletonCmdDesc = "You got 1 Skeleton skull and 1 Lapis Lazuli.";
 	@ConfigField(name = "skeleton-cmd-run-frequency", category = "mobs")
 	public int skeletonFrequency = 5;
 	@ConfigField(name = "skeleton-cmd-run-frequency-base", category = "mobs")
@@ -299,9 +300,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "wither-skeleton", category = "mobs")
 	public String witherSkeletonPrize = "30:50";
 	@ConfigField(name = "wither-skeleton-cmd", category = "mobs")
-	public String witherSkeletonCmd = "mh head give {player} WitherSkeleton|give {player} iron_ingot 1";
+	public String witherSkeletonCmd = "mh head give {player} WitherSkeleton|give {player} gold_ingot 1";
 	@ConfigField(name = "wither-skeleton-cmd-desc", category = "mobs")
-	public String witherSkeletonCmdDesc = "You got a Wither Skeleton skull and an Iron ingot.";
+	public String witherSkeletonCmdDesc = "You got 1 Wither Skeleton skull and 1 Gold ingot.";
 	@ConfigField(name = "wither-skeleton-cmd-run-frequency", category = "mobs")
 	public int witherSkeletonFrequency = 10;
 	@ConfigField(name = "wither-skeleton-cmd-run-frequency-base", category = "mobs")
@@ -332,9 +333,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "witch", category = "mobs")
 	public String witchPrize = "10:15";
 	@ConfigField(name = "witch-cmd", category = "mobs")
-	public String witchCmd = "mh head give {player} Witch|give {player} iron_ingot 1";
+	public String witchCmd = "mh head give {player} Witch|give {player} gold_ingot 1";
 	@ConfigField(name = "witch-cmd-desc", category = "mobs")
-	public String witchCmdDesc = "You got a Witch skull and an Iron ingot.";
+	public String witchCmdDesc = "You got a Witch skull and an Gold ingot.";
 	@ConfigField(name = "witch-cmd-run-frequency", category = "mobs")
 	public int witchFrequency = 5;
 	@ConfigField(name = "witch-cmd-run-frequency-base", category = "mobs")
@@ -354,9 +355,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "ghast", category = "mobs")
 	public String ghastPrize = "40:80";
 	@ConfigField(name = "ghast-cmd", category = "mobs")
-	public String ghastCmd = "mh head give {player} Ghast|give {player} iron_ingot 1";
+	public String ghastCmd = "mh head give {player} Ghast|give {player} 406 4";
 	@ConfigField(name = "ghast-cmd-desc", category = "mobs")
-	public String ghastCmdDesc = "You got a Ghast skull and an Iron ingot.";
+	public String ghastCmdDesc = "You got a Ghast skull and 4 Nether Quartz.";
 	@ConfigField(name = "ghast-cmd-run-frequency", category = "mobs")
 	public int ghastFrequency = 10;
 	@ConfigField(name = "ghast-cmd-run-frequency-base", category = "mobs")
@@ -365,9 +366,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "iron-golem", category = "mobs")
 	public String ironGolemPrize = "20:40";
 	@ConfigField(name = "iron-golem-cmd", category = "mobs")
-	public String ironGolemCmd = "mh head give {player} Iron_Golem|give {player} iron_ingot 1";
+	public String ironGolemCmd = "mh head give {player} Iron_Golem|give {player} iron_ingot 4";
 	@ConfigField(name = "iron-golem-cmd-desc", category = "mobs")
-	public String ironGolemCmdDesc = "You got an Iron Golem skull and an Iron ingot.";
+	public String ironGolemCmdDesc = "You got an Iron Golem skull and 4 Iron ingot.";
 	@ConfigField(name = "iron-golem-cmd-run-frequency", category = "mobs")
 	public int ironGolemFrequency = 10;
 	@ConfigField(name = "iron-golem-cmd-run-frequency-base", category = "mobs")
@@ -489,9 +490,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "wither", category = "boss")
 	public String witherPrize = "1000.0:2000.0";
 	@ConfigField(name = "wither-cmd", category = "boss")
-	public String witherCmd = "mh head give {player} Wither|give {player} diamond 2";
+	public String witherCmd = "mh head give {player} Wither|give {player} diamond 10";
 	@ConfigField(name = "wither-cmd-desc", category = "boss")
-	public String witherCmdDesc = "You got a Wither skull and two Diamonds.";
+	public String witherCmdDesc = "You got a Wither skull and 10 Diamonds.";
 	@ConfigField(name = "wither-cmd-run-frequency", category = "boss")
 	public int witherFrequency = 100;
 	@ConfigField(name = "wither-cmd-run-frequency-base", category = "boss")
@@ -500,9 +501,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "enderdragon", category = "boss")
 	public String enderdragonPrize = "2000.0:5000.0";
 	@ConfigField(name = "enderdragon-cmd", category = "boss")
-	public String enderdragonCmd = "mh head give {player} Enderdragon|give {player} diamond 2";
+	public String enderdragonCmd = "mh head give {player} Enderdragon|give {player} diamond 10";
 	@ConfigField(name = "enderdragon-cmd-desc", category = "boss")
-	public String enderdragonCmdDesc = "You got a Enderdragon skull and two Diamonds.";
+	public String enderdragonCmdDesc = "You got a Enderdragon skull and 10 Diamonds.";
 	@ConfigField(name = "enderdragon-cmd-run-frequency", category = "boss")
 	public int enderdragonFrequency = 100;
 	@ConfigField(name = "enderdragon-cmd-run-frequency-base", category = "boss")
