@@ -16,7 +16,7 @@ public class ActionBarAPICompat {
 
 	public ActionBarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with ActionBarAPI in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with ActionBarAPI is disabled in config.yml");
 		} else {
 			mPlugin = (ActionBarAPI) Bukkit.getPluginManager().getPlugin("ActionBarAPI");
 

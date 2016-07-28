@@ -52,6 +52,7 @@ import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaHelper;
+import one.lindegaard.MobHunting.compatibility.TARDSISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
@@ -97,6 +98,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
+
+import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngelsAPI;
 
 public class MobHunting extends JavaPlugin implements Listener {
 
@@ -212,6 +215,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(GringottsCompat.class, "Gringotts");
+		registerPlugin(TARDSISWeepingAngelsCompat.class, "TARDISWeepingAngels");
 
 		// register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",

@@ -14,7 +14,7 @@ public class BarAPICompat {
 
 	public BarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with BarAPI in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with BarAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
 

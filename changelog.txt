@@ -1,9 +1,11 @@
 V3.3.6
-- Killstreak can now be disabled if you set the multiplier to 1.0
+- Killstreak can now be completely disabled if you set the multiplier to 1.0
 - Learning messages is updated to fit into the Bossbar.
 - Fixed a possible NullPointerException bug in WorldGuardHelper.
 - Fixed "Could not pass event PlayerMoveEvent to MobHunting v3.3.5" error.
 - pom.xml update with time stamp in filename yyyyMMddHHmmss.
+- MobHunting does now force /mh head to use the minecraft:give command.
+- Added support for TARDISWeepingAngels
 V3.3.5
 - Stray Head updated
 - Elder Guardian Mob Added. (Strange that nobody has noticed that Elder Guardian was missing???)

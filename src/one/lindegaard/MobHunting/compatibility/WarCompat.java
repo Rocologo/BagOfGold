@@ -8,7 +8,7 @@ import one.lindegaard.MobHunting.MobHunting;
 public class WarCompat implements Listener {
 	public WarCompat() {
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-		MobHunting.getInstance().getLogger().info("Enabling War Compatibility"); //$NON-NLS-1$
+		MobHunting.getInstance().getLogger().info("Enabling War Compatibility"); 
 	}
 
 }

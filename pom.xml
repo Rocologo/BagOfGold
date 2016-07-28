@@ -46,6 +46,7 @@
 		<TitleAPI.jar.version>TitleAPI-1.7.3.jar</TitleAPI.jar.version>
 		<VanishNoPacket.jar.version>VanishNoPacket3.20.jar</VanishNoPacket.jar.version>
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
+		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B74.jar</TARDISWeepingAngels.jar.version>
 	</properties>
 
 	<organization>
@@ -110,7 +111,7 @@
 					<relocations>
 						<relocation>
 							<pattern>org.mcstats</pattern>
-							<shadedPattern>one.lindegaard.HobHunting</shadedPattern>
+							<shadedPattern>one.lindegaard.MobHunting</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -343,6 +344,12 @@
 			<id>MobStacker-github</id>
 			<url>https://github.com/KiwiFisher/MobStacker.git</url>
 		</repository>
+		
+		<!-- TARDISWeepingangels -->
+		<repository>
+			<id>TARDISWeepingAngels-github</id>
+			<url>https://github.com/eccentricdevotion/TARDISWeepingAngels.git</url>
+		</repository>
 
 	</repositories>
 
@@ -504,7 +511,16 @@
 			<artifactId>TitleManager</artifactId>
 			<version>${titlemanager.version}</version>
 		</dependency>
-		
+
+		<!-- TARDISWeepingangels -->
+		<dependency>
+			<groupId>me.eccentric_nz.tardisweepingangels</groupId>
+			<artifactId>TARDISWeepingAngels</artifactId>
+			<version>${TARDISWeepingAngels.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${TARDISWeepingAngels.jar.version}</systemPath>
+		</dependency>
+				
 		<!-- iDisguise -->
 		<dependency>
 			<groupId>de.robingrether.idisguise</groupId>
@@ -611,9 +627,6 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${ActionAnnouncer.jar.version}</systemPath>
 		</dependency>
-
-		
-
 	</dependencies>
 
 	<dependencyManagement>

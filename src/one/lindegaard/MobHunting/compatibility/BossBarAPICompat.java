@@ -13,7 +13,7 @@ public class BossBarAPICompat {
 
 	public BossBarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with BossBarAPI in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with BossBarAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BossBarAPI");
 

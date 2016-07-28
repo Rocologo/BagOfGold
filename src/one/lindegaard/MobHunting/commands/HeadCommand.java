@@ -112,7 +112,7 @@ public class HeadCommand implements ICommand, Listener {
 				if (args.length >= 4) {
 					displayName = args[3].replace("_", " ");
 				} else {
-					if (mob != null)
+					if (mob != ExtendedMobType.PvpPlayer)
 						displayName = mob.getDisplayName().replace("_", " ");
 					else
 						displayName = offlinePlayer.getName();
@@ -129,6 +129,7 @@ public class HeadCommand implements ICommand, Listener {
 				}
 				if (mob != null) {
 					String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
+							.replace("give", "minecraft:give")
 							.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
 							.replace("{playerid}", mob.getPlayerId()).replace("{texturevalue}", mob.getTextureValue())
 							.replace("{amount}", String.valueOf(amount))

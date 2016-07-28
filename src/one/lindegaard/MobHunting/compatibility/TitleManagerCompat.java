@@ -16,7 +16,7 @@ public class TitleManagerCompat {
 
 	public TitleManagerCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with TitleManager in config.yml");
+			MobHunting.getInstance().getLogger().info("Compatibility with TitleManager is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TitleManager");
 

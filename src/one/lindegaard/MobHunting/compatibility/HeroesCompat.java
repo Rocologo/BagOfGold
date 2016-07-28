@@ -8,7 +8,7 @@ import one.lindegaard.MobHunting.MobHunting;
 public class HeroesCompat implements Listener {
 	public HeroesCompat() {
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-		MobHunting.getInstance().getLogger().info("Enabling Heroes Compatibility"); //$NON-NLS-1$
+		MobHunting.getInstance().getLogger().info("Enabling Heroes Compatibility");
 	}
 
 }
