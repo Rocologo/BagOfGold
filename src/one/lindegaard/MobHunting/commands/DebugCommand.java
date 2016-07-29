@@ -2,18 +2,15 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.Listener;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
-public class DebugCommand implements ICommand, Listener {
+public class DebugCommand implements ICommand {
 
 	public DebugCommand() {
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
 	// Used case

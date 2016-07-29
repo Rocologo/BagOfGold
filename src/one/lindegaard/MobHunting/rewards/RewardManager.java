@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.milkbowl.vault.economy.Economy;
@@ -11,19 +12,22 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
-public class RewardManager {
+public class RewardManager implements Listener {
 
 	private static Economy mEconomy;
 
 	public RewardManager(MobHunting instance) {
-		RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager()
+		RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
 				.getRegistration(Economy.class);
 		if (economyProvider == null) {
-			Bukkit.getLogger().severe(Messages.getString(instance.getName() + ".hook.econ"));
-			Bukkit.getServer().getPluginManager().disablePlugin(instance);
+			Bukkit.getLogger().severe(Messages.getString(instance.getName().toLowerCase() + ".hook.econ"));
+			Bukkit.getPluginManager().disablePlugin(instance);
 			return;
 		}
 		mEconomy = economyProvider.getProvider();
+		
+		Bukkit.getPluginManager().registerEvents(new Rewards(), instance);
+		
 	}
 
 	public Economy getEconomy() {

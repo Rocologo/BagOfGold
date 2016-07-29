@@ -25,8 +25,8 @@ import org.bukkit.event.Listener;
 
 public class NpcCommand implements ICommand, Listener {
 
-	public NpcCommand() {
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+	public NpcCommand(MobHunting instance) {
+		Bukkit.getPluginManager().registerEvents(this, instance);
 	}
 
 	// Used case (???)

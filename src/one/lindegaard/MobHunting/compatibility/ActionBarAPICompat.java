@@ -16,11 +16,11 @@ public class ActionBarAPICompat {
 
 	public ActionBarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with ActionBarAPI is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with ActionBarAPI is disabled in config.yml");
 		} else {
 			mPlugin = (ActionBarAPI) Bukkit.getPluginManager().getPlugin("ActionBarAPI");
 
-			MobHunting.getInstance().getLogger().info("Enabling compatibility with ActionBarAPI ("
+			Bukkit.getLogger().info("Enabling compatibility with ActionBarAPI ("
 					+ getActionBarAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}

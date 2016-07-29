@@ -2,22 +2,19 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 
-public class MuteCommand implements ICommand, Listener {
+public class MuteCommand implements ICommand {
 
 	public MuteCommand() {
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
 	// Used case

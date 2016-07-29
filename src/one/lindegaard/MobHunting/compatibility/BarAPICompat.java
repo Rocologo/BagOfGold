@@ -14,11 +14,11 @@ public class BarAPICompat {
 
 	public BarAPICompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with BarAPI is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with BarAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
 
-			MobHunting.getInstance().getLogger()
+			Bukkit.getLogger()
 					.info("Enabling compatibility with BarAPI (" + getBarAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}

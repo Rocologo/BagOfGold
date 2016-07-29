@@ -27,8 +27,8 @@ import one.lindegaard.MobHunting.storage.TimePeriod;
 public class LeaderboardCommand implements ICommand, Listener {
 	private WeakHashMap<Player, BoardState> mWaitingStates = new WeakHashMap<Player, BoardState>();
 
-	public LeaderboardCommand() {
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+	public LeaderboardCommand(MobHunting instance) {
+		Bukkit.getPluginManager().registerEvents(this, instance);
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class LeaderboardCommand implements ICommand, Listener {
 		return new String[] {
 				ChatColor.GOLD + label + ChatColor.GREEN + " create <type> <period> [isHorizonal?] " + ChatColor.YELLOW
 						+ "[<width> <height>]",
-						ChatColor.GOLD +label + ChatColor.GREEN + " delete <id>",
-						ChatColor.GOLD +label + ChatColor.GREEN + " edit (type|period|horizontal|addtype|addperiod) <value>" };
+				ChatColor.GOLD + label + ChatColor.GREEN + " delete <id>",
+				ChatColor.GOLD + label + ChatColor.GREEN + " edit (type|period|horizontal|addtype|addperiod) <value>" };
 	}
 
 	@Override

@@ -33,11 +33,11 @@ public class MobHuntingManager implements Listener {
 	/**
 	 * Constructor for MobHuntingManager
 	 * 
-	 * @param mobHunting
+	 * @param instance
 	 */
-	public MobHuntingManager(MobHunting mobHunting) {
-		this.instance = mobHunting;
-		Bukkit.getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
+	public MobHuntingManager(MobHunting instance) {
+		this.instance = instance;
+		Bukkit.getServer().getPluginManager().registerEvents(this, instance);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

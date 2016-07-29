@@ -63,7 +63,7 @@ public enum ExtendedMobType {
 	// {display:{Name:"Guardian"},SkullOwner:{Id:"e57e58c0-bb9c-4cb0-a0a2-c137dfc91164",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGZiNjc1Y2I1YTdlM2ZkMjVlMjlkYTgyNThmMjRmYzAyMGIzZmE5NTAzNjJiOGJjOGViMjUyZTU2ZTc0In19fQ=="}]}}}
 	Guardian("GUARDIAN", "MHF_Guardian", "2e9c0a67-92b3-4949-9be1-faf12318ee88", "Guardian Head",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTMyYzI0NTI0YzgyYWIzYjNlNTdjMjA1MmM1MzNmMTNkZDhjMGJlYjhiZGQwNjM2OWJiMjU1NGRhODZjMTIzIn19fQ=="),
-
+	
 	// Elder Guardian
 	// /give @p skull 1 3 {display:{Name:"Elder
 	// Guardian"},SkullOwner:{Id:"4d43444c-2455-4f6e-b2bd-924b7e5050f3",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFkYzRhNmY1M2FmYTExNjAyN2I1MWQ2ZjJlNDMzZWU3YWZhNWQ1OWIyZmZhMDQ3ODBiZTQ2NGZhNWQ2MWEifX19"}]}}}
@@ -73,13 +73,13 @@ public enum ExtendedMobType {
 	// Guardian"},SkullOwner:{Id:"1132b69e-5ca8-4393-819c-7b2a9cb68d0d",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzIzZDU4ODU5YTFhYTIyYmYwZWY5NjZiYjI5NDVjYzM5NjJiYjRiZTVmZWQ0ZTM2OWU3ZjExMjg1NzM1MWYyMiJ9fX0="}]}}}
 	ElderGuardian("ELDER_GUARDIAN", "MHF_EGuardian", "4d43444c-2455-4f6e-b2bd-924b7e5050f3", "Elder Guardian Head",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFkYzRhNmY1M2FmYTExNjAyN2I1MWQ2ZjJlNDMzZWU3YWZhNWQ1OWIyZmZhMDQ3ODBiZTQ2NGZhNWQ2MWEifX19"),
-
+	
 	// KillerRabbit
 	// give @p skull 1 3 {display:{Name:"Killer
 	// Rabbit"},SkullOwner:{Id:"b9aa36fd-8584-4d2d-948c-278a58ac1a54",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzA4OGNkNjE0MTg5NDU4ZDk5YzJmYmVkNTg0NDg4OTVlYTZiMjZmYzY2N2EyYzU5MTlmNzE0Y2VlNjQ4ZDExIn19fQ=="}]}}}
 	KillerRabbit("KILLERRABBIT", "MHF_KillerRabbit", "b9aa36fd-8584-4d2d-948c-278a58ac1a54", "Killer Rabbit Head",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzA4OGNkNjE0MTg5NDU4ZDk5YzJmYmVkNTg0NDg4OTVlYTZiMjZmYzY2N2EyYzU5MTlmNzE0Y2VlNjQ4ZDExIn19fQ=="),
-
+	
 	// Player
 	// give @p skull 1 3
 	// {display:{Name:"Player"},SkullOwner:{Id:"65b24bc2-0774-49cf-9118-18e826418a3a",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjNiMDk4OTY3MzQwZGFhYzUyOTI5M2MyNGUwNDkxMDUwOWIyMDhlN2I5NDU2M2MzZWYzMWRlYzdiMzc1MCJ9fX0="}]}}}
@@ -431,9 +431,31 @@ public enum ExtendedMobType {
 	public String getCommandString() {
 		switch (this) {
 		case PvpPlayer:
-			return "give {player} skull {amount} 3 {display:{Name:\"{displayname}\",Lore:[{lore}]},SkullOwner:\"{playername}\"}";
+		case Blaze:
+		case CaveSpider:
+		case Chicken:
+		case Cow:
+		case Creeper:
+		case Enderman:
+		case Ghast:
+		case IronGolem:
+		case MagmaCube:
+		case Slime:
+		case MushroomCow:
+		case Ocelot:
+		case Pig:
+		case Sheep:
+		case PassiveRabbit:
+		case Shulker:
+		case Skeleton:
+		case Spider:
+		case Squid:
+		case WitherSkeleton:
+		case Zombie:
+		case ZombiePigman:
+			return "minecraft:give {player} skull {amount} 3 {SkullOwner:\"{playername}\",display:{Name:\"{displayname}\",Lore:[{lore}]}}";
 		default:
-			return "give {player} skull {amount} 3 {display:{Name:\"{displayname}\",Lore:[{lore}]},SkullOwner:{Id:\"{playerid}\",Properties:{textures:[{Value:\"{texturevalue}\"}]}}}";
+			return "minecraft:give {player} skull {amount} 3 {SkullOwner:{Id:\"{playerid}\",Properties:{textures:[{Value:\"{texturevalue}\"}]}},display:{Name:\"{displayname}\",Lore:[{lore}]}}";
 		}
 	}
 
@@ -463,6 +485,13 @@ public enum ExtendedMobType {
 		skullMeta.setOwner(mPlayerProfile);
 		skull.setItemMeta(skullMeta);
 		return skull;
+	}
+
+	/**
+	 * @return the mPlayerProfile
+	 */
+	public String getPlayerProfile() {
+		return mPlayerProfile;
 	}
 
 	private ItemStack getSkullFromOtherPlayer(String name) {

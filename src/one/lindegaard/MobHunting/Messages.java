@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -32,8 +33,8 @@ public class Messages {
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 
-	public static void exportDefaultLanguages() {
-		File folder = new File(MobHunting.getInstance().getDataFolder(), "lang");
+	public static void exportDefaultLanguages(MobHunting plugin) {
+		File folder = new File(plugin.getDataFolder(), "lang");
 		if (!folder.exists())
 			folder.mkdirs();
 
@@ -42,16 +43,15 @@ public class Messages {
 		for (String source : sources) {
 			File dest = new File(folder, source);
 			if (!dest.exists()) {
-				MobHunting.getInstance().getLogger().info("Creating language file " + source + " from JAR.");
-				MobHunting.getInstance().saveResource("lang/" + source, false);
+				Bukkit.getLogger().info("Creating language file " + source + " from JAR.");
+				plugin.saveResource("lang/" + source, false);
 				mTranslationTable = loadLang(dest);
 			} else {
 				if (!injectChanges(
 
-						MobHunting.getInstance().getResource("lang/" + source),
-						new File(MobHunting.getInstance().getDataFolder(), "lang/" + source))) {
+						plugin.getResource("lang/" + source), new File(plugin.getDataFolder(), "lang/" + source))) {
 
-					MobHunting.getInstance().saveResource("lang/" + source, true);
+					plugin.saveResource("lang/" + source, true);
 				}
 			}
 		}
@@ -68,7 +68,7 @@ public class Messages {
 			HashMap<String, String> newEntries = new HashMap<String, String>();
 			for (String key : source.keySet()) {
 				if (!dest.containsKey(key)) {
-					MobHunting.getInstance().getLogger().info("Missing key in language file: " + key);
+					Bukkit.getLogger().info("Missing key in language file: " + key);
 					newEntries.put(key, source.get(key));
 				}
 			}
@@ -80,7 +80,7 @@ public class Messages {
 
 				writer.close();
 
-				MobHunting.getInstance().getLogger().info("Updated " + onDisk.getName() + " translation");
+				Bukkit.getLogger().info("Updated " + onDisk.getName() + " translation");
 			}
 
 			return true;
@@ -146,8 +146,7 @@ public class Messages {
 			String encoding = detectEncoding(file);
 			if (encoding == null) {
 				FileInputStream input = new FileInputStream(file);
-				MobHunting.getInstance().getLogger()
-						.warning("Could not detect encoding of lang file. Defaulting to UTF-8");
+				Bukkit.getLogger().warning("Could not detect encoding of lang file. Defaulting to UTF-8");
 				map = loadLang(input, "UTF-8");
 				input.close();
 			}
@@ -166,19 +165,19 @@ public class Messages {
 	public static void setLanguage(String lang) {
 		File file = new File(MobHunting.getInstance().getDataFolder(), "lang/" + lang + ".lang");
 		if (!file.exists()) {
-			MobHunting.getInstance().getLogger().severe("Language file does not exist.");
+			Bukkit.getLogger().severe("Language file does not exist.");
 			file = new File(MobHunting.getInstance().getDataFolder(), "lang/en_US.lang");
 		}
 
 		if (file.exists()) {
 			mTranslationTable = loadLang(file);
 		} else {
-			MobHunting.getInstance().getLogger().warning("Could not read the translation file:" + file.getName());
+			Bukkit.getLogger().warning("Could not read the translation file:" + file.getName());
 		}
 
 		if (mTranslationTable == null) {
 			mTranslationTable = new HashMap<String, String>();
-			MobHunting.getInstance().getLogger().warning("Creating new translation table.");
+			Bukkit.getLogger().warning("Creating new translation table.");
 		}
 	}
 
@@ -186,7 +185,7 @@ public class Messages {
 		String value = mTranslationTable.get(key);
 
 		if (value == null) {
-			MobHunting.getInstance().getLogger().warning("mTranslationTable has not key: " + key.toString());
+			Bukkit.getLogger().warning("mTranslationTable has not key: " + key.toString());
 			throw new MissingResourceException("", "", key);
 		}
 
@@ -235,7 +234,7 @@ public class Messages {
 
 			return ChatColor.translateAlternateColorCodes('&', output);
 		} catch (MissingResourceException e) {
-			MobHunting.getInstance().getLogger().warning("Mobhunt could not find key: " + key.toString());
+			Bukkit.getLogger().warning("Mobhunt could not find key: " + key.toString());
 			return key;
 		}
 	}
@@ -269,17 +268,15 @@ public class Messages {
 
 	public static void debug(String text, Object... args) {
 		if (MobHunting.getConfigManager().killDebug)
-			MobHunting.getInstance().getLogger().info("[Debug] " + String.format(text, args));
+			Bukkit.getLogger().info("[Debug] " + String.format(text, args));
 	}
 
 	public static void learn(Player player, String text, Object... args) {
 		if (player != null && !CitizensCompat.isNPC(player)
 				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode())
-			if (!MobHunting.getConfigManager().disableIntegrationBossBarAPI && BossBarAPICompat.isSupported()
-					&& BossBarAPICompat.isEnabledInConfig()) {
+			if (BossBarAPICompat.isSupported()) {
 				BossBarAPICompat.addBar(player, text);
-			} else if (!MobHunting.getConfigManager().disableIntegrationBarAPI && BarAPICompat.isSupported()
-					&& BarAPICompat.isEnabledInConfig()) {
+			} else if (BarAPICompat.isSupported()) {
 				BarAPICompat.setMessageTime(player, text, 5);
 			} else {
 				player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
@@ -288,14 +285,13 @@ public class Messages {
 	}
 
 	public static void playerActionBarMessage(Player player, String message) {
-		if (!MobHunting.getConfigManager().disableIntegrationTitleManager && TitleManagerCompat.isSupported()) {
+		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.setActionBar(player, message);
-		} else if (!MobHunting.getConfigManager().disableIntegrationActionbar && ActionbarCompat.isSupported()) {
+		} else if (ActionbarCompat.isSupported()) {
 			ActionbarCompat.setMessage(player, message);
-		} else if (!MobHunting.getConfigManager().disableIntegrationActionAnnouncer
-				&& ActionAnnouncerCompat.isSupported()) {
+		} else if (ActionAnnouncerCompat.isSupported()) {
 			ActionAnnouncerCompat.setMessage(player, message);
-		} else if (!MobHunting.getConfigManager().disableIntegrationActionBarAPI && ActionBarAPICompat.isSupported()) {
+		} else if (ActionBarAPICompat.isSupported()) {
 			ActionBarAPICompat.setMessage(player, message);
 		} else {
 			player.sendMessage(message);

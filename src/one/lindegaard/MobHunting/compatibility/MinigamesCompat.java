@@ -14,11 +14,11 @@ import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
 public class MinigamesCompat implements Listener {
 	public MinigamesCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Compatibility with MiniGames is disabled in config.yml");
 		} else {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Enabling compatibility with Minigames");
 		}
 	}

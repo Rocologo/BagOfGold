@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -24,15 +25,15 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class AreaManager implements Listener {
 
-	private MobHunting instance;
+	// private MobHunting instance;
 	private static ArrayList<Area> mKnownGrindingSpots = new ArrayList<Area>();
 	private static HashMap<UUID, LinkedList<Area>> mWhitelistedAreas = new HashMap<UUID, LinkedList<Area>>();
 
 	public AreaManager(MobHunting instance) {
-		this.instance = instance;
-		if (!loadWhitelist())
+		// this.instance = instance;
+		if (!loadWhitelist(instance))
 			throw new RuntimeException();
-		instance.getServer().getPluginManager().registerEvents(this, instance);
+		Bukkit.getPluginManager().registerEvents(this, instance);
 	}
 
 	public ArrayList<Area> getKnownGrindingSpots() {
@@ -77,7 +78,7 @@ public class AreaManager implements Listener {
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean loadWhitelist() {
+	private boolean loadWhitelist(MobHunting instance) {
 		YamlConfiguration whitelist = new YamlConfiguration();
 		File file = new File(instance.getDataFolder(), "whitelist.yml");
 
@@ -184,7 +185,7 @@ public class AreaManager implements Listener {
 
 		saveWhitelist();
 	}
-	
+
 	public void registerKnownGrindingSpot(Area newArea) {
 		for (Area area : getKnownGrindingSpots()) {
 			if (newArea.center.getWorld().equals(area.center.getWorld())) {
@@ -211,7 +212,7 @@ public class AreaManager implements Listener {
 	public Area getGrindingArea(Location location) {
 		for (Area area : getKnownGrindingSpots()) {
 			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range){
+				if (area.center.distance(location) < area.range) {
 					Messages.debug("Found a grinding area = %s", area.center);
 					return area;
 				}
@@ -232,8 +233,6 @@ public class AreaManager implements Listener {
 			}
 		}
 	}
-
-
 
 	@EventHandler
 	private void onWorldLoad(WorldLoadEvent event) {

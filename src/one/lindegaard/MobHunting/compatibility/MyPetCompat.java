@@ -21,11 +21,11 @@ public class MyPetCompat implements Listener {
 
 	public MyPetCompat() {
 		if (MobHunting.getConfigManager().disableIntegrationMyPet) {
-			MobHunting.getInstance().getLogger().info("Compatibility with MyPet is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with MyPet is disabled in config.yml");
 		} else {
 			mPlugin = (MyPetPlugin) Bukkit.getPluginManager().getPlugin("MyPet");
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-			MobHunting.getInstance().getLogger()
+			Bukkit.getLogger()
 					.info("Enabling compatibility with MyPet (" + getMyPetPlugin().getDescription().getVersion() + ")");
 			supported = true;
 		}

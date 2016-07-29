@@ -18,11 +18,11 @@ public class PVPArenaCompat implements Listener {
 
 	public PVPArenaCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Compatibility with PvpArena is disabled in config.yml");
 		} else {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Enabling PVPArena Compatibility");
 			supported = true;
 		}

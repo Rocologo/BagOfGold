@@ -11,13 +11,13 @@ public class WorldGuardCompat {
 	private static WorldGuardPlugin mPlugin;
 	public WorldGuardCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with WorldGuard is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with WorldGuard is disabled in config.yml");
 		} else {
 			mPlugin = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
 			
 			if (mPlugin != null)
 				if (getWorldGuardPlugin().getDescription().getVersion().startsWith("5")) {
-					MobHunting.getInstance().getLogger()
+					Bukkit.getLogger()
 							.warning("Your current version of WorldGuard ("
 									+ getWorldGuardPlugin().getDescription().getVersion()
 									+ ") is not supported by MobHunting. Mobhunting does only support 6.0+");
@@ -25,9 +25,7 @@ public class WorldGuardCompat {
 					
 					WorldGuardHelper.addMobHuningFlag();
 					
-					Bukkit.getServer().getPluginManager().registerEvents(new WorldGuardHelper(), MobHunting.getInstance());
-					
-					MobHunting.getInstance().getLogger().info("Enabling compatibility with WorldGuard ("
+					Bukkit.getLogger().info("Enabling compatibility with WorldGuard ("
 							+ mPlugin.getDescription().getVersion() + ")");
 					supported = true;
 					

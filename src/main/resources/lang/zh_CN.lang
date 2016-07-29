@@ -273,6 +273,7 @@ leaderboard.exists=The leaderboard ${id} already exists
 leaderboard.notexists=The leaderboard ${id} does not exist
 
 mobhunting.learn.prefix=[MobHunting]
+mobhunting.learn.overruled=MobHunting disabled in ${huntworld}, but region allows mobhunting=allow 
 mobhunting.learn.disabled=MobHunting is disabled in this world by Admin.
 mobhunting.learn.mob-damage-flag=No reward: You are in a protected region with mob-damage=DENY
 mobhunting.learn.mobhunting-deny=No reward: You are in a protected region with MobHunting=DENY

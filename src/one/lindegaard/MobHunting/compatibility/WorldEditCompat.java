@@ -9,7 +9,6 @@ import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
 import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.MobHunting;
 
 public class WorldEditCompat {
 	private static WorldEditPlugin mPlugin;
@@ -18,7 +17,7 @@ public class WorldEditCompat {
 	public WorldEditCompat() {
 		mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 
-		MobHunting.getInstance().getLogger()
+		Bukkit.getLogger()
 				.info("Enabling compatibility with WorldEdit (" + getWorldEdit().getDescription().getVersion() + ")");
 		supported = true;
 	}

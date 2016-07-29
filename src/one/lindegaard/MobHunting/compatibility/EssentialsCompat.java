@@ -11,22 +11,19 @@ import one.lindegaard.MobHunting.MobHunting;
 public class EssentialsCompat implements Listener {
 
 	private static Essentials mPlugin;
-	private static boolean supported=false;
+	private static boolean supported = false;
 
 	public EssentialsCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info(
-					"Compatibility with Essentials is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with Essentials is disabled in config.yml");
 		} else {
-			mPlugin = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			MobHunting.getInstance()
-					.getLogger()
-					.info("Enabling compatibility with Essentials ("
-							+ getEssentials().getDescription().getVersion() + ")");
-			supported=true;
+			Bukkit.getLogger().info(
+					"Enabling compatibility with Essentials (" + getEssentials().getDescription().getVersion() + ")");
+			supported = true;
 		}
 	}
 
@@ -37,8 +34,8 @@ public class EssentialsCompat implements Listener {
 	public static Essentials getEssentials() {
 		return mPlugin;
 	}
-	
-	public static boolean isSupported(){
+
+	public static boolean isSupported() {
 		return supported;
 	}
 
@@ -49,19 +46,19 @@ public class EssentialsCompat implements Listener {
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationEssentials;
 	}
-	
-	public static boolean isGodModeEnabled(Player player){
+
+	public static boolean isGodModeEnabled(Player player) {
 		User user = getEssentials().getUser(player);
-	    return user.isGodModeEnabled();
+		return user.isGodModeEnabled();
 	}
-	
-	public static boolean isVanishedModeEnabled(Player player){
+
+	public static boolean isVanishedModeEnabled(Player player) {
 		User user = getEssentials().getUser(player);
-	    return user.isVanished();
+		return user.isVanished();
 	}
-	
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
-	
+
 }

@@ -17,11 +17,11 @@ public class ActionbarCompat {
 
 	public ActionbarCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with Actionbar is disabled in config.yml ");
+			Bukkit.getLogger().info("Compatibility with Actionbar is disabled in config.yml ");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("Actionbar");
 
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Enabling compatibility with Actionbar (" + getActionbar().getDescription().getVersion() + ")");
 			supported = true;
 		}

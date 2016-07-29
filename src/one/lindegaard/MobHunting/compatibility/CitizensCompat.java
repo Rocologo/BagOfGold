@@ -52,7 +52,7 @@ public class CitizensCompat implements Listener {
 
 	private void initialize() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with Citizens2 is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with Citizens2 is disabled in config.yml");
 		} else {
 			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin("Citizens");
 			if (citizensAPI == null)
@@ -61,7 +61,7 @@ public class CitizensCompat implements Listener {
 			TraitInfo trait = TraitInfo.create(MasterMobHunterTrait.class).withName("MasterMobHunter");
 			citizensAPI.getTraitFactory().registerTrait(trait);
 
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Enabling compatibility with Citizens (" + getCitizensPlugin().getDescription().getVersion() + ")");
 
 			supported = true;
@@ -71,14 +71,13 @@ public class CitizensCompat implements Listener {
 
 			// wait x seconds or until Citizens is fully loaded.
 			// TODO: wait until MasterMobHunterTrait is loaded.
-			MobHunting.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(MobHunting.getInstance(),
-					new Runnable() {
-						public void run() {
-							masterMobHunterManager.initialize();
-							findMissingSentry();
-							loadBountyDataForSentryOrSentinel();
-						}
-					}, 20 * 3); // 20ticks/sec * 10 sec.
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MobHunting.getInstance(), new Runnable() {
+				public void run() {
+					masterMobHunterManager.initialize();
+					findMissingSentry();
+					loadBountyDataForSentryOrSentinel();
+				}
+			}, 20 * 3); // 20ticks/sec * 10 sec.
 
 		}
 	}
@@ -234,7 +233,7 @@ public class CitizensCompat implements Listener {
 		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
 			NPC npc = npcList.next();
 			if (isSentryOrSentinel(npc.getEntity())) {
-				//MobHunting.getBountyManager().loadBounties(npc);
+				// MobHunting.getBountyManager().loadBounties(npc);
 			}
 		}
 	}

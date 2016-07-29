@@ -33,23 +33,20 @@ public class MythicMobsCompat implements Listener {
 	private static boolean supported = false;
 	private static Plugin mPlugin;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
-	private File file = new File(MobHunting.getInstance().getDataFolder(),
-			"mythicmobs-rewards.yml");
+	private File file = new File(MobHunting.getInstance().getDataFolder(), "mythicmobs-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
+	public static final String MH_MYTHICMOBS = "MH:MYTHICMOBS";
 
 	public MythicMobsCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info(
-					"Compatibility with MythicMobs is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with MythicMobs is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			MobHunting.getInstance().getLogger().info(
-					"Enabling Compatibility with MythicMobs ("
-							+ getMythicMobs().getDescription().getVersion()
-							+ ")");
+			Bukkit.getLogger().info(
+					"Enabling Compatibility with MythicMobs (" + getMythicMobs().getDescription().getVersion() + ")");
 			// API:
 			// http://xikage.elseland.net/viewgit/?a=tree&p=MythicMobs&h=dec796decd1ef71fdd49aed69aef85dc7d82b1c1&hb=ffeb51fb84e882365846a30bd2b9753716faf51e&f=MythicMobs/src/net/elseland/xikage/MythicMobs/API
 			supported = true;
@@ -69,8 +66,7 @@ public class MythicMobsCompat implements Listener {
 
 			config.load(file);
 			for (String key : config.getKeys(false)) {
-				ConfigurationSection section = config
-						.getConfigurationSection(key);
+				ConfigurationSection section = config.getConfigurationSection(key);
 				MobRewardData mob = new MobRewardData();
 				mob.read(section);
 				mob.setMobType(key);
@@ -104,8 +100,7 @@ public class MythicMobsCompat implements Listener {
 
 	public void saveMythicMobsData() {
 		try {
-			config.options()
-					.header("This a extra MobHunting config data for the MythicMobs on your server.");
+			config.options().header("This a extra MobHunting config data for the MythicMobs on your server.");
 
 			if (mMobRewardData.size() > 0) {
 
@@ -134,9 +129,7 @@ public class MythicMobsCompat implements Listener {
 				Messages.debug("Saving Mobhunting extra MythicMobs data.");
 				config.save(file);
 			} else {
-				Messages.debug(
-						"ERROR! MythicMobs ID (%s) is not found in mNPCData",
-						key);
+				Messages.debug("ERROR! MythicMobs ID (%s) is not found in mNPCData", key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -153,15 +146,15 @@ public class MythicMobsCompat implements Listener {
 	public static boolean isSupported() {
 		return supported;
 	}
-	
-	public static boolean isMythicMob(LivingEntity mob){
-		return mob.hasMetadata("MH:MythicMob");
+
+	public static boolean isMythicMob(LivingEntity mob) {
+		return mob.hasMetadata(MH_MYTHICMOBS);
 	}
-	
-	public static String getMythicMobType(LivingEntity mob){
-		List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+
+	public static String getMythicMobType(LivingEntity mob) {
+		List<MetadataValue> data = mob.getMetadata(MH_MYTHICMOBS);
 		MetadataValue value = data.get(0);
-		return ((MobRewardData) value.value()).getMobType();		
+		return ((MobRewardData) value.value()).getMobType();
 	}
 
 	public static HashMap<String, MobRewardData> getMobRewardData() {
@@ -181,30 +174,27 @@ public class MythicMobsCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
-		//Messages.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
-		//		.getLivingEntity().getType(), event.getMobType().getInternalName());
+		// Messages.debug("MythicMob spawn event: MinecraftMobtype=%s
+		// MythicMobType=%s", event
+		// .getLivingEntity().getType(), event.getMobType().getInternalName());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
-		Messages.debug("MythicMob spawn event: MinecraftMobtype=%s MythicMobType=%s", event
-				.getLivingEntity().getType(), event.getMobType().getInternalName());
-		if (mMobRewardData != null
-				&& !mMobRewardData.containsKey(event.getMobType().getInternalName())) {
-			Messages.debug("New MythicMobType found=%s,%s", event
-					.getMobType().getInternalName(), event.getMobType().getDisplayName());
-			mMobRewardData.put(event.getMobType().getInternalName(), new MobRewardData(
-					MobPlugins.MobPluginNames.MythicMobs, event.getMobType().getInternalName(), 
-					event.getMobType().getDisplayName(), "10",
-					"give {player} iron_sword 1", "You got an Iron sword.",
-					100, 100));
+		Messages.debug("MythicMobSpawnEvent: MinecraftMobtype=%s MythicMobType=%s", event.getLivingEntity().getType(),
+				event.getMobType().getInternalName());
+		if (mMobRewardData != null && !mMobRewardData.containsKey(event.getMobType().getInternalName())) {
+			Messages.debug("New MythicMobType found=%s,%s", event.getMobType().getInternalName(),
+					event.getMobType().getDisplayName());
+			mMobRewardData.put(event.getMobType().getInternalName(),
+					new MobRewardData(MobPlugins.MobPluginNames.MythicMobs, event.getMobType().getInternalName(),
+							event.getMobType().getDisplayName(), "10", "minecraft:give {player} iron_sword 1",
+							"You got an Iron sword.", 100, 100));
 			saveMythicMobsData(event.getMobType().getInternalName());
 		}
 
-		event.getLivingEntity().setMetadata(
-				"MH:MythicMob",
-				new FixedMetadataValue(mPlugin,
-						mMobRewardData.get(event.getMobType().getInternalName())));
+		event.getLivingEntity().setMetadata(MH_MYTHICMOBS,
+				new FixedMetadataValue(mPlugin, mMobRewardData.get(event.getMobType().getInternalName())));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -3,7 +3,7 @@ package one.lindegaard.MobHunting;
 public class MobPlugins {
 
 	public enum MobPluginNames {
-		Minecraft("Minecraft"), MythicMobs("MythicMobs"), Citizens("Citizens");
+		Minecraft("Minecraft"), MythicMobs("MythicMobs"), Citizens("Citizens"), TARDISWeepingAngels("TARDISWeepingAngels");
 
 		private final String name;
 

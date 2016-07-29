@@ -27,19 +27,19 @@ public class LibsDisguisesCompat implements Listener {
 
 	public LibsDisguisesCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance()
-					.getLogger()
+			Bukkit.getLogger()
 					.info("Compatibility with LibsDisguises is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("LibsDisguises");
 
-			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Enabling compatibility with LibsDisguises ("
 							+ getLibsDisguises().getDescription().getVersion()
 							+ ")");
+			
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+			
 			supported=true;
 		}
 	}

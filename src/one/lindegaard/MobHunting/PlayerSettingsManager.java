@@ -22,7 +22,7 @@ public class PlayerSettingsManager implements Listener {
 	 * Constructor for the PlayerSettingsmanager
 	 */
 	PlayerSettingsManager() {
-		Bukkit.getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
+		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
 	/**

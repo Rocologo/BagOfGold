@@ -42,14 +42,14 @@ public class BountyManager implements Listener {
 	public BountyManager(MobHunting instance) {
 		this.instance = instance;
 		// if (MobHunting.ENABLE_TEST_BOUNTY)
-		// addTestData();
+		//     addTestData();
 		initialize();
 	}
 
 	private void initialize() {
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 		if (MobHunting.getConfigManager().enableRandomBounty) {
-			Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Runnable() {
+				Bukkit.getPluginManager().registerEvents(this, instance);
+			Bukkit.getScheduler().runTaskTimer(instance, new Runnable() {
 				public void run() {
 					createRandomBounty();
 				}

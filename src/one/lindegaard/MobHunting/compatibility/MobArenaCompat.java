@@ -26,17 +26,14 @@ public class MobArenaCompat implements Listener {
 
 	public MobArenaCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info(
-					"Compatibility with MobArena is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with MobArena is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MobArena");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			MobHunting.getInstance()
-					.getLogger()
-					.info("Enabling compatibility with MobArena ("
-							+ getMobArena().getDescription().getVersion() + ")");
+			Bukkit.getLogger()
+					.info("Enabling compatibility with MobArena (" + getMobArena().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}
@@ -67,16 +64,14 @@ public class MobArenaCompat implements Listener {
 	// Happens when the player joins the Arena /ma join
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerJoinEvent(ArenaPlayerJoinEvent event) {
-		Messages.debug("[MH]Player %s joined MobArena: %s", event.getPlayer()
-				.getName(), event.getArena());
+		Messages.debug("[MH]Player %s joined MobArena: %s", event.getPlayer().getName(), event.getArena());
 		MobArenaHelper.startPlayingMobArena(event.getPlayer());
 	}
 
 	// Happens when the player leave the Arena /ma leave
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerLeaveEvent(ArenaPlayerLeaveEvent event) {
-		Messages.debug("[MH]Player %s left MobArena: %s", event.getPlayer()
-				.getName(), event.getArena());
+		Messages.debug("[MH]Player %s left MobArena: %s", event.getPlayer().getName(), event.getArena());
 		MobArenaHelper.stopPlayingMobArena(event.getPlayer());
 	}
 

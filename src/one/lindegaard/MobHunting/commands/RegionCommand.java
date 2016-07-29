@@ -5,11 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -17,16 +15,14 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 
-public class RegionCommand implements ICommand, Listener {
+public class RegionCommand implements ICommand {
 
 	public RegionCommand() {
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
 	// Used case (???)

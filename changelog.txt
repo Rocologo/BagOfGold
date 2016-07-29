@@ -6,6 +6,7 @@ V3.3.6
 - pom.xml update with time stamp in filename yyyyMMddHHmmss.
 - MobHunting does now force /mh head to use the minecraft:give command.
 - Added support for TARDISWeepingAngels
+- Cleanup in MobHunting head give command.
 V3.3.5
 - Stray Head updated
 - Elder Guardian Mob Added. (Strange that nobody has noticed that Elder Guardian was missing???)

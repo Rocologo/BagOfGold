@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.3.6-SNAPSHOT</version>
+	<version>3.3.6</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -46,7 +46,7 @@
 		<TitleAPI.jar.version>TitleAPI-1.7.3.jar</TitleAPI.jar.version>
 		<VanishNoPacket.jar.version>VanishNoPacket3.20.jar</VanishNoPacket.jar.version>
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
-		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B74.jar</TARDISWeepingAngels.jar.version>
+		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B80.jar</TARDISWeepingAngels.jar.version>
 	</properties>
 
 	<organization>

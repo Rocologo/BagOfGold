@@ -31,7 +31,8 @@ public class HeadCommand implements ICommand, Listener {
 	public static final String MH_HEAD = "MH:Head";
 	public static final String MH_REWARD = "MobHunting Reward";
 
-	public HeadCommand() {
+	public HeadCommand(MobHunting instance) {
+		Bukkit.getServer().getPluginManager().registerEvents(this, instance);
 	}
 
 	// Used case
@@ -129,11 +130,11 @@ public class HeadCommand implements ICommand, Listener {
 				}
 				if (mob != null) {
 					String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
-							.replace("give", "minecraft:give")
-							.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
-							.replace("{playerid}", mob.getPlayerId()).replace("{texturevalue}", mob.getTextureValue())
+							.replace("{displayname}", displayName)
+							.replace("{lore}", MH_REWARD).replace("{playerid}", mob.getPlayerId())
+							.replace("{texturevalue}", mob.getTextureValue())
 							.replace("{amount}", String.valueOf(amount))
-							.replace("{playername}", offlinePlayer != null ? offlinePlayer.getName() : "MHF_Alex");
+							.replace("{playername}", offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
 					Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
 					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 				}
@@ -216,13 +217,6 @@ public class HeadCommand implements ICommand, Listener {
 			im.setLore(lore);
 			event.getItem().getItemStack().setItemMeta(im);
 		}
-		if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasLore()
-				&& item.getItemStack().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
-			Messages.debug("You picked up a MH Head DisplayName.2=%s",
-					item.getItemStack().getItemMeta().getDisplayName());
-			event.getItem().setMetadata(HeadCommand.MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
-					item.getItemStack().getItemMeta().getDisplayName()));
-		}
 	}
 
 	@EventHandler
@@ -247,7 +241,7 @@ public class HeadCommand implements ICommand, Listener {
 	public void onInventoryPickUp(InventoryPickupItemEvent event) {
 		Item item = event.getItem();
 		if (item.hasMetadata(MH_HEAD)) {
-			String displayName = event.getItem().getMetadata(MH_HEAD).get(0).asString();
+			String displayName = item.getMetadata(MH_HEAD).get(0).asString();
 			Messages.debug("A Inventory picked up a MH Head DisplayName=%s", displayName);
 			ItemMeta im = item.getItemStack().getItemMeta();
 			im.setDisplayName(displayName);
@@ -255,13 +249,6 @@ public class HeadCommand implements ICommand, Listener {
 			lore.add(MH_REWARD);
 			im.setLore(lore);
 			event.getItem().getItemStack().setItemMeta(im);
-		}
-		if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasLore()
-				&& item.getItemStack().getItemMeta().getLore().get(0).equals(MH_REWARD)) {
-			Messages.debug("An Inventory picked up a MH Head DisplayName.2=%s",
-					item.getItemStack().getItemMeta().getDisplayName());
-			event.getItem().setMetadata(HeadCommand.MH_HEAD, new FixedMetadataValue(MobHunting.getInstance(),
-					item.getItemStack().getItemMeta().getDisplayName()));
 		}
 	}
 
@@ -303,16 +290,18 @@ public class HeadCommand implements ICommand, Listener {
 		}
 	}
 
+	/**
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		if (event.getItem() != null)
 			if (event.getMaterial() == Material.SKULL_ITEM || event.getMaterial() == Material.SKULL) {
 				if (event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore()
-						&& event.getItem().getItemMeta().getLore().get(0).equals(HeadCommand.MH_REWARD)) {
+						&& event.getItem().getItemMeta().getLore().get(0).equalsIgnoreCase(HeadCommand.MH_REWARD)) {
 					String displayName = event.getItem().getItemMeta().getDisplayName();
 					Messages.debug("You hit a MH Head DisplayName=%s", displayName);
 				}
 			}
 	}
+	**/
 
 }

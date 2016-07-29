@@ -18,13 +18,13 @@ public class BattleArenaCompat implements Listener {
 
 	public BattleArenaCompat() {
 		if (isDisabledInConfig()) {
-			MobHunting.getInstance().getLogger().info("Compatibility with BattleArena is disabled in config.yml");
+			Bukkit.getLogger().info("Compatibility with BattleArena is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BattleArena");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			MobHunting.getInstance().getLogger().info(
+			Bukkit.getLogger().info(
 					"Enabling compatibility with BattleArena (" + getBattleArena().getDescription().getVersion() + ")");
 			supported = true;
 		}

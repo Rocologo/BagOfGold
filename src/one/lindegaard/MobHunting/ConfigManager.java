@@ -6,6 +6,7 @@ import java.util.List;
 
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import one.lindegaard.MobHunting.util.AutoConfig;
 import one.lindegaard.MobHunting.util.ConfigField;
@@ -1348,8 +1349,13 @@ public class ConfigManager extends AutoConfig {
 	 * @return value
 	 */
 	public double getBaseKillPrize(LivingEntity mob) {
-		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				MetadataValue value = data.get(0);
+				return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 			MetadataValue value = data.get(0);
 			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 
@@ -1515,8 +1521,13 @@ public class ConfigManager extends AutoConfig {
 	 *         be separeted by a "|"
 	 */
 	public String getKillConsoleCmd(LivingEntity mob) {
-		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getConsoleRunCommand();
+
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
 
@@ -1636,8 +1647,13 @@ public class ConfigManager extends AutoConfig {
 	 * @return String
 	 */
 	public String getKillRewardDescription(LivingEntity mob) {
-		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getRewardDescription();
+
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
 
@@ -1751,8 +1767,13 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	public int getCmdRunProbability(LivingEntity mob) {
-		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getPropability();
+
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropability();
 
@@ -1866,8 +1887,13 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	public int getCmdRunProbabilityBase(LivingEntity mob) {
-		if (MythicMobsCompat.isSupported() && mob.hasMetadata("MH:MythicMob")) {
-			List<MetadataValue> data = mob.getMetadata("MH:MythicMob");
+		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getPropabilityBase();
+
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropabilityBase();
 
