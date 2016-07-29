@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -22,7 +21,6 @@ import one.lindegaard.MobHunting.MobPlugins;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngelSpawnEvent;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngels;
-import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngelsAPI;
 import me.eccentric_nz.tardisweepingangels.utils.Monster;
 
 public class TARDISWeepingAngelsCompat implements Listener {
@@ -42,26 +40,23 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TARDISWeepingAngels");
 
-			Bukkit.getLogger().info("Enabling compatibility with TARDISWeepingAngelsAPI ("
-					+ mPlugin.getDescription().getVersion() + ")");
+			if (mPlugin != null) {
+				Bukkit.getLogger().info("Enabling compatibility with TARDISWeepingAngelsAPI ("
+						+ mPlugin.getDescription().getVersion() + ")");
 
-			supported = true;
+				supported = true;
 
-			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			loadTARDISWeepingAngelsMobsData();
-			saveTARDISWeepingAngelsMobsData();
-
+				loadTARDISWeepingAngelsMobsData();
+				saveTARDISWeepingAngelsMobsData();
+			}
 		}
 	}
 
 	// **************************************************************************
 	// OTHER
 	// **************************************************************************
-
-	private static TARDISWeepingAngelsAPI getAPI() {
-		return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI();
-	}
 
 	public static boolean isSupported() {
 		return supported;
@@ -83,7 +78,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	 * @return true if the entity is a TARDISWeepingAngels entity
 	 */
 	public static boolean isWeepingAngelMonster(Entity entity) {
-		return getAPI().isWeepingAngelMonster(entity);
+		return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
 	}
 
 	/**
@@ -94,7 +89,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	 * @return the Monster type or null if it is not TARDISWeepingAngels entity
 	 */
 	public static Monster getWeepingAngelMonsterType(Entity entity) {
-		return getAPI().getWeepingAngelMonsterType(entity);
+		return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().getWeepingAngelMonsterType(entity);
 	}
 
 	// **************************************************************************
