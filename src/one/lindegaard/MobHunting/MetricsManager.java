@@ -22,6 +22,7 @@ import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
@@ -33,7 +34,8 @@ public class MetricsManager {
 
 	// Metrics
 	private Metrics metrics;
-	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph, usageGraph;
+	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph, usageGraph,
+			mobPluginIntegrationsGraph;
 	private MobHunting instance;
 
 	public MetricsManager(MobHunting instance) {
@@ -92,12 +94,6 @@ public class MetricsManager {
 				@Override
 				public int getValue() {
 					return MyPetCompat.isSupported() ? 1 : 0;
-				}
-			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("MythicMobs") {
-				@Override
-				public int getValue() {
-					return MythicMobsCompat.isSupported() ? 1 : 0;
 				}
 			});
 			integrationsGraph.addPlotter(new Metrics.Plotter("DisguisesCraft") {
@@ -186,15 +182,29 @@ public class MetricsManager {
 					return VanishNoPacketCompat.isSupported() ? 1 : 0;
 				}
 			});
-			integrationsGraph.addPlotter(new Metrics.Plotter("MobStacker") {
+			metrics.addGraph(integrationsGraph);
+
+			mobPluginIntegrationsGraph = metrics.createGraph("Special Mobs");
+			mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("MythicMobs") {
+				@Override
+				public int getValue() {
+					return MythicMobsCompat.isSupported() ? 1 : 0;
+				}
+			});
+			mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("TARDISWeepingAngels") {
+				@Override
+				public int getValue() {
+					return TARDISWeepingAngelsCompat.isSupported() ? 1 : 0;
+				}
+			});
+			mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("MobStacker") {
 				@Override
 				public int getValue() {
 					return MobStackerCompat.isSupported() ? 1 : 0;
 				}
 			});
-
-			metrics.addGraph(integrationsGraph);
-
+			metrics.addGraph(mobPluginIntegrationsGraph);
+			
 			titleManagerGraph = metrics.createGraph("TitleManagers");
 			titleManagerGraph.addPlotter(new Metrics.Plotter("BossBarAPI") {
 				@Override

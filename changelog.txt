@@ -1,5 +1,6 @@
 V3.3.8
 - Bug fix: BountManager failed when plugin was reloaded.
+- Metrics for TARDISWeepingAngels added.
 V3.3.7
 - Emergency fix: plugin failed when TARDISWeepingAngels was not installed.
 V3.3.6
