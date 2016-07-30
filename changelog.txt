@@ -1,5 +1,7 @@
+V3.3.8
+- Bug fix: BountManager failed when plugin was reloaded.
 V3.3.7
--
+- Emergency fix: plugin failed when TARDISWeepingAngels was not installed.
 V3.3.6
 - Killstreak can now be completely disabled if you set the multiplier to 1.0
 - Learning messages is updated to fit into the Bossbar.

@@ -246,15 +246,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
 				Messages.debug("Reloading %s online player settings from the database",
 						mMobHuntingManager.getOnlinePlayersAmount());
-				for (Player player : mMobHuntingManager.getOnlinePlayers()) {
+				for (Player player : mMobHuntingManager.getOnlinePlayers()) 
 					mPlayerSettingsManager.load(player);
-				}
 			}
 			if (!mConfig.disablePlayerBounties) {
 				mBountyManager = new BountyManager(this);
-				if (!mConfig.disablePlayerBounties) {
-					cmd.registerCommand(new BountyCommand());
-				}
+				cmd.registerCommand(new BountyCommand());
+				if (mMobHuntingManager.getOnlinePlayersAmount() > 0) 
+					for (Player player : mMobHuntingManager.getOnlinePlayers()) 
+						mBountyManager.loadOpenBounties(player); 
 			}
 
 			mAchievementManager = new AchievementManager();
