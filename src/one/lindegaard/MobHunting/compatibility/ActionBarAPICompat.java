@@ -49,7 +49,7 @@ public class ActionBarAPICompat {
 	public static void setMessage(Player player, String text) {
 		if (supported) {
 
-			ActionBarAPI.sendActionBar(player, "Action Bar Message");
+			ActionBarAPI.sendActionBar(player, text);
 
 			// ActionBarAPI.sendActionBar(player,"Action Bar Message",
 			// duration);

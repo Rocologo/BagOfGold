@@ -33,7 +33,7 @@ public class DebugCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + " debug" + ChatColor.GREEN + " - to enable/disable debugmode." };
+		return new String[] { label + ChatColor.GREEN + " - to enable/disable debugmode." };
 	}
 
 	@Override
