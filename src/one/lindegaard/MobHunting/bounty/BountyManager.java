@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
@@ -473,25 +474,25 @@ public class BountyManager implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		ItemStack clicked = event.getCurrentItem();
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
-				if (clicked != null && clicked.getType() == Material.DIRT) {
-					// TODO:
-				}
 				event.setCancelled(true);
 				Messages.debug("BountyManager: Player clicked on inventory - closing now");
 				player.closeInventory();
-				// player.openInventory(inventory2);
 			}
-		// if (inv.getName().equals(inventory2.getName())) {
-		// if (clicked != null && clicked.getType() == Material.DIRT) {
-		// // TODO:
-		// }
-		// event.setCancelled(true);
-		// player.closeInventory();
-		// }
+	}
+
+	@EventHandler
+	public void onInventoryDrag(InventoryDragEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		Inventory inv = event.getInventory();
+		if (inv != null && inventory != null)
+			if (inv.getName().equals(inventory.getName())) {
+				event.setCancelled(true);
+				Messages.debug("BountyManager: Player clicked on inventory - closing now");
+				player.closeInventory();
+			}
 	}
 
 	// ***********************************************************

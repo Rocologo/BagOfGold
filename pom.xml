@@ -33,7 +33,7 @@
 		<titlemanager.version>1.5.11</titlemanager.version>
 		
 		<slf4j.version>1.7.21</slf4j.version>
-		<slf4j-log4j.jar.version>slf4j-log4j12-1.7.12.jar</slf4j-log4j.jar.version>
+		<slf4j-log4j.jar.version>slf4j-log4j12-1.7.21.jar</slf4j-log4j.jar.version>
 		
 		<mythicmobs.jar.version>MythicMobs-2.4.5.jar</mythicmobs.jar.version>
 		<mobarena.jar.version>MobArena0.97.1.jar</mobarena.jar.version>

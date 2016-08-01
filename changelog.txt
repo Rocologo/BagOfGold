@@ -1,5 +1,6 @@
 V3.3.9
 * /Mh reload fixed. Now reloading bounties and player settings for online players.
+* Added InventoryDragEvent to BountyManager and AchievementManager - players was able to drag heads/items out of the inventory gui.
 V3.3.8
 * Gringotts support fixed.
 * Bug fix: BountyManager failed when plugin was reloaded.

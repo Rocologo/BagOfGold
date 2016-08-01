@@ -11,8 +11,8 @@ commands:
   mobhunt:
     description: Allows you to configure mob hunt
     permission: mobhunting.cmd
-    aliases: [mob,mh,hunt]
-    usage: /<command> reload
+    aliases: [mob,mh,mobhunt]
+    usage: /<command> command
 
 permissions:
   mobhunting.enable:
@@ -56,6 +56,11 @@ permissions:
       mobhunting.cmd: true
   mobhunting.cleargrinding:
     description: Allows a player to remove grinding areas 
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.whitelistarea:
+    description: Allows a player to whitelist an grinding area.
     default: op
     children:
       mobhunting.cmd: true
@@ -104,5 +109,41 @@ permissions:
     default: true
     children:
       mobhunting.cmd: true
+  mobhunting.head:
+    description: Allows the player to give heads to other players.
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.bounty:
+    description: Allows you to put a bounty on other player.
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.debug:
+    description: Allows you to enable/disable debugmode and see debug information in the server console.
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.learn:
+    description: Allows you to enable/disable learningmode and see learning information when you kill a mob.
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.learn.other:
+    description: Allows you to enable/disable learningmode for other players.
+    default: op
+    children:
+      mobhunting.learn: true
+  mobhunting.mute:
+    description: Allows you to mute/unmute most messages in the chat.
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.mute.other:
+    description: Allows you to mute/unmute most messages in the chat for other players.
+    default: op
+    children:
+      mobhunting.mute: true
+
 
 
