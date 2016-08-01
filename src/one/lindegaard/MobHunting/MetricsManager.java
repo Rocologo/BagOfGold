@@ -37,7 +37,6 @@ import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 public class MetricsManager {
 
 	// Metrics
-	private boolean isStarted = false;
 	private Metrics metrics;
 	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph, usageGraph,
 			mobPluginIntegrationsGraph;

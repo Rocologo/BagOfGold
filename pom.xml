@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.3.8-SNAPSHOT</version>
+	<version>3.3.8</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -23,7 +23,7 @@
 		<mypet.version>2.1.5-SNAPSHOT</mypet.version>
 		<worldedit.version>6.1.3-SNAPSHOT</worldedit.version>
 		<worldguard.version>6.1.3-SNAPSHOT</worldguard.version>
-		<citizensapi.version>2.0.18-SNAPSHOT</citizensapi.version>
+		<citizensapi.version>2.0.20-SNAPSHOT</citizensapi.version>
 		<disguisecraft.version>5.2</disguisecraft.version>
 		<libsdisguises.version>8.2.6-SNAPSHOT</libsdisguises.version>
 		<protocollib.version>4.0.1-SNAPSHOT</protocollib.version>
@@ -32,7 +32,7 @@
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>1.5.11</titlemanager.version>
 		
-		<slf4j.version>1.7.20</slf4j.version>
+		<slf4j.version>1.7.21</slf4j.version>
 		<slf4j-log4j.jar.version>slf4j-log4j12-1.7.12.jar</slf4j-log4j.jar.version>
 		
 		<mythicmobs.jar.version>MythicMobs-2.4.5.jar</mythicmobs.jar.version>
