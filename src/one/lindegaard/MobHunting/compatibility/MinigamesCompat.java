@@ -15,11 +15,11 @@ public class MinigamesCompat implements Listener {
 	public MinigamesCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info(
-					"Compatibility with MiniGames is disabled in config.yml");
+					"[MobHunting] Compatibility with MiniGames is disabled in config.yml");
 		} else {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 			Bukkit.getLogger().info(
-					"Enabling compatibility with Minigames");
+					"[MobHunting] Enabling compatibility with Minigames");
 		}
 	}
 

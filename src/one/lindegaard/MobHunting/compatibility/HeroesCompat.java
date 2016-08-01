@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 
 public class HeroesCompat implements Listener {
 	public HeroesCompat() {
-		Bukkit.getLogger().info("Enabling Heroes Compatibility");
+		Bukkit.getLogger().info("[MobHunting] Enabling Heroes Compatibility");
 	}
 
 }

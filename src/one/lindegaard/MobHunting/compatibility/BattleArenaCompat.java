@@ -18,14 +18,14 @@ public class BattleArenaCompat implements Listener {
 
 	public BattleArenaCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with BattleArena is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with BattleArena is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BattleArena");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			Bukkit.getLogger().info(
-					"Enabling compatibility with BattleArena (" + getBattleArena().getDescription().getVersion() + ")");
+					"[MobHunting] Enabling compatibility with BattleArena (" + getBattleArena().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}
@@ -61,7 +61,7 @@ public class BattleArenaCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onArenaPlayerLeaveEvent(ArenaPlayerLeaveEvent event) {
-		Messages.debug("BattleArenaCompat.StartEvent s%", event.getEventName());
+		Messages.debug("BattleArenaCompat.StartEvent %s", event.getEventName());
 		BattleArenaHelper.stopPlayingBattleArena(event.getPlayer());
 	}
 

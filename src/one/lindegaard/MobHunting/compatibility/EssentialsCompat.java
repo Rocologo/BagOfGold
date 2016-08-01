@@ -15,14 +15,14 @@ public class EssentialsCompat implements Listener {
 
 	public EssentialsCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with Essentials is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with Essentials is disabled in config.yml");
 		} else {
 			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			Bukkit.getLogger().info(
-					"Enabling compatibility with Essentials (" + getEssentials().getDescription().getVersion() + ")");
+					"[MobHunting] Enabling compatibility with Essentials (" + getEssentials().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

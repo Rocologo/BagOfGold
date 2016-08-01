@@ -39,14 +39,14 @@ public class MythicMobsCompat implements Listener {
 
 	public MythicMobsCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with MythicMobs is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with MythicMobs is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			Bukkit.getLogger().info(
-					"Enabling Compatibility with MythicMobs (" + getMythicMobs().getDescription().getVersion() + ")");
+					"[MobHunting] Enabling Compatibility with MythicMobs (" + getMythicMobs().getDescription().getVersion() + ")");
 			// API:
 			// http://xikage.elseland.net/viewgit/?a=tree&p=MythicMobs&h=dec796decd1ef71fdd49aed69aef85dc7d82b1c1&hb=ffeb51fb84e882365846a30bd2b9753716faf51e&f=MythicMobs/src/net/elseland/xikage/MythicMobs/API
 			supported = true;

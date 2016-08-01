@@ -27,7 +27,7 @@ public class IDisguiseCompat implements Listener {
 	public IDisguiseCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info(
-					"Compatibility with iDisguise is disabled in config.yml");
+					"[MobHunting] Compatibility with iDisguise is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("iDisguise");
@@ -37,7 +37,7 @@ public class IDisguiseCompat implements Listener {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			Bukkit.getLogger().info(
-					"Enabling compatibility with iDisguise ("
+					"[MobHunting] Enabling compatibility with iDisguise ("
 							+ getiDisguise().getDescription().getVersion()
 							+ ")");
 			supported = true;

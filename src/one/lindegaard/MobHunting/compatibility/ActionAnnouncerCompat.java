@@ -16,12 +16,12 @@ public class ActionAnnouncerCompat {
 
 	public ActionAnnouncerCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with ActionAnnouncer in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with ActionAnnouncer in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("ActionAnnouncer");
 
 			Bukkit.getLogger().info(
-					"Enabling compatibility with ActionAnnouncer (" + mPlugin.getDescription().getVersion() + ").");
+					"[MobHunting] Enabling compatibility with ActionAnnouncer (" + mPlugin.getDescription().getVersion() + ").");
 			supported = true;
 		}
 	}

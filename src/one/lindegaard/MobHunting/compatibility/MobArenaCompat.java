@@ -26,14 +26,14 @@ public class MobArenaCompat implements Listener {
 
 	public MobArenaCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with MobArena is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with MobArena is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MobArena");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			Bukkit.getLogger()
-					.info("Enabling compatibility with MobArena (" + getMobArena().getDescription().getVersion() + ")");
+					.info("[MobHunting] Enabling compatibility with MobArena (" + getMobArena().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

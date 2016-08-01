@@ -26,7 +26,7 @@ public class DisguiseCraftCompat implements Listener {
 
 	public DisguiseCraftCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with DisguiseCraft is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with DisguiseCraft is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager().getPlugin("DisguiseCraft");
 			if (mPlugin != null) {
@@ -35,12 +35,12 @@ public class DisguiseCraftCompat implements Listener {
 						|| mPlugin.getDescription().getVersion().startsWith("2.")
 						|| mPlugin.getDescription().getVersion().startsWith("3.")
 						|| mPlugin.getDescription().getVersion().startsWith("4."))
-					Bukkit.getLogger().info("Your version (" + mPlugin.getDescription().getVersion()
+					Bukkit.getLogger().info("[MobHunting] Your version (" + mPlugin.getDescription().getVersion()
 							+ ") of DisguisCraft is too old and not supported by MobHunting.");
 				else {
 					Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-					Bukkit.getLogger().info("Enabling compatibility with DisguiseCraft ("
+					Bukkit.getLogger().info("[MobHunting] Enabling compatibility with DisguiseCraft ("
 							+ getDisguiseCraft().getDescription().getVersion() + ")");
 					supported = true;
 				}

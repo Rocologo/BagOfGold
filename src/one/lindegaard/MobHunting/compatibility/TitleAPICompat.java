@@ -14,12 +14,12 @@ public class TitleAPICompat {
 
 	public TitleAPICompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with TitelAPI is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with TitelAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TitleAPI");
 
 			Bukkit.getLogger()
-					.info("Enabling compatibility with TitleAPI (" + getTitleAPI().getDescription().getVersion() + ")");
+					.info("[MobHunting] Enabling compatibility with TitleAPI (" + getTitleAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

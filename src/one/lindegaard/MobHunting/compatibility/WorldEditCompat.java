@@ -18,7 +18,7 @@ public class WorldEditCompat {
 		mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 
 		Bukkit.getLogger()
-				.info("Enabling compatibility with WorldEdit (" + getWorldEdit().getDescription().getVersion() + ")");
+				.info("[MobHunting] Enabling compatibility with WorldEdit (" + getWorldEdit().getDescription().getVersion() + ")");
 		supported = true;
 	}
 

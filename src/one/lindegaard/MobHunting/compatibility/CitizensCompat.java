@@ -52,7 +52,7 @@ public class CitizensCompat implements Listener {
 
 	private void initialize() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with Citizens2 is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with Citizens2 is disabled in config.yml");
 		} else {
 			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin("Citizens");
 			if (citizensAPI == null)
@@ -62,7 +62,7 @@ public class CitizensCompat implements Listener {
 			citizensAPI.getTraitFactory().registerTrait(trait);
 
 			Bukkit.getLogger().info(
-					"Enabling compatibility with Citizens (" + getCitizensPlugin().getDescription().getVersion() + ")");
+					"[MobHunting] Enabling compatibility with Citizens (" + getCitizensPlugin().getDescription().getVersion() + ")");
 
 			supported = true;
 

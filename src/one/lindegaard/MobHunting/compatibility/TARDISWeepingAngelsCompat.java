@@ -36,12 +36,12 @@ public class TARDISWeepingAngelsCompat implements Listener {
 
 	public TARDISWeepingAngelsCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with TARDISWeepingAngels is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with TARDISWeepingAngels is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TARDISWeepingAngels");
 
 			if (mPlugin != null) {
-				Bukkit.getLogger().info("Enabling compatibility with TARDISWeepingAngelsAPI ("
+				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TARDISWeepingAngelsAPI ("
 						+ mPlugin.getDescription().getVersion() + ")");
 
 				supported = true;

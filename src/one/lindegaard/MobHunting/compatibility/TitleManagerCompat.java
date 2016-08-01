@@ -16,11 +16,11 @@ public class TitleManagerCompat {
 
 	public TitleManagerCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("Compatibility with TitleManager is disabled in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with TitleManager is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TitleManager");
 
-			Bukkit.getLogger().info("Enabling compatibility with TitleManager ("
+			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TitleManager ("
 					+ getTtitleManager().getDescription().getVersion() + ")");
 			supported = true;
 		}

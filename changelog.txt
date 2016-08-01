@@ -1,149 +1,151 @@
+V3.3.9
+* /Mh reload fixed. Now reloading bounties and player settings for online players.
 V3.3.8
-- Gringotts support fixed.
-- Bug fix: BountyManager failed when plugin was reloaded.
-- Metrics for TARDISWeepingAngels added.
-- Metrics is disabled if Http://mcstats.org don't respond. Testing every 30 min. 
+* Gringotts support fixed.
+* Bug fix: BountyManager failed when plugin was reloaded.
+* Metrics for TARDISWeepingAngels added.
+* Metrics is disabled if Http://mcstats.org don't respond. Testing every 30 min. 
 V3.3.7
-- Emergency fix: plugin failed when TARDISWeepingAngels was not installed.
+* Emergency fix: plugin failed when TARDISWeepingAngels was not installed.
 V3.3.6
-- Killstreak can now be completely disabled if you set the multiplier to 1.0
-- Learning messages is updated to fit into the Bossbar.
-- Fixed a possible NullPointerException bug in WorldGuardHelper.
-- Fixed "Could not pass event PlayerMoveEvent to MobHunting v3.3.5" error.
-- pom.xml update with time stamp in filename yyyyMMddHHmmss.
-- MobHunting does now force /mh head to use the minecraft:give command.
-- Added support for TARDISWeepingAngels
-- Cleanup in MobHunting head give command.
+* Killstreak can now be completely disabled if you set the multiplier to 1.0
+* Learning messages is updated to fit into the Bossbar.
+* Fixed a possible NullPointerException bug in WorldGuardHelper.
+* Fixed "Could not pass event PlayerMoveEvent to MobHunting v3.3.5" error.
+* pom.xml update with time stamp in filename yyyyMMddHHmmss.
+* MobHunting does now force /mh head to use the minecraft:give command.
+* Added support for TARDISWeepingAngels
+* Cleanup in MobHunting head give command.
 V3.3.5
-- Stray Head updated
-- Elder Guardian Mob Added. (Strange that nobody has noticed that Elder Guardian was missing???)
-- Elder Guardian Head added (Can be spawned with /mh head spawn elder_guardian.
-- Fix bug where changes in where newer Worldguard SNAPSHOT's broke the integration. I have tested MobHunting 3.3.5 and WorldGuard 6.1.3-SNAPSHOT-Build1680.
+* Stray Head updated
+* Elder Guardian Mob Added. (Strange that nobody has noticed that Elder Guardian was missing???)
+* Elder Guardian Head added (Can be spawned with /mh head spawn elder_guardian.
+* Fix bug where changes in where newer Worldguard SNAPSHOT's broke the integration. I have tested MobHunting 3.3.5 and WorldGuard 6.1.3-SNAPSHOT-Build1680.
 V3.3.4
-- Added integration to ActionAnnouncer
-- Added integration to ActionBarAPI
-- Parameter added to enable/disable Broadcasts in the ActionBar. (If possible).
-- Cleaned up pom.xml
-- Minor bugfixing
+* Added integration to ActionAnnouncer
+* Added integration to ActionBarAPI
+* Parameter added to enable/disable Broadcasts in the ActionBar. (If possible).
+* Cleaned up pom.xml
+* Minor bugfixing
 V3.3.3
-- Fixed ConcurrentModification onPlayerQuit bug
-- Add parameter "deny-hoppers-to-pickup-money-on-ground=true" to deny Hoppers to pickup reward money. (In the fight against "Dark Room Mobspawners");
-- added code to configManager to catch if prize in config.yml starts with ":" and through a warning in Server Console.
+* Fixed ConcurrentModification onPlayerQuit bug
+* Add parameter "deny-hoppers-to-pickup-money-on-ground=true" to deny Hoppers to pickup reward money. (In the fight against "Dark Room Mobspawners");
+* added code to configManager to catch if prize in config.yml starts with ":" and through a warning in Server Console.
 V3.3.2
-- Rollback Hidden MasterMobHunter Sign Tag.
-- Giant Head updated
-- Snowman head updated
-- mh bounty bug fixing.
+* Rollback Hidden MasterMobHunter Sign Tag.
+* Giant Head updated
+* Snowman head updated
+* mh bounty bug fixing.
 V3.3.1
-- Change: Players which has decided to mute MobHunting does not receive Broadcast messages from others players when they achieve something.
-- Fixed NullPointerException when when "mh head ..." was executed from console .
-- Fixed NullPointerException when player clicked on a MH sign without something in the hand.
-- OBS. Plugin does not work with WorldGuard 6.1.3 SNAPSHOTS (Development builds) Changes has been made in WorldGuard. I have contacted the developer to get this fixed. 
+* Change: Players which has decided to mute MobHunting does not receive Broadcast messages from others players when they achieve something.
+* Fixed NullPointerException when when "mh head ..." was executed from console .
+* Fixed NullPointerException when player clicked on a MH sign without something in the hand.
+* OBS. Plugin does not work with WorldGuard 6.1.3 SNAPSHOTS (Development builds) Changes has been made in WorldGuard. I have contacted the developer to get this fixed. 
 V3.3.0
-- All MobHeads are now updated. You should rename config.yml to config.yml.old and restart server to get all new settings.
-- Changed the syntax of "/mh head"
-- Added "/mh head give [toPlayer] [mob|playername] [displayName] [amount]"
-- Added "/mh head rename [newName]" Renaming the head in hand.
-- Added "/mh debug" to toggle/enable/disable console debug information.
-- Gringotts added to Metrics.
-- Hided MH tag on MasterMobHunter signs
-- MasterMobHunter Signs can now be clicked to get npc id.
-- Fix a bug in MasterMobHunterSign, which stored a "zero signLocation" on the NPC if the sign was broken. 
+* All MobHeads are now updated. You should rename config.yml to config.yml.old and restart server to get all new settings.
+* Changed the syntax of "/mh head"
+* Added "/mh head give [toPlayer] [mob|playername] [displayName] [amount]"
+* Added "/mh head rename [newName]" Renaming the head in hand.
+* Added "/mh debug" to toggle/enable/disable console debug information.
+* Gringotts added to Metrics.
+* Hided MH tag on MasterMobHunter signs
+* MasterMobHunter Signs can now be clicked to get npc id.
+* Fix a bug in MasterMobHunterSign, which stored a "zero signLocation" on the NPC if the sign was broken. 
 V3.2.8
-- Added support for Gringotts. DropMoneyOnGround now drop money in Gringott currency. 
-- Fixed bug. "/mh achievements playername" can now be run from the console.
-- Fixed bug. MasterMobHunterSigns does now partly show the playername if rank + name are longer than 15 chars.
-- Added a new setting "show-achievements-without-reward" to show rewards even if the prize is 0.  
+* Added support for Gringotts. DropMoneyOnGround now drop money in Gringott currency. 
+* Fixed bug. "/mh achievements playername" can now be run from the console.
+* Fixed bug. MasterMobHunterSigns does now partly show the playername if rank + name are longer than 15 chars.
+* Added a new setting "show-achievements-without-reward" to show rewards even if the prize is 0.  
 V3.2.7
-- Made a work around to fix bug in getOfflinePlayer() 
+* Made a work around to fix bug in getOfflinePlayer() 
 V3.2.6
-- Fixed name change detecting spam in the console
-- Optimized the use of playerIds, so they are kept in memory for fast access.
-- Fixed bug "org.bukkit.event.entity.EntityDamageEvent cannot be cast to org.bukkit.event.entity.EntityDamageByEntityEvent"
-- Removed "MobHunting is disabled in this world" from the player screen, to reduce the spam. The message is kept in the server console.
+* Fixed name change detecting spam in the console
+* Optimized the use of playerIds, so they are kept in memory for fast access.
+* Fixed bug "org.bukkit.event.entity.EntityDamageEvent cannot be cast to org.bukkit.event.entity.EntityDamageByEntityEvent"
+* Removed "MobHunting is disabled in this world" from the player screen, to reduce the spam. The message is kept in the server console.
 V3.2.5
-- New feature /mh head spawn [mobname] [displayname] [amount] [xpos] [ypos] [zpos]|[playername]
-- New feature /mh head rename newDisplayname
-- Bugfix. The compatibility with the Glowstone++ Server was broken. Now fixed.
-- Bugfix. Error when closing the server which could cause the server to hang is fixed.
+* New feature /mh head spawn [mobname] [displayname] [amount] [xpos] [ypos] [zpos]|[playername]
+* New feature /mh head rename newDisplayname
+* Bugfix. The compatibility with the Glowstone++ Server was broken. Now fixed.
+* Bugfix. Error when closing the server which could cause the server to hang is fixed.
 V3.2.4
-- Support for Citizens Sentinel added. Sentry has been discontinued by Citizens Developer and is replaced by Sentinel.
-- New feature: Players can loose money if the get killed by a mob. Can be enabled in config.yml
-- The owner of a MyPet will now get a reward if the Pet kills a mob. This feature has been broken for while, but is now fixed.
-- Fixed bug: WitherSkeleton kills is now counted.
-- Fixed bug when DisguiseCraft is too old. If version is before DisguiseCraft V5.0 the compatibility is disabled.
-- The update checker now handle Development versions from the Jenkins server.     
+* Support for Citizens Sentinel added. Sentry has been discontinued by Citizens Developer and is replaced by Sentinel.
+* New feature: Players can loose money if the get killed by a mob. Can be enabled in config.yml
+* The owner of a MyPet will now get a reward if the Pet kills a mob. This feature has been broken for while, but is now fixed.
+* Fixed bug: WitherSkeleton kills is now counted.
+* Fixed bug when DisguiseCraft is too old. If version is before DisguiseCraft V5.0 the compatibility is disabled.
+* The update checker now handle Development versions from the Jenkins server.     
 V3.2.3
-- Removed the moneygain'ed message when money is dropped on the group.
-- Added display name for hostile Mobs in config.yml 
-- Changed pom.xml, preparing for development releases on http://jenkins.lindegaard.one:8180/job/MobHunting/
-- Changed the way random numbers are generated, to produce better random numbers.
-- Changed hashCode() in Bounty.java. (Bug fix)
-- Changed HashMap to Map in AutoConfig.java (Bug fix)
-- Achievements can now be disabled per Mob by setting the level to 0.
+* Removed the moneygain'ed message when money is dropped on the group.
+* Added display name for hostile Mobs in config.yml 
+* Changed pom.xml, preparing for development releases on http://jenkins.lindegaard.one:8180/job/MobHunting/
+* Changed the way random numbers are generated, to produce better random numbers.
+* Changed hashCode() in Bounty.java. (Bug fix)
+* Changed HashMap to Map in AutoConfig.java (Bug fix)
+* Achievements can now be disabled per Mob by setting the level to 0.
 V3.2.2
-- Fixed bug where two money items on ground was merged and one lost.
-- Fixed error which caused Bounties not to be paid.
+* Fixed bug where two money items on ground was merged and one lost.
+* Fixed error which caused Bounties not to be paid.
 V3.2.1
-- Fixed java.lang.NoSuchMethodError: net.citizensnpcs.api.trait.TraitFactory.deregisterTrait on MC 1.7 servers
-- Added new feature. You can now disable achievements in specific worlds in config.yml, but still get rewards for killings.
-- Fixed java.lang.NullPointerException at one.lindegaard.MobHunting.achievements.AchievementManager.onInventoryClick(AchievementManager.java:732) ~[?:?]
+* Fixed java.lang.NoSuchMethodError: net.citizensnpcs.api.trait.TraitFactory.deregisterTrait on MC 1.7 servers
+* Added new feature. You can now disable achievements in specific worlds in config.yml, but still get rewards for killings.
+* Fixed java.lang.NullPointerException at one.lindegaard.MobHunting.achievements.AchievementManager.onInventoryClick(AchievementManager.java:732) ~[?:?]
 V3.2.0
-- Fixed bugs
-  - ProSniper bonus was not added when sing LEFT hand
-  - NullPointerException bug in MetricsManager
-  - /mh achievements show disabled mobs (passive mobs / peaceful mobs)
-- /mh achievements is separated in two inventories. Achieved and in progress/not begun.
-- Added gui/nogui parameter
-  - /mh achievements nogui
-  - /mh achievements gui
-  - /mh achievements playername nogui
-  - /mh achievements playername gui
-  - /mh bounty nogui
-  - /mh bounty gui
-  - /mh bounty playername nogui
-  - /mh bounty playername gui
-- Improved Minecraft version test, now using a faster method. The old method could cause a sort lag, when killing a Mob!  
+* Fixed bugs
+  * ProSniper bonus was not added when sing LEFT hand
+  * NullPointerException bug in MetricsManager
+  * /mh achievements show disabled mobs (passive mobs / peaceful mobs)
+* /mh achievements is separated in two inventories. Achieved and in progress/not begun.
+* Added gui/nogui parameter
+  * /mh achievements nogui
+  * /mh achievements gui
+  * /mh achievements playername nogui
+  * /mh achievements playername gui
+  * /mh bounty nogui
+  * /mh bounty gui
+  * /mh bounty playername nogui
+  * /mh bounty playername gui
+* Improved Minecraft version test, now using a faster method. The old method could cause a sort lag, when killing a Mob!  
   
 V3.1.9
-- Added new Mobs Husk and Stray 
-- Fixed bug when MobStacker was not installed 
-- Fixed bug in MetricsManager when Bounties was null.
-- Another fix trying to solve the SQL bug shutting down. 
+* Added new Mobs Husk and Stray 
+* Fixed bug when MobStacker was not installed 
+* Fixed bug in MetricsManager when Bounties was null.
+* Another fix trying to solve the SQL bug shutting down. 
 V3.1.8
-- Added Support for MineCraft 1.10 and the new mob Polar Bear 
-- Added debugSQL setting in config.yml - to be used by the developer.
-- Changed Queue system on Shutdown
+* Added Support for MineCraft 1.10 and the new mob Polar Bear 
+* Added debugSQL setting in config.yml - to be used by the developer.
+* Changed Queue system on Shutdown
 V3.1.7
-- Refactored one.lindegaard.MobHunting.compatability to Refactored one.lindegaard.MobHunting.compatibility
-- Basic compatibility for MobStacker added. 
-- Changed number format in BountyManager
-- Added Usage graph to MetricsManager
-- Added Basic settings for grinding detection
-- Added Grinding detection to learning and debug mode.
+* Refactored one.lindegaard.MobHunting.compatability to Refactored one.lindegaard.MobHunting.compatibility
+* Basic compatibility for MobStacker added. 
+* Changed number format in BountyManager
+* Added Usage graph to MetricsManager
+* Added Basic settings for grinding detection
+* Added Grinding detection to learning and debug mode.
 V3.1.6
-- Fixed compatibility with CraftBukkit
-- Change Store queue system
+* Fixed compatibility with CraftBukkit
+* Change Store queue system
 V3.1.5
-- Fixed NullPointerException in MasterMobHunterSign.java:318
-- Added extra user and debug information in the Anti - MobGrinding code. 
+* Fixed NullPointerException in MasterMobHunterSign.java:318
+* Added extra user and debug information in the Anti - MobGrinding code. 
 V3.1.4
-- Open initial connections was done twice
-- Found two missing closing commands in ResultSet's  
+* Open initial connections was done twice
+* Found two missing closing commands in ResultSet's  
 V3.1.3
-- Fixed wrong color code format in config.yml (DropMoneyOnGroupItemColor)
+* Fixed wrong color code format in config.yml (DropMoneyOnGroupItemColor)
 V3.1-2
-- Fixes error thrown when Citizens is not installed
-- Fixes error thrown when WorldGuard is not installed 
+* Fixes error thrown when Citizens is not installed
+* Fixes error thrown when WorldGuard is not installed 
 V3.1.1
-- Fixes error causing the cpu usage to go 100%
-- Fixes error in RandomBounty
+* Fixes error causing the cpu usage to go 100%
+* Fixes error in RandomBounty
 V3.1.0
-- Added setting in config.yml to set the item color text when using DropMoneyOnGroup
-- Fixed freeze/crash server when stopping or restarting server
-- Fixed bug in MetricManager when starting the server and Citizens not installed
-- Changed Metrics SQL statistics 
+* Added setting in config.yml to set the item color text when using DropMoneyOnGroup
+* Fixed freeze/crash server when stopping or restarting server
+* Fixed bug in MetricManager when starting the server and Citizens not installed
+* Changed Metrics SQL statistics 
 V3.0.8
-- Fixed bug: players could get achievement Creepercide and Fangmaster while playing MobArena
-- Fixed bug: added two database closing statements which could make the server hang after new players had joined the server.
+* Fixed bug: players could get achievement Creepercide and Fangmaster while playing MobArena
+* Fixed bug: added two database closing statements which could make the server hang after new players had joined the server.
   

@@ -28,13 +28,13 @@ public class LibsDisguisesCompat implements Listener {
 	public LibsDisguisesCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger()
-					.info("Compatibility with LibsDisguises is disabled in config.yml");
+					.info("[MobHunting] Compatibility with LibsDisguises is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager()
 					.getPlugin("LibsDisguises");
 
 			Bukkit.getLogger().info(
-					"Enabling compatibility with LibsDisguises ("
+					"[MobHunting] Enabling compatibility with LibsDisguises ("
 							+ getLibsDisguises().getDescription().getVersion()
 							+ ")");
 			

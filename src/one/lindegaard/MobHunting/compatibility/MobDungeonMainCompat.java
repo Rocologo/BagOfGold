@@ -8,7 +8,7 @@ import one.lindegaard.MobHunting.MobHunting;
 public class MobDungeonMainCompat implements Listener {
 	public MobDungeonMainCompat() {
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-		Bukkit.getLogger().info("Enabling MobDungeon Compatibility");
+		Bukkit.getLogger().info("[MobHunting] Enabling MobDungeon Compatibility");
 	}
 
 }
