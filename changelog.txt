@@ -1,6 +1,7 @@
 V3.3.8
-- Bug fix: BountManager failed when plugin was reloaded.
+- Bug fix: BountyManager failed when plugin was reloaded.
 - Metrics for TARDISWeepingAngels added.
+- Metrics is disabled if Http://mcstats.org don't respond. Testing every 30 min. 
 V3.3.7
 - Emergency fix: plugin failed when TARDISWeepingAngels was not installed.
 V3.3.6

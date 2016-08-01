@@ -44,13 +44,14 @@ public class Rewards implements Listener {
 				if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
 					money = (Double) mdv.value();
 					Player player = e.getPlayer();
+					// If not Gringotts
 					if (money != 0) {
 						MobHunting.getRewardManager().depositPlayer(player, money);
 						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
 								MobHunting.getRewardManager().format(money)));
-					} 
-					e.getItem().remove();
-					e.setCancelled(true);
+						e.getItem().remove();
+						e.setCancelled(true);
+					}
 					break;
 				}
 			}

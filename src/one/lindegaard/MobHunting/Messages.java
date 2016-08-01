@@ -32,6 +32,7 @@ import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
 public class Messages {
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
+	private static final String PREFIX = "[MobHunting]";
 
 	public static void exportDefaultLanguages(MobHunting plugin) {
 		File folder = new File(plugin.getDataFolder(), "lang");
@@ -43,7 +44,7 @@ public class Messages {
 		for (String source : sources) {
 			File dest = new File(folder, source);
 			if (!dest.exists()) {
-				Bukkit.getLogger().info("Creating language file " + source + " from JAR.");
+				Bukkit.getLogger().info(PREFIX + " Creating language file " + source + " from JAR.");
 				plugin.saveResource("lang/" + source, false);
 				mTranslationTable = loadLang(dest);
 			} else {
@@ -68,7 +69,7 @@ public class Messages {
 			HashMap<String, String> newEntries = new HashMap<String, String>();
 			for (String key : source.keySet()) {
 				if (!dest.containsKey(key)) {
-					Bukkit.getLogger().info("Missing key in language file: " + key);
+					Bukkit.getLogger().info(PREFIX + " Missing key in language file: " + key);
 					newEntries.put(key, source.get(key));
 				}
 			}
@@ -80,7 +81,7 @@ public class Messages {
 
 				writer.close();
 
-				Bukkit.getLogger().info("Updated " + onDisk.getName() + " translation");
+				Bukkit.getLogger().info(PREFIX + " Updated " + onDisk.getName() + " translation");
 			}
 
 			return true;
@@ -146,7 +147,7 @@ public class Messages {
 			String encoding = detectEncoding(file);
 			if (encoding == null) {
 				FileInputStream input = new FileInputStream(file);
-				Bukkit.getLogger().warning("Could not detect encoding of lang file. Defaulting to UTF-8");
+				Bukkit.getLogger().warning(PREFIX + " Could not detect encoding of lang file. Defaulting to UTF-8");
 				map = loadLang(input, "UTF-8");
 				input.close();
 			}
@@ -165,19 +166,19 @@ public class Messages {
 	public static void setLanguage(String lang) {
 		File file = new File(MobHunting.getInstance().getDataFolder(), "lang/" + lang + ".lang");
 		if (!file.exists()) {
-			Bukkit.getLogger().severe("Language file does not exist.");
+			Bukkit.getLogger().severe(PREFIX + " Language file does not exist.");
 			file = new File(MobHunting.getInstance().getDataFolder(), "lang/en_US.lang");
 		}
 
 		if (file.exists()) {
 			mTranslationTable = loadLang(file);
 		} else {
-			Bukkit.getLogger().warning("Could not read the translation file:" + file.getName());
+			Bukkit.getLogger().warning(PREFIX + " Could not read the translation file:" + file.getName());
 		}
 
 		if (mTranslationTable == null) {
 			mTranslationTable = new HashMap<String, String>();
-			Bukkit.getLogger().warning("Creating new translation table.");
+			Bukkit.getLogger().warning(PREFIX + " Creating new translation table.");
 		}
 	}
 
@@ -185,7 +186,7 @@ public class Messages {
 		String value = mTranslationTable.get(key);
 
 		if (value == null) {
-			Bukkit.getLogger().warning("mTranslationTable has not key: " + key.toString());
+			Bukkit.getLogger().warning(PREFIX + " mTranslationTable has not key: " + key.toString());
 			throw new MissingResourceException("", "", key);
 		}
 
@@ -234,7 +235,7 @@ public class Messages {
 
 			return ChatColor.translateAlternateColorCodes('&', output);
 		} catch (MissingResourceException e) {
-			Bukkit.getLogger().warning("Mobhunt could not find key: " + key.toString());
+			Bukkit.getLogger().warning(PREFIX + " Mobhunt could not find key: " + key.toString());
 			return key;
 		}
 	}
@@ -268,7 +269,7 @@ public class Messages {
 
 	public static void debug(String text, Object... args) {
 		if (MobHunting.getConfigManager().killDebug)
-			Bukkit.getLogger().info("[Debug] " + String.format(text, args));
+			Bukkit.getLogger().info(PREFIX + "[Debug] " + String.format(text, args));
 	}
 
 	public static void learn(Player player, String text, Object... args) {
