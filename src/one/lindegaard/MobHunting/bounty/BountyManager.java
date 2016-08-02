@@ -477,7 +477,7 @@ public class BountyManager implements Listener {
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
-			
+				event.setCancelled(true);
 				Messages.debug("BountyManager: Player clicked on inventory - closing now");
 				Bukkit.getScheduler().runTask(instance, new Runnable() {
 					public void run() {
