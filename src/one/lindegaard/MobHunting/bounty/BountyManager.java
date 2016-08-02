@@ -473,25 +473,34 @@ public class BountyManager implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
+		final Player player = (Player) event.getWhoClicked();
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
-				event.setCancelled(true);
+			
 				Messages.debug("BountyManager: Player clicked on inventory - closing now");
-				player.closeInventory();
+				Bukkit.getScheduler().runTask(instance, new Runnable() {
+					public void run() {
+						player.closeInventory();
+					}
+				});
+				
 			}
 	}
 
 	@EventHandler
 	public void onInventoryDrag(InventoryDragEvent event) {
-		Player player = (Player) event.getWhoClicked();
+		final Player player = (Player) event.getWhoClicked();
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
 				event.setCancelled(true);
 				Messages.debug("BountyManager: Player clicked on inventory - closing now");
-				player.closeInventory();
+				Bukkit.getScheduler().runTask(instance, new Runnable() {
+					public void run() {
+						player.closeInventory();
+					}
+				});
 			}
 	}
 

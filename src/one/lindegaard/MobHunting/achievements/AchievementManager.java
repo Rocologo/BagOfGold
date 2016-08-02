@@ -718,35 +718,52 @@ public class AchievementManager implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
+		final Player player = (Player) event.getWhoClicked();
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
 				event.setCancelled(true);
-				player.closeInventory();
-				player.openInventory(inventory2);
+				Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
+					public void run() {
+						player.closeInventory();
+						player.openInventory(inventory2);
+					}
+				});
+				
 			}
 		if (inv != null && inventory2 != null)
 			if (inv.getName().equals(inventory2.getName())) {
 				event.setCancelled(true);
-				player.closeInventory();
+				Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
+					public void run() {
+						player.closeInventory();
+					}
+				});
 			}
 	}
 
 	@EventHandler
 	public void onInventoryDrag(InventoryDragEvent event) {
-		Player player = (Player) event.getWhoClicked();
+		final Player player = (Player) event.getWhoClicked();
 		Inventory inv = event.getInventory();
 		if (inv != null && inventory != null)
 			if (inv.getName().equals(inventory.getName())) {
 				event.setCancelled(true);
-				player.closeInventory();
-				player.openInventory(inventory2);
+				Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
+					public void run() {
+						player.closeInventory();
+						player.openInventory(inventory2);
+					}
+				});
 			}
 		if (inv != null && inventory2 != null)
 			if (inv.getName().equals(inventory2.getName())) {
 				event.setCancelled(true);
-				player.closeInventory();
+				Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
+					public void run() {
+						player.closeInventory();
+					}
+				});
 			}
 	}
 
