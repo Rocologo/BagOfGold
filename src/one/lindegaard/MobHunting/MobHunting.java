@@ -103,7 +103,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	// Constants
 	private final static String pluginName = "mobhunting";
-	// private String pluginVersion = "";
 
 	private static MobHunting instance;
 
@@ -1104,7 +1103,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Calculate the reward
 		// cash += reward;
 
-		if ((cash >= 0.01) || (cash <= -0.01)) {
+		if ((cash >= getConfigManager().minimumReward) || (cash <= -getConfigManager().minimumReward)) {
 
 			// Handle MobHuntKillEvent
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, killer);
@@ -1155,11 +1154,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 
+			// Record the kill in the Database 
 			if (killer != null)
 				Messages.debug("RecordKill: %s killed a %s", killer.getName(),
 						ExtendedMobType.getExtendedMobType(killed));
-
-			// MythicMob Kill - update PlayerStats
 			// TODO: record MyythicMobs kills as its own kind of mobs
 			// TODO: record TARDISWeepingAngels kills as its own kind of mobs
 			if (ExtendedMobType.getExtendedMobType(killed) != null)

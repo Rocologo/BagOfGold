@@ -76,8 +76,6 @@ public abstract class AutoConfig {
 				if (optionName.isEmpty())
 					optionName = field.getName();
 				if (!mCategories.contains(configField.category())) {
-					// InfoSigns.debug("Category found: %s",
-					// configField.category());
 					mCategories.add(configField.category());
 				}
 
@@ -151,7 +149,6 @@ public abstract class AutoConfig {
 						// HashMap
 						else if (field.getType().getComponentType()
 								.equals(HashMap.class)) {
-							//MobHunting.instance.getLogger().info("Loading HashMap-Array into config field...");
 							field.set(this, yml.getConfigurationSection(path).getValues(true));
 						} else
 							throw new IllegalArgumentException(
@@ -192,9 +189,7 @@ public abstract class AutoConfig {
 							field.set(this, yml.getString(path));
 						// HashMap
 						else if (field.getType().equals(HashMap.class)) {
-							//MobHunting.instance.getLogger().info("Loading HashMap into config field...");
 							field.set(this, yml.getConfigurationSection(path).getValues(true));
-							//MobHunting.instance.getLogger().info("field="+yml.getConfigurationSection(path).getValues(true));
 						} else
 							throw new IllegalArgumentException(
 									"LoadConfig - Cannot use type "

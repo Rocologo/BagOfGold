@@ -156,8 +156,8 @@ public class BukkitUpdate {
 			}
 		} catch (IOException e) {
 			// There was an error reading the query
-			if (e.getMessage().contains("Server returned HTTP response code: 504 for URL: https://api.curseforge.com/servermods/filesrojectIds=63718")){
-				MobHunting.getInstance().getLogger().warning("[MobHunting] MobHunting could not communicate with Http://api.curseforge.com. HTTP response code: 504. A new attempt will be initialted later. Thisis only a warning.");
+			if (e.getMessage().contains("Server returned HTTP response code: 504 for URL: https://api.curseforge.com/servermods/files?ProjectIds=63718")){
+				MobHunting.getInstance().getLogger().warning("[MobHunting] MobHunting could not communicate with Https://api.curseforge.com. HTTP response code: 504. A new attempt will be initialted later. This is only a warning.");
 			} else
 			e.printStackTrace();
 			return false;

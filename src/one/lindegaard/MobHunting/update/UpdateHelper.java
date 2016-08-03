@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.MalformedInputException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.minecraft.util.org.apache.commons.io.FileUtils;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
@@ -128,36 +131,42 @@ public class UpdateHelper {
 	}
 
 	public static boolean downloadAndUpdateJar() {
+		boolean succes = false;
 		final String OS = System.getProperty("os.name");
 		if (OS.indexOf("Win") >= 0) {
 			try {
-				downloadFile(getBukkitUpdate().getVersionLink(), "plugins/update/");
-				File downloadedJar = new File("plugins/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
-				File newJar = new File("plugins/update/MobHunting.jar");
-				downloadedJar.renameTo(newJar);
+				succes = downloadFile(getBukkitUpdate().getVersionLink(), "plugins/update/");
+				if (succes) {
+					File downloadedJar = new File(
+							"plugins/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+					File newJar = new File("plugins/update/MobHunting.jar");
+					downloadedJar.renameTo(newJar);
+					return true;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return true;
 		} else {
 			try {
 				if (updateAvailable != UpdateStatus.RESTART_NEEDED)
-					downloadFile(getBukkitUpdate().getVersionLink(), "plugins/MobHunting/update/");
-				File currentJar = new File("plugins/" + getCurrentJarFile());
-				File disabledJar = new File("plugins/" + getCurrentJarFile() + ".old");
-				int count = 0;
-				while (disabledJar.exists() && count++ < 100) {
-					disabledJar = new File("plugins/" + getCurrentJarFile() + ".old" + count);
-				}
-				if (!disabledJar.exists()) {
-					currentJar.renameTo(disabledJar);
+					succes = downloadFile(getBukkitUpdate().getVersionLink(), "plugins/MobHunting/update/");
+				if (succes) {
+					File currentJar = new File("plugins/" + getCurrentJarFile());
+					File disabledJar = new File("plugins/" + getCurrentJarFile() + ".old");
+					int count = 0;
+					while (disabledJar.exists() && count++ < 100) {
+						disabledJar = new File("plugins/" + getCurrentJarFile() + ".old" + count);
+					}
+					if (!disabledJar.exists()) {
+						currentJar.renameTo(disabledJar);
 
-					File downloadedJar = new File(
-							"plugins/MobHunting/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
-					File newJar = new File("plugins/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
-					downloadedJar.renameTo(newJar);
-					updateAvailable = UpdateStatus.RESTART_NEEDED;
-					return true;
+						File downloadedJar = new File(
+								"plugins/MobHunting/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+						File newJar = new File("plugins/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+						downloadedJar.renameTo(newJar);
+						updateAvailable = UpdateStatus.RESTART_NEEDED;
+						return true;
+					}
 				}
 			} catch (MalformedInputException malformedInputException) {
 				malformedInputException.printStackTrace();
@@ -237,17 +246,20 @@ public class UpdateHelper {
 	 *            path of the directory to save the file
 	 * @throws IOException
 	 */
-	private static void downloadFile(String fileURL, String saveDir) throws IOException {
+	private static boolean downloadFile(String fileURL, String saveDir) throws IOException {
+		boolean succes = false;
 		URL url = new URL(fileURL);
 		HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 		int responseCode = httpConn.getResponseCode();
+
+		Messages.debug("File to be downloaded:%s", fileURL);
 
 		// Create savedir if needed
 		if (!new File(saveDir).exists())
 			new File(saveDir).mkdirs();
 
 		// always check HTTP response code first
-		if (responseCode == HttpURLConnection.HTTP_OK) {
+		if (responseCode == HttpURLConnection.HTTP_OK || responseCode==HttpURLConnection.HTTP_MOVED_TEMP) {
 			String fileName = "";
 			String disposition = httpConn.getHeaderField("Content-Disposition");
 			String contentType = httpConn.getContentType();
@@ -287,10 +299,12 @@ public class UpdateHelper {
 			inputStream.close();
 
 			System.out.println("File downloaded");
+			succes = true;
 		} else {
 			System.out.println("No file to download. Server replied HTTP code: " + responseCode);
 		}
 		httpConn.disconnect();
+		return succes;
 	}
 
 }
