@@ -1,8 +1,9 @@
 V3.3.9
+* Bug fixed: Killing a Husk added +1 to Zombie kills in the achievements.
 * /Mh reload fixed. Now reloading bounties and player settings for online players.
 * Added InventoryDragEvent to BountyManager and AchievementManager - players was able to drag heads/items out of the inventory gui.
 * Some Gringott users needed to lower the minimum reward. A minimum_reward is therefore added to Config.yml.
-* The plugin updater was broken after a change on www.curse.com homepage. The updater is improved and going forward the jar willnot be renamed unless the new file could be downloaded.   
+* The plugin updater was broken after a change on www.curse.com homepage. The updater is improved and going forward the jar will not be renamed unless the new file could be downloaded.   
 V3.3.8
 * Gringotts support fixed.
 * Bug fix: BountyManager failed when plugin was reloaded.
