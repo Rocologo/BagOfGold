@@ -318,24 +318,27 @@ public class MobHunting extends JavaPlugin implements Listener {
 	}
 
 	private void registerModifiers() {
+		mModifiers.add(new BonusMobBonus());
 		mModifiers.add(new BrawlerBonus());
+		mModifiers.add(new CoverBlown());
+		mModifiers.add(new CriticalModifier());
+		mModifiers.add(new DifficultyBonus());
+		mModifiers.add(new FlyingPenalty());
+		mModifiers.add(new FriendleFireBonus());
+		mModifiers.add(new GrindingPenalty());
+		mModifiers.add(new MountedBonus());
 		mModifiers.add(new ProSniperBonus());
-		mModifiers.add(new SniperBonus());
+		mModifiers.add(new RankBonus());
 		mModifiers.add(new ReturnToSenderBonus());
 		mModifiers.add(new ShoveBonus());
 		mModifiers.add(new SneakyBonus());
-		mModifiers.add(new FriendleFireBonus());
-		mModifiers.add(new BonusMobBonus());
-		mModifiers.add(new CriticalModifier());
-
-		mModifiers.add(new FlyingPenalty());
-		mModifiers.add(new GrindingPenalty());
-		mModifiers.add(new Undercover());
-		mModifiers.add(new CoverBlown());
-		mModifiers.add(new RankBonus());
-		mModifiers.add(new DifficultyBonus());
-		mModifiers.add(new MountedBonus());
+		mModifiers.add(new SniperBonus());
 		mModifiers.add(new StackedMobBonus());
+		mModifiers.add(new Undercover());
+	}
+	
+	public void registerModifierXXX(IModifier modifier) {
+		mModifiers.add(modifier);
 	}
 
 	// ************************************************************************************
@@ -373,7 +376,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 * 
 	 * @return
 	 */
-	public static AchievementManager getAchievements() {
+	public static AchievementManager getAchievementManager() {
 		return mAchievementManager;
 	}
 
@@ -447,10 +450,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 */
 	public static RewardManager getRewardManager() {
 		return mRewardManager;
-	}
-
-	public void registerModifier(IModifier modifier) {
-		mModifiers.add(modifier);
 	}
 
 	// ************************************************************************************

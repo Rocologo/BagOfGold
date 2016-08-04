@@ -113,7 +113,7 @@ public class MyPetCompat implements Listener {
 			Player owner = killer.getOwner().getPlayer();
 
 			if (owner != null && MobHunting.getMobHuntingManager().isHuntEnabled(owner)) {
-				MobHunting.getAchievements().awardAchievementProgress("fangmaster", owner, 1);
+				MobHunting.getAchievementManager().awardAchievementProgress("fangmaster", owner, 1);
 			}
 		}
 	}

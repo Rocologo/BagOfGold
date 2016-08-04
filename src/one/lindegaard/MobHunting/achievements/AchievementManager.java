@@ -502,7 +502,7 @@ public class AchievementManager implements Listener {
 			inventory2 = Bukkit.createInventory((Player) sender, 54,
 					ChatColor.BLUE + "" + ChatColor.BOLD + "Not started");
 		}
-		MobHunting.getAchievements().requestCompletedAchievements(otherPlayer,
+		MobHunting.getAchievementManager().requestCompletedAchievements(otherPlayer,
 				new IDataCallback<List<Entry<Achievement, Integer>>>() {
 					@Override
 					public void onError(Throwable error) {

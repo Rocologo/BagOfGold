@@ -59,7 +59,7 @@ public class RecordHungry implements Achievement, Listener {
 
 				if (skele.getTarget() == target && target.getGameMode() != GameMode.CREATIVE
 						&& MobHunting.getMobHuntingManager().isHuntEnabled(target))
-					MobHunting.getAchievements().awardAchievement(this, target);
+					MobHunting.getAchievementManager().awardAchievement(this, target);
 			}
 		}
 	}

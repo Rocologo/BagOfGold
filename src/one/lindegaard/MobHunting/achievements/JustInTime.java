@@ -41,7 +41,7 @@ public class JustInTime implements Achievement, Listener {
 				&& (event.getKilledEntity().getWorld().getTime() >= 23500
 						&& event.getKilledEntity().getWorld().getTime() <= 24000)
 				&& event.getKilledEntity().getFireTicks() > 0)
-			MobHunting.getAchievements().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override

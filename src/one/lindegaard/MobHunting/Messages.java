@@ -274,7 +274,9 @@ public class Messages {
 
 	public static void learn(Player player, String text, Object... args) {
 		if (player != null && !CitizensCompat.isNPC(player)
-				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode())
+				&& MobHunting.getPlayerSettingsmanager()
+				.getPlayerSettings(player)
+				.isLearningMode())
 			if (BossBarAPICompat.isSupported()) {
 				BossBarAPICompat.addBar(player, text);
 			} else if (BarAPICompat.isSupported()) {

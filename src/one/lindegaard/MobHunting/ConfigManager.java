@@ -678,8 +678,9 @@ public class ConfigManager extends AutoConfig {
 	public double bonusSendFalling = 2.0;
 	@ConfigField(name = "no-weapon", category = "bonus")
 	public double bonusNoWeapon = 2.0;
-	@ConfigField(name = "far-shot", category = "bonus")
-	public double bonusFarShot = 4.0;
+	@ConfigField(name = "far-shot", category = "bonus", comment="This is the PRO-Sniper bonus. The Sniper bonus is calulated as half of PRO-Sniper bonus."
+			+"\nIf If PRO Sniper (far-shot) is 2, then Sniper will be = 1+((far-shot-1)/2)=1.5")
+	public double bonusFarShot = 2.0;
 	@ConfigField(name = "mounted", category = "bonus")
 	public double bonusMounted = 1.5;
 	@ConfigField(name = "friendly-fire", category = "bonus")

@@ -78,6 +78,6 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onKillCompleted(MobHuntKillEvent event) {
 		if (mType.matches(event.getKilledEntity()))
-			MobHunting.getAchievements().awardAchievementProgress(this, event.getPlayer(), 1);
+			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(), 1);
 	}
 }

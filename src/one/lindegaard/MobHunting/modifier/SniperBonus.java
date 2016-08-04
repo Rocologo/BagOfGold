@@ -17,13 +17,13 @@ public class SniperBonus implements IModifier
 	@Override
 	public String getName()
 	{
-		return ChatColor.GRAY + Messages.getString("bonus.sniper.name"); //$NON-NLS-1$
+		return ChatColor.GRAY + Messages.getString("bonus.sniper.name"); 
 	}
 
 	@Override
 	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause)
 	{
-		return MobHunting.getConfigManager().bonusFarShot / 2;
+		return 1+((MobHunting.getConfigManager().bonusFarShot-1) / 2);
 	}
 
 	@Override

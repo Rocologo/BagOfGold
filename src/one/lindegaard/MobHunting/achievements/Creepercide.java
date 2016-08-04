@@ -77,7 +77,7 @@ public class Creepercide implements Achievement, Listener {
 							initiator.getName());
 					Messages.learn(initiator, Messages.getString("mobhunting.learn.mobarena"));
 				} else
-					MobHunting.getAchievements().awardAchievement("creepercide", initiator);
+					MobHunting.getAchievementManager().awardAchievement("creepercide", initiator);
 			}
 		}
 	}

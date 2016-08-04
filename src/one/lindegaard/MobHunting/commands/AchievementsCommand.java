@@ -74,10 +74,10 @@ public class AchievementsCommand implements ICommand {
 
 		if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 			sender.sendMessage("list all archivement descriptions");
-			MobHunting.getAchievements().listAllAchievements(sender);
+			MobHunting.getAchievementManager().listAllAchievements(sender);
 
 		} else if (args.length == 1 && (args[0].equalsIgnoreCase("nogui") || args[0].equalsIgnoreCase("gui"))) {
-			MobHunting.getAchievements().showAllAchievements((Player) player, player, args[0].equalsIgnoreCase("gui"),
+			MobHunting.getAchievementManager().showAllAchievements((Player) player, player, args[0].equalsIgnoreCase("gui"),
 					self);
 
 		} else {
@@ -102,15 +102,15 @@ public class AchievementsCommand implements ICommand {
 				}
 
 				if (args.length == 2 && (args[1].equalsIgnoreCase("nogui") || args[1].equalsIgnoreCase("gui")))
-					MobHunting.getAchievements().showAllAchievements(sender, otherPlayer,
+					MobHunting.getAchievementManager().showAllAchievements(sender, otherPlayer,
 							args[1].equalsIgnoreCase("gui"), self);
 				else if (sender instanceof ConsoleCommandSender)
-					MobHunting.getAchievements().showAllAchievements(sender, otherPlayer, false, self);
+					MobHunting.getAchievementManager().showAllAchievements(sender, otherPlayer, false, self);
 				else
-					MobHunting.getAchievements().showAllAchievements(sender, otherPlayer,
+					MobHunting.getAchievementManager().showAllAchievements(sender, otherPlayer,
 							MobHunting.getConfigManager().useGuiForAchievements, self);
 			} else {
-				MobHunting.getAchievements().showAllAchievements(sender, player,
+				MobHunting.getAchievementManager().showAllAchievements(sender, player,
 						MobHunting.getConfigManager().useGuiForAchievements, self);
 			}
 		}

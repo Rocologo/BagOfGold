@@ -74,6 +74,7 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		save(player);
+		removePlayerSettings(player);
 	}
 
 	/**
