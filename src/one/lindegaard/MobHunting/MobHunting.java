@@ -245,15 +245,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
 				Messages.debug("Reloading %s online player settings from the database",
 						mMobHuntingManager.getOnlinePlayersAmount());
-				for (Player player : mMobHuntingManager.getOnlinePlayers()) 
+				for (Player player : mMobHuntingManager.getOnlinePlayers())
 					mPlayerSettingsManager.load(player);
 			}
 			if (!mConfig.disablePlayerBounties) {
 				mBountyManager = new BountyManager(this);
 				cmd.registerCommand(new BountyCommand());
-				if (mMobHuntingManager.getOnlinePlayersAmount() > 0) 
-					for (Player player : mMobHuntingManager.getOnlinePlayers()) 
-						mBountyManager.loadOpenBounties(player); 
+				if (mMobHuntingManager.getOnlinePlayersAmount() > 0)
+					for (Player player : mMobHuntingManager.getOnlinePlayers())
+						mBountyManager.loadOpenBounties(player);
 			}
 
 			mAchievementManager = new AchievementManager();
@@ -336,7 +336,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		mModifiers.add(new StackedMobBonus());
 		mModifiers.add(new Undercover());
 	}
-	
+
 	public void registerModifierXXX(IModifier modifier) {
 		mModifiers.add(modifier);
 	}
@@ -559,7 +559,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		if (WorldGuardCompat.isSupported()
 				&& !WorldGuardHelper.isAllowedByWorldGuard(damager, damaged, DefaultFlag.MOB_DAMAGE)) {
-			//Messages.debug("KillBlocked:(1) %s is hiding in WG region with mob-damage=DENY", damager.getName());
+			// Messages.debug("KillBlocked:(1) %s is hiding in WG region with
+			// mob-damage=DENY", damager.getName());
 			return;
 		}
 
@@ -1150,7 +1151,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}
 
-			// Record the kill in the Database 
+			// Record the kill in the Database
 			if (killer != null)
 				Messages.debug("RecordKill: %s killed a %s", killer.getName(),
 						ExtendedMobType.getExtendedMobType(killed));
@@ -1180,10 +1181,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Run console commands as a reward
 		if (data.getDampenedKills() < 10) {
-			if (!mConfig.getKillConsoleCmd(killed).equals("") 
-					&& mConfig.getCmdRunProbabilityBase(killed) != 0) {
-				if (getMobHuntingManager().mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) 
-						< mConfig.getCmdRunProbability(killed)) {
+			Messages.debug("Is this an old config: %s", mConfig.isOldChanceCalculation("mob"));
+			if (!mConfig.getKillConsoleCmd(killed).equals("") && mConfig.getCmdRunProbabilityBase(killed) != 0) {
+				if (getMobHuntingManager().mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig
+						.getCmdRunProbability(killed)) {
 					String worldname = killer.getWorld().getName();
 					String killerpos = killer.getLocation().getBlockX() + " " + killer.getLocation().getBlockY() + " "
 							+ killer.getLocation().getBlockZ();

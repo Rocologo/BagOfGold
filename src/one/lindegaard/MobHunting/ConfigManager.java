@@ -678,8 +678,8 @@ public class ConfigManager extends AutoConfig {
 	public double bonusSendFalling = 2.0;
 	@ConfigField(name = "no-weapon", category = "bonus")
 	public double bonusNoWeapon = 2.0;
-	@ConfigField(name = "far-shot", category = "bonus", comment="This is the PRO-Sniper bonus. The Sniper bonus is calulated as half of PRO-Sniper bonus."
-			+"\nIf If PRO Sniper (far-shot) is 2, then Sniper will be = 1+((far-shot-1)/2)=1.5")
+	@ConfigField(name = "far-shot", category = "bonus", comment = "This is the PRO-Sniper bonus. The Sniper bonus is calulated as half of PRO-Sniper bonus."
+			+ "\nIf If PRO Sniper (far-shot) is 2, then Sniper will be = 1+((far-shot-1)/2)=1.5")
 	public double bonusFarShot = 2.0;
 	@ConfigField(name = "mounted", category = "bonus")
 	public double bonusMounted = 1.5;
@@ -1284,8 +1284,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nSet rounding_reward=2 if you want multipla of 2 IE. 10,12,14,16...")
 	public double rewardRounding = 0.01;
 
-	@ConfigField(name = "minimum_reward", category = "general", comment = 
-			     "This is the minimum reward which will which will be paid to the player 0.01 will be fine"
+	@ConfigField(name = "minimum_reward", category = "general", comment = "This is the minimum reward which will which will be paid to the player 0.01 will be fine"
 			+ "\nin most installation, but Gringott users who want very low rewards (like 0.001  for killing"
 			+ "\na mob) will have to lower the minimum reward. Remember that some multipiers are less than 1"
 			+ "\n and grinding detection and penalties. The minimum_reward should therefor be less than 10%"
@@ -1358,10 +1357,11 @@ public class ConfigManager extends AutoConfig {
 	 * @return value
 	 */
 	public double getBaseKillPrize(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
-				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-				MetadataValue value = data.get(0);
-				return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+		if (TARDISWeepingAngelsCompat.isSupported()
+				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+			MetadataValue value = data.get(0);
+			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
@@ -1530,7 +1530,8 @@ public class ConfigManager extends AutoConfig {
 	 *         be separeted by a "|"
 	 */
 	public String getKillConsoleCmd(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+		if (TARDISWeepingAngelsCompat.isSupported()
+				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
@@ -1656,7 +1657,8 @@ public class ConfigManager extends AutoConfig {
 	 * @return String
 	 */
 	public String getKillRewardDescription(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+		if (TARDISWeepingAngelsCompat.isSupported()
+				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
@@ -1776,7 +1778,8 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	public int getCmdRunProbability(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+		if (TARDISWeepingAngelsCompat.isSupported()
+				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropability();
@@ -1896,7 +1899,8 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	public int getCmdRunProbabilityBase(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+		if (TARDISWeepingAngelsCompat.isSupported()
+				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getPropabilityBase();
@@ -2014,6 +2018,17 @@ public class ConfigManager extends AutoConfig {
 
 		}
 		return 100;
+	}
+
+	public boolean isOldChanceCalculation(String category) {
+		List<String> mobs = getNodes(category);
+		for (String mob : mobs) {
+			if (mob.contains("run-frequency")) {
+				Messages.debug("Old config: %s", mob);
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
