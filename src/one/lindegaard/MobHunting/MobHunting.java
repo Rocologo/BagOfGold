@@ -965,10 +965,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		HuntData data;
 
-		// if (killer != null)
 		data = mMobHuntingManager.getHuntData(killer);
-		// else
-		// data = mMobHuntingManager.getHuntData(damager);
 
 		// Killstreak
 		Misc.handleKillstreak(killer);
@@ -1183,9 +1180,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Run console commands as a reward
 		if (data.getDampenedKills() < 10) {
-			if (!mConfig.getKillConsoleCmd(killed).equals("") && mConfig.getCmdRunProbabilityBase(killed) != 0) {
-				if (getMobHuntingManager().mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig
-						.getCmdRunProbability(killed)) {
+			if (!mConfig.getKillConsoleCmd(killed).equals("") 
+					&& mConfig.getCmdRunProbabilityBase(killed) != 0) {
+				if (getMobHuntingManager().mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) 
+						< mConfig.getCmdRunProbability(killed)) {
 					String worldname = killer.getWorld().getName();
 					String killerpos = killer.getLocation().getBlockX() + " " + killer.getLocation().getBlockY() + " "
 							+ killer.getLocation().getBlockZ();

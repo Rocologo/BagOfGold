@@ -27,7 +27,7 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label };
+		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to download and update the plugin." };
 	}
 
 	@Override
@@ -49,17 +49,12 @@ public class UpdateCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		if (UpdateHelper.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
 			if (UpdateHelper.downloadAndUpdateJar()) {
-				sender.sendMessage(ChatColor.GREEN
-						+ Messages
-								.getString("mobhunting.commands.update.complete"));
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
 			} else {
-				sender.sendMessage(ChatColor.GREEN
-						+ Messages
-								.getString("mobhunting.commands.update.could-not-update"));
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.could-not-update"));
 			}
 		} else if (UpdateHelper.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
-			sender.sendMessage(ChatColor.GREEN
-					+ Messages.getString("mobhunting.commands.update.complete"));
+			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
 		} else {
 			UpdateHelper.pluginUpdateCheck(sender, true, false);
 		}
@@ -67,8 +62,7 @@ public class UpdateCommand implements ICommand {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, String label,
-			String[] args) {
+	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		return null;
 	}
 

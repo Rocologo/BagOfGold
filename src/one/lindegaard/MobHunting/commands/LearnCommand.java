@@ -37,8 +37,9 @@ public class LearnCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + " learn" + ChatColor.GREEN + " - to enable/disable learningmode.", label
-				+ " learn playername" + ChatColor.GREEN + " - to enable/disable learningmode for a specific player." };
+		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to enable/disable learningmode.",
+				ChatColor.GOLD + label + ChatColor.GREEN + " playername" + ChatColor.WHITE
+						+ " - to enable/disable learningmode for a specific player." };
 	}
 
 	@Override

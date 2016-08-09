@@ -30,13 +30,13 @@ public class WhitelistAreaCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + ChatColor.GREEN + " [add|remove]" };
+		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " [add|remove]" + ChatColor.WHITE
+				+ " - to whitelist an area." };
 	}
 
 	@Override
 	public String getDescription() {
-		return Messages
-				.getString("mobhunting.commands.whitelistarea.description");
+		return Messages.getString("mobhunting.commands.whitelistarea.description");
 	}
 
 	@Override
@@ -55,28 +55,23 @@ public class WhitelistAreaCommand implements ICommand {
 
 		if (args.length == 0) {
 			if (MobHunting.getAreaManager().isWhitelisted(loc))
-				sender.sendMessage(ChatColor.GREEN
-						+ Messages
-								.getString("mobhunting.commands.whitelistarea.iswhitelisted"));
+				sender.sendMessage(
+						ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.iswhitelisted"));
 			else
-				sender.sendMessage(ChatColor.RED
-						+ Messages
-								.getString("mobhunting.commands.whitelistarea.notwhitelisted"));
+				sender.sendMessage(
+						ChatColor.RED + Messages.getString("mobhunting.commands.whitelistarea.notwhitelisted"));
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("remove")) {
 				MobHunting.getAreaManager().unWhitelistArea(loc);
-				sender.sendMessage(ChatColor.GREEN
-						+ Messages
-								.getString("mobhunting.commands.whitelistarea.remove.done"));
+				sender.sendMessage(
+						ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.remove.done"));
 			} else if (args[0].equalsIgnoreCase("add")) {
 				Area area = new Area();
 				area.center = loc;
 				area.range = 15;
 				MobHunting.getAreaManager().whitelistArea(area);
 
-				sender.sendMessage(ChatColor.GREEN
-						+ Messages
-								.getString("mobhunting.commands.whitelistarea.done"));
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.done"));
 			} else
 				return false;
 		} else
@@ -86,8 +81,7 @@ public class WhitelistAreaCommand implements ICommand {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, String label,
-			String[] args) {
+	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		return null;
 	}
 

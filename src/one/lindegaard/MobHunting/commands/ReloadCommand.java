@@ -27,7 +27,7 @@ public class ReloadCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label };
+		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to reload MobHunting configuration."};
 	}
 
 	@Override

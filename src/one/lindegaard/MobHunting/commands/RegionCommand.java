@@ -50,11 +50,12 @@ public class RegionCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + ChatColor.RED + " <id>" + ChatColor.GOLD + " mobhunting allow",
-				label + ChatColor.RED + " <id>" + ChatColor.GOLD + " mobhunting deny",
-				label + ChatColor.RED + " <id>" + ChatColor.GOLD + " mobhunting",
-				label + ChatColor.GOLD + " mobhunting allow", label + ChatColor.GOLD + " mobhunting deny",
-				label + ChatColor.GOLD + " mobhunting" };
+		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " <id>" + ChatColor.WHITE + " mobhunting allow",
+				ChatColor.GOLD + label + ChatColor.GREEN + " <id>" + ChatColor.WHITE + " mobhunting deny",
+				ChatColor.GOLD + label + ChatColor.GREEN + " <id>" + ChatColor.WHITE + " mobhunting",
+				ChatColor.GOLD + label + ChatColor.GREEN + " mobhunting allow",
+				label + ChatColor.GREEN + " mobhunting deny", 
+				ChatColor.GOLD + label + ChatColor.GREEN + " mobhunting" + ChatColor.WHITE + " - to remove the flag"};
 	}
 
 	@Override

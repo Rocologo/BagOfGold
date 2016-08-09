@@ -28,8 +28,8 @@ public class VersionCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + ChatColor.RED + " version"
-				+ ChatColor.GOLD + " to get the version number" };
+		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " version"
+				+ ChatColor.WHITE + " - to get the version number" };
 	}
 
 	@Override

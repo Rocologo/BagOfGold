@@ -1,3 +1,7 @@
+V3.4.0
+* Fixed bug on servers < Minecraft 1.10: NoSuchMethodError: org.bukkit.entity.Zombie.getVillagerProfession() 
+* Missing mobhunting.commands.region.description added to Lang files.
+* /mh help has been updated, including /mh <command> help
 V3.3.9
 * Bug fixed: Killing a Husk added +1 to Zombie kills in the achievements.
 * /Mh reload fixed. Now reloading bounties and player settings for online players.

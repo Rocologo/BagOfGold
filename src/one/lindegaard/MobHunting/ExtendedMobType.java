@@ -382,6 +382,9 @@ public enum ExtendedMobType {
 			else if (this == Husk)
 				return ent instanceof org.bukkit.entity.Zombie
 						&& ((Zombie) ent).getVillagerProfession() == Profession.HUSK;
+			else if (this == ExtendedMobType.Zombie)
+				return ent instanceof org.bukkit.entity.Zombie
+						&& ((Zombie) ent).getVillagerProfession() == Profession.NORMAL;
 
 		if (Misc.isMC19OrNewer())
 			if (this == Shulker)
@@ -402,8 +405,7 @@ public enum ExtendedMobType {
 		else if (this == Skeleton)
 			return ent instanceof Skeleton && ((Skeleton) ent).getSkeletonType() == SkeletonType.NORMAL;
 		else if (this == ExtendedMobType.Zombie)
-			return ent instanceof org.bukkit.entity.Zombie
-					&& ((Zombie) ent).getVillagerProfession() == Profession.NORMAL;
+			return ent instanceof org.bukkit.entity.Zombie;
 		else if (this == BonusMob)
 			return ent.hasMetadata("MH:hasBonus");
 		else

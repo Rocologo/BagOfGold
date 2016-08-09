@@ -31,7 +31,7 @@ public class ClearGrindingCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label };
+		return new String[] { ChatColor.GOLD + label };
 	}
 
 	@Override

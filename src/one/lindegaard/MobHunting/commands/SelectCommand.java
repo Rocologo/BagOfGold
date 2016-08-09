@@ -29,7 +29,7 @@ public class SelectCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + ChatColor.GOLD + " (1|2)" };
+		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " (1|2)" };
 	}
 
 	@Override

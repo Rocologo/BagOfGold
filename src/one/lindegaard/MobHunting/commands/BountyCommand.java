@@ -50,15 +50,13 @@ public class BountyCommand implements ICommand {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				label + ChatColor.RED + ChatColor.YELLOW + " [gui|nogui]" + ChatColor.GREEN
-						+ "       - to show a list.",
-				label + ChatColor.RED + " <player>" + ChatColor.YELLOW + " [gui|nogui]" + ChatColor.GREEN
+				ChatColor.GOLD + label + ChatColor.YELLOW + " [gui|nogui]" + ChatColor.WHITE + " - to show open bounties on your head.",
+				ChatColor.GOLD + label + ChatColor.YELLOW + " <player> [gui|nogui]" + ChatColor.GREEN
 						+ " - to check if there is a bounty on <player>",
-				label + ChatColor.RED + " <player> <prize> <message>" + ChatColor.GREEN
-						+ " - put a bounty on <player> deliver the message when killed.",
-				label + ChatColor.RED + " <player>" + ChatColor.WHITE + " drop" + ChatColor.GREEN
-						+ " - to remove bounty on <player> with a " + MobHunting.getConfigManager().bountyReturnPct
-						+ "% reduction" };
+						ChatColor.GOLD + label + ChatColor.GREEN + " <player> <prize>" + ChatColor.YELLOW + " <message>" + ChatColor.WHITE
+						+ " - put a bounty on <player> and deliver the message when killed.",
+						ChatColor.GOLD + label + ChatColor.GREEN + " <player> drop" + ChatColor.WHITE + " - to remove bounty on <player> with a "
+						+ MobHunting.getConfigManager().bountyReturnPct + "% reduction" };
 	}
 
 	@Override

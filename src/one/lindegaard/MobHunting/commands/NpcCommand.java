@@ -53,10 +53,12 @@ public class NpcCommand implements ICommand, Listener {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				label + ChatColor.GOLD + " create" + ChatColor.RED + " <stattype> <period> <number>" + ChatColor.WHITE
-						+ " -:to create a MasterMobHunter NPC",
-				label + ChatColor.GOLD + " remove" + ChatColor.WHITE + " -:to remove the MasterMobHunter",
-				label + ChatColor.GOLD + " update" + ChatColor.WHITE + " -:to update the MasterMobHunter NPC" };
+				ChatColor.GOLD + label + ChatColor.GREEN + " create <stattype> <period> <number>"
+						+ ChatColor.WHITE + " - to create a MasterMobHunter NPC",
+						ChatColor.GOLD + label + ChatColor.GREEN + " remove" + ChatColor.WHITE
+						+ " - to remove the selected MasterMobHunter",
+						ChatColor.GOLD + label + ChatColor.GREEN + " update" + ChatColor.WHITE
+						+ " - to update selected the MasterMobHunter NPC" };
 	}
 
 	@Override

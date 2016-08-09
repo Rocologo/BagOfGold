@@ -34,8 +34,8 @@ public class TopCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] {
-				label + ChatColor.GOLD + " <type> (day|week|month|year|alltime)" + ChatColor.GREEN + " [count]" };
+		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " <type> (day|week|month|year|alltime)"
+				+ ChatColor.YELLOW + " [count]" + ChatColor.WHITE + " - to show top players" };
 	}
 
 	@Override

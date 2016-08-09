@@ -37,8 +37,9 @@ public class MuteCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + " mute" + ChatColor.GREEN + " - to mute/unmute.", label + " mute playername"
-				+ ChatColor.GREEN + " - to mute/unmute a the notifications for a specific player." };
+		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to mute/unmute.",
+				ChatColor.GOLD + label + ChatColor.GREEN + " <playername>" + ChatColor.WHITE
+						+ " - to mute/unmute a the notifications for a specific player." };
 	}
 
 	@Override

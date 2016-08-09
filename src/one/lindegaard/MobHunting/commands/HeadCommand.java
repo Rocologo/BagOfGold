@@ -57,9 +57,9 @@ public class HeadCommand implements ICommand, Listener {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				ChatColor.GOLD + label + ChatColor.GREEN + " give" + " [toPlayername] [playername|mobname]"
-						+ ChatColor.YELLOW + " [displayname] [amount]" + ChatColor.WHITE + " - to give a head",
-				ChatColor.GOLD + label + ChatColor.GREEN + " rename [new displayname]" + ChatColor.WHITE
+				ChatColor.GOLD + label + ChatColor.GREEN + " give" + " [toPlayername] [playername|mobname]" + ChatColor.YELLOW
+						+ " [displayname] [amount]" + ChatColor.WHITE + " - to give a head",
+						ChatColor.GOLD + label + ChatColor.GREEN + " rename [new displayname]" + ChatColor.WHITE
 						+ " - to rename the head in players name" };
 	}
 
@@ -129,11 +129,10 @@ public class HeadCommand implements ICommand, Listener {
 				}
 				if (mob != null) {
 					String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
-							.replace("{displayname}", displayName)
-							.replace("{lore}", MH_REWARD).replace("{playerid}", mob.getPlayerId())
-							.replace("{texturevalue}", mob.getTextureValue())
-							.replace("{amount}", String.valueOf(amount))
-							.replace("{playername}", offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
+							.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
+							.replace("{playerid}", mob.getPlayerId()).replace("{texturevalue}", mob.getTextureValue())
+							.replace("{amount}", String.valueOf(amount)).replace("{playername}",
+									offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
 					Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
 					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 				}
@@ -290,17 +289,18 @@ public class HeadCommand implements ICommand, Listener {
 	}
 
 	/**
-	@EventHandler
-	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		if (event.getItem() != null)
-			if (event.getMaterial() == Material.SKULL_ITEM || event.getMaterial() == Material.SKULL) {
-				if (event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore()
-						&& event.getItem().getItemMeta().getLore().get(0).equalsIgnoreCase(HeadCommand.MH_REWARD)) {
-					String displayName = event.getItem().getItemMeta().getDisplayName();
-					Messages.debug("You hit a MH Head DisplayName=%s", displayName);
-				}
-			}
-	}
-	**/
+	 * @EventHandler public void onPlayerInteractEvent(PlayerInteractEvent
+	 *               event) { if (event.getItem() != null) if
+	 *               (event.getMaterial() == Material.SKULL_ITEM ||
+	 *               event.getMaterial() == Material.SKULL) { if
+	 *               (event.getItem().hasItemMeta() &&
+	 *               event.getItem().getItemMeta().hasLore() &&
+	 *               event.getItem().getItemMeta().getLore().get(0).
+	 *               equalsIgnoreCase(HeadCommand.MH_REWARD)) { String
+	 *               displayName =
+	 *               event.getItem().getItemMeta().getDisplayName();
+	 *               Messages.debug("You hit a MH Head DisplayName=%s",
+	 *               displayName); } } }
+	 **/
 
 }

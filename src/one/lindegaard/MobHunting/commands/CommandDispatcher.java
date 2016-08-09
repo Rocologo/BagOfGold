@@ -173,6 +173,12 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		}
 
 		sender.sendMessage(usage);
+		
+		if (subcommand == null) {
+			sender.sendMessage(Messages
+					.getString("mobhunting.commands.base.morehelp"));
+		}
+
 	}
 
 	@Override

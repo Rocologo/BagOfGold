@@ -13,7 +13,7 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class DatabaseCommand implements ICommand, Listener {
 
-	//private IDataStore mStore;
+	// private IDataStore mStore;
 
 	// private DataStoreManager mStoreManager;
 
@@ -37,7 +37,7 @@ public class DatabaseCommand implements ICommand, Listener {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { label + ChatColor.GOLD + " fixLeaderboard" };
+		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " fixLeaderboard" };
 	}
 
 	@Override
@@ -56,26 +56,25 @@ public class DatabaseCommand implements ICommand, Listener {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, String label,
-			String[] args) {
+	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 
 		ArrayList<String> items = new ArrayList<String>();
 		if (args.length == 1) {
 			items.add("fixLeaderboard");
-			//items.add("backup");
-			//items.add("restore");
-			//items.add("deletebackup");
-		} 
-		//else if (args.length == 2) {
-		//	if (args[0].equalsIgnoreCase("backupxxx")) {
-		//		// TODO: set items do defaultname
-		//		// items.add(today);
-		//	} else if (args[0].equalsIgnoreCase("backupyyy")) {
-		//		// TODO: list posible backups
-		//	} else if (args[0].equalsIgnoreCase("deletebackup")) {
-		//		// TODO: list posible backups
-		//	}
-		//}
+			// items.add("backup");
+			// items.add("restore");
+			// items.add("deletebackup");
+		}
+		// else if (args.length == 2) {
+		// if (args[0].equalsIgnoreCase("backupxxx")) {
+		// // TODO: set items do defaultname
+		// // items.add(today);
+		// } else if (args[0].equalsIgnoreCase("backupyyy")) {
+		// // TODO: list posible backups
+		// } else if (args[0].equalsIgnoreCase("deletebackup")) {
+		// // TODO: list posible backups
+		// }
+		// }
 		return items;
 	}
 
