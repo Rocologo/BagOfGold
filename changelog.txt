@@ -1,5 +1,6 @@
 V3.4.1
-* Fix for Metrics error
+* Fix for Metrics error. Metrics removed internally.
+* Error in Plugin.yml
 V3.4.0
 * Fixed bug on servers < Minecraft 1.10: NoSuchMethodError: org.bukkit.entity.Zombie.getVillagerProfession() 
 * Missing mobhunting.commands.region.description added to Lang files.
