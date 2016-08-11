@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>3.4.1</version>
+	<version>3.4.2-SNAPSHOT</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -17,7 +17,7 @@
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
 		
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
-		<metrics.version>R8-SNAPSHOT</metrics.version>
+		<metrics.version>R7</metrics.version>
 		<vault.version>1.5.6</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
 		<mypet.version>2.1.5-SNAPSHOT</mypet.version>
@@ -255,10 +255,12 @@
 			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
 		<!-- MCStats SNAPSHOTS -->
-		<repository>
+		<!--
+		 <repository>
 			<id>Plugin Metrics SNAPSHOTS</id>
 			<url>http://repo.mcstats.org/content/repositories/snapshots/</url>
 		</repository>
+		 -->
 
 
 		<!-- Essentials -->
