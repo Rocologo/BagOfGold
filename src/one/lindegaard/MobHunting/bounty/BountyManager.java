@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
@@ -41,13 +40,13 @@ public class BountyManager implements Listener {
 	public BountyManager(MobHunting instance) {
 		this.instance = instance;
 		// if (MobHunting.ENABLE_TEST_BOUNTY)
-		//     addTestData();
+		// addTestData();
 		initialize();
 	}
 
 	private void initialize() {
 		if (MobHunting.getConfigManager().enableRandomBounty) {
-				Bukkit.getPluginManager().registerEvents(this, instance);
+			Bukkit.getPluginManager().registerEvents(this, instance);
 			Bukkit.getScheduler().runTaskTimer(instance, new Runnable() {
 				public void run() {
 					createRandomBounty();
@@ -267,7 +266,7 @@ public class BountyManager implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		// saveBounties(e.getPlayer());
 		Set<Bounty> toBeRemoved = new HashSet<Bounty>();
-		
+
 		Iterator<Bounty> itr = getAllBounties().iterator();
 		int n = 0;
 		while (itr.hasNext()) {
@@ -338,18 +337,18 @@ public class BountyManager implements Listener {
 	// BOUNTY GUI
 	// *************************************************************************************
 
-	private static Inventory inventory;
+	// private static Inventory inventory;
 
 	public static void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
 			boolean useGui) {
 		if (sender instanceof Player) {
-			Player player = (Player) sender;
+			//Player player = (Player) sender;
 
 			if (hasBounties(worldGroupName, wantedPlayer)) {
 				Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getBounties(worldGroupName,
 						wantedPlayer);
 				if (useGui) {
-					inventory = Bukkit.createInventory(player, 54,
+					Inventory inventory = Bukkit.createInventory(null, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
 					int n = 0;
 					for (Bounty bounty : bountiesOnWantedPlayer) {
@@ -415,7 +414,7 @@ public class BountyManager implements Listener {
 				// Set<Bounty> bounties =
 				// MobHunting.getBountyManager().getAllBounties();
 				if (useGui) {
-					inventory = Bukkit.createInventory(player, 54,
+					Inventory inventory = Bukkit.createInventory(player, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
 					int n = 0;
 					for (Bounty bounty : mOpenBounties) {
@@ -471,27 +470,11 @@ public class BountyManager implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		final Player player = (Player) event.getWhoClicked();
 		Inventory inv = event.getInventory();
-		if (inv != null && inventory != null)
-			if (inv.getName().equals(inventory.getName())) {
-				event.setCancelled(true);
-				Messages.debug("BountyManager: Player clicked on inventory - closing now");
-				Bukkit.getScheduler().runTask(instance, new Runnable() {
-					public void run() {
-						player.closeInventory();
-					}
-				});
-				
-			}
-	}
-
-	@EventHandler
-	public void onInventoryDrag(InventoryDragEvent event) {
-		final Player player = (Player) event.getWhoClicked();
-		Inventory inv = event.getInventory();
-		if (inv != null && inventory != null)
-			if (inv.getName().equals(inventory.getName())) {
+		if (ChatColor.stripColor(inv.getName()).startsWith("MostWanted:")||
+				ChatColor.stripColor(inv.getName()).startsWith("Wanted:")) {
+			final Player player = (Player) event.getWhoClicked();
+			if (inv != null) {
 				event.setCancelled(true);
 				Messages.debug("BountyManager: Player clicked on inventory - closing now");
 				Bukkit.getScheduler().runTask(instance, new Runnable() {
@@ -500,6 +483,7 @@ public class BountyManager implements Listener {
 					}
 				});
 			}
+		}
 	}
 
 	// ***********************************************************

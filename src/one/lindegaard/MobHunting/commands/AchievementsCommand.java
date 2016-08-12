@@ -79,7 +79,6 @@ public class AchievementsCommand implements ICommand {
 		} else if (args.length == 1 && (args[0].equalsIgnoreCase("nogui") || args[0].equalsIgnoreCase("gui"))) {
 			MobHunting.getAchievementManager().showAllAchievements((Player) player, player, args[0].equalsIgnoreCase("gui"),
 					self);
-
 		} else {
 
 			OfflinePlayer otherPlayer;
