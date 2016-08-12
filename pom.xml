@@ -17,7 +17,7 @@
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
 		
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
-		<metrics.version>R7</metrics.version>
+		<!-- <metrics.version>R7</metrics.version> -->
 		<vault.version>1.5.6</vault.version>
 		<minigames.version>1.7.0-SNAPSHOT</minigames.version>
 		<mypet.version>2.1.5-SNAPSHOT</mypet.version>
@@ -95,6 +95,7 @@
 					<target>${javacompiler.version}</target>
 				</configuration>
 			</plugin>
+			<!-- 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -124,7 +125,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			 -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
@@ -250,10 +251,10 @@
 		</repository>
 
 		<!-- MCStats -->
-		<repository>
+		<!-- <repository>
 			<id>Plugin Metrics</id>
 			<url>http://repo.mcstats.org/content/repositories/public</url>
-		</repository>
+		</repository> -->
 		<!-- MCStats SNAPSHOTS -->
 		<!--
 		 <repository>
@@ -434,12 +435,12 @@
 		</dependency>
 
 		<!-- MCStats / Plugin Metrics -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.mcstats.bukkit</groupId>
 			<artifactId>metrics</artifactId>
 			<version>${metrics.version}</version>
 			<scope>compile</scope>
-		</dependency>
+		</dependency> -->
 
 		<!-- MyPet -->
 		<dependency>
@@ -560,8 +561,6 @@
 			<systemPath>${project.basedir}/lib/${VanishNoPacket.jar.version}</systemPath>
 		</dependency>
 
-		
-		
 		<!-- Essentials -->
 		<dependency>
 			<groupId>net.ess3</groupId>

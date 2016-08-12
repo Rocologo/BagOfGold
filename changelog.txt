@@ -1,5 +1,6 @@
 V3.4.2
-- Change Pom.xml to fix Metrics Error
+* Metrics copied into MohbHunting and renamed again to solve Metrics error.
+* Change Pom.xml to fix Metrics Error
 V3.4.1
 * Fix for Metrics error. Metrics removed internally.
 * Error in Plugin.yml

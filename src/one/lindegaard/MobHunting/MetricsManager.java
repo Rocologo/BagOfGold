@@ -6,8 +6,8 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import org.bukkit.Bukkit;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
+import org.mcstats_mh.Metrics;
+import org.mcstats_mh.Metrics.Graph;
 
 import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.MobHunting.compatibility.ActionBarAPICompat;
@@ -320,7 +320,7 @@ public class MetricsManager {
 
 			// trying to retrieve data from the source. If there
 			// is no connection, this line will fail
-			urlConnect.setConnectTimeout(1000);
+			urlConnect.setConnectTimeout(5000);
 			@SuppressWarnings("unused")
 			Object objData = urlConnect.getContent();
 
