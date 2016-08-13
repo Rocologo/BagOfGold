@@ -1,13 +1,17 @@
 package one.lindegaard.MobHunting.update;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.MalformedInputException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -247,16 +251,36 @@ public class UpdateHelper {
 		boolean succes = false;
 		URL url = new URL(fileURL);
 		HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+		httpConn.setReadTimeout(5000);
+		httpConn.setRequestProperty("Accept-Language", "en-US,en);q=0.8");
+		httpConn.setRequestProperty("User-Agent", "Mozilla");
+		httpConn.setRequestProperty("Referer", "google.com");
 		int responseCode = httpConn.getResponseCode();
 
-		Messages.debug("File to be downloaded:%s", fileURL);
+		System.out.println("File to be downloaded:%s" + fileURL);
 
 		// Create savedir if needed
 		if (!new File(saveDir).exists())
 			new File(saveDir).mkdirs();
 
+		// if (redirected) then get new URL
+		if (responseCode != HttpURLConnection.HTTP_OK) {
+			if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
+					|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+				String newUrl = httpConn.getHeaderField("Location");
+				String cookies = httpConn.getHeaderField("Set-Cookie");
+				httpConn = (HttpURLConnection) new URL(newUrl).openConnection();
+				httpConn.setRequestProperty("Cookie", cookies);
+				httpConn.setRequestProperty("Accept-Language", "en-US,en);q=0.8");
+				httpConn.setRequestProperty("User-Agent", "Mozilla");
+				httpConn.setRequestProperty("Referer", "google.com");
+				System.out.println("Redirected file to be downloaded:%s" + newUrl);
+				responseCode = httpConn.getResponseCode();
+			}
+		}
+
 		// always check HTTP response code first
-		if (responseCode == HttpURLConnection.HTTP_OK || responseCode==HttpURLConnection.HTTP_MOVED_TEMP) {
+		if (responseCode == HttpURLConnection.HTTP_OK) {
 			String fileName = "";
 			String disposition = httpConn.getHeaderField("Content-Disposition");
 			String contentType = httpConn.getContentType();
@@ -295,7 +319,6 @@ public class UpdateHelper {
 			outputStream.close();
 			inputStream.close();
 
-			System.out.println("File downloaded");
 			succes = true;
 		} else {
 			System.out.println("No file to download. Server replied HTTP code: " + responseCode);

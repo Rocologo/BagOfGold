@@ -1,5 +1,5 @@
 V3.4.3
-* Bug fixing - solved problem where players was able to take head out of the gui's
+* /mh update changed to handle redirected Url's
 V3.4.2
 * Metrics copied into MohbHunting and renamed again to solve Metrics error.
 * Change Pom.xml to fix Metrics Error
