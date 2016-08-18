@@ -1191,10 +1191,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 					String killedpos = killed.getLocation().getBlockX() + " " + killed.getLocation().getBlockY() + " "
 							+ killed.getLocation().getBlockZ();
 					String prizeCommand = mConfig.getKillConsoleCmd(killed).replaceAll("\\{player\\}", killer.getName())
-							.replaceAll("\\{killed_player\\}", killed.getName())
-							.replaceAll("\\{killer\\}", killer.getName()).replaceAll("\\{killed\\}", killed.getName())
-							.replaceAll("\\{world\\}", worldname).replace("\\{prize\\}", mRewardManager.format(cash))
+							.replaceAll("\\{killer\\}", killer.getName()).replaceAll("\\{world\\}", worldname)
+							.replace("\\{prize\\}", mRewardManager.format(cash))
 							.replaceAll("\\{killerpos\\}", killerpos).replaceAll("\\{killedpos\\}", killedpos);
+					if (killed instanceof Player)
+						prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getName())
+								.replaceAll("\\{killed\\}", killed.getName());
+					else
+						prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getType().getName())
+								.replaceAll("\\{killed\\}", killed.getType().getName());
 					Messages.debug("command to be run is:" + prizeCommand);
 					if (!mConfig.getKillConsoleCmd(killed).equals("")) {
 						String str = prizeCommand;
@@ -1210,14 +1215,22 @@ public class MobHunting extends JavaPlugin implements Listener {
 					}
 					// send a message to the player
 					if (!mConfig.getKillRewardDescription(killed).equals("") && !killer_muted) {
-						Messages.playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
+						String message = ChatColor.GREEN + "" + ChatColor.ITALIC
 								+ mConfig.getKillRewardDescription(killed).replaceAll("\\{player\\}", killer.getName())
-										.replaceAll("\\{killed_player\\}", killed.getName())
 										.replaceAll("\\{killer\\}", killer.getName())
-										.replaceAll("\\{killed\\}", killed.getName())
 										.replace("\\{prize\\}", mRewardManager.format(cash))
 										.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
-										.replaceAll("\\{killedpos\\}", killedpos));
+										.replaceAll("\\{killedpos\\}", killedpos);
+
+						if (killed instanceof Player)
+							message = message.replaceAll("\\{killed_player\\}", killed.getName())
+									.replaceAll("\\{killed\\}", killed.getName());
+						else
+							message = message.replaceAll("\\{killed_player\\}", killed.getType().getName())
+									.replaceAll("\\{killed\\}", killed.getType().getName());
+						Messages.debug("Description to be send:" + message);
+
+						Messages.playerActionBarMessage(killer, message);
 					}
 				}
 			}

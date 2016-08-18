@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import one.lindegaard.MobHunting.storage.PlayerSettings;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class PlayerSettingsManager implements Listener {
 
@@ -58,10 +60,12 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param event
 	 */
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		load(player);
+		//if (Misc.isMC17())
+		//	((CraftPlayer) player).spigot().setCollidesWithEntities(true);
 	}
 
 	/**
@@ -70,7 +74,7 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param event
 	 */
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		save(player);
