@@ -1,5 +1,6 @@
 V3.4.4
 * Fixed "NoSuchMethodError: org.bukkit.entity.LivingEntity.getName()" on Minecraft 1.7.10 servers.
+* DropMoneyOnGround Fixed on 1.7.10 Servers
 V3.4.3
 * /mh update changed to handle redirected Url's
 V3.4.2

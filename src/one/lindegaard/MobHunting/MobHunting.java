@@ -1122,7 +1122,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// Reward for assisted kill
 			if (info.assister == null || mConfig.enableAssists == false) {
 				if (cash > 0) {
-					if (mConfig.dropMoneyOnGroup && !Misc.isMC17()) {
+					if (mConfig.dropMoneyOnGroup) {
 						Rewards.dropMoneyOnGround(killed, cash);
 						Messages.debug("%s was droped on the ground", mRewardManager.format(cash));
 					} else {
@@ -1136,7 +1136,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			} else {
 				cash = cash / 2;
 				if (cash > 0) {
-					if (mConfig.dropMoneyOnGroup && !Misc.isMC17()) {
+					if (mConfig.dropMoneyOnGroup) {
 						Rewards.dropMoneyOnGround(killed, cash);
 						Messages.debug("%s was droped on the ground", mRewardManager.format(cash));
 					} else {

@@ -11,6 +11,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class RewardManager implements Listener {
 
@@ -27,6 +28,8 @@ public class RewardManager implements Listener {
 		mEconomy = economyProvider.getProvider();
 		
 		Bukkit.getPluginManager().registerEvents(new Rewards(), instance);
+		if (Misc.isMC18OrNewer())
+			Bukkit.getPluginManager().registerEvents(new ItemMergeEventListener(), MobHunting.getInstance());
 		
 	}
 
