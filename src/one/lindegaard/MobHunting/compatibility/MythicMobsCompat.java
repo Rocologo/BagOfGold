@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -147,12 +148,12 @@ public class MythicMobsCompat implements Listener {
 		return supported;
 	}
 
-	public static boolean isMythicMob(LivingEntity mob) {
-		return mob.hasMetadata(MH_MYTHICMOBS);
+	public static boolean isMythicMob(Entity killed) {
+		return killed.hasMetadata(MH_MYTHICMOBS);
 	}
 
-	public static String getMythicMobType(LivingEntity mob) {
-		List<MetadataValue> data = mob.getMetadata(MH_MYTHICMOBS);
+	public static String getMythicMobType(Entity killed) {
+		List<MetadataValue> data = killed.getMetadata(MH_MYTHICMOBS);
 		MetadataValue value = data.get(0);
 		return ((MobRewardData) value.value()).getMobType();
 	}

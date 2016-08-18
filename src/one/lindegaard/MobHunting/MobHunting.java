@@ -1031,7 +1031,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Calculate basic the reward
 		double cash = mConfig.getBaseKillPrize(killed);
 
-		Messages.debug("Mob Basic Prize=%s for killing a %s", cash, killed.getName());
+		Messages.debug("Mob Basic Prize=%s for killing a %s", cash, killed.getType());
 		double multiplier = 1.0;
 
 		// Apply the modifiers to Basic reward

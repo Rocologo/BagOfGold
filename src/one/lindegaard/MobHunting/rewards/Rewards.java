@@ -152,10 +152,14 @@ public class Rewards implements Listener {
 			Location location = entity.getLocation();
 			ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
 			Item item = location.getWorld().dropItem(location, is);
+			Messages.debug("Item was dropped on ground");
 			item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
-			item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-					+ MobHunting.getRewardManager().format(money));
-			item.setCustomNameVisible(true);
+			Messages.debug("MetaData added to item");
+			if (Misc.isMC18OrNewer()) {
+				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ MobHunting.getRewardManager().format(money));
+				item.setCustomNameVisible(true);
+			}
 		}
 	}
 
