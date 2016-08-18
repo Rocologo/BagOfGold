@@ -858,9 +858,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			if (!hasPermissionToKillMob(killer, killed)) {
-				Messages.debug("KillBlocked: %s has not permission to kill %s.", killer.getName(), killed.getName());
+				Messages.debug("KillBlocked: %s has not permission to kill %s.", killer.getName(), killed.getType());
 				Messages.learn(killer,
-						Messages.getString("mobhunting.learn.no-permission", "killed-mob", killed.getName()));
+						Messages.getString("mobhunting.learn.no-permission", "killed-mob", killed.getType()));
 				return;
 			}
 		}
@@ -870,7 +870,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// if (killed != null)
 			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player",
 					killed.getType(), killed.getEntityId());
-			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", killed.getName()));
+			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", killed.getType()));
 			return;
 		}
 
@@ -879,7 +879,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (killed != null) {
 				Messages.debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
 						event.getEntity().getType(), killed.getEntityId());
-				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", killed.getName()));
+				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", killed.getType()));
 			}
 			return;
 		}
@@ -1122,7 +1122,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// Reward for assisted kill
 			if (info.assister == null || mConfig.enableAssists == false) {
 				if (cash > 0) {
-					if (mConfig.dropMoneyOnGroup) {
+					if (mConfig.dropMoneyOnGroup && !Misc.isMC17()) {
 						Rewards.dropMoneyOnGround(killed, cash);
 						Messages.debug("%s was droped on the ground", mRewardManager.format(cash));
 					} else {
@@ -1136,7 +1136,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			} else {
 				cash = cash / 2;
 				if (cash > 0) {
-					if (mConfig.dropMoneyOnGroup) {
+					if (mConfig.dropMoneyOnGroup && !Misc.isMC17()) {
 						Rewards.dropMoneyOnGround(killed, cash);
 						Messages.debug("%s was droped on the ground", mRewardManager.format(cash));
 					} else {
