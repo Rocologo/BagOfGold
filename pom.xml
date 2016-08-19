@@ -49,14 +49,6 @@
 		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B80.jar</TARDISWeepingAngels.jar.version>
 	</properties>
 	
-	<distributionManagement>
-    	<snapshotRepository>
-        	<id>snapshots</id>
-        	<name>fractal-snapshots</name>
-        	<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
-    	</snapshotRepository>
-	</distributionManagement>
-
 	<organization>
 		<name>Rocologo</name>
 		<url>https://fractal.lindegaard.one</url>
@@ -363,17 +355,15 @@
 		</repository>
 
 	</repositories>
-
+	
 	<distributionManagement>
-		<repository>
-			<id>rocologo-releases</id>
-			<url>http://artifactory.lindegaard.one:8185/artifactory/list/plugins-release/</url>
-		</repository>
-		<snapshotRepository>
-			<id>rocologo-snapshots</id>
-			<url>http://artifactory.lindegaard.one:8185/artifactory/list/plugins-snapshot/</url>
-		</snapshotRepository>
+    	<snapshotRepository>
+        	<id>snapshots</id>
+        	<name>fractal-snapshots</name>
+        	<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
+    	</snapshotRepository>
 	</distributionManagement>
+
 
 	<!-- ********************************************************************** -->
 	<!-- **************************** Dependencies **************************** -->
