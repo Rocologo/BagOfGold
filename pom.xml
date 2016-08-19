@@ -48,6 +48,14 @@
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
 		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B80.jar</TARDISWeepingAngels.jar.version>
 	</properties>
+	
+	<distributionManagement>
+    	<snapshotRepository>
+        	<id>snapshots</id>
+        	<name>fractal-snapshots</name>
+        	<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
+    	</snapshotRepository>
+	</distributionManagement>
 
 	<organization>
 		<name>Rocologo</name>
@@ -648,5 +656,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	
 </project>

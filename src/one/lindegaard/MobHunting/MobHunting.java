@@ -694,9 +694,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 						Messages.debug(
 								"KillBlocked %s(%d): Mobhunting disabled in world '%s'"
 										+ ",but MobHunting=ALLOW overrules.",
-								killed.getType(), killed.getEntityId(), killed.getWorld().getName());
+								killed.getType().getName(), killed.getEntityId(), killed.getWorld().getName());
 					} else {
-						Messages.debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'", killed.getType(),
+						Messages.debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'", killed.getType().getName(),
 								killed.getEntityId(), killed.getWorld().getName());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
 						return;
@@ -798,7 +798,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (MobStackerCompat.isStackedMob(killed)) {
 				if (mConfig.getRewardFromStackedMobs) {
 					if (killer != null) {
-						Messages.debug("%s killed a stacked mob (%s) No=%s", killer.getName(), killed.getType(),
+						Messages.debug("%s killed a stacked mob (%s) No=%s", killer.getName(), killed.getType().getName(),
 								MobStackerCompat.getStackSize(killed));
 						if (MobStackerCompat.killHoleStackOnDeath(killed) && MobStackerCompat.multiplyLoot()) {
 							Messages.debug("Pay reward for no x mob");
@@ -858,9 +858,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			if (!hasPermissionToKillMob(killer, killed)) {
-				Messages.debug("KillBlocked: %s has not permission to kill %s.", killer.getName(), killed.getType());
+				Messages.debug("KillBlocked: %s has not permission to kill %s.", killer.getName(), killed.getType().getName());
 				Messages.learn(killer,
-						Messages.getString("mobhunting.learn.no-permission", "killed-mob", killed.getType()));
+						Messages.getString("mobhunting.learn.no-permission", "killed-mob", killed.getType().getName()));
 				return;
 			}
 		}
@@ -869,8 +869,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (mConfig.getBaseKillPrize(event.getEntity()) == 0 && mConfig.getKillConsoleCmd(killed).equals("")) {
 			// if (killed != null)
 			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player",
-					killed.getType(), killed.getEntityId());
-			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", killed.getType()));
+					killed.getType().getName(), killed.getEntityId());
+			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", killed.getType().getName()));
 			return;
 		}
 
@@ -879,7 +879,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (killed != null) {
 				Messages.debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
 						event.getEntity().getType(), killed.getEntityId());
-				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", killed.getType()));
+				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", killed.getType().getName()));
 			}
 			return;
 		}
@@ -1031,7 +1031,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Calculate basic the reward
 		double cash = mConfig.getBaseKillPrize(killed);
 
-		Messages.debug("Mob Basic Prize=%s for killing a %s", cash, killed.getType());
+		Messages.debug("Mob Basic Prize=%s for killing a %s", cash, killed.getType().getName());
 		double multiplier = 1.0;
 
 		// Apply the modifiers to Basic reward
