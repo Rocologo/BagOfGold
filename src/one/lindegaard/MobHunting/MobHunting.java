@@ -673,6 +673,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMobDeath(EntityDeathEvent event) {
 
@@ -696,8 +697,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 										+ ",but MobHunting=ALLOW overrules.",
 								killed.getType().getName(), killed.getEntityId(), killed.getWorld().getName());
 					} else {
-						Messages.debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'", killed.getType().getName(),
-								killed.getEntityId(), killed.getWorld().getName());
+						Messages.debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'",
+								killed.getType().getName(), killed.getEntityId(), killed.getWorld().getName());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
 						return;
 					}
@@ -798,8 +799,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (MobStackerCompat.isStackedMob(killed)) {
 				if (mConfig.getRewardFromStackedMobs) {
 					if (killer != null) {
-						Messages.debug("%s killed a stacked mob (%s) No=%s", killer.getName(), killed.getType().getName(),
-								MobStackerCompat.getStackSize(killed));
+						Messages.debug("%s killed a stacked mob (%s) No=%s", killer.getName(),
+								killed.getType().getName(), MobStackerCompat.getStackSize(killed));
 						if (MobStackerCompat.killHoleStackOnDeath(killed) && MobStackerCompat.multiplyLoot()) {
 							Messages.debug("Pay reward for no x mob");
 						} else {
@@ -858,7 +859,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			if (!hasPermissionToKillMob(killer, killed)) {
-				Messages.debug("KillBlocked: %s has not permission to kill %s.", killer.getName(), killed.getType().getName());
+				Messages.debug("KillBlocked: %s has not permission to kill %s.", killer.getName(),
+						killed.getType().getName());
 				Messages.learn(killer,
 						Messages.getString("mobhunting.learn.no-permission", "killed-mob", killed.getType().getName()));
 				return;
@@ -870,7 +872,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// if (killed != null)
 			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player",
 					killed.getType().getName(), killed.getEntityId());
-			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", killed.getType().getName()));
+			Messages.learn(killer,
+					Messages.getString("mobhunting.learn.no-reward", "killed", killed.getType().getName()));
 			return;
 		}
 
@@ -879,7 +882,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (killed != null) {
 				Messages.debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
 						event.getEntity().getType(), killed.getEntityId());
-				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", killed.getType().getName()));
+				Messages.learn(killer,
+						Messages.getString("mobhunting.learn.mobspawner", "killed", killed.getType().getName()));
 			}
 			return;
 		}
@@ -1181,57 +1185,51 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Run console commands as a reward
 		if (data.getDampenedKills() < 10) {
-			Messages.debug("Is this an old config: %s", mConfig.isOldChanceCalculation("mob"));
-			if (!mConfig.getKillConsoleCmd(killed).equals("") && mConfig.getCmdRunProbabilityBase(killed) != 0) {
-				if (getMobHuntingManager().mRand.nextInt(mConfig.getCmdRunProbabilityBase(killed)) < mConfig
-						.getCmdRunProbability(killed)) {
-					String worldname = killer.getWorld().getName();
-					String killerpos = killer.getLocation().getBlockX() + " " + killer.getLocation().getBlockY() + " "
-							+ killer.getLocation().getBlockZ();
-					String killedpos = killed.getLocation().getBlockX() + " " + killed.getLocation().getBlockY() + " "
-							+ killed.getLocation().getBlockZ();
-					String prizeCommand = mConfig.getKillConsoleCmd(killed).replaceAll("\\{player\\}", killer.getName())
-							.replaceAll("\\{killer\\}", killer.getName()).replaceAll("\\{world\\}", worldname)
-							.replace("\\{prize\\}", mRewardManager.format(cash))
+			if (mConfig.isCmdGointToBeExcuted(killed)) {
+				String worldname = killer.getWorld().getName();
+				String killerpos = killer.getLocation().getBlockX() + " " + killer.getLocation().getBlockY() + " "
+						+ killer.getLocation().getBlockZ();
+				String killedpos = killed.getLocation().getBlockX() + " " + killed.getLocation().getBlockY() + " "
+						+ killed.getLocation().getBlockZ();
+				String prizeCommand = mConfig.getKillConsoleCmd(killed).replaceAll("\\{player\\}", killer.getName())
+						.replaceAll("\\{killer\\}", killer.getName()).replaceAll("\\{world\\}", worldname)
+						.replace("\\{prize\\}", mRewardManager.format(cash)).replaceAll("\\{killerpos\\}", killerpos)
+						.replaceAll("\\{killedpos\\}", killedpos);
+				if (killed instanceof Player)
+					prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getName())
+							.replaceAll("\\{killed\\}", killed.getName());
+				else
+					prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getType().getName())
+							.replaceAll("\\{killed\\}", killed.getType().getName());
+				Messages.debug("command to be run is:" + prizeCommand);
+				if (!mConfig.getKillConsoleCmd(killed).equals("")) {
+					String str = prizeCommand;
+					do {
+						if (str.contains("|")) {
+							int n = str.indexOf("|");
+							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
+									str.substring(0, n));
+							str = str.substring(n + 1, str.length()).toString();
+						}
+					} while (str.contains("|"));
+					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+				}
+				// send a message to the player
+				if (!mConfig.getKillRewardDescription(killed).equals("") && !killer_muted) {
+					String message = ChatColor.GREEN + "" + ChatColor.ITALIC + mConfig.getKillRewardDescription(killed)
+							.replaceAll("\\{player\\}", killer.getName()).replaceAll("\\{killer\\}", killer.getName())
+							.replace("\\{prize\\}", mRewardManager.format(cash)).replaceAll("\\{world\\}", worldname)
 							.replaceAll("\\{killerpos\\}", killerpos).replaceAll("\\{killedpos\\}", killedpos);
+
 					if (killed instanceof Player)
-						prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getName())
-								.replaceAll("\\{killed\\}", killed.getName());
+						message = message.replaceAll("\\{killed_player\\}", killed.getName()).replaceAll("\\{killed\\}",
+								killed.getName());
 					else
-						prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getType().getName())
+						message = message.replaceAll("\\{killed_player\\}", killed.getType().getName())
 								.replaceAll("\\{killed\\}", killed.getType().getName());
-					Messages.debug("command to be run is:" + prizeCommand);
-					if (!mConfig.getKillConsoleCmd(killed).equals("")) {
-						String str = prizeCommand;
-						do {
-							if (str.contains("|")) {
-								int n = str.indexOf("|");
-								Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
-										str.substring(0, n));
-								str = str.substring(n + 1, str.length()).toString();
-							}
-						} while (str.contains("|"));
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
-					}
-					// send a message to the player
-					if (!mConfig.getKillRewardDescription(killed).equals("") && !killer_muted) {
-						String message = ChatColor.GREEN + "" + ChatColor.ITALIC
-								+ mConfig.getKillRewardDescription(killed).replaceAll("\\{player\\}", killer.getName())
-										.replaceAll("\\{killer\\}", killer.getName())
-										.replace("\\{prize\\}", mRewardManager.format(cash))
-										.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
-										.replaceAll("\\{killedpos\\}", killedpos);
+					Messages.debug("Description to be send:" + message);
 
-						if (killed instanceof Player)
-							message = message.replaceAll("\\{killed_player\\}", killed.getName())
-									.replaceAll("\\{killed\\}", killed.getName());
-						else
-							message = message.replaceAll("\\{killed_player\\}", killed.getType().getName())
-									.replaceAll("\\{killed\\}", killed.getType().getName());
-						Messages.debug("Description to be send:" + message);
-
-						Messages.playerActionBarMessage(killer, message);
-					}
+					Messages.playerActionBarMessage(killer, message);
 				}
 			}
 		}

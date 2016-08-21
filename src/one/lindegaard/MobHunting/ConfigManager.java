@@ -59,6 +59,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 
+@SuppressWarnings("deprecation")
 public class ConfigManager extends AutoConfig {
 
 	public ConfigManager(File file) {
@@ -1037,7 +1038,7 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	// #####################################################################################
-	// PVP
+	// PVP Propality
 	// #####################################################################################
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
 	public boolean pvpAllowed = true;
@@ -1052,6 +1053,8 @@ public class ConfigManager extends AutoConfig {
 	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"}|give {player} diamond 1";
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
 	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
+	@ConfigField(name = "pvp-kill-cmd-run-chance", category = "pvp", comment = "This is the chance for running the command. 1 = 100% (each time the player is killed), 0.5 ~ 50% and 0.001 = 0.1% (very rare) ")
+	public double pvpKillCmdRunChance = 0.5;
 
 	// #####################################################################################
 	// Disguises
@@ -1823,9 +1826,11 @@ public class ConfigManager extends AutoConfig {
 						return MobHunting.getConfigManager().rabbitFrequency;
 
 			// MC1.7 or older
-			if (mob instanceof Player)
+			if (mob instanceof Player) {
+				Bukkit.getLogger()
+						.severe("[MobHunting] Error when caculate chance for running Cmd command on Mob kill");
 				return 100;
-			else if (mob instanceof Blaze)
+			} else if (mob instanceof Blaze)
 				return MobHunting.getConfigManager().blazeFrequency;
 			else if (mob instanceof Creeper)
 				return MobHunting.getConfigManager().creeperFrequency;
@@ -2020,15 +2025,13 @@ public class ConfigManager extends AutoConfig {
 		return 100;
 	}
 
-	public boolean isOldChanceCalculation(String category) {
-		List<String> mobs = getNodes(category);
-		for (String mob : mobs) {
-			if (mob.contains("run-frequency")) {
-				Messages.debug("Old config: %s", mob);
-				return true;
-			}
-		}
-		return false;
+	public boolean isCmdGointToBeExcuted(LivingEntity killed) {
+		if (killed instanceof Player)
+			return pvpKillCmdRunChance < MobHunting.getMobHuntingManager().mRand.nextDouble();
+		else
+			return !getKillConsoleCmd(killed).equals("") && getCmdRunProbabilityBase(killed) != 0
+					&& (MobHunting.getMobHuntingManager().mRand
+							.nextInt(getCmdRunProbabilityBase(killed)) < getCmdRunProbability(killed));
 	}
 
 }
