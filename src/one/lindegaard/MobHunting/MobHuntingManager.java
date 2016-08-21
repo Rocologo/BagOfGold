@@ -164,12 +164,15 @@ public class MobHuntingManager implements Listener {
 			data = new HuntData(instance);
 			player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
 		} else {
-			if (!(player.getMetadata(HUNTDATA).get(0).value() instanceof HuntData)) {
-				player.getMetadata(HUNTDATA).get(0).invalidate();
-				player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, new HuntData(instance)));
+			List<MetadataValue> md = player.getMetadata(HUNTDATA);
+			for (MetadataValue mdv : md) {
+				if (mdv.value() instanceof HuntData) {
+					data = (HuntData) mdv.value();
+					break;
+				}
+				data = new HuntData(instance);
+				player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
 			}
-
-			data = (HuntData) player.getMetadata(HUNTDATA).get(0).value();
 		}
 
 		return data;

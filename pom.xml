@@ -153,6 +153,34 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+            <groupId>org.jfrog.buildinfo</groupId>
+            <artifactId>artifactory-maven-plugin</artifactId>
+            <version>2.2.1</version>
+            <inherited>false</inherited>
+            <executions>
+                <execution>
+                    <id>build-info</id>
+                    <goals>
+                        <goal>publish</goal>
+                    </goals>
+                    <configuration>
+                        <deployProperties>
+                            <gradle>awesome</gradle>
+                            <review.team>qa</review.team>
+                        </deployProperties>
+                        <publisher>
+                            <contextUrl>https://oss.jfrog.org</contextUrl>
+                            <username>deployer</username>
+                            <password>{DESede}...</password>
+                            <repoKey>libs-release-local</repoKey>
+                            <snapshotRepoKey>libs-snapshot-local</snapshotRepoKey>
+                        </publisher>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
 		</plugins>
 	</build>
 
