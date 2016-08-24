@@ -16,6 +16,7 @@ import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
@@ -209,6 +210,12 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return MobStackerCompat.isSupported() ? 1 : 0;
+			}
+		});
+		mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("CustomMobs") {
+			@Override
+			public int getValue() {
+				return CustomMobsCompat.isSupported() ? 1 : 0;
 			}
 		});
 		metrics.addGraph(mobPluginIntegrationsGraph);

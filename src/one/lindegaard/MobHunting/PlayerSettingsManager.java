@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +13,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import one.lindegaard.MobHunting.storage.PlayerSettings;
-import one.lindegaard.MobHunting.util.Misc;
 
 public class PlayerSettingsManager implements Listener {
 

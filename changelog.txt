@@ -4,6 +4,7 @@ V3.4.4
 * Fixed "NoSuchMethodError: org.bukkit.entity.LivingEntity.getName()" on Minecraft 1.7.10 servers.
 * DropMoneyOnGround Fixed on 1.7.10 Servers
 * Fixed rare bug reported by Mr_Killer01: https://www.spigotmc.org/threads/mobhunting.46937/page-52#post-1843924
+* Change: when MobHunting find a new Sentry/Sentinel NPC the default settings will be created without a reward, because the fightback is not enabled by default.
 V3.4.3
 * /mh update changed to handle redirected Url's
 V3.4.2

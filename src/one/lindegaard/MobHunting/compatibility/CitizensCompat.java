@@ -274,8 +274,8 @@ public class CitizensCompat implements Listener {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
-							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "10",
-									"give {player} iron_sword 1", "You got an Iron sword.", 1));
+							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "0",
+									"give {player} iron_sword 1", "You got an Iron sword.", 0));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}

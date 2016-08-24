@@ -372,6 +372,7 @@ public enum ExtendedMobType {
 		return 100;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean matches(Entity ent) {
 		if (Misc.isMC110OrNewer())
 			if (this == PolarBear)

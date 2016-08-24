@@ -1038,7 +1038,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "world-difficulty-multiplier", category = "multiplier", comment = "WorldDifficulty")
 	public HashMap<String, String> difficultyMultiplier = new HashMap<String, String>();
 	{
-		difficultyMultiplier.put("difficulty.multiplier.peacefull", "0.5");
+		difficultyMultiplier.put("difficulty.multiplier.peaceful", "0.5");
 		difficultyMultiplier.put("difficulty.multiplier.easy", "0.75");
 		difficultyMultiplier.put("difficulty.multiplier.normal", "1");
 		difficultyMultiplier.put("difficulty.multiplier.hard", "2");
@@ -1831,37 +1831,37 @@ public class ConfigManager extends AutoConfig {
 		} else {
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
-					return MobHunting.getConfigManager().polarBearFrequency
-							/ MobHunting.getConfigManager().polarBearFrequencyBase;
+					return (double) MobHunting.getConfigManager().polarBearFrequency
+							/ (double) MobHunting.getConfigManager().polarBearFrequencyBase;
 				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
-					return MobHunting.getConfigManager().strayFrequency
-							/ MobHunting.getConfigManager().strayFrequencyBase;
+					return (double) MobHunting.getConfigManager().strayFrequency
+							/ (double) MobHunting.getConfigManager().strayFrequencyBase;
 				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
-					return MobHunting.getConfigManager().huskFrequency
-							/ MobHunting.getConfigManager().huskFrequencyBase;
+					return (double) MobHunting.getConfigManager().huskFrequency
+							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
 
 			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
-					return MobHunting.getConfigManager().shulkerFrequency
-							/ MobHunting.getConfigManager().shulkerFrequencyBase;
+					return (double) MobHunting.getConfigManager().shulkerFrequency
+							/ (double) MobHunting.getConfigManager().shulkerFrequencyBase;
 
 			if (Misc.isMC18OrNewer())
 				if (mob instanceof Guardian && ((Guardian) mob).isElder())
-					return MobHunting.getConfigManager().elderGuardianFrequency
-							/ MobHunting.getConfigManager().elderGuardianFrequencyBase;
+					return (double) MobHunting.getConfigManager().elderGuardianFrequency
+							/ (double) MobHunting.getConfigManager().elderGuardianFrequencyBase;
 				else if (mob instanceof Guardian)
-					return MobHunting.getConfigManager().guardianFrequency
-							/ MobHunting.getConfigManager().guardianFrequencyBase;
+					return (double) MobHunting.getConfigManager().guardianFrequency
+							/ (double) MobHunting.getConfigManager().guardianFrequencyBase;
 				else if (mob instanceof Endermite)
-					return MobHunting.getConfigManager().endermiteFrequency
-							/ MobHunting.getConfigManager().endermiteFrequencyBase;
+					return (double) MobHunting.getConfigManager().endermiteFrequency
+							/ (double) MobHunting.getConfigManager().endermiteFrequencyBase;
 				else if (mob instanceof Rabbit)
 					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return MobHunting.getConfigManager().killerrabbitFrequency
-								/ MobHunting.getConfigManager().killerrabbitFrequencyBase;
+						return (double) MobHunting.getConfigManager().killerrabbitFrequency
+								/ (double) MobHunting.getConfigManager().killerrabbitFrequencyBase;
 					else
-						return MobHunting.getConfigManager().rabbitFrequency
-								/ MobHunting.getConfigManager().rabbitFrequencyBase;
+						return (double) MobHunting.getConfigManager().rabbitFrequency
+								/ (double) MobHunting.getConfigManager().rabbitFrequencyBase;
 
 			// MC1.7 or older
 			if (mob instanceof Player) {
@@ -1869,92 +1869,103 @@ public class ConfigManager extends AutoConfig {
 						.severe("[MobHunting] Error when caculate chance for running Cmd command on Mob kill");
 				return 1;
 			} else if (mob instanceof Blaze)
-				return MobHunting.getConfigManager().blazeFrequency / MobHunting.getConfigManager().blazeFrequencyBase;
+				return (double) MobHunting.getConfigManager().blazeFrequency
+						/ (double) MobHunting.getConfigManager().blazeFrequencyBase;
 			else if (mob instanceof Creeper)
-				return MobHunting.getConfigManager().creeperFrequency
-						/ MobHunting.getConfigManager().creeperFrequencyBase;
+				return (double) MobHunting.getConfigManager().creeperFrequency
+						/ (double) MobHunting.getConfigManager().creeperFrequencyBase;
 			else if (mob instanceof Silverfish)
-				return MobHunting.getConfigManager().silverfishFrequency
-						/ MobHunting.getConfigManager().silverfishFrequencyBase;
+				return (double) MobHunting.getConfigManager().silverfishFrequency
+						/ (double) MobHunting.getConfigManager().silverfishFrequencyBase;
 			else if (mob instanceof Enderman)
-				return MobHunting.getConfigManager().endermanFrequency
-						/ MobHunting.getConfigManager().endermanFrequencyBase;
+				return (double) MobHunting.getConfigManager().endermanFrequency
+						/ (double) MobHunting.getConfigManager().endermanFrequencyBase;
 			else if (mob instanceof Giant)
-				return MobHunting.getConfigManager().giantFrequency / MobHunting.getConfigManager().giantFrequencyBase;
+				return (double) MobHunting.getConfigManager().giantFrequency
+						/ (double) MobHunting.getConfigManager().giantFrequencyBase;
 			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
-				return MobHunting.getConfigManager().skeletonFrequency
-						/ MobHunting.getConfigManager().skeletonFrequencyBase;
+				return (double) MobHunting.getConfigManager().skeletonFrequency
+						/ (double) MobHunting.getConfigManager().skeletonFrequencyBase;
 			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
-				return MobHunting.getConfigManager().witherSkeletonFrequency
-						/ MobHunting.getConfigManager().witherSkeletonFrequencyBase;
+				return (double) MobHunting.getConfigManager().witherSkeletonFrequency
+						/ (double) MobHunting.getConfigManager().witherSkeletonFrequencyBase;
 			else if (mob instanceof CaveSpider)
 				// CaveSpider is a subclass of Spider
-				return MobHunting.getConfigManager().caveSpiderFrequency
-						/ MobHunting.getConfigManager().caveSpiderFrequencyBase;
+				return (double) MobHunting.getConfigManager().caveSpiderFrequency
+						/ (double) MobHunting.getConfigManager().caveSpiderFrequencyBase;
 			else if (mob instanceof Spider)
-				return MobHunting.getConfigManager().spiderFrequency
-						/ MobHunting.getConfigManager().spiderFrequencyBase;
+				return (double) MobHunting.getConfigManager().spiderFrequency
+						/ (double) MobHunting.getConfigManager().spiderFrequencyBase;
 			else if (mob instanceof Witch)
-				return MobHunting.getConfigManager().witchFrequency / MobHunting.getConfigManager().witchFrequencyBase;
+				return (double) MobHunting.getConfigManager().witchFrequency
+						/ (double) MobHunting.getConfigManager().witchFrequencyBase;
 			else if (mob instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
-				return MobHunting.getConfigManager().zombiePigmanFrequency
-						/ MobHunting.getConfigManager().zombiePigmanFrequencyBase;
+				return (double) MobHunting.getConfigManager().zombiePigmanFrequency
+						/ (double) MobHunting.getConfigManager().zombiePigmanFrequencyBase;
 			else if (mob instanceof Zombie)
-				return MobHunting.getConfigManager().zombieFrequency
-						/ MobHunting.getConfigManager().zombieFrequencyBase;
+				return (double) MobHunting.getConfigManager().zombieFrequency
+						/ (double) MobHunting.getConfigManager().zombieFrequencyBase;
 			else if (mob instanceof Ghast)
-				return MobHunting.getConfigManager().ghastFrequency / MobHunting.getConfigManager().ghastFrequencyBase;
+				return (double) MobHunting.getConfigManager().ghastFrequency
+						/ (double) MobHunting.getConfigManager().ghastFrequencyBase;
 			else if (mob instanceof Slime)
 				if (mob instanceof MagmaCube)
 					// MagmaCube is a subclass of Slime
-					return MobHunting.getConfigManager().magmaCubeFrequency
-							/ MobHunting.getConfigManager().magmaCubeFrequencyBase;
+					return (double) MobHunting.getConfigManager().magmaCubeFrequency
+							/ (double) MobHunting.getConfigManager().magmaCubeFrequencyBase;
 				else
-					return MobHunting.getConfigManager().slimeFrequency
-							/ MobHunting.getConfigManager().slimeFrequencyBase;
+					return (double) MobHunting.getConfigManager().slimeFrequency
+							/ (double) MobHunting.getConfigManager().slimeFrequencyBase;
 			else if (mob instanceof EnderDragon)
-				return MobHunting.getConfigManager().enderdragonFrequency
-						/ MobHunting.getConfigManager().enderdragonFrequencyBase;
+				return (double) MobHunting.getConfigManager().enderdragonFrequency
+						/ (double) MobHunting.getConfigManager().enderdragonFrequencyBase;
 			else if (mob instanceof Wither)
-				return MobHunting.getConfigManager().witherFrequency
-						/ MobHunting.getConfigManager().witherFrequencyBase;
+				return (double) MobHunting.getConfigManager().witherFrequency
+						/ (double) MobHunting.getConfigManager().witherFrequencyBase;
 			else if (mob instanceof IronGolem)
-				return MobHunting.getConfigManager().ironGolemFrequency
-						/ MobHunting.getConfigManager().ironGolemFrequencyBase;
+				return (double) MobHunting.getConfigManager().ironGolemFrequency
+						/ (double) MobHunting.getConfigManager().ironGolemFrequencyBase;
 
 			// Passive mobs
 			else if (mob instanceof Bat)
-				return MobHunting.getConfigManager().batFrequency / MobHunting.getConfigManager().batFrequencyBase;
+				return (double) MobHunting.getConfigManager().batFrequency
+						/ (double) MobHunting.getConfigManager().batFrequencyBase;
 			else if (mob instanceof Chicken)
-				return MobHunting.getConfigManager().chickenFrequency
-						/ MobHunting.getConfigManager().chickenFrequencyBase;
+				return (double) MobHunting.getConfigManager().chickenFrequency
+						/ (double) MobHunting.getConfigManager().chickenFrequencyBase;
 			else if (mob instanceof Cow)
 				if (mob instanceof MushroomCow)
 					// MushroomCow is a subclass of Cow
-					return MobHunting.getConfigManager().mushroomCowFrequency
-							/ MobHunting.getConfigManager().mushroomCowFrequencyBase;
+					return (double) MobHunting.getConfigManager().mushroomCowFrequency
+							/ (double) MobHunting.getConfigManager().mushroomCowFrequencyBase;
 				else
-					return MobHunting.getConfigManager().cowFrequency / MobHunting.getConfigManager().cowFrequencyBase;
+					return (double) MobHunting.getConfigManager().cowFrequency
+							/ (double) MobHunting.getConfigManager().cowFrequencyBase;
 			else if (mob instanceof Horse)
-				return MobHunting.getConfigManager().horseFrequency / MobHunting.getConfigManager().horseFrequencyBase;
+				return (double) MobHunting.getConfigManager().horseFrequency
+						/ (double) MobHunting.getConfigManager().horseFrequencyBase;
 			else if (mob instanceof Ocelot)
-				return MobHunting.getConfigManager().ocelotFrequency
-						/ MobHunting.getConfigManager().ocelotFrequencyBase;
+				return (double) MobHunting.getConfigManager().ocelotFrequency
+						/ (double) MobHunting.getConfigManager().ocelotFrequencyBase;
 			else if (mob instanceof Pig)
-				return MobHunting.getConfigManager().pigFrequency / MobHunting.getConfigManager().pigFrequencyBase;
+				return (double) MobHunting.getConfigManager().pigFrequency
+						/ (double) MobHunting.getConfigManager().pigFrequencyBase;
 			else if (mob instanceof Sheep)
-				return MobHunting.getConfigManager().sheepFrequency / MobHunting.getConfigManager().sheepFrequencyBase;
+				return (double) MobHunting.getConfigManager().sheepFrequency
+						/ (double) MobHunting.getConfigManager().sheepFrequencyBase;
 			else if (mob instanceof Snowman)
-				return MobHunting.getConfigManager().snowmanFrequency
-						/ MobHunting.getConfigManager().snowmanFrequencyBase;
+				return (double) MobHunting.getConfigManager().snowmanFrequency
+						/ (double) MobHunting.getConfigManager().snowmanFrequencyBase;
 			else if (mob instanceof Squid)
-				return MobHunting.getConfigManager().squidFrequency / MobHunting.getConfigManager().squidFrequencyBase;
+				return (double) MobHunting.getConfigManager().squidFrequency
+						/ (double) MobHunting.getConfigManager().squidFrequencyBase;
 			else if (mob instanceof Villager)
-				return MobHunting.getConfigManager().villagerFequency
-						/ MobHunting.getConfigManager().villagerFrequencyBase;
+				return (double) MobHunting.getConfigManager().villagerFequency
+						/ (double) MobHunting.getConfigManager().villagerFrequencyBase;
 			else if (mob instanceof Wolf)
-				return MobHunting.getConfigManager().wolfFequency / MobHunting.getConfigManager().wolfFrequencyBase;
+				return (double) MobHunting.getConfigManager().wolfFequency
+						/ (double) MobHunting.getConfigManager().wolfFrequencyBase;
 		}
 		return 1;
 	}
