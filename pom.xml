@@ -36,6 +36,7 @@
 		<slf4j-log4j.jar.version>slf4j-log4j12-1.7.21.jar</slf4j-log4j.jar.version>
 		
 		<mythicmobs.jar.version>MythicMobs-2.4.5.jar</mythicmobs.jar.version>
+		<custommobs.jar.version>CustomMobs-4.13.jar</custommobs.jar.version>
 		<mobarena.jar.version>MobArena0.97.1.jar</mobarena.jar.version>
 		<ActionBarAPI.jar.version>ActionBarAPI-1.5.2.jar</ActionBarAPI.jar.version>
 		<ActionAnnouncer.jar.version>ActionAnnouncer-1.10.jar</ActionAnnouncer.jar.version>
@@ -65,7 +66,7 @@
 	<!-- ******************************** Build ******************************* -->
 	<!-- ********************************************************************** -->
 	<build>
-		<defaultGoal>package</defaultGoal>
+		<defaultGoal>clean package</defaultGoal>
 		<directory>${basedir}/target</directory>
 		<finalName>${project.name}-${project.version}-${myBuildNumberVariable}-B${buildNumber}</finalName>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
@@ -159,7 +160,7 @@
             <artifactId>artifactory-maven-plugin</artifactId>
             <version>2.2.1</version>
             <inherited>false</inherited>
-            <executions>
+            <!-- <executions>
                 <execution>
                     <id>build-info</id>
                     <goals>
@@ -179,7 +180,7 @@
                         </publisher>
                     </configuration>
                 </execution>
-            </executions>
+            </executions> -->
         </plugin>
 		</plugins>
 	</build>
@@ -623,6 +624,16 @@
 			<type>jar</type> 
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
+		</dependency>
+
+		<!-- CustomMobs -->
+		<dependency>
+			<groupId>de.hellfirepvp.CustomMobs</groupId>
+			<artifactId>CustomMobs</artifactId>
+			<version>${custommobs.jar.version}</version>
+			<type>jar</type> 
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${custommobs.jar.version}</systemPath>
 		</dependency>
 
 		<!-- MobArena -->

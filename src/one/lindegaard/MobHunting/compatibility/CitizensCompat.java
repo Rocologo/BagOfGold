@@ -61,8 +61,8 @@ public class CitizensCompat implements Listener {
 			TraitInfo trait = TraitInfo.create(MasterMobHunterTrait.class).withName("MasterMobHunter");
 			citizensAPI.getTraitFactory().registerTrait(trait);
 
-			Bukkit.getLogger().info(
-					"[MobHunting] Enabling compatibility with Citizens (" + getCitizensPlugin().getDescription().getVersion() + ")");
+			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with Citizens ("
+					+ getCitizensPlugin().getDescription().getVersion() + ")");
 
 			supported = true;
 
@@ -160,7 +160,7 @@ public class CitizensCompat implements Listener {
 		return citizensAPI;
 	}
 
-	public static boolean isCitizensSupported() {
+	public static boolean isSupported() {
 		if (supported && citizensAPI != null && CitizensAPI.hasImplementation())
 			return supported;
 		else
@@ -172,7 +172,7 @@ public class CitizensCompat implements Listener {
 	}
 
 	public static boolean isNPC(Entity entity) {
-		if (isCitizensSupported())
+		if (isSupported())
 			return CitizensAPI.getNPCRegistry().isNPC(entity);
 		else
 			return false;
@@ -221,7 +221,7 @@ public class CitizensCompat implements Listener {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
 							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "10",
-									"give {player} iron_sword 1", "You got an Iron sword.", 100, 100));
+									"give {player} iron_sword 1", "You got an Iron sword.", 1));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}
@@ -275,7 +275,7 @@ public class CitizensCompat implements Listener {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
 							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "10",
-									"give {player} iron_sword 1", "You got an Iron sword.", 100, 100));
+									"give {player} iron_sword 1", "You got an Iron sword.", 1));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}

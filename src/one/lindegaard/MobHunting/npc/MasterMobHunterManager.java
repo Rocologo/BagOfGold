@@ -41,7 +41,7 @@ public class MasterMobHunterManager implements Listener {
 	}
 
 	public void initialize() {
-		if (CitizensCompat.isCitizensSupported()) {
+		if (CitizensCompat.isSupported()) {
 			loadData();
 			Bukkit.getPluginManager().registerEvents(new MasterMobHunterTrait(), MobHunting.getInstance());
 			Bukkit.getPluginManager().registerEvents(new MasterMobHunterManager(), MobHunting.getInstance());
@@ -60,7 +60,7 @@ public class MasterMobHunterManager implements Listener {
 	private class Updater implements Runnable {
 		@Override
 		public void run() {
-			if (CitizensCompat.isCitizensSupported()) {
+			if (CitizensCompat.isSupported()) {
 				int n = 0;
 				for (Iterator<NPC> npcList = CitizensAPI.getNPCRegistry().iterator(); npcList.hasNext();) {
 					NPC npc = npcList.next();

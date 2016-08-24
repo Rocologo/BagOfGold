@@ -78,9 +78,10 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	 * @return true if the entity is a TARDISWeepingAngels entity
 	 */
 	public static boolean isWeepingAngelMonster(Entity entity) {
-		return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
+		return entity.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+		//return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
 	}
-
+	
 	/**
 	 * Returns the Monster type for a TARDISWeepingAngels entity.
 	 *
@@ -102,7 +103,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 					mMobRewardData.put(monster.name(),
 							new MobRewardData(MobPlugins.MobPluginNames.TARDISWeepingAngels, monster.name(),
 									monster.name(), "40:60", "minecraft:give {player} iron_sword 1",
-									"You got an Iron sword.", 100, 100));
+									"You got an Iron sword.", 1));
 					saveTARDISWeepingAngelsMobsData(mMobRewardData.get(monster.name()).getMobName());
 				}
 				return;
@@ -198,7 +199,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			Messages.debug("New TARDIS mob found=%s", monster.name());
 			mMobRewardData.put(monster.name(),
 					new MobRewardData(MobPlugins.MobPluginNames.TARDISWeepingAngels, monster.name(), monster.name(),
-							"40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 100, 100));
+							"40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveTARDISWeepingAngelsMobsData(monster.name());
 		}
 

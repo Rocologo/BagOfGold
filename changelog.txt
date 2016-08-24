@@ -1,5 +1,6 @@
 V3.4.4
 * Add chance to run the Command on PVP kills. Default is is 50%. Can be changed in config.yml.
+* Added support for CustomMobs: https://dev.bukkit.org/bukkit-plugins/custom-mobs/
 * Fixed "NoSuchMethodError: org.bukkit.entity.LivingEntity.getName()" on Minecraft 1.7.10 servers.
 * DropMoneyOnGround Fixed on 1.7.10 Servers
 * Fixed rare bug reported by Mr_Killer01: https://www.spigotmc.org/threads/mobhunting.46937/page-52#post-1843924

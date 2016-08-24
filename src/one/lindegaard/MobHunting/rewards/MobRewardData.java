@@ -17,21 +17,21 @@ public class MobRewardData {
 	private String rewardDescription = "";
 	private int propability = 100;
 	private int propabilityBase = 100;
+	private double chance = 1;
 
 	public MobRewardData() {
 		super();
 	}
 
 	public MobRewardData(MobPluginNames pluginName, String mobType, String mobName, String rewardPrize, String cmd,
-			String cmdDesc, int propability, int propabilityBase) {
+			String cmdDesc, double chance) {
 		this.mobPluginName = pluginName;
 		this.mobType = mobType;
 		this.mobName = mobName;
 		this.reward = rewardPrize;
 		this.consoleRunCommand = cmd;
 		this.rewardDescription = cmdDesc;
-		this.propability = propability;
-		this.setPropabilityBase(propabilityBase);
+		this.chance = chance;
 	}
 
 	// **************************************************************************
@@ -101,6 +101,14 @@ public class MobRewardData {
 		this.propabilityBase = propabilityBase;
 	}
 
+	public double getChance() {
+		return chance;
+	}
+
+	public void setChance(int chance) {
+		this.chance = chance;
+	}
+
 	// **************************************************************************
 	// Load & Save
 	// **************************************************************************
@@ -110,8 +118,9 @@ public class MobRewardData {
 		section.set("rewardPrize", reward);
 		section.set("consoleRunCommand", consoleRunCommand);
 		section.set("rewardDescription", rewardDescription);
-		section.set("propability", propability);
-		section.set("propabilityBase", propabilityBase);
+		// section.set("propability", propability);
+		// section.set("propabilityBase", propabilityBase);
+		section.set("chance", chance);
 	}
 
 	@SuppressWarnings("unused")
@@ -124,7 +133,6 @@ public class MobRewardData {
 		throw new IllegalArgumentException("Not a number");
 	}
 
-	@SuppressWarnings("unused")
 	private double toDouble(Object obj) {
 		if (obj instanceof Double)
 			return (Double) obj;
@@ -155,8 +163,9 @@ public class MobRewardData {
 		objects.put("rewardPrize", reward);
 		objects.put("consoleRunCommand", consoleRunCommand);
 		objects.put("rewardDescription", rewardDescription);
-		objects.put("propability", propability);
-		objects.put("propabilityBase", propabilityBase);
+		//objects.put("propability", propability);
+		//objects.put("propabilityBase", propabilityBase);
+		objects.put("chance", chance);
 		return objects;
 	}
 
@@ -166,19 +175,27 @@ public class MobRewardData {
 		reward = (String) data.get("rewardPrize");
 		consoleRunCommand = (String) data.get("consoleRunCommand");
 		rewardDescription = (String) data.get("rewardDescription");
-		propability = toInt(data.get("propability"));
-		propabilityBase = toInt(data.get("propabilityBase"));
+		if (data.get("chance") == null) {
+			propability = toInt(data.get("propability"));
+			propabilityBase = toInt(data.get("propabilityBase"));
+			chance = propability / propabilityBase;
+		} else
+			chance = toDouble(data.get("chance"));
 	}
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
-
 		mobPluginName = MobPluginNames.valueOf(section.get("plugin").toString());
 		mobName = section.getString("mobName");
 		reward = section.getString("rewardPrize");
 		consoleRunCommand = section.getString("consoleRunCommand");
 		rewardDescription = section.getString("rewardDescription");
-		propability = section.getInt("propability");
-		propabilityBase = section.getInt("propabilityBase");
+		if (section.get("chance") != null)
+			chance = section.getDouble("chance");
+		else {
+			propability = section.getInt("propability");
+			propabilityBase = section.getInt("propabilityBase");
+			chance = propability / propabilityBase;
+		}
 	}
 
 }

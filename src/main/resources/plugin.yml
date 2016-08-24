@@ -5,7 +5,7 @@ description: A Mobhunting plugin
 dev-url: http://dev.bukkit.org/server-mods/mobhunting/
 author: Rocologo
 depend: [Vault]
-softdepend: [Essentials, WorldEdit, WorldGuard, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, ProtocolLib, Minigames, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, MobStacker, Gringotts, ActionBarAPI, AcctionAnnouncer]
+softdepend: [Essentials, WorldEdit, WorldGuard, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, ProtocolLib, Minigames, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, MobStacker, Gringotts, ActionBarAPI, AcctionAnnouncer, CustomMobs]
 
 commands:
   mobhunt:

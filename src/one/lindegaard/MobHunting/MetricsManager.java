@@ -83,7 +83,7 @@ public class MetricsManager {
 		integrationsGraph.addPlotter(new Metrics.Plotter("Citizens") {
 			@Override
 			public int getValue() {
-				return CitizensCompat.isCitizensSupported() ? 1 : 0;
+				return CitizensCompat.isSupported() ? 1 : 0;
 			}
 		});
 		integrationsGraph.addPlotter(new Metrics.Plotter("Essentials") {

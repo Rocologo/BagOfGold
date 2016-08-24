@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
@@ -190,6 +191,12 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nMobStacker settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of Mobstacker Integration, or you can disable"
+						+ "\nintegration completely.");
+
+		setCategoryComment("custommobs",
+				"########################################################################" + "\nMobStacker settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of CustomMobs Integration, or you can disable"
 						+ "\nintegration completely.");
 
 		setCategoryComment("grinding",
@@ -1121,6 +1128,16 @@ public class ConfigManager extends AutoConfig {
 	public boolean getRewardFromStackedMobs = false;
 
 	// #####################################################################################
+	// CustomMobs Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-custommobs", category = "custommobs", comment = "Disable integration with CustomMobs"
+			+ "\nhttps://dev.bukkit.org/bukkit-plugins/custom-mobs/")
+	public boolean disableIntegrationCustomMobs = false;
+
+	@ConfigField(name = "allow_custom_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from CustomMobs Spawners and eggs?")
+	public boolean allowCustomMobsSpawners = false;
+
+	// #####################################################################################
 	// DropMoneyOnGrond settings
 	// #####################################################################################
 	@ConfigField(name = "drop-money-on-groud", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
@@ -1360,8 +1377,7 @@ public class ConfigManager extends AutoConfig {
 	 * @return value
 	 */
 	public double getBaseKillPrize(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported()
-				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
 			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
@@ -1371,7 +1387,7 @@ public class ConfigManager extends AutoConfig {
 			MetadataValue value = data.get(0);
 			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 
-		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentryOrSentinel(mob)) {
@@ -1379,6 +1395,10 @@ public class ConfigManager extends AutoConfig {
 						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
 				return 0;
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+			MetadataValue value = data.get(0);
+			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 		} else {
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
@@ -1533,8 +1553,7 @@ public class ConfigManager extends AutoConfig {
 	 *         be separeted by a "|"
 	 */
 	public String getKillConsoleCmd(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported()
-				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
@@ -1544,13 +1563,17 @@ public class ConfigManager extends AutoConfig {
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
 
-		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentryOrSentinel(mob)) {
 				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getConsoleRunCommand();
 			} else
 				return "";
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getConsoleRunCommand();
 		} else {
 
 			if (Misc.isMC110OrNewer())
@@ -1660,8 +1683,7 @@ public class ConfigManager extends AutoConfig {
 	 * @return String
 	 */
 	public String getKillRewardDescription(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported()
-				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
@@ -1671,13 +1693,17 @@ public class ConfigManager extends AutoConfig {
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
 
-		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentryOrSentinel(mob)) {
 				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardDescription();
 			} else
 				return "";
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getRewardDescription();
 		} else {
 
 			if (Misc.isMC110OrNewer())
@@ -1780,258 +1806,167 @@ public class ConfigManager extends AutoConfig {
 		return "";
 	}
 
-	public int getCmdRunProbability(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported()
-				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+	public double getCmdRunChance(LivingEntity mob) {
+		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
 			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getPropability();
+			return ((MobRewardData) value.value()).getChance();
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getPropability();
+			return ((MobRewardData) value.value()).getChance();
 
-		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			if (CitizensCompat.isSentryOrSentinel(mob)) {
-				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getPropability();
+				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getChance();
 			} else
-				return 100;
+				return 1;
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getChance();
 		} else {
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
-					return MobHunting.getConfigManager().polarBearFrequency;
+					return MobHunting.getConfigManager().polarBearFrequency
+							/ MobHunting.getConfigManager().polarBearFrequencyBase;
 				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
-					return MobHunting.getConfigManager().strayFrequency;
+					return MobHunting.getConfigManager().strayFrequency
+							/ MobHunting.getConfigManager().strayFrequencyBase;
 				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
-					return MobHunting.getConfigManager().huskFrequency;
+					return MobHunting.getConfigManager().huskFrequency
+							/ MobHunting.getConfigManager().huskFrequencyBase;
 
 			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
-					return MobHunting.getConfigManager().shulkerFrequency;
+					return MobHunting.getConfigManager().shulkerFrequency
+							/ MobHunting.getConfigManager().shulkerFrequencyBase;
 
 			if (Misc.isMC18OrNewer())
 				if (mob instanceof Guardian && ((Guardian) mob).isElder())
-					return MobHunting.getConfigManager().elderGuardianFrequency;
+					return MobHunting.getConfigManager().elderGuardianFrequency
+							/ MobHunting.getConfigManager().elderGuardianFrequencyBase;
 				else if (mob instanceof Guardian)
-					return MobHunting.getConfigManager().guardianFrequency;
+					return MobHunting.getConfigManager().guardianFrequency
+							/ MobHunting.getConfigManager().guardianFrequencyBase;
 				else if (mob instanceof Endermite)
-					return MobHunting.getConfigManager().endermiteFrequency;
+					return MobHunting.getConfigManager().endermiteFrequency
+							/ MobHunting.getConfigManager().endermiteFrequencyBase;
 				else if (mob instanceof Rabbit)
 					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return MobHunting.getConfigManager().killerrabbitFrequency;
+						return MobHunting.getConfigManager().killerrabbitFrequency
+								/ MobHunting.getConfigManager().killerrabbitFrequencyBase;
 					else
-						return MobHunting.getConfigManager().rabbitFrequency;
+						return MobHunting.getConfigManager().rabbitFrequency
+								/ MobHunting.getConfigManager().rabbitFrequencyBase;
 
 			// MC1.7 or older
 			if (mob instanceof Player) {
 				Bukkit.getLogger()
 						.severe("[MobHunting] Error when caculate chance for running Cmd command on Mob kill");
-				return 100;
+				return 1;
 			} else if (mob instanceof Blaze)
-				return MobHunting.getConfigManager().blazeFrequency;
+				return MobHunting.getConfigManager().blazeFrequency / MobHunting.getConfigManager().blazeFrequencyBase;
 			else if (mob instanceof Creeper)
-				return MobHunting.getConfigManager().creeperFrequency;
+				return MobHunting.getConfigManager().creeperFrequency
+						/ MobHunting.getConfigManager().creeperFrequencyBase;
 			else if (mob instanceof Silverfish)
-				return MobHunting.getConfigManager().silverfishFrequency;
+				return MobHunting.getConfigManager().silverfishFrequency
+						/ MobHunting.getConfigManager().silverfishFrequencyBase;
 			else if (mob instanceof Enderman)
-				return MobHunting.getConfigManager().endermanFrequency;
+				return MobHunting.getConfigManager().endermanFrequency
+						/ MobHunting.getConfigManager().endermanFrequencyBase;
 			else if (mob instanceof Giant)
-				return MobHunting.getConfigManager().giantFrequency;
+				return MobHunting.getConfigManager().giantFrequency / MobHunting.getConfigManager().giantFrequencyBase;
 			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
-				return MobHunting.getConfigManager().skeletonFrequency;
+				return MobHunting.getConfigManager().skeletonFrequency
+						/ MobHunting.getConfigManager().skeletonFrequencyBase;
 			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
-				return MobHunting.getConfigManager().witherSkeletonFrequency;
+				return MobHunting.getConfigManager().witherSkeletonFrequency
+						/ MobHunting.getConfigManager().witherSkeletonFrequencyBase;
 			else if (mob instanceof CaveSpider)
 				// CaveSpider is a subclass of Spider
-				return MobHunting.getConfigManager().caveSpiderFrequency;
+				return MobHunting.getConfigManager().caveSpiderFrequency
+						/ MobHunting.getConfigManager().caveSpiderFrequencyBase;
 			else if (mob instanceof Spider)
-				return MobHunting.getConfigManager().spiderFrequency;
+				return MobHunting.getConfigManager().spiderFrequency
+						/ MobHunting.getConfigManager().spiderFrequencyBase;
 			else if (mob instanceof Witch)
-				return MobHunting.getConfigManager().witchFrequency;
+				return MobHunting.getConfigManager().witchFrequency / MobHunting.getConfigManager().witchFrequencyBase;
 			else if (mob instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
-				return MobHunting.getConfigManager().zombiePigmanFrequency;
+				return MobHunting.getConfigManager().zombiePigmanFrequency
+						/ MobHunting.getConfigManager().zombiePigmanFrequencyBase;
 			else if (mob instanceof Zombie)
-				return MobHunting.getConfigManager().zombieFrequency;
+				return MobHunting.getConfigManager().zombieFrequency
+						/ MobHunting.getConfigManager().zombieFrequencyBase;
 			else if (mob instanceof Ghast)
-				return MobHunting.getConfigManager().ghastFrequency;
+				return MobHunting.getConfigManager().ghastFrequency / MobHunting.getConfigManager().ghastFrequencyBase;
 			else if (mob instanceof Slime)
 				if (mob instanceof MagmaCube)
 					// MagmaCube is a subclass of Slime
-					return MobHunting.getConfigManager().magmaCubeFrequency;
+					return MobHunting.getConfigManager().magmaCubeFrequency
+							/ MobHunting.getConfigManager().magmaCubeFrequencyBase;
 				else
-					return MobHunting.getConfigManager().slimeFrequency;
+					return MobHunting.getConfigManager().slimeFrequency
+							/ MobHunting.getConfigManager().slimeFrequencyBase;
 			else if (mob instanceof EnderDragon)
-				return MobHunting.getConfigManager().enderdragonFrequency;
+				return MobHunting.getConfigManager().enderdragonFrequency
+						/ MobHunting.getConfigManager().enderdragonFrequencyBase;
 			else if (mob instanceof Wither)
-				return MobHunting.getConfigManager().witherFrequency;
+				return MobHunting.getConfigManager().witherFrequency
+						/ MobHunting.getConfigManager().witherFrequencyBase;
 			else if (mob instanceof IronGolem)
-				return MobHunting.getConfigManager().ironGolemFrequency;
+				return MobHunting.getConfigManager().ironGolemFrequency
+						/ MobHunting.getConfigManager().ironGolemFrequencyBase;
 
 			// Passive mobs
 			else if (mob instanceof Bat)
-				return MobHunting.getConfigManager().batFrequency;
+				return MobHunting.getConfigManager().batFrequency / MobHunting.getConfigManager().batFrequencyBase;
 			else if (mob instanceof Chicken)
-				return MobHunting.getConfigManager().chickenFrequency;
+				return MobHunting.getConfigManager().chickenFrequency
+						/ MobHunting.getConfigManager().chickenFrequencyBase;
 			else if (mob instanceof Cow)
 				if (mob instanceof MushroomCow)
 					// MushroomCow is a subclass of Cow
-					return MobHunting.getConfigManager().mushroomCowFrequency;
+					return MobHunting.getConfigManager().mushroomCowFrequency
+							/ MobHunting.getConfigManager().mushroomCowFrequencyBase;
 				else
-					return MobHunting.getConfigManager().cowFrequency;
+					return MobHunting.getConfigManager().cowFrequency / MobHunting.getConfigManager().cowFrequencyBase;
 			else if (mob instanceof Horse)
-				return MobHunting.getConfigManager().horseFrequency;
+				return MobHunting.getConfigManager().horseFrequency / MobHunting.getConfigManager().horseFrequencyBase;
 			else if (mob instanceof Ocelot)
-				return MobHunting.getConfigManager().ocelotFrequency;
+				return MobHunting.getConfigManager().ocelotFrequency
+						/ MobHunting.getConfigManager().ocelotFrequencyBase;
 			else if (mob instanceof Pig)
-				return MobHunting.getConfigManager().pigFrequency;
+				return MobHunting.getConfigManager().pigFrequency / MobHunting.getConfigManager().pigFrequencyBase;
 			else if (mob instanceof Sheep)
-				return MobHunting.getConfigManager().sheepFrequency;
+				return MobHunting.getConfigManager().sheepFrequency / MobHunting.getConfigManager().sheepFrequencyBase;
 			else if (mob instanceof Snowman)
-				return MobHunting.getConfigManager().snowmanFrequency;
+				return MobHunting.getConfigManager().snowmanFrequency
+						/ MobHunting.getConfigManager().snowmanFrequencyBase;
 			else if (mob instanceof Squid)
-				return MobHunting.getConfigManager().squidFrequency;
+				return MobHunting.getConfigManager().squidFrequency / MobHunting.getConfigManager().squidFrequencyBase;
 			else if (mob instanceof Villager)
-				return MobHunting.getConfigManager().villagerFequency;
+				return MobHunting.getConfigManager().villagerFequency
+						/ MobHunting.getConfigManager().villagerFrequencyBase;
 			else if (mob instanceof Wolf)
-				return MobHunting.getConfigManager().wolfFequency;
-
+				return MobHunting.getConfigManager().wolfFequency / MobHunting.getConfigManager().wolfFrequencyBase;
 		}
-		return 100;
-	}
-
-	public int getCmdRunProbabilityBase(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported()
-				&& mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getPropabilityBase();
-
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getPropabilityBase();
-
-		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)) {
-				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getPropabilityBase();
-			} else
-				return 100;
-		} else {
-			if (Misc.isMC110OrNewer())
-				if (mob instanceof PolarBear)
-					return MobHunting.getConfigManager().polarBearFrequencyBase;
-				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
-					return MobHunting.getConfigManager().strayFrequencyBase;
-				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
-					return MobHunting.getConfigManager().huskFrequencyBase;
-
-			if (Misc.isMC19OrNewer())
-				if (mob instanceof Shulker)
-					return MobHunting.getConfigManager().shulkerFrequencyBase;
-
-			if (Misc.isMC18OrNewer())
-				if (mob instanceof Guardian && ((Guardian) mob).isElder())
-					return MobHunting.getConfigManager().elderGuardianFrequencyBase;
-				else if (mob instanceof Guardian)
-					return MobHunting.getConfigManager().guardianFrequencyBase;
-				else if (mob instanceof Endermite)
-					return MobHunting.getConfigManager().endermiteFrequencyBase;
-				else if (mob instanceof Rabbit)
-					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return MobHunting.getConfigManager().killerrabbitFrequencyBase;
-					else
-						return MobHunting.getConfigManager().rabbitFrequencyBase;
-
-			// Minecraft 1.7.10 and older
-			if (mob instanceof Player)
-				return 100;
-			else if (mob instanceof Blaze)
-				return MobHunting.getConfigManager().blazeFrequencyBase;
-			else if (mob instanceof Creeper)
-				return MobHunting.getConfigManager().creeperFrequencyBase;
-			else if (mob instanceof Silverfish)
-				return MobHunting.getConfigManager().silverfishFrequencyBase;
-			else if (mob instanceof Enderman)
-				return MobHunting.getConfigManager().endermanFrequencyBase;
-			else if (mob instanceof Giant)
-				return MobHunting.getConfigManager().giantFrequencyBase;
-			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
-				return MobHunting.getConfigManager().skeletonFrequencyBase;
-			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
-				return MobHunting.getConfigManager().witherSkeletonFrequencyBase;
-			else if (mob instanceof CaveSpider)
-				// Cavespider is a sub class of Spider
-				return MobHunting.getConfigManager().caveSpiderFrequencyBase;
-			else if (mob instanceof Spider)
-				return MobHunting.getConfigManager().spiderFrequencyBase;
-			else if (mob instanceof Witch)
-				return MobHunting.getConfigManager().witchFrequencyBase;
-			else if (mob instanceof PigZombie)
-				// PigZombie is a subclass of Zombie.
-				return MobHunting.getConfigManager().zombiePigmanFrequencyBase;
-			else if (mob instanceof Zombie)
-				return MobHunting.getConfigManager().zombieFrequencyBase;
-			else if (mob instanceof Ghast)
-				return MobHunting.getConfigManager().ghastFrequencyBase;
-			else if (mob instanceof Slime)
-				if (mob instanceof MagmaCube)
-					// MagmaCube is a subclass of Slime
-					return MobHunting.getConfigManager().magmaCubeFrequencyBase;
-				else
-					return MobHunting.getConfigManager().slimeFrequencyBase;
-			else if (mob instanceof EnderDragon)
-				return MobHunting.getConfigManager().enderdragonFrequencyBase;
-			else if (mob instanceof Wither)
-				return MobHunting.getConfigManager().witherFrequencyBase;
-			else if (mob instanceof IronGolem)
-				return MobHunting.getConfigManager().ironGolemFrequencyBase;
-
-			// Passive mobs
-			else if (mob instanceof Bat)
-				return MobHunting.getConfigManager().batFrequencyBase;
-			else if (mob instanceof Chicken)
-				return MobHunting.getConfigManager().chickenFrequencyBase;
-			else if (mob instanceof Cow)
-				if (mob instanceof MushroomCow)
-					// MushroomCow is a subclass of Cow and must be detected
-					// first
-					return MobHunting.getConfigManager().mushroomCowFrequencyBase;
-				else
-					return MobHunting.getConfigManager().cowFrequencyBase;
-			else if (mob instanceof Horse)
-				return MobHunting.getConfigManager().horseFrequencyBase;
-			else if (mob instanceof Ocelot)
-				return MobHunting.getConfigManager().ocelotFrequencyBase;
-			else if (mob instanceof Pig)
-				return MobHunting.getConfigManager().pigFrequencyBase;
-			else if (mob instanceof Sheep)
-				return MobHunting.getConfigManager().sheepFrequencyBase;
-			else if (mob instanceof Snowman)
-				return MobHunting.getConfigManager().snowmanFrequencyBase;
-			else if (mob instanceof Squid)
-				return MobHunting.getConfigManager().squidFrequencyBase;
-			else if (mob instanceof Villager)
-				return MobHunting.getConfigManager().villagerFrequencyBase;
-			else if (mob instanceof Wolf)
-				return MobHunting.getConfigManager().wolfFrequencyBase;
-
-		}
-		return 100;
+		return 1;
 	}
 
 	public boolean isCmdGointToBeExcuted(LivingEntity killed) {
+		double randomDouble = MobHunting.getMobHuntingManager().mRand.nextDouble();
+		double runChanceDouble = getCmdRunChance(killed);
+		Messages.debug("random double=%s < chance=%s", randomDouble, runChanceDouble);
 		if (killed instanceof Player)
-			return pvpKillCmdRunChance < MobHunting.getMobHuntingManager().mRand.nextDouble();
+			return randomDouble < pvpKillCmdRunChance;
 		else
-			return !getKillConsoleCmd(killed).equals("") && getCmdRunProbabilityBase(killed) != 0
-					&& (MobHunting.getMobHuntingManager().mRand
-							.nextInt(getCmdRunProbabilityBase(killed)) < getCmdRunProbability(killed));
+			return !getKillConsoleCmd(killed).equals("") && randomDouble < runChanceDouble;
 	}
 
 }

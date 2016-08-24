@@ -10,7 +10,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -46,8 +45,8 @@ public class MythicMobsCompat implements Listener {
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			Bukkit.getLogger().info(
-					"[MobHunting] Enabling Compatibility with MythicMobs (" + getMythicMobs().getDescription().getVersion() + ")");
+			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
+					+ getMythicMobs().getDescription().getVersion() + ")");
 			// API:
 			// http://xikage.elseland.net/viewgit/?a=tree&p=MythicMobs&h=dec796decd1ef71fdd49aed69aef85dc7d82b1c1&hb=ffeb51fb84e882365846a30bd2b9753716faf51e&f=MythicMobs/src/net/elseland/xikage/MythicMobs/API
 			supported = true;
@@ -190,7 +189,7 @@ public class MythicMobsCompat implements Listener {
 			mMobRewardData.put(event.getMobType().getInternalName(),
 					new MobRewardData(MobPlugins.MobPluginNames.MythicMobs, event.getMobType().getInternalName(),
 							event.getMobType().getDisplayName(), "10", "minecraft:give {player} iron_sword 1",
-							"You got an Iron sword.", 100, 100));
+							"You got an Iron sword.", 1));
 			saveMythicMobsData(event.getMobType().getInternalName());
 		}
 

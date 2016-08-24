@@ -38,6 +38,7 @@ import one.lindegaard.MobHunting.compatibility.BattleArenaHelper;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
@@ -212,6 +213,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(MobStackerCompat.class, "MobStacker");
 			registerPlugin(GringottsCompat.class, "Gringotts");
 			registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
+			registerPlugin(CustomMobsCompat.class, "CustomMobs");
 
 			// register commands
 			CommandDispatcher cmd = new CommandDispatcher("mobhunt",
@@ -226,7 +228,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new LeaderboardCommand(this));
 			cmd.registerCommand(new LearnCommand());
 			cmd.registerCommand(new MuteCommand());
-			if (CompatibilityManager.isPluginLoaded(CitizensCompat.class) && CitizensCompat.isCitizensSupported()) {
+			if (CompatibilityManager.isPluginLoaded(CitizensCompat.class) && CitizensCompat.isSupported()) {
 				cmd.registerCommand(new NpcCommand(this));
 			}
 			cmd.registerCommand(new ReloadCommand());
@@ -1347,7 +1349,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				Messages.debug("Permission mobhunting.mobs." + permission_postfix + " not set, defaulting to True.");
 				return true;
 			}
-		} else if (CitizensCompat.isCitizensSupported() && CitizensCompat.isSentryOrSentinel(mob)) {
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isSentryOrSentinel(mob)) {
 			permission_postfix = "npc-" + CitizensCompat.getNPCId(mob);
 			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
 				return player.hasPermission("mobhunting.mobs." + permission_postfix);
