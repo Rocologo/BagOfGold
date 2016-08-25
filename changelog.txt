@@ -1,3 +1,5 @@
+V3.4.5
+* Cleaned up the Difficulty Multiplier, added debug information.
 V3.4.4
 * Add chance to run the Command on PVP kills. Default is is 50%. Can be changed in config.yml.
 * Added support for CustomMobs: https://dev.bukkit.org/bukkit-plugins/custom-mobs/

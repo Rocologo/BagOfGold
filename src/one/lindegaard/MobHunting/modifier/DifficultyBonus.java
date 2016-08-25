@@ -24,23 +24,24 @@ public class DifficultyBonus implements IModifier {
 	public double getMultiplier(LivingEntity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		Difficulty dif = killer.getWorld().getDifficulty();
+		Difficulty worldDifficulty = killer.getWorld().getDifficulty();
 		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier
 				.entrySet().iterator();
-		String valueStr = "1";
+		String multiplierStr = "1";
 		while (difficulties.hasNext()) {
 			Entry<String, String> difficulty = difficulties.next();
 			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
 					&& !difficulty.getKey().equalsIgnoreCase(
 							"difficulty.multiplier")
 							&& (difficulty.getKey().equals("difficulty.multiplier."
-									+ dif.name().toLowerCase()))) {
-				valueStr = difficulty.getValue();
+									+ worldDifficulty.name().toLowerCase()))) {
+				Messages.debug("WorldDifficulty=%s, multiplier=%s", worldDifficulty, difficulty.getValue() );
+				multiplierStr = difficulty.getValue();
 				break;
 			}
 		}
-		if (valueStr != null && Double.valueOf(valueStr) != 0)
-			return Double.valueOf(valueStr);
+		if (multiplierStr != null && Double.valueOf(multiplierStr) != 0)
+			return Double.valueOf(multiplierStr);
 		else
 			return 1;
 	}
@@ -49,23 +50,23 @@ public class DifficultyBonus implements IModifier {
 	public boolean doesApply(LivingEntity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		Difficulty dif = killer.getWorld().getDifficulty();
+		Difficulty worldDifficulty = killer.getWorld().getDifficulty();
 		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier
 				.entrySet().iterator();
-		String valueStr = "1";
+		String multiplierStr = "1";
 		while (difficulties.hasNext()) {
 			Entry<String, String> difficulty = difficulties.next();
 			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
 					&& !difficulty.getKey().equalsIgnoreCase(
 							"difficulty.multiplier")
 					&& (difficulty.getKey().equals("difficulty.multiplier."
-							+ dif.name().toLowerCase()))) {
-				valueStr = difficulty.getValue();
-				Messages.debug("DifficultyMultiplier: %s=%s",difficulty.getKey(),valueStr);
+							+ worldDifficulty.name().toLowerCase()))) {
+				multiplierStr = difficulty.getValue();
+				Messages.debug("DifficultyMultiplier: %s=%s",difficulty.getKey(),multiplierStr);
 				break;
 			}
 		}
-		if (valueStr != null && Double.valueOf(valueStr) != 0)
+		if (multiplierStr != null && Double.valueOf(multiplierStr) != 0)
 			return true;
 		else
 			return false;
