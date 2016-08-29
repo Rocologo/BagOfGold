@@ -62,8 +62,6 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		load(player);
-		//if (Misc.isMC17())
-		//	((CraftPlayer) player).spigot().setCollidesWithEntities(true);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 import one.lindegaard.MobHunting.StatType;
 
 public class StatStore {
+	//TODO: private String mobType;
 	private StatType type;
 	private OfflinePlayer player;
 	private int amount;

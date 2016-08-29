@@ -159,9 +159,8 @@ public class MobHuntingManager implements Listener {
 	 */
 	public HuntData getHuntData(Player player) {
 		final String HUNTDATA = "MH:HuntData";
-		HuntData data = null;
+		HuntData data = new HuntData(instance);
 		if (!player.hasMetadata(HUNTDATA)) {
-			data = new HuntData(instance);
 			player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
 		} else {
 			List<MetadataValue> md = player.getMetadata(HUNTDATA);
@@ -170,11 +169,8 @@ public class MobHuntingManager implements Listener {
 					data = (HuntData) mdv.value();
 					break;
 				}
-				data = new HuntData(instance);
-				player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
 			}
 		}
-
 		return data;
 	}
 

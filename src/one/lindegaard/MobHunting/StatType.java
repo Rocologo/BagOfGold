@@ -16,6 +16,7 @@ public class StatType {
 		mValues[1] = KillsTotal;
 		mValues[2] = AssistsTotal;
 
+		//Adding Vanilla Minecraft mobTypes
 		for (int i = 0; i < ExtendedMobType.values().length; ++i)
 			mValues[3 + i] = new StatType(ExtendedMobType.values()[i] + "_kill", "stats.name-format", "mob",
 					"mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.kills");
@@ -24,16 +25,22 @@ public class StatType {
 			mValues[3 + i + ExtendedMobType.values().length] = new StatType(ExtendedMobType.values()[i] + "_assist",
 					"stats.name-format", "mob", "mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype",
 					"stats.assists");
+		
+		//TODO: Add found MythicMob names 
+		//TODO: Add found CustomMob names 
+		//TODO: Add found Citizens names 
 
 		for (int i = 0; i < mValues.length; ++i)
 			mNameLookup.put(mValues[i].mColumnName, mValues[i]);
 	}
 
+	//TODO: private String mMobType;
 	private String mColumnName;
 	private String mName;
 	private String[] mExtra;
 
 	StatType(String columnName, String name, String... extra) {
+		//TODO: mMobType = mobType
 		mColumnName = columnName;
 		mName = name;
 		mExtra = extra;
@@ -51,6 +58,12 @@ public class StatType {
 	}
 
 	public String getDBColumn() {
+		//TODO: chance returned column 
+		// if mColumnName endsWith("_kill")
+		// return "total_kill"; 
+		// else if mColumnName endsWith("_assist")
+		// return "total_assist"; 
+		// else return "achievement_count";
 		return mColumnName;
 	}
 
