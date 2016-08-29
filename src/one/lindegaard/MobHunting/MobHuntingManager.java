@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -29,6 +30,7 @@ public class MobHuntingManager implements Listener {
 
 	private MobHunting instance;
 	public Random mRand = new Random();
+	private final String HUNTDATA = "MH:HuntData";
 
 	/**
 	 * Constructor for MobHuntingManager
@@ -158,7 +160,6 @@ public class MobHuntingManager implements Listener {
 	 * @return HuntData
 	 */
 	public HuntData getHuntData(Player player) {
-		final String HUNTDATA = "MH:HuntData";
 		HuntData data = new HuntData(instance);
 		if (!player.hasMetadata(HUNTDATA)) {
 			player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
@@ -172,6 +173,56 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 		return data;
+	}
+
+	public double handleKillstreak(Player player) {
+		HuntData data = getHuntData(player);
+
+		// Killstreak can be disabled by setting the multiplier to 1
+
+		int lastKillstreakLevel = data.getKillstreakLevel();
+		Messages.debug("lastKillstreakLevel=%s", lastKillstreakLevel);
+
+		data.setKillStreak(data.getKillStreak() + 1);
+		player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
+
+		Messages.debug("newKillstreakLevel=%s", data.getKillstreakLevel());
+
+		double multiplier = data.getKillstreakMultiplier();
+		if (multiplier != 1) {
+			// Give a message notifying of killstreak increase
+			if (data.getKillstreakLevel() != lastKillstreakLevel) {
+				switch (data.getKillstreakLevel()) {
+				case 1:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				case 2:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				case 3:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				default:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				}
+
+			}
+		}
+
+		return multiplier;
 	}
 
 	/**

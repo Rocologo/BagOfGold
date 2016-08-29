@@ -975,7 +975,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		data = mMobHuntingManager.getHuntData(killer);
 
 		// Killstreak
-		Misc.handleKillstreak(killer);
+		mMobHuntingManager.handleKillstreak(killer);
 
 		// Record kills that are still within a small area
 		Location loc = killed.getLocation();
@@ -989,7 +989,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				&& !killed.hasMetadata("MH:reinforcement") && !mAreaManager.isWhitelisted(killed.getLocation())) {
 			Messages.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
 					data.getcDampnerRange());
-			Messages.debug("DampendKills=%s ", data.getDampenedKills());
+			Messages.debug("DampendKills=%s", data.getDampenedKills());
 
 			if (detectedGrindingArea != null) {
 				data.lastKillAreaCenter = null;
@@ -1055,6 +1055,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 		data.setReward(cash);
 
+		Messages.debug("Killstreak=%s, level=%s, multiplier=%s ", data.getKillStreak(), data.getKillstreakLevel(),
+				data.getKillstreakMultiplier());
 		multiplier *= data.getKillstreakMultiplier();
 
 		String extraString = "";
@@ -1244,7 +1246,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		double multiplier = mConfig.assistMultiplier;
 		double ks = 1.0;
 		if (mConfig.assistAllowKillstreak)
-			ks = Misc.handleKillstreak(player);
+			ks = mMobHuntingManager.handleKillstreak(player);
 
 		multiplier *= ks;
 		double cash = 0;

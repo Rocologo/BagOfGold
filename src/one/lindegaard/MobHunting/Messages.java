@@ -274,17 +274,19 @@ public class Messages {
 
 	public static void learn(Player player, String text, Object... args) {
 		if (player != null && !CitizensCompat.isNPC(player)
-				&& MobHunting.getPlayerSettingsmanager()
-				.getPlayerSettings(player)
-				.isLearningMode())
-			if (BossBarAPICompat.isSupported()) {
-				BossBarAPICompat.addBar(player, text);
-			} else if (BarAPICompat.isSupported()) {
-				BarAPICompat.setMessageTime(player, text, 5);
-			} else {
-				player.sendMessage(ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " "
-						+ String.format(text, args));
-			}
+				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode())
+			playerBossbarMessage(player, text, args);
+	}
+
+	public static void playerBossbarMessage(Player player, String text, Object... args) {
+		if (BossBarAPICompat.isSupported()) {
+			BossBarAPICompat.addBar(player, String.format(text, args));
+		} else if (BarAPICompat.isSupported()) {
+			BarAPICompat.setMessageTime(player, String.format(text, args), 5);
+		} else {
+			player.sendMessage(
+					ChatColor.AQUA + Messages.getString("mobhunting.learn.prefix") + " " + String.format(text, args));
+		}
 	}
 
 	public static void playerActionBarMessage(Player player, String message) {

@@ -36,46 +36,6 @@ public class Misc {
 				|| item.getType() == Material.WOOD_PICKAXE);
 	}
 
-	public static double handleKillstreak(Player player) {
-		HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
-
-		// Killstreak can be disabled by setting the multiplier to 1
-		double multiplier = data.getKillstreakMultiplier();
-		if (multiplier != 1) {
-			
-			int lastKillstreakLevel = data.getKillstreakLevel();
-
-			data.setKillStreak(data.getKillStreak() + 1);
-
-			// Give a message notifying of killstreak increase
-			if (data.getKillstreakLevel() != lastKillstreakLevel) {
-				switch (data.getKillstreakLevel()) {
-				case 1:
-					Messages.playerActionBarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1"));
-					break;
-				case 2:
-					Messages.playerActionBarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2"));
-					break;
-				case 3:
-					Messages.playerActionBarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3"));
-					break;
-				default:
-					Messages.playerActionBarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4"));
-					break;
-				}
-
-				Messages.playerActionBarMessage(player, ChatColor.GRAY + Messages
-						.getString("mobhunting.killstreak.activated", "multiplier", String.format("%.1f", multiplier)));
-			}
-		}
-
-		return multiplier;
-	}
-
 	public static Map<String, Object> toMap(Location loc) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("X", loc.getX());
