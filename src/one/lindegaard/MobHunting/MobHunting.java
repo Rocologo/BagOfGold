@@ -1084,7 +1084,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					reward += b.getPrize();
 					OfflinePlayer bountyOwner = b.getBountyOwner();
 					mBountyManager.removeBounty(b);
-					if (bountyOwner.isOnline())
+					if (bountyOwner!=null && bountyOwner.isOnline())
 						Messages.playerActionBarMessage(Misc.getOnlinePlayer(bountyOwner),
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
 										"prize", b.getPrize(), "killed", killed.getName()));
