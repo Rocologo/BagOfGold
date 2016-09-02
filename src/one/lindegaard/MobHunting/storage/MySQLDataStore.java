@@ -99,11 +99,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 			mDeleteBounty = connection.prepareStatement(
 					"DELETE FROM mh_Bounties WHERE WANTEDPLAYER_ID=? AND BOUNTYOWNER_ID=? AND WORLDGROUP=?;");
 		}
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections++;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-		}
 
 	}
 
@@ -138,11 +133,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 		try {
 			Statement statement = mConnection.createStatement();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections++;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-			}
 			ResultSet results = statement
 					.executeQuery("SELECT " + type.getDBColumn() + ", mh_Players.UUID, mh_Players.NAME from mh_"
 							+ period.getTable() + " inner join mh_Players on mh_Players.PLAYER_ID=mh_"
@@ -164,11 +154,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 			}
 			results.close();
 			statement.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("MySQLDataStore: close - connections=%s", connections);
-			}
 			return list;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -189,19 +174,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			}
 			mSavePlayerStats.executeBatch();
 			mSavePlayerStats.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("MySQLDatastore: Close - connections=%s", connections);
-			}
 
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections++;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-			}
 
 			for (StatStore stat : stats)
 				statement.addBatch(String.format(
@@ -209,11 +184,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 						stat.getType().getDBColumn(), getPlayerId(stat.getPlayer()), stat.getAmount()));
 			statement.executeBatch();
 			statement.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("MySQLDataStore: close - connections=%s", connections);
-			}
 
 			mConnection.commit();
 			Messages.debug("Saved.");
@@ -229,14 +199,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 	// *******************************************************************************
 
 	@Override
-	protected void setupTables(Connection connection) throws SQLException {
+	protected void setupV2Tables(Connection connection) throws SQLException {
 
 		Statement create = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections++;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-		}
 
 		// Prefix tables to mh_
 		try {
@@ -295,29 +260,19 @@ public class MySQLDataStore extends DatabaseDataStore {
 					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
 
 		// Setup Database triggers
-		setupTrigger(connection);
+		setupTriggerV2(connection);
 
 		create.close();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections--;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDatastore: Close - connections=%s", connections);
-		}
 
 		connection.commit();
 
-		performUUIDMigrate(connection);
-		performAddNewMobs(connection);
+		performTableMigrateFromV1toV2(connection);
+
 	}
 
-	private void setupTrigger(Connection connection) throws SQLException {
+	private void setupTriggerV2(Connection connection) throws SQLException {
 
 		Statement create = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections++;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-		}
 
 		// Workaround for no create trigger if not exists
 		try {
@@ -368,31 +323,20 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 
 		create.close();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections--;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDataStore: close - connections=%s", connections);
-		}
 		connection.commit();
 	}
 
-	private void performUUIDMigrate(Connection connection) throws SQLException {
-		Statement statement = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections++;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-		}
+	private void performTableMigrateFromV1toV2(Connection connection) throws SQLException {
+		performUUIDMigrateV2(connection);
+		performAddNewMobsIntoV2(connection);
+	}
 
+	private void performUUIDMigrateV2(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
 		try {
 			ResultSet rs = statement.executeQuery("SELECT UUID from `mh_Players` LIMIT 0");
 			rs.close();
 			statement.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("MySQLDataStore: close - connections=%s", connections);
-			}
 			return; // UUIDs are in place
 
 		} catch (SQLException e) {
@@ -410,11 +354,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		UUIDHelper.initialize();
 
 		PreparedStatement insert = connection.prepareStatement("update `mh_Players` set `UUID`=? where `NAME`=?");
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections++;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-		}
 
 		StringBuilder failString = new StringBuilder();
 		int failCount = 0;
@@ -444,11 +383,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		insert.executeBatch();
 		insert.close();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections--;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDataStore: close - connections=%s", connections);
-		}
 
 		int modified = statement.executeUpdate("delete from `mh_Players` where `UUID`='**UNSPEC**'");
 		System.out.println("[MobHunting]" + modified + " players were removed due to missing UUIDs");
@@ -459,21 +393,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 		System.out.println("[MobHunting] Player UUID migration complete.");
 
 		statement.close();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections--;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDataStore: close - connections=%s", connections);
-		}
 		connection.commit();
 	}
 
-	private void performAddNewMobs(Connection connection) throws SQLException {
+	private void performAddNewMobsIntoV2(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections++;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDatastore: Open - connections=%s", connections);
-		}
 
 		try {
 			ResultSet rs = statement.executeQuery("SELECT Bat_kill from `mh_Daily` LIMIT 0");
@@ -890,20 +814,30 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 			System.out.println("[MobHunting] Adding 1.8 Mob (Elder Guardian) to MobHunting Database.");
 
-			statement.executeUpdate("alter table `mh_Daily` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Daily` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Weekly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Weekly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Monthly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Monthly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Yearly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Yearly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_AllTime` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_AllTime` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Daily` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Daily` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Weekly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Weekly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Monthly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Monthly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Yearly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Yearly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_AllTime` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_AllTime` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			System.out.println("[MobHunting] Adding 1.8 Mob (Elder Guardian) complete.");
 		}
-		
+
 		try {
 			ResultSet rs = statement.executeQuery("SELECT LEARNING_MODE from mh_Players LIMIT 0");
 			rs.close();
@@ -925,14 +859,191 @@ public class MySQLDataStore extends DatabaseDataStore {
 		System.out.println("[MobHunting] Updating database triggers.");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
-		setupTrigger(connection);
+		setupTriggerV2(connection);
 
 		statement.close();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections--;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("MySQLDataStore: close - connections=%s", connections);
+		connection.commit();
+	}
+
+	// *******************************************************************************
+	// V3 DATABASE SETUP / MIGRATION
+	// *******************************************************************************
+
+	@Override
+	protected void setupV3Tables(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
+
+		// Check if tables are V3.
+		try {
+			ResultSet rs = create.executeQuery("SELECT MOB_ID from mh_Mobs LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			// Tables are V2
+			create.executeUpdate("ALTER TABLE mh_Daily RENAME TO mh_DailyV2");
+			create.executeUpdate("ALTER TABLE mh_Weekly RENAME TO mh_WeeklyV2");
+			create.executeUpdate("ALTER TABLE mh_Monthly RENAME TO mh_MonthlyV2");
+			create.executeUpdate("ALTER TABLE mh_Yearly RENAME TO mh_YearlyV2");
+			create.executeUpdate("ALTER TABLE mh_AllTime RENAME TO mh_AllTimeV2");
+			create.executeUpdate("DROP TRIGGER IF EXISTS DailyInsert");
+			create.executeUpdate("DROP TRIGGER IF EXISTS DailyUpdate");
 		}
+
+		// Create new empty tables if they do not exist
+		String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_Players"
+						+ "(UUID CHAR(40) PRIMARY KEY,"
+						+" NAME VARCHAR(20),"
+						+" PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT, "
+						+" KEY PLAYER_ID (PLAYER_ID),"
+						+" LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","
+						+" MUTE_MODE INTEGER NOT NULL DEFAULT 0)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Plugins "
+				+ "(PLUGIN_ID INTEGER PRIMARY KEY NOT NULL, NAME VARCHAR(20))");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Mobs "
+				+ "(MOB_ID INTEGER NOT NULL AUTO_INCREMENT,"
+				+ " PLUGIN_ID INTEGER REFERENCES mh_Plugins(PLUGIN_ID),"
+				+ " MOBTYPE VARCHAR(30),"
+				+ " PRIMARY KEY(MOB_ID, PLUGIN_ID))");
+
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_Daily "
+				+ "(ID CHAR(7) NOT NULL,"
+				+ " MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+ " PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
+				+ " TOTAL_KILL INTEGER DEFAULT 0," 
+				+ " TOTAL_ASSITS INTEGER DEFAULT 0,"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
+		
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_Weekly "
+				+"(ID CHAR(6) NOT NULL,"
+				+" MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+" PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
+				+ " TOTAL_KILL INTEGER DEFAULT 0," 
+				+ " TOTAL_ASSITS INTEGER DEFAULT 0,"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
+		
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_Monthly "
+				+"(ID CHAR(6) NOT NULL,"
+				+" MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+" PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
+				+ " TOTAL_KILL INTEGER DEFAULT 0," 
+				+ " TOTAL_ASSITS INTEGER DEFAULT 0,"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
+		
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_Yearly "
+				+"(ID CHAR(4) NOT NULL,"
+				+" MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+" PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
+				+ " TOTAL_KILL INTEGER DEFAULT 0," 
+				+ " TOTAL_ASSITS INTEGER DEFAULT 0,"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
+		
+		create.executeUpdate(
+				"CREATE TABLE IF NOT EXISTS mh_AllTime "
+						+"(MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+						+" PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+						+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
+						+ " TOTAL_KILL INTEGER DEFAULT 0," 
+						+ " TOTAL_ASSITS INTEGER DEFAULT 0,"
+						+ " PRIMARY KEY(MOB_ID, PLAYER_ID))");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements "
+				+ "(PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " ACHIEVEMENT VARCHAR(64) NOT NULL,"
+				+ " DATE DATETIME NOT NULL,"
+				+ " PROGRESS INTEGER NOT NULL,"
+				+ " PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
+
+		if (!MobHunting.getConfigManager().disablePlayerBounties)
+			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties (" + "BOUNTYOWNER_ID INTEGER NOT NULL, "
+					+ "MOBTYPE CHAR(6), " + "WANTEDPLAYER_ID INTEGER NOT NULL, " + "NPC_ID INTEGER, "
+					+ "MOB_ID VARCHAR(40), " + "WORLDGROUP VARCHAR(20) NOT NULL, " + "CREATED_DATE BIGINT NOT NULL, "
+					+ "END_DATE BIGINT NOT NULL, " + "PRIZE FLOAT NOT NULL, " + "MESSAGE VARCHAR(64), "
+					+ "STATUS INTEGER NOT NULL DEFAULT 0, "
+					+ "PRIMARY KEY(WORLDGROUP, WANTEDPLAYER_ID, BOUNTYOWNER_ID), "
+					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
+					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
+
+		// Setup Database triggers
+		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
+		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
+		setupTriggerV3(connection);
+
+		create.close();
+		connection.commit();
+
+	}
+
+	private void setupTriggerV3(Connection connection) throws SQLException {
+		// TODO: create trigger
+		Statement create = connection.createStatement();
+
+		// Workaround for no create trigger if not exists
+		try {
+			create.executeUpdate(
+					"create trigger mh_DailyInsert after insert on mh_Daily for each row"
+							+" begin"
+							+" insert ignore into mh_Weekly(ID, MOB_ID, PLAYER_ID)"
+							+" values(DATE_FORMAT(NOW(), '%Y%U'), NEW.MOB_ID, NEW.PLAYER_ID);"
+							+" insert ignore into mh_Monthly(ID, MOB_ID, PLAYER_ID)"
+							+" values(DATE_FORMAT(NOW(), '%Y%c'), NEW.MOB_ID, NEW.PLAYER_ID);"
+							+" insert ignore into mh_Yearly(ID, MOB_ID, PLAYER_ID)"
+							+" values(DATE_FORMAT(NOW(), '%Y'), NEW.MOB_ID, NEW.PLAYER_ID);"
+							+" insert ignore into mh_AllTime(MOB_ID, PLAYER_ID)"
+							+" values(NEW.MOB_ID, NEW.PLAYER_ID);"
+							+" end"); 
+
+			// Create the cascade update trigger. It will allow us to only
+			// modify the Daily table, and the rest will happen automatically
+			StringBuilder updateStringBuilder = new StringBuilder();
+
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "ACHIEVEMENT_COUNT"));
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_KILL"));
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
+
+			String updateString = updateStringBuilder.toString();
+
+			StringBuilder updateTrigger = new StringBuilder();
+			updateTrigger.append("create trigger mh_DailyUpdate after update on mh_Daily for each row begin ");
+
+			// Weekly
+			updateTrigger.append(" update mh_Weekly set ");
+			updateTrigger.append(updateString);
+			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y%U') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			// Monthly
+			updateTrigger.append(" update mh_Monthly set ");
+			updateTrigger.append(updateString);
+			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y%c') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			// Yearly
+			updateTrigger.append(" update mh_Yearly set ");
+			updateTrigger.append(updateString);
+			updateTrigger.append(" where ID=DATE_FORMAT(NOW(), '%Y') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			// AllTime
+			updateTrigger.append(" update mh_AllTime set ");
+			updateTrigger.append(updateString);
+			updateTrigger.append(" where MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			updateTrigger.append("END");
+
+			create.executeUpdate(updateTrigger.toString());
+		} catch (SQLException e) {
+			// Do Nothing
+		}
+
+		create.close();
 		connection.commit();
 	}
 

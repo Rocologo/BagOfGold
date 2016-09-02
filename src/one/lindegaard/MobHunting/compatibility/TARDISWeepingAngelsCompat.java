@@ -92,6 +92,10 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	public static Monster getWeepingAngelMonsterType(Entity entity) {
 		return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().getWeepingAngelMonsterType(entity);
 	}
+	
+	public static HashMap<String, MobRewardData> getMobRewardData() {
+		return mMobRewardData;
+	}
 
 	// **************************************************************************
 	// LOAD & SAVE

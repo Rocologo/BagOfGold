@@ -3,13 +3,15 @@ package one.lindegaard.MobHunting;
 public class MobPlugins {
 
 	public enum MobPluginNames {
-		Minecraft("Minecraft"), MythicMobs("MythicMobs"), Citizens("Citizens"), TARDISWeepingAngels(
-				"TARDISWeepingAngels"), CustomMobs("CustomMobs");
+		Minecraft("Minecraft",0), MythicMobs("MythicMobs",1), Citizens("Citizens",2), TARDISWeepingAngels(
+				"TARDISWeepingAngels",3), CustomMobs("CustomMobs",4);
 
 		private final String name;
+		private final Integer id;
 
-		private MobPluginNames(String s) {
+		private MobPluginNames(String s, Integer id) {
 			name = s;
+			this.id = id;
 		}
 
 		public boolean equalsName(String otherName) {
@@ -18,6 +20,10 @@ public class MobPlugins {
 
 		public String toString() {
 			return name;
+		}
+
+		public Integer getId() {
+			return id;
 		}
 	}
 
@@ -53,7 +59,8 @@ public class MobPlugins {
 		return mobPlugin;
 	}
 
-	public MobPluginNames valueOf(String str) {
+	//TODO: missing plugins must be added (?)
+	public MobPluginNames valueOfXXX(String str) {
 		switch (str) {
 		case "MythicMobs":
 			return MobPluginNames.MythicMobs;
@@ -63,4 +70,5 @@ public class MobPlugins {
 			return MobPluginNames.Minecraft;
 		}
 	}
+	
 }

@@ -117,5 +117,14 @@ public interface IDataStore {
 	
 	public int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException, UserNotFoundException ;
 
-	
+	void insertVanillaMobs() throws SQLException;
+
+	void insertMythicMobs() throws SQLException;
+
+	void insertCitizensMobs() throws SQLException;
+
+	void insertTARDISWeepingAngelsMobs() throws SQLException;
+
+	void insertCustomMobs() throws SQLException;
+
 }

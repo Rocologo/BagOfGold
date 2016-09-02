@@ -1161,8 +1161,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (killer != null)
 				Messages.debug("RecordKill: %s killed a %s", killer.getName(),
 						ExtendedMobType.getExtendedMobType(killed));
-			// TODO: record MyythicMobs kills as its own kind of mobs
+			// TODO: record MythicMobs kills as its own kind of mobs
+			// TODO: record Citizens kills as its own kind of mobs
 			// TODO: record TARDISWeepingAngels kills as its own kind of mobs
+			// TODO: record CustomMobs kills as its own kind of mobs
+			// else 
 			if (ExtendedMobType.getExtendedMobType(killed) != null)
 				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));

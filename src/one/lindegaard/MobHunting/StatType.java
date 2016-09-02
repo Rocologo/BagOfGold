@@ -8,14 +8,15 @@ public class StatType {
 	public static final StatType KillsTotal = new StatType("total_kill", "stats.total_kill");
 	public static final StatType AssistsTotal = new StatType("total_assist", "stats.total_assist");
 
-	private static final StatType[] mValues = new StatType[3 + ExtendedMobType.values().length * 2];
-	private static final HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
+	private static StatType[] mValues = new StatType[3 + ExtendedMobType.values().length * 2];
+	private static HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
 
 	static {
 		mValues[0] = AchievementCount;
 		mValues[1] = KillsTotal;
 		mValues[2] = AssistsTotal;
 
+		//adding vanilla mobs type
 		for (int i = 0; i < ExtendedMobType.values().length; ++i)
 			mValues[3 + i] = new StatType(ExtendedMobType.values()[i] + "_kill", "stats.name-format", "mob",
 					"mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.kills");
@@ -27,13 +28,19 @@ public class StatType {
 
 		for (int i = 0; i < mValues.length; ++i)
 			mNameLookup.put(mValues[i].mColumnName, mValues[i]);
+		
+		//TODO: adding MythicMobType
+		//TODO: adding Citizens
+		//TODO: adding TARDISWeepingAngels
+		//TODO: adding CustomMobs
+		
 	}
 
 	private String mColumnName;
 	private String mName;
 	private String[] mExtra;
 
-	StatType(String columnName, String name, String... extra) {
+	public StatType(String columnName, String name, String... extra) {
 		mColumnName = columnName;
 		mName = name;
 		mExtra = extra;
@@ -51,6 +58,7 @@ public class StatType {
 	}
 
 	public String getDBColumn() {
+		//TODO: get total_kill or assist_kill
 		return mColumnName;
 	}
 

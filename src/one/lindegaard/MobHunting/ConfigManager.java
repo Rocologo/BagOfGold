@@ -1248,6 +1248,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "debug_sql", category = "database", comment = "sql_debug is only meant to be used by the developer. Setting this to to true can produre a a big log file!")
 	public boolean debugSQL = false;
 
+	@ConfigField(name = "database_version", category = "database", comment = "FOR INTERNAL USE ONLY. DONT CHANGE THIS VALUE!")
+	public Integer databaseVersion = 0;
+
 	// #####################################################################################
 	// Update Settings
 	// #####################################################################################

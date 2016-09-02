@@ -26,6 +26,7 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.MobPlugins;
+import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
 public class MythicMobsCompat implements Listener {
@@ -91,6 +92,9 @@ public class MythicMobsCompat implements Listener {
 			mob.read(section);
 			mob.setMobType(key);
 			mMobRewardData.put(key, mob);
+			int n = StatType.values().length;
+			StatType.values()[n+1] = new StatType (mob.getMobType()+"_kill",mob.getMobName());
+			StatType.values()[n+2] = new StatType (mob.getMobType()+"_assist",mob.getMobName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -168,7 +172,7 @@ public class MythicMobsCompat implements Listener {
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationMythicmobs;
 	}
-
+	
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
