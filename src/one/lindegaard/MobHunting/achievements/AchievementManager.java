@@ -553,7 +553,7 @@ public class AchievementManager implements Listener {
 				boolean inProgress = false;
 				int n = 0;
 				for (Map.Entry<Achievement, Integer> achievement : data) {
-					if (achievement.getValue() == -1 && (achievement.getKey().getPrize() != 0
+					if (achievement.getValue() == -1 && (achievement.getKey().getPrize() > 0
 							|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
 						if (!gui) {
 							lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
@@ -593,7 +593,7 @@ public class AchievementManager implements Listener {
 
 					for (Map.Entry<Achievement, Integer> achievement : data) {
 						if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
-								&& (achievement.getKey().getPrize() != 0
+								&& (achievement.getKey().getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0) {
 							if (!gui)
@@ -622,7 +622,7 @@ public class AchievementManager implements Listener {
 					for (Achievement achievement : getAllAchievements()) {
 						if (!(achievement instanceof ProgressAchievement)) {
 							if (!isOnGoingOrCompleted(achievement, data)) {
-								if (achievement.getPrize() != 0
+								if (achievement.getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward) {
 									addInventoryDetails(achievement.getSymbol(), inventory2, m,
 											ChatColor.YELLOW + achievement.getName(),
@@ -640,7 +640,7 @@ public class AchievementManager implements Listener {
 					// ProgressAchivement
 					for (Achievement achievement : getAllAchievements()) {
 						if ((achievement instanceof ProgressAchievement
-								&& (achievement.getPrize() != 0
+								&& (achievement.getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
 							boolean ongoing = isOnGoingOrCompleted(achievement, data);
