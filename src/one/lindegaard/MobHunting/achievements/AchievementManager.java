@@ -356,7 +356,7 @@ public class AchievementManager implements Listener {
 		int maxProgress = achievement.getMaxProgress();
 		int nextProgress = Math.min(maxProgress, curProgress + amount);
 
-		if (nextProgress == maxProgress)
+		if (nextProgress == maxProgress && maxProgress != 0)
 			awardAchievement(achievement, player);
 		else {
 			storage.progressAchievements.put(achievement.getID(), nextProgress);
