@@ -248,7 +248,7 @@ public class AchievementManager implements Listener {
 	 */
 	public void awardAchievement(Achievement achievement, Player player) {
 		if (!achievementsEnabledFor(player)) {
-			Messages.debug("AchievementBlocked] Achievements is disabled for player %s", player.getName());
+			Messages.debug("[AchievementBlocked] Achievements is disabled for player %s", player.getName());
 			return;
 		}
 
@@ -258,7 +258,7 @@ public class AchievementManager implements Listener {
 
 		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
 			if (world.equalsIgnoreCase(player.getWorld().getName())) {
-				Messages.debug("AchievementBlocked] Achievements is disabled in this world");
+				Messages.debug("[AchievementBlocked] Achievements is disabled in this world");
 				return;
 			}
 
@@ -334,6 +334,15 @@ public class AchievementManager implements Listener {
 	public void awardAchievementProgress(ProgressAchievement achievement, Player player, int amount) {
 		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
+
+		if (achievement.getExtendedMobType().getMax()==0) {
+			Messages.debug(
+					"[AchievementBlocked] ProgressAchievement for killing a %s is disabled (%s_level1) is 0 in config.yml",
+					achievement.getExtendedMobType().getDisplayName(),
+					achievement.getExtendedMobType().getDisplayName());
+			return;
+		}
+
 
 		Validate.isTrue(amount > 0);
 		PlayerStorage storage = mStorage.get(player);
@@ -595,7 +604,8 @@ public class AchievementManager implements Listener {
 						if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
 								&& (achievement.getKey().getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
-								&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0) {
+								&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0
+								&& ((ProgressAchievement) achievement.getKey()).getExtendedMobType().getMax() != 0) {
 							if (!gui)
 								lines.add(ChatColor.GRAY + " " + achievement.getKey().getName() + ChatColor.WHITE + "  "
 										+ achievement.getValue() + " / "

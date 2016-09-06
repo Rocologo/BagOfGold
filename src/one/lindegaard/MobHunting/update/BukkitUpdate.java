@@ -37,6 +37,7 @@ public class BukkitUpdate {
 	// Static information for querying the API
 	private static final String API_QUERY = "/servermods/files?projectIds=";
 	private static final String API_HOST = "https://api.curseforge.com";
+	// https://api.curseforge.com/servermods/files?projectIds=63718
 
 	// Results of query
 	// Version's title

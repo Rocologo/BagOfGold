@@ -253,7 +253,7 @@ public class UpdateHelper {
 		httpConn.setRequestProperty("Referer", "google.com");
 		int responseCode = httpConn.getResponseCode();
 
-		System.out.println("File to be downloaded:%s" + fileURL);
+		System.out.println("[MobHunting] File to be downloaded:" + fileURL);
 
 		// Create savedir if needed
 		if (!new File(saveDir).exists())
@@ -270,7 +270,7 @@ public class UpdateHelper {
 				httpConn.setRequestProperty("Accept-Language", "en-US,en);q=0.8");
 				httpConn.setRequestProperty("User-Agent", "Mozilla");
 				httpConn.setRequestProperty("Referer", "google.com");
-				System.out.println("Redirected file to be downloaded:%s" + newUrl);
+				System.out.println("[MobHunting] Redirected file to be downloaded:" + newUrl);
 				responseCode = httpConn.getResponseCode();
 			}
 		}
@@ -293,10 +293,10 @@ public class UpdateHelper {
 				fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1, fileURL.length());
 			}
 
-			System.out.println("Content-Type = " + contentType);
-			System.out.println("Content-Disposition = " + disposition);
-			System.out.println("Content-Length = " + contentLength);
-			System.out.println("fileName = " + fileName);
+			System.out.println("[MobHunting] Content-Type = " + contentType);
+			System.out.println("[MobHunting] Content-Disposition = " + disposition);
+			System.out.println("[MobHunting] Content-Length = " + contentLength);
+			System.out.println("[MobHunting] fileName = " + fileName);
 
 			// opens input stream from the HTTP connection
 			InputStream inputStream = httpConn.getInputStream();
@@ -317,7 +317,7 @@ public class UpdateHelper {
 
 			succes = true;
 		} else {
-			System.out.println("No file to download. Server replied HTTP code: " + responseCode);
+			System.out.println("[MobHunting] No file to download. Server replied HTTP code: " + responseCode);
 		}
 		httpConn.disconnect();
 		return succes;
