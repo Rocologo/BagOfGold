@@ -255,6 +255,9 @@ public class AchievementManager implements Listener {
 		if (hasAchievement(achievement, player)) {
 			return;
 		}
+		
+		//if (achievement.getPrize()<=0)
+		//	return;
 
 		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
 			if (world.equalsIgnoreCase(player.getWorld().getName())) {

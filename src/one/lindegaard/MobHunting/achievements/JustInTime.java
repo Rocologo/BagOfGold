@@ -38,6 +38,7 @@ public class JustInTime implements Achievement, Listener {
 		// Zombies begin burning about 5:30 = 23500
 		// player get a reward if he kills between 5:30 and 6:00.
 		if (event.getKilledEntity().getWorld().getEnvironment().equals(Environment.NORMAL)
+				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0
 				&& (event.getKilledEntity().getWorld().getTime() >= 23500
 						&& event.getKilledEntity().getWorld().getTime() <= 24000)
 				&& event.getKilledEntity().getFireTicks() > 0)
@@ -53,7 +54,7 @@ public class JustInTime implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialJustInTimeCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.WATCH);

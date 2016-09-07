@@ -46,7 +46,8 @@ public class FancyPants implements Achievement, Listener {
 				&& !event.getPlayer().getInventory().getLeggings().getEnchantments().isEmpty()
 				&& event.getPlayer().getInventory().getBoots() != null
 				&& event.getPlayer().getInventory().getBoots().getType() == Material.DIAMOND_BOOTS
-				&& !event.getPlayer().getInventory().getBoots().getEnchantments().isEmpty())
+				&& !event.getPlayer().getInventory().getBoots().getEnchantments().isEmpty()
+				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
 	}
 
@@ -59,7 +60,7 @@ public class FancyPants implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialFancyPantsCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.DIAMOND_LEGGINGS);

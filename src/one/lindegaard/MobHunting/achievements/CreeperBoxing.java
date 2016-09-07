@@ -11,37 +11,32 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
-public class CreeperBoxing implements Achievement, Listener
-{
+public class CreeperBoxing implements Achievement, Listener {
 
 	@Override
-	public String getName()
-	{
-		return Messages.getString("achievements.creeperboxing.name"); 
+	public String getName() {
+		return Messages.getString("achievements.creeperboxing.name");
 	}
 
 	@Override
-	public String getID()
-	{
-		return "creeperboxing"; 
+	public String getID() {
+		return "creeperboxing";
 	}
 
 	@Override
-	public String getDescription()
-	{
-		return Messages.getString("achievements.creeperboxing.description"); 
+	public String getDescription() {
+		return Messages.getString("achievements.creeperboxing.description");
 	}
 
 	@Override
-	public double getPrize()
-	{
+	public double getPrize() {
 		return MobHunting.getConfigManager().specialCreeperPunch;
 	}
 
 	@EventHandler
-	private void onKill(MobHuntKillEvent event)
-	{
-		if(event.getKilledEntity() instanceof Creeper && !event.getDamageInfo().usedWeapon)
+	private void onKill(MobHuntKillEvent event) {
+		if (event.getKilledEntity() instanceof Creeper && !event.getDamageInfo().usedWeapon
+				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
 	}
 
@@ -54,13 +49,13 @@ public class CreeperBoxing implements Achievement, Listener
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialCreeperPunchCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
-	    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-	    SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skullMeta.setOwner("MHF_Creeper");
-        skull.setItemMeta(skullMeta);
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		skullMeta.setOwner("MHF_Creeper");
+		skull.setItemMeta(skullMeta);
 		return skull;
 	}
 }

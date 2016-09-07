@@ -1084,7 +1084,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					reward += b.getPrize();
 					OfflinePlayer bountyOwner = b.getBountyOwner();
 					mBountyManager.removeBounty(b);
-					if (bountyOwner!=null && bountyOwner.isOnline())
+					if (bountyOwner != null && bountyOwner.isOnline())
 						Messages.playerActionBarMessage(Misc.getOnlinePlayer(bountyOwner),
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
 										"prize", b.getPrize(), "killed", killed.getName()));
@@ -1127,7 +1127,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 				Messages.debug("%s lost %s", killed.getName(), mRewardManager.format(cash));
 			}
 
-			// Reward for assisted kill
+			// Reward/Penalty for assisted kill
 			if (info.assister == null || mConfig.enableAssists == false) {
 				if (cash > 0) {
 					if (mConfig.dropMoneyOnGroup) {
@@ -1169,20 +1169,30 @@ public class MobHunting extends JavaPlugin implements Listener {
 				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
 						killed.hasMetadata("MH:hasBonus"));
 
-			// Tell the player that he got the reward, unless muted
-			if (!killer_muted && !getConfigManager().dropMoneyOnGroup)
+			// Tell the player that he got the reward/penalty, unless muted
+			if (!killer_muted)
+
 				if (extraString.trim().isEmpty()) {
-					if (cash > 0) {
-						Messages.playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
-								+ Messages.getString("mobhunting.moneygain", "prize", mRewardManager.format(cash)));
-					} else {
-						Messages.playerActionBarMessage(killer, ChatColor.RED + "" + ChatColor.ITALIC
-								+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
-					}
-				} else
-					Messages.playerActionBarMessage(killer,
-							ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain.bonuses",
-									"prize", mRewardManager.format(cash), "bonuses", extraString.trim()));
+					if (cash > 0)
+						if (!getConfigManager().dropMoneyOnGroup)
+							Messages.playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.moneygain", "prize", mRewardManager.format(cash)));
+						else
+							Messages.playerActionBarMessage(killer, ChatColor.RED + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
+
+				} else {
+					if (cash > 0)
+						Messages.playerActionBarMessage(killer,
+								ChatColor.GREEN + "" + ChatColor.ITALIC
+										+ Messages.getString("mobhunting.moneygain.bonuses", "prize",
+												mRewardManager.format(cash), "bonuses", extraString.trim()));
+					else
+						Messages.playerActionBarMessage(killer,
+								ChatColor.RED + "" + ChatColor.ITALIC
+										+ Messages.getString("mobhunting.moneylost.bonuses", "prize",
+												mRewardManager.format(cash), "bonuses", extraString.trim()));
+				}
 		} else
 			Messages.debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)",
 					killer.getName(), extraString);

@@ -1,5 +1,6 @@
 V3.4.7
-* Change: Disable achievements for killing mobs with a negative reward (fine).
+* Change: Disable all achievements when killing a mob with a negative reward (penalty).
+* Fixed bug where a Penalty was showed as "money gained". 
 V3.4.6
 * Fixed NullPointerException error i RandomBounties: https://www.spigotmc.org/threads/mobhunting.46937/page-54#post-1875728
 V3.4.5

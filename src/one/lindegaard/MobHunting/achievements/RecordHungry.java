@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class RecordHungry implements Achievement, Listener {
 
@@ -39,12 +40,13 @@ public class RecordHungry implements Achievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onDeath(EntityDeathEvent event) {
-		if (!(event.getEntity() instanceof Creeper)
-				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
+	private void onDeath(MobHuntKillEvent event) {
+		if (!(event.getKilledEntity() instanceof Creeper)
+				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
+				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0))
 			return;
 
-		Creeper killed = (Creeper) event.getEntity();
+		Creeper killed = (Creeper) event.getKilledEntity();
 
 		if (!(killed.getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return;
@@ -73,7 +75,7 @@ public class RecordHungry implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialRecordHungryCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.BREAD);

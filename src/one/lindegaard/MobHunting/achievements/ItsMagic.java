@@ -13,7 +13,7 @@ public class ItsMagic implements Achievement, Listener {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.itsmagic.name"); 
+		return Messages.getString("achievements.itsmagic.name");
 	}
 
 	@Override
@@ -33,9 +33,9 @@ public class ItsMagic implements Achievement, Listener {
 
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
-		if (event.getDamageInfo().weapon.getType() == Material.POTION)
-			MobHunting.getAchievementManager().awardAchievement(this,
-					event.getPlayer());
+		if (event.getDamageInfo().weapon.getType() == Material.POTION
+				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
+			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ItsMagic implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialItsMagicCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.POTION);

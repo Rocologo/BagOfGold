@@ -35,7 +35,8 @@ public class Electrifying implements Achievement, Listener {
 
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
-		if (event.getKilledEntity() instanceof Creeper && ((Creeper) event.getKilledEntity()).isPowered())
+		if (event.getKilledEntity() instanceof Creeper && ((Creeper) event.getKilledEntity()).isPowered()
+				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
 	}
 
@@ -48,13 +49,13 @@ public class Electrifying implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialChargedCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
-	    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skullMeta.setOwner("MHF_Creeper");
-        skull.setItemMeta(skullMeta);
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		skullMeta.setOwner("MHF_Creeper");
+		skull.setItemMeta(skullMeta);
 		return skull;
 	}
 }

@@ -16,6 +16,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
+import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class WolfKillAchievement implements ProgressAchievement, Listener {
 
@@ -55,12 +56,13 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onWolfKillMob(EntityDeathEvent event) {
-		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld())
-				|| !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent))
+	private void onWolfKillMob(MobHuntKillEvent event) {
+		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
+				|| !(event.getKilledEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
+				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0))
 			return;
 
-		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) event.getEntity().getLastDamageCause();
+		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) event.getKilledEntity().getLastDamageCause();
 
 		if (!(dmg.getDamager() instanceof Wolf))
 			return;

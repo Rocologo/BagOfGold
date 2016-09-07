@@ -16,6 +16,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
+import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class Creepercide implements Achievement, Listener {
 
@@ -40,12 +41,15 @@ public class Creepercide implements Achievement, Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onDeath(EntityDeathEvent event) {
-		if (!(event.getEntity() instanceof Creeper)
-				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
+	private void onKill(MobHuntKillEvent event) {
+		if (!(event.getKilledEntity() instanceof Creeper)
+				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld()))
+			return;
+		
+		if (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0)
 			return;
 
-		Creeper killed = (Creeper) event.getEntity();
+		Creeper killed = (Creeper) event.getKilledEntity();
 
 		if (!(killed.getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return;
@@ -55,8 +59,8 @@ public class Creepercide implements Achievement, Listener {
 		if (damage.getDamager() instanceof Creeper) {
 			Player initiator = null;
 
-			if (((Creeper) event.getEntity()).getTarget() instanceof Player)
-				initiator = (Player) ((Creeper) event.getEntity()).getTarget();
+			if (((Creeper) event.getKilledEntity()).getTarget() instanceof Player)
+				initiator = (Player) ((Creeper) event.getKilledEntity()).getTarget();
 			else {
 				DamageInformation a, b;
 				a = MobHunting.getDamageInformation(killed);

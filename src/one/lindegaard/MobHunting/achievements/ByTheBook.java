@@ -33,9 +33,10 @@ public class ByTheBook implements Achievement, Listener {
 
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
-		if (event.getDamageInfo().weapon.getType() == Material.BOOK
+		if ((event.getDamageInfo().weapon.getType() == Material.BOOK
 				|| event.getDamageInfo().weapon.getType() == Material.WRITTEN_BOOK
 				|| event.getDamageInfo().weapon.getType() == Material.BOOK_AND_QUILL)
+				&& (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0))
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
 	}
 
@@ -48,7 +49,7 @@ public class ByTheBook implements Achievement, Listener {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialByTheBookCmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
 		return new ItemStack(Material.BOOK);
