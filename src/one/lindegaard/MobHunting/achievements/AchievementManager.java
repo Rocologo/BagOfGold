@@ -256,9 +256,6 @@ public class AchievementManager implements Listener {
 			return;
 		}
 		
-		//if (achievement.getPrize()<=0)
-		//	return;
-
 		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
 			if (world.equalsIgnoreCase(player.getWorld().getName())) {
 				Messages.debug("[AchievementBlocked] Achievements is disabled in this world");
@@ -269,7 +266,7 @@ public class AchievementManager implements Listener {
 		if (storage == null)
 			return;
 
-		MobHunting.getInstance();
+		//MobHunting.getInstance();
 		MobHunting.getDataStoreManager().recordAchievement(player, achievement);
 
 		storage.gainedAchievements.add(achievement.getID());
@@ -340,9 +337,9 @@ public class AchievementManager implements Listener {
 
 		if (achievement.getExtendedMobType().getMax()==0) {
 			Messages.debug(
-					"[AchievementBlocked] ProgressAchievement for killing a %s is disabled (%s_level1) is 0 in config.yml",
-					achievement.getExtendedMobType().getDisplayName(),
-					achievement.getExtendedMobType().getDisplayName());
+					"[AchievementBlocked] ProgressAchievement for killing a %s is disabled (%s_level1 is 0 in config.yml)",
+					achievement.getExtendedMobType().getExtendedMobType().toLowerCase(),
+					achievement.getExtendedMobType().getExtendedMobType().toLowerCase());
 			return;
 		}
 
