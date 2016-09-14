@@ -1266,19 +1266,27 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cash = mConfig.getBaseKillPrize(killed) * multiplier;
 
 		if (cash >= 0.01) {
-			getDataStoreManager().recordAssist(player, killer, ExtendedMobType.getExtendedMobType(killed),
-					killed.hasMetadata("MH:hasBonus"));
-			mRewardManager.depositPlayer(player, cash);
-			Messages.debug("%s got a on assist reward (%s)", player.getName(), mRewardManager.format(cash));
+			ExtendedMobType mob = ExtendedMobType.getExtendedMobType(killed);
+			if (mob != null) {
+				getDataStoreManager().recordAssist(player, killer, mob, killed.hasMetadata("MH:hasBonus"));
+				mRewardManager.depositPlayer(player, cash);
+				Messages.debug("%s got a on assist reward (%s)", player.getName(), mRewardManager.format(cash));
 
-			if (ks != 1.0)
-				Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
-						+ Messages.getString("mobhunting.moneygain.assist", "prize", mRewardManager.format(cash)));
-			else
-				Messages.playerActionBarMessage(player,
-						ChatColor.GREEN + "" + ChatColor.ITALIC
-								+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
-										mRewardManager.format(cash), "bonuses", String.format("x%.1f", ks)));
+				if (ks != 1.0)
+					Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
+							+ Messages.getString("mobhunting.moneygain.assist", "prize", mRewardManager.format(cash)));
+				else
+					Messages.playerActionBarMessage(player,
+							ChatColor.GREEN + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
+											mRewardManager.format(cash), "bonuses", String.format("x%.1f", ks)));
+			} else {
+				player.sendMessage(
+						"[MobHunting] Error - please contact server owner and ask him to check the serverlog.");
+				MobHunting.getInstance().getLogger().warning("[MobHunting] WARNING - Assisted kill of a "
+						+ killed.getType() + ". Cant handle the entity type!");
+			}
+
 		}
 	}
 
