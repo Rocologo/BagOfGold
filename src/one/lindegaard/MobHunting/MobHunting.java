@@ -485,13 +485,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (playerPenalty != 0) {
 					boolean killed_muted = false;
 					if (mPlayerSettingsManager.containsKey(player))
-						killed_muted = mPlayerSettingsManager.getPlayerSettings((Player) player).isMuted();
+						killed_muted = mPlayerSettingsManager.getPlayerSettings(player).isMuted();
 
 					mRewardManager.withdrawPlayer(player, playerPenalty);
 					if (!killed_muted)
-						Messages.playerActionBarMessage((Player) player,
-								ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneylost",
-										"prize", mRewardManager.format(playerPenalty)));
+						player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages
+								.getString("mobhunting.moneylost", "prize", mRewardManager.format(playerPenalty)));
+					// Messages.playerActionBarMessage(player,
+					// ChatColor.RED + "" + ChatColor.ITALIC +
+					// Messages.getString("mobhunting.moneylost",
+					// "prize", mRewardManager.format(playerPenalty)));
 					Messages.debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
 							mRewardManager.format(playerPenalty));
 				}
@@ -1122,8 +1125,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (killer != null && killed instanceof Player && !CitizensCompat.isNPC(killed) && mConfig.robFromVictim) {
 				mRewardManager.withdrawPlayer((Player) killed, cash);
 				if (!killed_muted)
-					Messages.playerActionBarMessage((Player) killed, ChatColor.RED + "" + ChatColor.ITALIC
+					killed.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
 							+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
+				// Messages.playerActionBarMessage((Player) killed,
+				// ChatColor.RED + "" + ChatColor.ITALIC
+				// + Messages.getString("mobhunting.moneylost", "prize",
+				// mRewardManager.format(cash)));
 				Messages.debug("%s lost %s", killed.getName(), mRewardManager.format(cash));
 			}
 
@@ -1173,13 +1180,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 			if (!killer_muted)
 
 				if (extraString.trim().isEmpty()) {
-					if (cash > 0)
+					if (cash > 0) {
 						if (!getConfigManager().dropMoneyOnGroup)
 							Messages.playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
 									+ Messages.getString("mobhunting.moneygain", "prize", mRewardManager.format(cash)));
-						else
-							Messages.playerActionBarMessage(killer, ChatColor.RED + "" + ChatColor.ITALIC
-									+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
+					} else
+						Messages.playerActionBarMessage(killer, ChatColor.RED + "" + ChatColor.ITALIC
+								+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
 
 				} else {
 					if (cash > 0)

@@ -1,7 +1,9 @@
 V3.4.7
 * Change: Disable all achievements when killing a mob with a negative reward (penalty).
 * Fixed bug where a Penalty was showed as "money gained".
-* Added some debug information to find bug in assisted kill. https://www.spigotmc.org/threads/mobhunting.46937/page-55#post-1900341 
+* Added some debug information to find bug in assisted kill. https://www.spigotmc.org/threads/mobhunting.46937/page-55#post-1900341
+* Moved messages for killed players from the ActionBar to the chat, so the message does not disappear.
+* Fixed bug where the text messages where written as a loss instead of a reward, when a mob was killed (drop money on ground was true - and all multipliers was 1)  
 V3.4.6
 * Fixed NullPointerException error i RandomBounties: https://www.spigotmc.org/threads/mobhunting.46937/page-54#post-1875728
 V3.4.5
