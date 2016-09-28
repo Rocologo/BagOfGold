@@ -1,3 +1,6 @@
+V3.4.8
+* Disable MobHunting pr world in Config.yml fixed.
+* Caveat: WorldGuard flag MobHunting=Allow does not work because of limited WG CustomFlag support. 
 V3.4.7
 * Change: Disable all achievements when killing a mob with a negative reward (penalty).
 * Fixed bug where a Penalty was showed as "money gained".

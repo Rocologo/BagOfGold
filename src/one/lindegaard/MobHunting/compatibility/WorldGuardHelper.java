@@ -7,10 +7,16 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+
+import javax.naming.Context;
+import javax.naming.Name;
+import javax.naming.NamingException;
+import javax.naming.spi.StateFactory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,7 +63,6 @@ public class WorldGuardHelper implements Listener {
 			field.setAccessible(true);
 			@SuppressWarnings("deprecation")
 			List<Flag<?>> flags = new ArrayList<Flag<?>>(Arrays.asList(DefaultFlag.getFlags()));
-
 			flags.add(MOBHUNTINGFLAG);
 			field.set(null, flags.toArray(new Flag[flags.size()]));
 			WorldGuardPlugin.class.cast(Bukkit.getPluginManager().getPlugin("WorldGuard")).getGlobalStateManager()
@@ -151,9 +156,6 @@ public class WorldGuardHelper implements Listener {
 
 	public static boolean setCurrentRegionFlag(CommandSender sender, ProtectedRegion region, StateFlag stateFlag,
 			String flagstate) {
-		// try {
-		// region.setFlag(getMobHuntingFlag(),
-		// stateFlag.parseInput(getWorldGuardPlugin(), sender, flagstate));
 		region.setFlag(getMobHuntingFlag(), parseInput(flagstate));
 		mobHuntingRegions.put(region.getId(), flagstate);
 		saveMobHuntingRegions();
@@ -171,9 +173,6 @@ public class WorldGuardHelper implements Listener {
 		if (sender != null)
 			sender.sendMessage(ChatColor.GRAY + "(Current flags: " + flagstring + ")");
 
-		// } catch (InvalidFlagFormat e) {
-		// e.printStackTrace();
-		// }
 		return true;
 	}
 
@@ -215,36 +214,54 @@ public class WorldGuardHelper implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public static boolean isAllowedByWorldGuard(Entity damager, Entity damaged, StateFlag stateFlag) {
-		if (damager != null) {
-			Player checkedPlayer = null;
-			if (MyPetCompat.isMyPet(damager))
-				checkedPlayer = MyPetCompat.getMyPetOwner(damager);
-			else if (damager instanceof Player)
-				checkedPlayer = (Player) damager;
-			if (checkedPlayer != null) {
-				RegionManager regionManager = WorldGuardCompat.getWorldGuardPlugin()
-						.getRegionManager(checkedPlayer.getWorld());
-				if (regionManager != null) {
-					ApplicableRegionSet set = regionManager.getApplicableRegions(checkedPlayer.getLocation());
-					if (set.size() > 0) {
-						if (set.allows(stateFlag)) {
-							Messages.debug("KillAllowed: %s(%d) are in a protected region but %s=%s",
-									damaged.getType(), damaged.getEntityId(), stateFlag.getName(),
-									set.allows(stateFlag));
-						} else {
-							Messages.debug("KillBlocked %s(%d) are in a protected region and %s=%sd",
-									damaged.getType(), damaged.getEntityId(), stateFlag.getName(),
-									set.allows(stateFlag));
-							return false;
-						}
+	public static boolean isAllowedByWorldGuard(Entity damager, Entity damaged, StateFlag stateFlag,
+			boolean defaultValue) {
+		// if (damager != null) {
+		Player checkedPlayer = null;
+		if (MyPetCompat.isMyPet(damager))
+			checkedPlayer = MyPetCompat.getMyPetOwner(damager);
+		else if (damager instanceof Player)
+			checkedPlayer = (Player) damager;
+		// Messages.debug("checkedPlayer=%s", checkedPlayer);
+		if (checkedPlayer != null) {
+			RegionManager regionManager = WorldGuardCompat.getWorldGuardPlugin()
+					.getRegionManager(checkedPlayer.getWorld());
+			if (regionManager != null) {
+				ApplicableRegionSet set = regionManager.getApplicableRegions(checkedPlayer.getLocation());
+				if (set.size() > 0) {
+					LocalPlayer localPlayer = WorldGuardCompat.getWorldGuardPlugin().wrapPlayer(checkedPlayer);
+					State flag = set.queryState(localPlayer, stateFlag);
+					// Messages.debug("testState=%s", set.testState(localPlayer,
+					// stateFlag));
+					// Messages.debug("FLAG %s defaultValue=%s",
+					// stateFlag.getName(), stateFlag.getDefault());
+					// State flag = set.getFlag(stateFlag);
+					if (flag == null) {
+						Messages.debug("WorldGuard %s flag not defined. Default value = %s", stateFlag.getName(),
+								defaultValue);
+						return defaultValue;
+					} else if (flag.equals(State.ALLOW)) {
+						// Messages.debug("KillAllowed: %s are in a protected
+						// region but %s=%s",
+						// checkedPlayer.getName(), stateFlag.getName(),
+						// set.queryState(localPlayer, stateFlag));
+						return true;
+					} else {
+						// Messages.debug("KillBlocked %s are in a protected
+						// region and %s=%sd",
+						// checkedPlayer.getName(), stateFlag.getName(),
+						// set.queryState(localPlayer, stateFlag));
+						return false;
 					}
+				} else {
+					Messages.debug("No region here, return default %s=%s", stateFlag.getName(), defaultValue);
+					return defaultValue;
 				}
 			}
 		}
-
-		return true;
+		// }
+		Messages.debug("WorldGuard return default %s=%s", stateFlag.getName(), defaultValue);
+		return defaultValue;
 	}
 
 }

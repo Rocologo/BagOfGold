@@ -563,7 +563,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			return;
 
 		if (WorldGuardCompat.isSupported()
-				&& !WorldGuardHelper.isAllowedByWorldGuard(damager, damaged, DefaultFlag.MOB_DAMAGE)) {
+				&& !WorldGuardHelper.isAllowedByWorldGuard(damager, damaged, DefaultFlag.MOB_DAMAGE, true)) {
 			// Messages.debug("KillBlocked:(1) %s is hiding in WG region with
 			// mob-damage=DENY", damager.getName());
 			return;
@@ -694,49 +694,56 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// MobHunting is Disabled in World
 		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())) {
 			if (WorldGuardCompat.isSupported()) {
-				if (killer != null || MyPetCompat.isMyPet(killer)) {
-					if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag())) {
-						Messages.learn(killer, Messages.getString("mobhunting.learn.overruled"));
-						Messages.debug(
-								"KillBlocked %s(%d): Mobhunting disabled in world '%s'"
-										+ ",but MobHunting=ALLOW overrules.",
-								killed.getType().getName(), killed.getEntityId(), killed.getWorld().getName());
+				if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
+					if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
+							false)) {
+						Messages.debug("KillBlocked %s: Mobhunting disabled in world '%s'", killer.getName(),
+								killer.getWorld().getName());
+						Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
+						return;
+						// isAllowedByWorldGuard does not return null if the MobHunting flag is not defined.
+						// so WorldGuard can't overrule with MobHuting allow.
+						
+						//Messages.debug(
+						//		"KillAllowed %s: Mobhunting disabled in world '%s', but overruled with MobHunting=ALLOW",
+						//		killer.getName(), killer.getWorld().getName());
+						//Messages.learn(killer, Messages.getString("mobhunting.learn.overruled"));
 					} else {
-						Messages.debug("KillBlocked %s(%d): Mobhunting disabled in world '%s'",
-								killed.getType().getName(), killed.getEntityId(), killed.getWorld().getName());
+						Messages.debug("KillBlocked %s: Mobhunting disabled in world '%s'", killer.getName(),
+								killer.getWorld().getName());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
 						return;
 					}
-
+				} else {
+					Messages.debug("KillBlocked: killer is null and killer was not a MyPet or NPC Sentinel Guard.");
+					return;
 				}
-				// killer is not a player - MobHunting is allowed
 			} else {
-				// MobHunting is NOT allowed in world and no support for WG
-				// reject.
-				Messages.debug("KillBlocked: MobHunting disabled in world and Worldguard is not supported");
+				// MobHunting is NOT allowed in this world,
+				Messages.debug("KillBlocked %s: Mobhunting disabled in world '%s'", killer.getName(),
+						killer.getWorld().getName());
+				Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
 				return;
 			}
-
-			// MobHunting is allowed in this world,
-			// Continue to ned if... (Do NOTHING).
 		}
 
-		// MyPet Compatibility
+		// WorldGuard Compatibility
 		if (WorldGuardCompat.isSupported()) {
 			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
-				if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, DefaultFlag.MOB_DAMAGE)) {
-					if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag())) {
-						Messages.debug(
-								"KillAllowed:(1) %s is hiding in WG region, but this is overruled with MobHunting=allow",
-								killer.getName());
-					} else {
+				if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, DefaultFlag.MOB_DAMAGE, false)) {
+					//if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
+					//		true)) {
+					//	Messages.debug(
+					//			"KillAllowed:(1) %s is hiding in WG region, but this is overruled with MobHunting=allow",
+					//			killer.getName());
+					//} else {
 						Messages.debug("KillBlocked:(2) %s is hiding in WG region with mob-damage=DENY",
 								killer.getName());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
 						return;
-					}
-				} else if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed,
-						WorldGuardHelper.getMobHuntingFlag())) {
+					//}
+				} else if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
+						true)) {
 					Messages.debug("KillBlocked: %s is in a protected region mobhunting=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
 					return;
