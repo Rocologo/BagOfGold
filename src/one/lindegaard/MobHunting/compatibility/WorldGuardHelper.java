@@ -222,7 +222,6 @@ public class WorldGuardHelper implements Listener {
 			checkedPlayer = MyPetCompat.getMyPetOwner(damager);
 		else if (damager instanceof Player)
 			checkedPlayer = (Player) damager;
-		// Messages.debug("checkedPlayer=%s", checkedPlayer);
 		if (checkedPlayer != null) {
 			RegionManager regionManager = WorldGuardCompat.getWorldGuardPlugin()
 					.getRegionManager(checkedPlayer.getWorld());
@@ -241,16 +240,8 @@ public class WorldGuardHelper implements Listener {
 								defaultValue);
 						return defaultValue;
 					} else if (flag.equals(State.ALLOW)) {
-						// Messages.debug("KillAllowed: %s are in a protected
-						// region but %s=%s",
-						// checkedPlayer.getName(), stateFlag.getName(),
-						// set.queryState(localPlayer, stateFlag));
 						return true;
 					} else {
-						// Messages.debug("KillBlocked %s are in a protected
-						// region and %s=%sd",
-						// checkedPlayer.getName(), stateFlag.getName(),
-						// set.queryState(localPlayer, stateFlag));
 						return false;
 					}
 				} else {
@@ -259,7 +250,6 @@ public class WorldGuardHelper implements Listener {
 				}
 			}
 		}
-		// }
 		Messages.debug("WorldGuard return default %s=%s", stateFlag.getName(), defaultValue);
 		return defaultValue;
 	}
