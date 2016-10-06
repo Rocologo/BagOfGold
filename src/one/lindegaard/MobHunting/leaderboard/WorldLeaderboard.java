@@ -21,6 +21,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.material.Sign;
 import org.bukkit.util.Vector;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.storage.IDataCallback;
@@ -167,7 +168,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 			if (mPeriodIndex >= mPeriod.length)
 				mPeriodIndex = 0;
 		}
-
+		Messages.debug("Updating WorldLeaderboards (%s,%s) @ (%s,%s,%s)", getType().translateName(), getPeriod().translateName(), mLocation.getBlockX(), mLocation.getY(),mLocation.getZ());
 		MobHunting.getDataStoreManager().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
 	}
 
