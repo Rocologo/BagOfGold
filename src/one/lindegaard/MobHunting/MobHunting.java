@@ -690,6 +690,10 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
 			return;
 		}
+		
+		// Killer is a NPC
+		if (killer != null && CitizensCompat.isNPC(killer))
+			return;
 
 		// MobHunting is Disabled in World
 		if (!mMobHuntingManager.isHuntEnabledInWorld(event.getEntity().getWorld())) {
