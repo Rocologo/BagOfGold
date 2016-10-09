@@ -32,16 +32,16 @@ public class StatRetrieverTask implements DataStoreTask<List<StatStore>> {
 
 				Iterator<StatStore> it = stats.iterator();
 				boolean found = false;
-				if (!it.hasNext())
-					while (it.hasNext()) {
-						StatStore stat = it.next();
-						if (cached.getPlayer().getUniqueId().equals(stat.getPlayer().getUniqueId())
-								&& cached.getType().equals(stat.getType())) {
-							stat.setAmount(stat.getAmount() + cached.getAmount());
-							found = true;
-							break;
-						}
+
+				while (it.hasNext()) {
+					StatStore stat = it.next();
+					if (cached.getPlayer().getUniqueId().equals(stat.getPlayer().getUniqueId())
+							&& cached.getType().equals(stat.getType())) {
+						stat.setAmount(stat.getAmount() + cached.getAmount());
+						found = true;
+						break;
 					}
+				}
 
 				if (!found && cached.getType().equals(mType))
 					stats.add(cached);
