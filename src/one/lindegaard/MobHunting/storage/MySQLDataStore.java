@@ -33,15 +33,23 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected Connection setupConnection() throws SQLException, DataStoreException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			//return DriverManager.getConnection(
-			//		"jdbc:mysql://" + MobHunting.getConfigManager().databaseHost + "/"
-			//				+ MobHunting.getConfigManager().databaseName + "?autoReconnect=true",
-			//		MobHunting.getConfigManager().databaseUsername, MobHunting.getConfigManager().databasePassword);
+			// return DriverManager.getConnection(
+			// "jdbc:mysql://" + MobHunting.getConfigManager().databaseHost +
+			// "/"
+			// + MobHunting.getConfigManager().databaseName +
+			// "?autoReconnect=true",
+			// MobHunting.getConfigManager().databaseUsername,
+			// MobHunting.getConfigManager().databasePassword);
 			MysqlDataSource dataSource = new MysqlDataSource();
 			dataSource.setUser(MobHunting.getConfigManager().databaseUsername);
 			dataSource.setPassword(MobHunting.getConfigManager().databasePassword);
-			dataSource.setServerName(MobHunting.getConfigManager().databaseHost);
-			dataSource.setDatabaseName(MobHunting.getConfigManager().databaseName+ "?autoReconnect=true");
+			if (MobHunting.getConfigManager().databaseHost.contains(":")){
+				dataSource.setServerName(MobHunting.getConfigManager().databaseHost.split(":")[0]);
+				dataSource.setPort(Integer.valueOf(MobHunting.getConfigManager().databaseHost.split(":")[1]));
+			} else {
+				dataSource.setServerName(MobHunting.getConfigManager().databaseHost);
+			}
+			dataSource.setDatabaseName(MobHunting.getConfigManager().databaseName + "?autoReconnect=true");
 			return dataSource.getConnection();
 		} catch (ClassNotFoundException e) {
 			throw new DataStoreException("MySQL not present on the classpath");
