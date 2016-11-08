@@ -1107,7 +1107,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "bounty-return-pct", category = "bounties", comment = "Here you set how much of a bound the bounty owner get back if "
 			+ "\nhe drop the bounty on another player")
 	public int bountyReturnPct = 50;
-	@ConfigField(name = "bounty_days_to_live", category = "bounties", comment = "Here you set the number of days the Bounty is collectable before"
+	@ConfigField(name = "bounty_duration", category = "bounties", comment = "Here you set the number of days the Bounty is collectable."
 			+ "\nAfter the number of days the Bounty will be removed automatically")
 	public int bountyDaysToLive = 30;
 	@ConfigField(name = "enable_random_bounty", category = "bounties", comment = "Set enable_random_bounty=false to disable random bounties")

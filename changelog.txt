@@ -6,7 +6,7 @@ V3.4.8
 * Changed MySQL connections from using DriverManager to MysqlDataSource, to give better connection stability
 * Removed debug information from WorldGuard Integration 
 * Removed debug information from TARDISWeepingAngels Integration
-* Added bounty_days_to_live in config.yml, so the serverowner can decide how many days a bounty can live before it is removed automatically.
+* Added bounty_duration in config.yml, so the serverowner can decide how many days a bounty can live before it is removed automatically.
 V3.4.7
 * Change: Disable all achievements when killing a mob with a negative reward (penalty).
 * Fixed bug where a Penalty was showed as "money gained".
