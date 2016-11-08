@@ -3,6 +3,9 @@ V3.4.8
 * Caveat: WorldGuard flag MobHunting=Allow does not work because of limited WG CustomFlag support. 
 * Fixed NPE bug when a Citizen NPC killed a mob. https://github.com/Rocologo/MobHunting/issues/101
 * Fixed bug on Leaderboards, where the same playername was displayed multible times. https://www.spigotmc.org/threads/mobhunting.46937/page-58#post-1949123
+* Changed MySQL connections from using DriverManager to MysqlDataSource, to give better connection stability
+* Removed debug information from WorldGuard Integration 
+* Removed debug information from TARDISWeepingAngels Integration
 V3.4.7
 * Change: Disable all achievements when killing a mob with a negative reward (penalty).
 * Fixed bug where a Penalty was showed as "money gained".

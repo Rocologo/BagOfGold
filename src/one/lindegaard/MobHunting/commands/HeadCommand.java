@@ -15,8 +15,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -134,6 +136,9 @@ public class HeadCommand implements ICommand, Listener {
 							.replace("{amount}", String.valueOf(amount)).replace("{playername}",
 									offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
 					Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
+					if (toPlayer.isOnline()){
+						((Player) toPlayer).sendMessage("You got a head of "+displayName+".");
+					}
 					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 				}
 			}
@@ -238,7 +243,7 @@ public class HeadCommand implements ICommand, Listener {
 	@EventHandler
 	public void onInventoryPickUp(InventoryPickupItemEvent event) {
 		Item item = event.getItem();
-		if (item.hasMetadata(MH_HEAD)) {
+		if (item.hasMetadata(MH_HEAD) && event.getInventory().getType()!=InventoryType.PLAYER) {
 			String displayName = item.getMetadata(MH_HEAD).get(0).asString();
 			Messages.debug("A Inventory picked up a MH Head DisplayName=%s", displayName);
 			ItemMeta im = item.getItemStack().getItemMeta();

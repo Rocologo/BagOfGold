@@ -236,8 +236,8 @@ public class WorldGuardHelper implements Listener {
 					// stateFlag.getName(), stateFlag.getDefault());
 					// State flag = set.getFlag(stateFlag);
 					if (flag == null) {
-						Messages.debug("WorldGuard %s flag not defined. Default value = %s", stateFlag.getName(),
-								defaultValue);
+						//Messages.debug("WorldGuard %s flag not defined. Default value = %s", stateFlag.getName(),
+						//		defaultValue);
 						return defaultValue;
 					} else if (flag.equals(State.ALLOW)) {
 						return true;
@@ -245,12 +245,12 @@ public class WorldGuardHelper implements Listener {
 						return false;
 					}
 				} else {
-					Messages.debug("No region here, return default %s=%s", stateFlag.getName(), defaultValue);
+					//Messages.debug("No region here, return default %s=%s", stateFlag.getName(), defaultValue);
 					return defaultValue;
 				}
 			}
 		}
-		Messages.debug("WorldGuard return default %s=%s", stateFlag.getName(), defaultValue);
+		//Messages.debug("WorldGuard return default %s=%s", stateFlag.getName(), defaultValue);
 		return defaultValue;
 	}
 

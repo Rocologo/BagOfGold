@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting.storage;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +12,8 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -29,10 +30,24 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected Connection setupConnection() throws SQLException, DataStoreException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection(
-					"jdbc:mysql://" + MobHunting.getConfigManager().databaseHost + "/"
-							+ MobHunting.getConfigManager().databaseName + "?autoReconnect=true",
-					MobHunting.getConfigManager().databaseUsername, MobHunting.getConfigManager().databasePassword);
+			// return DriverManager.getConnection(
+			// "jdbc:mysql://" + MobHunting.getConfigManager().databaseHost +
+			// "/"
+			// + MobHunting.getConfigManager().databaseName +
+			// "?autoReconnect=true",
+			// MobHunting.getConfigManager().databaseUsername,
+			// MobHunting.getConfigManager().databasePassword);
+			MysqlDataSource dataSource = new MysqlDataSource();
+			dataSource.setUser(MobHunting.getConfigManager().databaseUsername);
+			dataSource.setPassword(MobHunting.getConfigManager().databasePassword);
+			if (MobHunting.getConfigManager().databaseHost.contains(":")){
+				dataSource.setServerName(MobHunting.getConfigManager().databaseHost.split(":")[0]);
+				dataSource.setPort(Integer.valueOf(MobHunting.getConfigManager().databaseHost.split(":")[1]));
+			} else {
+				dataSource.setServerName(MobHunting.getConfigManager().databaseHost);
+			}
+			dataSource.setDatabaseName(MobHunting.getConfigManager().databaseName + "?autoReconnect=true");
+			return dataSource.getConnection();
 		} catch (ClassNotFoundException e) {
 			throw new DataStoreException("MySQL not present on the classpath");
 		}
@@ -890,20 +905,30 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 			System.out.println("[MobHunting] Adding 1.8 Mob (Elder Guardian) to MobHunting Database.");
 
-			statement.executeUpdate("alter table `mh_Daily` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Daily` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Weekly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Weekly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Monthly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Monthly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Yearly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_Yearly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_AllTime` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
-			statement.executeUpdate("alter table `mh_AllTime` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Daily` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Daily` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Weekly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Weekly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Monthly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Monthly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Yearly` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_Yearly` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_AllTime` add column `ElderGuardian_kill`  INTEGER NOT NULL DEFAULT 0");
+			statement.executeUpdate(
+					"alter table `mh_AllTime` add column `ElderGuardian_assist`  INTEGER NOT NULL DEFAULT 0");
 
 			System.out.println("[MobHunting] Adding 1.8 Mob (Elder Guardian) complete.");
 		}
-		
+
 		try {
 			ResultSet rs = statement.executeQuery("SELECT LEARNING_MODE from mh_Players LIMIT 0");
 			rs.close();

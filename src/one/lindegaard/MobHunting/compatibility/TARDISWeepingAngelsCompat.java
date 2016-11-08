@@ -192,8 +192,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		Entity entity = event.getEntity();
 		Monster monster = getWeepingAngelMonsterType(entity);
 
-		Messages.debug("TARDISWeepingAngelSpawnEvent: MinecraftMobtype=%s WeepingAngelsMobType=%s",
-				event.getEntityType(), monster.name());
+		//Messages.debug("TARDISWeepingAngelSpawnEvent: MinecraftMobtype=%s WeepingAngelsMobType=%s",
+		//		event.getEntityType(), monster.name());
 
 		if (mMobRewardData != null && !mMobRewardData.containsKey(monster.name())) {
 			Messages.debug("New TARDIS mob found=%s", monster.name());
