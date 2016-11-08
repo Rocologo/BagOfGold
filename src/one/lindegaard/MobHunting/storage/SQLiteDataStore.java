@@ -918,12 +918,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			create.executeUpdate("DROP TRIGGER IF EXISTS DailyUpdate");
 		}
 
+		Messages.debug("Create mh_Players");
 		// Create new empty tables if they do not exist
 		String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players"
 				+ "(UUID TEXT,"
 				+" NAME TEXT, "
-				+" PLAYER_ID UNIQUE INTEGER NOT NULL DEFAULT 0,"
+				+" PLAYER_ID INTEGER PRIMARY KEY NOT NULL DEFAULT 0,"
 				+" LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","
 				+" MUTE_MODE INTEGER NOT NULL DEFAULT 0,"
 				+" PRIMARY KEY(UUID,PLAYER_ID))");
@@ -932,11 +933,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		//		+ "(PLUGIN_ID INTEGER PRIMARY KEY,"
 		//		+ " NAME TEXT)");
 
+		Messages.debug("Create mh_Mobs");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Mobs "
-				+"(MOB_ID INTEGER NOT PRIMARY KEY UNIQUE,"
+				+"(MOB_ID INTEGER PRIMARY KEY NOT NULL,"
 				+" PLUGIN_ID INTEGER" // REFERENCES mh_Plugins(PLUGIN_ID),"
 				+" MOBTYPE TEXT)");
 
+		Messages.debug("Create mh_Daily");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily" 
 				+ "(ID CHAR(6) NOT NULL,"
 				+ " MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID)," 
@@ -944,46 +947,51 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
 				+ " TOTAL_KILL INTEGER DEFAULT 0," 
 				+ " TOTAL_ASSITS INTEGER DEFAULT 0,"
-				+ " PRIMARY KEY(ID, MOB_ID INTEGER, PLAYER_ID))");
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
 		
+		Messages.debug("Create mh_Weekly");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly"
 				+"(ID CHAR(6) NOT NULL,"
-				+" MOB_ID INTEGER,"
+				+" MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID),"
 				+" PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
 				+" ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
 				+" TOTAL_KILL INTEGER DEFAULT 0," 
 				+" TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+" PRIMARY KEY(ID, MOB_ID INTEGER, PLAYER_ID))");
+				+" PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
 		
+		Messages.debug("Create mh_Monthly");
 		create.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Monthly("
 				+"ID CHAR(6) NOT NULL,"
-				+" MOB_ID INTEGER,"
+				+" MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID),"
 				+" PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID)"
 				+" ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
 				+" TOTAL_KILL INTEGER DEFAULT 0," 
 				+" TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+" PRIMARY KEY(ID, MOB_ID INTEGER, PLAYER_ID))");
+				+" PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
 		
+		Messages.debug("Create mh_Yearly");
 		create.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_Yearly"
 				+"(ID CHAR(6) NOT NULL,"
-				+" MOB_ID INTEGER,"
+				+" MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID),"
 				+" PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID),"
 				+" ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
 				+" TOTAL_KILL INTEGER DEFAULT 0," 
 				+" TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+" PRIMARY KEY(ID, MOB_ID INTEGER, PLAYER_ID))");
+				+" PRIMARY KEY(ID, MOB_ID, PLAYER_ID))");
 		
+		Messages.debug("Create mh_Alltime");
 		create.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_AllTime"
-				+ " (MOB_ID INTEGER,"
+				+ " (MOB_ID INTEGER REFERENCES mh_Mobs(MOB_ID),"
 				+ " PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID),"
 				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," 
 				+ " TOTAL_KILL INTEGER DEFAULT 0," 
 				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+ " PRIMARY KEY(MOB_ID INTEGER, PLAYER_ID))");
+				+ " PRIMARY KEY(MOB_ID, PLAYER_ID))");
 
+		Messages.debug("Create mh_Achievements");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements "
 				+"(PLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL,"
 				+" ACHIEVEMENT TEXT NOT NULL,"
@@ -992,6 +1000,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+" PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), "
 				+" FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))");
 
+		Messages.debug("Create mh_Bounties");
 		if (!MobHunting.getConfigManager().disablePlayerBounties)
 			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties ("
 				+ "BOUNTYOWNER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, " 

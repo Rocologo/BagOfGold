@@ -1249,8 +1249,8 @@ public class ConfigManager extends AutoConfig {
 	public boolean debugSQL = false;
 
 	@ConfigField(name = "database_version", category = "database", comment = "FOR INTERNAL USE ONLY. DONT CHANGE THIS VALUE!")
-	public Integer databaseVersion = 0;
-
+	public int databaseVersion = 0;
+	
 	// #####################################################################################
 	// Update Settings
 	// #####################################################################################

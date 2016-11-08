@@ -207,6 +207,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 					int n = 0;
 					if (rs.getFetchSize() == 0) {
 						for (ExtendedMobType mob : ExtendedMobType.values()) {
+							Messages.debug("SQL String line 210="+"INSERT INTO mh_Mobs (" + n + ",0,'" + mob.name() + "'");
 							statement.executeUpdate("INSERT INTO mh_Mobs (" + n + ",0,'" + mob.name() + "'");
 						}
 					}
