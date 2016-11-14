@@ -3,24 +3,40 @@ package one.lindegaard.MobHunting.storage;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.mobs.MobStore;
 
 public class StatStore {
 	private StatType type;
+	private MobStore mob;
 	private OfflinePlayer player;
 	private int amount;
+
+	public StatStore(StatType type, MobStore mob, OfflinePlayer player, int amount) {
+		this.type = type;
+		this.setMob_id(mob);
+		this.player = player;
+		this.amount = amount;
+	}
+
+	public StatStore(StatType type, MobStore mob, OfflinePlayer player) {
+		this.type = type;
+		this.setMob_id(mob);
+		this.player = player;
+		amount = 1; //add one kill.
+	}
 
 	public StatStore(StatType type, OfflinePlayer player, int amount) {
 		this.type = type;
 		this.player = player;
 		this.amount = amount;
 	}
-
+	
 	public StatStore(StatType type, OfflinePlayer player) {
 		this.type = type;
 		this.player = player;
-		amount = 1; //add one kill.
+		amount = 1; //add one achievement.
 	}
-
+	
 	/**
 	 * @return the type
 	 */
@@ -34,6 +50,14 @@ public class StatStore {
 	 */
 	public void setType(StatType type) {
 		this.type = type;
+	}
+	
+	public MobStore getMob() {
+		return mob;
+	}
+
+	public void setMob_id(MobStore mob) {
+		this.mob = mob;
 	}
 
 	/**
@@ -52,7 +76,7 @@ public class StatStore {
 	}
 
 	/**
-	 * @return the amount
+	 * @return the # of kills
 	 */
 	public int getAmount() {
 		return amount;
@@ -74,4 +98,6 @@ public class StatStore {
 		return String.format("StatStore: {player: %s type: %s amount: %d}",
 				player.getName(), type.getDBColumn(), amount);
 	}
+
+	
 }

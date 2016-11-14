@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,8 +26,8 @@ import org.bukkit.plugin.Plugin;
 import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobPlugins;
 import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
 public class MythicMobsCompat implements Listener {
@@ -72,6 +73,13 @@ public class MythicMobsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
+				try {
+					if (mMobRewardData.size() > 0)
+						MobHunting.getStoreManager().insertMythicMobs(key);
+				} catch (SQLException e) {
+					Messages.debug("Error on creating MythicMobs in Database");
+					e.printStackTrace();
+				}
 			}
 			Messages.debug("Loaded %s MythicMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -79,6 +87,8 @@ public class MythicMobsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+		
+		
 	}
 
 	public void loadMythicMobsData(String key) {
@@ -93,11 +103,20 @@ public class MythicMobsCompat implements Listener {
 			mob.setMobType(key);
 			mMobRewardData.put(key, mob);
 			int n = StatType.values().length;
-			StatType.values()[n+1] = new StatType (mob.getMobType()+"_kill",mob.getMobName());
-			StatType.values()[n+2] = new StatType (mob.getMobType()+"_assist",mob.getMobName());
+			StatType.values()[n + 1] = new StatType(mob.getMobType() + "_kill", mob.getMobName());
+			StatType.values()[n + 2] = new StatType(mob.getMobType() + "_assist", mob.getMobName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		
+		try {
+			if (mMobRewardData.size() > 0)
+				MobHunting.getStoreManager().insertMythicMobs(key);
+		} catch (SQLException e) {
+			Messages.debug("Error on creating MythicMobs in Database");
 			e.printStackTrace();
 		}
 	}
@@ -172,7 +191,7 @@ public class MythicMobsCompat implements Listener {
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationMythicmobs;
 	}
-	
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
@@ -185,16 +204,22 @@ public class MythicMobsCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
+		String mobtype=event.getMobType().getInternalName();
 		Messages.debug("MythicMobSpawnEvent: MinecraftMobtype=%s MythicMobType=%s", event.getLivingEntity().getType(),
-				event.getMobType().getInternalName());
-		if (mMobRewardData != null && !mMobRewardData.containsKey(event.getMobType().getInternalName())) {
-			Messages.debug("New MythicMobType found=%s,%s", event.getMobType().getInternalName(),
+				mobtype);
+		if (mMobRewardData != null && !mMobRewardData.containsKey(mobtype)) {
+			Messages.debug("New MythicMobType found=%s,%s", mobtype,
 					event.getMobType().getDisplayName());
-			mMobRewardData.put(event.getMobType().getInternalName(),
-					new MobRewardData(MobPlugins.MobPluginNames.MythicMobs, event.getMobType().getInternalName(),
+			mMobRewardData.put(mobtype,
+					new MobRewardData(MobPlugin.MythicMobs, event.getMobType().getInternalName(),
 							event.getMobType().getDisplayName(), "10", "minecraft:give {player} iron_sword 1",
 							"You got an Iron sword.", 1));
-			saveMythicMobsData(event.getMobType().getInternalName());
+			saveMythicMobsData(mobtype);
+			try {
+				MobHunting.getStoreManager().insertMythicMobs(mobtype);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		event.getLivingEntity().setMetadata(MH_MYTHICMOBS,

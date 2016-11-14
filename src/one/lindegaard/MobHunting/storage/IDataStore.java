@@ -1,6 +1,8 @@
 package one.lindegaard.MobHunting.storage;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.bounty.Bounty;
+import one.lindegaard.MobHunting.mobs.MobStore;
 
 public interface IDataStore {
 	/**
@@ -117,7 +120,7 @@ public interface IDataStore {
 	
 	public int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException, UserNotFoundException ;
 
-	void insertVanillaMobs() throws SQLException;
+	//void insertVanillaMobs() throws SQLException;
 
 	void insertMythicMobs() throws SQLException;
 
@@ -126,5 +129,21 @@ public interface IDataStore {
 	void insertTARDISWeepingAngelsMobs() throws SQLException;
 
 	void insertCustomMobs() throws SQLException;
+
+	void insertVanillaMobs() throws SQLException;
+
+	public Set<MobStore> loadMobs() throws DataStoreException;
+
+	public void insertMobs(Set<MobStore> mobs) throws DataStoreException;
+
+	public void updateMobs(Set<MobStore> mobs) throws DataStoreException;
+
+	public void insertMythicMobs(String mob) throws SQLException;
+
+	public void insertCitizensMobs(String mob) throws SQLException;
+
+	public void insertTARDISWeepingAngelsMobs(String mob) throws SQLException;
+
+	public void insertCustomMobs(String mob) throws SQLException;
 
 }

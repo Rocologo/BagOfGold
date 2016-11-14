@@ -2,13 +2,19 @@ package one.lindegaard.MobHunting;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import one.lindegaard.MobHunting.mobs.MobPlugin;
+import one.lindegaard.MobHunting.mobs.MobStore;
 
 public class StatType {
 	public static final StatType AchievementCount = new StatType("achievement_count", "stats.achievement_count");
 	public static final StatType KillsTotal = new StatType("total_kill", "stats.total_kill");
 	public static final StatType AssistsTotal = new StatType("total_assist", "stats.total_assist");
 
-	private static StatType[] mValues = new StatType[3 + ExtendedMobType.values().length * 2];
+	// TODO: change 500
+	private static StatType[] mValues = new StatType[3 + ExtendedMobType.values().length * 2 + 500];
 	private static HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
 
 	static {
@@ -16,7 +22,7 @@ public class StatType {
 		mValues[1] = KillsTotal;
 		mValues[2] = AssistsTotal;
 
-		//adding vanilla mobs type
+		// adding vanilla mobs type
 		for (int i = 0; i < ExtendedMobType.values().length; ++i)
 			mValues[3 + i] = new StatType(ExtendedMobType.values()[i] + "_kill", "stats.name-format", "mob",
 					"mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.kills");
@@ -26,14 +32,25 @@ public class StatType {
 					"stats.name-format", "mob", "mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype",
 					"stats.assists");
 
+		// adding other mobtype from other plugins
+		Iterator<Entry<Integer, MobStore>> itr = MobHunting.getMobManager().getAllMobs().entrySet().iterator();
+		int l = 3 + ExtendedMobType.values().length * 2;
+		while (itr.hasNext()) {
+			MobStore mob = (MobStore) itr.next().getValue();
+			if (!mob.getMobPlugin().equals(MobPlugin.Minecraft)) {
+				//Messages.debug("Adding new StatType(%s,%s)", mob.getMobtype(), mob.getMobPlugin().name());
+				mValues[l + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill",
+						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill");
+				mValues[l + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist",
+						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist");
+				l = l + 2;
+			}
+		}
+
 		for (int i = 0; i < mValues.length; ++i)
-			mNameLookup.put(mValues[i].mColumnName, mValues[i]);
-		
-		//TODO: adding MythicMobType
-		//TODO: adding Citizens
-		//TODO: adding TARDISWeepingAngels
-		//TODO: adding CustomMobs
-		
+			if (mValues[i] != null)
+				mNameLookup.put(mValues[i].mColumnName, mValues[i]);
+
 	}
 
 	private String mColumnName;
@@ -58,7 +75,6 @@ public class StatType {
 	}
 
 	public String getDBColumn() {
-		//TODO: get total_kill or assist_kill
 		return mColumnName;
 	}
 
@@ -97,4 +113,5 @@ public class StatType {
 
 		return null;
 	}
+
 }

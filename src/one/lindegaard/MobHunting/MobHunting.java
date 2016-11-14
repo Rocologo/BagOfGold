@@ -62,6 +62,8 @@ import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
+import one.lindegaard.MobHunting.mobs.MobManager;
+import one.lindegaard.MobHunting.mobs.MobStore;
 import one.lindegaard.MobHunting.modifier.*;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.rewards.Rewards;
@@ -117,6 +119,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private static MetricsManager mMetricsManager;
 	private static PlayerSettingsManager mPlayerSettingsManager;
 	private static WorldGroup mWorldGroupManager;
+	private static MobManager mMobPluginsManager;
 
 	public static IDataStore mStore;
 	private static DataStoreManager mStoreManager;
@@ -188,6 +191,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			mPlayerSettingsManager = new PlayerSettingsManager();
 
+			mMobPluginsManager = new MobManager();
+
 			// Handle compatability stuff
 			registerPlugin(EssentialsCompat.class, "Essentials");
 			registerPlugin(WorldEditCompat.class, "WorldEdit");
@@ -215,7 +220,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
 			registerPlugin(CustomMobsCompat.class, "CustomMobs");
 
-			// register commands
+						// register commands
 			CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 					Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
 			getCommand("mobhunt").setExecutor(cmd);
@@ -452,6 +457,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 */
 	public static RewardManager getRewardManager() {
 		return mRewardManager;
+	}
+
+	/**
+	 * Get the MobManager
+	 * 
+	 * @return
+	 */
+	public static MobManager getMobManager() {
+		return mMobPluginsManager;
 	}
 
 	// ************************************************************************************
@@ -1096,7 +1110,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 				Messages.debug("%s got %s for killing %s", killer.getName(), reward, killed.getName());
 				// TODO: call bounty event, and check if canceled.
 				mRewardManager.depositPlayer(killer, reward);
-				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
+
+				MobStore mobStore = getMobManager().getMobStoreFromEntity(killed, true);
+				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
 						killed.hasMetadata("MH:hasBonus"));
 			} else {
 				Messages.debug("There is no Bounty on %s", killed.getName());
@@ -1165,10 +1181,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 			// TODO: record Citizens kills as its own kind of mobs
 			// TODO: record TARDISWeepingAngels kills as its own kind of mobs
 			// TODO: record CustomMobs kills as its own kind of mobs
-			// else 
-			if (ExtendedMobType.getExtendedMobType(killed) != null)
-				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
-						killed.hasMetadata("MH:hasBonus"));
+			// else
+
+			MobStore mobStore = getMobManager().getMobStoreFromEntity(killed, true);
+			getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
+					killed.hasMetadata("MH:hasBonus"));
+
+			// if (ExtendedMobType.getExtendedMobType(killed) != null)
+			// getDataStoreManager().recordKill(killer,
+			// ExtendedMobType.getExtendedMobType(killed),
+			// killed.hasMetadata("MH:hasBonus"));
 
 			// Tell the player that he got the reward, unless muted
 			if (!killer_muted && !getConfigManager().dropMoneyOnGroup)
@@ -1257,7 +1279,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cash = mConfig.getBaseKillPrize(killed) * multiplier;
 
 		if (cash >= 0.01) {
-			getDataStoreManager().recordAssist(player, killer, ExtendedMobType.getExtendedMobType(killed),
+			MobStore mobStore = getMobManager().getMobStoreFromEntity(killed, false);
+			getDataStoreManager().recordAssist(player, killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
 					killed.hasMetadata("MH:hasBonus"));
 			mRewardManager.depositPlayer(player, cash);
 			Messages.debug("%s got a on assist reward (%s)", player.getName(), mRewardManager.format(cash));

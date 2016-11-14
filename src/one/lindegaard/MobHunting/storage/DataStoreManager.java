@@ -19,6 +19,7 @@ import one.lindegaard.MobHunting.achievements.Achievement;
 import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
+import one.lindegaard.MobHunting.mobs.MobStore;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
@@ -57,23 +58,24 @@ public class DataStoreManager {
 	// **************************************************************************************
 	// PlayerStats
 	// **************************************************************************************
-	public void recordKill(OfflinePlayer player, ExtendedMobType type, boolean bonusMob) {
+	public void recordKill(OfflinePlayer player, ExtendedMobType type, MobStore mob, boolean bonusMob) {
 		synchronized (mWaiting) {
-			mWaiting.add(new StatStore(StatType.fromMobType(type, true), player));
-			mWaiting.add(new StatStore(StatType.KillsTotal, player));
+			mWaiting.add(new StatStore(StatType.fromMobType(type, true), mob, player));
+			mWaiting.add(new StatStore(StatType.KillsTotal, mob, player));
 
 			if (bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, true), player));
+				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, true), mob, player));
 		}
 	}
 
-	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, ExtendedMobType type, boolean bonusMob) {
+	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, ExtendedMobType type, MobStore mob,
+			boolean bonusMob) {
 		synchronized (mWaiting) {
-			mWaiting.add(new StatStore(StatType.fromMobType(type, false), player));
-			mWaiting.add(new StatStore(StatType.AssistsTotal, player));
+			mWaiting.add(new StatStore(StatType.fromMobType(type, false), mob, player));
+			mWaiting.add(new StatStore(StatType.AssistsTotal, mob, player));
 
 			if (bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, false), player));
+				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, false), mob, player));
 		}
 	}
 
@@ -134,9 +136,9 @@ public class DataStoreManager {
 
 	public void cancelBounty(Bounty bounty) {
 		bounty.setStatus(BountyStatus.canceled);
-		//synchronized (mWaiting) {
-		//	mWaiting.add(new Bounty(bounty));
-		//}
+		// synchronized (mWaiting) {
+		// mWaiting.add(new Bounty(bounty));
+		// }
 		HashSet<Bounty> bounties = new HashSet<Bounty>();
 		bounties.add(bounty);
 		try {
@@ -147,9 +149,9 @@ public class DataStoreManager {
 	}
 
 	public void updateBounty(Bounty bounty) {
-		//synchronized (mWaiting) {
-		//	mWaiting.add(new Bounty(bounty));
-		//}
+		// synchronized (mWaiting) {
+		// mWaiting.add(new Bounty(bounty));
+		// }
 		HashSet<Bounty> bounties = new HashSet<Bounty>();
 		bounties.add(bounty);
 		try {
@@ -157,7 +159,7 @@ public class DataStoreManager {
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void requestBounties(BountyStatus mode, OfflinePlayer player, IDataCallback<Set<Bounty>> callback) {
@@ -293,7 +295,7 @@ public class DataStoreManager {
 	}
 
 	/**
-	 * Wait until all data has been updated  
+	 * Wait until all data has been updated
 	 */
 	public void waitForUpdates() {
 		flush();
@@ -306,6 +308,7 @@ public class DataStoreManager {
 
 	/**
 	 * Constructor for the StoreThread
+	 * 
 	 * @author Rocologo
 	 *
 	 */

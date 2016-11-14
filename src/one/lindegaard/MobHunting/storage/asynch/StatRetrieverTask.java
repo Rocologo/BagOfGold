@@ -13,15 +13,13 @@ import one.lindegaard.MobHunting.storage.TimePeriod;
 public class StatRetrieverTask implements DataStoreTask<List<StatStore>> {
 	private StatType mType;
 	private TimePeriod mPeriod;
-
 	private int mCount;
 	private HashSet<Object> mWaiting;
 
-	public StatRetrieverTask(StatType type, TimePeriod period, int count, HashSet<Object> waiting) {
+	public StatRetrieverTask(StatType type, TimePeriod period, int count , HashSet<Object> waiting) {
 		mType = type;
 		mPeriod = period;
-		mCount = count;
-
+		mCount=count;
 		mWaiting = waiting;
 	}
 

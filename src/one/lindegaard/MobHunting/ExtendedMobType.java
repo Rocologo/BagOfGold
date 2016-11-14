@@ -275,6 +275,10 @@ public enum ExtendedMobType {
 		mDisplayName = displayName;
 		mTexture = texture;
 	}
+	
+	public String getName(){
+		return name();
+	}
 
 	public String getDisplayName() {
 		return mDisplayName;
