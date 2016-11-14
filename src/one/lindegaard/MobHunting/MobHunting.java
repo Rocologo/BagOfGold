@@ -220,7 +220,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
 			registerPlugin(CustomMobsCompat.class, "CustomMobs");
 
-						// register commands
+			// register commands
 			CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 					Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
 			getCommand("mobhunt").setExecutor(cmd);
@@ -1111,9 +1111,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 				// TODO: call bounty event, and check if canceled.
 				mRewardManager.depositPlayer(killer, reward);
 
-				MobStore mobStore = getMobManager().getMobStoreFromEntity(killed, true);
-				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
-						killed.hasMetadata("MH:hasBonus"));
+				// MobStore mobStore =
+				// getMobManager().getMobStoreFromEntity(killed, true);
+				// getDataStoreManager().recordKill(killer,
+				// ExtendedMobType.getExtendedMobType(killed), mobStore,
+				// killed.hasMetadata("MH:hasBonus"));
 			} else {
 				Messages.debug("There is no Bounty on %s", killed.getName());
 			}
@@ -1174,18 +1176,13 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			// Record the kill in the Database
-			if (killer != null)
-				Messages.debug("RecordKill: %s killed a %s", killer.getName(),
-						ExtendedMobType.getExtendedMobType(killed));
-			// TODO: record MythicMobs kills as its own kind of mobs
-			// TODO: record Citizens kills as its own kind of mobs
-			// TODO: record TARDISWeepingAngels kills as its own kind of mobs
-			// TODO: record CustomMobs kills as its own kind of mobs
-			// else
-
 			MobStore mobStore = getMobManager().getMobStoreFromEntity(killed, true);
-			getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
-					killed.hasMetadata("MH:hasBonus"));
+			if (killer != null) {
+				Messages.debug("RecordKill: %s killed a %s (%s)", killer.getName(), mobStore.getName(),
+						mobStore.getMobPlugin().name());
+				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
+						killed.hasMetadata("MH:hasBonus"));
+			}
 
 			// if (ExtendedMobType.getExtendedMobType(killed) != null)
 			// getDataStoreManager().recordKill(killer,

@@ -19,7 +19,6 @@ import org.bukkit.plugin.Plugin;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
-import one.lindegaard.MobHunting.mobs.PluginManager;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngelSpawnEvent;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngels;
@@ -81,9 +80,10 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	 */
 	public static boolean isWeepingAngelMonster(Entity entity) {
 		return entity.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-		//return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
+		// return ((TARDISWeepingAngels)
+		// mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
 	}
-	
+
 	/**
 	 * Returns the Monster type for a TARDISWeepingAngels entity.
 	 *
@@ -94,7 +94,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	public static Monster getWeepingAngelMonsterType(Entity entity) {
 		return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().getWeepingAngelMonsterType(entity);
 	}
-	
+
 	public static HashMap<String, MobRewardData> getMobRewardData() {
 		return mMobRewardData;
 	}
@@ -107,9 +107,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			if (!file.exists()) {
 				for (Monster monster : Monster.getValues()) {
 					mMobRewardData.put(monster.name(),
-							new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(),
-									monster.name(), "40:60", "minecraft:give {player} iron_sword 1",
-									"You got an Iron sword.", 1));
+							new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.name(), "40:60",
+									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 					saveTARDISWeepingAngelsMobsData(mMobRewardData.get(monster.name()).getMobName());
 				}
 				return;
@@ -136,7 +135,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void loadTARDISWeepingAngelsMobsData(String key) {
@@ -218,9 +217,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 
 		if (mMobRewardData != null && !mMobRewardData.containsKey(monster.name())) {
 			Messages.debug("New TARDIS mob found=%s", monster.name());
-			mMobRewardData.put(monster.name(),
-					new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.name(),
-							"40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+			mMobRewardData.put(monster.name(), new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(),
+					monster.name(), "40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveTARDISWeepingAngelsMobsData(monster.name());
 			try {
 				MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);

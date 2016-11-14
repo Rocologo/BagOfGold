@@ -60,7 +60,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		switch (preparedConnectionType) {
 		case SAVE_PLAYER_STATS:
 			mSavePlayerStats = connection.prepareStatement(
-					"INSERT IGNORE INTO mh_Daily(ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?);");
+					"INSERT IGNORE INTO mh_Daily(ID, MOB_ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?,?);");
 			break;
 		case LOAD_ARCHIEVEMENTS:
 			mLoadAchievements = connection
@@ -169,13 +169,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 		else if (type.getDBColumn().equalsIgnoreCase("total_assist"))
 			column = "sum(total_assist) amount ";
 		else if (type.getDBColumn().substring(type.getDBColumn().lastIndexOf("_"), type.getDBColumn().length())
-				.equalsIgnoreCase("kill"))
-			column = "mob_id, mh_Mobs.MOBTYPE mt, sum(total_kill) amount ";
+				.equalsIgnoreCase("_kill"))
+			column = "mh_Mobs.mob_id, mh_Mobs.MOBTYPE mt, sum(total_kill) amount ";
 		else if (type.getDBColumn().substring(type.getDBColumn().lastIndexOf("_"), type.getDBColumn().length())
-				.equalsIgnoreCase("assist"))
-			column = "mob_id, mh_Mobs.MOBTYPE mt, sum(total_assist) amount ";
+				.equalsIgnoreCase("_assist"))
+			column = "mh_Mobs.mob_id, mh_Mobs.MOBTYPE mt, sum(total_assist) amount ";
 		else
-			column = "sum(achievement_count) amount ";
+			column = "sum(total_kill) amount ";
 
 		String wherepart = "";
 		if (type.getDBColumn().equalsIgnoreCase("total_kill") || type.getDBColumn().equalsIgnoreCase("total_assist")
@@ -191,19 +191,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		try {
 			Statement statement = mConnection.createStatement();
-			String str = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name" + " from mh_"
-					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
-					+ " inner join mh_Mobs using (MOB_ID) WHERE NAME IS NOT NULL " + wherepart
-					// + (id != null ? " where ID=" + id : " ")
-					// + " where name IS NOT NULL AND PLAYER_ID IS NOT NULL"
-					// + (column !=null ?
-					// + (id != null ? " and mh_Players.NAME!='' and ID=" + id :
-					// "")
-					+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count;
-			Messages.debug("QueryString=%s", str);
-			Messages.debug("StatType=%s, Period=%s", type.getDBColumn(), period.getDBColumn());
-			ResultSet results = statement.executeQuery(str);
-			// if (results.getFetchSize() > 0) {
+			ResultSet results = statement
+					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
+							+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
+							+ " inner join mh_Mobs using (MOB_ID) WHERE NAME IS NOT NULL " + wherepart
+							+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
 				try {
@@ -214,7 +206,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 				} catch (Exception e) {
 					Bukkit.getLogger()
 							.warning("Could not find player name for PLAYER_ID:" + results.getString("PLAYER_ID"));
-					// e.printStackTrace();
 				}
 				if (offlinePlayer == null)
 					Messages.debug("getOfflinePlayer(%s) was not in cache.", results.getString("name"));
@@ -233,12 +224,17 @@ public class MySQLDataStore extends DatabaseDataStore {
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
 		try {
 			Messages.debug("Saving PlayerStats to Database.");
-
 			// Make sure the stats are available for each player
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
 			mSavePlayerStats.clearBatch();
 			for (StatStore st : stats) {
-				mSavePlayerStats.setInt(1, getPlayerId(st.getPlayer()));
+				int mob_id = 0;
+				if (!st.getType().getDBColumn().substring(0, st.getType().getDBColumn().lastIndexOf("_"))
+						.equalsIgnoreCase("achievement"))
+					// if (!st.getType().equals(StatType.AchievementCount))
+					mob_id = st.getMob().getMob_id();
+				mSavePlayerStats.setInt(2, getPlayerId(st.getPlayer()));
+				mSavePlayerStats.setInt(1, mob_id);
 				mSavePlayerStats.addBatch();
 			}
 			mSavePlayerStats.executeBatch();
@@ -248,20 +244,28 @@ public class MySQLDataStore extends DatabaseDataStore {
 			Statement statement = mConnection.createStatement();
 
 			for (StatStore stat : stats) {
-				String column = "total" + stat.getType().getDBColumn().substring(
-						stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
-				statement.addBatch(String.format(
-						"UPDATE mh_Daily SET %1$s = %1$s + %2$d "
-								+ "WHERE ID = DATE_FORMAT(NOW(), '%%Y%%j') AND MOB_ID = %3$d AND PLAYER_ID = %3$d;",
-						column, stat.getAmount(), stat.getMob().getMob_id(), getPlayerId(stat.getPlayer())));
+				String column = "";
+				int mob_id ;
+				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_")).equalsIgnoreCase("achievement")){
+					column = "achievement_count";
+					mob_id=0;
+				}
+				else{
+					column = "total" + stat.getType().getDBColumn().substring(
+							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
+					mob_id = stat.getMob().getMob_id();
+				}
+				int amount = stat.getAmount();
+				int player_id = getPlayerId(stat.getPlayer());
+				statement.addBatch(String
+						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d, MOB_ID=%3$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id));
 
 			}
 			statement.executeBatch();
 			statement.close();
-
 			mConnection.commit();
 			Messages.debug("Saved.");
-			// }
 		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);

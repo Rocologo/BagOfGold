@@ -152,13 +152,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		else if (type.getDBColumn().equalsIgnoreCase("total_assist"))
 			column = "sum(total_assist) amount ";
 		else if (type.getDBColumn().substring(type.getDBColumn().lastIndexOf("_"), type.getDBColumn().length())
-				.equalsIgnoreCase("kill"))
-			column = "mob_id, mh_Mobs.MOBTYPE mt, sum(total_kill) amount ";
+				.equalsIgnoreCase("_kill"))
+			column = "mh_Mobs.mob_id, mh_Mobs.MOBTYPE mt, sum(total_kill) amount ";
 		else if (type.getDBColumn().substring(type.getDBColumn().lastIndexOf("_"), type.getDBColumn().length())
-				.equalsIgnoreCase("assist"))
-			column = "mob_id, mh_Mobs.MOBTYPE mt, sum(total_assist) amount ";
+				.equalsIgnoreCase("_assist"))
+			column = "mh_Mobs.mob_id, mh_Mobs.MOBTYPE mt, sum(total_assist) amount ";
 		else
-			column = "sum(achievement_count) amount ";
+			column = "sum(total_kill) amount ";
 
 		String wherepart = "";
 		if (type.getDBColumn().equalsIgnoreCase("total_kill") || type.getDBColumn().equalsIgnoreCase("total_assist")
@@ -210,7 +210,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
 			mSavePlayerStats.clearBatch();
 			for (StatStore st : stats) {
-				mSavePlayerStats.setInt(1, getPlayerId(st.getPlayer()));
+				int mob_id = 0;
+				if (!st.getType().getDBColumn().substring(0, st.getType().getDBColumn().lastIndexOf("_"))
+						.equalsIgnoreCase("achievement"))
+					// if (!st.getType().equals(StatType.AchievementCount))
+					mob_id = st.getMob().getMob_id();
+				mSavePlayerStats.setInt(2, getPlayerId(st.getPlayer()));
+				mSavePlayerStats.setInt(1, mob_id);
 				mSavePlayerStats.addBatch();
 			}
 			mSavePlayerStats.executeBatch();
@@ -218,15 +224,25 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
+			int mob_id = 0;
 			for (StatStore stat : stats) {
-				String column = "total" + stat.getType().getDBColumn().substring(
-						stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
-				String str= String.format(
-						"UPDATE mh_Daily SET %1$s = %1$s + %2$d, MOB_ID=%3d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
-								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;",
-						column, stat.getAmount(), stat.getMob().getMob_id(), getPlayerId(stat.getPlayer()));
-				Messages.debug("UpdateplayerStats=%s", str);
-				statement.addBatch(str);
+				String column = "";
+
+				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
+						.equalsIgnoreCase("achievement")) {
+					// if (!stat.getType().equals(StatType.AchievementCount)) {
+					column = "achievement_count";
+					mob_id = 0;
+				} else {
+					column = "total" + stat.getType().getDBColumn().substring(
+							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
+					mob_id = stat.getMob().getMob_id();
+				}
+				int amount = stat.getAmount();
+				int player_id = getPlayerId(stat.getPlayer());
+				statement.addBatch(String
+						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d, MOB_ID=%3$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id));
 			}
 			statement.executeBatch();
 			statement.close();

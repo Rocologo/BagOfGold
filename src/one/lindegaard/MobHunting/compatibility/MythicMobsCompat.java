@@ -87,8 +87,7 @@ public class MythicMobsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 	public void loadMythicMobsData(String key) {
@@ -110,8 +109,7 @@ public class MythicMobsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		try {
 			if (mMobRewardData.size() > 0)
 				MobHunting.getStoreManager().insertMythicMobs(key);
@@ -204,12 +202,11 @@ public class MythicMobsCompat implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
-		String mobtype=event.getMobType().getInternalName();
+		String mobtype = event.getMobType().getInternalName();
 		Messages.debug("MythicMobSpawnEvent: MinecraftMobtype=%s MythicMobType=%s", event.getLivingEntity().getType(),
 				mobtype);
 		if (mMobRewardData != null && !mMobRewardData.containsKey(mobtype)) {
-			Messages.debug("New MythicMobType found=%s,%s", mobtype,
-					event.getMobType().getDisplayName());
+			Messages.debug("New MythicMobType found=%s,%s", mobtype, event.getMobType().getDisplayName());
 			mMobRewardData.put(mobtype,
 					new MobRewardData(MobPlugin.MythicMobs, event.getMobType().getInternalName(),
 							event.getMobType().getDisplayName(), "10", "minecraft:give {player} iron_sword 1",

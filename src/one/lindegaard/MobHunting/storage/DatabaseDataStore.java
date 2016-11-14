@@ -334,12 +334,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 					int player_id = rs.getInt("PLAYER_ID");
 					int kills = rs.getInt(mob.name() + "_KILL");
 					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0) {
+					if (kills > 0 || assists > 0 || achievements>0) {
 						String insertStr = "INSERT INTO mh_Daily VALUES (" + id + "," + mob_id + "," + player_id + ","
 								+ achievements + "," + kills + "," + assists + ")";
 						statement2.executeUpdate(insertStr);
 						n++;
-						achievements = 0;
+						achievements=0;
 					}
 				}
 				statement2.close();
@@ -366,12 +366,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 					int player_id = rs.getInt("PLAYER_ID");
 					int kills = rs.getInt(mob.name() + "_KILL");
 					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0) {
+					if (kills > 0 || assists > 0 || achievements>0) {
 						String insertStr = "INSERT INTO mh_Weekly VALUES (" + id + "," + mob_id + "," + player_id + ","
 								+ achievements + "," + kills + "," + assists + ")";
 						statement2.executeUpdate(insertStr);
 						n++;
-						achievements = 0;
+						achievements=0;
 					}
 				}
 				statement2.close();
@@ -397,12 +397,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 					int player_id = rs.getInt("PLAYER_ID");
 					int kills = rs.getInt(mob.name() + "_KILL");
 					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0) {
+					if (kills > 0 || assists > 0|| achievements>0) {
 						String insertStr = "INSERT INTO mh_Monthly VALUES (" + id + "," + mob_id + "," + player_id + ","
 								+ achievements + "," + kills + "," + assists + ")";
 						statement2.executeUpdate(insertStr);
 						n++;
-						achievements = 0;
+						achievements=0;
 					}
 				}
 				statement2.close();
@@ -428,12 +428,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 					int player_id = rs.getInt("PLAYER_ID");
 					int kills = rs.getInt(mob.name() + "_KILL");
 					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0) {
+					if (kills > 0 || assists > 0|| achievements > 0) {
 						String insertStr = "INSERT INTO mh_Yearly VALUES (" + id + "," + mob_id + "," + player_id + ","
 								+ achievements + "," + kills + "," + assists + ")";
 						statement2.executeUpdate(insertStr);
 						n++;
-						achievements = 0;
+						achievements=0;
 					}
 				}
 				statement2.close();
@@ -458,12 +458,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 					int player_id = rs.getInt("PLAYER_ID");
 					int kills = rs.getInt(mob.name() + "_KILL");
 					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0) {
+					if (kills > 0 || assists > 0 || achievements > 0) {
 						String insertStr = "INSERT INTO mh_AllTime VALUES (" + mob_id + "," + player_id + ","
 								+ achievements + "," + kills + "," + assists + ")";
 						statement2.executeUpdate(insertStr);
 						n++;
-						achievements = 0;
+						achievements=0;
 					}
 				}
 				statement2.close();
@@ -506,6 +506,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (0,'" + mob.name() + "')");
 				n++;
 			}
+			if (n>0)
 			Bukkit.getLogger().info("[MobHunting] "+n+" Minecraft Vanilla Mobs was inserted to mh_Mobs");
 			statement.close();
 			mConnection.commit();
@@ -527,6 +528,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 					e.printStackTrace();
 				}
 		}
+		if(n>0)
 		Bukkit.getLogger().info("[MobHunting] "+n+" MythicMobs was inserted to mh_Mobs");
 		statement.close();
 		mConnection.commit();
@@ -535,15 +537,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void insertMythicMobs(String mob) throws SQLException {
 		Statement statement = mConnection.createStatement();
-		int n = 0;
 			if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.MythicMobs) == 0)
 				try {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
-					n++;
+					Bukkit.getLogger().info("[MobHunting] MobType "+ mob+" (MythicMobs) was inserted to mh_Mobs");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-			Bukkit.getLogger().info("[MobHunting] MobType "+ mob+" (MythicMobs) was inserted to mh_Mobs");
+			
 		statement.close();
 		mConnection.commit();
 	}
@@ -561,6 +562,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 		}
+		if (n>0)
 		Bukkit.getLogger().info("[MobHunting] "+n+" Citizens mobs was inserted to mh_Mobs");
 		statement.close();
 		mConnection.commit();
@@ -569,15 +571,13 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void insertCitizensMobs(String mob) throws SQLException {
 		Statement statement = mConnection.createStatement();
-		int n = 0;
 			if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.Citizens) == 0)
 			try {
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (2,'" + mob + "')");
-				n++;
+				Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (Citizens mob) was inserted to mh_Mobs");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (Citizens mob) was inserted to mh_Mobs");
 		statement.close();
 		mConnection.commit();
 	}
@@ -595,6 +595,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 		}
+		if(n>0)
 		Bukkit.getLogger().info("[MobHunting] "+n+"TARDIS Weeping Angel Mobs inserted to mh_Mobs");
 		statement.close();
 		mConnection.commit();
@@ -603,16 +604,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void insertTARDISWeepingAngelsMobs(String mob) throws SQLException {
 		Statement statement = mConnection.createStatement();
-		int n = 0;
 		// Adding TARDISWeepingAngels to mh_Mobs
 		if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.TARDISWeepingAngels) == 0)
 			try {
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (3,'" + mob + "')");
-				n++;
+				Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (TARDISWeepingAngel Mob) inserted to mh_Mobs");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (TARDISWeepingAngel Mob) inserted to mh_Mobs");
 		statement.close();
 		mConnection.commit();
 	}
@@ -630,6 +629,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 		}
+		if(n>0)
 		Bukkit.getLogger().info("[MobHunting] "+n+" CustomMobs was inserted to mh_Mobs");
 		statement.close();
 		mConnection.commit();
@@ -638,15 +638,13 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public void insertCustomMobs(String mob) throws SQLException {
 		Statement statement = mConnection.createStatement();
-		int n = 0;
 			if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.CustomMobs) == 0)
 			try {
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (4,'" + mob + "')");
-				n++;
+				Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (CustomMobs) was inserted to mh_Mobs");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (CustomMobs) was inserted to mh_Mobs");
 		statement.close();
 		mConnection.commit();
 	}

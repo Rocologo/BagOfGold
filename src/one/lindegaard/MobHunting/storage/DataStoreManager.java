@@ -61,7 +61,6 @@ public class DataStoreManager {
 	public void recordKill(OfflinePlayer player, ExtendedMobType type, MobStore mob, boolean bonusMob) {
 		synchronized (mWaiting) {
 			mWaiting.add(new StatStore(StatType.fromMobType(type, true), mob, player));
-			mWaiting.add(new StatStore(StatType.KillsTotal, mob, player));
 
 			if (bonusMob)
 				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, true), mob, player));
@@ -72,7 +71,6 @@ public class DataStoreManager {
 			boolean bonusMob) {
 		synchronized (mWaiting) {
 			mWaiting.add(new StatStore(StatType.fromMobType(type, false), mob, player));
-			mWaiting.add(new StatStore(StatType.AssistsTotal, mob, player));
 
 			if (bonusMob)
 				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, false), mob, player));

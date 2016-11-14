@@ -26,7 +26,6 @@ import de.hellfirepvp.api.event.CustomMobSpawnEvent.SpawnReason;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
-import one.lindegaard.MobHunting.mobs.PluginManager;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
 public class CustomMobsCompat implements Listener {
@@ -87,7 +86,7 @@ public class CustomMobsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void loadCustomMobsData(String key) {
@@ -218,9 +217,8 @@ public class CustomMobsCompat implements Listener {
 
 		{
 			Messages.debug("New CustomMobName found=%s,%s", mob.getName(), mob.getDisplayName());
-			mMobRewardData.put(mob.getName(),
-					new MobRewardData(MobPlugin.CustomMobs, mob.getName(), mob.getDisplayName(), "10",
-							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(),
+					mob.getDisplayName(), "10", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveCustomMobsData(mob.getName());
 			try {
 				MobHunting.getStoreManager().insertCustomMobs(mob.getName());
