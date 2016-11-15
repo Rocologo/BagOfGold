@@ -1006,11 +1006,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 						+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
 
 		Messages.debug("Create mh_Achievements if missing");
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements " + "(PLAYER_ID INTEGER NOT NULL,"
-				+ " ACHIEVEMENT VARCHAR(64) NOT NULL," + " DATE DATETIME NOT NULL," + " PROGRESS INTEGER NOT NULL,"
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements " 
+				+ "(PLAYER_ID INTEGER NOT NULL,"
+				+ " ACHIEVEMENT VARCHAR(64) NOT NULL," 
+				+ " DATE DATETIME NOT NULL," 
+				+ " PROGRESS INTEGER NOT NULL,"
 				+ " PRIMARY KEY(PLAYER_ID, ACHIEVEMENT),"
-				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
-				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
+				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
 
 		if (!MobHunting.getConfigManager().disablePlayerBounties) {
 			Messages.debug("Create mh_Bounties if missing");
