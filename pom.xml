@@ -154,10 +154,10 @@
 	<repositories>
 
 		<!-- SpigotMC Repository -->
-		<!-- <repository>
+		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/releases/</url>
-		</repository> -->
+		</repository>
 
 		<repository>
 			<id>spigot-repo-snapshots</id>
@@ -452,7 +452,7 @@
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>citizensapi</artifactId>
 			<version>${citizensapi.version}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ProtocolLib -->
