@@ -529,7 +529,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Statement statement = mConnection.createStatement();
 			ResultSet rs = statement.executeQuery(
 					"SELECT MOB_ID from mh_Mobs WHERE PLUGIN_ID=" + plugin_id + " AND MOBTYPE='" + mob + "'");
-			res = rs.getInt("MOB_ID");
+			if (rs.next())
+				res = rs.getInt("MOB_ID");
 			rs.close();
 			statement.close();
 		} catch (SQLException e) {
@@ -544,16 +545,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 		// Adding Vanilla Mobs to mh_Mobs
 		int n = 0;
 		try {
-			Statement statement = mConnection.createStatement();
 			for (MinecraftMob mob : MinecraftMob.values()) {
-				int res = statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) " + "SELECT 0,'"
-						+ mob.name() + "' " + "WHERE NOT EXISTS("
-						+ "SELECT * FROM mh_Mobs WHERE PLUGIN_ID=0 AND MOBTYPE='" + mob.name() + "')");
-				n = n + res;
+				if (getMobIdFromExtendedMobType(mob.name(), 0) == 0) {
+					Statement statement = mConnection.createStatement();
+					statement
+							.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES ( 0,'" + mob.name() + "')");
+					n++;
+					statement.close();
+				}
 			}
 			if (n > 0)
 				Bukkit.getLogger().info("[MobHunting] " + n + " Minecraft Vanilla Mobs was inserted to mh_Mobs");
-			statement.close();
 			mConnection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
