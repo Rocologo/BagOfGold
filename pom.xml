@@ -280,18 +280,15 @@
 		</repository>
 
 		<!-- MCStats -->
-		<!-- <repository>
+		<repository>
 			<id>Plugin Metrics</id>
 			<url>http://repo.mcstats.org/content/repositories/public</url>
-		</repository> -->
+		</repository>
 		<!-- MCStats SNAPSHOTS -->
-		<!--
 		 <repository>
 			<id>Plugin Metrics SNAPSHOTS</id>
 			<url>http://repo.mcstats.org/content/repositories/snapshots/</url>
 		</repository>
-		 -->
-
 
 		<!-- Essentials -->
 		<repository>
