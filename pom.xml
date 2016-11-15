@@ -363,19 +363,19 @@
 		</dependency>
 
 		<!-- Bukkit -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
 			<version>${spigotmc.version}</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 
 		<!-- CraftBukkit -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
 			<version>${spigotmc.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- SpongeAPI -->
 		<dependency>
@@ -383,7 +383,7 @@
 			<artifactId>spongeapi</artifactId>
 			<version>4.1.0</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> 
 
 		<!-- Vault / -->
 		<dependency>
