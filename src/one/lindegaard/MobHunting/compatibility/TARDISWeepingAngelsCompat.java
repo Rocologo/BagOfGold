@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -17,7 +18,7 @@ import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobPlugins;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngelSpawnEvent;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngels;
@@ -79,9 +80,10 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	 */
 	public static boolean isWeepingAngelMonster(Entity entity) {
 		return entity.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-		//return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
+		// return ((TARDISWeepingAngels)
+		// mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
 	}
-	
+
 	/**
 	 * Returns the Monster type for a TARDISWeepingAngels entity.
 	 *
@@ -93,6 +95,10 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		return ((TARDISWeepingAngels) mPlugin).getWeepingAngelsAPI().getWeepingAngelMonsterType(entity);
 	}
 
+	public static HashMap<String, MobRewardData> getMobRewardData() {
+		return mMobRewardData;
+	}
+
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
@@ -101,9 +107,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			if (!file.exists()) {
 				for (Monster monster : Monster.getValues()) {
 					mMobRewardData.put(monster.name(),
-							new MobRewardData(MobPlugins.MobPluginNames.TARDISWeepingAngels, monster.name(),
-									monster.name(), "40:60", "minecraft:give {player} iron_sword 1",
-									"You got an Iron sword.", 1));
+							new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.name(), "40:60",
+									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 					saveTARDISWeepingAngelsMobsData(mMobRewardData.get(monster.name()).getMobName());
 				}
 				return;
@@ -116,6 +121,13 @@ public class TARDISWeepingAngelsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
+				try {
+					if (mMobRewardData.size() > 0)
+						MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
+				} catch (SQLException e) {
+					Messages.debug("Error on creating TARDISWeepingAngels in Database");
+					e.printStackTrace();
+				}
 			}
 			Messages.debug("Loaded %s TARDISWeepingAngels-Mobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -123,6 +135,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public void loadTARDISWeepingAngelsMobsData(String key) {
@@ -140,6 +153,13 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			if (mMobRewardData.size() > 0)
+				MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs();
+		} catch (SQLException e) {
+			Messages.debug("Error on creating TARDISWeepingAngels in Database");
 			e.printStackTrace();
 		}
 	}
@@ -197,10 +217,15 @@ public class TARDISWeepingAngelsCompat implements Listener {
 
 		if (mMobRewardData != null && !mMobRewardData.containsKey(monster.name())) {
 			Messages.debug("New TARDIS mob found=%s", monster.name());
-			mMobRewardData.put(monster.name(),
-					new MobRewardData(MobPlugins.MobPluginNames.TARDISWeepingAngels, monster.name(), monster.name(),
-							"40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+			mMobRewardData.put(monster.name(), new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(),
+					monster.name(), "40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveTARDISWeepingAngelsMobsData(monster.name());
+			try {
+				MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		event.getEntity().setMetadata(MH_TARDISWEEPINGANGELS,

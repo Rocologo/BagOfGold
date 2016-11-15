@@ -12,10 +12,18 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
+import one.lindegaard.MobHunting.mobs.PluginManager;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
+import one.lindegaard.MobHunting.mobs.MobStore;
 
 public abstract class DatabaseDataStore implements IDataStore {
 	/**
@@ -27,16 +35,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * Args: player id
 	 */
 	protected PreparedStatement mSavePlayerStats;
-
-	/**
-	 * Args: player id
-	 */
-	protected PreparedStatement mLoadAchievements;
-
-	/**
-	 * Args: player id, achievement, date, progress
-	 */
-	protected PreparedStatement mSaveAchievement;
 
 	/**
 	 * Args: player uuid
@@ -94,16 +92,19 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract Connection setupConnection() throws SQLException, DataStoreException;
 
 	/**
-	 * Setup / Create database tables for MobHunting
+	 * Setup / Create database version 2 tables for MobHunting
 	 */
-	protected abstract void setupTables(Connection connection) throws SQLException;
+	protected abstract void setupV2Tables(Connection connection) throws SQLException;
 
-	public static int connections = 0;
-	public static final int MAX_CONNECTIONS = 2;
-
-	public enum PreparedConnectionType {
-		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID
-	};
+	/**
+	 * Setup / Create database version 3 tables for MobHunting
+	 */
+	protected abstract void setupV3Tables(Connection connection) throws SQLException;
+	
+	/**
+	 * Setup / Setup Triggers for V3 Database Layout
+	 */
+	protected abstract void setupTriggerV3(Connection connection) throws SQLException;
 
 	/**
 	 * Open a connection to the Database and prepare a statement for executing.
@@ -114,6 +115,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	protected abstract void openPreparedStatements(Connection connection, PreparedConnectionType preparedConnectionType)
 			throws SQLException;
+
+	public enum PreparedConnectionType {
+		SAVE_PLAYER_STATS, LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID, LOAD_MOBS, INSERT_MOBS, UPDATE_MOBS
+	};
 
 	/**
 	 * Initialize the connection. Must be called after Opening of initial
@@ -126,8 +131,65 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			mConnection = setupConnection();
 			mConnection.setAutoCommit(false);
-			setupTables(mConnection);
+
+			// Find current database version
+			if (MobHunting.getConfigManager().databaseVersion == 0) {
+				Statement statement = mConnection.createStatement();
+				try {
+					ResultSet rs = statement.executeQuery("SELECT MOB_ID FROM mh_Mobs LIMIT 0");
+					rs.close();
+					// The TABLE mh_Mobs created for V3 and does only contain
+					// data after migration
+					MobHunting.getConfigManager().databaseVersion = 3;
+					MobHunting.getConfigManager().saveConfig();
+				} catch (SQLException e1) {
+					try {
+						ResultSet rs = statement.executeQuery("SELECT UUID from mh_Players LIMIT 0");
+						rs.close();
+						// Player UUID is migrated in V2
+						MobHunting.getConfigManager().databaseVersion = 2;
+						MobHunting.getConfigManager().saveConfig();
+					} catch (SQLException e2) {
+						// database if from before Minecraft 1.7.9 R1 (No UUID)
+						// = V1
+						MobHunting.getConfigManager().databaseVersion = 1;
+						MobHunting.getConfigManager().saveConfig();
+					}
+				}
+				statement.close();
+			}
+
+			switch (MobHunting.getConfigManager().databaseVersion) {
+			case 1:
+				// create new V2 tables and migrate data.
+				setupV2Tables(mConnection);
+			case 2:
+				// Create new V3 tables and migrate data;
+				setupV3Tables(mConnection);
+				migrateDatabaseLayoutFromV2toV3(mConnection);
+				setupTriggerV3(mConnection);
+				MobHunting.getConfigManager().databaseVersion = 3;
+				MobHunting.getConfigManager().saveConfig();
+				break;
+			case 3:
+				// DATABASE IS UPTODATE
+				break;
+			default: // not needed
+				setupV3Tables(mConnection);
+				migrateDatabaseLayoutFromV2toV3(mConnection);
+				setupTriggerV3(mConnection);
+				MobHunting.getConfigManager().databaseVersion = 3;
+				MobHunting.getConfigManager().saveConfig();
+			}
+
 			mGetPlayerData = new PreparedStatement[4];
+			
+			// Enable FOREIGN KEY for Sqlite database
+			if (!MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")){
+				Statement statement = mConnection.createStatement();
+				statement.execute("PRAGMA foreign_keys = ON");
+				statement.close();
+			}
 
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -156,11 +218,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		mGetPlayerData[1].close();
 		mGetPlayerData[2].close();
 		mGetPlayerData[3].close();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections = connections - 4;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-		}
 	}
 
 	/**
@@ -200,6 +257,509 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
 		}
+	}
+
+	/**
+	 * databaseFixLeaderboard - tries to fix inconsistens in the database. Will
+	 * later be used for cleaning the database; deleting old data or so. This is
+	 * not implemented yet.
+	 */
+	@Override
+	public void databaseFixLeaderboard() throws SQLException {
+		Statement statement = mConnection.createStatement();
+		try {
+			Messages.debug("Beginning cleaning of database");
+			int result;
+			result = statement.executeUpdate("DELETE FROM mh_Achievements WHERE PLAYER_ID NOT IN "
+					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Achievements.PLAYER_ID=mh_Players.PLAYER_ID);");
+			Messages.debug("%s rows was deleted from Mh_Achievements", result);
+			result = statement.executeUpdate("DELETE FROM mh_AllTime WHERE PLAYER_ID NOT IN "
+					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_AllTime.PLAYER_ID=mh_Players.PLAYER_ID);");
+			Messages.debug("%s rows was deleted from Mh_AllTime", result);
+			result = statement.executeUpdate("DELETE FROM mh_Daily WHERE PLAYER_ID NOT IN "
+					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Daily.PLAYER_ID=mh_Players.PLAYER_ID);");
+			Messages.debug("%s rows was deleted from Mh_Daily", result);
+			result = statement.executeUpdate("DELETE FROM mh_Monthly WHERE PLAYER_ID NOT IN "
+					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Monthly.PLAYER_ID=mh_Players.PLAYER_ID);");
+			Messages.debug("%s rows was deleted from Mh_Monthly", result);
+			result = statement.executeUpdate("DELETE FROM mh_Weekly WHERE PLAYER_ID NOT IN "
+					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Weekly.PLAYER_ID=mh_Players.PLAYER_ID);");
+			Messages.debug("%s rows was deleted from Mh_Weekly", result);
+			result = statement.executeUpdate("DELETE FROM mh_Yearly WHERE PLAYER_ID NOT IN "
+					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Yearly.PLAYER_ID=mh_Players.PLAYER_ID);");
+			Messages.debug("%s rows was deleted from Mh_Yearly", result);
+			statement.close();
+			mConnection.commit();
+			Bukkit.getLogger().info("MobHunting Database was cleaned");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// ******************************************************************
+	// V2 To V3 Database migration
+	// ******************************************************************
+
+	// Migrate from DatabaseLayout from V2 to V3
+	public void migrateDatabaseLayoutFromV2toV3(Connection connection) throws SQLException {
+		Bukkit.getLogger().info("[MobHunting] DATAMIGRATION FROM DATABASE LAYOUT V2 TO V3.");
+		Statement statement = connection.createStatement();
+
+		// Insert missing Mobs to mh_Mobs
+		Bukkit.getLogger().info("[MobHunting] Insert missing mobs into mh_Mobs");
+		insertVanillaMobs();
+
+		HashMap<String, Integer> mobs = new HashMap<>();
+		try {
+			ResultSet rs = statement.executeQuery("SELECT * FROM mh_Mobs");
+			while (rs.next()) {
+				mobs.put(rs.getString("MOBTYPE"), rs.getInt("MOB_ID"));
+			}
+			rs.close();
+		} catch (Exception e) {
+			Bukkit.getLogger().severe("Error while fetching Vanilla Mobs from mh_Mobs");
+			e.printStackTrace();
+		}
+
+		try {
+			int n = 0;
+			ResultSet rs = statement.executeQuery("SELECT * FROM mh_DailyV2"
+			+ " inner join mh_Players using (PLAYER_ID) WHERE NAME!=''"); 
+			while (rs.next()) {
+				int achievements = rs.getInt("ACHIEVEMENT_COUNT");
+				Statement statement2 = connection.createStatement();
+				for (ExtendedMobType mob : ExtendedMobType.values()) {
+					String id = rs.getString("ID");
+					int mob_id = mobs.get(mob.name());
+					int player_id = rs.getInt("PLAYER_ID");
+					int kills = rs.getInt(mob.name() + "_KILL");
+					int assists = rs.getInt(mob.name() + "_ASSIST");
+					if (kills > 0 || assists > 0 || achievements>0) {
+						String insertStr = "INSERT INTO mh_Daily VALUES (" + id + "," + mob_id + "," + player_id + ","
+								+ achievements + "," + kills + "," + assists + ")";
+						statement2.executeUpdate(insertStr);
+						n++;
+						achievements=0;
+					}
+				}
+				statement2.close();
+				connection.commit();
+			}
+			rs.close();
+			Bukkit.getLogger().info("[MobHunting] Migrated "+n+" records into mh_Daily.");
+		} catch (SQLException e) {
+			Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_Daily");
+			e.printStackTrace();
+		}
+		
+		try {
+			int n = 0;
+			ResultSet rs = statement.executeQuery("SELECT * FROM mh_WeeklyV2"
+			+ " inner join mh_Players using (PLAYER_ID) WHERE NAME!=''");
+
+			while (rs.next()) {
+				int achievements = rs.getInt("ACHIEVEMENT_COUNT");
+				Statement statement2 = connection.createStatement();
+				for (ExtendedMobType mob : ExtendedMobType.values()) {
+					String id = rs.getString("ID");
+					int mob_id = mobs.get(mob.name());
+					int player_id = rs.getInt("PLAYER_ID");
+					int kills = rs.getInt(mob.name() + "_KILL");
+					int assists = rs.getInt(mob.name() + "_ASSIST");
+					if (kills > 0 || assists > 0 || achievements>0) {
+						String insertStr = "INSERT INTO mh_Weekly VALUES (" + id + "," + mob_id + "," + player_id + ","
+								+ achievements + "," + kills + "," + assists + ")";
+						statement2.executeUpdate(insertStr);
+						n++;
+						achievements=0;
+					}
+				}
+				statement2.close();
+				connection.commit();
+			}
+			rs.close();
+			Bukkit.getLogger().info("[MobHunting] Migrated "+n+" records into mh_Weekly.");
+		} catch (SQLException e) {
+			Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_Weekly");
+			e.printStackTrace();
+		}
+		
+		try {
+			int n = 0;
+			ResultSet rs = statement.executeQuery("SELECT * FROM mh_MonthlyV2"+ " inner join mh_Players using (PLAYER_ID) WHERE NAME!=''");
+
+			while (rs.next()) {
+				int achievements = rs.getInt("ACHIEVEMENT_COUNT");
+				Statement statement2 = connection.createStatement();
+				for (ExtendedMobType mob : ExtendedMobType.values()) {
+					String id = rs.getString("ID");
+					int mob_id = mobs.get(mob.name());
+					int player_id = rs.getInt("PLAYER_ID");
+					int kills = rs.getInt(mob.name() + "_KILL");
+					int assists = rs.getInt(mob.name() + "_ASSIST");
+					if (kills > 0 || assists > 0|| achievements>0) {
+						String insertStr = "INSERT INTO mh_Monthly VALUES (" + id + "," + mob_id + "," + player_id + ","
+								+ achievements + "," + kills + "," + assists + ")";
+						statement2.executeUpdate(insertStr);
+						n++;
+						achievements=0;
+					}
+				}
+				statement2.close();
+				connection.commit();
+			}
+			rs.close();
+			Bukkit.getLogger().info("[MobHunting] Migrated "+n+" records into mh_Monthly.");
+		} catch (SQLException e) {
+			Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_Monthly");
+			e.printStackTrace();
+		}
+		
+		try {
+			int n = 0;
+			ResultSet rs = statement.executeQuery("SELECT * FROM mh_YearlyV2"+ " inner join mh_Players using (PLAYER_ID) WHERE NAME!=''");
+
+			while (rs.next()) {
+				int achievements = rs.getInt("ACHIEVEMENT_COUNT");
+				Statement statement2 = connection.createStatement();
+				for (ExtendedMobType mob : ExtendedMobType.values()) {
+					String id = rs.getString("ID");
+					int mob_id = mobs.get(mob.name());
+					int player_id = rs.getInt("PLAYER_ID");
+					int kills = rs.getInt(mob.name() + "_KILL");
+					int assists = rs.getInt(mob.name() + "_ASSIST");
+					if (kills > 0 || assists > 0|| achievements > 0) {
+						String insertStr = "INSERT INTO mh_Yearly VALUES (" + id + "," + mob_id + "," + player_id + ","
+								+ achievements + "," + kills + "," + assists + ")";
+						statement2.executeUpdate(insertStr);
+						n++;
+						achievements=0;
+					}
+				}
+				statement2.close();
+				connection.commit();
+			}
+			rs.close();
+			Bukkit.getLogger().info("[MobHunting] Migrated "+n+" records into mh_Yearly.");
+		} catch (SQLException e) {
+			Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_Yearly");
+			e.printStackTrace();
+		}
+		
+		try {
+			int n = 0;
+			ResultSet rs = statement.executeQuery("SELECT * FROM mh_AllTimeV2"+ " inner join mh_Players using (PLAYER_ID) WHERE NAME!=''");
+
+			while (rs.next()) {
+				int achievements = rs.getInt("ACHIEVEMENT_COUNT");
+				Statement statement2 = connection.createStatement();
+				for (ExtendedMobType mob : ExtendedMobType.values()) {
+					int mob_id = mobs.get(mob.name());
+					int player_id = rs.getInt("PLAYER_ID");
+					int kills = rs.getInt(mob.name() + "_KILL");
+					int assists = rs.getInt(mob.name() + "_ASSIST");
+					if (kills > 0 || assists > 0 || achievements > 0) {
+						String insertStr = "INSERT INTO mh_AllTime VALUES (" + mob_id + "," + player_id + ","
+								+ achievements + "," + kills + "," + assists + ")";
+						statement2.executeUpdate(insertStr);
+						n++;
+						achievements=0;
+					}
+				}
+				statement2.close();
+				connection.commit();
+			}
+			rs.close();
+			Bukkit.getLogger().info("[MobHunting] Migrated "+n+" records into mh_AllTime.");
+		} catch (SQLException e) {
+			Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_AllTime");
+			e.printStackTrace();
+		}
+
+		statement.close();
+		connection.commit();
+	}
+
+	public int getMobIdFromExtendedMobType(String mob, int plugin_id) {
+		int res = 0;
+		try {
+			Statement statement = mConnection.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT MOB_ID from mh_Mobs WHERE PLUGIN_ID=" + plugin_id
+					+ " AND MOBTYPE='" + mob + "'");
+			res = rs.getInt("MOB_ID");
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			Bukkit.getLogger().severe("[MobHunting] The ExtendedMobType "+mob+" was not found");
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	@Override
+	public void insertVanillaMobs() {
+		int n = 0;
+		// Adding Vanilla Mobs to mh_Mobs
+		try {
+			Statement statement = mConnection.createStatement();
+			for (ExtendedMobType mob : ExtendedMobType.values()) {
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (0,'" + mob.name() + "')");
+				n++;
+			}
+			if (n>0)
+			Bukkit.getLogger().info("[MobHunting] "+n+" Minecraft Vanilla Mobs was inserted to mh_Mobs");
+			statement.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void insertMythicMobs() throws SQLException {
+		Statement statement = mConnection.createStatement();
+		int n = 0;
+		// Adding MythicMobs to mh_Mobs
+		for (String mob : MythicMobsCompat.getMobRewardData().keySet()) {
+				try {
+					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
+					n++;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		if(n>0)
+		Bukkit.getLogger().info("[MobHunting] "+n+" MythicMobs was inserted to mh_Mobs");
+		statement.close();
+		mConnection.commit();
+	}
+
+	@Override
+	public void insertMythicMobs(String mob) throws SQLException {
+		Statement statement = mConnection.createStatement();
+			if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.MythicMobs) == 0)
+				try {
+					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
+					Bukkit.getLogger().info("[MobHunting] MobType "+ mob+" (MythicMobs) was inserted to mh_Mobs");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			
+		statement.close();
+		mConnection.commit();
+	}
+
+	@Override
+	public void insertCitizensMobs() throws SQLException {
+		Statement statement = mConnection.createStatement();
+		int n = 0;
+		for (String mob : CitizensCompat.getMobRewardData().keySet()) {
+			//if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.Citizens) == 0)
+			try {
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (2,'" + mob + "')");
+				n++;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (n>0)
+		Bukkit.getLogger().info("[MobHunting] "+n+" Citizens mobs was inserted to mh_Mobs");
+		statement.close();
+		mConnection.commit();
+	}
+
+	@Override
+	public void insertCitizensMobs(String mob) throws SQLException {
+		Statement statement = mConnection.createStatement();
+			if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.Citizens) == 0)
+			try {
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (2,'" + mob + "')");
+				Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (Citizens mob) was inserted to mh_Mobs");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		statement.close();
+		mConnection.commit();
+	}
+
+	@Override
+	public void insertTARDISWeepingAngelsMobs() throws SQLException {
+		Statement statement = mConnection.createStatement();
+		int n = 0;
+		// Adding TARDISWeepingAngels to mh_Mobs
+		for (String mob : TARDISWeepingAngelsCompat.getMobRewardData().keySet()) {
+			//if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.TARDISWeepingAngels) == 0)
+			try {
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (3,'" + mob + "')");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if(n>0)
+		Bukkit.getLogger().info("[MobHunting] "+n+"TARDIS Weeping Angel Mobs inserted to mh_Mobs");
+		statement.close();
+		mConnection.commit();
+	}
+
+	@Override
+	public void insertTARDISWeepingAngelsMobs(String mob) throws SQLException {
+		Statement statement = mConnection.createStatement();
+		// Adding TARDISWeepingAngels to mh_Mobs
+		if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.TARDISWeepingAngels) == 0)
+			try {
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (3,'" + mob + "')");
+				Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (TARDISWeepingAngel Mob) inserted to mh_Mobs");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		statement.close();
+		mConnection.commit();
+	}
+
+	@Override
+	public void insertCustomMobs() throws SQLException {
+		Statement statement = mConnection.createStatement();
+		int n = 0;
+		for (String mob : CustomMobsCompat.getMobRewardData().keySet()) {
+			//if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.CustomMobs) == 0)
+			try {
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (4,'" + mob + "')");
+				n++;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if(n>0)
+		Bukkit.getLogger().info("[MobHunting] "+n+" CustomMobs was inserted to mh_Mobs");
+		statement.close();
+		mConnection.commit();
+	}
+
+	@Override
+	public void insertCustomMobs(String mob) throws SQLException {
+		Statement statement = mConnection.createStatement();
+			if (MobHunting.getMobManager().getMobIdFromMobType(mob, MobPlugin.CustomMobs) == 0)
+			try {
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (4,'" + mob + "')");
+				Bukkit.getLogger().info("[MobHunting] MobType "+mob+" (CustomMobs) was inserted to mh_Mobs");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		statement.close();
+		mConnection.commit();
+	}
+
+	// ******************************************************************
+	// Bounties
+	// ******************************************************************
+	@Override
+	public Set<Bounty> loadBounties(OfflinePlayer offlinePlayer) throws DataStoreException {
+		Set<Bounty> bounties = new HashSet<Bounty>();
+		try {
+			int playerId = getPlayerId(offlinePlayer);
+			openPreparedStatements(mConnection, PreparedConnectionType.GET_BOUNTIES);
+			mGetBounties.setInt(1, playerId);
+			mGetBounties.setInt(2, playerId);
+
+			ResultSet set = mGetBounties.executeQuery();
+
+			while (set.next()) {
+				Bounty b = new Bounty();
+				b.setBountyOwnerId(set.getInt(1));
+				b.setBountyOwner(getPlayerByPlayerId(set.getInt(1)));
+				b.setMobtype(set.getString(2));
+				b.setWantedPlayerId(set.getInt(3));
+				b.setWantedPlayer(getPlayerByPlayerId(set.getInt(3)));
+				b.setNpcId(set.getInt(4));
+				b.setMobId(set.getString(5));
+				b.setWorldGroup(set.getString(6));
+				b.setCreatedDate(set.getLong(7));
+				b.setEndDate(set.getLong(8));
+				b.setPrize(set.getDouble(9));
+				b.setMessage(set.getString(10));
+				b.setStatus(BountyStatus.valueOf(set.getInt(11)));
+				bounties.add(b);
+			}
+			set.close();
+			mGetBounties.close();
+			return (Set<Bounty>) bounties;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DataStoreException(e);
+		}
+	};
+
+	@Override
+	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
+			for (Bounty bounty : bountyDataSet) {
+				int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
+				int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
+				mInsertBounty.setString(1, bounty.getMobtype());
+				mInsertBounty.setInt(2, bountyOwnerId);
+				mInsertBounty.setInt(3, wantedPlayerId);
+				mInsertBounty.setInt(4, bounty.getNpcId());
+				mInsertBounty.setString(5, bounty.getMobId());
+				mInsertBounty.setString(6, bounty.getWorldGroup());
+				mInsertBounty.setLong(7, bounty.getCreatedDate());
+				mInsertBounty.setLong(8, bounty.getEndDate());
+				mInsertBounty.setDouble(9, bounty.getPrize());
+				mInsertBounty.setString(10, bounty.getMessage());
+				mInsertBounty.setInt(11, bounty.getStatus().getValue());
+				mInsertBounty.addBatch();
+			}
+			mInsertBounty.executeBatch();
+			mInsertBounty.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+
+	};
+
+	@Override
+	public void updateBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_BOUNTY);
+			for (Bounty bounty : bountyDataSet) {
+				mUpdateBounty.setDouble(1, bounty.getPrize());
+				mUpdateBounty.setString(2, bounty.getMessage());
+				mUpdateBounty.setLong(3, bounty.getEndDate());
+				mUpdateBounty.setInt(4, bounty.getStatus().getValue());
+				mUpdateBounty.setInt(5, getPlayerId(bounty.getWantedPlayer()));
+				mUpdateBounty.setInt(6, getPlayerId(bounty.getBountyOwner()));
+				mUpdateBounty.setString(7, bounty.getWorldGroup());
+				mUpdateBounty.addBatch();
+			}
+			mUpdateBounty.executeBatch();
+			mUpdateBounty.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+	};
+
+	@Override
+	public void deleteBounty(Set<Bounty> bounties) throws DataStoreException {
+		Iterator<Bounty> itr = bounties.iterator();
+		while (itr.hasNext()) {
+			Bounty b = itr.next();
+			b.setStatus(BountyStatus.deleted);
+		}
+		insertBounty(bounties);
+	}
+
+	@Override
+	public void cancelBounty(Set<Bounty> bounties) throws DataStoreException {
+		Iterator<Bounty> itr = bounties.iterator();
+		while (itr.hasNext()) {
+			Bounty b = itr.next();
+			b.setStatus(BountyStatus.canceled);
+		}
+		insertBounty(bounties);
 	}
 
 	// ******************************************************************
@@ -250,11 +810,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mInsertPlayerData.addBatch();
 			mInsertPlayerData.executeBatch();
 			mInsertPlayerData.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
@@ -274,11 +829,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mUpdatePlayerSettings.executeBatch();
 			mUpdatePlayerSettings.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
@@ -418,11 +968,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mUpdatePlayerName.setString(2, offlinePlayer.getUniqueId().toString());
 			mUpdatePlayerName.executeUpdate();
 			mUpdatePlayerName.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
 			mConnection.commit();
 		} finally {
 			mConnection.rollback();
@@ -449,19 +994,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 				UUID uid = UUID.fromString(set.getString(1));
 				set.close();
 				mGetPlayerUUID.close();
-				if (MobHunting.getConfigManager().debugSQL) {
-					connections--;
-					if (connections >= MAX_CONNECTIONS)
-						Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-				}
 				return Bukkit.getOfflinePlayer(uid);
 			}
 			mGetPlayerUUID.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
 			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -488,24 +1023,28 @@ public abstract class DatabaseDataStore implements IDataStore {
 				UUID uid = UUID.fromString(set.getString(1));
 				set.close();
 				mGetPlayerByPlayerId.close();
-				if (MobHunting.getConfigManager().debugSQL) {
-					connections--;
-					if (connections >= MAX_CONNECTIONS)
-						Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-				}
 				return Bukkit.getOfflinePlayer(uid);
 			}
 			mGetPlayerByPlayerId.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
 		}
 	}
+
+	// ******************************************************************
+	// ACHIEVEMENTS
+	// ******************************************************************
+
+	/**
+	 * Args: player id
+	 */
+	protected PreparedStatement mLoadAchievements;
+
+	/**
+	 * Args: player id, achievement, date, progress
+	 */
+	protected PreparedStatement mSaveAchievement;
 
 	/**
 	 * loadAchievements - loading the achievements for one player into memory
@@ -529,11 +1068,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 				set.close();
 			}
 			mLoadAchievements.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
 			return achievements;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -557,11 +1091,69 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mSaveAchievement.executeBatch();
 			mSaveAchievement.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
+
+			mConnection.commit();
+		} catch (SQLException e) {
+			rollback();
+			throw new DataStoreException(e);
+		}
+	}
+
+	// ******************************************************************
+	// MOBS
+	// ******************************************************************
+
+	/**
+	 * Args: player id
+	 */
+	protected PreparedStatement mLoadMobs;
+
+	/**
+	 * Args: player id, achievement, date, progress
+	 */
+	protected PreparedStatement mInsertMobs;
+
+	/**
+	 * Args: player id, achievement, date, progress
+	 */
+	protected PreparedStatement mUpdateMobs;
+
+	/**
+	 * loadMobs - load all mobs from database into memory
+	 */
+	@Override
+	public Set<MobStore> loadMobs() throws DataStoreException {
+		HashSet<MobStore> mobs = new HashSet<MobStore>();
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.LOAD_MOBS);
+			ResultSet set = mLoadMobs.executeQuery();
+			while (set.next()) {
+				mobs.add(new MobStore(set.getInt("MOB_ID"), PluginManager.valueOf(set.getInt("PLUGIN_ID")),
+						set.getString("MOBTYPE")));
 			}
+			set.close();
+			mLoadMobs.close();
+			return mobs;
+		} catch (SQLException e) {
+			throw new DataStoreException(e);
+		}
+	}
+
+	/**
+	 * saveMobs - save all NEW mobs to the Database
+	 */
+	@Override
+	public void insertMobs(Set<MobStore> mobs) throws DataStoreException {
+		try {
+			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_MOBS);
+			for (MobStore mob : mobs) {
+				mInsertMobs.setInt(1, mob.getMobPlugin().getId());
+				mInsertMobs.setString(2, mob.getMobtype());
+
+				mInsertMobs.addBatch();
+			}
+			mInsertMobs.executeBatch();
+			mInsertMobs.close();
 
 			mConnection.commit();
 		} catch (SQLException e) {
@@ -571,178 +1163,27 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	/**
-	 * databaseFixLeaderboard - tries to fix inconsistens in the database. Will
-	 * later be used for cleaning the database; deleting old data or so. This is
-	 * not implemented yet.
+	 * updateMobs - update all EXSISTING mobs in the Database
 	 */
 	@Override
-	public void databaseFixLeaderboard() throws SQLException {
-		Statement statement = mConnection.createStatement();
-		if (MobHunting.getConfigManager().debugSQL) {
-			connections++;
-			if (connections >= MAX_CONNECTIONS)
-				Messages.debug("DatabaseDatastore: Open - connections=%s", connections);
-		}
+	public void updateMobs(Set<MobStore> mobs) throws DataStoreException {
 		try {
-			Messages.debug("Beginning cleaning of database");
-			int result;
-			result = statement.executeUpdate("DELETE FROM mh_Achievements WHERE PLAYER_ID NOT IN "
-					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Achievements.PLAYER_ID=mh_Players.PLAYER_ID);");
-			Messages.debug("%s rows was deleted from Mh_Achievements", result);
-			result = statement.executeUpdate("DELETE FROM mh_AllTime WHERE PLAYER_ID NOT IN "
-					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_AllTime.PLAYER_ID=mh_Players.PLAYER_ID);");
-			Messages.debug("%s rows was deleted from Mh_AllTime", result);
-			result = statement.executeUpdate("DELETE FROM mh_Daily WHERE PLAYER_ID NOT IN "
-					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Daily.PLAYER_ID=mh_Players.PLAYER_ID);");
-			Messages.debug("%s rows was deleted from Mh_Daily", result);
-			result = statement.executeUpdate("DELETE FROM mh_Monthly WHERE PLAYER_ID NOT IN "
-					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Monthly.PLAYER_ID=mh_Players.PLAYER_ID);");
-			Messages.debug("%s rows was deleted from Mh_Monthly", result);
-			result = statement.executeUpdate("DELETE FROM mh_Weekly WHERE PLAYER_ID NOT IN "
-					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Weekly.PLAYER_ID=mh_Players.PLAYER_ID);");
-			Messages.debug("%s rows was deleted from Mh_Weekly", result);
-			result = statement.executeUpdate("DELETE FROM mh_Yearly WHERE PLAYER_ID NOT IN "
-					+ "(SELECT PLAYER_ID FROM mh_Players " + "where mh_Yearly.PLAYER_ID=mh_Players.PLAYER_ID);");
-			Messages.debug("%s rows was deleted from Mh_Yearly", result);
-			statement.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
-			mConnection.commit();
-			Messages.debug("MobHunting Database was cleaned");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_MOBS);
+			for (MobStore mob : mobs) {
+				mUpdateMobs.setInt(1, mob.getMobPlugin().getId());
+				mUpdateMobs.setString(2, mob.getMobtype());
+				mUpdateMobs.setInt(3, mob.getMob_id());
 
-	// ******************************************************************
-	// Bounties
-	// ******************************************************************
-	@Override
-	public Set<Bounty> loadBounties(OfflinePlayer offlinePlayer) throws DataStoreException {
-		Set<Bounty> bounties = new HashSet<Bounty>();
-		try {
-			int playerId = getPlayerId(offlinePlayer);
-			openPreparedStatements(mConnection, PreparedConnectionType.GET_BOUNTIES);
-			mGetBounties.setInt(1, playerId);
-			mGetBounties.setInt(2, playerId);
+				mUpdateMobs.addBatch();
+			}
+			mUpdateMobs.executeBatch();
+			mUpdateMobs.close();
 
-			ResultSet set = mGetBounties.executeQuery();
-
-			while (set.next()) {
-				Bounty b = new Bounty();
-				b.setBountyOwnerId(set.getInt(1));
-				b.setBountyOwner(getPlayerByPlayerId(set.getInt(1)));
-				b.setMobtype(set.getString(2));
-				b.setWantedPlayerId(set.getInt(3));
-				b.setWantedPlayer(getPlayerByPlayerId(set.getInt(3)));
-				b.setNpcId(set.getInt(4));
-				b.setMobId(set.getString(5));
-				b.setWorldGroup(set.getString(6));
-				b.setCreatedDate(set.getLong(7));
-				b.setEndDate(set.getLong(8));
-				b.setPrize(set.getDouble(9));
-				b.setMessage(set.getString(10));
-				b.setStatus(BountyStatus.valueOf(set.getInt(11)));
-				bounties.add(b);
-			}
-			set.close();
-			mGetBounties.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
-			return (Set<Bounty>) bounties;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new DataStoreException(e);
-		}
-	};
-
-	@Override
-	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
-		try {
-			openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
-			for (Bounty bounty : bountyDataSet) {
-				int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
-				int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
-				mInsertBounty.setString(1, bounty.getMobtype());
-				mInsertBounty.setInt(2, bountyOwnerId);
-				mInsertBounty.setInt(3, wantedPlayerId);
-				mInsertBounty.setInt(4, bounty.getNpcId());
-				mInsertBounty.setString(5, bounty.getMobId());
-				mInsertBounty.setString(6, bounty.getWorldGroup());
-				mInsertBounty.setLong(7, bounty.getCreatedDate());
-				mInsertBounty.setLong(8, bounty.getEndDate());
-				mInsertBounty.setDouble(9, bounty.getPrize());
-				mInsertBounty.setString(10, bounty.getMessage());
-				mInsertBounty.setInt(11, bounty.getStatus().getValue());
-				mInsertBounty.addBatch();
-			}
-			mInsertBounty.executeBatch();
-			mInsertBounty.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
 			mConnection.commit();
 		} catch (SQLException e) {
 			rollback();
 			throw new DataStoreException(e);
 		}
-
-	};
-
-	@Override
-	public void updateBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
-		try {
-			openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_BOUNTY);
-			for (Bounty bounty : bountyDataSet) {
-				mUpdateBounty.setDouble(1, bounty.getPrize());
-				mUpdateBounty.setString(2, bounty.getMessage());
-				mUpdateBounty.setLong(3, bounty.getEndDate());
-				mUpdateBounty.setInt(4, bounty.getStatus().getValue());
-				mUpdateBounty.setInt(5, getPlayerId(bounty.getWantedPlayer()));
-				mUpdateBounty.setInt(6, getPlayerId(bounty.getBountyOwner()));
-				mUpdateBounty.setString(7, bounty.getWorldGroup());
-				mUpdateBounty.addBatch();
-			}
-			mUpdateBounty.executeBatch();
-			mUpdateBounty.close();
-			if (MobHunting.getConfigManager().debugSQL) {
-				connections--;
-				if (connections >= MAX_CONNECTIONS)
-					Messages.debug("DatabaseDatastore: Close - connections=%s", connections);
-			}
-			mConnection.commit();
-		} catch (SQLException e) {
-			rollback();
-			throw new DataStoreException(e);
-		}
-	};
-
-	@Override
-	public void deleteBounty(Set<Bounty> bounties) throws DataStoreException {
-		Iterator<Bounty> itr = bounties.iterator();
-		while (itr.hasNext()) {
-			Bounty b = itr.next();
-			b.setStatus(BountyStatus.deleted);
-		}
-		insertBounty(bounties);
-	}
-
-	@Override
-	public void cancelBounty(Set<Bounty> bounties) throws DataStoreException {
-		Iterator<Bounty> itr = bounties.iterator();
-		while (itr.hasNext()) {
-			Bounty b = itr.next();
-			b.setStatus(BountyStatus.canceled);
-		}
-		insertBounty(bounties);
 	}
 
 }

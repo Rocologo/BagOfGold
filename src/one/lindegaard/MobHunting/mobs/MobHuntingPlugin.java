@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting.mobs;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;

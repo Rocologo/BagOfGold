@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -13,8 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import one.lindegaard.MobHunting.HuntData;
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class Misc {
@@ -70,6 +67,10 @@ public class Misc {
 			return new Location(null, x, y, z, yaw, pitch);
 	}
 
+	public static boolean isMC111() {
+		return Bukkit.getBukkitVersion().contains("1.11");
+	}
+
 	public static boolean isMC110() {
 		return Bukkit.getBukkitVersion().contains("1.10");
 	}
@@ -84,6 +85,14 @@ public class Misc {
 
 	public static boolean isMC17() {
 		return Bukkit.getBukkitVersion().contains("1.7");
+	}
+
+	public static boolean isMC111OrNewer() {
+		if (isMC111())
+			return true;
+		else if (isMC110() || isMC19() || isMC18() || isMC17())
+			return false;
+		return true;
 	}
 
 	public static boolean isMC110OrNewer() {

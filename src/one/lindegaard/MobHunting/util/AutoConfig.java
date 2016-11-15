@@ -341,7 +341,7 @@ public abstract class AutoConfig {
 						throw new IllegalArgumentException(
 								"SaveConfig - Cannot use type "
 										+ field.getType().getSimpleName()
-										+ " for AutoConfiguration");
+										+ " for AutoConfiguration ("+field.getName()+")");
 				}
 
 				// Record the comment

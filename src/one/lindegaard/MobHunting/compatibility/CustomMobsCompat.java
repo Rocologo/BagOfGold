@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import de.hellfirepvp.api.event.CustomMobSpawnEvent;
 import de.hellfirepvp.api.event.CustomMobSpawnEvent.SpawnReason;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobPlugins;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
 public class CustomMobsCompat implements Listener {
@@ -71,6 +72,13 @@ public class CustomMobsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
+				try {
+					if (mMobRewardData.size() > 0)
+						MobHunting.getStoreManager().insertCustomMobs(key);
+				} catch (SQLException e) {
+					Messages.debug("Error on creating CustomMobs in Database");
+					e.printStackTrace();
+				}
 			}
 			Messages.debug("Loaded %s CustomMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -78,6 +86,7 @@ public class CustomMobsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public void loadCustomMobsData(String key) {
@@ -94,6 +103,13 @@ public class CustomMobsCompat implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			if (mMobRewardData.size() > 0)
+				MobHunting.getStoreManager().insertCustomMobs(key);
+		} catch (SQLException e) {
+			Messages.debug("Error on creating CustomMobs in Database");
 			e.printStackTrace();
 		}
 	}
@@ -201,10 +217,15 @@ public class CustomMobsCompat implements Listener {
 
 		{
 			Messages.debug("New CustomMobName found=%s,%s", mob.getName(), mob.getDisplayName());
-			mMobRewardData.put(mob.getName(),
-					new MobRewardData(MobPlugins.MobPluginNames.CustomMobs, mob.getName(), mob.getDisplayName(), "10",
-							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(),
+					mob.getDisplayName(), "10", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveCustomMobsData(mob.getName());
+			try {
+				MobHunting.getStoreManager().insertCustomMobs(mob.getName());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		entity.setMetadata(MH_CUSTOMMOBS, new FixedMetadataValue(mPlugin, mMobRewardData.get(mob.getName())));

@@ -62,6 +62,8 @@ import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
+import one.lindegaard.MobHunting.mobs.MobManager;
+import one.lindegaard.MobHunting.mobs.MobStore;
 import one.lindegaard.MobHunting.modifier.*;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.rewards.Rewards;
@@ -117,6 +119,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 	private static MetricsManager mMetricsManager;
 	private static PlayerSettingsManager mPlayerSettingsManager;
 	private static WorldGroup mWorldGroupManager;
+	private static MobManager mMobPluginsManager;
 
 	public static IDataStore mStore;
 	private static DataStoreManager mStoreManager;
@@ -187,6 +190,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 			mStoreManager = new DataStoreManager(mStore);
 
 			mPlayerSettingsManager = new PlayerSettingsManager();
+
+			mMobPluginsManager = new MobManager();
 
 			// Handle compatability stuff
 			registerPlugin(EssentialsCompat.class, "Essentials");
@@ -454,6 +459,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 		return mRewardManager;
 	}
 
+	/**
+	 * Get the MobManager
+	 * 
+	 * @return
+	 */
+	public static MobManager getMobManager() {
+		return mMobPluginsManager;
+	}
+
 	// ************************************************************************************
 	// EVENTS
 	// ************************************************************************************
@@ -690,7 +704,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
 			return;
 		}
-		
+
 		// Killer is a NPC
 		if (killer != null && CitizensCompat.isNPC(killer))
 			return;
@@ -705,13 +719,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 								killer.getWorld().getName());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
 						return;
-						// isAllowedByWorldGuard does not return null if the MobHunting flag is not defined.
+						// isAllowedByWorldGuard does not return null if the
+						// MobHunting flag is not defined.
 						// so WorldGuard can't overrule with MobHuting allow.
-						
-						//Messages.debug(
-						//		"KillAllowed %s: Mobhunting disabled in world '%s', but overruled with MobHunting=ALLOW",
-						//		killer.getName(), killer.getWorld().getName());
-						//Messages.learn(killer, Messages.getString("mobhunting.learn.overruled"));
+
+						// Messages.debug(
+						// "KillAllowed %s: Mobhunting disabled in world '%s',
+						// but overruled with MobHunting=ALLOW",
+						// killer.getName(), killer.getWorld().getName());
+						// Messages.learn(killer,
+						// Messages.getString("mobhunting.learn.overruled"));
 					} else {
 						Messages.debug("KillBlocked %s: Mobhunting disabled in world '%s'", killer.getName(),
 								killer.getWorld().getName());
@@ -735,17 +752,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (WorldGuardCompat.isSupported()) {
 			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
 				if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, DefaultFlag.MOB_DAMAGE, true)) {
-					//if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
-					//		true)) {
-					//	Messages.debug(
-					//			"KillAllowed:(1) %s is hiding in WG region, but this is overruled with MobHunting=allow",
-					//			killer.getName());
-					//} else {
-						Messages.debug("KillBlocked:(2) %s is hiding in WG region with mob-damage=DENY",
-								killer.getName());
-						Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
-						return;
-					//}
+					// if (WorldGuardHelper.isAllowedByWorldGuard(killer,
+					// killed, WorldGuardHelper.getMobHuntingFlag(),
+					// true)) {
+					// Messages.debug(
+					// "KillAllowed:(1) %s is hiding in WG region, but this is
+					// overruled with MobHunting=allow",
+					// killer.getName());
+					// } else {
+					Messages.debug("KillBlocked:(2) %s is hiding in WG region with mob-damage=DENY", killer.getName());
+					Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
+					return;
+					// }
 				} else if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
 						true)) {
 					Messages.debug("KillBlocked: %s is in a protected region mobhunting=DENY", killer.getName());
@@ -1112,8 +1130,12 @@ public class MobHunting extends JavaPlugin implements Listener {
 				Messages.debug("%s got %s for killing %s", killer.getName(), reward, killed.getName());
 				// TODO: call bounty event, and check if canceled.
 				mRewardManager.depositPlayer(killer, reward);
-				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
-						killed.hasMetadata("MH:hasBonus"));
+
+				// MobStore mobStore =
+				// getMobManager().getMobStoreFromEntity(killed, true);
+				// getDataStoreManager().recordKill(killer,
+				// ExtendedMobType.getExtendedMobType(killed), mobStore,
+				// killed.hasMetadata("MH:hasBonus"));
 			} else {
 				Messages.debug("There is no Bounty on %s", killed.getName());
 			}
@@ -1178,14 +1200,18 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			// Record the kill in the Database
-			if (killer != null)
-				Messages.debug("RecordKill: %s killed a %s", killer.getName(),
-						ExtendedMobType.getExtendedMobType(killed));
-			// TODO: record MyythicMobs kills as its own kind of mobs
-			// TODO: record TARDISWeepingAngels kills as its own kind of mobs
-			if (ExtendedMobType.getExtendedMobType(killed) != null)
-				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed),
+			MobStore mobStore = getMobManager().getMobStoreFromEntity(killed, true);
+			if (killer != null) {
+				Messages.debug("RecordKill: %s killed a %s (%s)", killer.getName(), mobStore.getMobtype(),
+						mobStore.getMobPlugin().name());
+				getDataStoreManager().recordKill(killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
 						killed.hasMetadata("MH:hasBonus"));
+			}
+
+			// if (ExtendedMobType.getExtendedMobType(killed) != null)
+			// getDataStoreManager().recordKill(killer,
+			// ExtendedMobType.getExtendedMobType(killed),
+			// killed.hasMetadata("MH:hasBonus"));
 
 			// Tell the player that he got the reward/penalty, unless muted
 			if (!killer_muted)
@@ -1284,28 +1310,26 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cash = mConfig.getBaseKillPrize(killed) * multiplier;
 
 		if (cash >= 0.01) {
-			ExtendedMobType mob = ExtendedMobType.getExtendedMobType(killed);
-			if (mob != null) {
-				getDataStoreManager().recordAssist(player, killer, mob, killed.hasMetadata("MH:hasBonus"));
-				mRewardManager.depositPlayer(player, cash);
-				Messages.debug("%s got a on assist reward (%s)", player.getName(), mRewardManager.format(cash));
+			MobStore mobStore = getMobManager().getMobStoreFromEntity(killed, false);
+			getDataStoreManager().recordAssist(player, killer, ExtendedMobType.getExtendedMobType(killed), mobStore,
+					killed.hasMetadata("MH:hasBonus"));
+			mRewardManager.depositPlayer(player, cash);
+			Messages.debug("%s got a on assist reward (%s)", player.getName(), mRewardManager.format(cash));
 
-				if (ks != 1.0)
-					Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
-							+ Messages.getString("mobhunting.moneygain.assist", "prize", mRewardManager.format(cash)));
-				else
-					Messages.playerActionBarMessage(player,
-							ChatColor.GREEN + "" + ChatColor.ITALIC
-									+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
-											mRewardManager.format(cash), "bonuses", String.format("x%.1f", ks)));
-			} else {
-				player.sendMessage(
-						"[MobHunting] Error - please contact server owner and ask him to check the serverlog.");
-				MobHunting.getInstance().getLogger().warning("[MobHunting] WARNING - Assisted kill of a "
-						+ killed.getType() + ". Cant handle the entity type!");
-			}
-
+			if (ks != 1.0)
+				Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
+						+ Messages.getString("mobhunting.moneygain.assist", "prize", mRewardManager.format(cash)));
+			else
+				Messages.playerActionBarMessage(player,
+						ChatColor.GREEN + "" + ChatColor.ITALIC
+								+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
+										mRewardManager.format(cash), "bonuses", String.format("x%.1f", ks)));
+		} else {
+			player.sendMessage("[MobHunting] Error - please contact server owner and ask him to check the serverlog.");
+			MobHunting.getInstance().getLogger().warning(
+					"[MobHunting] WARNING - Assisted kill of a " + killed.getType() + ". Cant handle the entity type!");
 		}
+
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

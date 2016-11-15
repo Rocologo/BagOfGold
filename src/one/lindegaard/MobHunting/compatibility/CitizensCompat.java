@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -20,7 +21,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.MobPlugins;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 import one.lindegaard.MobHunting.npc.MasterMobHunterTrait;
@@ -97,6 +98,13 @@ public class CitizensCompat implements Listener {
 				MobRewardData mrd = new MobRewardData();
 				mrd.read(section);
 				mMobRewardData.put(key, mrd);
+				try {
+					if (mMobRewardData.size() > 0)
+						MobHunting.getStoreManager().insertCitizensMobs(key);
+				} catch (SQLException e) {
+					Messages.debug("Error on creating Citizens in Database");
+					e.printStackTrace();
+				}
 			}
 			Messages.debug("Loaded %s extra MobRewards.", mMobRewardData.size());
 		} catch (IOException e) {
@@ -104,6 +112,7 @@ public class CitizensCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	public void saveCitizensData() {
@@ -195,7 +204,8 @@ public class CitizensCompat implements Listener {
 			return CitizensAPI.getNPCRegistry().getNPC(entity)
 					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
 					|| CitizensAPI.getNPCRegistry().getNPC(entity)
-							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("sentinel"));
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
+		                                                 //TODO: is it "sentinel" or "Sentinel"
 		else
 			return false;
 	}
@@ -220,7 +230,7 @@ public class CitizensCompat implements Listener {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
-							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "10",
+							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "10",
 									"give {player} iron_sword 1", "You got an Iron sword.", 1));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
@@ -274,9 +284,15 @@ public class CitizensCompat implements Listener {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
-							new MobRewardData(MobPlugins.MobPluginNames.Citizens, "npc", npc.getFullName(), "0",
+							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
 									"give {player} iron_sword 1", "You got an Iron sword.", 0));
 					saveCitizensData(String.valueOf(npc.getId()));
+					try {
+						MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 			if (masterMobHunterManager.isMasterMobHunter(npc.getEntity())) {

@@ -6,10 +6,10 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-import one.lindegaard.MobHunting.MobPlugins.MobPluginNames;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class MobRewardData {
-	private MobPluginNames mobPluginName;
+	private MobPlugin mobPluginName;
 	private String mobType = "";
 	private String mobName = "";
 	private String reward = "5";
@@ -23,7 +23,7 @@ public class MobRewardData {
 		super();
 	}
 
-	public MobRewardData(MobPluginNames pluginName, String mobType, String mobName, String rewardPrize, String cmd,
+	public MobRewardData(MobPlugin pluginName, String mobType, String mobName, String rewardPrize, String cmd,
 			String cmdDesc, double chance) {
 		this.mobPluginName = pluginName;
 		this.mobType = mobType;
@@ -37,11 +37,11 @@ public class MobRewardData {
 	// **************************************************************************
 	// Getters and Setters
 	// **************************************************************************
-	public MobPluginNames getMobPlugin() {
+	public MobPlugin getMobPlugin() {
 		return mobPluginName;
 	}
 
-	public void setMobPlugin(MobPluginNames mobPlugin) {
+	public void setMobPlugin(MobPlugin mobPlugin) {
 		this.mobPluginName = mobPlugin;
 	}
 
@@ -170,7 +170,7 @@ public class MobRewardData {
 	}
 
 	public void read(Map<String, Object> data) {
-		mobPluginName = (MobPluginNames) data.get("plugin");
+		mobPluginName = (MobPlugin) data.get("plugin");
 		mobName = (String) data.get("mobName");
 		reward = (String) data.get("rewardPrize");
 		consoleRunCommand = (String) data.get("consoleRunCommand");
@@ -184,7 +184,7 @@ public class MobRewardData {
 	}
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
-		mobPluginName = MobPluginNames.valueOf(section.get("plugin").toString());
+		mobPluginName = MobPlugin.valueOf(section.get("plugin").toString());
 		mobName = section.getString("mobName");
 		reward = section.getString("rewardPrize");
 		consoleRunCommand = section.getString("consoleRunCommand");

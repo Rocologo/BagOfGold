@@ -2,14 +2,20 @@ package one.lindegaard.MobHunting;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import one.lindegaard.MobHunting.mobs.MobPlugin;
+import one.lindegaard.MobHunting.mobs.MobStore;
 
 public class StatType {
 	public static final StatType AchievementCount = new StatType("achievement_count", "stats.achievement_count");
 	public static final StatType KillsTotal = new StatType("total_kill", "stats.total_kill");
 	public static final StatType AssistsTotal = new StatType("total_assist", "stats.total_assist");
 
-	private static final StatType[] mValues = new StatType[3 + ExtendedMobType.values().length * 2];
-	private static final HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
+	// TODO: change 500
+	private static StatType[] mValues = new StatType[3 + ExtendedMobType.values().length * 2 + 500];
+	private static HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
 
 	static {
 		mValues[0] = AchievementCount;
@@ -17,6 +23,7 @@ public class StatType {
 		mValues[2] = AssistsTotal;
 
 		//Adding Vanilla Minecraft mobTypes
+
 		for (int i = 0; i < ExtendedMobType.values().length; ++i)
 			mValues[3 + i] = new StatType(ExtendedMobType.values()[i] + "_kill", "stats.name-format", "mob",
 					"mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.kills");
@@ -30,17 +37,32 @@ public class StatType {
 		//TODO: Add found CustomMob names 
 		//TODO: Add found Citizens names 
 
+		// adding other mobtype from other plugins
+		Iterator<Entry<Integer, MobStore>> itr = MobHunting.getMobManager().getAllMobs().entrySet().iterator();
+		int l = 3 + ExtendedMobType.values().length * 2;
+		while (itr.hasNext()) {
+			MobStore mob = (MobStore) itr.next().getValue();
+			if (!mob.getMobPlugin().equals(MobPlugin.Minecraft)) {
+				//Messages.debug("Adding new StatType(%s,%s)", mob.getMobtype(), mob.getMobPlugin().name());
+				mValues[l + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill",
+						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill");
+				mValues[l + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist",
+						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist");
+				l = l + 2;
+			}
+		}
+
 		for (int i = 0; i < mValues.length; ++i)
-			mNameLookup.put(mValues[i].mColumnName, mValues[i]);
+			if (mValues[i] != null)
+				mNameLookup.put(mValues[i].mColumnName, mValues[i]);
+
 	}
 
-	//TODO: private String mMobType;
 	private String mColumnName;
 	private String mName;
 	private String[] mExtra;
 
-	StatType(String columnName, String name, String... extra) {
-		//TODO: mMobType = mobType
+	public StatType(String columnName, String name, String... extra) {
 		mColumnName = columnName;
 		mName = name;
 		mExtra = extra;
@@ -102,4 +124,9 @@ public class StatType {
 
 		return null;
 	}
+	
+	public boolean equals(StatType other){
+		return mColumnName.equals(other.mColumnName);
+	}
+
 }
