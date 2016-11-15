@@ -506,10 +506,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 					if (!killed_muted)
 						player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages
 								.getString("mobhunting.moneylost", "prize", mRewardManager.format(playerPenalty)));
-					// Messages.playerActionBarMessage(player,
-					// ChatColor.RED + "" + ChatColor.ITALIC +
-					// Messages.getString("mobhunting.moneylost",
-					// "prize", mRewardManager.format(playerPenalty)));
 					Messages.debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
 							mRewardManager.format(playerPenalty));
 				}
@@ -720,16 +716,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 								killer.getWorld().getName());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.disabled"));
 						return;
-						// isAllowedByWorldGuard does not return null if the
-						// MobHunting flag is not defined.
-						// so WorldGuard can't overrule with MobHuting allow.
-
-						// Messages.debug(
-						// "KillAllowed %s: Mobhunting disabled in world '%s',
-						// but overruled with MobHunting=ALLOW",
-						// killer.getName(), killer.getWorld().getName());
-						// Messages.learn(killer,
-						// Messages.getString("mobhunting.learn.overruled"));
 					} else {
 						Messages.debug("KillBlocked %s: Mobhunting disabled in world '%s'", killer.getName(),
 								killer.getWorld().getName());
@@ -753,14 +739,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (WorldGuardCompat.isSupported()) {
 			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
 				if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, DefaultFlag.MOB_DAMAGE, true)) {
-					// if (WorldGuardHelper.isAllowedByWorldGuard(killer,
-					// killed, WorldGuardHelper.getMobHuntingFlag(),
-					// true)) {
-					// Messages.debug(
-					// "KillAllowed:(1) %s is hiding in WG region, but this is
-					// overruled with MobHunting=allow",
-					// killer.getName());
-					// } else {
 					Messages.debug("KillBlocked:(2) %s is hiding in WG region with mob-damage=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
 					return;
@@ -1156,10 +1134,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 				if (!killed_muted)
 					killed.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
 							+ Messages.getString("mobhunting.moneylost", "prize", mRewardManager.format(cash)));
-				// Messages.playerActionBarMessage((Player) killed,
-				// ChatColor.RED + "" + ChatColor.ITALIC
-				// + Messages.getString("mobhunting.moneylost", "prize",
-				// mRewardManager.format(cash)));
 				Messages.debug("%s lost %s", killed.getName(), mRewardManager.format(cash));
 			}
 
