@@ -1,6 +1,6 @@
 package one.lindegaard.MobHunting.achievements;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public interface ProgressAchievement extends Achievement
 {
@@ -10,5 +10,5 @@ public interface ProgressAchievement extends Achievement
 	
 	public String nextLevelId();
 	
-	public ExtendedMobType getExtendedMobType();
+	public MinecraftMob getExtendedMobType();
 }

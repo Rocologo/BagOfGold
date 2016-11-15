@@ -3,14 +3,14 @@ package one.lindegaard.MobHunting.achievements;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class FourthHuntAchievement implements ProgressAchievement {
-	private ExtendedMobType mType;
+	private MinecraftMob mType;
 
-	public FourthHuntAchievement(ExtendedMobType entity) {
+	public FourthHuntAchievement(MinecraftMob entity) {
 		mType = entity;
 	}
 
@@ -67,7 +67,7 @@ public class FourthHuntAchievement implements ProgressAchievement {
 	}
 	
 	@Override
-	public ExtendedMobType getExtendedMobType() {
+	public MinecraftMob getExtendedMobType() {
 		return mType;
 	}
 }

@@ -16,9 +16,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
@@ -96,7 +96,7 @@ public class AchievementManager implements Listener {
 		registerAchievement(new JustInTime());
 		registerAchievement(new WolfKillAchievement());
 
-		for (ExtendedMobType type : ExtendedMobType.values()) {
+		for (MinecraftMob type : MinecraftMob.values()) {
 			registerAchievement(new BasicHuntAchievement(type));
 			registerAchievement(new SecondHuntAchievement(type));
 			registerAchievement(new ThirdHuntAchievement(type));

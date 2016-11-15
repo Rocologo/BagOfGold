@@ -10,12 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class WolfKillAchievement implements ProgressAchievement, Listener {
 
@@ -100,7 +100,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	}
 
 	@Override
-	public ExtendedMobType getExtendedMobType() {
-		return ExtendedMobType.Wolf;
+	public MinecraftMob getExtendedMobType() {
+		return MinecraftMob.Wolf;
 	}
 }

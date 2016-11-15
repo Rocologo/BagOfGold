@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting.mobs;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -7,12 +7,15 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Villager.Profession;
 
-public enum ExtendedMobType {
+public enum MinecraftMob {
 	// PlayerName and texture can be found here:
 	// http://heads.freshcoal.com/index.php
 
@@ -268,7 +271,7 @@ public enum ExtendedMobType {
 	private String mDisplayName; // Normal DisplayName
 	private String mTexture; // Texture value
 
-	private ExtendedMobType(String type, String playerName, String playerId, String displayName, String texture) {
+	private MinecraftMob(String type, String playerName, String playerId, String displayName, String texture) {
 		mType = type;
 		mPlayerProfile = playerName;
 		mPlayerId = playerId;
@@ -387,7 +390,7 @@ public enum ExtendedMobType {
 			else if (this == Husk)
 				return ent instanceof org.bukkit.entity.Zombie
 						&& ((Zombie) ent).getVillagerProfession() == Profession.HUSK;
-			else if (this == ExtendedMobType.Zombie)
+			else if (this == MinecraftMob.Zombie)
 				return ent instanceof org.bukkit.entity.Zombie
 						&& ((Zombie) ent).getVillagerProfession() == Profession.NORMAL;
 
@@ -409,7 +412,7 @@ public enum ExtendedMobType {
 			return ent instanceof Skeleton && ((Skeleton) ent).getSkeletonType() == SkeletonType.WITHER;
 		else if (this == Skeleton)
 			return ent instanceof Skeleton && ((Skeleton) ent).getSkeletonType() == SkeletonType.NORMAL;
-		else if (this == ExtendedMobType.Zombie)
+		else if (this == MinecraftMob.Zombie)
 			return ent instanceof org.bukkit.entity.Zombie;
 		else if (this == BonusMob)
 			return ent.hasMetadata("MH:hasBonus");
@@ -421,8 +424,8 @@ public enum ExtendedMobType {
 		return Messages.getString("mobs." + name() + ".name");
 	}
 
-	public static ExtendedMobType getExtendedMobType(Entity entity) {
-		for (ExtendedMobType type : values())
+	public static MinecraftMob getExtendedMobType(Entity entity) {
+		for (MinecraftMob type : values())
 			if (type.matches(entity))
 				return type;
 		Messages.debug("ERROR!!! - Unhandled Entity: %s(%s) Type:%s", entity.getName(), entity.getCustomName(),
@@ -430,8 +433,8 @@ public enum ExtendedMobType {
 		return null;
 	}
 
-	public static ExtendedMobType getExtendedMobType(String name) {
-		for (ExtendedMobType type : values())
+	public static MinecraftMob getExtendedMobType(String name) {
+		for (MinecraftMob type : values())
 			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name)
 					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name)
 					|| type.name().equalsIgnoreCase(name))

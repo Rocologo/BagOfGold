@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,13 +71,8 @@ public class CustomMobsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
-				try {
-					if (mMobRewardData.size() > 0)
-						MobHunting.getStoreManager().insertCustomMobs(key);
-				} catch (SQLException e) {
-					Messages.debug("Error on creating CustomMobs in Database");
-					e.printStackTrace();
-				}
+				if (mMobRewardData.size() > 0)
+					MobHunting.getStoreManager().insertCustomMobs(key);
 			}
 			Messages.debug("Loaded %s CustomMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -105,13 +99,8 @@ public class CustomMobsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		try {
-			if (mMobRewardData.size() > 0)
-				MobHunting.getStoreManager().insertCustomMobs(key);
-		} catch (SQLException e) {
-			Messages.debug("Error on creating CustomMobs in Database");
-			e.printStackTrace();
-		}
+		if (mMobRewardData.size() > 0)
+			MobHunting.getStoreManager().insertCustomMobs(key);
 	}
 
 	public void saveCustomMobsData() {
@@ -220,12 +209,7 @@ public class CustomMobsCompat implements Listener {
 			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(),
 					mob.getDisplayName(), "10", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveCustomMobsData(mob.getName());
-			try {
-				MobHunting.getStoreManager().insertCustomMobs(mob.getName());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			MobHunting.getStoreManager().insertCustomMobs(mob.getName());
 		}
 
 		entity.setMetadata(MH_CUSTOMMOBS, new FixedMetadataValue(mPlugin, mMobRewardData.get(mob.getName())));

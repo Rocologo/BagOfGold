@@ -6,16 +6,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 
-	private ExtendedMobType mType;
+	private MinecraftMob mType;
 
-	public SeventhHuntAchievement(ExtendedMobType entity) {
+	public SeventhHuntAchievement(MinecraftMob entity) {
 		mType = entity;
 	}
 
@@ -71,7 +71,7 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 	}
 
 	@Override
-	public ExtendedMobType getExtendedMobType() {
+	public MinecraftMob getExtendedMobType() {
 		return mType;
 	}
 

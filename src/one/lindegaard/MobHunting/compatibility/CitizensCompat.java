@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -98,13 +97,8 @@ public class CitizensCompat implements Listener {
 				MobRewardData mrd = new MobRewardData();
 				mrd.read(section);
 				mMobRewardData.put(key, mrd);
-				try {
-					if (mMobRewardData.size() > 0)
-						MobHunting.getStoreManager().insertCitizensMobs(key);
-				} catch (SQLException e) {
-					Messages.debug("Error on creating Citizens in Database");
-					e.printStackTrace();
-				}
+				if (mMobRewardData.size() > 0)
+					MobHunting.getStoreManager().insertCitizensMobs(key);
 			}
 			Messages.debug("Loaded %s extra MobRewards.", mMobRewardData.size());
 		} catch (IOException e) {
@@ -280,6 +274,7 @@ public class CitizensCompat implements Listener {
 	private void onNPCSpawnEvent(NPCSpawnEvent event) {
 		NPC npc = event.getNPC();
 		if (npc.getId() == event.getNPC().getId()) {
+			Messages.debug("NPCSpawnEvent: %s spawned",npc.getName());
 			if (isSentryOrSentinel(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
@@ -287,12 +282,7 @@ public class CitizensCompat implements Listener {
 							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
 									"give {player} iron_sword 1", "You got an Iron sword.", 0));
 					saveCitizensData(String.valueOf(npc.getId()));
-					try {
-						MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
 				}
 			}
 			if (masterMobHunterManager.isMasterMobHunter(npc.getEntity())) {

@@ -1,15 +1,23 @@
 package one.lindegaard.MobHunting.mobs;
 
 public enum MobPlugin {
-	Minecraft("Minecraft",0), MythicMobs("MythicMobs",1), Citizens("Citizens",2), TARDISWeepingAngels(
-			"TARDISWeepingAngels",3), CustomMobs("CustomMobs",4);
+	Minecraft("Minecraft", 0), MythicMobs("MythicMobs", 1), Citizens("Citizens",
+			2), TARDISWeepingAngels("TARDISWeepingAngels", 3), CustomMobs("CustomMobs", 4);
 
 	private final String name;
 	private final Integer id;
 
-	private MobPlugin(String s, Integer id) {
-		name = s;
+	private MobPlugin(String name, Integer id) {
+		this.name = name;
 		this.id = id;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public boolean equals(MobPlugin other) {
+		return (other == null) ? false : id == other.getId();
 	}
 
 	public boolean equalsName(String otherName) {
@@ -20,15 +28,8 @@ public enum MobPlugin {
 		return name;
 	}
 
-	public Integer getId() {
-		return id;
+	public MobPlugin valueOf(int id) {
+		return MobPlugin.values()[id];
 	}
 
-	public static MobPlugin valueOf(int id) {
-		
-		return null;
-	}
-	
-	
 }
-

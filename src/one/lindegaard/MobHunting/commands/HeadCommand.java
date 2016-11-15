@@ -18,14 +18,14 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.Inventory;
+//import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class HeadCommand implements ICommand, Listener {
 
@@ -99,11 +99,11 @@ public class HeadCommand implements ICommand, Listener {
 				}
 
 				// get MobType / PlayerName
-				ExtendedMobType mob = ExtendedMobType.getExtendedMobType(args[2]);
+				MinecraftMob mob = MinecraftMob.getExtendedMobType(args[2]);
 				if (mob == null) {
 					offlinePlayer = Bukkit.getOfflinePlayer(args[2]);
 					if (offlinePlayer != null) {
-						mob = ExtendedMobType.PvpPlayer;
+						mob = MinecraftMob.PvpPlayer;
 					} else {
 						sender.sendMessage(
 								Messages.getString("mobhunting.commands.head.unknown_name", "playername", args[2]));
@@ -114,7 +114,7 @@ public class HeadCommand implements ICommand, Listener {
 				if (args.length >= 4) {
 					displayName = args[3].replace("_", " ");
 				} else {
-					if (mob != ExtendedMobType.PvpPlayer)
+					if (mob != MinecraftMob.PvpPlayer)
 						displayName = mob.getDisplayName().replace("_", " ");
 					else
 						displayName = offlinePlayer.getName();
@@ -194,7 +194,7 @@ public class HeadCommand implements ICommand, Listener {
 			}
 		} else if ((args.length == 3 && args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
 			String partial = args[2].toLowerCase();
-			for (ExtendedMobType mob : ExtendedMobType.values()) {
+			for (MinecraftMob mob : MinecraftMob.values()) {
 				if (mob.getFriendlyName().toLowerCase().startsWith(partial)
 						|| mob.getDisplayName().toLowerCase().startsWith(partial))
 					items.add(mob.getFriendlyName().replace(" ", "_"));

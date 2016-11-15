@@ -1,12 +1,14 @@
-V3.4.8
+V4.0.0
+* MAJOR VERSION CHANGE - PLEASE MAKE BACKUP OF DATABASE AND MOBHUNTING FOLDER BEFORE FIRST RUN
+* Changed Database Layout to improve support for statistics on MythicMobs, Citizens, TARDISWeepingAngels and CustomMobs 
 * Disable MobHunting per world in Config.yml fixed.
 * Caveat: WorldGuard flag MobHunting=Allow does not work because of limited WG CustomFlag support. 
 * Fixed NPE bug when a Citizen NPC killed a mob. https://github.com/Rocologo/MobHunting/issues/101
-* Fixed bug on Leaderboards, where the same playername was displayed multible times. https://www.spigotmc.org/threads/mobhunting.46937/page-58#post-1949123
+* Fixed bug on Leaderboards, where the same player name was displayed multible times. https://www.spigotmc.org/threads/mobhunting.46937/page-58#post-1949123
 * Changed MySQL connections from using DriverManager to MysqlDataSource, to give better connection stability
 * Removed debug information from WorldGuard Integration 
 * Removed debug information from TARDISWeepingAngels Integration
-* Added bounty_duration in config.yml, so the serverowner can decide how many days a bounty can live before it is removed automatically.
+* Added bounty_duration in config.yml, so the server owner can decide how many days a bounty can live before it is removed automatically.
 V3.4.7
 * Change: Disable all achievements when killing a mob with a negative reward (penalty).
 * Fixed bug where a Penalty was showed as "money gained".

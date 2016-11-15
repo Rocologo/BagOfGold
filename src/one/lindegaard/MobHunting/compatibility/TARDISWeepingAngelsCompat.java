@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -14,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -26,7 +24,7 @@ import me.eccentric_nz.tardisweepingangels.utils.Monster;
 
 public class TARDISWeepingAngelsCompat implements Listener {
 
-	private static Plugin mPlugin;
+	private static TARDISWeepingAngels mPlugin;
 	private static boolean supported = false;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
 	private File file = new File(MobHunting.getInstance().getDataFolder(), "TARDISWeepingAngels-rewards.yml");
@@ -39,7 +37,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with TARDISWeepingAngels is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("TARDISWeepingAngels");
+			mPlugin = (TARDISWeepingAngels) Bukkit.getPluginManager().getPlugin("TARDISWeepingAngels");
 
 			if (mPlugin != null) {
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TARDISWeepingAngelsAPI ("
@@ -59,6 +57,10 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	// OTHER
 	// **************************************************************************
 
+	public static TARDISWeepingAngels getTARDISWeepingAngels(){
+		return mPlugin;
+	}
+	
 	public static boolean isSupported() {
 		return supported;
 	}
@@ -70,7 +72,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationTARDISWeepingAngels;
 	}
-
+	
 	/**
 	 * Returns whether an entity is a TARDISWeepingAngels entity.
 	 *
@@ -121,13 +123,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
-				try {
-					if (mMobRewardData.size() > 0)
-						MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
-				} catch (SQLException e) {
-					Messages.debug("Error on creating TARDISWeepingAngels in Database");
-					e.printStackTrace();
-				}
+				if (mMobRewardData.size() > 0)
+					MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
 			}
 			Messages.debug("Loaded %s TARDISWeepingAngels-Mobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -155,13 +152,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		try {
-			if (mMobRewardData.size() > 0)
-				MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs();
-		} catch (SQLException e) {
-			Messages.debug("Error on creating TARDISWeepingAngels in Database");
-			e.printStackTrace();
-		}
+		if (mMobRewardData.size() > 0)
+			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
 	}
 
 	public void saveTARDISWeepingAngelsMobsData() {
@@ -220,12 +212,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			mMobRewardData.put(monster.name(), new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(),
 					monster.name(), "40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveTARDISWeepingAngelsMobsData(monster.name());
-			try {
-				MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
 		}
 
 		event.getEntity().setMetadata(MH_TARDISWEEPINGANGELS,

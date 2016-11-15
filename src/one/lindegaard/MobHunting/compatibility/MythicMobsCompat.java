@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,13 +72,8 @@ public class MythicMobsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
-				try {
-					if (mMobRewardData.size() > 0)
-						MobHunting.getStoreManager().insertMythicMobs(key);
-				} catch (SQLException e) {
-					Messages.debug("Error on creating MythicMobs in Database");
-					e.printStackTrace();
-				}
+				if (mMobRewardData.size() > 0)
+					MobHunting.getStoreManager().insertMythicMobs(key);
 			}
 			Messages.debug("Loaded %s MythicMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -110,13 +104,8 @@ public class MythicMobsCompat implements Listener {
 			e.printStackTrace();
 		}
 
-		try {
-			if (mMobRewardData.size() > 0)
-				MobHunting.getStoreManager().insertMythicMobs(key);
-		} catch (SQLException e) {
-			Messages.debug("Error on creating MythicMobs in Database");
-			e.printStackTrace();
-		}
+		if (mMobRewardData.size() > 0)
+			MobHunting.getStoreManager().insertMythicMobs(key);
 	}
 
 	public void saveMythicMobsData() {
@@ -212,11 +201,7 @@ public class MythicMobsCompat implements Listener {
 							event.getMobType().getDisplayName(), "10", "minecraft:give {player} iron_sword 1",
 							"You got an Iron sword.", 1));
 			saveMythicMobsData(mobtype);
-			try {
-				MobHunting.getStoreManager().insertMythicMobs(mobtype);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			MobHunting.getStoreManager().insertMythicMobs(mobtype);
 		}
 
 		event.getLivingEntity().setMetadata(MH_MYTHICMOBS,

@@ -3,23 +3,23 @@ package one.lindegaard.MobHunting.storage;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.StatType;
-import one.lindegaard.MobHunting.mobs.MobStore;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
 
 public class StatStore {
 	//TODO: private String mobType;
 	private StatType type;
-	private MobStore mob;
+	private ExtendedMob mob;
 	private OfflinePlayer player;
 	private int amount;
 
-	public StatStore(StatType type, MobStore mob, OfflinePlayer player, int amount) {
+	public StatStore(StatType type, ExtendedMob mob, OfflinePlayer player, int amount) {
 		this.type = type;
 		this.setMob_id(mob);
 		this.player = player;
 		this.amount = amount;
 	}
 
-	public StatStore(StatType type, MobStore mob, OfflinePlayer player) {
+	public StatStore(StatType type, ExtendedMob mob, OfflinePlayer player) {
 		this.type = type;
 		this.setMob_id(mob);
 		this.player = player;
@@ -53,11 +53,11 @@ public class StatStore {
 		this.type = type;
 	}
 	
-	public MobStore getMob() {
+	public ExtendedMob getMob() {
 		return mob;
 	}
 
-	public void setMob_id(MobStore mob) {
+	public void setMob_id(ExtendedMob mob) {
 		this.mob = mob;
 	}
 

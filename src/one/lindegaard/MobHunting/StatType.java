@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import one.lindegaard.MobHunting.mobs.MobPlugin;
-import one.lindegaard.MobHunting.mobs.MobStore;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class StatType {
 	public static final StatType AchievementCount = new StatType("achievement_count", "stats.achievement_count");
@@ -14,41 +15,37 @@ public class StatType {
 	public static final StatType AssistsTotal = new StatType("total_assist", "stats.total_assist");
 
 	// TODO: change 500
-	private static StatType[] mValues = new StatType[3 + ExtendedMobType.values().length * 2 + 500];
+	private static StatType[] mValues = new StatType[3 + MinecraftMob.values().length * 2 + 500];
 	private static HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
 
 	static {
-		mValues[0] = AchievementCount;
-		mValues[1] = KillsTotal;
-		mValues[2] = AssistsTotal;
-
+		mValues[0] = KillsTotal;
+		mValues[1] = AssistsTotal;
+		mValues[2] = AchievementCount;
+		
 		//Adding Vanilla Minecraft mobTypes
 
-		for (int i = 0; i < ExtendedMobType.values().length; ++i)
-			mValues[3 + i] = new StatType(ExtendedMobType.values()[i] + "_kill", "stats.name-format", "mob",
-					"mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype", "stats.kills");
+		for (int i = 0; i < MinecraftMob.values().length; ++i)
+			mValues[3 + i] = new StatType(MinecraftMob.values()[i] + "_kill", "stats.name-format", "mob",
+					"mobs." + MinecraftMob.values()[i].name() + ".name", "stattype", "stats.kills");
 
-		for (int i = 0; i < ExtendedMobType.values().length; ++i)
-			mValues[3 + i + ExtendedMobType.values().length] = new StatType(ExtendedMobType.values()[i] + "_assist",
-					"stats.name-format", "mob", "mobs." + ExtendedMobType.values()[i].name() + ".name", "stattype",
+		for (int i = 0; i < MinecraftMob.values().length; ++i)
+			mValues[3 + i + MinecraftMob.values().length] = new StatType(MinecraftMob.values()[i] + "_assist",
+					"stats.name-format", "mob", "mobs." + MinecraftMob.values()[i].name() + ".name", "stattype",
 					"stats.assists");
 		
-		//TODO: Add found MythicMob names 
-		//TODO: Add found CustomMob names 
-		//TODO: Add found Citizens names 
-
-		// adding other mobtype from other plugins
-		Iterator<Entry<Integer, MobStore>> itr = MobHunting.getMobManager().getAllMobs().entrySet().iterator();
-		int l = 3 + ExtendedMobType.values().length * 2;
+		// adding other mobtypes from other plugins
+		Iterator<Entry<Integer, ExtendedMob>> itr = MobHunting.getExtendedMobManager().getAllMobs().entrySet().iterator();
+		int offset = 3 + MinecraftMob.values().length * 2;
 		while (itr.hasNext()) {
-			MobStore mob = (MobStore) itr.next().getValue();
+			ExtendedMob mob = (ExtendedMob) itr.next().getValue();
 			if (!mob.getMobPlugin().equals(MobPlugin.Minecraft)) {
 				//Messages.debug("Adding new StatType(%s,%s)", mob.getMobtype(), mob.getMobPlugin().name());
-				mValues[l + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill",
+				mValues[offset + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill",
 						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill");
-				mValues[l + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist",
+				mValues[offset + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist",
 						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist");
-				l = l + 2;
+				offset = offset + 2;
 			}
 		}
 
@@ -68,10 +65,10 @@ public class StatType {
 		mExtra = extra;
 	}
 
-	public static StatType fromMobType(ExtendedMobType mob, boolean kill) {
+	public static StatType fromMobType(MinecraftMob mob, boolean kill) {
 		int index = mob.ordinal();
 		if (!kill)
-			index += ExtendedMobType.values().length;
+			index += MinecraftMob.values().length;
 		return mValues[index + 3];
 	}
 
@@ -80,12 +77,6 @@ public class StatType {
 	}
 
 	public String getDBColumn() {
-		//TODO: chance returned column 
-		// if mColumnName endsWith("_kill")
-		// return "total_kill"; 
-		// else if mColumnName endsWith("_assist")
-		// return "total_assist"; 
-		// else return "achievement_count";
 		return mColumnName;
 	}
 

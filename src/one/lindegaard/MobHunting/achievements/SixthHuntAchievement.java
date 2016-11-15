@@ -3,15 +3,15 @@ package one.lindegaard.MobHunting.achievements;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class SixthHuntAchievement implements ProgressAchievement {
 
-	private ExtendedMobType mType;
+	private MinecraftMob mType;
 
-	public SixthHuntAchievement(ExtendedMobType entity) {
+	public SixthHuntAchievement(MinecraftMob entity) {
 		mType = entity;
 	}
 
@@ -67,7 +67,7 @@ public class SixthHuntAchievement implements ProgressAchievement {
 	}
 	
 	@Override
-	public ExtendedMobType getExtendedMobType() {
+	public MinecraftMob getExtendedMobType() {
 		return mType;
 	}
 }

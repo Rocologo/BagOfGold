@@ -8,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.bounty.Bounty;
-import one.lindegaard.MobHunting.mobs.MobStore;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
 
 public interface IDataStore {
 	/**
@@ -111,37 +111,35 @@ public interface IDataStore {
 	public OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException;
 
 	public void deleteBounty(Set<Bounty> bounties) throws DataStoreException;
-	
+
 	public void cancelBounty(Set<Bounty> bounties) throws DataStoreException;
 
 	public Set<Bounty> loadBounties(OfflinePlayer mPlayer) throws DataStoreException;
-	
-	public int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException, UserNotFoundException ;
 
-	//void insertVanillaMobs() throws SQLException;
+	public int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException, UserNotFoundException;
 
-	void insertMythicMobs() throws SQLException;
+	public Set<ExtendedMob> loadMobs() throws DataStoreException;
 
-	void insertCitizensMobs() throws SQLException;
+	public void insertMissingVanillaMobs();
 
-	void insertTARDISWeepingAngelsMobs() throws SQLException;
+	public void insertMissingMythicMobs();
 
-	void insertCustomMobs() throws SQLException;
+	public void insertCitizensMobs();
 
-	void insertVanillaMobs() throws SQLException;
+	public void insertTARDISWeepingAngelsMobs();
 
-	public Set<MobStore> loadMobs() throws DataStoreException;
+	public void insertCustomMobs();
 
-	public void insertMobs(Set<MobStore> mobs) throws DataStoreException;
+	public void insertMobs(Set<ExtendedMob> mobs) throws DataStoreException;
 
-	public void updateMobs(Set<MobStore> mobs) throws DataStoreException;
+	public void updateMobs(Set<ExtendedMob> mobs) throws DataStoreException;
 
-	public void insertMythicMobs(String mob) throws SQLException;
+	public void insertMythicMobs(String mob);
 
-	public void insertCitizensMobs(String mob) throws SQLException;
+	public void insertCitizensMobs(String mob);
 
-	public void insertTARDISWeepingAngelsMobs(String mob) throws SQLException;
+	public void insertTARDISWeepingAngelsMobs(String mob);
 
-	public void insertCustomMobs(String mob) throws SQLException;
+	public void insertCustomMobs(String mob);
 
 }

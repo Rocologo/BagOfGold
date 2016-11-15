@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import one.lindegaard.MobHunting.ExtendedMobType;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
@@ -19,7 +18,8 @@ import one.lindegaard.MobHunting.achievements.Achievement;
 import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
-import one.lindegaard.MobHunting.mobs.MobStore;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
@@ -58,22 +58,22 @@ public class DataStoreManager {
 	// **************************************************************************************
 	// PlayerStats
 	// **************************************************************************************
-	public void recordKill(OfflinePlayer player, ExtendedMobType type, MobStore mob, boolean bonusMob) {
+	public void recordKill(OfflinePlayer player, MinecraftMob type, ExtendedMob mob, boolean bonusMob) {
 		synchronized (mWaiting) {
 			mWaiting.add(new StatStore(StatType.fromMobType(type, true), mob, player));
 
 			if (bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, true), mob, player));
+				mWaiting.add(new StatStore(StatType.fromMobType(MinecraftMob.BonusMob, true), mob, player));
 		}
 	}
 
-	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, ExtendedMobType type, MobStore mob,
+	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, MinecraftMob type, ExtendedMob mob,
 			boolean bonusMob) {
 		synchronized (mWaiting) {
 			mWaiting.add(new StatStore(StatType.fromMobType(type, false), mob, player));
 
 			if (bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(ExtendedMobType.BonusMob, false), mob, player));
+				mWaiting.add(new StatStore(StatType.fromMobType(MinecraftMob.BonusMob, false), mob, player));
 		}
 	}
 
