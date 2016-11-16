@@ -260,7 +260,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				statement
 						.addBatch(
 								String.format(
-										"UPDATE mh_Daily SET %1$s = %1$s + %2$d, MOB_ID=%3$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+										"UPDATE mh_Daily SET %1$s = %1$s + %2$d, MOB_ID=%3$d WHERE ID = DATE_FORMAT(NOW(), '%Y%j')"
 												+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;",
 										column, amount, mob_id, player_id));
 
