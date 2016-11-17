@@ -28,18 +28,19 @@ import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class Messages {
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 	private static final String PREFIX = "[MobHunting]";
+	private static String[] sources = new String[] { "en_US.lang", "zh_CN.lang" };
 
 	public static void exportDefaultLanguages(MobHunting plugin) {
 		File folder = new File(plugin.getDataFolder(), "lang");
 		if (!folder.exists())
 			folder.mkdirs();
-
-		String[] sources = new String[] { "en_US.lang", "zh_CN.lang" };
 
 		for (String source : sources) {
 			File dest = new File(folder, source);
@@ -81,6 +82,58 @@ public class Messages {
 
 				writer.close();
 
+				Bukkit.getLogger().info(PREFIX + " Updated " + onDisk.getName() + " translation");
+			}
+
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static void injectMissingMobNamesToLangFiles() {
+		File folder = new File(MobHunting.getInstance().getDataFolder(), "lang");
+		if (!folder.exists())
+			folder.mkdirs();
+
+		for (String source : sources) {
+			File dest = new File(folder, source);
+			injectMissingMobNamesToLangFile(dest);
+		}
+	}
+
+	private static boolean injectMissingMobNamesToLangFile(File onDisk) {
+		try {
+			Map<String, String> dest = loadLang(onDisk);
+
+			if (dest == null)
+				return false;
+
+			HashMap<String, String> newEntries = new HashMap<String, String>();
+			for (Entry<Integer, ExtendedMob> key : MobHunting.getExtendedMobManager().getAllMobs().entrySet()) {
+				String k;
+				if (key.getValue().getMobPlugin() == MobPlugin.Minecraft)
+					k = "mobs." + key.getValue().getMobtype() + ".name";
+				else
+					k = "mobs." + key.getValue().getMobPlugin().name() + "_" + key.getValue().getMobtype() + ".name";
+				if (!dest.containsKey(k)) {
+					Bukkit.getLogger().info(PREFIX + " Missing key in language file: " + k);
+					newEntries.put(k, key.getValue().getName());
+				}
+			}
+
+			if (!newEntries.isEmpty()) {
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
+				for (Entry<String, String> entry : newEntries.entrySet()){
+					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
+					
+				}
+				writer.close();
+				
+				//add new mobs to the TranslationTable
+				mTranslationTable.putAll(newEntries);
+				
 				Bukkit.getLogger().info(PREFIX + " Updated " + onDisk.getName() + " translation");
 			}
 

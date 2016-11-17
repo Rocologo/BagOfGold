@@ -192,23 +192,24 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			mPlayerSettingsManager = new PlayerSettingsManager();
 
-			mExtendedMobManager = new ExtendedMobManager();
-
 			// Handle compatability stuff
 			registerPlugin(EssentialsCompat.class, "Essentials");
+			registerPlugin(GringottsCompat.class, "Gringotts");
+			
 			registerPlugin(WorldEditCompat.class, "WorldEdit");
 			registerPlugin(WorldGuardCompat.class, "WorldGuard");
-			registerPlugin(MythicMobsCompat.class, "MythicMobs");
-			registerPlugin(CitizensCompat.class, "Citizens");
-			registerPlugin(MinigamesCompat.class, "Minigames");
 			registerPlugin(MyPetCompat.class, "MyPet");
+			
+			registerPlugin(MinigamesCompat.class, "Minigames");
 			registerPlugin(MobArenaCompat.class, "MobArena");
 			registerPlugin(PVPArenaCompat.class, "PVPArena");
+			registerPlugin(BattleArenaCompat.class, "BattleArena");
+			
 			registerPlugin(LibsDisguisesCompat.class, "LibsDisguises");
 			registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
 			registerPlugin(IDisguiseCompat.class, "iDisguise");
-			registerPlugin(BattleArenaCompat.class, "BattleArena");
 			registerPlugin(VanishNoPacketCompat.class, "VanishNoPacket");
+			
 			registerPlugin(BossBarAPICompat.class, "BossBarAPI");
 			registerPlugin(TitleAPICompat.class, "TitleAPI");
 			registerPlugin(BarAPICompat.class, "BarAPI");
@@ -216,11 +217,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(ActionbarCompat.class, "Actionbar");
 			registerPlugin(ActionBarAPICompat.class, "ActionBarAPI");
 			registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
-			registerPlugin(MobStackerCompat.class, "MobStacker");
-			registerPlugin(GringottsCompat.class, "Gringotts");
+			
+			registerPlugin(CitizensCompat.class, "Citizens");
+			registerPlugin(MythicMobsCompat.class, "MythicMobs");
 			registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
 			registerPlugin(CustomMobsCompat.class, "CustomMobs");
-
+			registerPlugin(MobStackerCompat.class, "MobStacker");
+			
+			mExtendedMobManager = new ExtendedMobManager();
+			
 			// register commands
 			CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 					Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
@@ -273,7 +278,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			for (Player player : mMobHuntingManager.getOnlinePlayers())
 				mAchievementManager.load(player);
-
+			
 			mLeaderboardManager = new LeaderboardManager(this);
 
 			UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
@@ -284,8 +289,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			Bukkit.getPluginManager().registerEvents(this, this);
+			
+			Bukkit.getScheduler().scheduleSyncDelayedTask(MobHunting.getInstance(), new Runnable() {
+				public void run() {
+					Messages.injectMissingMobNamesToLangFiles();
+				}
+			}, 20 * 5); // 20ticks/sec * 3 sec.
 
 			mInitialized = true;
+
 		}
 
 	}
@@ -698,9 +710,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 		Player killer = event.getEntity().getKiller();
 
 		// Killer is not a player and not a MyPet.
-		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
-			return;
-		}
+		if (killer == null)
+			if (MyPetCompat.isKilledByMyPet(killed))
+				Messages.debug("Mypet owned by %s killed %s", MyPetCompat.getMyPetOwner(killed));
+			else
+				return;
 
 		// Killer is a NPC
 		if (killer != null && CitizensCompat.isNPC(killer))
@@ -881,8 +895,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		}
 
 		// There is no reward and no penalty for this kill
-		if (mConfig.getBaseKillPrize(event.getEntity()) == 0 && mConfig.getKillConsoleCmd(killed).equals("")) {
-			// if (killed != null)
+		if (mConfig.getBaseKillPrize(killed) == 0 && mConfig.getKillConsoleCmd(killed).equals("")) {
 			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player",
 					killed.getType().getName(), killed.getEntityId());
 			Messages.learn(killer,
@@ -917,9 +930,8 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 		// Update DamageInformation
 		DamageInformation info = null;
-		info = mDamageHistory.get(event.getEntity());
+		info = mDamageHistory.get(killed);
 
-		// DamageInformation info = null;
 		if (killed instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity) killed)) {
 			info = mDamageHistory.get(killed);
 
@@ -941,12 +953,21 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 			info.usedWeapon = true;
 		}
+
+		// Check if the kill was within the time limit on both kills and
+		// assisted kills
 		if (((System.currentTimeMillis() - info.lastAttackTime) > mConfig.killTimeout * 1000) && (info.wolfAssist
 				&& ((System.currentTimeMillis() - info.lastAttackTime) > mConfig.assistTimeout * 1000))) {
 			Messages.debug("KillBlocked %s: Last damage was too long ago (%s sec.)", killer.getName(),
 					(System.currentTimeMillis() - info.lastAttackTime) / 1000);
 			return;
 		}
+
+		// MyPet killed a mob - Assister is the Owner
+		if (MyPetCompat.isKilledByMyPet(killed) && mConfig.enableAssists == true) {
+			info.assister = MyPetCompat.getMyPetOwner(killed);
+		}
+
 		if (info.weapon == null)
 			info.weapon = new ItemStack(Material.AIR);
 
@@ -1085,7 +1106,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		// Handle Bounty Kills
 		double reward = 0;
 		if (killer != null && !mConfig.disablePlayerBounties && killed instanceof Player) {
-			Messages.debug("This was a Pvp kill (killed=%s) no of bounties=%s", killed.getName(),
+			Messages.debug("This was a Pvp kill (killed=%s), number of bounties=%s", killed.getName(),
 					mBountyManager.getAllBounties().size());
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
@@ -1115,9 +1136,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 		}
 
-		// Calculate the reward
-		// cash += reward;
-
+		// Pay the reward to player and assister
 		if ((cash >= getConfigManager().minimumReward) || (cash <= -getConfigManager().minimumReward)) {
 
 			// Handle MobHuntKillEvent

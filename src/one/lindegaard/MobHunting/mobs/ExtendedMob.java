@@ -1,6 +1,9 @@
 package one.lindegaard.MobHunting.mobs;
 
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 
 public class ExtendedMob {
 
@@ -68,16 +71,16 @@ public class ExtendedMob {
 		switch (mobPlugin.getId()) {
 		case 1:
 			// MythicMobs
-			return mobtype;
+			return MythicMobsCompat.getMobRewardData().get(mobtype).getMobName();
 		case 2:
 			// Citizens
-			return CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(mobPlugin.getId()).getName();
+			return CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mobtype)).getName();
 		case 3:
 			// TARDISWeepingAngels
-			return mobtype;
+			return TARDISWeepingAngelsCompat.getMobRewardData().get(mobtype).getMobName();
 		case 4:
 			// CustomMobs
-			return mobtype;
+			return CustomMobsCompat.getMobRewardData().get(mobtype).getMobName();
 		default:
 			// Minecraft
 			return mobtype;

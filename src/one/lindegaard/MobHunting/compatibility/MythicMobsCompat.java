@@ -72,8 +72,7 @@ public class MythicMobsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
-				if (mMobRewardData.size() > 0)
-					MobHunting.getStoreManager().insertMythicMobs(key);
+				MobHunting.getStoreManager().insertMythicMobs(key);
 			}
 			Messages.debug("Loaded %s MythicMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -98,14 +97,12 @@ public class MythicMobsCompat implements Listener {
 			int n = StatType.values().length;
 			StatType.values()[n + 1] = new StatType(mob.getMobType() + "_kill", mob.getMobName());
 			StatType.values()[n + 2] = new StatType(mob.getMobType() + "_assist", mob.getMobName());
+			MobHunting.getStoreManager().insertMythicMobs(key);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-
-		if (mMobRewardData.size() > 0)
-			MobHunting.getStoreManager().insertMythicMobs(key);
 	}
 
 	public void saveMythicMobsData() {
@@ -139,7 +136,7 @@ public class MythicMobsCompat implements Listener {
 				Messages.debug("Saving Mobhunting extra MythicMobs data.");
 				config.save(file);
 			} else {
-				Messages.debug("ERROR! MythicMobs ID (%s) is not found in mNPCData", key);
+				Messages.debug("ERROR! MythicMobs ID (%s) is not found in mMobRewardData", key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -195,11 +192,10 @@ public class MythicMobsCompat implements Listener {
 		Messages.debug("MythicMobSpawnEvent: MinecraftMobtype=%s MythicMobType=%s", event.getLivingEntity().getType(),
 				mobtype);
 		if (mMobRewardData != null && !mMobRewardData.containsKey(mobtype)) {
-			Messages.debug("New MythicMobType found=%s,%s", mobtype, event.getMobType().getDisplayName());
+			Messages.debug("New MythicMobType found=%s (%s)", mobtype, event.getMobType().getDisplayName());
 			mMobRewardData.put(mobtype,
-					new MobRewardData(MobPlugin.MythicMobs, event.getMobType().getInternalName(),
-							event.getMobType().getDisplayName(), "10", "minecraft:give {player} iron_sword 1",
-							"You got an Iron sword.", 1));
+					new MobRewardData(MobPlugin.MythicMobs, mobtype, event.getMobType().getDisplayName(), "10",
+							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveMythicMobsData(mobtype);
 			MobHunting.getStoreManager().insertMythicMobs(mobtype);
 		}

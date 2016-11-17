@@ -523,18 +523,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 		connection.commit();
 	}
 
-	public int getMobIdFromExtendedMobType(String mob, int plugin_id) {
+	public int getMobIdFromExtendedMobType(String mobtype, MobPlugin plugin) {
 		int res = 0;
 		try {
 			Statement statement = mConnection.createStatement();
 			ResultSet rs = statement.executeQuery(
-					"SELECT MOB_ID from mh_Mobs WHERE PLUGIN_ID=" + plugin_id + " AND MOBTYPE='" + mob + "'");
+					"SELECT MOB_ID from mh_Mobs WHERE PLUGIN_ID=" + plugin.getId() + " AND MOBTYPE='" + mobtype + "'");
 			if (rs.next())
 				res = rs.getInt("MOB_ID");
 			rs.close();
 			statement.close();
 		} catch (SQLException e) {
-			Bukkit.getLogger().severe("[MobHunting] The ExtendedMobType " + mob + " was not found");
+			Bukkit.getLogger().severe("[MobHunting] The ExtendedMobType " + mobtype + " was not found");
 			e.printStackTrace();
 		}
 		return res;
@@ -542,20 +542,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertMissingVanillaMobs() {
-		// Adding Vanilla Mobs to mh_Mobs
 		int n = 0;
 		try {
-			for (MinecraftMob mob : MinecraftMob.values()) {
-				if (getMobIdFromExtendedMobType(mob.name(), 0) == 0) {
-					Statement statement = mConnection.createStatement();
+			Statement statement = mConnection.createStatement();
+			for (MinecraftMob mob : MinecraftMob.values())
+				if (getMobIdFromExtendedMobType(mob.name(), MobPlugin.Minecraft) == 0) {
 					statement
 							.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES ( 0,'" + mob.name() + "')");
 					n++;
-					statement.close();
 				}
-			}
 			if (n > 0)
 				Bukkit.getLogger().info("[MobHunting] " + n + " Minecraft Vanilla Mobs was inserted to mh_Mobs");
+			statement.close();
 			mConnection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -568,8 +566,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			Statement statement = mConnection.createStatement();
 			for (String mob : MythicMobsCompat.getMobRewardData().keySet())
-				if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.MythicMobs) == 0) {
-
+				if (getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
 					n++;
 				}
@@ -584,7 +581,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertMythicMobs(String mob) {
-		if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.MythicMobs) == 0)
+		if (getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0)
 			try {
 				Statement statement = mConnection.createStatement();
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
@@ -601,17 +598,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 		int n = 0;
 		try {
 			Statement statement = mConnection.createStatement();
-			for (String mob : CitizensCompat.getMobRewardData().keySet()) {
-				if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.Citizens) == 0)
-
+			for (String mob : CitizensCompat.getMobRewardData().keySet())
+				if (getMobIdFromExtendedMobType(mob, MobPlugin.Citizens) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (2,'" + mob + "')");
-				n++;
-			}
+					n++;
+				}
 			if (n > 0)
 				Bukkit.getLogger().info("[MobHunting] " + n + " Citizens NPC's was inserted to mh_Mobs");
 			statement.close();
 			mConnection.commit();
-		} catch (SQLException e) {
+		} catch (
+
+		SQLException e) {
 			e.printStackTrace();
 		}
 
@@ -619,7 +617,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertCitizensMobs(String mob) {
-		if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.Citizens) == 0)
+		if (getMobIdFromExtendedMobType(mob, MobPlugin.Citizens) == 0)
 			try {
 				Statement statement = mConnection.createStatement();
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (2,'" + mob + "')");
@@ -637,8 +635,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			Statement statement = mConnection.createStatement();
 			for (String mob : TARDISWeepingAngelsCompat.getMobRewardData().keySet())
-				if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.TARDISWeepingAngels) == 0) {
-
+				if (getMobIdFromExtendedMobType(mob, MobPlugin.TARDISWeepingAngels) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (3,'" + mob + "')");
 					n++;
 				}
@@ -653,7 +650,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertTARDISWeepingAngelsMobs(String mob) {
-		if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.TARDISWeepingAngels) == 0)
+		if (getMobIdFromExtendedMobType(mob, MobPlugin.TARDISWeepingAngels) == 0)
 			try {
 				Statement statement = mConnection.createStatement();
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (3,'" + mob + "')");
@@ -671,8 +668,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			Statement statement = mConnection.createStatement();
 			for (String mob : CustomMobsCompat.getMobRewardData().keySet())
-				if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.CustomMobs) == 0) {
-
+				if (MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mob, MobPlugin.CustomMobs) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (4,'" + mob + "')");
 					n++;
 				}
@@ -687,7 +683,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertCustomMobs(String mob) {
-		if (MobHunting.getExtendedMobManager().getMobIdFromMobType(mob, MobPlugin.CustomMobs) == 0)
+		if (getMobIdFromExtendedMobType(mob, MobPlugin.CustomMobs) == 0)
 			try {
 				Statement statement = mConnection.createStatement();
 				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (4,'" + mob + "')");
@@ -828,6 +824,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	@Override
 	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
+		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql")) {
+			Messages.debug("Checking connection: isClose()=%s, isValid(30)=%s", mConnection.isClosed(),
+					mConnection.isValid(30));
+			if (mConnection.isClosed() || !mConnection.isValid(30)) {
+				Messages.debug("Re-Connecting to the Database");
+				setupConnection();
+			}
+		}
 		openPreparedGetPlayerStatements();
 		mGetPlayerData[0].setString(1, offlinePlayer.getUniqueId().toString());
 		ResultSet result = mGetPlayerData[0].executeQuery();
@@ -1178,6 +1182,27 @@ public abstract class DatabaseDataStore implements IDataStore {
 			openPreparedStatements(mConnection, PreparedConnectionType.LOAD_MOBS);
 			ResultSet set = mLoadMobs.executeQuery();
 			while (set.next()) {
+				MobPlugin mp = PluginManager.valueOf(set.getInt("PLUGIN_ID"));
+				switch (mp) {
+				case Citizens:
+					if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig())
+						continue;
+					break;
+				case CustomMobs:
+					if (!CustomMobsCompat.isSupported() || CustomMobsCompat.isDisabledInConfig())
+						continue;
+					break;
+				case MythicMobs:
+					if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig())
+						continue;
+					break;
+				case TARDISWeepingAngels:
+					if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
+						continue;
+					break;
+				case Minecraft:
+					break;
+				}
 				mobs.add(new ExtendedMob(set.getInt("MOB_ID"), PluginManager.valueOf(set.getInt("PLUGIN_ID")),
 						set.getString("MOBTYPE")));
 			}

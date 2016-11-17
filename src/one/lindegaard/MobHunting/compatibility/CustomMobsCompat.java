@@ -70,9 +70,10 @@ public class CustomMobsCompat implements Listener {
 				MobRewardData mob = new MobRewardData();
 				mob.read(section);
 				mob.setMobType(key);
+				if (mob.getMobName() == null)
+					mob.setMobName(mob.getMobType());
 				mMobRewardData.put(key, mob);
-				if (mMobRewardData.size() > 0)
-					MobHunting.getStoreManager().insertCustomMobs(key);
+				MobHunting.getStoreManager().insertCustomMobs(key);
 			}
 			Messages.debug("Loaded %s CustomMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -80,7 +81,6 @@ public class CustomMobsCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void loadCustomMobsData(String key) {
@@ -93,14 +93,15 @@ public class CustomMobsCompat implements Listener {
 			MobRewardData mob = new MobRewardData();
 			mob.read(section);
 			mob.setMobType(key);
+			if (mob.getMobName() == null)
+				mob.setMobName(mob.getMobType());
 			mMobRewardData.put(key, mob);
+			MobHunting.getStoreManager().insertCustomMobs(key);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		if (mMobRewardData.size() > 0)
-			MobHunting.getStoreManager().insertCustomMobs(key);
 	}
 
 	public void saveCustomMobsData() {
@@ -134,7 +135,7 @@ public class CustomMobsCompat implements Listener {
 				Messages.debug("Saving Mobhunting extra CustomMobs data.");
 				config.save(file);
 			} else {
-				Messages.debug("ERROR! CustomMobs ID (%s) is not found in mNPCData", key);
+				Messages.debug("ERROR! CustomMobs ID (%s) is not found in mMobRewardData", key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -206,8 +207,9 @@ public class CustomMobsCompat implements Listener {
 
 		{
 			Messages.debug("New CustomMobName found=%s,%s", mob.getName(), mob.getDisplayName());
-			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(),
-					mob.getDisplayName(), "10", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+			String name = mob.getDisplayName() == null ? mob.getName() : mob.getDisplayName();
+			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(), name, "10",
+					"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveCustomMobsData(mob.getName());
 			MobHunting.getStoreManager().insertCustomMobs(mob.getName());
 		}

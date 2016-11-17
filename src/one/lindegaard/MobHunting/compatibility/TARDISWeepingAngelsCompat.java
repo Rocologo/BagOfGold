@@ -57,10 +57,10 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	// OTHER
 	// **************************************************************************
 
-	public static TARDISWeepingAngels getTARDISWeepingAngels(){
+	public static TARDISWeepingAngels getTARDISWeepingAngels() {
 		return mPlugin;
 	}
-	
+
 	public static boolean isSupported() {
 		return supported;
 	}
@@ -72,7 +72,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationTARDISWeepingAngels;
 	}
-	
+
 	/**
 	 * Returns whether an entity is a TARDISWeepingAngels entity.
 	 *
@@ -109,9 +109,9 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			if (!file.exists()) {
 				for (Monster monster : Monster.getValues()) {
 					mMobRewardData.put(monster.name(),
-							new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.name(), "40:60",
+							new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.getName(), "40:60",
 									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
-					saveTARDISWeepingAngelsMobsData(mMobRewardData.get(monster.name()).getMobName());
+					saveTARDISWeepingAngelsMobsData(mMobRewardData.get(monster.name()).getMobType());
 				}
 				return;
 			}
@@ -123,8 +123,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
-				if (mMobRewardData.size() > 0)
-					MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
+				MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
 			}
 			Messages.debug("Loaded %s TARDISWeepingAngels-Mobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -147,13 +146,12 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			mob.read(section);
 			mob.setMobType(key);
 			mMobRewardData.put(key, mob);
+			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		if (mMobRewardData.size() > 0)
-			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
 	}
 
 	public void saveTARDISWeepingAngelsMobsData() {
@@ -184,10 +182,11 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);
 				mMobRewardData.get(key).save(section);
-				Messages.debug("Saving extra TARDISWeepingAngels data for mob=%s", key);
+				Messages.debug("Saving extra TARDISWeepingAngels data for mob=%s (%s)", key,
+						mMobRewardData.get(key).getMobName());
 				config.save(file);
 			} else {
-				Messages.debug("ERROR! TARDISWeepingAngels ID (%s) is not found in mNPCData", key);
+				Messages.debug("ERROR! TARDISWeepingAngels ID (%s) is not found in mMobRewardData", key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -204,13 +203,14 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		Entity entity = event.getEntity();
 		Monster monster = getWeepingAngelMonsterType(entity);
 
-		//Messages.debug("TARDISWeepingAngelSpawnEvent: MinecraftMobtype=%s WeepingAngelsMobType=%s",
-		//		event.getEntityType(), monster.name());
+		// Messages.debug("TARDISWeepingAngelSpawnEvent: MinecraftMobtype=%s
+		// WeepingAngelsMobType=%s",
+		// event.getEntityType(), monster.name());
 
 		if (mMobRewardData != null && !mMobRewardData.containsKey(monster.name())) {
-			Messages.debug("New TARDIS mob found=%s", monster.name());
+			Messages.debug("New TARDIS mob found=%s (%s)", monster.name(), monster.getName());
 			mMobRewardData.put(monster.name(), new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(),
-					monster.name(), "40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+					monster.getName(), "40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveTARDISWeepingAngelsMobsData(monster.name());
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
 		}

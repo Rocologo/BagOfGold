@@ -15,7 +15,8 @@ public class StatType {
 	public static final StatType AssistsTotal = new StatType("total_assist", "stats.total_assist");
 
 	// TODO: change 500
-	private static StatType[] mValues = new StatType[3 + MinecraftMob.values().length * 2 + 500];
+	//private static StatType[] mValues = new StatType[3 + MinecraftMob.values().length * 2 + 500];
+	private static StatType[] mValues = new StatType[3 + MobHunting.getExtendedMobManager().getAllMobs().size()*2];
 	private static HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
 
 	static {
@@ -31,7 +32,8 @@ public class StatType {
 
 		for (int i = 0; i < MinecraftMob.values().length; ++i)
 			mValues[3 + i + MinecraftMob.values().length] = new StatType(MinecraftMob.values()[i] + "_assist",
-					"stats.name-format", "mob", "mobs." + MinecraftMob.values()[i].name() + ".name", "stattype",
+					"stats.name-format", "mob", 
+					"mobs." + MinecraftMob.values()[i].name() + ".name", "stattype", 
 					"stats.assists");
 		
 		// adding other mobtypes from other plugins
@@ -39,12 +41,18 @@ public class StatType {
 		int offset = 3 + MinecraftMob.values().length * 2;
 		while (itr.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) itr.next().getValue();
-			if (!mob.getMobPlugin().equals(MobPlugin.Minecraft)) {
+			if (mob.getMobPlugin()!=MobPlugin.Minecraft) {
 				//Messages.debug("Adding new StatType(%s,%s)", mob.getMobtype(), mob.getMobPlugin().name());
-				mValues[offset + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill",
-						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill");
+				mValues[offset] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill",
+						 "stats.name-format", "mob",
+						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype()+".name","stattype", 
+						"stats.kills");
+				
 				mValues[offset + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist",
-						"stats." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist");
+						 "stats.name-format", "mob",
+						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype()+".name" ,"stattype", 
+						"stats.assists");
+
 				offset = offset + 2;
 			}
 		}

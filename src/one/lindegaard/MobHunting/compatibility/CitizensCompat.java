@@ -77,7 +77,7 @@ public class CitizensCompat implements Listener {
 					findMissingSentry();
 					loadBountyDataForSentryOrSentinel();
 				}
-			}, 20 * 3); // 20ticks/sec * 10 sec.
+			}, 20 * 3); // 20ticks/sec * 3 sec.
 
 		}
 	}
@@ -97,8 +97,7 @@ public class CitizensCompat implements Listener {
 				MobRewardData mrd = new MobRewardData();
 				mrd.read(section);
 				mMobRewardData.put(key, mrd);
-				if (mMobRewardData.size() > 0)
-					MobHunting.getStoreManager().insertCitizensMobs(key);
+				MobHunting.getStoreManager().insertCitizensMobs(key);
 			}
 			Messages.debug("Loaded %s extra MobRewards.", mMobRewardData.size());
 		} catch (IOException e) {

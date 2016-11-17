@@ -31,13 +31,36 @@ public class ExtendedMobManager {
 			Bukkit.getLogger().severe("[MobHunting] Could not load data from mh_Mobs");
 			e.printStackTrace();
 		}
-		
+
 		MobHunting.getStoreManager().insertMissingVanillaMobs();
 
 		Iterator<ExtendedMob> mobset = set.iterator();
 		while (mobset.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) mobset.next();
-			mobs.put(mob.mob_id, mob);
+			switch (mob.mobPlugin) {
+			case MythicMobs:
+				if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig())
+					continue;
+				break;
+			case CustomMobs:
+				if (!CustomMobsCompat.isSupported() || CustomMobsCompat.isDisabledInConfig())
+					continue;
+				break;
+			case TARDISWeepingAngels:
+				if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
+					continue;
+				break;
+			case Citizens:
+				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig())
+					continue;
+				break;
+			case Minecraft:
+
+			}
+			if (!mobs.containsKey(mob.mob_id)){
+				Messages.debug("EMM-Insert %s into ExtMobManager", mob.mobtype);
+				mobs.put(mob.mob_id, mob);
+			}
 		}
 	}
 
@@ -48,8 +71,8 @@ public class ExtendedMobManager {
 	public HashMap<Integer, ExtendedMob> getAllMobs() {
 		return mobs;
 	}
-	
-	public int getMobIdFromMobType(String mobtype, MobPlugin mobPlugin) {
+
+	public int getMobIdFromMobTypeAndPluginID(String mobtype, MobPlugin mobPlugin) {
 
 		Iterator<Entry<Integer, ExtendedMob>> mobset = mobs.entrySet().iterator();
 		while (mobset.hasNext()) {
@@ -61,30 +84,30 @@ public class ExtendedMobManager {
 		return 0;
 	}
 
-	public ExtendedMob getExtendedMobFromEntity(LivingEntity killed) {
-		int mob_id; 
+	public ExtendedMob getExtendedMobFromEntity(LivingEntity entity) {
+		int mob_id;
 		MobPlugin mobPlugin;
 		String mobtype;
-		
-		if (MythicMobsCompat.isMythicMob(killed)) {
+
+		if (MythicMobsCompat.isMythicMob(entity)) {
 			mobPlugin = MobPlugin.MythicMobs;
-			mobtype=MythicMobsCompat.getMythicMobType(killed);
-		} else if (CitizensCompat.isNPC(killed)) {
+			mobtype = MythicMobsCompat.getMythicMobType(entity);
+		} else if (CitizensCompat.isNPC(entity)) {
 			mobPlugin = MobPlugin.Citizens;
-			mobtype=String.valueOf(CitizensCompat.getNPCId(killed));
-		} else if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
+			mobtype = String.valueOf(CitizensCompat.getNPCId(entity));
+		} else if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(entity)) {
 			mobPlugin = MobPlugin.TARDISWeepingAngels;
-			mobtype = TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name();
-		} else if (CustomMobsCompat.isCustomMob(killed)) {
+			mobtype = TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(entity).name();
+		} else if (CustomMobsCompat.isCustomMob(entity)) {
 			mobPlugin = MobPlugin.CustomMobs;
-			mobtype = CustomMobsCompat.getCustomMobType(killed);
+			mobtype = CustomMobsCompat.getCustomMobType(entity);
 		} else {
-			//StatType 
+			// StatType
 			mobPlugin = MobPlugin.Minecraft;
-			mobtype = MinecraftMob.getExtendedMobType(killed).name();
+			mobtype = MinecraftMob.getExtendedMobType(entity).name();
 		}
-		mob_id=getMobIdFromMobType(mobtype, mobPlugin);
-		return new ExtendedMob(mob_id,mobPlugin,mobtype);
+		mob_id = getMobIdFromMobTypeAndPluginID(mobtype, mobPlugin);
+		return new ExtendedMob(mob_id, mobPlugin, mobtype);
 	}
 
 }

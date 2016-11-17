@@ -183,9 +183,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			wherepart = (id != null ? " AND ID=" + id : "");
 		} else {
 			wherepart = (id != null
-					? " AND ID=" + id + " and mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobType(
+					? " AND ID=" + id + " and mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
 							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft)
-					: " AND mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobType(
+					: " AND mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
 							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft));
 		}
 
@@ -963,7 +963,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		Messages.debug("Create mh_Mobs if missing");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Mobs " + "(MOB_ID INTEGER NOT NULL AUTO_INCREMENT,"
-				+ " PLUGIN_ID INTEGER NOT NULL," + " MOBTYPE VARCHAR(30)," + " PRIMARY KEY(MOB_ID))");
+				+ " PLUGIN_ID INTEGER NOT NULL," 
+				+ " MOBTYPE VARCHAR(30)," 
+				+ " PRIMARY KEY(MOB_ID))");
 
 		Messages.debug("Create mh_Daily if missing");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily " + "(ID CHAR(7) NOT NULL,"

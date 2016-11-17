@@ -9,6 +9,7 @@ V4.0.0
 * Removed debug information from WorldGuard Integration 
 * Removed debug information from TARDISWeepingAngels Integration
 * Added bounty_duration in config.yml, so the server owner can decide how many days a bounty can live before it is removed automatically.
+* Fixed bug where a MyPet kill did not pay a reward.
 V3.4.7
 * Change: Disable all achievements when killing a mob with a negative reward (penalty).
 * Fixed bug where a Penalty was showed as "money gained".
