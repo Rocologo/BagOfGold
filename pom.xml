@@ -4,14 +4,14 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.0.0-SNAPSHOT</version>
+	<version>4.0.1-SNAPSHOT</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<spigotmc.version>1.10.2-R0.1-SNAPSHOT</spigotmc.version>
+		<spigotmc.version>1.11-R0.1-SNAPSHOT</spigotmc.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
@@ -193,7 +193,7 @@
 		<!-- SpigotMC Repository -->
 		<repository>
 			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+			<url>https://hub.spigotmc.org/stash/projects/SPIGOT/repos/</url>
 		</repository>
 
 		<repository>
