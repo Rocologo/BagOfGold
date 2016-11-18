@@ -258,6 +258,16 @@ mobs.Shulker.name=Shulker
 mobs.PolarBear.name=Polar Bear
 mobs.Stray.name=Stray
 mobs.Husk.name=Husk
+mobs.Nitwit.name=Nitwit
+mobs.Vindicator.name=Vindicator
+mobs.Llama.name=Llama
+mobs.ZombieHorse.name=ZombieHorse
+mobs.Donkey.name=Donkey
+mobs.Vex.name=Vex
+mobs.Evoker.name=Evoker
+mobs.Cartographer.name=Cartographer
+mobs.SkeletonHorse.name=SkeletonHorse
+mobs.Mule.name=Mule
 
 mobs.Bat.name=Bat
 mobs.Chicken.name=Chicken

@@ -20,6 +20,40 @@ public enum MinecraftMob {
 	// http://heads.freshcoal.com/index.php
 
 	// ******************************************************************
+	// Minecraft 1.11
+	// ******************************************************************
+
+	// Llama
+	Llama("LLAMA", "", "", "Llama Head", ""),
+
+	// Evoker
+	Evoker("EVOKER", "", "", "Evoker Head", ""),
+
+	// Vindicator
+	Vindicator("VINDICATOR", "", "", "Vindicator Head", ""),
+
+	// Vex
+	Vex("VEX", "", "", "Vex Head", ""),
+
+	// Nitwit Villager
+	Nitwit("NITWIT", "", "", "Nitwit Head", ""),
+
+	// Nitwit Villager
+	Cartographer("CARTOGRAFER", "", "", "Cartographer Head", ""),
+
+	// Donkey
+	Donkey("DONKEY", "", "", "Donkey Head", ""),
+
+	// Mule
+	Mule("MULE", "", "", "Mule Head", ""),
+
+	// ZombieHorse
+	ZombieHorse("ZOMBIEHORSE", "", "", "ZombieHorse Head", ""),
+
+	// SkeletonHorse
+	SkeletonHorse("SKELETONHORSE", "", "", "SkeletonHorse Head", ""),
+
+	// ******************************************************************
 	// Minecraft 1.10
 	// ******************************************************************
 	// Polar Bear
@@ -278,8 +312,8 @@ public enum MinecraftMob {
 		mDisplayName = displayName;
 		mTexture = texture;
 	}
-	
-	public String getName(){
+
+	public String getName() {
 		return name();
 	}
 
@@ -375,49 +409,96 @@ public enum MinecraftMob {
 			return MobHunting.getConfigManager().strayLevel1;
 		case Husk:
 			return MobHunting.getConfigManager().huskLevel1;
+		case Cartographer:
+			return MobHunting.getConfigManager().cartographerLevel1;
+		case Donkey:
+			return MobHunting.getConfigManager().donkeyLevel1;
+		case Evoker:
+			return MobHunting.getConfigManager().evokerLevel1;
+		case Llama:
+			return MobHunting.getConfigManager().llamaLevel1;
+		case Mule:
+			return MobHunting.getConfigManager().muleLevel1;
+		case Nitwit:
+			return MobHunting.getConfigManager().nitwitLevel1;
+		case Vex:
+			return MobHunting.getConfigManager().vexLevel1;
+		case Vindicator:
+			return MobHunting.getConfigManager().vindicatorLevel1;
+		case ZombieHorse:
+			return MobHunting.getConfigManager().zombieHorseLevel1;
+		case SkeletonHorse:
+			return MobHunting.getConfigManager().skeletonHorseLevel1;
 		}
 		return 100;
 	}
 
-	@SuppressWarnings("deprecation")
-	public boolean matches(Entity ent) {
+	public boolean matches(Entity entity) {
+		if (Misc.isMC111())
+			if (this == Llama)
+				return entity instanceof org.bukkit.entity.Llama;
+			else if (this == Evoker)
+				return entity instanceof org.bukkit.entity.Evoker;
+			else if (this == Vindicator)
+				return entity instanceof org.bukkit.entity.Vindicator;
+			else if (this == Stray)
+				return entity instanceof org.bukkit.entity.Stray;
+			else if (this == Husk)
+				return entity instanceof org.bukkit.entity.Husk;
+			else if (this == Mule)
+				return entity instanceof org.bukkit.entity.Mule;
+			else if (this == Donkey)
+				return entity instanceof org.bukkit.entity.Donkey;
+			else if (this == Husk)
+				return entity instanceof org.bukkit.entity.Husk;
+			else if (this == ZombieHorse)
+				return entity instanceof org.bukkit.entity.ZombieHorse;
+			else if (this == SkeletonHorse)
+				return entity instanceof org.bukkit.entity.SkeletonHorse;
+			else if (this == Zombie) 
+				return entity instanceof org.bukkit.entity.Zombie 
+						&& ((Zombie) entity).getVillagerProfession() == null;
+
+		// TODO: Villagers: Nitwit, Cartographer, Buther, Liberian, Farmer
+
 		if (Misc.isMC110OrNewer())
 			if (this == PolarBear)
-				return ent instanceof org.bukkit.entity.PolarBear;
+				return entity instanceof org.bukkit.entity.PolarBear;
 			else if (this == Stray)
-				return ent instanceof org.bukkit.entity.Skeleton
-						&& (((Skeleton) ent).getSkeletonType() == SkeletonType.STRAY);
+				return entity instanceof org.bukkit.entity.Skeleton
+						&& (((Skeleton) entity).getSkeletonType() == SkeletonType.STRAY);
 			else if (this == Husk)
-				return ent instanceof org.bukkit.entity.Zombie
-						&& ((Zombie) ent).getVillagerProfession() == Profession.HUSK;
-			else if (this == MinecraftMob.Zombie)
-				return ent instanceof org.bukkit.entity.Zombie
-						&& ((Zombie) ent).getVillagerProfession() == Profession.NORMAL;
+				return entity instanceof org.bukkit.entity.Zombie
+						&& ((Zombie) entity).getVillagerProfession() == Profession.HUSK;
+			else if (this == Zombie)
+				return entity instanceof org.bukkit.entity.Zombie
+						&& ((Zombie) entity).getVillagerProfession() == Profession.NORMAL;
 
 		if (Misc.isMC19OrNewer())
 			if (this == Shulker)
-				return ent instanceof org.bukkit.entity.Shulker;
+				return entity instanceof org.bukkit.entity.Shulker;
 
 		if (Misc.isMC18OrNewer())
 			if (this == KillerRabbit)
-				return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY;
+				return entity instanceof Rabbit && (((Rabbit) entity).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY;
 			else if (this == PassiveRabbit)
-				return ent instanceof Rabbit && (((Rabbit) ent).getRabbitType()) != Rabbit.Type.THE_KILLER_BUNNY;
+				return entity instanceof Rabbit && (((Rabbit) entity).getRabbitType()) != Rabbit.Type.THE_KILLER_BUNNY;
 			else if (this == ElderGuardian) {
-				return (ent instanceof org.bukkit.entity.Guardian) && (((org.bukkit.entity.Guardian) ent).isElder());
+				return (entity instanceof org.bukkit.entity.Guardian)
+						&& (((org.bukkit.entity.Guardian) entity).isElder());
 			}
 
 		// MC 1.7.10 and older entities
 		if (this == WitherSkeleton)
-			return ent instanceof Skeleton && ((Skeleton) ent).getSkeletonType() == SkeletonType.WITHER;
+			return entity instanceof Skeleton && ((Skeleton) entity).getSkeletonType() == SkeletonType.WITHER;
 		else if (this == Skeleton)
-			return ent instanceof Skeleton && ((Skeleton) ent).getSkeletonType() == SkeletonType.NORMAL;
-		else if (this == MinecraftMob.Zombie)
-			return ent instanceof org.bukkit.entity.Zombie;
+			return entity instanceof Skeleton && ((Skeleton) entity).getSkeletonType() == SkeletonType.NORMAL;
+		else if (this == Zombie)
+			return entity instanceof org.bukkit.entity.Zombie;
 		else if (this == BonusMob)
-			return ent.hasMetadata("MH:hasBonus");
+			return entity.hasMetadata("MH:hasBonus");
 		else
-			return ent.getType().toString().equals(mType);
+			return entity.getType().toString().equals(mType);
 	}
 
 	public String getFriendlyName() {

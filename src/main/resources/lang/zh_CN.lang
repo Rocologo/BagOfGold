@@ -257,7 +257,16 @@ mobs.Shulker.name=Shulker
 mobs.PolarBear.name=Polar Bear
 mobs.Stray.name=Stray
 mobs.Husk.name=Husk
-
+mobs.Nitwit.name=Nitwit
+mobs.Vindicator.name=Vindicator
+mobs.Llama.name=Llama
+mobs.ZombieHorse.name=ZombieHorse
+mobs.Donkey.name=Donkey
+mobs.Vex.name=Vex
+mobs.Evoker.name=Evoker
+mobs.Cartographer.name=Cartographer
+mobs.SkeletonHorse.name=SkeletonHorse
+mobs.Mule.name=Mule
 mobs.Bat.name=Bat
 mobs.Chicken.name=Chicken
 mobs.Cow.name=Cow
@@ -270,6 +279,7 @@ mobs.Snowman.name=Snowman
 mobs.Squid.name=Squid
 mobs.Villager.name=Villager
 mobs.Wolf.name=Wolf
+
 
 leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick
 leaderboard.exists=The leaderboard ${id} already exists

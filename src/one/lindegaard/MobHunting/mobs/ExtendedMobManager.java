@@ -58,7 +58,6 @@ public class ExtendedMobManager {
 
 			}
 			if (!mobs.containsKey(mob.mob_id)){
-				Messages.debug("EMM-Insert %s into ExtMobManager", mob.mobtype);
 				mobs.put(mob.mob_id, mob);
 			}
 		}

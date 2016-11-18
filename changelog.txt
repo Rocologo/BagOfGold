@@ -1,3 +1,6 @@
+V4.0.1 Support for Minecraft 1.11 added
+* New Mobs added: Evoker, Vex, Vindicator, Llama
+* Old mobs added: Mule, Donkey, ZombieHorse, Skeleton Horse
 V4.0.0 MAJOR UPGRADE FOR SPIGOT 1.10.2
 * MAJOR VERSION CHANGE - PLEASE MAKE BACKUP OF DATABASE AND MOBHUNTING FOLDER BEFORE FIRST RUN
 * Changed Database Layout to improve support for statistics on MythicMobs, Citizens, TARDISWeepingAngels and CustomMobs 
