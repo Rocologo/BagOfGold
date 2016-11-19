@@ -243,7 +243,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				statement
 						.addBatch(
 								String.format(
-										"UPDATE mh_Daily SET %1$s = %1$s + %2$d, MOB_ID=%3$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+										"UPDATE mh_Daily SET %1$s = %1$s + %2$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
 												+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;",
 										column, amount, mob_id, player_id));
 			}

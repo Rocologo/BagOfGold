@@ -41,10 +41,14 @@ public class ExtendedMobManager {
 			case MythicMobs:
 				if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig())
 					continue;
+				//TODO: check if mobtype still exists and continue; if not.
+				//if (MythicMobsCompat.getMythicMobs().)
 				break;
 			case CustomMobs:
 				if (!CustomMobsCompat.isSupported() || CustomMobsCompat.isDisabledInConfig())
 					continue;
+				//TODO: check if mobtype still exists and continue; if not.
+				//if (CustomMobsCompat.getCustomMobs())
 				break;
 			case TARDISWeepingAngels:
 				if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
@@ -52,6 +56,10 @@ public class ExtendedMobManager {
 				break;
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig())
+					//Citizens not installed or disabled
+					continue;
+				if (CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mob.mobtype))==null)
+					//NPC is deleted but data is still in citizenz_rewards.yml 
 					continue;
 				break;
 			case Minecraft:

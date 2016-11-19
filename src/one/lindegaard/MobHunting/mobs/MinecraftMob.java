@@ -455,6 +455,8 @@ public enum MinecraftMob {
 				return entity instanceof org.bukkit.entity.ZombieHorse;
 			else if (this == SkeletonHorse)
 				return entity instanceof org.bukkit.entity.SkeletonHorse;
+			else if (this == ElderGuardian)
+				return entity instanceof org.bukkit.entity.ElderGuardian;
 			else if (this == Zombie) 
 				return entity instanceof org.bukkit.entity.Zombie 
 						&& ((Zombie) entity).getVillagerProfession() == null;
@@ -472,8 +474,8 @@ public enum MinecraftMob {
 						&& ((Zombie) entity).getVillagerProfession() == Profession.HUSK;
 			else if (this == Zombie)
 				return entity instanceof org.bukkit.entity.Zombie
-						&& ((Zombie) entity).getVillagerProfession() == Profession.NORMAL;
-
+						&& (((Zombie) entity).getVillagerProfession() == Profession.NORMAL ||
+						((Zombie) entity).getVillagerProfession() == null);
 		if (Misc.isMC19OrNewer())
 			if (this == Shulker)
 				return entity instanceof org.bukkit.entity.Shulker;

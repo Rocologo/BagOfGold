@@ -118,22 +118,23 @@ public class Messages {
 				else
 					k = "mobs." + key.getValue().getMobPlugin().name() + "_" + key.getValue().getMobtype() + ".name";
 				if (!dest.containsKey(k)) {
-					Bukkit.getLogger().info(PREFIX + " Missing key in language file: " + k);
-					newEntries.put(k, key.getValue().getName());
+					Bukkit.getLogger().info(PREFIX + " Creating missing key ("+k+") in language file.");
+					if (key.getValue() != null)
+						newEntries.put(k, key.getValue().getName());
 				}
 			}
 
 			if (!newEntries.isEmpty()) {
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
-				for (Entry<String, String> entry : newEntries.entrySet()){
+				for (Entry<String, String> entry : newEntries.entrySet()) {
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
-					
+
 				}
 				writer.close();
-				
-				//add new mobs to the TranslationTable
+
+				// add new mobs to the TranslationTable
 				mTranslationTable.putAll(newEntries);
-				
+
 				Bukkit.getLogger().info(PREFIX + " Updated " + onDisk.getName() + " translation");
 			}
 
