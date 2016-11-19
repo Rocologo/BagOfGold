@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -56,10 +57,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		case SAVE_ACHIEVEMENTS:
 			mSaveAchievement = connection.prepareStatement("INSERT OR REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
 			break;
-		//case SAVE_PLAYER_STATS:
-		//	mSavePlayerStats = connection.prepareStatement("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, ?)"
-		//			+ " VALUES(strftime(\"%Y%j\",\"now\"),?,?,?)" + " ON DUPLICATE KEY UPDATE ? = ? + ?");
-		//	break;
+		case SAVE_PLAYER_STATS:
+			mSavePlayerStats = connection.prepareStatement(
+					"INSERT OR IGNORE INTO mh_Daily(ID, MOB_ID, PLAYER_ID) VALUES(strftime(\"%Y%j\",\"now\"),?,?);");
+			break;
 		case LOAD_ARCHIEVEMENTS:
 			mLoadAchievements = connection
 					.prepareStatement("SELECT ACHIEVEMENT, DATE, PROGRESS FROM mh_Achievements WHERE PLAYER_ID = ?;");
@@ -165,10 +166,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			wherepart = (id != null ? " AND ID=" + id : "");
 		} else {
 			wherepart = (id != null
-					? " AND ID=" + id + " and mh_Mobs.MOB_ID="
-							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
-									type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")),
-									MobPlugin.Minecraft)
+					? " AND ID=" + id + " and mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
+							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft)
 					: " AND mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
 							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft));
 		}
@@ -200,6 +199,62 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			statement.close();
 			return list;
 		} catch (SQLException e) {
+			throw new DataStoreException(e);
+		}
+	}
+
+	@Override
+	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
+		try {
+			Messages.debug("Saving PlayerStats to Database.");
+			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
+			mSavePlayerStats.clearBatch();
+			for (StatStore st : stats) {
+				int mob_id = 0;
+				if (!st.getType().getDBColumn().substring(0, st.getType().getDBColumn().lastIndexOf("_"))
+						.equalsIgnoreCase("achievement"))
+					// if (!st.getType().equals(StatType.AchievementCount))
+					mob_id = st.getMob().getMob_id();
+				mSavePlayerStats.setInt(2, getPlayerId(st.getPlayer()));
+				mSavePlayerStats.setInt(1, mob_id);
+				mSavePlayerStats.addBatch();
+			}
+			mSavePlayerStats.executeBatch();
+			mSavePlayerStats.close();
+
+			// Now add each of the stats
+			Statement statement = mConnection.createStatement();
+			int mob_id = 0;
+			for (StatStore stat : stats) {
+				String column = "";
+
+				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
+						.equalsIgnoreCase("achievement")) {
+					// if (!stat.getType().equals(StatType.AchievementCount)) {
+					column = "achievement_count";
+					mob_id = 0;
+				} else {
+					column = "total" + stat.getType().getDBColumn().substring(
+							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
+					mob_id = stat.getMob().getMob_id();
+				}
+				int amount = stat.getAmount();
+				int player_id = getPlayerId(stat.getPlayer());
+				statement
+						.addBatch(
+								String.format(
+										"UPDATE mh_Daily SET %1$s = %1$s + %2$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+												+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;",
+										column, amount, mob_id, player_id));
+			}
+			statement.executeBatch();
+			statement.close();
+			mConnection.commit();
+			Messages.debug("Saved.");
+		} catch (
+
+		SQLException e) {
+			rollback();
 			throw new DataStoreException(e);
 		}
 	}
@@ -915,16 +970,21 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	protected void setupV3Tables(Connection connection) throws SQLException {
 		Statement create = connection.createStatement();
 
+		Messages.debug("Create mh_Players if missing");
 		// Create new empty tables if they do not exist
 		String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players" + "(UUID TEXT," + " NAME TEXT, "
 				+ " PLAYER_ID INTEGER NOT NULL DEFAULT 0," + " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," + " PRIMARY KEY(PLAYER_ID))");
 
+		Messages.debug("Create mh_Mobs if missing");
 		create.executeUpdate(
-				"CREATE TABLE IF NOT EXISTS mh_Mobs " + "(MOB_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT 0,"
-						+ " PLUGIN_ID INTEGER NOT NULL," + " MOBTYPE TEXT)");
+				"CREATE TABLE IF NOT EXISTS mh_Mobs " 
+		+ "(MOB_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT 0,"				
+		+ " PLUGIN_ID INTEGER NOT NULL," 
+		+ " MOBTYPE TEXT)");
 
+		Messages.debug("Create mh_Daily if missing");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily" + "(ID CHAR(7) NOT NULL,"//
 				+ " MOB_ID INTEGER NOT NULL," //
 				+ " PLAYER_ID INTEGER NOT NULL,"//
@@ -935,6 +995,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
 				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
 
+		Messages.debug("Create mh_Weekly if missing");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly" + "(ID CHAR(6) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
 				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
@@ -942,6 +1003,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
 				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
 
+		Messages.debug("Create mh_Monthly if missing");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly" + "(ID CHAR(6) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
 				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
@@ -949,6 +1011,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
 				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
 
+		Messages.debug("Create mh_Yearly if missing");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly" + "(ID CHAR(4) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
 				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
@@ -966,11 +1029,13 @@ public class SQLiteDataStore extends DatabaseDataStore {
 						+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
 		;
 
+		Messages.debug("Create mh_Achievements if missing");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements " + "(PLAYER_ID INTEGER NOT NULL,"
 				+ " ACHIEVEMENT TEXT NOT NULL," + " DATE INTEGER NOT NULL," + " PROGRESS INTEGER NOT NULL,"
 				+ " PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), "
 				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))");
 
+		Messages.debug("Create mh_Bounties if missing");
 		if (!MobHunting.getConfigManager().disablePlayerBounties) {
 			Messages.debug("Create mh_Bounties if missing");
 			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties ("

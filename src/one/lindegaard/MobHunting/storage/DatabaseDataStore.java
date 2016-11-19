@@ -117,7 +117,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID, LOAD_MOBS, INSERT_MOBS, UPDATE_MOBS
+		LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID, LOAD_MOBS, INSERT_MOBS, UPDATE_MOBS, SAVE_PLAYER_STATS
 	};
 
 	/**
@@ -1082,72 +1082,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mGetPlayerByPlayerId.close();
 			throw new UserNotFoundException("[MobHunting] PlayerId " + playerId + " is not present in database");
 		} catch (SQLException e) {
-			throw new DataStoreException(e);
-		}
-	}
-
-	// ******************************************************************
-	// Player Statistics
-	// ******************************************************************
-
-	@Override
-	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
-		try {
-			Messages.debug("Saving PlayerStats to Database.");
-			Statement statement = mConnection.createStatement();
-			// openPreparedStatements(mConnection,
-			// PreparedConnectionType.SAVE_PLAYER_STATS);
-			statement.clearBatch();
-			for (StatStore stat : stats) {
-				String column = "";
-				int mob_id;
-				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
-						.equalsIgnoreCase("achievement")) {
-					column = "achievement_count";
-					mob_id = 0;
-				} else {
-					column = "total" + stat.getType().getDBColumn().substring(
-							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
-					mob_id = stat.getMob().getMob_id();
-				}
-				int amount = stat.getAmount();
-				int player_id = getPlayerId(stat.getPlayer());
-				// "INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, ?)"
-				// + " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),?,?,?)" + " ON
-				// DUPLICATE KEY UPDATE ? = ? + ?"
-				// mSavePlayerStats.setString(1, column);
-				// mSavePlayerStats.setInt(2, mob_id);
-				// mSavePlayerStats.setInt(3, player_id);
-				// mSavePlayerStats.setInt(4, amount);
-				// mSavePlayerStats.setString(5, column);
-				// mSavePlayerStats.setString(6, column);
-				// mSavePlayerStats.setInt(7, amount);
-				String insertStr;
-				if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql"))
-					insertStr = String.format(
-							"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
-									+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
-									+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d;",
-							column, mob_id, player_id, amount);
-				else
-					insertStr = String.format(
-							"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
-									+ " VALUES(strftime('%%Y%%j','now'),%2$d,%3$d,%4$d)"
-									+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d;",
-							column, mob_id, player_id, amount);
-				Messages.debug("insertStr=%s", insertStr);
-				statement.addBatch(insertStr);
-
-			}
-			statement.executeBatch();
-			statement.close();
-
-			mConnection.commit();
-			Messages.debug("Saved.");
-		} catch (
-
-		SQLException e) {
-			rollback();
 			throw new DataStoreException(e);
 		}
 	}
