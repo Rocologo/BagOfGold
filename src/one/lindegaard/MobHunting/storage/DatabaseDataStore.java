@@ -181,6 +181,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
 						+ " detected. Migrating to V3");
 				// setupV3Tables(mConnection);
+				migrate_mh_PlayersFromV2ToV3(mConnection);
 				migrateDatabaseLayoutFromV2toV3(mConnection);
 				setupTriggerV3(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 3;
@@ -191,12 +192,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 						+ " detected.");
 				// DATABASE IS UPTODATE or NOT created => create new database
 				setupV3Tables(mConnection);
+				migrate_mh_PlayersFromV2ToV3(mConnection);
 				setupTriggerV3(mConnection);
 				break;
 			default: // not needed
 				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
 						+ " detected.");
 				setupV3Tables(mConnection);
+				migrate_mh_PlayersFromV2ToV3(mConnection);
 				migrateDatabaseLayoutFromV2toV3(mConnection);
 				setupTriggerV3(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 3;
@@ -1259,6 +1262,42 @@ public abstract class DatabaseDataStore implements IDataStore {
 			rollback();
 			throw new DataStoreException(e);
 		}
+	}
+
+	// Migrate from DatabaseLayout from V2 to V3
+	public void migrate_mh_PlayersFromV2ToV3(Connection connection) throws SQLException {
+		boolean migrateData = false;
+		Statement statement = connection.createStatement();
+		// Check if tables are V3.
+		try {
+			ResultSet rs = statement.executeQuery("SELECT * from mh_PlayersV2 LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			// Tables are V2 => rename table and migrate data
+			migrateData = true;
+			Bukkit.getLogger().info("[MobHunting] Rename mh_Players to mh_PlayersV2.");
+			statement.executeUpdate("ALTER TABLE mh_Players RENAME TO mh_PlayersV2");
+		}
+
+		if (migrateData) {
+			// create new tables 
+			setupV3Tables(connection);
+
+			// migrate data from old table3s to new tables.
+			try {
+				Bukkit.getLogger().info("[MobHunting] Migrating mh_Players from V2 to V3");
+				String insertStr = "INSERT INTO mh_Players(UUID, NAME, PLAYER_ID, LEARNING_MODE, MUTE_MODE)"
+						+ "SELECT UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE FROM mh_PlayersV2";
+				int n = statement.executeUpdate(insertStr);
+				Bukkit.getLogger().info("[MobHunting] Migrated " + n + " players into the new mh_Players.");
+			} catch (SQLException e) {
+				Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_Players");
+				e.printStackTrace();
+			}
+		}
+
+		statement.close();
+		connection.commit();
 	}
 
 }

@@ -1,3 +1,5 @@
+V4.0.4 Bugfixing 
+* Migrating mh_Players into new V3 layout, the old table is renamed to mh_PlayersV2.
 V4.0.3 Bugfixing 
 * Fixed SQL Error reported by Dutchy1001 (https://www.spigotmc.org/threads/mobhunting.46937/page-61#post-2028165)
 V4.0.2 Bugfixing 
