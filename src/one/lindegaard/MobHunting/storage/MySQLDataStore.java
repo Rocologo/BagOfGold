@@ -245,8 +245,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 				int player_id = getPlayerId(stat.getPlayer());
 				statement.addBatch(String.format("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
 						+" VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
-						+" ON DUPLICATE KEY UPDATE %1$s = %1$s + %2$d",
-						column, amount, mob_id, player_id));
+						+" ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d",
+						column, mob_id, player_id, amount));
 			}
 			statement.executeBatch();
 			statement.close();
