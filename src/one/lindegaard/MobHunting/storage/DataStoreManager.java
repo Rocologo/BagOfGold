@@ -19,7 +19,9 @@ import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
@@ -87,7 +89,7 @@ public class DataStoreManager {
 	public void recordAchievement(OfflinePlayer player, Achievement achievement) {
 		synchronized (mWaiting) {
 			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
-			mWaiting.add(new StatStore(StatType.AchievementCount, player));
+			mWaiting.add(new StatStore(StatType.AchievementCount, ExtendedMobManager.getFirstMob(), player));
 		}
 	}
 

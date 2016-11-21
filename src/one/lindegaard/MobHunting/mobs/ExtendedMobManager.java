@@ -19,7 +19,7 @@ import one.lindegaard.MobHunting.storage.DataStoreException;
 
 public class ExtendedMobManager {
 
-	private HashMap<Integer, ExtendedMob> mobs = new HashMap<Integer, ExtendedMob>();
+	private static HashMap<Integer, ExtendedMob> mobs = new HashMap<Integer, ExtendedMob>();
 
 	public ExtendedMobManager() {
 
@@ -115,6 +115,12 @@ public class ExtendedMobManager {
 		}
 		mob_id = getMobIdFromMobTypeAndPluginID(mobtype, mobPlugin);
 		return new ExtendedMob(mob_id, mobPlugin, mobtype);
+	}
+	
+	// This is only used to get a "random" mob_id stored when an Achievement is stored in mh_Daily 
+	public static ExtendedMob getFirstMob(){
+		int mob_id = mobs.keySet().iterator().next().intValue();
+		return mobs.get(mob_id);
 	}
 
 }

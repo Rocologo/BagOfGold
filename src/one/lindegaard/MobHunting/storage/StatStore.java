@@ -14,14 +14,14 @@ public class StatStore {
 
 	public StatStore(StatType type, ExtendedMob mob, OfflinePlayer player, int amount) {
 		this.type = type;
-		this.setMob_id(mob);
+		this.setMob(mob);
 		this.player = player;
 		this.amount = amount;
 	}
 
 	public StatStore(StatType type, ExtendedMob mob, OfflinePlayer player) {
 		this.type = type;
-		this.setMob_id(mob);
+		this.setMob(mob);
 		this.player = player;
 		amount = 1; //add one kill.
 	}
@@ -57,7 +57,7 @@ public class StatStore {
 		return mob;
 	}
 
-	public void setMob_id(ExtendedMob mob) {
+	public void setMob(ExtendedMob mob) {
 		this.mob = mob;
 	}
 

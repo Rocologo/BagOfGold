@@ -60,7 +60,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected void openPreparedStatements(Connection connection, PreparedConnectionType preparedConnectionType)
 			throws SQLException {
 		switch (preparedConnectionType) {
-		case SAVE_PLAYER_STATS:
+		case SAVE_PLAYER_STATS: //NOT USED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			mSavePlayerStats = connection.prepareStatement(
 					"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
 							+" VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
@@ -233,21 +233,21 @@ public class MySQLDataStore extends DatabaseDataStore {
 			statement.clearBatch();
 			for (StatStore stat : stats) {
 				String column = "";
-				int mob_id;
+				int mob_id = stat.getMob().getMob_id();
 				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
 						.equalsIgnoreCase("achievement")) {
 					column = "achievement_count";
-					mob_id = 0;
+					
 				} else {
 					column = "total" + stat.getType().getDBColumn().substring(
 							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
-					mob_id = stat.getMob().getMob_id();
+					//mob_id = stat.getMob().getMob_id();
 				}
 				int amount = stat.getAmount();
 				int player_id = getPlayerId(stat.getPlayer());
 				Calendar date = Calendar.getInstance();
 				date.setTimeInMillis(System.currentTimeMillis());
-				Bukkit.getLogger().severe("Saving data ("+date.get(Calendar.YEAR)+date.get(Calendar.DAY_OF_YEAR)+","+
+				Bukkit.getLogger().info("[MobHunting] Saving data ("+date.get(Calendar.YEAR)+date.get(Calendar.DAY_OF_YEAR)+","+
 						mob_id+","+player_id+","+amount+")");
 				statement.addBatch(String.format("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
 						+" VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"

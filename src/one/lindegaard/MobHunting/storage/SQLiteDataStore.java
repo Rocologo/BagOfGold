@@ -224,19 +224,19 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
-			int mob_id = 0;
+			//int mob_id = 0;
 			for (StatStore stat : stats) {
 				String column = "";
-
+				int mob_id = stat.getMob().getMob_id();
 				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
 						.equalsIgnoreCase("achievement")) {
 					// if (!stat.getType().equals(StatType.AchievementCount)) {
 					column = "achievement_count";
-					mob_id = 0;
+					//mob_id = stat.getMob().getMob_id();
 				} else {
 					column = "total" + stat.getType().getDBColumn().substring(
 							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
-					mob_id = stat.getMob().getMob_id();
+					//mob_id = stat.getMob().getMob_id();
 				}
 				int amount = stat.getAmount();
 				int player_id = getPlayerId(stat.getPlayer());

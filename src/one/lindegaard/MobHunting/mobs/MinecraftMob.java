@@ -1,10 +1,12 @@
 package one.lindegaard.MobHunting.mobs;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
+import org.bukkit.entity.ZombieVillager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -199,6 +201,11 @@ public enum MinecraftMob {
 	// give @p skull 1 3
 	// {display:{Name:"Zombie"},SkullOwner:{Id:"290f6aeb-b185-451c-9930-e441070b5901",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZmYzg1NGJiODRjZjRiNzY5NzI5Nzk3M2UwMmI3OWJjMTA2OTg0NjBiNTFhNjM5YzYwZTVlNDE3NzM0ZTExIn19fQ=="}]}}}
 	Zombie("ZOMBIE", "MHF_Zombie", "290f6aeb-b185-451c-9930-e441070b5901", "Zombie Head",
+			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZmYzg1NGJiODRjZjRiNzY5NzI5Nzk3M2UwMmI3OWJjMTA2OTg0NjBiNTFhNjM5YzYwZTVlNDE3NzM0ZTExIn19fQ=="),
+	// ZombieVillager
+	// give @p skull 1 3
+	// {display:{Name:"Zombie"},SkullOwner:{Id:"290f6aeb-b185-451c-9930-e441070b5901",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZmYzg1NGJiODRjZjRiNzY5NzI5Nzk3M2UwMmI3OWJjMTA2OTg0NjBiNTFhNjM5YzYwZTVlNDE3NzM0ZTExIn19fQ=="}]}}}
+	ZombieVillager("ZOMBIE_VILLAGER", "MHF_Zombie", "290f6aeb-b185-451c-9930-e441070b5901", "ZombieVillager Head",
 			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZmYzg1NGJiODRjZjRiNzY5NzI5Nzk3M2UwMmI3OWJjMTA2OTg0NjBiNTFhNjM5YzYwZTVlNDE3NzM0ZTExIn19fQ=="),
 	// BonusMob
 	// Herobrine /give @p skull 1 3
@@ -457,25 +464,33 @@ public enum MinecraftMob {
 				return entity instanceof org.bukkit.entity.SkeletonHorse;
 			else if (this == ElderGuardian)
 				return entity instanceof org.bukkit.entity.ElderGuardian;
-			else if (this == Zombie) 
-				return entity instanceof org.bukkit.entity.Zombie 
-						&& ((Zombie) entity).getVillagerProfession() == null;
+			else if (this == Villager)
+				return entity instanceof org.bukkit.entity.Villager;
+			else if (this == Zombie)
+				return entity instanceof org.bukkit.entity.Zombie && ((Zombie) entity).getVillagerProfession() == null;
+			else if (this == ZombieVillager)
+				return entity instanceof ZombieVillager;
+					//&& ((ZombieVillager) entity).getVillagerProfession() == null;
 
+		// else if (this == Zombie)
+		// return entity instanceof org.bukkit.entity.Zombie
+		// && ((Zombie) entity).getVillagerProfession() == null;
+
+		// else if (this == Nitwit)
+		// return entity instanceof org.bukkit.entity.ZombieVillager &&
+		// ((org.bukkit.entity.ZombieVillager) entity).);
 		// TODO: Villagers: Nitwit, Cartographer, Buther, Liberian, Farmer
 
 		if (Misc.isMC110OrNewer())
 			if (this == PolarBear)
 				return entity instanceof org.bukkit.entity.PolarBear;
 			else if (this == Stray)
-				return entity instanceof org.bukkit.entity.Skeleton
-						&& (((Skeleton) entity).getSkeletonType() == SkeletonType.STRAY);
+				return entity instanceof Skeleton && (((Skeleton) entity).getSkeletonType() == SkeletonType.STRAY);
 			else if (this == Husk)
-				return entity instanceof org.bukkit.entity.Zombie
-						&& ((Zombie) entity).getVillagerProfession() == Profession.HUSK;
+				return entity instanceof Zombie && ((Zombie) entity).getVillagerProfession() == Profession.HUSK;
 			else if (this == Zombie)
-				return entity instanceof org.bukkit.entity.Zombie
-						&& (((Zombie) entity).getVillagerProfession() == Profession.NORMAL ||
-						((Zombie) entity).getVillagerProfession() == null);
+				return entity instanceof Zombie && (((Zombie) entity).getVillagerProfession() == Profession.NORMAL
+						|| ((Zombie) entity).getVillagerProfession() == null);
 		if (Misc.isMC19OrNewer())
 			if (this == Shulker)
 				return entity instanceof org.bukkit.entity.Shulker;
@@ -496,7 +511,7 @@ public enum MinecraftMob {
 		else if (this == Skeleton)
 			return entity instanceof Skeleton && ((Skeleton) entity).getSkeletonType() == SkeletonType.NORMAL;
 		else if (this == Zombie)
-			return entity instanceof org.bukkit.entity.Zombie;
+			return entity instanceof Zombie;
 		else if (this == BonusMob)
 			return entity.hasMetadata("MH:hasBonus");
 		else
@@ -511,8 +526,8 @@ public enum MinecraftMob {
 		for (MinecraftMob type : values())
 			if (type.matches(entity))
 				return type;
-		Messages.debug("ERROR!!! - Unhandled Entity: %s(%s) Type:%s", entity.getName(), entity.getCustomName(),
-				entity.getType().toString());
+		Bukkit.getLogger().severe("ERROR!!! - Unhandled Entity: " + entity.getName() + "(" + entity.getCustomName()
+				+ ") Type:" + entity.getType().toString());
 		return null;
 	}
 
