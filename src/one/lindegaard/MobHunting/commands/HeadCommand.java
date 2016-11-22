@@ -209,6 +209,8 @@ public class HeadCommand implements ICommand, Listener {
 
 	@EventHandler
 	public void PickupItem(PlayerPickupItemEvent event) {
+		if (event.isCancelled())
+			return;
 		Item item = event.getItem();
 		if (item.hasMetadata(HeadCommand.MH_HEAD)) {
 			String displayName = item.getMetadata(HeadCommand.MH_HEAD).get(0).asString();
@@ -224,6 +226,8 @@ public class HeadCommand implements ICommand, Listener {
 
 	@EventHandler
 	public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
+		if (event.isCancelled())
+			return;
 		Item item = event.getItemDrop();
 		if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasLore()
 				&& item.getItemStack().getItemMeta().getLore().get(0).equals(MH_REWARD)) {
@@ -242,6 +246,8 @@ public class HeadCommand implements ICommand, Listener {
 
 	@EventHandler
 	public void onInventoryPickUp(InventoryPickupItemEvent event) {
+		if (event.isCancelled())
+			return;
 		Item item = event.getItem();
 		if (item.hasMetadata(MH_HEAD) && event.getInventory().getType()!=InventoryType.PLAYER) {
 			String displayName = item.getMetadata(MH_HEAD).get(0).asString();
@@ -257,6 +263,8 @@ public class HeadCommand implements ICommand, Listener {
 
 	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent event) {
+		if (event.isCancelled())
+			return;
 		if (event.getBlock().hasMetadata(MH_HEAD)) {
 			String displayName = event.getBlock().getMetadata(MH_HEAD).get(0).asString();
 			Messages.debug("You broke a MH head Displayname=%s", displayName);
@@ -282,6 +290,8 @@ public class HeadCommand implements ICommand, Listener {
 
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent event) {
+		if (event.isCancelled())
+			return;
 		if (event.getItemInHand() != null && event.getItemInHand().hasItemMeta()) {
 			ItemMeta im = event.getItemInHand().getItemMeta();
 			if (im.hasLore() && im.getLore().get(0).equalsIgnoreCase(HeadCommand.MH_REWARD)

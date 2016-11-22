@@ -436,6 +436,8 @@ public enum MinecraftMob {
 			return MobHunting.getConfigManager().zombieHorseLevel1;
 		case SkeletonHorse:
 			return MobHunting.getConfigManager().skeletonHorseLevel1;
+		case ZombieVillager:
+			return MobHunting.getConfigManager().zombieVillagerLevel1;
 		}
 		return 100;
 	}
@@ -466,11 +468,12 @@ public enum MinecraftMob {
 				return entity instanceof org.bukkit.entity.ElderGuardian;
 			else if (this == Villager)
 				return entity instanceof org.bukkit.entity.Villager;
-			else if (this == Zombie)
-				return entity instanceof org.bukkit.entity.Zombie && ((Zombie) entity).getVillagerProfession() == null;
 			else if (this == ZombieVillager)
 				return entity instanceof ZombieVillager;
-					//&& ((ZombieVillager) entity).getVillagerProfession() == null;
+			else if (this == WitherSkeleton)
+				return entity instanceof org.bukkit.entity.WitherSkeleton;
+			
+		// && ((ZombieVillager) entity).getVillagerProfession() == null;
 
 		// else if (this == Zombie)
 		// return entity instanceof org.bukkit.entity.Zombie

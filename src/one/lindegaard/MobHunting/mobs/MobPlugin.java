@@ -16,10 +16,6 @@ public enum MobPlugin {
 		return id;
 	}
 
-	public boolean equals(MobPlugin other) {
-		return (other == null) ? false : id == other.getId();
-	}
-
 	public boolean equalsName(String otherName) {
 		return (otherName == null) ? false : name.equals(otherName);
 	}

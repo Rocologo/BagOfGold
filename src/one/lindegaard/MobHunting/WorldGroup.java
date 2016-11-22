@@ -71,7 +71,11 @@ public class WorldGroup {
 			config.options()
 					.header("----------------------------------------------------------"
 							+ "\nWorldGroups. New world are added in the Default Group"
-							+ "\n----------------------------------------------------------");
+							+ "\n----------------------------------------------------------"
+							+ "\nThese worldgroups arer only use for Player Bounties. An"
+							+ "\nbounty created in one worldgroup can not be claimed in"
+							+ "\nanother worldgroup. This is to make sure that economies"
+							+ "\nare not mixed.");
 			Messages.debug("Saving worldGroups");
 			ConfigurationSection section = config.createSection("WorldGroups");
 			section.set("WorldGroups", worldGroups);

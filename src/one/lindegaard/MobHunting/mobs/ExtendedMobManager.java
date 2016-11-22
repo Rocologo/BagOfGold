@@ -87,7 +87,7 @@ public class ExtendedMobManager {
 			if (mob.getMobPlugin().equals(mobPlugin) && mob.mobtype.equalsIgnoreCase(mobtype))
 				return mob.mob_id;
 		}
-		Messages.debug("The %s mobtype %s was not found.", mobPlugin.name(), mobtype);
+		Bukkit.getLogger().warning("[MobHunting] The "+mobPlugin.name()+" mobtype "+mobtype+" was not found.");
 		return 0;
 	}
 

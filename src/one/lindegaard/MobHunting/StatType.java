@@ -124,8 +124,4 @@ public class StatType {
 		return null;
 	}
 	
-	public boolean equals(StatType other){
-		return mColumnName.equals(other.mColumnName);
-	}
-
 }

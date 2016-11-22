@@ -56,8 +56,8 @@ public class InFighting implements Achievement, Listener {
 
 			if (killed.getTarget() == skele && skele.getTarget() == killed) {
 				DamageInformation a, b;
-				a = MobHunting.getDamageInformation(killed);
-				b = MobHunting.getDamageInformation(skele);
+				a = MobHunting.getMobHuntingManager().getDamageInformation(killed);
+				b = MobHunting.getMobHuntingManager().getDamageInformation(skele);
 
 				Player initiator = null;
 				if (a != null)

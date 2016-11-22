@@ -62,8 +62,8 @@ public class Creepercide implements Achievement, Listener {
 				initiator = (Player) ((Creeper) event.getKilledEntity()).getTarget();
 			else {
 				DamageInformation a, b;
-				a = MobHunting.getDamageInformation(killed);
-				b = MobHunting.getDamageInformation((Creeper) damage.getDamager());
+				a = MobHunting.getMobHuntingManager().getDamageInformation(killed);
+				b = MobHunting.getMobHuntingManager().getDamageInformation((Creeper) damage.getDamager());
 
 				if (a != null)
 					initiator = a.attacker;

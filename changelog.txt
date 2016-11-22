@@ -1,3 +1,7 @@
+V4.0.6 Bugfixing
+* Remove natural drops when detected grinding, killing mobs in a WG region with mob-damage deny or mobhunting deny.
+* Cancel MH Head events if other plugins has canceled the event.
+* Added missing zombie_villager_level1 in config.yml
 V4.0.5 Bugfixing 
 * Fixed error when Achivemens was saved.
 * Fixed Zombie/Villager/ZombieVillager mob type.... I hope its very confusion in MC1.11

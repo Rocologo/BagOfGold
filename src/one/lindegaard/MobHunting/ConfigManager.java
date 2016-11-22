@@ -60,6 +60,7 @@ import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieHorse;
+import org.bukkit.entity.ZombieVillager;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.SkeletonHorse;
 import org.bukkit.entity.Villager.Profession;
@@ -576,7 +577,7 @@ public class ConfigManager extends AutoConfig {
 	// Villagers
 	// #####################################################################################
 	@ConfigField(name = "cartographer", category = "villager")
-	public String cartographerPrize = "10:20";
+	public String cartographerPrize = "1:2";
 	@ConfigField(name = "cartographer-cmd", category = "villager")
 	public String cartographerCmd = "";
 	@ConfigField(name = "enderdragon-cmd-desc", category = "villager")
@@ -585,14 +586,35 @@ public class ConfigManager extends AutoConfig {
 	public double cartographerCmdRunChance = 1.00;
 
 	@ConfigField(name = "nitwit", category = "villager")
-	public String nitwitPrize = "10:20";
+	public String nitwitPrize = "1:2";
 	@ConfigField(name = "nitwit-cmd", category = "villager")
 	public String nitwitCmd = "";
 	@ConfigField(name = "nitwit-cmd-desc", category = "villager")
 	public String nitwitCmdDesc = "";
 	@ConfigField(name = "nitwit-cmd-run-chance", category = "villager")
 	public double nitwitCmdRunChance = 1.00;
-
+	
+	@ConfigField(name = "villager", category = "villager")
+	public String villagerPrize = "1";
+	@ConfigField(name = "villager-cmd", category = "villager")
+	public String villagerCmd = "mobhunt head give {player} Villager";
+	@ConfigField(name = "villager-cmd-desc", category = "villager")
+	public String villagerCmdDesc = "You got a Villager Skull";
+	@ConfigField(name = "villager-cmd-run-frequency", category = "villager")
+	public int villagerFequency = 0;
+	@ConfigField(name = "villager-cmd-run-frequency-base", category = "villager")
+	public int villagerFrequencyBase = 100;
+	
+	@ConfigField(name = "zombie-villager", category = "villager")
+	public String zombieVillagerPrize = "1:2";
+	@ConfigField(name = "zombie-villager-cmd", category = "villager")
+	public String zombieVillagerCmd = "";
+	@ConfigField(name = "zombie-villager-cmd-desc", category = "villager")
+	public String zombieVillagerCmdDesc = "";
+	@ConfigField(name = "zombie-villager-cmd-run-chance", category = "villager")
+	public double zombieVillagerCmdRunChance = 1.00;
+	
+	
 	// #####################################################################################
 	// Passive Mobs
 	// #####################################################################################
@@ -752,17 +774,6 @@ public class ConfigManager extends AutoConfig {
 	public int squidFrequency = 0;
 	@ConfigField(name = "bat-cmd-run-frequency-base", category = "passive")
 	public int squidFrequencyBase = 100;
-
-	@ConfigField(name = "villager", category = "passive")
-	public String villagerPrize = "0";
-	@ConfigField(name = "villager-cmd", category = "passive")
-	public String villagerCmd = "mobhunt head give {player} Villager";
-	@ConfigField(name = "villager-cmd-desc", category = "passive")
-	public String villagerCmdDesc = "You got a Villager Skull";
-	@ConfigField(name = "villager-cmd-run-frequency", category = "passive")
-	public int villagerFequency = 0;
-	@ConfigField(name = "villager-cmd-run-frequency-base", category = "passive")
-	public int villagerFrequencyBase = 100;
 
 	@ConfigField(name = "wolf", category = "passive")
 	public String wolfPrize = "-10";
@@ -1096,6 +1107,9 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "skeletonhorse_level1", category = "achievement_levels")
 	public int skeletonHorseLevel1 = 100;
+	
+	@ConfigField(name = "zombie_villager_level1", category = "achievement_levels")
+	public int zombieVillagerLevel1 = 100;
 
 	// #####################################################################################
 	// Assists
@@ -1566,6 +1580,8 @@ public class ConfigManager extends AutoConfig {
 					return getPrice(mob, MobHunting.getConfigManager().strayPrize);
 				else if (mob instanceof Husk)
 					return getPrice(mob, MobHunting.getConfigManager().huskPrize);
+				else if (mob instanceof ZombieVillager)
+					return getPrice(mob, MobHunting.getConfigManager().zombieVillagerPrize);
 			//TODO: Villagers
 				
 			if (Misc.isMC110OrNewer())
@@ -1764,6 +1780,8 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().strayCmd;
 				else if (mob instanceof Husk)
 					return MobHunting.getConfigManager().huskCmd;
+				else if (mob instanceof ZombieVillager)
+					return MobHunting.getConfigManager().zombieVillagerCmd;
 			//TODO: Villagers
 				
 			
@@ -1917,6 +1935,8 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().strayCmdDesc;
 				else if (mob instanceof Husk)
 					return MobHunting.getConfigManager().huskCmdDesc;
+				else if (mob instanceof ZombieVillager)
+					return MobHunting.getConfigManager().zombieVillagerCmdDesc;
 			//TODO: Villagers
 			
 			if (Misc.isMC110OrNewer())
@@ -2065,6 +2085,8 @@ public class ConfigManager extends AutoConfig {
 				else if (mob instanceof Husk)
 					return (double) MobHunting.getConfigManager().huskFrequency
 							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
+				else if (mob instanceof ZombieVillager)
+					return MobHunting.getConfigManager().zombieVillagerCmdRunChance;
 			//TODO: Villagers
 			
 			if (Misc.isMC110OrNewer())

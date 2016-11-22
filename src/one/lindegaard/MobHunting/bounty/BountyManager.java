@@ -342,7 +342,7 @@ public class BountyManager implements Listener {
 	public static void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
 			boolean useGui) {
 		if (sender instanceof Player) {
-			//Player player = (Player) sender;
+			// Player player = (Player) sender;
 
 			if (hasBounties(worldGroupName, wantedPlayer)) {
 				Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getBounties(worldGroupName,
@@ -471,18 +471,16 @@ public class BountyManager implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Inventory inv = event.getInventory();
-		if (ChatColor.stripColor(inv.getName()).startsWith("MostWanted:")||
-				ChatColor.stripColor(inv.getName()).startsWith("Wanted:")) {
+		if (ChatColor.stripColor(inv.getName()).startsWith("MostWanted:")
+				|| ChatColor.stripColor(inv.getName()).startsWith("Wanted:")) {
 			final Player player = (Player) event.getWhoClicked();
-			if (inv != null) {
-				event.setCancelled(true);
-				Messages.debug("BountyManager: Player clicked on inventory - closing now");
-				Bukkit.getScheduler().runTask(instance, new Runnable() {
-					public void run() {
-						player.closeInventory();
-					}
-				});
-			}
+			event.setCancelled(true);
+			Messages.debug("BountyManager: Player clicked on inventory - closing now");
+			Bukkit.getScheduler().runTask(instance, new Runnable() {
+				public void run() {
+					player.closeInventory();
+				}
+			});
 		}
 	}
 
