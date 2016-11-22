@@ -244,10 +244,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 				}
 				int amount = stat.getAmount();
 				int player_id = getPlayerId(stat.getPlayer());
-				Calendar date = Calendar.getInstance();
-				date.setTimeInMillis(System.currentTimeMillis());
-				Bukkit.getLogger().info("[MobHunting] Saving data ("+date.get(Calendar.YEAR)+date.get(Calendar.DAY_OF_YEAR)+","+
-						mob_id+","+player_id+","+amount+")");
+				//Calendar date = Calendar.getInstance();
+				//date.setTimeInMillis(System.currentTimeMillis());
+				//Bukkit.getLogger().info("[MobHunting] Saving data ("+date.get(Calendar.YEAR)+date.get(Calendar.DAY_OF_YEAR)+","+
+				//		mob_id+","+player_id+","+amount+")");
 				statement.addBatch(String.format("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
 						+" VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
 						+" ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d",

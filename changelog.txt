@@ -1,3 +1,5 @@
+V4.0.7 Bugfixing
+* Debug information "Saving data" has been removed from the console. 
 V4.0.6 Bugfixing
 * Remove natural drops when detected grinding, killing mobs in a WG region with mob-damage deny or mobhunting deny.
 * Cancel MH Head events if other plugins has canceled the event.
