@@ -1,17 +1,20 @@
-V4.0.7 Bugfixing
+V4.0.8 Bug fixing
+* Fixed bug on MasterMobHuntingSigns which caused them to be permanent powered.
+* Fixed open connections in MySql
+V4.0.7 Bug fixing
 * Debug information "Saving data" has been removed from the console. 
-V4.0.6 Bugfixing
+V4.0.6 Bug fixing
 * Remove natural drops when detected grinding, killing mobs in a WG region with mob-damage deny or mobhunting deny.
 * Cancel MH Head events if other plugins has canceled the event.
 * Added missing zombie_villager_level1 in config.yml
-V4.0.5 Bugfixing 
+V4.0.5 Bug fixing 
 * Fixed error when Achivemens was saved.
 * Fixed Zombie/Villager/ZombieVillager mob type.... I hope its very confusion in MC1.11
-V4.0.4 Bugfixing 
+V4.0.4 Bug fixing 
 * Migrating mh_Players into new V3 layout, the old table is renamed to mh_PlayersV2.
-V4.0.3 Bugfixing 
+V4.0.3 Bug fixing 
 * Fixed SQL Error reported by Dutchy1001 (https://www.spigotmc.org/threads/mobhunting.46937/page-61#post-2028165)
-V4.0.2 Bugfixing 
+V4.0.2 Bug fixing 
 * NPE error fixed (Occurs when a Citizens ID exists in citizens_rewards but has been deleted in Citizens store)
 * Fixed NPE error when killing a normal Zombie
 * Fixed SQL Error reported by Dutchy1001 (https://www.spigotmc.org/threads/mobhunting.46937/page-61#post-2028165)

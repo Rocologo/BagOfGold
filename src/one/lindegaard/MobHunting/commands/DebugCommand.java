@@ -69,11 +69,11 @@ public class DebugCommand implements ICommand {
 		boolean debug = MobHunting.getConfigManager().killDebug;
 		if (debug) {
 			MobHunting.getConfigManager().killDebug = false;
-			sender.sendMessage(Messages.getString("mobhunting.commands.debug.disabled"));
+			sender.sendMessage("[MobHunting] " + Messages.getString("mobhunting.commands.debug.disabled"));
 			MobHunting.getConfigManager().saveConfig();
 		} else {
 			MobHunting.getConfigManager().killDebug = true;
-			sender.sendMessage(Messages.getString("mobhunting.commands.debug.enabled"));
+			sender.sendMessage("[MobHunting] " + Messages.getString("mobhunting.commands.debug.enabled"));
 			MobHunting.getConfigManager().saveConfig();
 		}
 
