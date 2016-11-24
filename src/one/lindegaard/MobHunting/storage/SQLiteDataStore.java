@@ -27,12 +27,14 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	// *******************************************************************************
 
 	@Override
-	protected Connection setupConnection() throws SQLException, DataStoreException {
+	protected Connection setupConnection() throws DataStoreException {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			return DriverManager.getConnection("jdbc:sqlite:" + MobHunting.getInstance().getDataFolder().getPath() + "/"
+			Connection c = DriverManager.getConnection("jdbc:sqlite:" + MobHunting.getInstance().getDataFolder().getPath() + "/"
 					+ MobHunting.getConfigManager().databaseName + ".db");
-		} catch (ClassNotFoundException e) {
+			c.setAutoCommit(false);
+			return c;
+		} catch (ClassNotFoundException | SQLException e) {
 			throw new DataStoreException("SQLite not present on the classpath");
 		}
 	}
@@ -166,13 +168,17 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			wherepart = (id != null ? " AND ID=" + id : "");
 		} else {
 			wherepart = (id != null
-					? " AND ID=" + id + " and mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
-							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft)
+					? " AND ID=" + id + " and mh_Mobs.MOB_ID="
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
+									type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")),
+									MobPlugin.Minecraft)
 					: " AND mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
 							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft));
 		}
 
 		try {
+			Connection mConnection = setupConnection();
+
 			Statement statement = mConnection.createStatement();
 			ResultSet results = statement
 					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
@@ -197,6 +203,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			}
 			results.close();
 			statement.close();
+			mConnection.close();
 			return list;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -205,6 +212,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	@Override
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
+		Connection mConnection = setupConnection();
 		try {
 			Messages.debug("Saving PlayerStats to Database.");
 			openPreparedStatements(mConnection, PreparedConnectionType.SAVE_PLAYER_STATS);
@@ -213,7 +221,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				int mob_id = 0;
 				if (!st.getType().getDBColumn().substring(0, st.getType().getDBColumn().lastIndexOf("_"))
 						.equalsIgnoreCase("achievement"))
-					// if (!st.getType().equals(StatType.AchievementCount))
 					mob_id = st.getMob().getMob_id();
 				mSavePlayerStats.setInt(2, getPlayerId(st.getPlayer()));
 				mSavePlayerStats.setInt(1, mob_id);
@@ -221,22 +228,19 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			}
 			mSavePlayerStats.executeBatch();
 			mSavePlayerStats.close();
-
+			mConnection.commit();
+			
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
-			//int mob_id = 0;
 			for (StatStore stat : stats) {
 				String column = "";
 				int mob_id = stat.getMob().getMob_id();
 				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
 						.equalsIgnoreCase("achievement")) {
-					// if (!stat.getType().equals(StatType.AchievementCount)) {
 					column = "achievement_count";
-					//mob_id = stat.getMob().getMob_id();
 				} else {
 					column = "total" + stat.getType().getDBColumn().substring(
 							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
-					//mob_id = stat.getMob().getMob_id();
 				}
 				int amount = stat.getAmount();
 				int player_id = getPlayerId(stat.getPlayer());
@@ -248,13 +252,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 										column, amount, mob_id, player_id));
 			}
 			statement.executeBatch();
-			statement.close();
+			statement.closeOnCompletion();
 			mConnection.commit();
+			mConnection.close();
 			Messages.debug("Saved.");
-		} catch (
-
-		SQLException e) {
-			rollback();
+		} catch (SQLException e) {
+			rollback(mConnection);
 			throw new DataStoreException(e);
 		}
 	}
@@ -321,10 +324,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
 					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
 
-		setupTriggerV2(connection);
-
 		create.close();
 		connection.commit();
+		
+		setupTriggerV2(connection);
 
 		performUUIDMigrateV2(connection);
 		performAddNewMobsIntoV2(connection);
@@ -377,8 +380,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		create.executeUpdate(updateTrigger.toString());
 		create.close();
-
 		connection.commit();
+		
 	}
 
 	private void performTableMigrateFromV1ToV2(Connection connection) throws SQLException {
@@ -440,6 +443,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		statement.executeUpdate("DROP TABLE mh_YearlyOLD");
 		statement.executeUpdate("DROP TABLE mh_AllTimeOLD");
 		statement.close();
+		connection.commit();
 	}
 
 	private void performUUIDMigrateV2(Connection connection) throws SQLException {
@@ -492,11 +496,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		insert.executeBatch();
 		insert.close();
-
+		
 		System.out.println("[MobHunting] Player UUID migration complete.");
 
 		statement.close();
 		connection.commit();
+		
 	}
 
 	private void performAddNewMobsIntoV2(Connection connection) throws SQLException {
@@ -956,10 +961,11 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 
-		setupTriggerV2(connection);
-
 		statement.close();
 		connection.commit();
+		
+		setupTriggerV2(connection);
+		
 	}
 
 	// *******************************************************************************
@@ -977,10 +983,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," + " PRIMARY KEY(PLAYER_ID))");
 
 		create.executeUpdate(
-				"CREATE TABLE IF NOT EXISTS mh_Mobs " 
-		+ "(MOB_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT 0,"				
-		+ " PLUGIN_ID INTEGER NOT NULL," 
-		+ " MOBTYPE TEXT)");
+				"CREATE TABLE IF NOT EXISTS mh_Mobs " + "(MOB_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT 0,"
+						+ " PLUGIN_ID INTEGER NOT NULL," + " MOBTYPE TEXT)");
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily" + "(ID CHAR(7) NOT NULL,"//
 				+ " MOB_ID INTEGER NOT NULL," //
@@ -1043,10 +1047,11 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 
-		insertMissingVanillaMobs();
-
 		create.close();
 		connection.commit();
+
+		insertMissingVanillaMobs();
+
 		Messages.debug("MobHunting V3 Database created.");
 
 	}
@@ -1108,9 +1113,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		updateTrigger.append("END");
 
 		create.executeUpdate(updateTrigger.toString());
+		
 		create.close();
-
 		connection.commit();
+		
 		Messages.debug("Database trigger updated.");
 	}
 

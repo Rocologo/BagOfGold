@@ -101,8 +101,9 @@ public interface IDataStore {
 	 * Fixes error in the database
 	 * 
 	 * @throws SQLException
+	 * @throws DataStoreException 
 	 */
-	public void databaseFixLeaderboard() throws SQLException;
+	public void databaseFixLeaderboard() throws DataStoreException;
 
 	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
 
@@ -116,12 +117,12 @@ public interface IDataStore {
 
 	public Set<Bounty> loadBounties(OfflinePlayer mPlayer) throws DataStoreException;
 
-	public int getPlayerId(OfflinePlayer player) throws SQLException, DataStoreException, UserNotFoundException;
+	public int getPlayerId(OfflinePlayer player) throws DataStoreException, UserNotFoundException;
 
 	public Set<ExtendedMob> loadMobs() throws DataStoreException;
 
 	public void insertMissingVanillaMobs();
-
+	
 	public void insertMissingMythicMobs();
 
 	public void insertCitizensMobs();

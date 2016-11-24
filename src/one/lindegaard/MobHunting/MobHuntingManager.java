@@ -41,7 +41,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -343,15 +342,6 @@ public class MobHuntingManager implements Listener {
 			}
 
 		return true;
-	}
-
-	public boolean isKillRewareded(Player killer, LivingEntity killed, EntityDeathEvent event) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void rewardKill(Player killer, LivingEntity killed, EntityDeathEvent event) {
-		// TODO Auto-generated method stub
 	}
 
 	/**

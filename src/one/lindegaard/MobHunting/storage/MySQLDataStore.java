@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	// *******************************************************************************
 
 	@Override
-	protected Connection setupConnection() throws SQLException, DataStoreException {
+	protected Connection setupConnection() throws DataStoreException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			// return DriverManager.getConnection(
@@ -49,8 +48,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 				dataSource.setServerName(MobHunting.getConfigManager().databaseHost);
 			}
 			dataSource.setDatabaseName(MobHunting.getConfigManager().databaseName + "?autoReconnect=true");
-			return dataSource.getConnection();
-		} catch (ClassNotFoundException e) {
+			Connection c = dataSource.getConnection();
+			c.setAutoCommit(false);
+			return c;
+		} catch (ClassNotFoundException | SQLException e) {
 			throw new DataStoreException("MySQL not present on the classpath");
 		}
 	}
@@ -59,12 +60,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected void openPreparedStatements(Connection connection, PreparedConnectionType preparedConnectionType)
 			throws SQLException {
 		switch (preparedConnectionType) {
-		case SAVE_PLAYER_STATS: //NOT USED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			mSavePlayerStats = connection.prepareStatement(
-					"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
-							+" VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
-							+" ON DUPLICATE KEY UPDATE %1$s = %1$s + %2$d");
-					//"INSERT IGNORE INTO mh_Daily(ID, MOB_ID, PLAYER_ID) VALUES(DATE_FORMAT(NOW(), '%Y%j'),?,?);");
+		case SAVE_PLAYER_STATS: // NOT USED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			mSavePlayerStats = connection.prepareStatement("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
+					+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
+					+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %2$d");
+			// "INSERT IGNORE INTO mh_Daily(ID, MOB_ID, PLAYER_ID)
+			// VALUES(DATE_FORMAT(NOW(), '%Y%j'),?,?);");
 			break;
 		case LOAD_ARCHIEVEMENTS:
 			mLoadAchievements = connection
@@ -187,13 +188,16 @@ public class MySQLDataStore extends DatabaseDataStore {
 			wherepart = (id != null ? " AND ID=" + id : "");
 		} else {
 			wherepart = (id != null
-					? " AND ID=" + id + " and mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
-							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft)
+					? " AND ID=" + id + " and mh_Mobs.MOB_ID="
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
+									type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")),
+									MobPlugin.Minecraft)
 					: " AND mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
 							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft));
 		}
 
 		try {
+			Connection mConnection = setupConnection();
 			Statement statement = mConnection.createStatement();
 			ResultSet results = statement
 					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
@@ -218,6 +222,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			}
 			results.close();
 			statement.close();
+			mConnection.close();
 			return list;
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
@@ -226,6 +231,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	@Override
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
+		Connection mConnection = setupConnection();
 		try {
 			Messages.debug("Saving PlayerStats to Database.");
 			Statement statement = mConnection.createStatement();
@@ -236,29 +242,31 @@ public class MySQLDataStore extends DatabaseDataStore {
 				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
 						.equalsIgnoreCase("achievement")) {
 					column = "achievement_count";
-					
 				} else {
 					column = "total" + stat.getType().getDBColumn().substring(
 							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
-					//mob_id = stat.getMob().getMob_id();
 				}
 				int amount = stat.getAmount();
 				int player_id = getPlayerId(stat.getPlayer());
-				//Calendar date = Calendar.getInstance();
-				//date.setTimeInMillis(System.currentTimeMillis());
-				//Bukkit.getLogger().info("[MobHunting] Saving data ("+date.get(Calendar.YEAR)+date.get(Calendar.DAY_OF_YEAR)+","+
-				//		mob_id+","+player_id+","+amount+")");
-				statement.addBatch(String.format("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
-						+" VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
-						+" ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d",
-						column, mob_id, player_id, amount));
+				// Calendar date = Calendar.getInstance();
+				// date.setTimeInMillis(System.currentTimeMillis());
+				// Bukkit.getLogger().info("[MobHunting] Saving data
+				// ("+date.get(Calendar.YEAR)+date.get(Calendar.DAY_OF_YEAR)+","+
+				// mob_id+","+player_id+","+amount+")");
+				statement.addBatch(
+						String.format(
+								"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
+										+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
+										+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d",
+								column, mob_id, player_id, amount));
 			}
 			statement.executeBatch();
 			statement.close();
 			mConnection.commit();
+			mConnection.close();
 			Messages.debug("Saved.");
 		} catch (SQLException e) {
-			rollback();
+			rollback(mConnection);
 			throw new DataStoreException(e);
 		}
 	}
@@ -328,15 +336,14 @@ public class MySQLDataStore extends DatabaseDataStore {
 					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
 					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
 
+		create.close();
+		connection.commit();
+
 		// Setup Database triggers
 		setupTriggerV2(connection);
 
-		create.close();
-
-		connection.commit();
-
 		performTableMigrateFromV1toV2(connection);
-
+		connection.close();
 	}
 
 	private void setupTriggerV2(Connection connection) throws SQLException {
@@ -390,7 +397,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		} catch (SQLException e) {
 			// Do Nothing
 		}
-
 		create.close();
 		connection.commit();
 	}
@@ -452,7 +458,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		insert.executeBatch();
 		insert.close();
-
+		
 		int modified = statement.executeUpdate("delete from `mh_Players` where `UUID`='**UNSPEC**'");
 		System.out.println("[MobHunting]" + modified + " players were removed due to missing UUIDs");
 
@@ -461,8 +467,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		System.out.println("[MobHunting] Player UUID migration complete.");
 
-		statement.close();
 		connection.commit();
+		statement.close();
 	}
 
 	private void performAddNewMobsIntoV2(Connection connection) throws SQLException {
@@ -928,10 +934,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 		System.out.println("[MobHunting] Updating database triggers.");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
-		setupTriggerV2(connection);
-
 		statement.close();
 		connection.commit();
+		
+		setupTriggerV2(connection);
+
 	}
 
 	// *******************************************************************************
@@ -949,9 +956,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," + " PRIMARY KEY (PLAYER_ID))");
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Mobs " + "(MOB_ID INTEGER NOT NULL AUTO_INCREMENT,"
-				+ " PLUGIN_ID INTEGER NOT NULL," 
-				+ " MOBTYPE VARCHAR(30)," 
-				+ " PRIMARY KEY(MOB_ID))");
+				+ " PLUGIN_ID INTEGER NOT NULL," + " MOBTYPE VARCHAR(30)," + " PRIMARY KEY(MOB_ID))");
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily " + "(ID CHAR(7) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
@@ -988,11 +993,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 						+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
 						+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
 
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements " 
-				+ "(PLAYER_ID INTEGER NOT NULL,"
-				+ " ACHIEVEMENT VARCHAR(64) NOT NULL," 
-				+ " DATE DATETIME NOT NULL," 
-				+ " PROGRESS INTEGER NOT NULL,"
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements " + "(PLAYER_ID INTEGER NOT NULL,"
+				+ " ACHIEVEMENT VARCHAR(64) NOT NULL," + " DATE DATETIME NOT NULL," + " PROGRESS INTEGER NOT NULL,"
 				+ " PRIMARY KEY(PLAYER_ID, ACHIEVEMENT),"
 				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
 
@@ -1010,20 +1012,16 @@ public class MySQLDataStore extends DatabaseDataStore {
 		// Setup Database triggers
 		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
-		// setupTriggerV3(connection);
-
-		insertMissingVanillaMobs();
-
 		create.close();
 		connection.commit();
 
+		insertMissingVanillaMobs();
+		
 		Messages.debug("MobHunting V3 Database created.");
-
 	}
 
 	@Override
 	protected void setupTriggerV3(Connection connection) throws SQLException {
-		// TODO: create trigger
 		Statement create = connection.createStatement();
 
 		// Workaround for no create trigger if not exists
@@ -1083,11 +1081,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 			updateTrigger.append("END");
 
 			create.executeUpdate(updateTrigger.toString());
+			create.close();
 		} catch (SQLException e) {
 			// Do Nothing
 		}
-
-		create.close();
 		connection.commit();
 	}
 

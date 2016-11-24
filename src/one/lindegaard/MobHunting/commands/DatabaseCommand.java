@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.commands;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import org.bukkit.event.Listener;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.storage.DataStoreException;
 
 public class DatabaseCommand implements ICommand, Listener {
 
@@ -85,7 +85,7 @@ public class DatabaseCommand implements ICommand, Listener {
 		if (args.length == 1 && (args[0].equalsIgnoreCase("fixleaderboard"))) {
 			try {
 				MobHunting.getStoreManager().databaseFixLeaderboard();
-			} catch (SQLException e) {
+			} catch (DataStoreException e) {
 				e.printStackTrace();
 			}
 			return true;

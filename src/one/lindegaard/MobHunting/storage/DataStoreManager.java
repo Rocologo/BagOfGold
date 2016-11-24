@@ -237,7 +237,7 @@ public class DataStoreManager {
 	public int getPlayerId(OfflinePlayer offlinePlayer) throws UserNotFoundException {
 		try {
 			return mStore.getPlayerId(offlinePlayer);
-		} catch (SQLException | DataStoreException e) {
+		} catch (DataStoreException e) {
 			if (MobHunting.getConfigManager().killDebug)
 				e.printStackTrace();
 		}
