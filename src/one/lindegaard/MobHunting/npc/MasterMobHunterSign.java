@@ -242,9 +242,11 @@ public class MasterMobHunterSign implements Listener {
 				Messages.debug("rb = %s, isPowered=%s, !isMHPoweredSign=%s", rb.getType(),isMHPowered(rb), !isMHPoweredSign(rb));
 				if (rb!=null && (isMHPowered(rb) || !isMHPoweredSign(rb)) && supportedmats.contains(rb.getType())) {
 					Messages.debug("remove power on %s", rb.getType());
+					if (rb.getType().equals(Material.REDSTONE_LAMP_ON))
+						rb.setType(Material.REDSTONE_LAMP_OFF);
 					removeMHPower(rb);
-					BlockRedstoneEvent bre = new BlockRedstoneEvent(rb, 15, 0);
-					Bukkit.getServer().getPluginManager().callEvent(bre);
+					//BlockRedstoneEvent bre = new BlockRedstoneEvent(rb, 15, 0);
+					//Bukkit.getServer().getPluginManager().callEvent(bre);
 				}
 			}
 		}  
