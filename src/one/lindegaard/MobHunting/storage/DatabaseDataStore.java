@@ -1394,10 +1394,23 @@ public abstract class DatabaseDataStore implements IDataStore {
 		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql"))
 			try {
 				statement.executeUpdate("ALTER TABLE mh_Daily DROP FOREIGN KEY mh_Daily_ibfk_1;");
-				Bukkit.getLogger().info("[MobHunting] Drops foreign key mh_Daily_ibfk_1");
+				statement.executeUpdate("ALTER TABLE mh_Weekly DROP FOREIGN KEY mh_Weekly_ibfk_1;");
+				statement.executeUpdate("ALTER TABLE mh_Monthly DROP FOREIGN KEY mh_Monthly_ibfk_1;");
+				statement.executeUpdate("ALTER TABLE mh_Yearly DROP FOREIGN KEY mh_Yearly_ibfk_1;");
+				statement.executeUpdate("ALTER TABLE mh_AllTime DROP FOREIGN KEY mh_AllTime_ibfk_1;");
+				
+				Bukkit.getLogger().info("[MobHunting] Drops foreign keys on mh_Players.PLAYER_ID");
 				statement.executeUpdate(
 						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_Daily_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
-				Bukkit.getLogger().info("[MobHunting] ADD CONSTRAINT mh_Daily_Player_Id");
+				statement.executeUpdate(
+						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_Weekly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_Monthly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_Yearly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_AllTime_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+				Bukkit.getLogger().info("[MobHunting] Added contraints on mh_Players.PLAYER_ID");
 			} catch (SQLException e) {
 				Bukkit.getLogger().info("[MobHunting] Moving constraints is already done.");
 			}
