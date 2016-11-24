@@ -1003,7 +1003,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mConnection.close();
 
 		} catch (DataStoreException | SQLException e) {
-			//mConnection.rollback();
+			// mConnection.rollback();
 			throw new DataStoreException(e);
 		}
 		return ids;
@@ -1373,6 +1373,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Bukkit.getLogger().info("[MobHunting] Rename mh_Players to mh_PlayersV2.");
 			statement.executeUpdate("ALTER TABLE mh_Players RENAME TO mh_PlayersV2");
 		}
+
+		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql"))
+			try {
+
+				statement.executeUpdate("ALTER TABLE mh_Daily DROP FOREIGN KEY mh_Daily_ibfk_1;");
+				Bukkit.getLogger().info("[MobHunting] Drops foreign key mh_Daily_ibfk_1");
+				statement.executeUpdate(
+						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_Daily_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+				Bukkit.getLogger().info("[MobHunting] ADD CONSTRAINT mh_Daily_Player_Id");
+			} catch (SQLException e) {
+				Bukkit.getLogger().info("[MobHunting] Job was already done.");
+			}
 
 		if (migrateData) {
 			// create new tables

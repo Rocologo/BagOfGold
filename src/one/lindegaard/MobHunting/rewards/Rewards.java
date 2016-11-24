@@ -35,6 +35,8 @@ public class Rewards implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPickupMoney(PlayerPickupItemEvent e) {
+		// This event is NOT called when the inventory is full
+		//Messages.debug("Rewards-PlayerPickupItemEvent called");
 		double money = 0;
 		Item item = e.getItem();
 		if (item.hasMetadata(MH_MONEY)) {
