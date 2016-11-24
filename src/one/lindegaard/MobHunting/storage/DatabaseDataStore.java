@@ -1428,6 +1428,24 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Bukkit.getLogger().info("[MobHunting] Added constraints on mh_Achievements");
 			} catch (SQLException e) {
 			}
+			
+			try {
+				statement.executeUpdate("ALTER TABLE mh_Bounties DROP FOREIGN KEY mh_Bounties_ibfk_1;");
+				statement.executeUpdate("ALTER TABLE mh_Bounties DROP FOREIGN KEY mh_Bounties_ibfk_2;");
+				
+				Bukkit.getLogger().info("[MobHunting] Dropped constraints on mh_Bounties");
+			} catch (SQLException e) {
+			}
+
+			try {
+				statement.executeUpdate(
+						"ALTER TABLE mh_Bounties ADD CONSTRAINT mh_Bounties_Player_Id_1 FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"ALTER TABLE mh_Bounties ADD CONSTRAINT mh_Bounties_Player_Id_2 FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+
+				Bukkit.getLogger().info("[MobHunting] Added constraints on mh_Bounties");
+			} catch (SQLException e) {
+			}
 		}
 
 		statement.close();
