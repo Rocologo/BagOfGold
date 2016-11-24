@@ -1390,16 +1390,16 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 		}
-		
-		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql"))
+
+		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("mysql")) {
 			try {
 				statement.executeUpdate("ALTER TABLE mh_Daily DROP FOREIGN KEY mh_Daily_ibfk_1;");
 				statement.executeUpdate("ALTER TABLE mh_Weekly DROP FOREIGN KEY mh_Weekly_ibfk_1;");
 				statement.executeUpdate("ALTER TABLE mh_Monthly DROP FOREIGN KEY mh_Monthly_ibfk_1;");
 				statement.executeUpdate("ALTER TABLE mh_Yearly DROP FOREIGN KEY mh_Yearly_ibfk_1;");
 				statement.executeUpdate("ALTER TABLE mh_AllTime DROP FOREIGN KEY mh_AllTime_ibfk_1;");
-				
-				Bukkit.getLogger().info("[MobHunting] Drops foreign keys on mh_Players.PLAYER_ID");
+
+				Bukkit.getLogger().info("[MobHunting] Dropped foreign keys on mh_Players.PLAYER_ID");
 				statement.executeUpdate(
 						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_Daily_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
 				statement.executeUpdate(
@@ -1410,11 +1410,26 @@ public abstract class DatabaseDataStore implements IDataStore {
 						"ALTER TABLE mh_Yearly ADD CONSTRAINT mh_Yearly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
 				statement.executeUpdate(
 						"ALTER TABLE mh_AllTime ADD CONSTRAINT mh_AllTime_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
-				Bukkit.getLogger().info("[MobHunting] Added contraints on mh_Players.PLAYER_ID");
+				Bukkit.getLogger().info("[MobHunting] Added constraints on mh_Players.PLAYER_ID");
 			} catch (SQLException e) {
 				Bukkit.getLogger().info("[MobHunting] Moving constraints is already done.");
 			}
-		
+
+			try {
+				statement.executeUpdate("ALTER TABLE mh_Achievements DROP FOREIGN KEY mh_Achievements_ibfk_1;");
+				Bukkit.getLogger().info("[MobHunting] Dropped constraints on mh_Achievements");
+			} catch (SQLException e) {
+			}
+
+			try {
+				statement.executeUpdate(
+						"ALTER TABLE mh_Achievements ADD CONSTRAINT mh_Achievements_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
+
+				Bukkit.getLogger().info("[MobHunting] Added constraints on mh_Achievements");
+			} catch (SQLException e) {
+			}
+		}
+
 		statement.close();
 		connection.commit();
 	}

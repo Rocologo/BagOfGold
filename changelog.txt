@@ -2,6 +2,7 @@ V4.0.8 Bug fixing
 * Fixed bug on MasterMobHuntingSigns which caused them to be permanent powered.
 * Fixed open connections in MySql
 * Updating MySql Constraints on mh_PlayersV2/mh_Players
+* Updating MySql Constraints on mh_Daily, mh_Weekly, mh_Monthly, mh_Yearly, mh_AllTime, mh_Achievements
 V4.0.7 Bug fixing
 * Debug information "Saving data" has been removed from the console. 
 V4.0.6 Bug fixing

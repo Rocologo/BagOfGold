@@ -239,11 +239,14 @@ public class MasterMobHunterSign implements Listener {
 			block.removeMetadata(MH_POWERED, MobHunting.getInstance());
 			for (BlockFace bf : possibleBlockface) {
 				Block rb = block.getRelative(bf);
-				if (isMHPowered(rb) || !isMHPoweredSign(rb)) {
+				if (isMHPowered(rb) && !isMHPoweredSign(rb)) {
 					removeMHPower(rb);
+					
 				}
 			}
-		}
+		}  
+		BlockRedstoneEvent bre = new BlockRedstoneEvent(block, 15, 0);
+		Bukkit.getServer().getPluginManager().callEvent(bre);
 	}
 
 	private static void removeMHPower(Block block) {
