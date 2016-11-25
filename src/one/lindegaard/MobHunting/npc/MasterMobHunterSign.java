@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -173,6 +174,23 @@ public class MasterMobHunterSign implements Listener {
 		}
 	}
 
+	private static void removePowerOnPiston(Block b) {
+		PistonBaseMaterial pistonData = (PistonBaseMaterial) b.getState().getData();
+		if (!pistonData.isPowered()) {
+			pistonData.setPowered(false);
+			b.setData(pistonData.getData(), false);
+			b.getState().update();
+
+			BlockFace blockFace = pistonData.getFacing();
+			Block tb = b.getRelative(blockFace);
+			tb.setType(Material.PISTON_EXTENSION, false);
+			PistonExtensionMaterial pistonExtentionData = (PistonExtensionMaterial) tb.getState().getData();
+			pistonExtentionData.setFacingDirection(b.getFace(tb));
+			tb.setData(pistonExtentionData.getData(), false);
+			tb.getState().update();
+		}
+	}
+
 	// ****************************************************************************'
 	// GETTERS
 	// ****************************************************************************'
@@ -239,19 +257,34 @@ public class MasterMobHunterSign implements Listener {
 			block.removeMetadata(MH_POWERED, MobHunting.getInstance());
 			for (BlockFace bf : possibleBlockface) {
 				Block rb = block.getRelative(bf);
-				Messages.debug("rb = %s, isPowered=%s, !isMHPoweredSign=%s", rb.getType(),isMHPowered(rb), !isMHPoweredSign(rb));
-				if (rb!=null && (isMHPowered(rb) || !isMHPoweredSign(rb)) && supportedmats.contains(rb.getType())) {
-					Messages.debug("remove power on %s", rb.getType());
-					if (rb.getType().equals(Material.REDSTONE_LAMP_ON))
+				//Messages.debug("rb = %s, isPowered=%s, !isMHPoweredSign=%s", rb.getType(), isMHPowered(rb),
+				//		!isMHPoweredSign(rb));
+				if (rb != null && isMHPowered(rb) && !isMHPoweredSign(rb) && supportedmats.contains(rb.getType())) {
+					//Messages.debug("remove power on %s", rb.getType());
+					if (rb.getType().equals(Material.REDSTONE_LAMP_ON)) {
 						rb.setType(Material.REDSTONE_LAMP_OFF);
+						//Messages.debug("Turn Redstone Lamp OFF");
+						//BlockRedstoneEvent bre = new BlockRedstoneEvent(rb, 15, 0);
+						//Bukkit.getServer().getPluginManager().callEvent(bre);
+					} else if (rb.getType().equals(Material.REDSTONE_WIRE)) {
+						rb.setTypeIdAndData(Material.REDSTONE_WIRE.getId(), (byte) 0, true);
+						rb.getState().update();
+						//BlockRedstoneEvent bre = new BlockRedstoneEvent(rb, 15, 0);
+						//Bukkit.getServer().getPluginManager().callEvent(bre);
+					} else if (rb.getType().equals(Material.PISTON_BASE)
+							|| (rb.getType().equals(Material.PISTON_STICKY_BASE))) {
+						removePowerOnPiston(rb);
+						//BlockRedstoneEvent bre = new BlockRedstoneEvent(rb, 15, 0);
+						//Bukkit.getServer().getPluginManager().callEvent(bre);
+					}
 					removeMHPower(rb);
-					//BlockRedstoneEvent bre = new BlockRedstoneEvent(rb, 15, 0);
-					//Bukkit.getServer().getPluginManager().callEvent(bre);
+					// BlockRedstoneEvent bre = new BlockRedstoneEvent(rb, 15,
+					// 0);
+					// Bukkit.getServer().getPluginManager().callEvent(bre);
 				}
 			}
-		}  
-		BlockRedstoneEvent bre = new BlockRedstoneEvent(block, 15, 0);
-		Bukkit.getServer().getPluginManager().callEvent(bre);
+		}
+
 	}
 
 	private static void removeMHPower(Block block) {
@@ -279,6 +312,8 @@ public class MasterMobHunterSign implements Listener {
 
 		if (event.getPlayer().getItemInHand().getType().equals(Material.STICK)) {
 
+			boolean turnon = (event.getAction() == Action.LEFT_CLICK_BLOCK);
+
 			// Check if Block is powered or indirectly powered
 			int power = 0;
 			if (event.getClickedBlock().hasMetadata(MH_POWERED)) {
@@ -287,8 +322,8 @@ public class MasterMobHunterSign implements Listener {
 					power = power > p ? power : p;
 				}
 			}
-			
-			Messages.debug("power=%s, hasMeta(MH_POWERED)=%s",power,event.getClickedBlock().hasMetadata(MH_POWERED));
+
+			Messages.debug("power=%s, hasMeta(MH_POWERED)=%s", power, event.getClickedBlock().hasMetadata(MH_POWERED));
 
 			// Check if block is MMH Sign
 			if (isMHSign(event.getClickedBlock())) {
@@ -328,18 +363,21 @@ public class MasterMobHunterSign implements Listener {
 										Misc.trimSignText(
 												mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
 
-								boolean powered = isPowerSetOnSign(event.getClickedBlock());
-								if (powered) {
-									OfflinePlayer offlinePlayer = Bukkit.getPlayer(npc.getName());
-									if (offlinePlayer != null && offlinePlayer.isOnline()) {
-										setPower(event.getClickedBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
-									} else {
+								if (turnon) {
+									setPower(event.getClickedBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
+								} else {
+									boolean powered = isPowerSetOnSign(event.getClickedBlock());
+									if (powered) {
+										OfflinePlayer offlinePlayer = Bukkit.getPlayer(npc.getName());
+										if (offlinePlayer != null && offlinePlayer.isOnline()) {
+											setPower(event.getClickedBlock(), MasterMobHunterSign.POWER_FROM_SIGN);
+										} else {
+											removePower(event.getClickedBlock());
+										}
+									} else
 										removePower(event.getClickedBlock());
-									}
-								} else
-									removePower(event.getClickedBlock());
-								MasterMobHunterManager.getMasterMobHunterManager().get(npc.getId()).update();
-
+									MasterMobHunterManager.getMasterMobHunterManager().get(npc.getId()).update();
+								}
 							}
 						}
 					} else {
@@ -402,7 +440,7 @@ public class MasterMobHunterSign implements Listener {
 						event.setLine(2, Misc.trimSignText(mmh.getPeriod().translateNameFriendly()));
 						event.setLine(3,
 								Misc.trimSignText(mmh.getNumberOfKills() + " " + mmh.getStatType().translateName()));
-						
+
 						if (powered) {
 							OfflinePlayer offlinePlayer = Bukkit.getPlayer(npc.getName());
 							if (offlinePlayer != null && offlinePlayer.isOnline() && !CitizensCompat.isNPC(player))

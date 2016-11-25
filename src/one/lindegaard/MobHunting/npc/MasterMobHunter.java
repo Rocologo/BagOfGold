@@ -206,6 +206,8 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 							OfflinePlayer player = Bukkit.getPlayer(npc.getName());
 							if (player != null && player.isOnline())
 								MasterMobHunterSign.setPower(sb, MasterMobHunterSign.POWER_FROM_SIGN);
+							else 
+								MasterMobHunterSign.removePower(sb);
 						}
 					} else {
 						if (MasterMobHunterSign.isSign(sb)) {
