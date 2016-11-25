@@ -252,7 +252,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 										column, amount, mob_id, player_id));
 			}
 			statement.executeBatch();
-			statement.closeOnCompletion();
+			statement.close();
 			mConnection.commit();
 			mConnection.close();
 			Messages.debug("Saved.");

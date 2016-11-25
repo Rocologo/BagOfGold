@@ -1,5 +1,6 @@
 V4.0.9
 * Fixed bug on Powered MasterMobHuntingSigns
+* Fixed CloseOnCompletion error in Sqlite (https://www.spigotmc.org/threads/mobhunting.46937/page-66#post-2043563)
 V4.0.8 Bug fixing
 * Money dropped on ground can now be picked up when the the player inventory is full.
 * Fixed bug on MasterMobHuntingSigns which caused them to be permanent powered.
