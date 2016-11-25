@@ -180,8 +180,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 				// Create new V3 tables and migrate data;
 				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
 						+ " detected. Migrating to V3");
-				migrate_mh_PlayersFromV2ToV3(mConnection);
 				migrateDatabaseLayoutFromV2toV3(mConnection);
+				migrate_mh_PlayersFromV2ToV3(mConnection);
 				setupTriggerV3(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 3;
 				MobHunting.getConfigManager().saveConfig();
@@ -198,8 +198,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
 						+ " detected.");
 				setupV3Tables(mConnection);
-				migrate_mh_PlayersFromV2ToV3(mConnection);
 				migrateDatabaseLayoutFromV2toV3(mConnection);
+				migrate_mh_PlayersFromV2ToV3(mConnection);
 				setupTriggerV3(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 3;
 				MobHunting.getConfigManager().saveConfig();
@@ -348,14 +348,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 					String id = rs.getString("ID");
 					int mob_id = mobs.get(mob.name());
 					int player_id = rs.getInt("PLAYER_ID");
-					int kills = rs.getInt(mob.name() + "_KILL");
-					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0 || achievements > 0) {
-						String insertStr = "INSERT INTO mh_Daily VALUES (" + id + "," + mob_id + "," + player_id + ","
-								+ achievements + "," + kills + "," + assists + ")";
-						statement2.executeUpdate(insertStr);
-						n++;
-						achievements = 0;
+					try {
+						int kills = rs.getInt(mob.name() + "_KILL");
+						int assists = rs.getInt(mob.name() + "_ASSIST");
+						if (kills > 0 || assists > 0 || achievements > 0) {
+							String insertStr = "INSERT INTO mh_Daily VALUES (" + id + "," + mob_id + "," + player_id
+									+ "," + achievements + "," + kills + "," + assists + ")";
+							statement2.executeUpdate(insertStr);
+							n++;
+							achievements = 0;
+						}
+					} catch (SQLException e) {
 					}
 				}
 				statement2.close();
@@ -380,14 +383,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 					String id = rs.getString("ID");
 					int mob_id = mobs.get(mob.name());
 					int player_id = rs.getInt("PLAYER_ID");
-					int kills = rs.getInt(mob.name() + "_KILL");
-					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0 || achievements > 0) {
-						String insertStr = "INSERT INTO mh_Weekly VALUES (" + id + "," + mob_id + "," + player_id + ","
-								+ achievements + "," + kills + "," + assists + ")";
-						statement2.executeUpdate(insertStr);
-						n++;
-						achievements = 0;
+					try {
+						int kills = rs.getInt(mob.name() + "_KILL");
+						int assists = rs.getInt(mob.name() + "_ASSIST");
+						if (kills > 0 || assists > 0 || achievements > 0) {
+							String insertStr = "INSERT INTO mh_Weekly VALUES (" + id + "," + mob_id + "," + player_id
+									+ "," + achievements + "," + kills + "," + assists + ")";
+							statement2.executeUpdate(insertStr);
+							n++;
+							achievements = 0;
+						}
+					} catch (SQLException e) {
 					}
 				}
 				statement2.close();
@@ -412,14 +418,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 					String id = rs.getString("ID");
 					int mob_id = mobs.get(mob.name());
 					int player_id = rs.getInt("PLAYER_ID");
-					int kills = rs.getInt(mob.name() + "_KILL");
-					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0 || achievements > 0) {
-						String insertStr = "INSERT INTO mh_Monthly VALUES (" + id + "," + mob_id + "," + player_id + ","
-								+ achievements + "," + kills + "," + assists + ")";
-						statement2.executeUpdate(insertStr);
-						n++;
-						achievements = 0;
+					try {
+						int kills = rs.getInt(mob.name() + "_KILL");
+						int assists = rs.getInt(mob.name() + "_ASSIST");
+						if (kills > 0 || assists > 0 || achievements > 0) {
+							String insertStr = "INSERT INTO mh_Monthly VALUES (" + id + "," + mob_id + "," + player_id
+									+ "," + achievements + "," + kills + "," + assists + ")";
+							statement2.executeUpdate(insertStr);
+							n++;
+							achievements = 0;
+						}
+					} catch (SQLException e) {
 					}
 				}
 				statement2.close();
@@ -444,14 +453,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 					String id = rs.getString("ID");
 					int mob_id = mobs.get(mob.name());
 					int player_id = rs.getInt("PLAYER_ID");
-					int kills = rs.getInt(mob.name() + "_KILL");
-					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0 || achievements > 0) {
-						String insertStr = "INSERT INTO mh_Yearly VALUES (" + id + "," + mob_id + "," + player_id + ","
-								+ achievements + "," + kills + "," + assists + ")";
-						statement2.executeUpdate(insertStr);
-						n++;
-						achievements = 0;
+					try {
+						int kills = rs.getInt(mob.name() + "_KILL");
+						int assists = rs.getInt(mob.name() + "_ASSIST");
+						if (kills > 0 || assists > 0 || achievements > 0) {
+							String insertStr = "INSERT INTO mh_Yearly VALUES (" + id + "," + mob_id + "," + player_id
+									+ "," + achievements + "," + kills + "," + assists + ")";
+							statement2.executeUpdate(insertStr);
+							n++;
+							achievements = 0;
+						}
+					} catch (SQLException e) {
 					}
 				}
 				statement2.close();
@@ -475,14 +487,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 				for (MinecraftMob mob : MinecraftMob.values()) {
 					int mob_id = mobs.get(mob.name());
 					int player_id = rs.getInt("PLAYER_ID");
-					int kills = rs.getInt(mob.name() + "_KILL");
-					int assists = rs.getInt(mob.name() + "_ASSIST");
-					if (kills > 0 || assists > 0 || achievements > 0) {
-						String insertStr = "INSERT INTO mh_AllTime VALUES (" + mob_id + "," + player_id + ","
-								+ achievements + "," + kills + "," + assists + ")";
-						statement2.executeUpdate(insertStr);
-						n++;
-						achievements = 0;
+					try {
+						int kills = rs.getInt(mob.name() + "_KILL");
+						int assists = rs.getInt(mob.name() + "_ASSIST");
+						if (kills > 0 || assists > 0 || achievements > 0) {
+							String insertStr = "INSERT INTO mh_AllTime VALUES (" + mob_id + "," + player_id + ","
+									+ achievements + "," + kills + "," + assists + ")";
+							statement2.executeUpdate(insertStr);
+							n++;
+							achievements = 0;
+						}
+					} catch (SQLException e) {
 					}
 				}
 				statement2.close();
@@ -1428,11 +1443,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Bukkit.getLogger().info("[MobHunting] Added constraints on mh_Achievements");
 			} catch (SQLException e) {
 			}
-			
+
 			try {
 				statement.executeUpdate("ALTER TABLE mh_Bounties DROP FOREIGN KEY mh_Bounties_ibfk_1;");
 				statement.executeUpdate("ALTER TABLE mh_Bounties DROP FOREIGN KEY mh_Bounties_ibfk_2;");
-				
+
 				Bukkit.getLogger().info("[MobHunting] Dropped constraints on mh_Bounties");
 			} catch (SQLException e) {
 			}

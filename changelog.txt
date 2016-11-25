@@ -1,3 +1,5 @@
+V4.1.0
+* Sqlite Migration from V2 to V3 fixed on older Minecraft versions (PRE 1.11)
 V4.0.9
 * Fixed bug on Powered MasterMobHuntingSigns
 * Fixed CloseOnCompletion error in Sqlite (https://www.spigotmc.org/threads/mobhunting.46937/page-66#post-2043563)
