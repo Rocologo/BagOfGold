@@ -491,9 +491,6 @@ public enum MinecraftMob {
 				return entity instanceof Skeleton && (((Skeleton) entity).getSkeletonType() == SkeletonType.STRAY);
 			else if (this == Husk)
 				return entity instanceof Zombie && ((Zombie) entity).getVillagerProfession() == Profession.HUSK;
-			else if (this == Zombie)
-				return entity instanceof Zombie && (((Zombie) entity).getVillagerProfession() == Profession.NORMAL
-						|| ((Zombie) entity).getVillagerProfession() == null);
 		if (Misc.isMC19OrNewer())
 			if (this == Shulker)
 				return entity instanceof org.bukkit.entity.Shulker;
