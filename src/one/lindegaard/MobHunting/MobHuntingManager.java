@@ -399,7 +399,7 @@ public class MobHuntingManager implements Listener {
 			return;
 
 		HuntData data = MobHunting.getMobHuntingManager().getHuntData(event.getEntity());
-		if (data.getKillstreakLevel() != 0 && data.getDampnerMultiplier() != 1)
+		if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 			Messages.playerActionBarMessage((Player) event.getEntity(),
 					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
 		data.setKillStreak(0);
@@ -444,7 +444,7 @@ public class MobHuntingManager implements Listener {
 
 		Player player = (Player) event.getEntity();
 		HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
-		if (data.getKillstreakLevel() != 0 && data.getDampnerMultiplier() != 1)
+		if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 			Messages.playerActionBarMessage(player,
 					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
 		data.setKillStreak(0);

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,7 +38,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement[] mGetPlayerData;
+	protected PreparedStatement mGetPlayerData;
 
 	/**
 	 * Args: player name
@@ -117,7 +116,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET1PLAYER, GET2PLAYERS, GET5PLAYERS, GET10PLAYERS, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID, LOAD_MOBS, INSERT_MOBS, UPDATE_MOBS, SAVE_PLAYER_STATS
+		LOAD_ARCHIEVEMENTS, SAVE_ACHIEVEMENTS, UPDATE_PLAYER_NAME, GET_PLAYER_DATA, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_BOUNTIES, INSERT_BOUNTY, UPDATE_BOUNTY, DELETE_BOUNTY, GET_PLAYER_BY_PLAYER_ID, LOAD_MOBS, INSERT_MOBS, UPDATE_MOBS, SAVE_PLAYER_STATS
 	};
 
 	/**
@@ -205,7 +204,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				MobHunting.getConfigManager().saveConfig();
 			}
 
-			mGetPlayerData = new PreparedStatement[4];
+			//mGetPlayerData = new PreparedStatement[4];
 
 			// Enable FOREIGN KEY for Sqlite database
 			if (!MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
@@ -858,9 +857,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
 		Connection mConnection = setupConnection();
-		openPreparedStatements(mConnection, PreparedConnectionType.GET1PLAYER);
-		mGetPlayerData[0].setString(1, offlinePlayer.getUniqueId().toString());
-		ResultSet result = mGetPlayerData[0].executeQuery();
+		openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
+		mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
+		ResultSet result = mGetPlayerData.executeQuery();
 		if (result.next()) {
 			PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getBoolean("LEARNING_MODE"),
 					result.getBoolean("MUTE_MODE"));
@@ -869,11 +868,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 				ps.setPlayerId(id);
 			result.close();
 			Messages.debug("Reading Playersettings from Database: %s", ps.toString());
-			mGetPlayerData[0].close();
+			mGetPlayerData.close();
 			mConnection.close();
 			return ps;
 		}
-		mGetPlayerData[0].close();
+		mGetPlayerData.close();
 		mConnection.close();
 		throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
 	}
@@ -935,94 +934,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
-	/**
-	 * getPlayerIds
-	 * 
-	 * @param players
-	 *            : A set of players: Set<OfflinePlayer>
-	 * @return Map<UUID, Integer> a Map with all players UUID and player_ID in
-	 *         the Database.
-	 * @throws SQLException
-	 * @throws DataStoreException
-	 */
-	protected Map<UUID, Integer> getPlayerIdsNotUsed(Set<OfflinePlayer> players) throws DataStoreException {
-
-		// Then select all players in batches of 10,5,2,1 into the HashMap ids
-		// and return ids.
-		int left = players.size();
-		Iterator<OfflinePlayer> it = players.iterator();
-		HashMap<UUID, Integer> ids = new HashMap<UUID, Integer>();
-		ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
-		Connection mConnection;
-		try {
-			mConnection = setupConnection();
-			openPreparedStatements(mConnection, PreparedConnectionType.GET1PLAYER);
-			openPreparedStatements(mConnection, PreparedConnectionType.GET2PLAYERS);
-			openPreparedStatements(mConnection, PreparedConnectionType.GET5PLAYERS);
-			openPreparedStatements(mConnection, PreparedConnectionType.GET10PLAYERS);
-			while (left > 0) {
-				PreparedStatement statement;
-				int size = 0;
-				if (left >= 10) {
-					size = 10;
-					statement = mGetPlayerData[3];
-				} else if (left >= 5) {
-					size = 5;
-					statement = mGetPlayerData[2];
-				} else if (left >= 2) {
-					size = 2;
-					statement = mGetPlayerData[1];
-				} else {
-					size = 1;
-					statement = mGetPlayerData[0];
-				}
-
-				left -= size;
-
-				ArrayList<OfflinePlayer> temp = new ArrayList<OfflinePlayer>(size);
-				for (int i = 0; i < size; ++i) {
-					OfflinePlayer player = it.next();
-					temp.add(player);
-					statement.setString(i + 1, player.getUniqueId().toString());
-				}
-
-				ResultSet results = statement.executeQuery();
-
-				int index = 0;
-				while (results.next()) {
-					OfflinePlayer player = temp.get(index++);
-					if (results.getString(1).equals(player.getUniqueId().toString())
-							&& !results.getString(2).equals(player.getPlayer().getName())) {
-						MobHunting.getInstance().getLogger()
-								.warning("[MobHunting] Name change detected(1): " + results.getString(2) + " -> "
-										+ player.getPlayer().getName() + " UUID=" + player.getUniqueId().toString());
-						changedNames.add(player);
-					}
-
-					ids.put(UUID.fromString(results.getString(1)), results.getInt(3));
-				}
-				results.close();
-
-				Iterator<OfflinePlayer> itr = changedNames.iterator();
-				while (itr.hasNext()) {
-					OfflinePlayer p = itr.next();
-					Messages.debug("Updating playername in database and in memory (%s)", p.getName());
-					updatePlayerName(p.getPlayer());
-				}
-			}
-			mGetPlayerData[0].close();
-			mGetPlayerData[1].close();
-			mGetPlayerData[2].close();
-			mGetPlayerData[3].close();
-			mConnection.commit();
-			mConnection.close();
-
-		} catch (DataStoreException | SQLException e) {
-			// mConnection.rollback();
-			throw new DataStoreException(e);
-		}
-		return ids;
-	}
 
 	/**
 	 * getPlayerID. get the player ID and check if the player has change name
@@ -1042,11 +953,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 		if (playerId == 0) {
 			Connection mConnection;
 			try {
-				mConnection = setupConnection();
-				openPreparedStatements(mConnection, PreparedConnectionType.GET1PLAYER);
-				mGetPlayerData[0].setString(1, offlinePlayer.getUniqueId().toString());
-				ResultSet result = mGetPlayerData[0].executeQuery();
 				ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
+				
+				mConnection = setupConnection();
+				openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
+				mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
+				ResultSet result = mGetPlayerData.executeQuery();
 				if (result.next()) {
 					String name = result.getString(2);
 					UUID uuid = UUID.fromString(result.getString(1));
@@ -1060,16 +972,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 						}
 					playerId = result.getInt(3);
 					result.close();
-					Iterator<OfflinePlayer> itr = changedNames.iterator();
-					while (itr.hasNext()) {
-						OfflinePlayer p = itr.next();
-						Messages.debug("Updating playername in database and in memory (%s)", p.getName());
-						updatePlayerName(p.getPlayer());
-					}
+
 				}
 				result.close();
-				mGetPlayerData[0].close();
+				mGetPlayerData.close();
 				mConnection.close();
+				
+				Iterator<OfflinePlayer> itr = changedNames.iterator();
+				while (itr.hasNext()) {
+					OfflinePlayer p = itr.next();
+					Messages.debug("Updating playername in database and in memory (%s)", p.getName());
+					updatePlayerName(p.getPlayer());
+				}
 			} catch (SQLException e) {
 				throw new DataStoreException(e);
 			}

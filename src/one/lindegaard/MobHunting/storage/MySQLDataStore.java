@@ -74,18 +74,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 		case SAVE_ACHIEVEMENTS:
 			mSaveAchievement = connection.prepareStatement("REPLACE INTO mh_Achievements VALUES(?,?,?,?);");
 			break;
-		case GET1PLAYER:
-			mGetPlayerData[0] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
-			break;
-		case GET2PLAYERS:
-			mGetPlayerData[1] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?);");
-			break;
-		case GET5PLAYERS:
-			mGetPlayerData[2] = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?);");
-			break;
-		case GET10PLAYERS:
-			mGetPlayerData[3] = connection
-					.prepareStatement("SELECT * FROM mh_Players WHERE UUID IN (?,?,?,?,?,?,?,?,?,?);");
+		case GET_PLAYER_DATA:
+			mGetPlayerData = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
 			break;
 		case GET_PLAYER_UUID:
 			mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");

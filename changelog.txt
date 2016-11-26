@@ -1,5 +1,7 @@
 V4.1.1
 * Fixed Zombie kills on older servers (before MC1.11)
+* Fixed error in console when a player had changed name. (https://www.spigotmc.org/threads/mobhunting.46937/page-66#post-2044917)
+* Fixed Missing "killstreak ended" missing. (https://www.spigotmc.org/threads/mobhunting.46937/page-66#post-2045401) 
 V4.1.0
 * Sqlite Migration from V2 to V3 fixed on older Minecraft versions (PRE 1.11)
 V4.0.9
