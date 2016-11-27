@@ -30,8 +30,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	protected Connection setupConnection() throws DataStoreException {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			Connection c = DriverManager.getConnection("jdbc:sqlite:" + MobHunting.getInstance().getDataFolder().getPath() + "/"
-					+ MobHunting.getConfigManager().databaseName + ".db");
+			Connection c = DriverManager
+					.getConnection("jdbc:sqlite:" + MobHunting.getInstance().getDataFolder().getPath() + "/"
+							+ MobHunting.getConfigManager().databaseName + ".db");
 			c.setAutoCommit(false);
 			return c;
 		} catch (ClassNotFoundException | SQLException e) {
@@ -219,7 +220,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			mSavePlayerStats.executeBatch();
 			mSavePlayerStats.close();
 			mConnection.commit();
-			
+
 			// Now add each of the stats
 			Statement statement = mConnection.createStatement();
 			for (StatStore stat : stats) {
@@ -316,7 +317,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		create.close();
 		connection.commit();
-		
+
 		setupTriggerV2(connection);
 
 		performUUIDMigrateV2(connection);
@@ -371,7 +372,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		create.executeUpdate(updateTrigger.toString());
 		create.close();
 		connection.commit();
-		
+
 	}
 
 	private void performTableMigrateFromV1ToV2(Connection connection) throws SQLException {
@@ -486,12 +487,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		insert.executeBatch();
 		insert.close();
-		
+
 		System.out.println("[MobHunting] Player UUID migration complete.");
 
 		statement.close();
 		connection.commit();
-		
+
 	}
 
 	private void performAddNewMobsIntoV2(Connection connection) throws SQLException {
@@ -953,9 +954,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		statement.close();
 		connection.commit();
-		
+
 		setupTriggerV2(connection);
-		
+
 	}
 
 	// *******************************************************************************
@@ -1103,10 +1104,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		updateTrigger.append("END");
 
 		create.executeUpdate(updateTrigger.toString());
-		
+
 		create.close();
 		connection.commit();
-		
+
 		Messages.debug("Database trigger updated.");
 	}
 

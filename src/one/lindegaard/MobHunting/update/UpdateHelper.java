@@ -137,6 +137,8 @@ public class UpdateHelper {
 					File downloadedJar = new File(
 							"plugins/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
 					File newJar = new File("plugins/update/MobHunting.jar");
+					if (newJar.exists())
+						newJar.delete();
 					downloadedJar.renameTo(newJar);
 					return true;
 				}

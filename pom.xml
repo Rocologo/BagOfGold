@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.1.1</version>
+	<version>4.1.2</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -25,7 +25,7 @@
 		<worldguard.version>6.1.3-SNAPSHOT</worldguard.version>
 		<citizensapi.version>2.0.20-SNAPSHOT</citizensapi.version>
 		<disguisecraft.version>5.2</disguisecraft.version>
-		<libsdisguises.version>9.0.9</libsdisguises.version>
+		<libsdisguises.version>9.1.1</libsdisguises.version>
 		<protocollib.version>4.1.0-SNAPSHOT</protocollib.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>

@@ -1,3 +1,7 @@
+V4.1.2
+* Compability with LibsDisgues was broken after the 9.1.1 release. UNDEAD_HORSE is now removed.
+* LibsDIsguises, iDisguise and CraftDisguise can now be disabled in config.yml without generation an error.  
+* /mh update on Windows change. Old MobHunting.jar is deleted if user try to update twice without restarting the server (https://www.spigotmc.org/threads/mobhunting.46937/page-67#post-2045527)
 V4.1.1
 * Fixed Zombie kills on older servers (before MC1.11)
 * Fixed error in console when a player had changed name. (https://www.spigotmc.org/threads/mobhunting.46937/page-66#post-2044917)

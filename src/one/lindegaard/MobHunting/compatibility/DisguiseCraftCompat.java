@@ -25,7 +25,7 @@ public class DisguiseCraftCompat implements Listener {
 	private static boolean supported = false;
 
 	public DisguiseCraftCompat() {
-		if (isDisabledInConfig()) {
+		if (MobHunting.getConfigManager().disableIntegrationDisguiseCraft) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with DisguiseCraft is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager().getPlugin("DisguiseCraft");
@@ -58,14 +58,6 @@ public class DisguiseCraftCompat implements Listener {
 
 	public static boolean isSupported() {
 		return supported;
-	}
-
-	public static boolean isDisabledInConfig() {
-		return MobHunting.getConfigManager().disableIntegrationDisguiseCraft;
-	}
-
-	public static boolean isEnabledInConfig() {
-		return !MobHunting.getConfigManager().disableIntegrationDisguiseCraft;
 	}
 
 	public static boolean isDisguised(Player player) {

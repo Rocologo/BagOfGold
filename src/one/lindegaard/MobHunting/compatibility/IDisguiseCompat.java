@@ -25,21 +25,16 @@ public class IDisguiseCompat implements Listener {
 	private static boolean supported = false;
 
 	public IDisguiseCompat() {
-		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info(
-					"[MobHunting] Compatibility with iDisguise is disabled in config.yml");
+		if (MobHunting.getConfigManager().disableIntegrationIDisguise) {
+			Bukkit.getLogger().info("[MobHunting] Compatibility with iDisguise is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getServer().getPluginManager()
-					.getPlugin("iDisguise");
-			api = Bukkit.getServicesManager()
-					.getRegistration(DisguiseAPI.class).getProvider();
+			mPlugin = Bukkit.getServer().getPluginManager().getPlugin("iDisguise");
+			api = Bukkit.getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			Bukkit.getLogger().info(
-					"[MobHunting] Enabling compatibility with iDisguise ("
-							+ getiDisguise().getDescription().getVersion()
-							+ ")");
+			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with iDisguise ("
+					+ getiDisguise().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}
@@ -54,14 +49,6 @@ public class IDisguiseCompat implements Listener {
 
 	public static boolean isSupported() {
 		return supported;
-	}
-
-	public static boolean isDisabledInConfig() {
-		return MobHunting.getConfigManager().disableIntegrationIDisguise;
-	}
-
-	public static boolean isEnabledInConfig() {
-		return !MobHunting.getConfigManager().disableIntegrationIDisguise;
 	}
 
 	public static boolean isDisguised(Entity entity) {
@@ -87,31 +74,23 @@ public class IDisguiseCompat implements Listener {
 			api.undisguiseToAll((Player) entity);
 	}
 
-	private static final DisguiseType aggresiveList[] = { DisguiseType.ZOMBIE,
-			DisguiseType.BLAZE, DisguiseType.CAVE_SPIDER, DisguiseType.CREEPER,
-			DisguiseType.ENDER_DRAGON, DisguiseType.ENDERMAN,
-			DisguiseType.ENDERMITE, DisguiseType.GHAST, DisguiseType.GIANT,
-			DisguiseType.GUARDIAN, DisguiseType.PIG_ZOMBIE,
-			DisguiseType.SKELETON, DisguiseType.SLIME, DisguiseType.SPIDER,
-			DisguiseType.WITCH, DisguiseType.WITHER, DisguiseType.ZOMBIE };
+	private static final DisguiseType aggresiveList[] = { DisguiseType.ZOMBIE, DisguiseType.BLAZE,
+			DisguiseType.CAVE_SPIDER, DisguiseType.CREEPER, DisguiseType.ENDER_DRAGON, DisguiseType.ENDERMAN,
+			DisguiseType.ENDERMITE, DisguiseType.GHAST, DisguiseType.GIANT, DisguiseType.GUARDIAN,
+			DisguiseType.PIG_ZOMBIE, DisguiseType.SKELETON, DisguiseType.SLIME, DisguiseType.SPIDER, DisguiseType.WITCH,
+			DisguiseType.WITHER, DisguiseType.ZOMBIE };
 	// TODO: SHULKER not supported by IDisguise yet???
-	
-	public static final Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(
-			Arrays.asList(aggresiveList));
 
-	private static final DisguiseType passiveList[] = { DisguiseType.BAT,
-			DisguiseType.CHICKEN, DisguiseType.COW, DisguiseType.HORSE,
-			DisguiseType.IRON_GOLEM, DisguiseType.MAGMA_CUBE,
-			DisguiseType.MUSHROOM_COW, DisguiseType.OCELOT, DisguiseType.PIG,
-			DisguiseType.RABBIT, DisguiseType.SHEEP, DisguiseType.SILVERFISH,
+	public static final Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(Arrays.asList(aggresiveList));
+
+	private static final DisguiseType passiveList[] = { DisguiseType.BAT, DisguiseType.CHICKEN, DisguiseType.COW,
+			DisguiseType.HORSE, DisguiseType.IRON_GOLEM, DisguiseType.MAGMA_CUBE, DisguiseType.MUSHROOM_COW,
+			DisguiseType.OCELOT, DisguiseType.PIG, DisguiseType.RABBIT, DisguiseType.SHEEP, DisguiseType.SILVERFISH,
 			DisguiseType.SNOWMAN, DisguiseType.SQUID, };
-	public static final Set<DisguiseType> passiveMobs = new HashSet<DisguiseType>(
-			Arrays.asList(passiveList));
+	public static final Set<DisguiseType> passiveMobs = new HashSet<DisguiseType>(Arrays.asList(passiveList));
 
-	private static final DisguiseType otherList[] = { DisguiseType.PLAYER,
-			DisguiseType.VILLAGER, DisguiseType.WOLF };
-	public static final Set<DisguiseType> otherDisguiseTypes = new HashSet<DisguiseType>(
-			Arrays.asList(otherList));
+	private static final DisguiseType otherList[] = { DisguiseType.PLAYER, DisguiseType.VILLAGER, DisguiseType.WOLF };
+	public static final Set<DisguiseType> otherDisguiseTypes = new HashSet<DisguiseType>(Arrays.asList(otherList));
 
 	public static boolean isAggresiveDisguise(Entity entity) {
 		Disguise d = getDisguise(entity);
