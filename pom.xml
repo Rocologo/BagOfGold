@@ -216,12 +216,28 @@
 			<url>http://repo.citizensnpcs.co/net/citizensnpcs/citizensapi/</url>
 		</repository>
 
-		<!-- minigamesAPI repository -->
+ 		<!-- Addstar repo -->
 		<repository>
-			<id>MinigamesAPI-Repo</id>
-			<name>MinigamesAPI Repository</name>
-			<url>http://www.instancedev.com/bukkitdev/MinigamesAPI/maven/</url>
+			<id>addstar-repo</id>
+			<url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 		</repository>
+		<repository>
+			<id>addstar-snapshot-repo</id>
+			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/au/com/mineauz/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+
 		
 		<!-- ProtocolLib API repository -->
 		<repository>
