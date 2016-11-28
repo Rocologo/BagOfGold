@@ -154,18 +154,17 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/</url>
 		</repository>
 
-		<!-- Addstar repo -->
-		<!-- <repository> <id>addstar-repo</id> <url>http://maven.addstar.com.au/artifactory/ext-release-local/</url> 
-			</repository> -->
-		<repository>
-			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/au/com/mineauz/Minigames/</url>
-		</repository>
-
 		<!-- Vault repository -->
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
+		</repository>
+
+
+		<!-- md5 repository -->
+		<repository>
+			<id>md5-repo</id>
+			<url>http://repo.md-5.net/content/repositories/public/</url>
 		</repository>
 
 		<!-- mypet repository -->
@@ -199,17 +198,9 @@
 		</repository>
 
 
-		<!-- Spout Repository -->
-		<repository>
-			<id>spout-repo</id>
-			<url>http://nexus.spout.org/content/groups/public/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+		<!-- Spout Repository <repository> <id>spout-repo</id> <url>http://nexus.spout.org/content/groups/public/</url> 
+			<releases> <enabled>false</enabled> </releases> <snapshots> <enabled>false</enabled> 
+			</snapshots> </repository> -->
 
 		<!-- citizens repository -->
 		<repository>
@@ -233,57 +224,40 @@
 		</repository>
 
 		<!-- Essentials -->
-		<!-- <repository>
-			<id>ess-repo</id>
-			<url>http://repo.ess3.net/content/groups/public</url>
-		</repository> -->
+		<!-- <repository> <id>ess-repo</id> <url>http://repo.ess3.net/content/groups/public</url> 
+			</repository> -->
 
 		<!-- ProtocolLib-repo -->
-		<repository>
-			<id>dmulloy2-repo</id>
-			<url>http://repo.dmulloy2.net/content/groups/public/</url>
-		</repository>
-		<repository>
-			<id>comphenix-rep</id>
-			<name>Comphenix Repository</name>
-			<url>http://repo.comphenix.net/content/groups/public</url>
-		</repository>
-		<repository>
-			<id>comphenix-snapshot-rep</id>
-			<name>Comphenix Snapshot Repository</name>
-			<url>http://repo.comphenix.net/content/repositories/snapshots/</url>
-		</repository>
+		<!-- <repository> <id>dmulloy2-repo</id> <url>http://repo.dmulloy2.net/content/groups/public/</url> 
+			</repository> <repository> <id>comphenix-rep</id> <name>Comphenix Repository</name> 
+			<url>http://repo.comphenix.net/content/groups/public</url> </repository> 
+			<repository> <id>comphenix-snapshot-rep</id> <name>Comphenix Snapshot Repository</name> 
+			<url>http://repo.comphenix.net/content/repositories/snapshots/</url> </repository> -->
 
 		<!-- DisguiseCraft -->
-		<!-- <repository>
-			<id>disguise-repo</id>
-			<url>http://build.yu8.me:8080/plugin/repository/everything/</url>
-		</repository> -->
+		<!-- <repository> <id>disguise-repo</id> <url>http://build.yu8.me:8080/plugin/repository/everything/</url> 
+			</repository> -->
 
 		<!-- LibsDisguises -->
 		<repository>
 			<id>libsdisguises-repo</id>
-			<url>http://repo.md-5.net/content/repositories/public/</url>
+			<url>http://repo.md-5.net/content/repositories/public/LibsDisguises/LibsDisguises/</url>
 		</repository>
 
-		<!-- Multiverse -->
-		<repository>
-			<id>onarandombox</id>
-			<url>http://repo.onarandombox.com/content/groups/public</url>
-		</repository>
+		<!-- Multiverse <repository> <id>onarandombox</id> <url>http://repo.onarandombox.com/content/groups/public</url> 
+			</repository> -->
 
 		<!-- BattleArena -->
 		<repository>
 			<id>battleplugins-net</id>
 			<name>BattlePlugins</name>
 			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
-			<!-- <url>http://battleplugins.com/maven</url> <url>https://github.com/BattlePlugins/BattleArena.git</url> -->
 		</repository>
 
 		<!-- BossBarAPI -->
 		<repository>
 			<id>inventive-repo</id>
-			<url>http://repo.inventivetalent.org/content/groups/public/</url>
+			<url>http://repo.inventivetalent.org/content/groups/public/org/inventivetalent/</url>
 		</repository>
 
 		<!-- TitleAPI -->
@@ -321,10 +295,21 @@
 			<id>TARDISWeepingAngels-github</id>
 			<url>https://github.com/eccentricdevotion/TARDISWeepingAngels.git</url>
 		</repository>
-		
+
+		<!-- Sponge -->
 		<repository>
 			<id>sponge</id>
 			<url>http://repo.spongepowered.org/maven</url>
+		</repository>
+		
+		<!-- Addstar repo -->
+		<repository>
+			<id>addstar-repo</id>
+			<url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url>
+		</repository>
+		<repository>
+			<id>addstar-snapshot-repo</id>
+			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/au/com/mineauz/</url>
 		</repository>
 
 		
@@ -344,19 +329,19 @@
 	<!-- **************************** Dependencies **************************** -->
 	<!-- ********************************************************************** -->
 	<dependencies>
-		<!-- CraftBukkit Dependency for experimental features -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>${bukkit.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- SpigotMC -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- CraftBukkit Dependency for experimental features -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>${bukkit.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
