@@ -165,6 +165,7 @@ public class BountyManager implements Listener {
 
 	public void removeBounty(Bounty bounty) {
 		MobHunting.getDataStoreManager().deleteBounty(bounty);
+
 		Iterator<Bounty> it = mOpenBounties.iterator();
 		while (it.hasNext()) {
 			Bounty b = (Bounty) it.next();
@@ -352,25 +353,27 @@ public class BountyManager implements Listener {
 							ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
 					int n = 0;
 					for (Bounty bounty : bountiesOnWantedPlayer) {
-						if (bounty.getBountyOwner() != null)
-							AchievementManager.addInventoryDetails(Misc.getPlayerHead(wantedPlayer), inventory, n,
-									ChatColor.GREEN + wantedPlayer.getName(),
-									new String[] { ChatColor.WHITE + "", Messages.getString(
-											"mobhunting.commands.bounty.bounties", "bountyowner",
-											bounty.getBountyOwner().getName(), "prize",
-											MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
-											bounty.getWantedPlayer().getName(), "daysleft",
-											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
-						else
-							AchievementManager.addInventoryDetails(Misc.getPlayerHead(wantedPlayer), inventory, n,
-									ChatColor.GREEN + wantedPlayer.getName(),
-									new String[] { ChatColor.WHITE + "", Messages.getString(
-											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
-											"prize", MobHunting.getRewardManager().format(bounty.getPrize()),
-											"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
-											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
-						if (n < 52)
-							n++;
+						if (bounty.isOpen()) {
+							if (bounty.getBountyOwner() != null)
+								AchievementManager.addInventoryDetails(Misc.getPlayerHead(wantedPlayer), inventory, n,
+										ChatColor.GREEN + wantedPlayer.getName(),
+										new String[] { ChatColor.WHITE + "", Messages.getString(
+												"mobhunting.commands.bounty.bounties", "bountyowner",
+												bounty.getBountyOwner().getName(), "prize",
+												MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+												bounty.getWantedPlayer().getName(), "daysleft",
+												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+							else
+								AchievementManager.addInventoryDetails(Misc.getPlayerHead(wantedPlayer), inventory, n,
+										ChatColor.GREEN + wantedPlayer.getName(),
+										new String[] { ChatColor.WHITE + "", Messages.getString(
+												"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
+												"prize", MobHunting.getRewardManager().format(bounty.getPrize()),
+												"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
+												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
+							if (n < 52)
+								n++;
+						}
 					}
 					if (sender instanceof Player)
 						((Player) sender).openInventory(inventory);

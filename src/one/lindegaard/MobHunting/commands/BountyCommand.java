@@ -134,7 +134,7 @@ public class BountyCommand implements ICommand {
 				return true;
 			}
 
-		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+		} else if (args.length == 2 && (args[0].equalsIgnoreCase("remove")||args[0].equalsIgnoreCase("drop"))) {
 			// /mh bounty drop <player> - to drop the bounty on the player
 			// Remove a bounty on player <player>
 			@SuppressWarnings("deprecation")
