@@ -13,6 +13,7 @@
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
 		<bukkit.version>1.11-R0.1-SNAPSHOT</bukkit.version>
 		<spigotmc.version>1.11-R0.1-SNAPSHOT</spigotmc.version>
+		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
@@ -151,92 +152,32 @@
 		<repository>
 			<id>spigot-repo</id>
 			<!-- <url>https://hub.spigotmc.org/stash/projects/SPIGOT/repos/</url> -->
-			<url>https://hub.spigotmc.org/nexus/content/repositories/</url>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/</url>
 		</repository>
 
-		<!-- Vault repository -->
+		<!-- Sponge -->
+		<repository>
+			<id>sponge</id>
+			<url>http://repo.spongepowered.org/maven</url>
+		</repository>
+
+		<!-- Vault -->
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
 		</repository>
 
-
-		<!-- md5 repository -->
+		<!-- sk89q WorldGuard WorldEdit repositories -->
 		<repository>
-			<id>md5-repo</id>
-			<url>http://repo.md-5.net/content/repositories/public/</url>
+			<id>sk89q-repo</id>
+			<url>http://maven.sk89q.com/repo/com/sk89q/</url>
 		</repository>
 
 		<!-- mypet repository -->
 		<repository>
 			<id>mypet-repo1</id>
-			<url>http://repo.keyle.de/</url>
+			<url>https://nexus.keyle.de/content/groups/public/de/keyle/mypet/</url>
 		</repository>
-
-		<!-- Maven repository -->
-		<repository>
-			<id>maven-central</id>
-			<url>http://repo1.maven.org/maven3/</url>
-		</repository>
-
-		<!-- sk89q WorldGuard WorldEdit repositories -->
-		<repository>
-			<id>sk89q-repo</id>
-			<url>http://maven.sk89q.com/repo/</url>
-		</repository>
-
-		<!-- MobArena repository -->
-		<repository>
-			<id>mobarena-repo</id>
-			<url>https://github.com/garbagemule/MobArena.git</url>
-		</repository>
-
-		<!-- PvpArena repository -->
-		<repository>
-			<id>pvparena-repo</id>
-			<url>https://github.com/slipcor/pvparena.git</url>
-		</repository>
-
-
-		<!-- Spout Repository <repository> <id>spout-repo</id> <url>http://nexus.spout.org/content/groups/public/</url> 
-			<releases> <enabled>false</enabled> </releases> <snapshots> <enabled>false</enabled> 
-			</snapshots> </repository> -->
-
-		<!-- citizens repository -->
-		<repository>
-			<id>citizens-repo</id>
-			<url>http://repo.citizensnpcs.co/</url>
-		</repository>
-
-		<!-- minigamesAPI repository -->
-		<!-- <repository> <id>MinigamesAPI-Repo</id> <name>MinigamesAPI Repository</name> 
-			<url>http://www.instancedev.com/bukkitdev/MinigamesAPI/maven/</url> </repository> -->
-
-		<!-- MCStats -->
-		<repository>
-			<id>Plugin Metrics</id>
-			<url>http://repo.mcstats.org/content/repositories/public</url>
-		</repository>
-		<!-- MCStats SNAPSHOTS -->
-		<repository>
-			<id>Plugin Metrics SNAPSHOTS</id>
-			<url>http://repo.mcstats.org/content/repositories/snapshots/</url>
-		</repository>
-
-		<!-- Essentials -->
-		<!-- <repository> <id>ess-repo</id> <url>http://repo.ess3.net/content/groups/public</url> 
-			</repository> -->
-
-		<!-- ProtocolLib-repo -->
-		<!-- <repository> <id>dmulloy2-repo</id> <url>http://repo.dmulloy2.net/content/groups/public/</url> 
-			</repository> <repository> <id>comphenix-rep</id> <name>Comphenix Repository</name> 
-			<url>http://repo.comphenix.net/content/groups/public</url> </repository> 
-			<repository> <id>comphenix-snapshot-rep</id> <name>Comphenix Snapshot Repository</name> 
-			<url>http://repo.comphenix.net/content/repositories/snapshots/</url> </repository> -->
-
-		<!-- DisguiseCraft -->
-		<!-- <repository> <id>disguise-repo</id> <url>http://build.yu8.me:8080/plugin/repository/everything/</url> 
-			</repository> -->
 
 		<!-- LibsDisguises -->
 		<repository>
@@ -244,14 +185,11 @@
 			<url>http://repo.md-5.net/content/repositories/public/LibsDisguises/LibsDisguises/</url>
 		</repository>
 
-		<!-- Multiverse <repository> <id>onarandombox</id> <url>http://repo.onarandombox.com/content/groups/public</url> 
-			</repository> -->
-
 		<!-- BattleArena -->
 		<repository>
 			<id>battleplugins-net</id>
 			<name>BattlePlugins</name>
-			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
+			<url>http://rainbowcraft.sytes.net/maven/repository/mc/alk/</url>
 		</repository>
 
 		<!-- BossBarAPI -->
@@ -260,64 +198,19 @@
 			<url>http://repo.inventivetalent.org/content/groups/public/org/inventivetalent/</url>
 		</repository>
 
-		<!-- TitleAPI -->
-		<repository>
-			<id>TitleAPI-github</id>
-			<url>https://github.com/ConnorLinfoot/TitleAPI.git</url>
-		</repository>
-
-		<!-- VanishNoPacket -->
-		<repository>
-			<id>VanishNoPacket-github</id>
-			<url>https://github.com/mbax/VanishNoPacket.git</url>
-		</repository>
-
 		<!-- BarAPI -->
 		<repository>
 			<id>confuser-repo</id>
-			<url>http://ci.frostcast.net/plugin/repository/everything</url>
+			<url>http://ci.frostcast.net/plugin/repository/everything/me/confuser/</url>
 		</repository>
 
 		<!-- TitleManager -->
 		<repository>
 			<id>puha-repo</id>
-			<url>http://repo.puha.io/nexus/content/repositories/releases/</url>
+			<url>http://repo.puha.io/nexus/content/repositories/releases/io/puharesource/mc/</url>
 		</repository>
 
-		<!-- MobStacker -->
-		<repository>
-			<id>MobStacker-github</id>
-			<url>https://github.com/KiwiFisher/MobStacker.git</url>
-		</repository>
 
-		<!-- TARDISWeepingangels -->
-		<repository>
-			<id>TARDISWeepingAngels-github</id>
-			<url>https://github.com/eccentricdevotion/TARDISWeepingAngels.git</url>
-		</repository>
-
-		<!-- Sponge -->
-		<repository>
-			<id>sponge</id>
-			<url>http://repo.spongepowered.org/maven</url>
-		</repository>
-		
-		<!-- Addstar repo -->
-		<repository>
-			<id>addstar-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
-		</repository>
-		<repository>
-			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		
 	</repositories>
 
 	<distributionManagement>
@@ -353,7 +246,7 @@
 		<dependency>
 			<groupId>org.spongepowered</groupId>
 			<artifactId>spongeapi</artifactId>
-			<version>4.1.0</version>
+			<version>${spongeapi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
