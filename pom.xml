@@ -154,11 +154,6 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/</url>
 		</repository>
 
-		<repository>
-			<id>sponge</id>
-			<url>http://repo.spongepowered.org/maven</url>
-		</repository>
-
 		<!-- Addstar repo -->
 		<!-- <repository> <id>addstar-repo</id> <url>http://maven.addstar.com.au/artifactory/ext-release-local/</url> 
 			</repository> -->
@@ -260,10 +255,10 @@
 		</repository>
 
 		<!-- DisguiseCraft -->
-		<repository>
+		<!-- <repository>
 			<id>disguise-repo</id>
 			<url>http://build.yu8.me:8080/plugin/repository/everything/</url>
-		</repository>
+		</repository> -->
 
 		<!-- LibsDisguises -->
 		<repository>
@@ -326,6 +321,13 @@
 			<id>TARDISWeepingAngels-github</id>
 			<url>https://github.com/eccentricdevotion/TARDISWeepingAngels.git</url>
 		</repository>
+		
+		<repository>
+			<id>sponge</id>
+			<url>http://repo.spongepowered.org/maven</url>
+		</repository>
+
+		
 
 	</repositories>
 
@@ -448,6 +450,12 @@
 			<artifactId>LibsDisguises</artifactId>
 			<version>${libsdisguises.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>spigot</artifactId>
+					<groupId>org.spigotmc</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- BattleArena -->
