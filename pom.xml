@@ -152,7 +152,7 @@
 		<repository>
 			<id>spigot-repo</id>
 			<!-- <url>https://hub.spigotmc.org/stash/projects/SPIGOT/repos/</url> -->
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/</url>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/</url>
 		</repository>
 
 		<!-- Sponge -->
