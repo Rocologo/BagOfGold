@@ -15,7 +15,7 @@
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
-		
+
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<!-- <metrics.version>R7</metrics.version> -->
 		<vault.version>1.5.6</vault.version>
@@ -31,10 +31,10 @@
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>1.5.11</titlemanager.version>
-		
+
 		<slf4j.version>1.7.21</slf4j.version>
 		<slf4j-log4j.jar.version>slf4j-log4j12-1.7.21.jar</slf4j-log4j.jar.version>
-		
+
 		<mythicmobs.jar.version>MythicMobs-2.4.5.jar</mythicmobs.jar.version>
 		<custommobs.jar.version>CustomMobs-4.16.jar</custommobs.jar.version>
 		<mobarena.jar.version>MobArena0.97.1.jar</mobarena.jar.version>
@@ -49,7 +49,7 @@
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
 		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B85.jar</TARDISWeepingAngels.jar.version>
 	</properties>
-	
+
 	<organization>
 		<name>Rocologo</name>
 		<url>https://fractal.lindegaard.one</url>
@@ -96,37 +96,14 @@
 					<target>${javacompiler.version}</target>
 				</configuration>
 			</plugin>
-			<!-- 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>${mavenShadePlugin.version}</version>
-				<configuration>
-					<finalName>${project.name}</finalName>
-					<minimizeJar>true</minimizeJar>
-					<createDependencyReducedPom>false</createDependencyReducedPom>
-					<artifactSet>
-						<includes>
-							<include>org.mcstats.bukkit:metrics</include>
-						</includes>
-					</artifactSet>
-					<relocations>
-						<relocation>
-							<pattern>org.mcstats</pattern>
-							<shadedPattern>one.lindegaard.MobHunting</shadedPattern>
-						</relocation>
-					</relocations>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>clean package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			 -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
+				<version>${mavenShadePlugin.version}</version> <configuration> <finalName>${project.name}</finalName> 
+				<minimizeJar>true</minimizeJar> <createDependencyReducedPom>false</createDependencyReducedPom> 
+				<artifactSet> <includes> <include>org.mcstats.bukkit:metrics</include> </includes> 
+				</artifactSet> <relocations> <relocation> <pattern>org.mcstats</pattern> 
+				<shadedPattern>one.lindegaard.MobHunting</shadedPattern> </relocation> </relocations> 
+				</configuration> <executions> <execution> <phase>clean package</phase> <goals> 
+				<goal>shade</goal> </goals> </execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
@@ -154,34 +131,19 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
-            <groupId>org.jfrog.buildinfo</groupId>
-            <artifactId>artifactory-maven-plugin</artifactId>
-            <version>2.2.1</version>
-            <inherited>false</inherited>
-            <!-- <executions>
-                <execution>
-                    <id>build-info</id>
-                    <goals>
-                        <goal>publish</goal>
-                    </goals>
-                    <configuration>
-                        <deployProperties>
-                            <gradle>awesome</gradle>
-                            <review.team>qa</review.team>
-                        </deployProperties>
-                        <publisher>
-                            <contextUrl>https://oss.jfrog.org</contextUrl>
-                            <username>deployer</username>
-                            <password>{DESede}...</password>
-                            <repoKey>libs-release-local</repoKey>
-                            <snapshotRepoKey>libs-snapshot-local</snapshotRepoKey>
-                        </publisher>
-                    </configuration>
-                </execution>
-            </executions> -->
-        </plugin>
+				<groupId>org.jfrog.buildinfo</groupId>
+				<artifactId>artifactory-maven-plugin</artifactId>
+				<version>2.2.1</version>
+				<inherited>false</inherited>
+				<!-- <executions> <execution> <id>build-info</id> <goals> <goal>publish</goal> 
+					</goals> <configuration> <deployProperties> <gradle>awesome</gradle> <review.team>qa</review.team> 
+					</deployProperties> <publisher> <contextUrl>https://oss.jfrog.org</contextUrl> 
+					<username>deployer</username> <password>{DESede}...</password> <repoKey>libs-release-local</repoKey> 
+					<snapshotRepoKey>libs-snapshot-local</snapshotRepoKey> </publisher> </configuration> 
+					</execution> </executions> -->
+			</plugin>
 		</plugins>
 	</build>
 
@@ -206,7 +168,7 @@
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-		</repository>
+		</repository> 
 
 		<!-- mypet repository -->
 		<repository>
@@ -215,20 +177,10 @@
 		</repository>
 
 		<!-- Addstar repo -->
-		<!-- <repository>
-			<id>addstar-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url>
-		</repository>
-		<repository>
-			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository> -->
+		<!-- <repository> <id>addstar-repo</id> <url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url> 
+			</repository> <repository> <id>addstar-snapshot-repo</id> <url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url> 
+			<snapshots> <enabled>true</enabled> </snapshots> <releases> <enabled>false</enabled> 
+			</releases> </repository> -->
 
 		<!-- Maven repository -->
 		<repository>
@@ -286,7 +238,7 @@
 			<url>http://repo.mcstats.org/content/repositories/public</url>
 		</repository>
 		<!-- MCStats SNAPSHOTS -->
-		 <repository>
+		<repository>
 			<id>Plugin Metrics SNAPSHOTS</id>
 			<url>http://repo.mcstats.org/content/repositories/snapshots/</url>
 		</repository>
@@ -374,7 +326,7 @@
 			<id>MobStacker-github</id>
 			<url>https://github.com/KiwiFisher/MobStacker.git</url>
 		</repository>
-		
+
 		<!-- TARDISWeepingangels -->
 		<repository>
 			<id>TARDISWeepingAngels-github</id>
@@ -382,13 +334,13 @@
 		</repository>
 
 	</repositories>
-	
+
 	<distributionManagement>
-    	<snapshotRepository>
-        	<id>snapshots</id>
-        	<name>fractal-snapshots</name>
-        	<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
-    	</snapshotRepository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>fractal-snapshots</name>
+			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 
@@ -405,6 +357,14 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${spigotmc.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- SpongeAPI -->
@@ -456,15 +416,12 @@
 			<groupId>com.sk89q.worldedit</groupId>
 			<artifactId>worldedit-bukkit</artifactId>
 			<version>${worldedit.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- MCStats / Plugin Metrics -->
-		<!-- <dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics</artifactId>
-			<version>${metrics.version}</version>
-			<scope>compile</scope>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.mcstats.bukkit</groupId> <artifactId>metrics</artifactId> 
+			<version>${metrics.version}</version> <scope>compile</scope> </dependency> -->
 
 		<!-- MyPet -->
 		<dependency>
@@ -479,6 +436,7 @@
 			<groupId>com.sk89q.worldguard</groupId>
 			<artifactId>worldguard-legacy</artifactId>
 			<version>${worldguard.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Citizens -->
@@ -486,9 +444,9 @@
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>citizensapi</artifactId>
 			<version>${citizensapi.version}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- ProtocolLib -->
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
@@ -548,7 +506,7 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${TARDISWeepingAngels.jar.version}</systemPath>
 		</dependency>
-				
+
 		<!-- iDisguise -->
 		<dependency>
 			<groupId>de.robingrether.idisguise</groupId>
@@ -613,13 +571,13 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/Gringotts-2.9.jar</systemPath>
 		</dependency>
-		
+
 		<!-- MythicMobs -->
 		<dependency>
 			<groupId>net.elseland.mythicmobs</groupId>
 			<artifactId>MythicMobs</artifactId>
 			<version>${mythicmobs.jar.version}</version>
-			<type>jar</type> 
+			<type>jar</type>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
 		</dependency>
@@ -629,7 +587,7 @@
 			<groupId>de.hellfirepvp.CustomMobs</groupId>
 			<artifactId>CustomMobs</artifactId>
 			<version>${custommobs.jar.version}</version>
-			<type>jar</type> 
+			<type>jar</type>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${custommobs.jar.version}</systemPath>
 		</dependency>
@@ -649,7 +607,7 @@
 			<groupId>com.connorlinfoot.actionbarapi.ActionBarAPI</groupId>
 			<artifactId>ActionBarAPI</artifactId>
 			<version>${ActionBarAPI.jar.version}</version>
-			<type>jar</type> 
+			<type>jar</type>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${ActionBarAPI.jar.version}</systemPath>
 		</dependency>
@@ -659,7 +617,7 @@
 			<groupId>me.clip.actionannouncer.ActionAnnouncer</groupId>
 			<artifactId>ActionAnnouncer</artifactId>
 			<version>${ActionAnnouncer.jar.version}</version>
-			<type>jar</type> 
+			<type>jar</type>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${ActionAnnouncer.jar.version}</systemPath>
 		</dependency>
@@ -683,5 +641,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 </project>
