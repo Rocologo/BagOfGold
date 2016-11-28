@@ -24,7 +24,6 @@
 		<worldedit.version>6.1.3-SNAPSHOT</worldedit.version>
 		<worldguard.version>6.1.3-SNAPSHOT</worldguard.version>
 		<citizensapi.version>2.0.21-SNAPSHOT</citizensapi.version>
-		<disguisecraft.version>5.2</disguisecraft.version>
 		<libsdisguises.version>9.1.1</libsdisguises.version>
 		<protocollib.version>4.2.0-SNAPSHOT</protocollib.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
@@ -43,6 +42,7 @@
 		<Gringotts.jar.version>Gringotts-2.9.jar</Gringotts.jar.version>
 		<Essentials.jar.version>EssentialsX-2.0.1.jar</Essentials.jar.version>
 		<iDisguise.jar.version>iDisguise-5.5.1.jar</iDisguise.jar.version>
+		<disguisecraft.jar.version>DisguiseCraft-5.1.jar</disguisecraft.jar.version>
 		<PvpArena.jar.version>pvparena.jar</PvpArena.jar.version>
 		<TitleAPI.jar.version>TitleAPI-1.7.3.jar</TitleAPI.jar.version>
 		<VanishNoPacket.jar.version>VanishNoPacket3.20.jar</VanishNoPacket.jar.version>
@@ -158,6 +158,16 @@
 			<url>http://repo.spongepowered.org/maven</url>
 		</repository>
 
+		<!-- Addstar repo -->
+		<repository>
+			<id>addstar-repo</id>
+			<url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url>
+		</repository>
+		<repository>
+			<id>addstar-snapshot-repo</id>
+			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/au/com/mineauz/</url>
+		</repository>
+
 		<!-- Vault repository -->
 		<repository>
 			<id>vault-repo</id>
@@ -168,16 +178,6 @@
 		<repository>
 			<id>mypet-repo1</id>
 			<url>http://repo.keyle.de/</url>
-		</repository>
-
-		<!-- Addstar repo -->
-		<repository>
-			<id>addstar-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url>
-		</repository>
-		<repository>
-			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/au/com/mineauz/</url>
 		</repository>
 
 		<!-- Maven repository -->
@@ -438,13 +438,6 @@
 			<version>${protocollib.version}</version>
 		</dependency>
 
-		<!-- DisguiseCraft -->
-		<dependency>
-			<groupId>pgDev</groupId>
-			<artifactId>DisguiseCraft</artifactId>
-			<version>${disguisecraft.version}</version>
-		</dependency>
-
 		<!-- LibsDisguises -->
 		<dependency>
 			<groupId>LibsDisguises</groupId>
@@ -504,6 +497,15 @@
 			<version>${iDisguise.jar.version}</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${iDisguise.jar.version}</systemPath>
+		</dependency>
+
+		<!-- DisguiseCraft -->
+		<dependency>
+			<groupId>pgDev</groupId>
+			<artifactId>DisguiseCraft</artifactId>
+			<version>${disguisecraft.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${disguisecraft.jar.version}</systemPath>
 		</dependency>
 
 		<!-- PvpArena -->
@@ -611,7 +613,7 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${ActionAnnouncer.jar.version}</systemPath>
 		</dependency>
-		
+
 		<!-- Minigames -->
 		<dependency>
 			<groupId>au.com.mineauz</groupId>
