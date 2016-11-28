@@ -1081,8 +1081,9 @@ public class MobHuntingManager implements Listener {
 			}
 
 			// Handle reward on PVP kill. (Robbing)
-			if (killer != null && killed instanceof Player && !CitizensCompat.isNPC(killed)
-					&& MobHunting.getConfigManager().robFromVictim) {
+			boolean robbing = killer != null && killed instanceof Player && !CitizensCompat.isNPC(killed)
+					&& MobHunting.getConfigManager().robFromVictim;
+			if (robbing) {
 				MobHunting.getRewardManager().withdrawPlayer((Player) killed, cash);
 				if (!killed_muted)
 					killed.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages
@@ -1093,7 +1094,8 @@ public class MobHuntingManager implements Listener {
 			// Reward/Penalty for assisted kill
 			if (info.assister == null || MobHunting.getConfigManager().enableAssists == false) {
 				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
+					if (MobHunting.getConfigManager().dropMoneyOnGroup //&& !robbing
+							) {
 						Rewards.dropMoneyOnGround(killed, cash);
 						Messages.debug("%s was droped on the ground", MobHunting.getRewardManager().format(cash));
 					} else {
@@ -1109,7 +1111,8 @@ public class MobHuntingManager implements Listener {
 			} else {
 				cash = cash / 2;
 				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
+					if (MobHunting.getConfigManager().dropMoneyOnGroup //&& !robbing
+							) {
 						Rewards.dropMoneyOnGround(killed, cash);
 						Messages.debug("%s was droped on the ground", MobHunting.getRewardManager().format(cash));
 					} else {
