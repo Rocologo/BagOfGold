@@ -11,6 +11,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
+		<bukkit.version>1.11-R0.1-SNAPSHOT</bukkit.version>
 		<spigotmc.version>1.11-R0.1-SNAPSHOT</spigotmc.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
@@ -343,9 +344,12 @@
 	<!-- **************************** Dependencies **************************** -->
 	<!-- ********************************************************************** -->
 	<dependencies>
-		<!-- CraftBukkit Dependency for experimental features <dependency> <groupId>org.bukkit</groupId> 
-			<artifactId>craftbukkit</artifactId> <version>${bukkit.version}</version> 
-			</dependency> -->
+		<!-- CraftBukkit Dependency for experimental features -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>${bukkit.version}</version>
+		</dependency>
 
 		<!-- SpigotMC -->
 		<dependency>
