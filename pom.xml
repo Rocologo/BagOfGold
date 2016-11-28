@@ -238,10 +238,10 @@
 		</repository>
 
 		<!-- Essentials -->
-		<repository>
+		<!-- <repository>
 			<id>ess-repo</id>
 			<url>http://repo.ess3.net/content/groups/public</url>
-		</repository>
+		</repository> -->
 
 		<!-- ProtocolLib-repo -->
 		<repository>
