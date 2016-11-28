@@ -215,7 +215,7 @@
 		</repository>
 
 		<!-- Addstar repo -->
-		<repository>
+		<!-- <repository>
 			<id>addstar-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url>
 		</repository>
@@ -228,7 +228,7 @@
 			<releases>
 				<enabled>false</enabled>
 			</releases>
-		</repository>
+		</repository> -->
 
 		<!-- Maven repository -->
 		<repository>
