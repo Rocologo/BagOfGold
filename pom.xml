@@ -210,6 +210,27 @@
 			<url>http://repo.puha.io/nexus/content/repositories/releases/io/puharesource/mc/</url>
 		</repository>
 
+		<!-- citizens repository -->
+		<repository>
+			<id>citizens-repo</id>
+			<url>http://repo.citizensnpcs.co/net/citizensnpcs/citizensapi/</url>
+		</repository>
+
+		<!-- minigamesAPI repository -->
+		<repository>
+			<id>MinigamesAPI-Repo</id>
+			<name>MinigamesAPI Repository</name>
+			<url>http://www.instancedev.com/bukkitdev/MinigamesAPI/maven/</url>
+		</repository>
+		
+		<!-- ProtocolLib API repository -->
+		<repository>
+			<id>ProtocolLib-Repo</id>
+			<name>MinigamesAPI Repository</name>
+			<url>http://repo.dmulloy2.net/content/groups/public/com/comphenix/protocol/ProtocolLib-API/</url>
+		</repository>
+		
+
 
 	</repositories>
 
