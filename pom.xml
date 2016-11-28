@@ -161,11 +161,11 @@
 		<!-- Addstar repo -->
 		<repository>
 			<id>addstar-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-release-local/au/com/mineauz/</url>
+			<url>http://maven.addstar.com.au/artifactory/ext-release-local/</url>
 		</repository>
 		<repository>
 			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/au/com/mineauz/</url>
+			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url>
 		</repository>
 
 		<!-- Vault repository -->
@@ -501,7 +501,7 @@
 
 		<!-- DisguiseCraft -->
 		<dependency>
-			<groupId>pgDev</groupId>
+			<groupId>pgDev.bukkit.DisguiseCraft.DisguiseCraft</groupId>
 			<artifactId>DisguiseCraft</artifactId>
 			<version>${disguisecraft.jar.version}</version>
 			<scope>system</scope>
