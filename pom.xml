@@ -160,13 +160,11 @@
 		</repository>
 
 		<!-- Addstar repo -->
-		<!-- <repository>
-			<id>addstar-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-release-local/</url>
-		</repository> -->
+		<!-- <repository> <id>addstar-repo</id> <url>http://maven.addstar.com.au/artifactory/ext-release-local/</url> 
+			</repository> -->
 		<repository>
 			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url>
+			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/au/com/mineauz/Minigames/</url>
 		</repository>
 
 		<!-- Vault repository -->
@@ -349,6 +347,7 @@
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
 			<version>${bukkit.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- SpigotMC -->
@@ -440,6 +439,7 @@
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
 			<version>${protocollib.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- LibsDisguises -->
@@ -447,15 +447,15 @@
 			<groupId>LibsDisguises</groupId>
 			<artifactId>LibsDisguises</artifactId>
 			<version>${libsdisguises.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- BattleArena -->
 		<dependency>
 			<groupId>mc.alk</groupId>
-			<artifactId>
-				BattleArena
-			</artifactId>
+			<artifactId>BattleArena</artifactId>
 			<version>${battleArena.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- BossBarAPI -->
@@ -463,6 +463,7 @@
 			<groupId>org.inventivetalent</groupId>
 			<artifactId>bossbarapi</artifactId>
 			<version>${bossbarapi.version}</version>
+			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>bukkit</artifactId>
@@ -476,6 +477,7 @@
 			<groupId>me.confuser</groupId>
 			<artifactId>BarAPI</artifactId>
 			<version>${barapi.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- TitleManager -->
@@ -483,6 +485,7 @@
 			<groupId>io.puharesource.mc</groupId>
 			<artifactId>TitleManager</artifactId>
 			<version>${titlemanager.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- TARDISWeepingangels -->
