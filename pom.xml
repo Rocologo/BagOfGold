@@ -214,11 +214,11 @@
 		</repository>
 
 		<!-- Addstar repo -->
-		<repository>
+		<!-- <repository>
 			<id>addstar-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
 		</repository>
-		<!-- <repository>
+		<repository>
 			<id>addstar-snapshot-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
 			<snapshots>
