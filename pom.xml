@@ -218,7 +218,7 @@
 			<id>addstar-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
 		</repository>
-		<repository>
+		<!-- <repository>
 			<id>addstar-snapshot-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
 			<snapshots>
@@ -227,7 +227,7 @@
 			<releases>
 				<enabled>false</enabled>
 			</releases>
-		</repository>
+		</repository> -->
 
 		<!-- Maven repository -->
 		<repository>
