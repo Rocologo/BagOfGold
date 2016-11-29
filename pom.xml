@@ -265,7 +265,7 @@
 		<!-- CraftBukkit Dependency for experimental features -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
+			<artifactId>bukkit</artifactId>
 			<version>${bukkit.version}</version>
 			<scope>provided</scope>
 		</dependency>
