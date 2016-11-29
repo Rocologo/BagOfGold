@@ -149,11 +149,15 @@
 	<repositories>
 
 		<!-- SpigotMC Repository -->
-		<repository>
+		<!-- <repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/stash/projects/SPIGOT/repos/</url> 
-			<!-- <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/</url>  -->
-		</repository>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/</url>  
+		</repository>-->
+		<repository>
+        <id>spigot-repo</id>
+        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    	</repository>
 
 		<!-- Sponge -->
 		<repository>

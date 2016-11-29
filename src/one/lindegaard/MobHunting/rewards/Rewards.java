@@ -33,7 +33,7 @@ public class Rewards implements Listener {
 
 	public static final String MH_MONEY = "MH:Money";
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPickupMoney(PlayerPickupItemEvent e) {
 		// This event is NOT called when the inventory is full
 		//Messages.debug("Rewards-PlayerPickupItemEvent called");
