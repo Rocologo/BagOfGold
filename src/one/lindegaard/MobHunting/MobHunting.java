@@ -42,6 +42,7 @@ import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
@@ -151,6 +152,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			registerPlugin(WorldEditCompat.class, "WorldEdit");
 			registerPlugin(WorldGuardCompat.class, "WorldGuard");
+			//registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
 			registerPlugin(MyPetCompat.class, "MyPet");
 
 			registerPlugin(MinigamesCompat.class, "Minigames");

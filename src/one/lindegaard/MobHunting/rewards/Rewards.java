@@ -14,8 +14,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -33,10 +35,36 @@ public class Rewards implements Listener {
 
 	public static final String MH_MONEY = "MH:Money";
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	public static void dropMoneyOnGround(Entity entity, double money) {
+		if (GringottsCompat.isSupported()) {
+			List<Denomination> denoms = Configuration.CONF.currency.denominations();
+			int unit = Configuration.CONF.currency.unit;
+			double rest = money;
+			Location location = entity.getLocation();
+			for (Denomination d : denoms) {
+				ItemStack is = new ItemStack(d.key.type.getType(), 1);
+				while (rest >= (d.value / unit)) {
+					Item item = location.getWorld().dropItem(location, is);
+					item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), (double) 0));
+					rest = rest - (d.value / unit);
+				}
+			}
+		} else {
+			Location location = entity.getLocation();
+			ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
+			Item item = location.getWorld().dropItem(location, is);
+			item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
+			if (Misc.isMC18OrNewer()) {
+				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ MobHunting.getRewardManager().format(money));
+				item.setCustomNameVisible(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPickupMoney(PlayerPickupItemEvent e) {
-		// This event is NOT called when the inventory is full
-		//Messages.debug("Rewards-PlayerPickupItemEvent called");
+		// This event is NOT called when the inventory is full.
 		double money = 0;
 		Item item = e.getItem();
 		if (item.hasMetadata(MH_MONEY)) {
@@ -56,13 +84,13 @@ public class Rewards implements Listener {
 					break;
 				}
 			}
-
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onMobPickupMoney(EntityInteractEvent e) {
+		Messages.debug("EntityInteractEvent was called on %s", e.getEntityType());
 		if (e.getEntity() instanceof Item) {
 			Item item = (Item) e.getEntity();
 			if (item.hasMetadata(MH_MONEY))
@@ -93,16 +121,14 @@ public class Rewards implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onItemDespawnEvent(ItemDespawnEvent e) {
+	public void onMoneyDespawnEvent(ItemDespawnEvent e) {
 		if (e.getEntity().hasMetadata(MH_MONEY)) {
 			Messages.debug("The money was lost - despawned");
-			// e.getEntity().setCancelled(true);
-			// too many items can cause lag, dont cancel this event.
 		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onInventoryPickupItemEvent(InventoryPickupItemEvent e) {
+	public void onInventoryPickupMoneyEvent(InventoryPickupItemEvent e) {
 		Item item = e.getItem();
 		if (MobHunting.getConfigManager().denyHoppersToPickUpMoney && item.hasMetadata(MH_MONEY)
 				&& e.getInventory().getType() == InventoryType.HOPPER) {
@@ -112,29 +138,50 @@ public class Rewards implements Listener {
 		}
 	}
 
-	public static void dropMoneyOnGround(Entity entity, double money) {
-		if (GringottsCompat.isSupported()) {
-			List<Denomination> denoms = Configuration.CONF.currency.denominations();
-			int unit = Configuration.CONF.currency.unit;
-			double rest = money;
-			Location location = entity.getLocation();
-			for (Denomination d : denoms) {
-				ItemStack is = new ItemStack(d.key.type.getType(), 1);
-				while (rest >= (d.value / unit)) {
-					Item item = location.getWorld().dropItem(location, is);
-					item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), (double) 0));
-					rest = rest - (d.value / unit);
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerMoveOverMoneyEvent(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		List<Entity> itemList = ((Entity) player).getNearbyEntities(0.5, 0.5, 0.5);
+		double money = 0;
+		for (Entity ent : itemList) {
+			if (ent.hasMetadata(MH_MONEY)) {
+				List<MetadataValue> metadata = ent.getMetadata(MH_MONEY);
+				for (MetadataValue mdv : metadata) {
+					if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
+						money = (Double) mdv.value();
+						// If not Gringotts
+						if (money != 0) {
+							MobHunting.getRewardManager().depositPlayer(player, money);
+							Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
+									"money", MobHunting.getRewardManager().format(money)));
+						}
+						break;
+					}
 				}
+				ent.remove();
 			}
-		} else {
-			Location location = entity.getLocation();
-			ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
-			Item item = location.getWorld().dropItem(location, is);
-			item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
-			if (Misc.isMC18OrNewer()) {
-				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-						+ MobHunting.getRewardManager().format(money));
-				item.setCustomNameVisible(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onMoneyMergeEvent(ItemMergeEvent e) {
+		Item item1 = e.getEntity();
+		Item item2 = e.getTarget();
+		if (item1.hasMetadata(Rewards.MH_MONEY) || item2.hasMetadata(Rewards.MH_MONEY)) {
+			double value1 = 0;
+			if (item1.hasMetadata(Rewards.MH_MONEY)) {
+				value1 = item1.getMetadata(Rewards.MH_MONEY).get(0).asDouble();
+			}
+			double value2 = 0;
+			if (item2.hasMetadata(Rewards.MH_MONEY)) {
+				value2 = item2.getMetadata(Rewards.MH_MONEY).get(0).asDouble();
+			}
+			if (value1 + value2 != 0) {
+				item2.setMetadata(Rewards.MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), value1 + value2));
+				item2.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ MobHunting.getRewardManager().format(value1 + value2));
+				item2.setCustomNameVisible(true);
+				Messages.debug("Rewards: Items merged - new value=%s", value1 + value2);
 			}
 		}
 	}

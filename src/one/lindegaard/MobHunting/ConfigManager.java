@@ -1383,6 +1383,10 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttp://dev.bukkit.org/bukkit-plugins/tardisweepingangels/")
 	public boolean disableIntegrationTARDISWeepingAngels = false;
 
+	@ConfigField(name = "disable-integration-protocollib", category = "plugins", comment = "Disable integration with ProtocolLib."
+			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
+	public boolean disableIntegrationProtocolLib = false;
+
 	// #####################################################################################
 	// Database
 	// #####################################################################################
