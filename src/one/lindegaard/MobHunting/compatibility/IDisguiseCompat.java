@@ -10,6 +10,7 @@ import de.robingrether.idisguise.disguise.*;
 import one.lindegaard.MobHunting.MobHunting;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -53,25 +54,25 @@ public class IDisguiseCompat implements Listener {
 
 	public static boolean isDisguised(Entity entity) {
 		if (entity instanceof Player)
-			return api.isDisguised((Player) entity);
+			return api.isDisguised((OfflinePlayer) entity);
 		else
 			return false;
 	}
 
 	public static Disguise getDisguise(Entity entity) {
 		if (entity instanceof Player)
-			return api.getDisguise((Player) entity);
+			return api.getDisguise((OfflinePlayer) entity);
 		else
 			return null;
 	}
 
 	public static void disguisePlayer(Player player, Disguise disguise) {
-		api.disguiseToAll(player, disguise);
+		api.disguise(player, disguise);
 	}
 
 	public static void undisguisePlayer(Entity entity) {
 		if (entity instanceof Player)
-			api.undisguiseToAll((Player) entity);
+			api.undisguise((Player) entity);
 	}
 
 	private static final DisguiseType aggresiveList[] = { DisguiseType.ZOMBIE, DisguiseType.BLAZE,

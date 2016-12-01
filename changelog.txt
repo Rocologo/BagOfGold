@@ -1,7 +1,9 @@
 V4.1.3
 * Fixed 2 errors in the Bounty command, Ticket 103, (https://github.com/Rocologo/MobHunting/issues/103)
-* Fixed issue where money was not picked up when the player inventory was full.
-* Added support for ProtocolLib - all though this is not used yet.
+* Fixed issue. Money can now be picked up even with a full inventory. ProtocolLib is recommended, but is only optional. 
+* Added support for ProtocolLib (https://www.spigotmc.org/resources/protocollib.1997/)
+* Included PacketWrapper in MobHunting. (https://github.com/aadnk/PacketWrapper)
+* Removed deprecated methods in iDisguiseCompat
 V4.1.2
 * Compability with LibsDisgues was broken after the 9.1.1 release. UNDEAD_HORSE is now removed.
 * LibsDIsguises, iDisguise and CraftDisguise can now be disabled in config.yml without generation an error.  

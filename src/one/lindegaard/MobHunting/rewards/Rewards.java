@@ -14,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
-import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -29,6 +28,8 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.commands.HeadCommand;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class Rewards implements Listener {
@@ -141,7 +142,7 @@ public class Rewards implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMoveOverMoneyEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		List<Entity> itemList = ((Entity) player).getNearbyEntities(0.5, 0.5, 0.5);
+		List<Entity> itemList = ((Entity) player).getNearbyEntities(1, 1, 1);
 		double money = 0;
 		for (Entity ent : itemList) {
 			if (ent.hasMetadata(MH_MONEY)) {
@@ -152,15 +153,18 @@ public class Rewards implements Listener {
 						// If not Gringotts
 						if (money != 0) {
 							MobHunting.getRewardManager().depositPlayer(player, money);
+							if (ProtocolLibCompat.isSupported())
+								ProtocolLibHelper.pickupMoney(player, ent);
+							ent.remove();
 							Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
 									"money", MobHunting.getRewardManager().format(money)));
 						}
 						break;
 					}
 				}
-				ent.remove();
+
 			}
 		}
 	}
 
-	}
+}

@@ -152,7 +152,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			registerPlugin(WorldEditCompat.class, "WorldEdit");
 			registerPlugin(WorldGuardCompat.class, "WorldGuard");
-			//registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
+			registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
 			registerPlugin(MyPetCompat.class, "MyPet");
 
 			registerPlugin(MinigamesCompat.class, "Minigames");

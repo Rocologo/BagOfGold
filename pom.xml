@@ -317,7 +317,7 @@
 			<artifactId>ProtocolLib-API</artifactId>
 			<version>${protocollib.version}</version>
 		</dependency>
-
+		
 		<!-- MyPet -->
 		<dependency>
 			<groupId>de.keyle</groupId>
