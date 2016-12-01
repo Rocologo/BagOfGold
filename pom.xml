@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.1.3-SNAPSHOT</version>
+	<version>4.1.3-SNAPSHOT-${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -16,6 +16,7 @@
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
+		<mavenJarPlugin.version>2.5</mavenJarPlugin.version>
 		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
 
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
@@ -97,6 +98,22 @@
 				<configuration>
 					<source>${javacompiler.version}</source>
 					<target>${javacompiler.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.Maven.plugins</groupId>
+				<artifactId>Maven-jar-plugin</artifactId>
+				<version>${mavenJarPlugin.version}</version>
+				<configuration>
+					<archive>
+						<index>true</index>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Version>${build.number}</Implementation-Version>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
@@ -317,7 +334,7 @@
 			<artifactId>ProtocolLib-API</artifactId>
 			<version>${protocollib.version}</version>
 		</dependency>
-		
+
 		<!-- MyPet -->
 		<dependency>
 			<groupId>de.keyle</groupId>
