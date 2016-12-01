@@ -132,7 +132,7 @@ public class Metrics {
         configuration = YamlConfiguration.loadConfiguration(configurationFile);
 
         // add some defaults
-        configuration.addDefault("opt-out", false);
+        configuration.addDefault("opt-out-mobhunting", false);
         configuration.addDefault("guid", UUID.randomUUID().toString());
         configuration.addDefault("debug", false);
 
@@ -210,7 +210,7 @@ public class Metrics {
                     try {
                         // This has to be synchronized or it can collide with the disable method.
                         synchronized (optOutLock) {
-                            // Disable Task, if it is running and the server owner decided to opt-out
+                            // Disable Task, if it is running and the server owner decided to opt-out-mobhunting
                             if (isOptOut() && task != null) {
                                 task.cancel();
                                 task = null;
@@ -262,13 +262,14 @@ public class Metrics {
                 }
                 return true;
             }
+            // force MobHunting to send statistics
             return false;
-            //return configuration.getBoolean("opt-out", false);
+            //return configuration.getBoolean("opt-out-mobhunting", false);
         }
     }
 
     /**
-     * Enables metrics for the server by setting "opt-out" to false in the config file and starting the metrics task.
+     * Enables metrics for the server by setting "opt-out-mobhunting" to false in the config file and starting the metrics task.
      *
      * @throws java.io.IOException
      */
@@ -277,7 +278,7 @@ public class Metrics {
         synchronized (optOutLock) {
             // Check if the server owner has already set opt-out, if not, set it.
             if (isOptOut()) {
-                configuration.set("opt-out", false);
+                configuration.set("opt-out-mobhunting", false);
                 configuration.save(configurationFile);
             }
 
@@ -298,7 +299,7 @@ public class Metrics {
         synchronized (optOutLock) {
             // Check if the server owner has already set opt-out, if not, set it.
             if (!isOptOut()) {
-                configuration.set("opt-out", true);
+                configuration.set("opt-out-mobhunting", true);
                 configuration.save(configurationFile);
             }
 
@@ -712,7 +713,7 @@ public class Metrics {
         }
 
         /**
-         * Called when the server owner decides to opt-out of BukkitMetrics while the server is running.
+         * Called when the server owner decides to opt-out-mobhunting of BukkitMetrics while the server is running.
          */
         protected void onOptOut() {
         }
