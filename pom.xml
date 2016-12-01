@@ -72,8 +72,6 @@
 	<build>
 		<defaultGoal>clean package</defaultGoal>
 		<directory>${basedir}/target</directory>
-		<!-- <finalName>${project.name}-${project.version}-${myBuildNumberVariable}-B${buildNumber}</finalName> -->
-		<!-- <finalName>${project.name}-${project.version}-${build.number}</finalName> -->
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 		<resources>
 			<resource>
@@ -125,32 +123,6 @@
 				<shadedPattern>one.lindegaard.MobHunting</shadedPattern> </relocation> </relocations> 
 				</configuration> <executions> <execution> <phase>clean package</phase> <goals> 
 				<goal>shade</goal> </goals> </execution> </executions> </plugin> -->
-			<!-- <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>buildNumber</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-						<configuration>
-							<timestampFormat>{0,date,yyyyMMddHHmmss}</timestampFormat>
-							<timestampPropertyName>myBuildNumberVariable</timestampPropertyName>
-							<format>{0,number}</format>
-							<items>
-								<item>buildNumber</item>
-							</items>
-							<doCheck>false</doCheck>
-							<doUpdate>false</doUpdate>
-							<revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin> -->
-
 			<plugin>
 				<groupId>org.jfrog.buildinfo</groupId>
 				<artifactId>artifactory-maven-plugin</artifactId>

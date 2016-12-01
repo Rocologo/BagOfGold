@@ -299,7 +299,7 @@ public class MetricsManager {
 		metrics.addGraph(usageGraph);
 		metrics.start();
 		Messages.debug("Metrics started");
-		Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Runnable() {
+		Bukkit.getScheduler().runTaskTimerAsynchronously(MobHunting.getInstance(), new Runnable() {
 			public void run() {
 				try {
 					if (isMCStatsReachable()) {
