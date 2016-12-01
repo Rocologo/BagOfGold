@@ -4,7 +4,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.1.3-SNAPSHOT-B${build.number}</version>
+	<version>4.1.3-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -137,6 +137,15 @@
 	<!-- ********************************************************************** -->
 	<repositories>
 
+		<repository>
+			<id>MobHunting-Repository</id>
+			<name>mobhunting-snapshots</name>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
+		</repository>
+
 		<!-- SpigotMC Repository -->
 		<repository>
 			<id>spigot-repo</id>
@@ -230,15 +239,6 @@
 		</repository>
 
 	</repositories>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>fractal-snapshots</name>
-			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 
 	<!-- ********************************************************************** -->
 	<!-- **************************** Dependencies **************************** -->
@@ -540,5 +540,18 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>plugins-releases</name>
+			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>plugins-snapshot</name>
+			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
