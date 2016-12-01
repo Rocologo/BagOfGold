@@ -72,7 +72,8 @@
 	<build>
 		<defaultGoal>clean package</defaultGoal>
 		<directory>${basedir}/target</directory>
-		<finalName>${project.name}-${project.version}-${myBuildNumberVariable}-B${buildNumber}</finalName>
+		<!-- <finalName>${project.name}-${project.version}-${myBuildNumberVariable}-B${buildNumber}</finalName> -->
+		<finalName>${project.name}-${project.version}-${build.number}</finalName>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 		<resources>
 			<resource>
@@ -124,7 +125,7 @@
 				<shadedPattern>one.lindegaard.MobHunting</shadedPattern> </relocation> </relocations> 
 				</configuration> <executions> <execution> <phase>clean package</phase> <goals> 
 				<goal>shade</goal> </goals> </execution> </executions> </plugin> -->
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 				<version>1.4</version>
@@ -136,10 +137,8 @@
 							<goal>create</goal>
 						</goals>
 						<configuration>
-							<!-- Time stamp -->
 							<timestampFormat>{0,date,yyyyMMddHHmmss}</timestampFormat>
 							<timestampPropertyName>myBuildNumberVariable</timestampPropertyName>
-							<!-- BuildNumber -->
 							<format>{0,number}</format>
 							<items>
 								<item>buildNumber</item>
@@ -150,7 +149,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 
 			<plugin>
 				<groupId>org.jfrog.buildinfo</groupId>
