@@ -73,7 +73,7 @@
 		<defaultGoal>clean package</defaultGoal>
 		<directory>${basedir}/target</directory>
 		<!-- <finalName>${project.name}-${project.version}-${myBuildNumberVariable}-B${buildNumber}</finalName> -->
-		<finalName>${project.name}-${project.version}-${build.number}</finalName>
+		<!-- <finalName>${project.name}-${project.version}-${build.number}</finalName> -->
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 		<resources>
 			<resource>
@@ -101,7 +101,7 @@
 					<target>${javacompiler.version}</target>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.Maven.plugins</groupId>
 				<artifactId>Maven-jar-plugin</artifactId>
 				<version>${mavenJarPlugin.version}</version>
@@ -117,6 +117,7 @@
 					</archive>
 				</configuration>
 			</plugin>
+			 -->
 			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
 				<version>${mavenShadePlugin.version}</version> <configuration> <finalName>${project.name}</finalName> 
 				<minimizeJar>true</minimizeJar> <createDependencyReducedPom>false</createDependencyReducedPom> 
