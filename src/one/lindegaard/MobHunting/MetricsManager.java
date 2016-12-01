@@ -51,7 +51,6 @@ public class MetricsManager {
 		try {
 			metrics = new Metrics(instance);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -332,11 +331,9 @@ public class MetricsManager {
 			Object objData = urlConnect.getContent();
 
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			// e.printStackTrace();
 			return false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			// e.printStackTrace();
 			return false;
 		}

@@ -276,7 +276,7 @@ public class Metrics {
     public void enable() throws IOException {
         // This has to be synchronized or it can collide with the check in the task.
         synchronized (optOutLock) {
-            // Check if the server owner has already set opt-out, if not, set it.
+            // Check if the server owner has already set opt-out-mobhunting, if not, set it.
             if (isOptOut()) {
                 configuration.set("opt-out-mobhunting", false);
                 configuration.save(configurationFile);
@@ -325,7 +325,7 @@ public class Metrics {
         File pluginsFolder = plugin.getDataFolder().getParentFile();
 
         // return => base/plugins/PluginMetrics/config.yml
-        return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
+        return new File(new File(pluginsFolder, "PluginMetrics"), "config-mobhunting.yml");
     }
     
     /**
