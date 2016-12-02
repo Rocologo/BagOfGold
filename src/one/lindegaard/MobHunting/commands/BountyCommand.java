@@ -55,7 +55,7 @@ public class BountyCommand implements ICommand {
 						+ " - to check if there is a bounty on <player>",
 						ChatColor.GOLD + label + ChatColor.GREEN + " <player> <prize>" + ChatColor.YELLOW + " <message>" + ChatColor.WHITE
 						+ " - put a bounty on <player> and deliver the message when killed.",
-						ChatColor.GOLD + label + ChatColor.GREEN + " <player> drop" + ChatColor.WHITE + " - to remove bounty on <player> with a "
+						ChatColor.GOLD + label + ChatColor.GREEN + " remove <player> " + ChatColor.WHITE + " - to remove bounty on <player> with a "
 						+ MobHunting.getConfigManager().bountyReturnPct + "% reduction" };
 	}
 

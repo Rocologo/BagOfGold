@@ -1,5 +1,6 @@
 V4.1.4
-* Fixed bug: Metrics is now only enabled for MobHunting and don't force this for all other plugins. 
+* Fixed bug: Metrics is now only enabled for MobHunting and don't force this for all other plugins.
+* Updated /mh bounty help 
 V4.1.3
 * Fixed 2 errors in the Bounty command, Ticket 103, (https://github.com/Rocologo/MobHunting/issues/103)
 * Fixed issue. Money can now be picked up even with a full inventory. ProtocolLib is recommended, but is only optional. 
