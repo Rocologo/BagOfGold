@@ -1,19 +1,11 @@
 package one.lindegaard.MobHunting.compatibility;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import com.comphenix.packetwrapper.WrapperPlayServerCollect;
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-
-import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.MobHunting;
 
 public class ProtocolLibHelper {
 
@@ -22,17 +14,18 @@ public class ProtocolLibHelper {
 	public static void enableProtocolLib() {
 		protocolManager = ProtocolLibrary.getProtocolManager();
 
-		protocolManager.addPacketListener(
+		/**protocolManager.addPacketListener(
 				new PacketAdapter(MobHunting.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.COLLECT) {
 					@Override
 					public void onPacketSending(PacketEvent event) {
 						// Item packets (id: 0x29)
 						if (event.getPacketType() == PacketType.Play.Server.COLLECT) {
-							Messages.debug("Server send a COLLECT packet type=%s", event.getPacketType());
+							//Messages.debug("Server send a COLLECT packet type=%s", event.getPacketType());
 							// event.setCancelled(true);
 						}
 					}
 				});
+				**/
 	}
 
 	public static ProtocolManager getProtocolmanager() {
