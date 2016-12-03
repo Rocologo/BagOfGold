@@ -142,27 +142,29 @@ public class Rewards implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMoveOverMoneyEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		List<Entity> itemList = ((Entity) player).getNearbyEntities(1, 1, 1);
-		double money = 0;
-		for (Entity ent : itemList) {
-			if (ent.hasMetadata(MH_MONEY)) {
-				List<MetadataValue> metadata = ent.getMetadata(MH_MONEY);
-				for (MetadataValue mdv : metadata) {
-					if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
-						money = (Double) mdv.value();
-						// If not Gringotts
-						if (money != 0) {
-							MobHunting.getRewardManager().depositPlayer(player, money);
-							if (ProtocolLibCompat.isSupported())
-								ProtocolLibHelper.pickupMoney(player, ent);
-							ent.remove();
-							Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
-									"money", MobHunting.getRewardManager().format(money)));
+		if (!player.getCanPickupItems()) {
+			List<Entity> itemList = ((Entity) player).getNearbyEntities(1, 1, 1);
+			double money = 0;
+			for (Entity ent : itemList) {
+				if (ent.hasMetadata(MH_MONEY)) {
+					List<MetadataValue> metadata = ent.getMetadata(MH_MONEY);
+					for (MetadataValue mdv : metadata) {
+						if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
+							money = (Double) mdv.value();
+							// If not Gringotts
+							if (money != 0) {
+								MobHunting.getRewardManager().depositPlayer(player, money);
+								if (ProtocolLibCompat.isSupported())
+									ProtocolLibHelper.pickupMoney(player, ent);
+								ent.remove();
+								Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
+										"money", MobHunting.getRewardManager().format(money)));
+							}
+							break;
 						}
-						break;
 					}
-				}
 
+				}
 			}
 		}
 	}
