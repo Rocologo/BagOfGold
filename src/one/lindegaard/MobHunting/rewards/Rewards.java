@@ -1,6 +1,9 @@
 package one.lindegaard.MobHunting.rewards;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,6 +39,8 @@ public class Rewards implements Listener {
 
 	public static final String MH_MONEY = "MH:Money";
 
+	private static HashMap<Integer, Double> droppedItems = new HashMap<Integer, Double>();
+
 	public static void dropMoneyOnGround(Entity entity, double money) {
 		if (GringottsCompat.isSupported()) {
 			List<Denomination> denoms = Configuration.CONF.currency.denominations();
@@ -54,6 +59,7 @@ public class Rewards implements Listener {
 			Location location = entity.getLocation();
 			ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
 			Item item = location.getWorld().dropItem(location, is);
+			droppedItems.put(item.getEntityId(), money);
 			item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
 			if (Misc.isMC18OrNewer()) {
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
@@ -63,7 +69,7 @@ public class Rewards implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPickupMoney(PlayerPickupItemEvent e) {
 		// This event is NOT called when the inventory is full.
 		double money = 0;
@@ -79,9 +85,12 @@ public class Rewards implements Listener {
 						MobHunting.getRewardManager().depositPlayer(player, money);
 						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
 								MobHunting.getRewardManager().format(money)));
-						e.getItem().remove();
+						Messages.debug("Normal pickup");
+						item.remove();
 						e.setCancelled(true);
 					}
+					if (droppedItems.containsKey(item.getEntityId()))
+						droppedItems.remove(item.getEntityId());
 					break;
 				}
 			}
@@ -139,31 +148,37 @@ public class Rewards implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerMoveOverMoneyEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		if (!player.getCanPickupItems()) {
-			List<Entity> itemList = ((Entity) player).getNearbyEntities(1, 1, 1);
+			Iterator<Entity> itemList = ((Entity) player).getNearbyEntities(1, 1, 1).iterator();
 			double money = 0;
-			for (Entity ent : itemList) {
-				if (ent.hasMetadata(MH_MONEY)) {
-					List<MetadataValue> metadata = ent.getMetadata(MH_MONEY);
-					for (MetadataValue mdv : metadata) {
-						if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
-							money = (Double) mdv.value();
-							// If not Gringotts
-							if (money != 0) {
-								MobHunting.getRewardManager().depositPlayer(player, money);
-								if (ProtocolLibCompat.isSupported())
-									ProtocolLibHelper.pickupMoney(player, ent);
-								ent.remove();
-								Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
-										"money", MobHunting.getRewardManager().format(money)));
+			// for (Entity ent : itemList) {
+			while (itemList.hasNext()) {
+				Entity ent = itemList.next();
+				if (droppedItems.containsKey(ent.getEntityId())) {
+					if (ent.hasMetadata(MH_MONEY)) {
+						List<MetadataValue> metadata = ent.getMetadata(MH_MONEY);
+						for (MetadataValue mdv : metadata) {
+							// Messages.debug("mdv=%s", mdv.toString());
+							if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
+								money = (Double) metadata.get(0).value();
+								// If not Gringotts
+								if (money != 0) {
+									MobHunting.getRewardManager().depositPlayer(player, money);
+									if (ProtocolLibCompat.isSupported())
+										ProtocolLibHelper.pickupMoney(player, ent);
+									droppedItems.remove(ent.getEntityId());
+									ent.remove();
+									Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
+											"money", MobHunting.getRewardManager().format(money)));
+								}
+								break;
 							}
-							break;
 						}
-					}
 
+					}
 				}
 			}
 		}
