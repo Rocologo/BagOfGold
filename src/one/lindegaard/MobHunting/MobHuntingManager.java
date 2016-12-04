@@ -92,7 +92,7 @@ import one.lindegaard.MobHunting.modifier.SneakyBonus;
 import one.lindegaard.MobHunting.modifier.SniperBonus;
 import one.lindegaard.MobHunting.modifier.StackedMobBonus;
 import one.lindegaard.MobHunting.modifier.Undercover;
-import one.lindegaard.MobHunting.rewards.Rewards;
+import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.update.UpdateHelper;
 import one.lindegaard.MobHunting.util.Misc;
 
@@ -1094,10 +1094,10 @@ public class MobHuntingManager implements Listener {
 			// Reward/Penalty for assisted kill
 			if (info.assister == null || MobHunting.getConfigManager().enableAssists == false) {
 				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup //&& !robbing
-							) {
-						Rewards.dropMoneyOnGround(killed, cash);
-						Messages.debug("%s was droped on the ground", MobHunting.getRewardManager().format(cash));
+					if (MobHunting.getConfigManager().dropMoneyOnGroup // &&
+																		// !robbing
+					) {
+						RewardManager.dropMoneyOnGround(killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						Messages.debug("%s got a reward (%s)", killer.getName(),
@@ -1111,10 +1111,10 @@ public class MobHuntingManager implements Listener {
 			} else {
 				cash = cash / 2;
 				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup //&& !robbing
-							) {
-						Rewards.dropMoneyOnGround(killed, cash);
-						Messages.debug("%s was droped on the ground", MobHunting.getRewardManager().format(cash));
+					if (MobHunting.getConfigManager().dropMoneyOnGroup // &&
+																		// !robbing
+					) {
+						RewardManager.dropMoneyOnGround(killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						onAssist(info.assister, killer, killed, info.lastAssistTime);

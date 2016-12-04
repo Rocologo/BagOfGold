@@ -1,13 +1,8 @@
 package one.lindegaard.MobHunting.rewards;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -17,65 +12,28 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
-import org.gestern.gringotts.Configuration;
-import org.gestern.gringotts.currency.Denomination;
-
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.commands.HeadCommand;
-import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
 import one.lindegaard.MobHunting.util.Misc;
 
-public class Rewards implements Listener {
-
-	public static final String MH_MONEY = "MH:Money";
-
-	private static HashMap<Integer, Double> droppedItems = new HashMap<Integer, Double>();
-
-	public static void dropMoneyOnGround(Entity entity, double money) {
-		if (GringottsCompat.isSupported()) {
-			List<Denomination> denoms = Configuration.CONF.currency.denominations();
-			int unit = Configuration.CONF.currency.unit;
-			double rest = money;
-			Location location = entity.getLocation();
-			for (Denomination d : denoms) {
-				ItemStack is = new ItemStack(d.key.type.getType(), 1);
-				while (rest >= (d.value / unit)) {
-					Item item = location.getWorld().dropItem(location, is);
-					item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), (double) 0));
-					rest = rest - (d.value / unit);
-				}
-			}
-		} else {
-			Location location = entity.getLocation();
-			ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
-			Item item = location.getWorld().dropItem(location, is);
-			droppedItems.put(item.getEntityId(), money);
-			item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
-			if (Misc.isMC18OrNewer()) {
-				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-						+ MobHunting.getRewardManager().format(money));
-				item.setCustomNameVisible(true);
-			}
-		}
-	}
+public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPickupMoney(PlayerPickupItemEvent e) {
 		// This event is NOT called when the inventory is full.
 		double money = 0;
 		Item item = e.getItem();
-		if (item.hasMetadata(MH_MONEY)) {
-			List<MetadataValue> metadata = item.getMetadata(MH_MONEY);
+		if (item.hasMetadata(RewardManager.MH_MONEY)) {
+			List<MetadataValue> metadata = item.getMetadata(RewardManager.MH_MONEY);
 			for (MetadataValue mdv : metadata) {
 				if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
 					money = (Double) mdv.value();
@@ -85,12 +43,13 @@ public class Rewards implements Listener {
 						MobHunting.getRewardManager().depositPlayer(player, money);
 						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
 								MobHunting.getRewardManager().format(money)));
-						Messages.debug("Normal pickup");
 						item.remove();
 						e.setCancelled(true);
 					}
-					if (droppedItems.containsKey(item.getEntityId()))
-						droppedItems.remove(item.getEntityId());
+					if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
+						RewardManager.getDroppedMoney().remove(item.getEntityId());
+					Messages.debug("%s picked up %s money. (# of rewards left=%s)", player.getName(),
+							MobHunting.getRewardManager().format(money), RewardManager.getDroppedMoney().size());
 					break;
 				}
 			}
@@ -100,11 +59,10 @@ public class Rewards implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onMobPickupMoney(EntityInteractEvent e) {
-		Messages.debug("EntityInteractEvent was called on %s", e.getEntityType());
 		if (e.getEntity() instanceof Item) {
 			Item item = (Item) e.getEntity();
-			if (item.hasMetadata(MH_MONEY))
-				Messages.debug("Rewards: EventInteractEvent MH_MONEY - %s, %s, %s ", e.getEntity().getType(),
+			if (item.hasMetadata(RewardManager.MH_MONEY))
+				Messages.debug("RewardListeners: EventInteractEvent MH_MONEY - %s, %s, %s ", e.getEntity().getType(),
 						e.getEntityType(), e.getBlock().getType());
 		}
 		if (e.getEntity() instanceof Zombie) {
@@ -132,34 +90,40 @@ public class Rewards implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onMoneyDespawnEvent(ItemDespawnEvent e) {
-		if (e.getEntity().hasMetadata(MH_MONEY)) {
-			Messages.debug("The money was lost - despawned");
+		if (e.getEntity().hasMetadata(RewardManager.MH_MONEY)) {
+			Messages.debug("The money was lost - despawned (# of rewards left=%s)",
+					RewardManager.getDroppedMoney().size());
+			if (RewardManager.getDroppedMoney().containsKey(e.getEntity().getEntityId()))
+				RewardManager.getDroppedMoney().remove(e.getEntity().getEntityId());
 		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryPickupMoneyEvent(InventoryPickupItemEvent e) {
 		Item item = e.getItem();
-		if (MobHunting.getConfigManager().denyHoppersToPickUpMoney && item.hasMetadata(MH_MONEY)
+		if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
+			RewardManager.getDroppedMoney().remove(item.getEntityId());
+		if (MobHunting.getConfigManager().denyHoppersToPickUpMoney && item.hasMetadata(RewardManager.MH_MONEY)
 				&& e.getInventory().getType() == InventoryType.HOPPER) {
 			Messages.debug("A %s tried to pick up the the reward, but this is disabled in config.yml",
 					e.getInventory().getType());
 			e.setCancelled(true);
+		} else {
+			Messages.debug("The reward was picked up by %s", e.getInventory().getType());
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMoveOverMoneyEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if (!player.getCanPickupItems()) {
+		if (!player.getCanPickupItems() && !RewardManager.getDroppedMoney().isEmpty()) {
 			Iterator<Entity> itemList = ((Entity) player).getNearbyEntities(1, 1, 1).iterator();
 			double money = 0;
-			// for (Entity ent : itemList) {
 			while (itemList.hasNext()) {
 				Entity ent = itemList.next();
-				if (droppedItems.containsKey(ent.getEntityId())) {
-					if (ent.hasMetadata(MH_MONEY)) {
-						List<MetadataValue> metadata = ent.getMetadata(MH_MONEY);
+				if (RewardManager.getDroppedMoney().containsKey(ent.getEntityId())) {
+					if (ent.hasMetadata(RewardManager.MH_MONEY)) {
+						List<MetadataValue> metadata = ent.getMetadata(RewardManager.MH_MONEY);
 						for (MetadataValue mdv : metadata) {
 							// Messages.debug("mdv=%s", mdv.toString());
 							if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
@@ -169,7 +133,10 @@ public class Rewards implements Listener {
 									MobHunting.getRewardManager().depositPlayer(player, money);
 									if (ProtocolLibCompat.isSupported())
 										ProtocolLibHelper.pickupMoney(player, ent);
-									droppedItems.remove(ent.getEntityId());
+									RewardManager.getDroppedMoney().remove(ent.getEntityId());
+									Messages.debug("%s picked up the %s money. (# of money left=%s)", player.getName(),
+											MobHunting.getRewardManager().format(money),
+											RewardManager.getDroppedMoney().size());
 									ent.remove();
 									Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
 											"money", MobHunting.getRewardManager().format(money)));
@@ -181,6 +148,18 @@ public class Rewards implements Listener {
 					}
 				}
 			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onProjectileHitEvent(ProjectileHitEvent e) {
+		Entity entity = e.getHitEntity();
+		if (entity != null && entity.hasMetadata(RewardManager.MH_MONEY)) {
+			if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId()))
+				RewardManager.getDroppedMoney().remove(entity.getEntityId());
+			Messages.debug("The reward was hit by %s and removed. (# of money left=%s)", e.getEntity().getType(),
+					RewardManager.getDroppedMoney().size());
+
 		}
 	}
 

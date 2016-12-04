@@ -1,3 +1,6 @@
+V4.1.7
+* Money dropped on ground is now invulnable. (Cant be destroyed by fireballs). 
+* Fixed error where rewards was paid twice - when the inventory was NOT full. Error introduced in V4.1.3
 V4.1.6
 * Fixed error where rewards was paid twice - when the inventory was NOT full. Error introduced in V4.1.3
 V4.1.5
