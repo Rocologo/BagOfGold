@@ -100,7 +100,7 @@ public class RewardManager implements Listener {
 			Location location = entity.getLocation();
 			ItemStack is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
 			Item item = location.getWorld().dropItem(location, is);
-			item.setInvulnerable(true);
+			//item.setInvulnerable(true);
 			RewardManager.getDroppedMoney().put(item.getEntityId(), money);
 			item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
 			if (Misc.isMC18OrNewer()) {

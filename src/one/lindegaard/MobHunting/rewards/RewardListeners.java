@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -91,10 +92,10 @@ public class RewardListeners implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onMoneyDespawnEvent(ItemDespawnEvent e) {
 		if (e.getEntity().hasMetadata(RewardManager.MH_MONEY)) {
-			Messages.debug("The money was lost - despawned (# of rewards left=%s)",
-					RewardManager.getDroppedMoney().size());
 			if (RewardManager.getDroppedMoney().containsKey(e.getEntity().getEntityId()))
 				RewardManager.getDroppedMoney().remove(e.getEntity().getEntityId());
+			Messages.debug("The money was lost - despawned (# of rewards left=%s)",
+					RewardManager.getDroppedMoney().size());
 		}
 	}
 
@@ -152,19 +153,34 @@ public class RewardListeners implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onProjectileHitEvent(ProjectileHitEvent e) {
-		if (Misc.isMC111OrNewer()) {
-			Entity entity = e.getHitEntity();
-			if (entity != null && entity.hasMetadata(RewardManager.MH_MONEY)) {
-				if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId()))
-					RewardManager.getDroppedMoney().remove(entity.getEntityId());
-				Messages.debug("The reward was hit by %s and removed. (# of money left=%s)", e.getEntity().getType(),
+	public void onProjectileHitEvent(ProjectileHitEvent event) {
+		Projectile projectile = event.getEntity();
+		Entity targetEntity = null;
+		/**
+		 * if (Misc.isMC111OrNewer()) { targetEntity = event.getHitEntity(); if
+		 * (targetEntity != null &&
+		 * targetEntity.hasMetadata(RewardManager.MH_MONEY)) { if
+		 * (RewardManager.getDroppedMoney().containsKey(targetEntity.getEntityId
+		 * ()))
+		 * RewardManager.getDroppedMoney().remove(targetEntity.getEntityId());
+		 * targetEntity.remove(); Messages.debug(
+		 * "The reward was hit by %s and removed. (# of Rewards left=%s)",
+		 * projectile.getType(), RewardManager.getDroppedMoney().size()); } }
+		 * else {
+		 **/
+		Iterator<Entity> nearby = projectile.getNearbyEntities(1, 1, 1).iterator();
+		while (nearby.hasNext()) {
+			targetEntity = nearby.next();
+			if (targetEntity.hasMetadata(RewardManager.MH_MONEY)) {
+				if (RewardManager.getDroppedMoney().containsKey(targetEntity.getEntityId()))
+					RewardManager.getDroppedMoney().remove(targetEntity.getEntityId());
+				targetEntity.remove();
+				Messages.debug("The reward was hit by %s and removed. (# of Rewards left=%s)", projectile.getType(),
 						RewardManager.getDroppedMoney().size());
-
+				break;
 			}
-		} else {
-
 		}
+		// }
 	}
 
 }
