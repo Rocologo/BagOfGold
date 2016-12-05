@@ -1,3 +1,6 @@
+V4.1.8
+* Fixed NoSuchMethodError: org.bukkit.event.entity.ProjectileHitEvent.getHitEntity() on older Minecraft versions. If you get this error on Minecraft 1.11 you need to update SpigotMC. (https://www.spigotmc.org/threads/mobhunting.46937/page-70#post-2065080)
+*
 V4.1.7
 * Money dropped on ground is now invulnable. (Cant be destroyed by fireballs). 
 * Fixed error where rewards was paid twice - when the inventory was NOT full. Error introduced in V4.1.3

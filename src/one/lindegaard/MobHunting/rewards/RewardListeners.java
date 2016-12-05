@@ -153,12 +153,16 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onProjectileHitEvent(ProjectileHitEvent e) {
-		Entity entity = e.getHitEntity();
-		if (entity != null && entity.hasMetadata(RewardManager.MH_MONEY)) {
-			if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId()))
-				RewardManager.getDroppedMoney().remove(entity.getEntityId());
-			Messages.debug("The reward was hit by %s and removed. (# of money left=%s)", e.getEntity().getType(),
-					RewardManager.getDroppedMoney().size());
+		if (Misc.isMC111OrNewer()) {
+			Entity entity = e.getHitEntity();
+			if (entity != null && entity.hasMetadata(RewardManager.MH_MONEY)) {
+				if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId()))
+					RewardManager.getDroppedMoney().remove(entity.getEntityId());
+				Messages.debug("The reward was hit by %s and removed. (# of money left=%s)", e.getEntity().getType(),
+						RewardManager.getDroppedMoney().size());
+
+			}
+		} else {
 
 		}
 	}
