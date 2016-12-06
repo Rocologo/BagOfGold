@@ -26,6 +26,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class HeadCommand implements ICommand, Listener {
 
@@ -59,9 +60,9 @@ public class HeadCommand implements ICommand, Listener {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				ChatColor.GOLD + label + ChatColor.GREEN + " give" + " [toPlayername] [playername|mobname]" + ChatColor.YELLOW
-						+ " [displayname] [amount]" + ChatColor.WHITE + " - to give a head",
-						ChatColor.GOLD + label + ChatColor.GREEN + " rename [new displayname]" + ChatColor.WHITE
+				ChatColor.GOLD + label + ChatColor.GREEN + " give" + " [toPlayername] [playername|mobname]"
+						+ ChatColor.YELLOW + " [displayname] [amount]" + ChatColor.WHITE + " - to give a head",
+				ChatColor.GOLD + label + ChatColor.GREEN + " rename [new displayname]" + ChatColor.WHITE
 						+ " - to rename the head in players name" };
 	}
 
@@ -130,16 +131,24 @@ public class HeadCommand implements ICommand, Listener {
 					}
 				}
 				if (mob != null) {
-					String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
-							.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
-							.replace("{playerid}", mob.getPlayerId()).replace("{texturevalue}", mob.getTextureValue())
-							.replace("{amount}", String.valueOf(amount)).replace("{playername}",
-									offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
-					Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
-					if (toPlayer.isOnline()){
-						((Player) toPlayer).sendMessage("You got a head of "+displayName+".");
+					if (Misc.isMC18OrNewer()) {
+						//Use GameProfile
+						((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(),
+								mob.getHead(displayName));
+					} else {
+						String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
+								.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
+								.replace("{playerid}", mob.getPlayerUUID())
+								.replace("{texturevalue}", mob.getTextureValue())
+								.replace("{amount}", String.valueOf(amount)).replace("{playername}",
+										offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
+						Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
+						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 					}
-					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
+					if (toPlayer.isOnline()) {
+						((Player) toPlayer).sendMessage("You got a head of " + displayName + ".");
+					}
+
 				}
 			}
 
@@ -249,7 +258,7 @@ public class HeadCommand implements ICommand, Listener {
 		if (event.isCancelled())
 			return;
 		Item item = event.getItem();
-		if (item.hasMetadata(MH_HEAD) && event.getInventory().getType()!=InventoryType.PLAYER) {
+		if (item.hasMetadata(MH_HEAD) && event.getInventory().getType() != InventoryType.PLAYER) {
 			String displayName = item.getMetadata(MH_HEAD).get(0).asString();
 			Messages.debug("A Inventory picked up a MH Head DisplayName=%s", displayName);
 			ItemMeta im = item.getItemStack().getItemMeta();
