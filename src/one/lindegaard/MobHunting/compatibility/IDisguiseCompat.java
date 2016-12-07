@@ -40,22 +40,22 @@ public class IDisguiseCompat implements Listener {
 		if (Misc.isMC111OrNewer()) {
 			aggresiveList[n++] = DisguiseType.HUSK;
 			aggresiveList[n++] = DisguiseType.STRAY;
-			aggresiveList[n++] = DisguiseType.POLAR_BEAR;
 		}
 		if (Misc.isMC19OrNewer()) {
 			aggresiveList[n++] = DisguiseType.SHULKER;
 		}
-		aggresiveList[n++] = DisguiseType.ZOMBIE;
+		if (Misc.isMC18OrNewer()){
+			aggresiveList[n++] = DisguiseType.GUARDIAN;
+			aggresiveList[n++] = DisguiseType.ENDERMITE;
+			aggresiveList[n++] = DisguiseType.ELDER_GUARDIAN;
+		}
 		aggresiveList[n++] = DisguiseType.BLAZE;
 		aggresiveList[n++] = DisguiseType.CAVE_SPIDER;
 		aggresiveList[n++] = DisguiseType.CREEPER;
-		aggresiveList[n++] = DisguiseType.ELDER_GUARDIAN;
 		aggresiveList[n++] = DisguiseType.ENDER_DRAGON;
 		aggresiveList[n++] = DisguiseType.ENDERMAN;
-		aggresiveList[n++] = DisguiseType.ENDERMITE;
 		aggresiveList[n++] = DisguiseType.GHAST;
 		aggresiveList[n++] = DisguiseType.GIANT;
-		aggresiveList[n++] = DisguiseType.GUARDIAN;
 		aggresiveList[n++] = DisguiseType.PIG_ZOMBIE;
 		aggresiveList[n++] = DisguiseType.SKELETON;
 		aggresiveList[n++] = DisguiseType.SLIME;
@@ -71,6 +71,12 @@ public class IDisguiseCompat implements Listener {
 
 	static {
 		int n2 = 0;
+		if (Misc.isMC111OrNewer()) {
+			passiveList[n2++] = DisguiseType.LLAMA;
+		}
+		if (Misc.isMC110OrNewer()) {
+			passiveList[n2++] = DisguiseType.POLAR_BEAR;
+		}
 		passiveList[n2++] = DisguiseType.BAT;
 		passiveList[n2++] = DisguiseType.CHICKEN;
 		passiveList[n2++] = DisguiseType.COW;
