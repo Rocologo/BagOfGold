@@ -9,6 +9,7 @@ import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.events.DisguiseEvent;
 import me.libraryaddict.disguise.events.UndisguiseEvent;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -24,6 +25,107 @@ public class LibsDisguisesCompat implements Listener {
 
 	private static Plugin mPlugin;
 	private static boolean supported = false;
+
+	private static DisguiseType[] aggresiveList = new DisguiseType[30];
+	private static DisguiseType[] passiveList = new DisguiseType[20];
+	private static DisguiseType[] otherList = new DisguiseType[40];
+
+	static {
+		int n = 0;
+		if (Misc.isMC111OrNewer()) {
+			aggresiveList[n++] = DisguiseType.VEX;
+			aggresiveList[n++] = DisguiseType.EVOKER;
+			aggresiveList[n++] = DisguiseType.VINDICATOR;
+		}
+		if (Misc.isMC111OrNewer()) {
+			aggresiveList[n++] = DisguiseType.HUSK;
+			aggresiveList[n++] = DisguiseType.STRAY;
+			aggresiveList[n++] = DisguiseType.POLAR_BEAR;
+		}
+		if (Misc.isMC19OrNewer()) {
+			aggresiveList[n++] = DisguiseType.SHULKER;
+		}
+		aggresiveList[n++] = DisguiseType.ZOMBIE;
+		aggresiveList[n++] = DisguiseType.BLAZE;
+		aggresiveList[n++] = DisguiseType.CAVE_SPIDER;
+		aggresiveList[n++] = DisguiseType.CREEPER;
+		aggresiveList[n++] = DisguiseType.ELDER_GUARDIAN;
+		aggresiveList[n++] = DisguiseType.ENDER_DRAGON;
+		aggresiveList[n++] = DisguiseType.ENDERMAN;
+		aggresiveList[n++] = DisguiseType.ENDERMITE;
+		aggresiveList[n++] = DisguiseType.GHAST;
+		aggresiveList[n++] = DisguiseType.GIANT;
+		aggresiveList[n++] = DisguiseType.GUARDIAN;
+		aggresiveList[n++] = DisguiseType.PIG_ZOMBIE;
+		aggresiveList[n++] = DisguiseType.SKELETON;
+		aggresiveList[n++] = DisguiseType.SLIME;
+		aggresiveList[n++] = DisguiseType.SPIDER;
+		aggresiveList[n++] = DisguiseType.WITCH;
+		aggresiveList[n++] = DisguiseType.WITHER;
+		aggresiveList[n++] = DisguiseType.WITHER_SKELETON;
+		aggresiveList[n++] = DisguiseType.WITHER_SKULL;
+		aggresiveList[n++] = DisguiseType.ZOMBIE;
+		aggresiveList[n++] = DisguiseType.ZOMBIE_VILLAGER;
+	}
+	private static Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(Arrays.asList(aggresiveList));
+
+	static {
+		int n2 = 0;
+		passiveList[n2++] = DisguiseType.BAT;
+		passiveList[n2++] = DisguiseType.CHICKEN;
+		passiveList[n2++] = DisguiseType.COW;
+		passiveList[n2++] = DisguiseType.DONKEY;
+		passiveList[n2++] = DisguiseType.HORSE;
+		passiveList[n2++] = DisguiseType.IRON_GOLEM;
+		passiveList[n2++] = DisguiseType.MAGMA_CUBE;
+		passiveList[n2++] = DisguiseType.MULE;
+		passiveList[n2++] = DisguiseType.MUSHROOM_COW;
+		passiveList[n2++] = DisguiseType.OCELOT;
+		passiveList[n2++] = DisguiseType.PIG;
+		passiveList[n2++] = DisguiseType.RABBIT;
+		passiveList[n2++] = DisguiseType.SHEEP;
+		passiveList[n2++] = DisguiseType.SILVERFISH;
+		passiveList[n2++] = DisguiseType.SKELETON_HORSE;
+		passiveList[n2++] = DisguiseType.SNOWMAN;
+		passiveList[n2++] = DisguiseType.SQUID;
+	}
+	private static Set<DisguiseType> passiveMobs = new HashSet<DisguiseType>(Arrays.asList(passiveList));
+
+	static {
+		int n3 = 0;
+		otherList[n3++] = DisguiseType.ARMOR_STAND;
+		otherList[n3++] = DisguiseType.ARROW;
+		otherList[n3++] = DisguiseType.BOAT;
+		otherList[n3++] = DisguiseType.DROPPED_ITEM;
+		otherList[n3++] = DisguiseType.EGG;
+		otherList[n3++] = DisguiseType.ENDER_CRYSTAL;
+		otherList[n3++] = DisguiseType.ENDER_PEARL;
+		otherList[n3++] = DisguiseType.ENDER_SIGNAL;
+		otherList[n3++] = DisguiseType.EXPERIENCE_ORB;
+		otherList[n3++] = DisguiseType.FALLING_BLOCK;
+		otherList[n3++] = DisguiseType.FIREBALL;
+		otherList[n3++] = DisguiseType.FIREWORK;
+		otherList[n3++] = DisguiseType.FISHING_HOOK;
+		otherList[n3++] = DisguiseType.ITEM_FRAME;
+		otherList[n3++] = DisguiseType.LEASH_HITCH;
+		otherList[n3++] = DisguiseType.MINECART;
+		otherList[n3++] = DisguiseType.MINECART_CHEST;
+		otherList[n3++] = DisguiseType.MINECART_COMMAND;
+		otherList[n3++] = DisguiseType.MINECART_FURNACE;
+		otherList[n3++] = DisguiseType.MINECART_HOPPER;
+		otherList[n3++] = DisguiseType.MINECART_MOB_SPAWNER;
+		otherList[n3++] = DisguiseType.MINECART_TNT;
+		otherList[n3++] = DisguiseType.PAINTING;
+		otherList[n3++] = DisguiseType.PLAYER;
+		otherList[n3++] = DisguiseType.PRIMED_TNT;
+		otherList[n3++] = DisguiseType.SMALL_FIREBALL;
+		otherList[n3++] = DisguiseType.SNOWBALL;
+		otherList[n3++] = DisguiseType.SPLASH_POTION;
+		otherList[n3++] = DisguiseType.THROWN_EXP_BOTTLE;
+		otherList[n3++] = DisguiseType.VILLAGER;
+		otherList[n3++] = DisguiseType.WOLF;
+	}
+	private static Set<DisguiseType> otherDisguiseTypes = new HashSet<DisguiseType>(Arrays.asList(otherList));
 
 	public LibsDisguisesCompat() {
 		if (MobHunting.getConfigManager().disableIntegrationLibsDisguises) {
@@ -68,38 +170,22 @@ public class LibsDisguisesCompat implements Listener {
 		return DisguiseAPI.isDisguised(entity);
 	}
 
-	private static final DisguiseType aggresiveList[] = { DisguiseType.ZOMBIE, DisguiseType.BLAZE,
-			DisguiseType.CAVE_SPIDER, DisguiseType.CREEPER, DisguiseType.ELDER_GUARDIAN, DisguiseType.ENDER_DRAGON,
-			DisguiseType.ENDERMAN, DisguiseType.ENDERMITE, DisguiseType.GHAST, DisguiseType.GIANT,
-			DisguiseType.GUARDIAN, DisguiseType.PIG_ZOMBIE, DisguiseType.SKELETON, DisguiseType.SLIME,
-			DisguiseType.SPIDER, DisguiseType.WITCH, DisguiseType.WITHER, DisguiseType.WITHER_SKELETON,
-			DisguiseType.WITHER_SKULL, DisguiseType.ZOMBIE, DisguiseType.ZOMBIE_VILLAGER, DisguiseType.HUSK,
-			DisguiseType.STRAY, DisguiseType.POLAR_BEAR, DisguiseType.VEX, DisguiseType.EVOKER,
-			DisguiseType.VINDICATOR };
-	// TODO: Shulker not supported in Libsdisguises???
-
-	public static final Set<DisguiseType> aggresiveMobs = new HashSet<DisguiseType>(Arrays.asList(aggresiveList));
-
-	private static final DisguiseType passiveList[] = { DisguiseType.BAT, DisguiseType.CHICKEN, DisguiseType.COW,
-			DisguiseType.DONKEY, DisguiseType.HORSE, DisguiseType.IRON_GOLEM, DisguiseType.MAGMA_CUBE,
-			DisguiseType.MULE, DisguiseType.MUSHROOM_COW, DisguiseType.OCELOT, DisguiseType.PIG, DisguiseType.RABBIT,
-			DisguiseType.SHEEP, DisguiseType.SILVERFISH, DisguiseType.SKELETON_HORSE, DisguiseType.SNOWMAN,
-			DisguiseType.SQUID };
-	public static final Set<DisguiseType> passiveMobs = new HashSet<DisguiseType>(Arrays.asList(passiveList));
-
-	private static final DisguiseType otherList[] = { DisguiseType.ARMOR_STAND, DisguiseType.ARROW, DisguiseType.BOAT,
-			DisguiseType.DROPPED_ITEM, DisguiseType.EGG, DisguiseType.ENDER_CRYSTAL, DisguiseType.ENDER_PEARL,
-			DisguiseType.ENDER_SIGNAL, DisguiseType.EXPERIENCE_ORB, DisguiseType.FALLING_BLOCK, DisguiseType.FIREBALL,
-			DisguiseType.FIREWORK, DisguiseType.FISHING_HOOK, DisguiseType.ITEM_FRAME, DisguiseType.LEASH_HITCH,
-			DisguiseType.MINECART, DisguiseType.MINECART_CHEST, DisguiseType.MINECART_COMMAND,
-			DisguiseType.MINECART_FURNACE, DisguiseType.MINECART_HOPPER, DisguiseType.MINECART_MOB_SPAWNER,
-			DisguiseType.MINECART_TNT, DisguiseType.PAINTING, DisguiseType.PLAYER, DisguiseType.PRIMED_TNT,
-			DisguiseType.SMALL_FIREBALL, DisguiseType.SNOWBALL, DisguiseType.SPLASH_POTION,
-			DisguiseType.THROWN_EXP_BOTTLE, DisguiseType.VILLAGER, DisguiseType.WOLF };
-	public static final Set<DisguiseType> otherDisguiseTypes = new HashSet<DisguiseType>(Arrays.asList(otherList));
-
 	public static boolean isAggresiveDisguise(Entity entity) {
 		if (aggresiveMobs.contains(DisguiseAPI.getDisguise(entity).getType()))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isPassiveDisguise(Entity entity) {
+		if (passiveMobs.contains(DisguiseAPI.getDisguise(entity).getType()))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isOtherDisguise(Entity entity) {
+		if (otherDisguiseTypes.contains(DisguiseAPI.getDisguise(entity).getType()))
 			return true;
 		else
 			return false;

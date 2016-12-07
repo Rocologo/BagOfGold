@@ -70,7 +70,6 @@ public class CitizensCompat implements Listener {
 			saveCitizensData();
 
 			// wait x seconds or until Citizens is fully loaded.
-			// TODO: wait until MasterMobHunterTrait is loaded.
 			Bukkit.getScheduler().scheduleSyncDelayedTask(MobHunting.getInstance(), new Runnable() {
 				public void run() {
 					masterMobHunterManager.initialize();
@@ -105,7 +104,7 @@ public class CitizensCompat implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void saveCitizensData() {
@@ -193,12 +192,11 @@ public class CitizensCompat implements Listener {
 	}
 
 	public static boolean isSentryOrSentinel(Entity entity) {
-		if (CitizensAPI.getNPCRegistry().isNPC(entity))
+		if (isNPC(entity))
 			return CitizensAPI.getNPCRegistry().getNPC(entity)
 					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
 					|| CitizensAPI.getNPCRegistry().getNPC(entity)
 							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
-		                                                 //TODO: is it "sentinel" or "Sentinel"
 		else
 			return false;
 	}
@@ -222,9 +220,8 @@ public class CitizensCompat implements Listener {
 			if (isSentryOrSentinel(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
-					mMobRewardData.put(String.valueOf(npc.getId()),
-							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "10",
-									"give {player} iron_sword 1", "You got an Iron sword.", 1));
+					mMobRewardData.put(String.valueOf(npc.getId()), new MobRewardData(MobPlugin.Citizens, "npc",
+							npc.getFullName(), "10", "give {player} iron_sword 1", "You got an Iron sword.", 1));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}
@@ -273,13 +270,12 @@ public class CitizensCompat implements Listener {
 	private void onNPCSpawnEvent(NPCSpawnEvent event) {
 		NPC npc = event.getNPC();
 		if (npc.getId() == event.getNPC().getId()) {
-			Messages.debug("NPCSpawnEvent: %s spawned",npc.getName());
+			Messages.debug("NPCSpawnEvent: %s spawned", npc.getName());
 			if (isSentryOrSentinel(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
-					mMobRewardData.put(String.valueOf(npc.getId()),
-							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
-									"give {player} iron_sword 1", "You got an Iron sword.", 0));
+					mMobRewardData.put(String.valueOf(npc.getId()), new MobRewardData(MobPlugin.Citizens, "npc",
+							npc.getFullName(), "0", "give {player} iron_sword 1", "You got an Iron sword.", 0));
 					saveCitizensData(String.valueOf(npc.getId()));
 					MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
 				}

@@ -530,45 +530,4 @@ public class BountyManager implements Listener {
 		}
 	}
 
-	// ***********************************************************
-	// TEST DATA
-	// ***********************************************************
-	@SuppressWarnings("deprecation")
-	private void addTestData() {
-		OfflinePlayer p1 = Bukkit.getOfflinePlayer("Gabriel333");
-		OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
-		OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
-
-		Messages.debug("Loading p1,p2,p3 from database");
-		loadOpenBounties(p1);
-		loadOpenBounties(p2);
-		loadOpenBounties(p3);
-
-		MobHunting.getInstance().getServer().getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
-			public void run() {
-
-				OfflinePlayer p1 = Bukkit.getOfflinePlayer("Gabriel333");
-				OfflinePlayer p2 = Bukkit.getOfflinePlayer("JeansenDK");
-				OfflinePlayer p3 = Bukkit.getOfflinePlayer("MrDanielBoy");
-
-				Bounty b1 = new Bounty("Default", p3, p2, 101, "he he he");
-				Bounty b2 = new Bounty("Default", p3, p1, 102, "ho ho ho");
-				Bounty b3 = new Bounty("Default", p2, p3, 200, "ha ha ha");
-				Bounty b4 = new Bounty("Default", p1, p3, 300, "hi hi hi");
-
-				Messages.debug("BountyManager AddTestData if not exist. Adding b1,b2,b3,b4 size=%s",
-						mOpenBounties.size());
-				if (!hasBounty(b1))
-					addBounty(b1);
-				if (!hasBounty(b2))
-					addBounty(b2);
-				if (!hasBounty(b3))
-					addBounty(b3);
-				if (!hasBounty(b4))
-					addBounty(b4);
-			}
-		}, 300L);
-
-	}
-
 }

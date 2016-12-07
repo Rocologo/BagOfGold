@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting;
+package one.lindegaard.MobHunting.bounty;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 
 /**
  * @author christian

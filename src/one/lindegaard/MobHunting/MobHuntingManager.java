@@ -1050,8 +1050,6 @@ public class MobHuntingManager implements Listener {
 					b.setStatus(BountyStatus.completed);
 					MobHunting.getDataStoreManager().updateBounty(b);
 				}
-				// OBS: Bounty will be added to the Reward for killing/Robbing
-				// the player
 				Messages.playerActionBarMessage(killer, Messages.getString("mobhunting.moneygain-for-killing", "money",
 						MobHunting.getRewardManager().format(reward), "killed", killed.getName()));
 				Messages.debug("%s got %s for killing %s", killer.getName(), reward, killed.getName());

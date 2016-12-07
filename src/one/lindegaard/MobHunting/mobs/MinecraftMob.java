@@ -24,6 +24,7 @@ import one.lindegaard.MobHunting.util.Misc;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Villager.Profession;
 
+@SuppressWarnings("deprecation")
 public enum MinecraftMob {
 	// PlayerName and texture can be found here:
 	// http://heads.freshcoal.com/index.php
@@ -52,11 +53,40 @@ public enum MinecraftMob {
 			"eyJ0aW1lc3RhbXAiOjE0ODEwMzk2MjM3NDQsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzBlNjZmZTIwZjMxMWViM2RlY2M2NDIwYWQyODFmY2FmMWQ2NmZmOTNkNDZhYTlkNWVjMzlmMmExMWUwMTAifX19",
 			"DgmiKAGFGayI10LI9vYr2G9y7uJnaXDErTTMSBdxzMHcNTn1ExzIHp+zwqX5rZf24fXHUC7neZC5Nx6qP9JhM9Z6uP+1f2qyviY9OQpsPUgEH6f8AtKAZyWa3Nlyrregc0i1N2X6y81UuNaBF8f92gGfCuOj55KenDaHg4YcbojOx4c+2AjeUs1tHDTI9hXtQMIrzHJfh3z+LkU1Zgfv1qcVtEfdVZiNGk6DK+llzZdjGSH1vTJCRD16iCkw8vB49VQ2YnB1GUdN7vVpUlCMP2hUavjcYFORxie+wjQsZt6oXrrU9rJsMPUBb1EDdlrDwjZd742NUHzyp8i4VuaRXCTyXC41Pwypc5PFZWedz81wKqrAKMf27RvvMcbkerHN0KYGqgHBZql430Eur/ZZUsw5PCWz8teQ4YEDkQcslnyVXI1oM5lmf1B9Y8T2e7r5sicnkizBzJoRRD6I3p9H0Y8G1OfLgC+qD3E39MSNx4noPh6HkTr99uw566Wj5FBosRr49BrM/y3h7rMI09XYh+sZmz4yQluWBVyNBq90sh9/4RFJMfkiJlxvNWsoYtYuUqUb4wSEzOMpQacmZQ8REZg9blQ6LYutfuKCDa3HQnstT5qQJvZ2KKRWIQbqRYQq8pG+IKVAGRf/9dRKnmqbhJ0myng+DggvS8p0QHCLGK0="),
 
-	// Nitwit Villager
-	Nitwit("NITWIT", "", "", "Nitwit Head", "", ""),
+	// Farmer Villager
+	Farmer("FARMER", "MHF_Villager", "f2a6abd1-2337-36ba-8534-bed9c649db29", "Farmer",
+			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
+
+	// Librarian Villager
+	Librarian("LIBRARIAN", "MHF_Villager", "f2a6abd1-2337-36ba-8534-bed9c649db29", "Librarian",
+			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
+
+	// Butcher Villager
+	Butcher("BUTCHER", "MHF_Villager", "f2a6abd1-2337-36ba-8534-bed9c649db29", "Butcher",
+			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
+
+	// Blacksmith Villager
+	Blacksmith("BLACKSMITH", "MHF_Villager", "f2a6abd1-2337-36ba-8534-bed9c649db29", "Blacksmith",
+			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
+
+	// Priest Villager
+	Priest("PRIEST", "MHF_Villager", "f2a6abd1-2337-36ba-8534-bed9c649db29", "Priest",
+			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
 
 	// Nitwit Villager
-	Cartographer("CARTOGRAFER", "", "", "Cartographer Head", "", ""),
+	Nitwit("NITWIT", "MHF_Villager", "f2a6abd1-2337-36ba-8534-bed9c649db29", "Nitwit",
+			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
+
+	// Cartographer Villager
+	Cartographer("CARTOGRAFER", "MHF_Villager", "f2a6abd1-2337-36ba-8534-bed9c649db29", "Cartographer",
+			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
 
 	// Donkey
 	Donkey("DONKEY", "Donkey", "5464dd67-5a46-4239-862f-b27b4944442c", "Donkey",
@@ -134,11 +164,9 @@ public enum MinecraftMob {
 	// Minecraft 1.7
 	// ******************************************************************
 	// Slime
-	// give @p skull 1 3
-	// {display:{Name:"Slime"},SkullOwner:{Id:"9aca565d-105c-4e8c-81fc-740545cb74b2",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTZhZDIwZmMyZDU3OWJlMjUwZDNkYjY1OWM4MzJkYTJiNDc4YTczYTY5OGI3ZWExMGQxOGM5MTYyZTRkOWI1In19fQ=="}]}}}
-	Slime("SLIME", "MHF_Slime", "9aca565d-105c-4e8c-81fc-740545cb74b2", "Slime Head",
-			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTZhZDIwZmMyZDU3OWJlMjUwZDNkYjY1OWM4MzJkYTJiNDc4YTczYTY5OGI3ZWExMGQxOGM5MTYyZTRkOWI1In19fQ==",
-			""),
+	Slime("SLIME", "MHF_Slime", "3c9a8292-0fa7-4e7c-8413-2bcb15968204", "Slime",
+			"eyJ0aW1lc3RhbXAiOjE0ODExMDgyMDY3NDUsInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmEyMWY1ZGIwYjZjZGJlOWMwMzBjNWVmYTBmZjQxM2VkYzJjOWU5NjQ2Y2YzMmExZDljOGVkZjNlYTE1YSJ9fX0=",
+			"MP6+fwPcpTRINaamAGw52ESS04OOhwwcIPT1645NBTK235Zs6DuBfM7RXVF2EuYge9kTpkBAoo8E2CtxDH/D6ZkwyCHTqURkX0WqlIFe/33hKmxC75ISSuVUOVAzHdCsty0EsONDGPLxyGtcFIbFVpT2JI0uCMbfpmn/0x1kebmj8XwfwgGdm/Dy+BRauqMiXfIT0Bj8+fm4g2/zQDB+9rjnDi4EiU3xuNei8tJy/2wz/uNHYD1RfbKU8OcIHd7EoH7gZCCBeKoX73/fLKY6rJRVultvmJ/k/XqYgJ+l4T7apwOy15tU3sjQUa778hVj7xa51MN/J4n0NIO+8r+sZhisPO9AJg48nvVIzro8QIuSwrZhdieaLxzaEHaG09QLywEcWuCv1+kF30IOS1CnwMelQ+b1ef5P6eWW0eIkWMCzNhlGGEQxkph/hjiePzknJH5A2pNjOBmxqIQDsoi9O22LCnWNsOosddi4B4hv4u1wV/EJB9PCQQe6x49OGiDcXcCgCM6wVagile/OoPgWPoA4EqggIrioipT0ueMHd2IYE5JRZlr46kTRaIOrGCsICy2kRCsfWRZre7iYKmD9qYPTSy4EeoRENn368TjZUjNiTVZoITtvcCQlkWOY/c+/ZmYng9nwL6hAGTLislmFhm2dgv96KvDa8HdfcHDq+1s="),
 	// MagmaCube
 	MagmaCube("MAGMA_CUBE", "MHF_LavaSlime", "4b68c0b9-efe5-3c57-a14a-4062f8de7bbc", "Lava Slime",
 			"eyJ0aW1lc3RhbXAiOjE0NjczMTI5NjExNTUsInByb2ZpbGVJZCI6IjQzYTgzNzNkNjQyOTQ1MTBhOWFhYjMwZjViM2NlYmIzIiwicHJvZmlsZU5hbWUiOiJTa3VsbENsaWVudFNraW42Iiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xNWZmNjhlYzRmM2MxYWNkNGU5Njk3YTI0NTM2YjZhZjQ0ZWJjNzE2N2M0MzQxYWE0YmNjODA0MzM5ZjQxNzUwIn19fQ==",
@@ -148,11 +176,9 @@ public enum MinecraftMob {
 			"eyJ0aW1lc3RhbXAiOjE0NjczMTI4OTc0MzMsInByb2ZpbGVJZCI6ImRhNzQ2NWVkMjljYjRkZTA5MzRkOTIwMTc0NDkxMzU1IiwicHJvZmlsZU5hbWUiOiJJc2F5bGEiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2ZmZDY4ODZmZjUxMzViYWNkYzdhMjFjOWRiZDI0MmMwZGNhNWIyOWJiYTIyYmFjY2E0MjdhZjA1NDM1ZGU5In19fQ==",
 			"rd9YOwZBlDsPxJKh0tqY5+23c6d52fzzLdwZ3c/zIQlTVtn7EVd3OBZaObtB+Xpx8yxjVmmTc5bhV3YFrGraI66HyfG3osLGzTKeZHatSSHZ/ZHxsnU1acmii5RAzUbqWzKhBeCS10yOzut78v/Izn1xSrtsuPKjSyLtuCuV9y3l8O4QNlwgjlKS5w5Kr5m1B8V21ShL7QOXbkzZxzWUBYejeeO85Of7Lad10t+1Rokq6+5UEzaJUQH/YTm/fv+2hNF+iA9euaiZ1XP8Zx1V8gg7SWojvVMuWIcRq4LveXcag0+8bf2mmK1/oW/vyzUyHUWJ2Pk4mS92BYYO1h/qGQXNraV+7IKAbX75BOEL4I4MMjkx/30JlaHGrE8eg3H7HK1UgCagiaTgdKnrg0OVOSXIV66Rx8wHD0eiHdjvApqc5hbX+q5nMPCSihdm/GcW0BOti5nrxzkRkevC03eZzrUHaJ4j72H6naj//Iw3h2whqtpmuP+0UDSf9267hdZDI5SVi408usA6be2MRsglJBk4DxPNZJ9lKwTytZP8+UsfRmHvrz6iIncDP0LRXvvuco8tlZmBtuR2AzSpDvI6zC9iEfEhJNC1psjxdG87d4DDU6QtmrrleFBEA9lkMQTd5G7+l4llvX+5PjxWnejeq6DofK4KBwGRZj0+0Mp0SlI="),
 	// Blaze
-	// give @p skull 1 3
-	// {display:{Name:"Blaze"},SkullOwner:{Id:"0432ca66-5c5e-48fa-910e-851e0452683e",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4ZWYyZTRjZjJjNDFhMmQxNGJmZGU5Y2FmZjEwMjE5ZjViMWJmNWIzNWE0OWViNTFjNjQ2Nzg4MmNiNWYwIn19fQ=="}]}}}
-	Blaze("BLAZE", "MHF_Blaze", "0432ca66-5c5e-48fa-910e-851e0452683e", "Blaze Head",
-			"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4ZWYyZTRjZjJjNDFhMmQxNGJmZGU5Y2FmZjEwMjE5ZjViMWJmNWIzNWE0OWViNTFjNjQ2Nzg4MmNiNWYwIn19fQ==",
-			""),
+	Blaze("BLAZE", "MHF_Blaze", "3c9a8292-0fa7-4e7c-8413-2bcb15968204", "Blaze",
+			"eyJ0aW1lc3RhbXAiOjE0ODExMDgzMTk4NjEsInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzU2NTg2ODlkMmQ2MWE3YTc1YjRmNWM0MTkyZTg5OWVjYWMxNmEwOGZmNDE2ZDk5NWY1YzEwYzc3YWEifX19",
+			"okbpQ6hIIpOKG1mKTnmiNrx14cpeOogmz0jbDJ4RQLzSyfW/yAhvzeIeI1qZa2TuMlfheiSsY+wU+TPdu2v61mycYnxglj4tj+/P5wXWV43QogZTCnvn4BEifMz/IBZKhbxdTJuDaSz1BEiLjAi10M8JFzF6Cl5hTTmeyBFVE502p7xUEbi0+4mYABTLxyZhwR/Uz9ziR3ZvVAzLB6SLLOxlqBPeUa72ic69xh/fW7BA15CQTZ9NGTxHvJ2nImELUjdQ5eCL9q9K4dke46MTgvz9AYD4t66n/nLPPRaFsKKG/WG1LTsBTctMUbiS2hYfGQh0cTK2zz9BhxD6iSj6c/QawWL3dN1ot0MPLRPdTw58DMPnWVec2ixgjnbd4ja2cSj8cyDF0S1YtMwVk2JE7apgx5xDcyByuJRoCtRHcZQ9lbLKK+znNFDM+ymIvcM2v+itMDf/kdz/410ecmPZO0pSwlUvJ10+C7uhfeYyN4v2cFZr3WucLxp/zh/dglneSfWyC3i/OdeXEk7k7JFBQw7BlEYHo/gPbj/qJBU5EPwOsvZcZcRxVgtcBqhr8FwvX7T1d1Pbz9NaMpNg8B4CCg2SJ5RYt040ST/PA0JaF33DvTgx0Bpm43pxRKSm9k58wzbtphGa58BCx2x9WH1hneVOkbbpjrr/eNw575YKTLI="),
 	// Creeper
 	Creeper("CREEPER", "MHF_Creeper", "881b4521-6159-3566-9ff2-acba3b6fe8c9", "Creeper",
 			"eyJ0aW1lc3RhbXAiOjE0NjczMTAyMjU0OTYsInByb2ZpbGVJZCI6ImM5YjFmYTJiNjhkMjQ3N2U4NzgxYTYwNjMwMWIzMmFiIiwicHJvZmlsZU5hbWUiOiJBbnRob255OTE5MCIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjk1ZWY4MzYzODlhZjk5MzE1OGFiYTI3ZmYzN2I2NTY3MTg1ZjdhNzIxY2E5MGZkZmViOTM3YTdjYjU3NDcifX19",
@@ -428,6 +454,16 @@ public enum MinecraftMob {
 			return MobHunting.getConfigManager().skeletonHorseLevel1;
 		case ZombieVillager:
 			return MobHunting.getConfigManager().zombieVillagerLevel1;
+		case Blacksmith:
+			return MobHunting.getConfigManager().blacksmithLevel1;
+		case Butcher:
+			return MobHunting.getConfigManager().butcherLevel1;
+		case Farmer:
+			return MobHunting.getConfigManager().farmerLevel1;
+		case Librarian:
+			return MobHunting.getConfigManager().librarianLevel1;
+		case Priest:
+			return MobHunting.getConfigManager().priestLevel1;
 		}
 		return 100;
 	}
@@ -456,23 +492,15 @@ public enum MinecraftMob {
 				return entity instanceof org.bukkit.entity.SkeletonHorse;
 			else if (this == ElderGuardian)
 				return entity instanceof org.bukkit.entity.ElderGuardian;
-			else if (this == Villager)
-				return entity instanceof org.bukkit.entity.Villager;
 			else if (this == ZombieVillager)
 				return entity instanceof ZombieVillager;
 			else if (this == WitherSkeleton)
 				return entity instanceof org.bukkit.entity.WitherSkeleton;
+			else if (this == Nitwit)
+				return entity instanceof org.bukkit.entity.Villager
+						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.NITWIT);
 
-		// && ((ZombieVillager) entity).getVillagerProfession() == null;
-
-		// else if (this == Zombie)
-		// return entity instanceof org.bukkit.entity.Zombie
-		// && ((Zombie) entity).getVillagerProfession() == null;
-
-		// else if (this == Nitwit)
-		// return entity instanceof org.bukkit.entity.ZombieVillager &&
-		// ((org.bukkit.entity.ZombieVillager) entity).);
-		// TODO: Villagers: Nitwit, Cartographer, Buther, Liberian, Farmer
+		// TODO: Villagers: Cartographer
 
 		if (Misc.isMC110OrNewer())
 			if (this == PolarBear)
@@ -481,6 +509,25 @@ public enum MinecraftMob {
 				return entity instanceof Skeleton && (((Skeleton) entity).getSkeletonType() == SkeletonType.STRAY);
 			else if (this == Husk)
 				return entity instanceof Zombie && ((Zombie) entity).getVillagerProfession() == Profession.HUSK;
+			else if (this == Villager)
+				return entity instanceof org.bukkit.entity.Villager
+						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.NORMAL);
+			else if (this == Butcher)
+				return entity instanceof org.bukkit.entity.Villager
+						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.BUTCHER);
+			else if (this == Blacksmith)
+				return entity instanceof org.bukkit.entity.Villager
+						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.BLACKSMITH);
+			else if (this == Priest)
+				return entity instanceof org.bukkit.entity.Villager
+						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.PRIEST);
+			else if (this == Farmer)
+				return entity instanceof org.bukkit.entity.Villager
+						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.FARMER);
+			else if (this == Librarian)
+				return entity instanceof org.bukkit.entity.Villager
+						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.LIBRARIAN);
+
 		if (Misc.isMC19OrNewer())
 			if (this == Shulker)
 				return entity instanceof org.bukkit.entity.Shulker;
@@ -543,9 +590,6 @@ public enum MinecraftMob {
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
 		case EnderDragon:
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
-		case Blaze:
-		case Slime:
-			return getSkullFromPlayerProfileName(mPlayerProfileName);
 		default:
 			return getCustomProfileHead();
 		}
@@ -567,12 +611,12 @@ public enum MinecraftMob {
 	}
 
 	/**
-	 * getHead - get a customTextureHeads. If Mojang changes the way they
-	 * calculate Signatures this method will stop working
+	 * Return an ItemStack with a custom texture. If Mojang changes the way they
+	 * calculate Signatures this method will stop working.
 	 * 
-	 * @return ItemStack with custom skin.
+	 * @return ItemStack with custom texture.
 	 */
-	public ItemStack getCustomProfileHead() {
+	private ItemStack getCustomProfileHead() {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
@@ -589,6 +633,7 @@ public enum MinecraftMob {
 			profileField = skullMeta.getClass().getDeclaredField("profile");
 		} catch (NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
+			return skull;
 		}
 
 		profileField.setAccessible(true);
@@ -613,27 +658,7 @@ public enum MinecraftMob {
 		switch (this) {
 		case PvpPlayer:
 		case Blaze:
-		case CaveSpider:
-		case Chicken:
-		case Cow:
-		case Creeper:
-		case Enderman:
-		case Ghast:
-		case IronGolem:
-		case MagmaCube:
 		case Slime:
-		case MushroomCow:
-		case Ocelot:
-		case Pig:
-		case Sheep:
-		case PassiveRabbit:
-		case Shulker:
-		case Skeleton:
-		case Spider:
-		case Squid:
-		case WitherSkeleton:
-		case Zombie:
-		case ZombiePigman:
 			return "minecraft:give {player} skull {amount} 3 {SkullOwner:\"{playername}\",display:{Name:\"{displayname}\",Lore:[{lore}]}}";
 		default:
 			return "minecraft:give {player} skull {amount} 3 {SkullOwner:{Id:\"{playerid}\",Properties:{textures:[{Value:\"{texturevalue}\"}]}},display:{Name:\"{displayname}\",Lore:[{lore}]}}";

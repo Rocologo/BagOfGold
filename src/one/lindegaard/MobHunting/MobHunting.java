@@ -3,6 +3,7 @@ package one.lindegaard.MobHunting;
 import java.io.File;
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.BountyManager;
+import one.lindegaard.MobHunting.bounty.WorldGroup;
 import one.lindegaard.MobHunting.commands.BountyCommand;
 import one.lindegaard.MobHunting.commands.CheckGrindingCommand;
 import one.lindegaard.MobHunting.commands.ClearGrindingCommand;
@@ -88,9 +89,6 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	private boolean mInitialized = false;
 
-	// TODO: Remove this when SQL Database connections is stable. (After V3.2.5)
-	public static int openConnections = 0;
-
 	@Override
 	public void onLoad() {
 	}
@@ -146,7 +144,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 			mPlayerSettingsManager = new PlayerSettingsManager();
 
-			// Handle compatability stuff
+			// Handle compatibility stuff
 			registerPlugin(EssentialsCompat.class, "Essentials");
 			registerPlugin(GringottsCompat.class, "Gringotts");
 

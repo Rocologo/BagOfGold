@@ -35,6 +35,7 @@ public class MasterMobHunterTrait extends Trait implements Listener {
 	@Persist("rank") int rank = 1;
 	@Persist("noOfKills") int noOfKills = 0;
 	@Persist("signLocations") List<Location> signLocations = new ArrayList<Location>();
+	@Persist("home") Location home = null;
 
 		//@Persist("mysettingname")
 	//boolean automaticallyPersistedSetting = false;

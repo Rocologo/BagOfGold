@@ -257,16 +257,24 @@ mobs.Shulker.name=Shulker
 mobs.PolarBear.name=Polar Bear
 mobs.Stray.name=Stray
 mobs.Husk.name=Husk
-mobs.Nitwit.name=Nitwit
 mobs.Vindicator.name=Vindicator
 mobs.Llama.name=Llama
 mobs.ZombieHorse.name=ZombieHorse
 mobs.Donkey.name=Donkey
 mobs.Vex.name=Vex
 mobs.Evoker.name=Evoker
-mobs.Cartographer.name=Cartographer
 mobs.SkeletonHorse.name=SkeletonHorse
 mobs.Mule.name=Mule
+
+mobs.Villager.name=Villager
+mobs.Farmer.name=Farmer
+mobs.Librarian.name=Librarian
+mobs.Priest.name=Priest
+mobs.Blacksmith.name=Blacksmith
+mobs.Butcher.name=Butcher
+mobs.Nitwit.name=Nitwit
+mobs.Cartographer.name=Cartographer
+
 mobs.Bat.name=Bat
 mobs.Chicken.name=Chicken
 mobs.Cow.name=Cow
@@ -277,7 +285,6 @@ mobs.Pig.name=Pig
 mobs.Sheep.name=Sheep
 mobs.Snowman.name=Snowman
 mobs.Squid.name=Squid
-mobs.Villager.name=Villager
 mobs.Wolf.name=Wolf
 
 

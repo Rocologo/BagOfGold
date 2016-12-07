@@ -352,7 +352,7 @@ public class MasterMobHunterSign implements Listener {
 											new FixedMetadataValue(MobHunting.getInstance(),
 													((org.bukkit.block.Sign) event.getClickedBlock().getState())
 															.getLine(0)));
-									mmh.putLocation(event.getClickedBlock().getLocation());
+									mmh.putSignLocation(event.getClickedBlock().getLocation());
 									MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
 								}
 								((org.bukkit.block.Sign) event.getClickedBlock().getState()).setLine(1,
@@ -430,7 +430,7 @@ public class MasterMobHunterSign implements Listener {
 							sb.setMetadata(MH_SIGN, new FixedMetadataValue(MobHunting.getInstance(), event.getLine(0)));
 							((Sign) sb.getState()).setMetadata(MH_SIGN, new FixedMetadataValue(MobHunting.getInstance(),
 									((org.bukkit.block.Sign) sb.getState()).getLine(0)));
-							mmh.putLocation(sb.getLocation());
+							mmh.putSignLocation(sb.getLocation());
 							MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
 							Messages.playerActionBarMessage(player,
 									player.getName() + " placed a MobHunting Sign (ID=" + id + ")");

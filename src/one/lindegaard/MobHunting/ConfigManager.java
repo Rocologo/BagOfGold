@@ -593,7 +593,52 @@ public class ConfigManager extends AutoConfig {
 	public String nitwitCmdDesc = "";
 	@ConfigField(name = "nitwit-cmd-run-chance", category = "villager")
 	public double nitwitCmdRunChance = 1.00;
-	
+
+	@ConfigField(name = "farmer", category = "villager")
+	public String farmerPrize = "1:2";
+	@ConfigField(name = "farmer-cmd", category = "villager")
+	public String farmerCmd = "";
+	@ConfigField(name = "farmer-cmd-desc", category = "villager")
+	public String farmerCmdDesc = "";
+	@ConfigField(name = "farmer-cmd-run-chance", category = "villager")
+	public double farmerCmdRunChance = 1.00;
+
+	@ConfigField(name = "priest", category = "villager")
+	public String priestPrize = "1:2";
+	@ConfigField(name = "priest-cmd", category = "villager")
+	public String priestCmd = "";
+	@ConfigField(name = "priest-cmd-desc", category = "villager")
+	public String priestCmdDesc = "";
+	@ConfigField(name = "priest-cmd-run-chance", category = "villager")
+	public double priestCmdRunChance = 1.00;
+
+	@ConfigField(name = "blacksmith", category = "villager")
+	public String blacksmithPrize = "1:2";
+	@ConfigField(name = "blacksmith-cmd", category = "villager")
+	public String blacksmithCmd = "";
+	@ConfigField(name = "blacksmith-cmd-desc", category = "villager")
+	public String blacksmithCmdDesc = "";
+	@ConfigField(name = "blacksmith-cmd-run-chance", category = "villager")
+	public double blacksmithCmdRunChance = 1.00;
+
+	@ConfigField(name = "butcher", category = "villager")
+	public String butcherPrize = "1:2";
+	@ConfigField(name = "butcher-cmd", category = "villager")
+	public String butcherCmd = "";
+	@ConfigField(name = "butcher-cmd-desc", category = "villager")
+	public String butcherCmdDesc = "";
+	@ConfigField(name = "butcher-cmd-run-chance", category = "villager")
+	public double butcherCmdRunChance = 1.00;
+
+	@ConfigField(name = "librarian", category = "villager")
+	public String librarianPrize = "1:2";
+	@ConfigField(name = "librarian-cmd", category = "villager")
+	public String librarianCmd = "";
+	@ConfigField(name = "librarian-cmd-desc", category = "villager")
+	public String librarianCmdDesc = "";
+	@ConfigField(name = "librarian-cmd-run-chance", category = "villager")
+	public double librarianCmdRunChance = 1.00;
+
 	@ConfigField(name = "villager", category = "villager")
 	public String villagerPrize = "1";
 	@ConfigField(name = "villager-cmd", category = "villager")
@@ -604,7 +649,7 @@ public class ConfigManager extends AutoConfig {
 	public int villagerFequency = 0;
 	@ConfigField(name = "villager-cmd-run-frequency-base", category = "villager")
 	public int villagerFrequencyBase = 100;
-	
+
 	@ConfigField(name = "zombie-villager", category = "villager")
 	public String zombieVillagerPrize = "1:2";
 	@ConfigField(name = "zombie-villager-cmd", category = "villager")
@@ -613,8 +658,7 @@ public class ConfigManager extends AutoConfig {
 	public String zombieVillagerCmdDesc = "";
 	@ConfigField(name = "zombie-villager-cmd-run-chance", category = "villager")
 	public double zombieVillagerCmdRunChance = 1.00;
-	
-	
+
 	// #####################################################################################
 	// Passive Mobs
 	// #####################################################################################
@@ -1084,6 +1128,16 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "nitwit_level1", category = "achievement_levels")
 	public int nitwitLevel1 = 100;
 
+	@ConfigField(name = "farmer_level1", category = "achievement_levels")
+	public int farmerLevel1 = 100;
+	@ConfigField(name = "librarian_level1", category = "achievement_levels")
+	public int librarianLevel1 = 100;
+	@ConfigField(name = "priest_level1", category = "achievement_levels")
+	public int priestLevel1 = 100;
+	@ConfigField(name = "butcher_level1", category = "achievement_levels")
+	public int butcherLevel1 = 100;
+	@ConfigField(name = "blacksmith_level1", category = "achievement_levels")
+	public int blacksmithLevel1 = 100;
 	@ConfigField(name = "donkey_level1", category = "achievement_levels")
 	public int donkeyLevel1 = 100;
 
@@ -1107,7 +1161,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "skeletonhorse_level1", category = "achievement_levels")
 	public int skeletonHorseLevel1 = 100;
-	
+
 	@ConfigField(name = "zombie_villager_level1", category = "achievement_levels")
 	public int zombieVillagerLevel1 = 100;
 
@@ -1586,8 +1640,9 @@ public class ConfigManager extends AutoConfig {
 					return getPrice(mob, MobHunting.getConfigManager().huskPrize);
 				else if (mob instanceof ZombieVillager)
 					return getPrice(mob, MobHunting.getConfigManager().zombieVillagerPrize);
-			//TODO: Villagers
-				
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NITWIT)
+					return getPrice(mob, MobHunting.getConfigManager().nitwitPrize);
+
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
 					return getPrice(mob, MobHunting.getConfigManager().polarBearPrize);
@@ -1595,6 +1650,18 @@ public class ConfigManager extends AutoConfig {
 					return getPrice(mob, MobHunting.getConfigManager().strayPrize);
 				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
 					return getPrice(mob, MobHunting.getConfigManager().huskPrize);
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NORMAL)
+					return getPrice(mob, MobHunting.getConfigManager().villagerPrize);
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.PRIEST)
+					return getPrice(mob, MobHunting.getConfigManager().priestPrize);
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BUTCHER)
+					return getPrice(mob, MobHunting.getConfigManager().butcherPrize);
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BLACKSMITH)
+					return getPrice(mob, MobHunting.getConfigManager().blacksmithPrize);
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.LIBRARIAN)
+					return getPrice(mob, MobHunting.getConfigManager().librarianPrize);
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.FARMER)
+					return getPrice(mob, MobHunting.getConfigManager().farmerPrize);
 
 			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
@@ -1786,9 +1853,9 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().huskCmd;
 				else if (mob instanceof ZombieVillager)
 					return MobHunting.getConfigManager().zombieVillagerCmd;
-			//TODO: Villagers
-				
-			
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NITWIT)
+					return MobHunting.getConfigManager().nitwitCmd;
+
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
 					return MobHunting.getConfigManager().polarBearCmd;
@@ -1796,6 +1863,18 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().strayCmd;
 				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
 					return MobHunting.getConfigManager().huskCmd;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NORMAL)
+					return MobHunting.getConfigManager().villagerCmd;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.PRIEST)
+					return MobHunting.getConfigManager().priestCmd;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BUTCHER)
+					return MobHunting.getConfigManager().butcherCmd;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BLACKSMITH)
+					return MobHunting.getConfigManager().blacksmithCmd;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.LIBRARIAN)
+					return MobHunting.getConfigManager().librarianCmd;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.FARMER)
+					return MobHunting.getConfigManager().farmerCmd;
 
 			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
@@ -1941,8 +2020,9 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().huskCmdDesc;
 				else if (mob instanceof ZombieVillager)
 					return MobHunting.getConfigManager().zombieVillagerCmdDesc;
-			//TODO: Villagers
-			
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NITWIT)
+					return MobHunting.getConfigManager().nitwitCmdDesc;
+
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
 					return MobHunting.getConfigManager().polarBearCmdDesc;
@@ -1950,6 +2030,18 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().strayCmdDesc;
 				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
 					return MobHunting.getConfigManager().huskCmdDesc;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NORMAL)
+					return MobHunting.getConfigManager().villagerCmdDesc;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.PRIEST)
+					return MobHunting.getConfigManager().priestCmdDesc;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BUTCHER)
+					return MobHunting.getConfigManager().butcherCmdDesc;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BLACKSMITH)
+					return MobHunting.getConfigManager().blacksmithCmdDesc;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.LIBRARIAN)
+					return MobHunting.getConfigManager().librarianCmdDesc;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.FARMER)
+					return MobHunting.getConfigManager().farmerCmdDesc;
 
 			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
@@ -2091,8 +2183,10 @@ public class ConfigManager extends AutoConfig {
 							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
 				else if (mob instanceof ZombieVillager)
 					return MobHunting.getConfigManager().zombieVillagerCmdRunChance;
-			//TODO: Villagers
-			
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NITWIT)
+					return MobHunting.getConfigManager().nitwitCmdRunChance;
+
+
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
 					return (double) MobHunting.getConfigManager().polarBearFrequency
@@ -2103,6 +2197,20 @@ public class ConfigManager extends AutoConfig {
 				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
 					return (double) MobHunting.getConfigManager().huskFrequency
 							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
+
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NORMAL)
+					return (double) MobHunting.getConfigManager().villagerFequency
+							/ (double) MobHunting.getConfigManager().villagerFrequencyBase;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.PRIEST)
+					return MobHunting.getConfigManager().priestCmdRunChance;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BUTCHER)
+					return MobHunting.getConfigManager().butcherCmdRunChance;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BLACKSMITH)
+					return MobHunting.getConfigManager().blacksmithCmdRunChance;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.LIBRARIAN)
+					return MobHunting.getConfigManager().librarianCmdRunChance;
+				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.FARMER)
+					return MobHunting.getConfigManager().farmerCmdRunChance;
 
 			if (Misc.isMC19OrNewer())
 				if (mob instanceof Shulker)
