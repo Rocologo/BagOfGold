@@ -92,6 +92,7 @@ import one.lindegaard.MobHunting.modifier.SneakyBonus;
 import one.lindegaard.MobHunting.modifier.SniperBonus;
 import one.lindegaard.MobHunting.modifier.StackedMobBonus;
 import one.lindegaard.MobHunting.modifier.Undercover;
+import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.update.UpdateHelper;
 import one.lindegaard.MobHunting.util.Misc;
@@ -763,6 +764,10 @@ public class MobHuntingManager implements Listener {
 		if (killer != null && CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinel(killed)) {
 			Messages.debug("%s killed Sentinel or a Sentry npc-%s (name=%s)", killer.getName(),
 					CitizensCompat.getNPCId(killed), CitizensCompat.getNPCName(killed));
+			if (MasterMobHunterManager.isMasterMobHunter(CitizensCompat.getNPC(killed))) {
+				//ItemStack is = ((Player) CitizensCompat.getNPC(killed).getEntity()).getItemInHand();
+				//killer.getWorld().dropItem(killed.getLocation(), is);
+			}
 		}
 
 		// Player killed a mob while playing a minigame: MobArena, PVPVArena,

@@ -22,11 +22,13 @@ import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
+import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
@@ -146,6 +148,12 @@ public class MetricsManager {
 				return MobArenaCompat.isSupported() ? 1 : 0;
 			}
 		});
+		integrationsGraph.addPlotter(new Metrics.Plotter("Minigames") {
+			@Override
+			public int getValue() {
+				return MinigamesCompat.isSupported() ? 1 : 0;
+			}
+		});
 		integrationsGraph.addPlotter(new Metrics.Plotter("PvpArena") {
 			@Override
 			public int getValue() {
@@ -188,6 +196,12 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return VanishNoPacketCompat.isSupported() ? 1 : 0;
+			}
+		});
+		integrationsGraph.addPlotter(new Metrics.Plotter("ProtocolLib") {
+			@Override
+			public int getValue() {
+				return ProtocolLibCompat.isSupported() ? 1 : 0;
 			}
 		});
 		metrics.addGraph(integrationsGraph);

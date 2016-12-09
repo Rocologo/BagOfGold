@@ -580,7 +580,7 @@ public class ConfigManager extends AutoConfig {
 	public String cartographerPrize = "1:2";
 	@ConfigField(name = "cartographer-cmd", category = "villager")
 	public String cartographerCmd = "";
-	@ConfigField(name = "enderdragon-cmd-desc", category = "villager")
+	@ConfigField(name = "cartographer-cmd-desc", category = "villager")
 	public String cartographerCmdDesc = "";
 	@ConfigField(name = "cartographer-cmd-run-chance", category = "villager")
 	public double cartographerCmdRunChance = 1.00;

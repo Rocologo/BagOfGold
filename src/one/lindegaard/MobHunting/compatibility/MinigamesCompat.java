@@ -12,6 +12,9 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
 
 public class MinigamesCompat implements Listener {
+	
+	private static boolean supported = false;
+	
 	public MinigamesCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info(
@@ -20,6 +23,7 @@ public class MinigamesCompat implements Listener {
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 			Bukkit.getLogger().info(
 					"[MobHunting] Enabling compatibility with Minigames");
+			supported = true;
 		}
 	}
 
@@ -32,6 +36,10 @@ public class MinigamesCompat implements Listener {
 
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationMinigames;
+	}
+
+	public static boolean isSupported() {
+		return supported;
 	}
 
 	// **************************************************************************

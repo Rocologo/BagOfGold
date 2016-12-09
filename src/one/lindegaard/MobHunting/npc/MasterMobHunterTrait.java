@@ -14,7 +14,7 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class MasterMobHunterTrait extends Trait implements Listener {
 	// http://wiki.citizensnpcs.co/API
-	
+
 	// This is your trait that will be applied to a npc using the /trait
 	// mytraitname command. Each NPC gets its own instance of this class.
 	// the Trait class has a reference to the attached NPC class through the
@@ -25,22 +25,28 @@ public class MasterMobHunterTrait extends Trait implements Listener {
 	MobHunting plugin = null;
 
 	public MasterMobHunterTrait() {
-		super("MasterMobHunter");
+		super("mastermobhunter");
 		plugin = MobHunting.getInstance();
 	}
 
 	// see the 'Persistence API' section
-	@Persist("stattype") String stattype = "total_kill";
-	@Persist("period") String period = "alltime";
-	@Persist("rank") int rank = 1;
-	@Persist("noOfKills") int noOfKills = 0;
-	@Persist("signLocations") List<Location> signLocations = new ArrayList<Location>();
-	@Persist("home") Location home = null;
+	@Persist("stattype")
+	String stattype = "total_kill";
+	@Persist("period")
+	String period = "alltime";
+	@Persist("rank")
+	int rank = 1;
+	@Persist("noOfKills")
+	int noOfKills = 0;
+	@Persist("signLocations")
+	List<Location> signLocations = new ArrayList<Location>();
+	@Persist("home")
+	Location home = null;
 
-		//@Persist("mysettingname")
-	//boolean automaticallyPersistedSetting = false;
-	
-	//boolean SomeSetting = false;
+	// @Persist("mysettingname")
+	// boolean automaticallyPersistedSetting = false;
+
+	// boolean SomeSetting = false;
 
 	// Here you should load up any values you have previously saved (optional).
 	// This does NOT get called when applying the trait for the first time, only
@@ -49,13 +55,13 @@ public class MasterMobHunterTrait extends Trait implements Listener {
 	// they will be overridden here.
 	// This is called BEFORE onSpawn, npc.getBukkitEntity() will return null.
 	public void load(DataKey key) {
-		//SomeSetting = key.getBoolean("SomeSetting", false);
+		// SomeSetting = key.getBoolean("SomeSetting", false);
 	}
 
 	// Save settings for this NPC (optional). These values will be persisted to
 	// the Citizens saves.yml file
 	public void save(DataKey key) {
-		//key.setBoolean("SomeSetting",SomeSetting);
+		// key.setBoolean("SomeSetting",SomeSetting);
 	}
 
 	// An example event handler. All traits will be registered automatically as
@@ -77,7 +83,7 @@ public class MasterMobHunterTrait extends Trait implements Listener {
 	// This would be a good place to load configurable defaults for new NPCs.
 	@Override
 	public void onAttach() {
-		//load(new net.citizensnpcs.api.util.MemoryDataKey());
+		// load(new net.citizensnpcs.api.util.MemoryDataKey());
 	}
 
 	// Run code when the NPC is despawned. This is called before the entity

@@ -6,7 +6,6 @@ import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 
 public class StatStore {
-	//TODO: private String mobType;
 	private StatType type;
 	private ExtendedMob mob;
 	private OfflinePlayer player;

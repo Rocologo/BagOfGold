@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -30,6 +31,7 @@ import net.citizensnpcs.api.trait.Trait;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class MasterMobHunterManager implements Listener {
 
@@ -175,53 +177,100 @@ public class MasterMobHunterManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onClick(NPCLeftClickEvent event) {
+		Messages.debug("NPCLeftClickEvent");
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
-			npc.setName("UPDATING...");
-			update(npc);
-			MasterMobHunter mmh = mMasterMobHunter.get(npc.getId());
-			mmh.update();
-			Messages.playerActionBarMessage(event.getClicker(),
-					Messages.getString("mobhunting.npc.clickednpc", "killer",
-							CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(),
-							"numberofkills", mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(),
-							"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
-			mMasterMobHunter.put(event.getNPC().getId(), mmh);
-			if (CitizensCompat.isSentryOrSentinel(npc.getEntity())
-					&& !event.getClicker().getItemInHand().equals(Material.STICK)) {
-				Trait trait = npc.getTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
-				trait.getNPC().faceLocation(event.getClicker().getLocation());
-				trait.getNPC().getNavigator().setTarget(event.getClicker(), true);
-				trait.getNPC().getDefaultSpeechController().speak(new SpeechContext("TEST", event.getClicker()),
-						"Don't hit me!!!");
+			ItemStack is = event.getClicker().getItemInHand();
+			Messages.debug("ItemStack=%s", is);
+			if (!is.getType().equals(Material.STICK)) {
+				if (Misc.isMC110OrNewer()) {
+					// ((Player) npc).getInventory().setItemInMainHand(is);
+					// ((Player)
+					// event.getClicker()).getInventory().setItemInMainHand(new
+					// ItemStack(Material.AIR));
+				} else {
+					// ((Player) npc).getInventory().setItemInHand(is);
+					// ((Player)
+					// event.getClicker()).getInventory().setItemInHand(new
+					// ItemStack(Material.AIR));
+				}
+				Trait trait = getSentinelOrSentryTrait(npc);
+				if (trait != null) {
+					trait.getNPC().faceLocation(event.getClicker().getLocation());
+					trait.getNPC().getDefaultSpeechController()
+							.speak(new SpeechContext("Don't hit me!!!", event.getClicker()));
+					trait.getNPC().getNavigator().setTarget(event.getClicker(), true);
+				}
+			} else {
+				npc.setName("UPDATING SKIN");
+				update(npc);
+				MasterMobHunter mmh = mMasterMobHunter.get(npc.getId());
+				mmh.update();
+				Messages.playerActionBarMessage(event.getClicker(),
+						Messages.getString("mobhunting.npc.clickednpc", "killer",
+								CitizensAPI.getNPCRegistry().getById(npc.getId()).getName(), "rank", mmh.getRank(),
+								"numberofkills", mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(),
+								"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
+				mMasterMobHunter.put(event.getNPC().getId(), mmh);
 			}
-		} else {
-			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onKilledTarget(EntityDeathEvent event) {
 		if (isMasterMobHunter(event.getEntity().getKiller()) && event.getEntity() instanceof Player) {
 			NPC npc = (NPC) CitizensCompat.getNPC(event.getEntity().getKiller());
 			Player player = (Player) event.getEntity();
 			Messages.debug("NPC %s (ID=%s) killed %s - return to home", npc.getName(), npc.getId(), player.getName());
-			Trait trait = npc.getTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
-			trait.getNPC().getNavigator().setTarget(mMasterMobHunter.get(npc.getId()).getHome());
-			npc.teleport(mMasterMobHunter.get(npc.getId()).getHome(), TeleportCause.UNKNOWN);
+			Trait trait = getSentinelOrSentryTrait(npc);
+			if (trait != null) {
+				trait.getNPC().getNavigator().setTarget(mMasterMobHunter.get(npc.getId()).getHome());
+				final NPC npc1 = npc;
+				Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
+					public void run() {
+						npc1.teleport(mMasterMobHunter.get(npc1.getId()).getHome(), TeleportCause.UNKNOWN);
+					}
+				}, 20 * 10); // 20ticks/sec * 3 sec
+			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onSpawnNPC(NPCSpawnEvent event) {
 		NPC npc = event.getNPC();
-		if (isMasterMobHunter(npc) && CitizensCompat.isSentryOrSentinel(npc.getEntity())) {
+		if (isMasterMobHunter(npc)) {
 			if (!npc.getStoredLocation().equals(mMasterMobHunter.get(npc.getId()).getHome())) {
 				Messages.debug("NPC %s (ID=%s) return to home", npc.getName(), npc.getId());
-				Trait trait = npc.getTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
-				trait.getNPC().getNavigator().setTarget(mMasterMobHunter.get(npc.getId()).getHome());
+				Trait trait = getSentinelOrSentryTrait(npc);
+				if (trait != null) {
+					trait.getNPC().getNavigator().setTarget(mMasterMobHunter.get(npc.getId()).getHome());
+					final NPC npc1 = npc;
+					Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
+						public void run() {
+							npc1.teleport(mMasterMobHunter.get(npc1.getId()).getHome(), TeleportCause.UNKNOWN);
+						}
+					}, 20 * 10); // 20ticks/sec * 3 sec
+				}
 			}
 		}
+	}
+
+	private Trait getSentinelOrSentryTrait(NPC npc) {
+		Trait trait = null;
+		if (CitizensCompat.isSentryOrSentinel(npc.getEntity())) {
+			if (npc.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel")))
+				trait = npc.getTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
+			else if (npc.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry")))
+				trait = npc.getTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"));
+
+		} else {// how to handle/add Trait ???
+			// npc.addTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
+			// trait =
+			// npc.getTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
+			// Messages.debug("Sentinel trait added to %s (id=%s)",
+			// npc.getName(), npc.getId());
+		}
+		return trait;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -237,8 +286,6 @@ public class MasterMobHunterManager implements Listener {
 							"numberofkills", mmh.getNumberOfKills(), "stattype", mmh.getStatType().translateName(),
 							"period", mmh.getPeriod().translateNameFriendly(), "npcid", npc.getId()));
 			mMasterMobHunter.put(event.getNPC().getId(), mmh);
-		} else {
-			Messages.debug("ID=%s is not a masterMobHunterNPC.", event.getNPC().getId());
 		}
 	}
 
@@ -251,4 +298,10 @@ public class MasterMobHunterManager implements Listener {
 				update(npc);
 		}
 	}
+
+	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	// public void onSpawnNPC(NPCTraitEvent event) {
+	// Messages.debug("NPCTraitEvent NPC=%s, Trait=%s", event.getNPC().getId(),
+	// event.getTrait().getName());
+	// }
 }

@@ -1,8 +1,10 @@
 V4.2.0
 * Added missing Villagers: Librarian, Priest, Butcher, Blacksmith, Farmer. 
-* Attacking the MasterMobHunter with Sentinel Trait makes him attack the player.
 * Fixed LibsDisguises compatibility on Minecraft 1.9.4
 * Fixed iDisguises compatibility on Minecraft 1.9.4
+* Tried to fix MySql error reported (https://www.spigotmc.org/threads/mobhunting.46937/page-72#post-2071076)
+* Added ProtocolLib, Minigames to Metrics statistics. 
+* Fixed error in villager settings in config.yml
 V4.1.9 New mob heads
 * All mob heads has now been updated, including the new 1.11 mobs.
 V4.1.8 Bug fixing

@@ -175,16 +175,10 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 	private void updateSigns() {
 		if (getSignLocations().size() > 0) {
 			Iterator<Location> itr = getSignLocations().iterator();
-			// Messages.debug("Updating %s signs", getSignLocations().size());
 			while (itr.hasNext()) {
 				Location loc = itr.next();
 				Block sb = loc.getBlock();
 				if (isLoaded(sb)) {
-					// Messages.debug("Block: hasMetadata3=%s",
-					// sb.hasMetadata(MasterMobHunterSign.MH_SIGN));
-					// Messages.debug("Sign :hasMetadata3=%s",
-					// ((org.bukkit.block.Sign)
-					// sb.getState()).hasMetadata(MasterMobHunterSign.MH_SIGN));
 					if (MasterMobHunterSign.isMHSign(sb)) {
 						org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
 						if (MasterMobHunterSign.isMHSign(s.getLine(0))) {
@@ -192,27 +186,17 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 									new FixedMetadataValue(MobHunting.getInstance(), s.getLine(0)));
 							s.setMetadata(MasterMobHunterSign.MH_SIGN,
 									new FixedMetadataValue(MobHunting.getInstance(), s.getLine(0)));
-							// Messages.debug("MasterMobHunter: MH Sign
-							// updated=%s", s.getLine(0));
-
 							int id = MasterMobHunterSign.getNPCIdOnSign(sb);
-
 							NPC npc = CitizensAPI.getNPCRegistry().getById(id);
 							if (npc != null) {
 								if (MasterMobHunterManager.isMasterMobHunter(npc)) {
 									MasterMobHunter mmh = MasterMobHunterManager.getMasterMobHunterManager()
 											.get(npc.getId());
-
 									mmh.putSignLocation(sb.getLocation());
 									MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
-
-									// Messages.debug("updater found a MMH
-									// Sign");
 								}
 							}
 						}
-						// s.setLine(0, (getRank() + "."));
-						// s.setLine(1, (Misc.trimSignText(npc.getName())));
 						s.setLine(1, (Misc.trimSignText(getRank() + "." + npc.getName())));
 						s.setLine(2, (Misc.trimSignText(getPeriod().translateNameFriendly())));
 						s.setLine(3, (Misc.trimSignText(getNumberOfKills() + " " + getStatType().translateName())));
@@ -224,25 +208,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 							else
 								MasterMobHunterSign.removePower(sb);
 						}
-					} else {
-						if (MasterMobHunterSign.isSign(sb)) {
-							if (sb.hasMetadata(MasterMobHunterSign.MH_SIGN)) {
-								// Messages.debug("Block: hasMetaData4=%s",
-								// sb.getMetadata(MasterMobHunterSign.MH_SIGN).get(0).asString());
-								// Messages.debug("Sign: hasMetaData4=%s",
-								// ((Sign) sb.getState())
-								// .getMetadata(MasterMobHunterSign.MH_SIGN).get(0).asString());
-							} else {
-								// Messages.debug("updating - this is not a MH
-								// sign - make it a MH MH sign");
-							}
-							// Messages.debug("removing
-							// sign!!!!!!!!!!!!!!!!!!!!!!!!");
-							// itr.remove();
-						} else {
-							// Messages.debug("updating - this is not a sign");
-						}
-					}
+					} 
 				}
 			}
 		}

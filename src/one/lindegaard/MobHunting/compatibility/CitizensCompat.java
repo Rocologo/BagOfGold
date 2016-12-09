@@ -70,7 +70,7 @@ public class CitizensCompat implements Listener {
 			saveCitizensData();
 
 			// wait x seconds or until Citizens is fully loaded.
-			Bukkit.getScheduler().scheduleSyncDelayedTask(MobHunting.getInstance(), new Runnable() {
+			Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
 				public void run() {
 					masterMobHunterManager.initialize();
 					findMissingSentry();
