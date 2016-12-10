@@ -15,7 +15,7 @@ public enum MobPlugin {
 	public Integer getId() {
 		return id;
 	}
-
+	
 	public boolean equalsName(String otherName) {
 		return (otherName == null) ? false : name.equals(otherName);
 	}

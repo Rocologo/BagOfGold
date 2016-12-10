@@ -63,7 +63,7 @@ public class ExtendedMob {
 
 	@Override
 	public String toString() {
-		return String.format("MobStore: {mob_id: %s plugin_id: %s mobtype: %s}", this.mob_id, mobPlugin.name(),
+		return String.format("MobStore: {mob_id: %s, plugin_id: %s, mobtype: %s}", this.mob_id, mobPlugin.name(),
 				mobtype);
 	}
 

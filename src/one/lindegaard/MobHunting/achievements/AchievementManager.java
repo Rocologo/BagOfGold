@@ -41,6 +41,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -255,7 +256,7 @@ public class AchievementManager implements Listener {
 		if (hasAchievement(achievement, player)) {
 			return;
 		}
-		
+
 		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
 			if (world.equalsIgnoreCase(player.getWorld().getName())) {
 				Messages.debug("[AchievementBlocked] Achievements is disabled in this world");
@@ -266,7 +267,7 @@ public class AchievementManager implements Listener {
 		if (storage == null)
 			return;
 
-		//MobHunting.getInstance();
+		// MobHunting.getInstance();
 		MobHunting.getDataStoreManager().recordAchievement(player, achievement);
 
 		storage.gainedAchievements.add(achievement.getID());
@@ -335,14 +336,13 @@ public class AchievementManager implements Listener {
 		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
 
-		if (achievement.getExtendedMobType().getMax()==0) {
+		if (achievement.getExtendedMobType().getMax() == 0) {
 			Messages.debug(
 					"[AchievementBlocked] ProgressAchievement for killing a %s is disabled (%s_level1 is 0 in config.yml)",
 					achievement.getExtendedMobType().getExtendedMobType().toLowerCase(),
 					achievement.getExtendedMobType().getExtendedMobType().toLowerCase());
 			return;
 		}
-
 
 		Validate.isTrue(amount > 0);
 		PlayerStorage storage = mStorage.get(player);
@@ -430,60 +430,66 @@ public class AchievementManager implements Listener {
 		final PlayerStorage storage = new PlayerStorage();
 		storage.enableAchievements = false;
 
-		mStorage.put(player, storage);
-
 		if (!player.hasPermission("mobhunting.achievements.disabled") || player.hasPermission("*")) {
 
-			MobHunting.getDataStoreManager().requestAllAchievements(player, new IDataCallback<Set<AchievementStore>>() {
-				@Override
-				public void onError(Throwable error) {
-					if (error instanceof UserNotFoundException)
-						storage.enableAchievements = true;
-					else {
-						error.printStackTrace();
-						player.sendMessage(Messages.getString("achievements.load-fail"));
-						storage.enableAchievements = false;
-					}
-				}
+			if (!mStorage.containsKey(player)) {
+				mStorage.put(player, storage);
 
-				@Override
-				public void onCompleted(Set<AchievementStore> data) {
-					for (AchievementStore achievement : data) {
-						if (achievement.progress == -1)
-							storage.gainedAchievements.add(achievement.id);
-						else
-							storage.progressAchievements.put(achievement.id, achievement.progress);
-					}
-
-					// Fix achievement errors where an upper level
-					// progress
-					// achievement is in progress/complete, but a lower
-					// level one is not
-					HashSet<String> toRemove = new HashSet<String>();
-					for (Entry<String, Integer> prog : storage.progressAchievements.entrySet()) {
-						Achievement raw = getAchievement(prog.getKey());
-						if (raw instanceof ProgressAchievement) {
-							ProgressAchievement achievement = (ProgressAchievement) raw;
-							while (achievement.inheritFrom() != null) {
-								String parent = achievement.inheritFrom();
-
-								if (storage.progressAchievements.containsKey(parent))
-									toRemove.add(parent);
-								achievement = (ProgressAchievement) getAchievement(parent);
+				MobHunting.getDataStoreManager().requestAllAchievements(player,
+						new IDataCallback<Set<AchievementStore>>() {
+							@Override
+							public void onError(Throwable error) {
+								if (error instanceof UserNotFoundException)
+									storage.enableAchievements = true;
+								else {
+									error.printStackTrace();
+									player.sendMessage(Messages.getString("achievements.load-fail"));
+									storage.enableAchievements = false;
+								}
 							}
-						}
-					}
 
-					storage.gainedAchievements.addAll(toRemove);
-					for (String id : toRemove) {
-						storage.progressAchievements.remove(id);
-						MobHunting.getInstance();
-						MobHunting.getDataStoreManager().recordAchievement(player, getAchievement(id));
-					}
+							@Override
+							public void onCompleted(Set<AchievementStore> data) {
+								for (AchievementStore achievement : data) {
+									if (achievement.progress == -1)
+										storage.gainedAchievements.add(achievement.id);
+									else
+										storage.progressAchievements.put(achievement.id, achievement.progress);
+								}
 
-					storage.enableAchievements = true;
-				}
-			});
+								// Fix achievement errors where an upper level
+								// progress
+								// achievement is in progress/complete, but a
+								// lower
+								// level one is not
+								HashSet<String> toRemove = new HashSet<String>();
+								for (Entry<String, Integer> prog : storage.progressAchievements.entrySet()) {
+									Achievement raw = getAchievement(prog.getKey());
+									if (raw instanceof ProgressAchievement) {
+										ProgressAchievement achievement = (ProgressAchievement) raw;
+										while (achievement.inheritFrom() != null) {
+											String parent = achievement.inheritFrom();
+
+											if (storage.progressAchievements.containsKey(parent))
+												toRemove.add(parent);
+											achievement = (ProgressAchievement) getAchievement(parent);
+										}
+									}
+								}
+
+								storage.gainedAchievements.addAll(toRemove);
+								for (String id : toRemove) {
+									storage.progressAchievements.remove(id);
+									MobHunting.getInstance();
+									MobHunting.getDataStoreManager().recordAchievement(player, getAchievement(id));
+								}
+
+								storage.enableAchievements = true;
+							}
+						});
+			} else {
+				Messages.debug("Using cached avchievemengts for player %s", player);
+			}
 		} else {
 			Messages.debug("achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",
 					player.getName());

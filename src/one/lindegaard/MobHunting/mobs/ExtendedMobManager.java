@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
@@ -40,14 +41,14 @@ public class ExtendedMobManager {
 			case MythicMobs:
 				if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig())
 					continue;
-				//TODO: check if mobtype still exists and continue; if not.
-				//if (MythicMobsCompat.getMythicMobs().)
+				// TODO: check if mobtype still exists and continue; if not.
+				// if (MythicMobsCompat.getMythicMobs().)
 				break;
 			case CustomMobs:
 				if (!CustomMobsCompat.isSupported() || CustomMobsCompat.isDisabledInConfig())
 					continue;
-				//TODO: check if mobtype still exists and continue; if not.
-				//if (CustomMobsCompat.getCustomMobs())
+				// TODO: check if mobtype still exists and continue; if not.
+				// if (CustomMobsCompat.getCustomMobs())
 				break;
 			case TARDISWeepingAngels:
 				if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
@@ -55,16 +56,16 @@ public class ExtendedMobManager {
 				break;
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig())
-					//Citizens not installed or disabled
+					// Citizens not installed or disabled
 					continue;
-				if (CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mob.mobtype))==null)
-					//NPC is deleted but data is still in citizenz_rewards.yml 
+				if (CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mob.mobtype)) == null)
+					// NPC is deleted but data is still in citizenz_rewards.yml
 					continue;
 				break;
 			case Minecraft:
 
 			}
-			if (!mobs.containsKey(mob.mob_id)){
+			if (!mobs.containsKey(mob.mob_id)) {
 				mobs.put(mob.mob_id, mob);
 			}
 		}
@@ -83,10 +84,11 @@ public class ExtendedMobManager {
 		Iterator<Entry<Integer, ExtendedMob>> mobset = mobs.entrySet().iterator();
 		while (mobset.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) mobset.next().getValue();
+			//Messages.debug("Checking if %s (mobPlugin=%s,mobType=%s)", mob, mob.getMobPlugin().equals(mobPlugin),mob.mobtype.equalsIgnoreCase(mobtype));
 			if (mob.getMobPlugin().equals(mobPlugin) && mob.mobtype.equalsIgnoreCase(mobtype))
 				return mob.mob_id;
 		}
-		Bukkit.getLogger().warning("[MobHunting] The "+mobPlugin.name()+" mobtype "+mobtype+" was not found.");
+		Bukkit.getLogger().warning("[MobHunting] The " + mobPlugin.name() + " mobtype " + mobtype + " was not found.");
 		return 0;
 	}
 
@@ -115,9 +117,10 @@ public class ExtendedMobManager {
 		mob_id = getMobIdFromMobTypeAndPluginID(mobtype, mobPlugin);
 		return new ExtendedMob(mob_id, mobPlugin, mobtype);
 	}
-	
-	// This is only used to get a "random" mob_id stored when an Achievement is stored in mh_Daily 
-	public static ExtendedMob getFirstMob(){
+
+	// This is only used to get a "random" mob_id stored when an Achievement is
+	// stored in mh_Daily
+	public static ExtendedMob getFirstMob() {
 		int mob_id = mobs.keySet().iterator().next().intValue();
 		return mobs.get(mob_id);
 	}

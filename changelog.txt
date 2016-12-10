@@ -1,3 +1,5 @@
+V4.2.1
+* Fixed bug where player was able get an Achievement, disconnect, reconnect and get the same Achievement again.
 V4.2.0
 * Added missing Villagers: Librarian, Priest, Butcher, Blacksmith, Farmer. 
 * Fixed LibsDisguises compatibility on Minecraft 1.9.4
