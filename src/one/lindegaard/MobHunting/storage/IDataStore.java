@@ -125,7 +125,7 @@ public interface IDataStore {
 	
 	public void insertMissingMythicMobs();
 
-	public void insertCitizensMobs();
+	public void insertMissingCitizensMobs();
 
 	public void insertTARDISWeepingAngelsMobs();
 
@@ -135,7 +135,7 @@ public interface IDataStore {
 
 	public void updateMobs(Set<ExtendedMob> mobs) throws DataStoreException;
 
-	public void insertMythicMobs(String mob);
+	public void insertMissingMythicMobs(String mob);
 
 	public void insertCitizensMobs(String mob);
 

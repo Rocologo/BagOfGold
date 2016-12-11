@@ -22,6 +22,19 @@ public class ExtendedMobManager {
 	private static HashMap<Integer, ExtendedMob> mobs = new HashMap<Integer, ExtendedMob>();
 
 	public ExtendedMobManager() {
+		updateExtendedMobs();
+	}
+	
+	public static void updateExtendedMobs(){
+		MobHunting.getStoreManager().insertMissingVanillaMobs();
+		if (CitizensCompat.isSupported())
+			MobHunting.getStoreManager().insertMissingCitizensMobs();
+		if (MythicMobsCompat.isSupported())
+			MobHunting.getStoreManager().insertMissingMythicMobs();
+		if (CustomMobsCompat.isSupported())
+			MobHunting.getStoreManager().insertCustomMobs();
+		if (TARDISWeepingAngelsCompat.isSupported())
+			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs();
 
 		Set<ExtendedMob> set = new HashSet<ExtendedMob>();
 
@@ -32,23 +45,17 @@ public class ExtendedMobManager {
 			e.printStackTrace();
 		}
 
-		MobHunting.getStoreManager().insertMissingVanillaMobs();
-
 		Iterator<ExtendedMob> mobset = set.iterator();
 		while (mobset.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) mobset.next();
-			switch (mob.mobPlugin) {
+			switch (mob.getMobPlugin()) {
 			case MythicMobs:
 				if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig())
 					continue;
-				// TODO: check if mobtype still exists and continue; if not.
-				// if (MythicMobsCompat.getMythicMobs().)
 				break;
 			case CustomMobs:
 				if (!CustomMobsCompat.isSupported() || CustomMobsCompat.isDisabledInConfig())
 					continue;
-				// TODO: check if mobtype still exists and continue; if not.
-				// if (CustomMobsCompat.getCustomMobs())
 				break;
 			case TARDISWeepingAngels:
 				if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
@@ -56,19 +63,16 @@ public class ExtendedMobManager {
 				break;
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig())
-					// Citizens not installed or disabled
-					continue;
-				if (CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mob.mobtype)) == null)
-					// NPC is deleted but data is still in citizenz_rewards.yml
 					continue;
 				break;
 			case Minecraft:
 
 			}
-			if (!mobs.containsKey(mob.mob_id)) {
-				mobs.put(mob.mob_id, mob);
+			if (!mobs.containsKey(mob.getMob_id())) {
+				mobs.put(mob.getMob_id(), mob);
 			}
 		}
+		Messages.debug("%s mobs was loaded into MobHunting", mobs.size());
 	}
 
 	public ExtendedMob getExtendedMobFromMobID(int i) {
@@ -84,9 +88,8 @@ public class ExtendedMobManager {
 		Iterator<Entry<Integer, ExtendedMob>> mobset = mobs.entrySet().iterator();
 		while (mobset.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) mobset.next().getValue();
-			//Messages.debug("Checking if %s (mobPlugin=%s,mobType=%s)", mob, mob.getMobPlugin().equals(mobPlugin),mob.mobtype.equalsIgnoreCase(mobtype));
-			if (mob.getMobPlugin().equals(mobPlugin) && mob.mobtype.equalsIgnoreCase(mobtype))
-				return mob.mob_id;
+			if (mob.getMobPlugin().equals(mobPlugin) && mob.getMobtype().equalsIgnoreCase(mobtype))
+				return mob.getMob_id();
 		}
 		Bukkit.getLogger().warning("[MobHunting] The " + mobPlugin.name() + " mobtype " + mobtype + " was not found.");
 		return 0;

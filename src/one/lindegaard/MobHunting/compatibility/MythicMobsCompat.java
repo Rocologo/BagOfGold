@@ -26,6 +26,7 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
@@ -72,7 +73,7 @@ public class MythicMobsCompat implements Listener {
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
-				MobHunting.getStoreManager().insertMythicMobs(key);
+				MobHunting.getStoreManager().insertMissingMythicMobs(key);
 			}
 			Messages.debug("Loaded %s MythicMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -97,7 +98,7 @@ public class MythicMobsCompat implements Listener {
 			int n = StatType.values().length;
 			StatType.values()[n + 1] = new StatType(mob.getMobType() + "_kill", mob.getMobName());
 			StatType.values()[n + 2] = new StatType(mob.getMobType() + "_assist", mob.getMobName());
-			MobHunting.getStoreManager().insertMythicMobs(key);
+			MobHunting.getStoreManager().insertMissingMythicMobs(key);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -197,7 +198,9 @@ public class MythicMobsCompat implements Listener {
 					new MobRewardData(MobPlugin.MythicMobs, mobtype, event.getMobType().getDisplayName(), "10",
 							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveMythicMobsData(mobtype);
-			MobHunting.getStoreManager().insertMythicMobs(mobtype);
+			MobHunting.getStoreManager().insertMissingMythicMobs(mobtype);
+			// Update mob loaded into memory
+			ExtendedMobManager.updateExtendedMobs();
 		}
 
 		event.getLivingEntity().setMetadata(MH_MYTHICMOBS,

@@ -24,6 +24,7 @@ import de.hellfirepvp.api.event.CustomMobSpawnEvent;
 import de.hellfirepvp.api.event.CustomMobSpawnEvent.SpawnReason;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
@@ -212,6 +213,8 @@ public class CustomMobsCompat implements Listener {
 					"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveCustomMobsData(mob.getName());
 			MobHunting.getStoreManager().insertCustomMobs(mob.getName());
+			// Update mob loaded into memory
+			ExtendedMobManager.updateExtendedMobs();
 		}
 
 		entity.setMetadata(MH_CUSTOMMOBS, new FixedMetadataValue(mPlugin, mMobRewardData.get(mob.getName())));

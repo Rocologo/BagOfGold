@@ -7,9 +7,9 @@ import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 
 public class ExtendedMob {
 
-	Integer mob_id; // The unique mob_id from mh_Mobs
-	MobPlugin mobPlugin; // Plugin_id from mh_Plugins
-	String mobtype; // mobtype NOT unique
+	private Integer mob_id; // The unique mob_id from mh_Mobs
+	private MobPlugin mobPlugin; // Plugin_id from mh_Plugins
+	private String mobtype; // mobtype NOT unique
 
 	public ExtendedMob(Integer mob_id, MobPlugin mobPlugin, String mobtype) {
 		this.mob_id = mob_id;
@@ -58,7 +58,7 @@ public class ExtendedMob {
 
 		ExtendedMob other = (ExtendedMob) obj;
 
-		return mob_id.equals(other.mob_id);
+		return mob_id==other.mob_id;
 	}
 
 	@Override

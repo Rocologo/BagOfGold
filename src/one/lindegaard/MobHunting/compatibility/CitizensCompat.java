@@ -20,6 +20,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
@@ -35,6 +36,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import mc.alk.arena.events.ExtendedBukkitEvent;
 
 public class CitizensCompat implements Listener {
 
@@ -274,10 +277,15 @@ public class CitizensCompat implements Listener {
 			if (isSentryOrSentinel(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
+					// Update Reward data in memory
 					mMobRewardData.put(String.valueOf(npc.getId()), new MobRewardData(MobPlugin.Citizens, "npc",
 							npc.getFullName(), "0", "give {player} iron_sword 1", "You got an Iron sword.", 0));
+					// Save Reward Data to disk
 					saveCitizensData(String.valueOf(npc.getId()));
+					// Insert new mob to Database
 					MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
+					// Update mob loaded into memory
+					ExtendedMobManager.updateExtendedMobs();
 				}
 			}
 			if (masterMobHunterManager.isMasterMobHunter(npc.getEntity())) {

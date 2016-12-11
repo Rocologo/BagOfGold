@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.UUID;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -51,7 +50,7 @@ public class AchievementManager implements Listener {
 
 	// String contains ID
 	private HashMap<String, Achievement> mAchievements = new HashMap<String, Achievement>();
-	private WeakHashMap<Player, PlayerStorage> mStorage = new WeakHashMap<Player, PlayerStorage>();
+	private HashMap<UUID, PlayerStorage> mStorage = new HashMap<UUID, PlayerStorage>();
 
 	public AchievementManager() {
 		registerAchievements();
@@ -113,7 +112,7 @@ public class AchievementManager implements Listener {
 	}
 
 	public boolean hasAchievement(Achievement achievement, Player player) {
-		PlayerStorage storage = mStorage.get(player);
+		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null)
 			return false;
 
@@ -121,7 +120,7 @@ public class AchievementManager implements Listener {
 	}
 
 	public boolean achievementsEnabledFor(Player player) {
-		PlayerStorage storage = mStorage.get(player);
+		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null)
 			return false;
 
@@ -136,7 +135,7 @@ public class AchievementManager implements Listener {
 	}
 
 	public int getProgress(ProgressAchievement achievement, Player player) {
-		PlayerStorage storage = mStorage.get(player);
+		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null)
 			return 0;
 
@@ -169,7 +168,7 @@ public class AchievementManager implements Listener {
 							getProgress((ProgressAchievement) achievement, player.getPlayer())));
 			}
 
-			achievements.removeAll(toRemove);
+			// achievements.removeAll(toRemove);
 
 			callback.onCompleted(achievements);
 			return;
@@ -202,7 +201,7 @@ public class AchievementManager implements Listener {
 					}
 				}
 
-				achievements.removeAll(toRemove);
+				// achievements.removeAll(toRemove);
 
 				callback.onCompleted(achievements);
 			}
@@ -263,14 +262,16 @@ public class AchievementManager implements Listener {
 				return;
 			}
 
-		PlayerStorage storage = mStorage.get(player);
-		if (storage == null)
-			return;
+		PlayerStorage storage = mStorage.get(player.getUniqueId());
+		if (storage == null) {
+			storage = new PlayerStorage();
+			storage.enableAchievements = true;
+		}
 
-		// MobHunting.getInstance();
 		MobHunting.getDataStoreManager().recordAchievement(player, achievement);
-
 		storage.gainedAchievements.add(achievement.getID());
+		mStorage.put(player.getUniqueId(), storage);
+
 		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name",
 				"" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()));
 		player.sendMessage(ChatColor.BLUE + "" + ChatColor.ITALIC + achievement.getDescription());
@@ -345,9 +346,11 @@ public class AchievementManager implements Listener {
 		}
 
 		Validate.isTrue(amount > 0);
-		PlayerStorage storage = mStorage.get(player);
-		if (storage == null)
-			return;
+		PlayerStorage storage = mStorage.get(player.getUniqueId());
+		if (storage == null) {
+			storage = new PlayerStorage();
+			storage.enableAchievements = true;
+		}
 
 		int curProgress = getProgress(achievement, player);
 
@@ -370,7 +373,6 @@ public class AchievementManager implements Listener {
 		else {
 			storage.progressAchievements.put(achievement.getID(), nextProgress);
 
-			MobHunting.getInstance();
 			MobHunting.getDataStoreManager().recordAchievementProgress(player, achievement, nextProgress);
 
 			int segment = Math.min(25, maxProgress / 2);
@@ -381,6 +383,7 @@ public class AchievementManager implements Listener {
 				player.sendMessage(ChatColor.GRAY + "" + nextProgress + " / " + maxProgress);
 			}
 		}
+		mStorage.put(player.getUniqueId(), storage);
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
@@ -426,15 +429,16 @@ public class AchievementManager implements Listener {
 		return false;
 	}
 
-	public void load(final Player player) {
-		final PlayerStorage storage = new PlayerStorage();
-		storage.enableAchievements = false;
-
+	public void load(Player player) {
 		if (!player.hasPermission("mobhunting.achievements.disabled") || player.hasPermission("*")) {
 
-			if (!mStorage.containsKey(player)) {
-				mStorage.put(player, storage);
+			if (!mStorage.containsKey(player.getUniqueId())) {
+				Messages.debug("Loading Achievements for player %s", player);
 
+				final PlayerStorage storage = new PlayerStorage();
+				storage.enableAchievements = false;
+
+				final Player p = player;
 				MobHunting.getDataStoreManager().requestAllAchievements(player,
 						new IDataCallback<Set<AchievementStore>>() {
 							@Override
@@ -443,13 +447,14 @@ public class AchievementManager implements Listener {
 									storage.enableAchievements = true;
 								else {
 									error.printStackTrace();
-									player.sendMessage(Messages.getString("achievements.load-fail"));
+									p.sendMessage(Messages.getString("achievements.load-fail"));
 									storage.enableAchievements = false;
 								}
 							}
 
 							@Override
 							public void onCompleted(Set<AchievementStore> data) {
+								Messages.debug("Achievements returned data set size = %s", data.size());
 								for (AchievementStore achievement : data) {
 									if (achievement.progress == -1)
 										storage.gainedAchievements.add(achievement.id);
@@ -462,33 +467,35 @@ public class AchievementManager implements Listener {
 								// achievement is in progress/complete, but a
 								// lower
 								// level one is not
-								HashSet<String> toRemove = new HashSet<String>();
-								for (Entry<String, Integer> prog : storage.progressAchievements.entrySet()) {
-									Achievement raw = getAchievement(prog.getKey());
-									if (raw instanceof ProgressAchievement) {
-										ProgressAchievement achievement = (ProgressAchievement) raw;
-										while (achievement.inheritFrom() != null) {
-											String parent = achievement.inheritFrom();
-
-											if (storage.progressAchievements.containsKey(parent))
-												toRemove.add(parent);
-											achievement = (ProgressAchievement) getAchievement(parent);
-										}
-									}
-								}
-
-								storage.gainedAchievements.addAll(toRemove);
-								for (String id : toRemove) {
-									storage.progressAchievements.remove(id);
-									MobHunting.getInstance();
-									MobHunting.getDataStoreManager().recordAchievement(player, getAchievement(id));
-								}
-
+								/**
+								 * HashSet<String> toRemove = new HashSet
+								 * <String>(); for (Entry<String, Integer> prog
+								 * : storage.progressAchievements.entrySet()) {
+								 * Achievement raw =
+								 * getAchievement(prog.getKey()); if (raw
+								 * instanceof ProgressAchievement) {
+								 * ProgressAchievement achievement =
+								 * (ProgressAchievement) raw; while
+								 * (achievement.inheritFrom() != null) { String
+								 * parent = achievement.inheritFrom();
+								 * 
+								 * if (storage.progressAchievements.containsKey(
+								 * parent)) toRemove.add(parent); achievement =
+								 * (ProgressAchievement) getAchievement(parent);
+								 * } } }
+								 * 
+								 * storage.gainedAchievements.addAll(toRemove);
+								 * for (String id : toRemove) {
+								 * //storage.progressAchievements.remove(id);
+								 * MobHunting.getDataStoreManager().
+								 * recordAchievement(p, getAchievement(id)); }
+								 **/
 								storage.enableAchievements = true;
+								mStorage.put(p.getUniqueId(), storage);
 							}
 						});
 			} else {
-				Messages.debug("Using cached avchievemengts for player %s", player);
+				Messages.debug("Using cached achievements for player %s", player);
 			}
 		} else {
 			Messages.debug("achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",
@@ -499,6 +506,11 @@ public class AchievementManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	private void onPlayerJoin(PlayerLoginEvent event) {
 		load(event.getPlayer());
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	private void onPlayerQuit(PlayerQuitEvent event) {
+
 	}
 
 	// *************************************************************************************
@@ -584,7 +596,7 @@ public class AchievementManager implements Listener {
 														"mobhunting.commands.listachievements.completed.self", "num",
 														ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
 														ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
-							else
+							else if (n < 53) {
 								addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
 										ChatColor.YELLOW + achievement.getKey().getName(),
 										new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
@@ -594,8 +606,11 @@ public class AchievementManager implements Listener {
 														"player", otherPlayer.getName(), "num",
 														ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
 														ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
-						if (n < 52)
-							n++;
+
+								n++;
+							} else {
+								Messages.debug("No room for more Achievements");
+							}
 					} else
 						inProgress = true;
 				}
@@ -617,16 +632,21 @@ public class AchievementManager implements Listener {
 										+ achievement.getValue() + " / "
 										+ ((ProgressAchievement) achievement.getKey()).getMaxProgress());
 							else if (sender instanceof Player)
-								addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
-										ChatColor.YELLOW + achievement.getKey().getName(),
-										new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-												achievement.getKey().getDescription(), "",
-												Messages.getString("mobhunting.commands.listachievements.progress")
-														+ " " + ChatColor.WHITE + achievement.getValue() + " / "
-														+ ((ProgressAchievement) achievement.getKey())
-																.getMaxProgress() });
-							if (n < 52)
-								n++;
+								if (n < 53) {
+									addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
+											ChatColor.YELLOW + achievement.getKey().getName(),
+											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+													achievement.getKey().getDescription(), "",
+													Messages.getString("mobhunting.commands.listachievements.progress")
+															+ " " + ChatColor.WHITE + achievement.getValue() + " / "
+															+ ((ProgressAchievement) achievement.getKey())
+																	.getMaxProgress() });
+
+									n++;
+								} else {
+									Messages.debug("No room for more achievements");
+									break;
+								}
 						} else
 							inProgress = true;
 					}
@@ -640,15 +660,18 @@ public class AchievementManager implements Listener {
 							if (!isOnGoingOrCompleted(achievement, data)) {
 								if (achievement.getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward) {
-									addInventoryDetails(achievement.getSymbol(), inventory2, m,
-											ChatColor.YELLOW + achievement.getName(),
-											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-													achievement.getDescription(), "", Messages.getString(
-															"mobhunting.commands.listachievements.notstarted") });
-									if (m < 52)
+									if (m < 53) {
+										addInventoryDetails(achievement.getSymbol(), inventory2, m,
+												ChatColor.YELLOW + achievement.getName(),
+												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+														achievement.getDescription(), "", Messages.getString(
+																"mobhunting.commands.listachievements.notstarted") });
+
 										m++;
-									else
+									} else {
 										Messages.debug("No room for achievement: %s", achievement.getName());
+										break;
+									}
 								}
 							}
 						}
@@ -665,15 +688,18 @@ public class AchievementManager implements Listener {
 								boolean previousLevelCompleted = isPreviousLevelCompleted3(
 										(ProgressAchievement) achievement, data);
 								if (!nextLevelBegun && previousLevelCompleted) {
-									addInventoryDetails(achievement.getSymbol(), inventory2, m,
-											ChatColor.YELLOW + achievement.getName(),
-											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-													achievement.getDescription(), "", Messages.getString(
-															"mobhunting.commands.listachievements.notstarted") });
-									if (m < 52)
+									if (m < 53) {
+										addInventoryDetails(achievement.getSymbol(), inventory2, m,
+												ChatColor.YELLOW + achievement.getName(),
+												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+														achievement.getDescription(), "", Messages.getString(
+																"mobhunting.commands.listachievements.notstarted") });
+
 										m++;
-									else
+									} else {
 										Messages.debug("No room for achievement: %s", achievement.getName());
+										break;
+									}
 								}
 							}
 						}

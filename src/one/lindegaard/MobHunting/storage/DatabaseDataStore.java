@@ -204,8 +204,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 				MobHunting.getConfigManager().saveConfig();
 			}
 
-			//mGetPlayerData = new PreparedStatement[4];
-
 			// Enable FOREIGN KEY for Sqlite database
 			if (!MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
 				Statement statement = mConnection.createStatement();
@@ -569,6 +567,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				if (getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
 					n++;
+					
 				}
 			if (n > 0)
 				Bukkit.getLogger().info("[MobHunting] " + n + " MythicMobs was inserted to mh_Mobs");
@@ -581,7 +580,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	@Override
-	public void insertMythicMobs(String mob) {
+	public void insertMissingMythicMobs(String mob) {
 		if (getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0)
 			try {
 				Connection mConnection = setupConnection();
@@ -597,7 +596,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	@Override
-	public void insertCitizensMobs() {
+	public void insertMissingCitizensMobs() {
 		int n = 0;
 		try {
 			Connection mConnection = setupConnection();
@@ -1309,11 +1308,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			// migrate data from old table3s to new tables.
 			try {
-				Bukkit.getLogger().info("[MobHunting] Migrating mh_Players from V2 to V3");
 				String insertStr = "INSERT INTO mh_Players(UUID, NAME, PLAYER_ID, LEARNING_MODE, MUTE_MODE)"
 						+ "SELECT UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE FROM mh_PlayersV2";
 				int n = statement.executeUpdate(insertStr);
-				Bukkit.getLogger().info("[MobHunting] Migrated " + n + " players into the new mh_Players.");
+				if (n>0)
+					Bukkit.getLogger().info("[MobHunting] Migrated " + n + " players into the new mh_Players.");
 			} catch (SQLException e) {
 				Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_Players");
 				e.printStackTrace();

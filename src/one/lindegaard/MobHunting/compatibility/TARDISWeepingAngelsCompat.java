@@ -16,6 +16,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngelSpawnEvent;
@@ -203,16 +204,14 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		Entity entity = event.getEntity();
 		Monster monster = getWeepingAngelMonsterType(entity);
 
-		// Messages.debug("TARDISWeepingAngelSpawnEvent: MinecraftMobtype=%s
-		// WeepingAngelsMobType=%s",
-		// event.getEntityType(), monster.name());
-
 		if (mMobRewardData != null && !mMobRewardData.containsKey(monster.name())) {
 			Messages.debug("New TARDIS mob found=%s (%s)", monster.name(), monster.getName());
 			mMobRewardData.put(monster.name(), new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(),
 					monster.getName(), "40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
 			saveTARDISWeepingAngelsMobsData(monster.name());
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
+			// Update mob loaded into memory
+			ExtendedMobManager.updateExtendedMobs();
 		}
 
 		event.getEntity().setMetadata(MH_TARDISWEEPINGANGELS,
