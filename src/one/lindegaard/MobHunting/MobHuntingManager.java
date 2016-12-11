@@ -638,18 +638,22 @@ public class MobHuntingManager implements Listener {
 				if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, DefaultFlag.MOB_DAMAGE, true)) {
 					Messages.debug("KillBlocked:(2) %s is hiding in WG region with mob-damage=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
+					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 					Messages.debug("Trying to remove natural drops");
 					cancelNaturalDrops = true;
 					event.getDrops().clear();
+					}
 					return;
 					// }
 				} else if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
 						true)) {
 					Messages.debug("KillBlocked: %s is in a protected region mobhunting=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
+					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 					Messages.debug("Trying to remove natural drops");
 					cancelNaturalDrops = true;
 					event.getDrops().clear();
+					}
 					return;
 				}
 			}
@@ -953,9 +957,10 @@ public class MobHuntingManager implements Listener {
 				data.setDampenedKills(detectedGrindingArea.count++);
 				if (data.getDampenedKills() == 20) {
 					MobHunting.getAreaManager().registerKnownGrindingSpot(detectedGrindingArea);
+					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 					Messages.debug("This is a registered grinding spot. Natural drops was removed.");
 					Messages.learn(killer, "This is a registered grinding spot. Natural drops was removed.");
-					cancelNaturalDrops = true;
+					cancelNaturalDrops = true;}
 				}
 			} else {
 				if (data.lastKillAreaCenter != null) {
@@ -971,8 +976,9 @@ public class MobHuntingManager implements Listener {
 									Messages.playerActionBarMessage(killer,
 											ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
 									data.recordGrindingArea();
+									if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 									Messages.debug("Grinding caused natural drops to be removed.");
-									cancelNaturalDrops = true;
+									cancelNaturalDrops = true;}
 
 								}
 							}
