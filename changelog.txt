@@ -1,5 +1,6 @@
 V4.2.2 New setting "try-to-cancel-natual-drops"
-* Added new setting to allow the mobs to drop normal items, even when the MobHunting reward is canceled. 
+* Added new setting to allow the mobs to drop normal items, even when the MobHunting reward is canceled.
+* Fixing CONSTRAINTS on mh_Players
 V4.2.1
 * Fixed bug where player was able get an Achievement, disconnect, reconnect and get the same Achievement again.
 * Fixed bug where Citizens/Sentinel kills was not registered.

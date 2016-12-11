@@ -441,7 +441,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		insert.executeBatch();
 		insert.close();
-		
+
 		int modified = statement.executeUpdate("delete from `mh_Players` where `UUID`='**UNSPEC**'");
 		System.out.println("[MobHunting]" + modified + " players were removed due to missing UUIDs");
 
@@ -919,7 +919,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		statement.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
 		statement.close();
 		connection.commit();
-		
+
 		setupTriggerV2(connection);
 
 	}
@@ -944,8 +944,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily " + "(ID CHAR(7) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
 				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
-				+ " KEY `MOB_ID` (`MOB_ID`),"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID)," + " KEY `MOB_ID` (`MOB_ID`),"
 				+ " KEY `mh_Daily_Player_Id` (`PLAYER_ID`),"
 				+ " CONSTRAINT mh_Daily_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
 				+ " CONSTRAINT mh_Daily_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
@@ -953,8 +952,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly " + "(ID CHAR(6) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
 				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
-				+ " KEY `MOB_ID` (`MOB_ID`),"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID)," + " KEY `MOB_ID` (`MOB_ID`),"
 				+ " KEY `mh_Weekly_Player_Id` (`PLAYER_ID`),"
 				+ " CONSTRAINT mh_Weekly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
 				+ " CONSTRAINT mh_Weekly_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
@@ -962,8 +960,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly " + "(ID CHAR(6) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
 				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
-				+ " KEY `MOB_ID` (`MOB_ID`),"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID)," + " KEY `MOB_ID` (`MOB_ID`),"
 				+ " KEY `mh_Monthly_Player_Id` (`PLAYER_ID`),"
 				+ " CONSTRAINT mh_Monthly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
 				+ " CONSTRAINT mh_Monthly_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
@@ -971,20 +968,18 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly " + "(ID CHAR(4) NOT NULL,"
 				+ " MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
 				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
-				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
-				+ " KEY `MOB_ID` (`MOB_ID`),"
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID)," + " KEY `MOB_ID` (`MOB_ID`),"
 				+ " KEY `mh_Yearly_Player_Id` (`PLAYER_ID`),"
 				+ " CONSTRAINT mh_Yearly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
 				+ " CONSTRAINT mh_Yearly_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
 
-		create.executeUpdate(
-				"CREATE TABLE IF NOT EXISTS mh_AllTime " + "(MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL,"
-						+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," + " TOTAL_KILL INTEGER DEFAULT 0,"
-						+ " TOTAL_ASSIST INTEGER DEFAULT 0," + " PRIMARY KEY(MOB_ID, PLAYER_ID),"
-						+ " KEY `MOB_ID` (`MOB_ID`),"
-						+ " KEY `mh_AllTime_Player_Id` (`PLAYER_ID`),"
-						+ " CONSTRAINT mh_AllTime_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
-						+ " CONSTRAINT mh_AllTime_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime " + "(MOB_ID INTEGER NOT NULL,"
+				+ " PLAYER_ID INTEGER NOT NULL," + " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"
+				+ " TOTAL_KILL INTEGER DEFAULT 0," + " TOTAL_ASSIST INTEGER DEFAULT 0,"
+				+ " PRIMARY KEY(MOB_ID, PLAYER_ID)," + " KEY `MOB_ID` (`MOB_ID`),"
+				+ " KEY `mh_AllTime_Player_Id` (`PLAYER_ID`),"
+				+ " CONSTRAINT mh_AllTime_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " CONSTRAINT mh_AllTime_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements " + "(PLAYER_ID INTEGER NOT NULL,"
 				+ " ACHIEVEMENT VARCHAR(64) NOT NULL," + " DATE DATETIME NOT NULL," + " PROGRESS INTEGER NOT NULL,"
@@ -1001,7 +996,39 @@ public class MySQLDataStore extends DatabaseDataStore {
 					+ "KEY `mh_Bounties_Player_Id_1` (`BOUNTYOWNER_ID`),"
 					+ "KEY `mh_Bounties_Player_Id_2` (`WANTEDPLAYER_ID`),"
 					+ "CONSTRAINT mh_Bounties_Player_Id_1 FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
-					+ "CONSTRAINT mh_Bounties_Player_Id_2 FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
+					+ "CONSTRAINT mh_Bounties_Player_Id_2 FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE"
+					+ ")");
+		}
+
+		try {
+			create.executeUpdate("alter table mh_Daily drop FOREIGN KEY `mh_Daily_Player_Id`;");
+			create.executeUpdate("alter table mh_Weekly drop FOREIGN KEY `mh_Weekly_Player_Id`;");
+			create.executeUpdate("alter table mh_Monthly drop FOREIGN KEY `mh_Monthly_Player_Id`;");
+			create.executeUpdate("alter table mh_Yearly drop FOREIGN KEY `mh_Yearly_Player_Id`;");
+			create.executeUpdate("alter table mh_AllTime drop FOREIGN KEY `mh_AllTime_Player_Id`;");
+			create.executeUpdate("alter table mh_Achievements drop FOREIGN KEY `mh_Achievements_Player_Id`;");
+			create.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_1`;");
+			create.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_2`;");
+
+			create.executeUpdate(
+					"alter table mh_Daily add CONSTRAINT `mh_Daily_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+			create.executeUpdate(
+					"alter table mh_Weekly add CONSTRAINT `mh_Weekly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+			create.executeUpdate(
+					"alter table mh_Monthly add CONSTRAINT `mh_Monthly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+			create.executeUpdate(
+					"alter table mh_Yearly add CONSTRAINT `mh_Yearly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+			create.executeUpdate(
+					"alter table mh_AllTime add CONSTRAINT `mh_AllTime_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+			create.executeUpdate(
+					"alter table mh_Achievements add CONSTRAINT `mh_Achievements_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+			create.executeUpdate(
+					"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_1` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+			create.executeUpdate(
+					"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_2` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
 		// Setup Database triggers
@@ -1011,7 +1038,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		connection.commit();
 
 		insertMissingVanillaMobs();
-		
+
 		Messages.debug("MobHunting V3 Database created.");
 	}
 
