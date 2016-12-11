@@ -1000,37 +1000,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 					+ ")");
 		}
 
-		try {
-			create.executeUpdate("alter table mh_Daily drop FOREIGN KEY `mh_Daily_Player_Id`;");
-			create.executeUpdate("alter table mh_Weekly drop FOREIGN KEY `mh_Weekly_Player_Id`;");
-			create.executeUpdate("alter table mh_Monthly drop FOREIGN KEY `mh_Monthly_Player_Id`;");
-			create.executeUpdate("alter table mh_Yearly drop FOREIGN KEY `mh_Yearly_Player_Id`;");
-			create.executeUpdate("alter table mh_AllTime drop FOREIGN KEY `mh_AllTime_Player_Id`;");
-			create.executeUpdate("alter table mh_Achievements drop FOREIGN KEY `mh_Achievements_Player_Id`;");
-			create.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_1`;");
-			create.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_2`;");
-
-			create.executeUpdate(
-					"alter table mh_Daily add CONSTRAINT `mh_Daily_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			create.executeUpdate(
-					"alter table mh_Weekly add CONSTRAINT `mh_Weekly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			create.executeUpdate(
-					"alter table mh_Monthly add CONSTRAINT `mh_Monthly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			create.executeUpdate(
-					"alter table mh_Yearly add CONSTRAINT `mh_Yearly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			create.executeUpdate(
-					"alter table mh_AllTime add CONSTRAINT `mh_AllTime_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			create.executeUpdate(
-					"alter table mh_Achievements add CONSTRAINT `mh_Achievements_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			create.executeUpdate(
-					"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_1` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			create.executeUpdate(
-					"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_2` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
 		// Setup Database triggers
 		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
 		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
