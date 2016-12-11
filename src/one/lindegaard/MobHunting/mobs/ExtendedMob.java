@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.mobs;
 
+import net.citizensnpcs.api.npc.NPC;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
@@ -74,7 +75,11 @@ public class ExtendedMob {
 			return MythicMobsCompat.getMobRewardData().get(mobtype).getMobName();
 		case 2:
 			// Citizens
-			return CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mobtype)).getName();
+			NPC npc = CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mobtype));
+			if (npc!=null)
+				return npc.getName();
+			else
+				return "";
 		case 3:
 			// TARDISWeepingAngels
 			return TARDISWeepingAngelsCompat.getMobRewardData().get(mobtype).getMobName();

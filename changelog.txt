@@ -1,3 +1,5 @@
+V4.2.4
+* Fixed error when creating names in language file for missing Citizens.
 V4.2.3 New setting "try-to-cancel-natural-drops"
 * Added new setting to allow the mobs to drop normal items, even when the MobHunting reward is canceled.
 * Fixing CONSTRAINTS on mh_Players

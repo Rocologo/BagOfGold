@@ -118,8 +118,8 @@ public class Messages {
 				else
 					k = "mobs." + key.getValue().getMobPlugin().name() + "_" + key.getValue().getMobtype() + ".name";
 				if (!dest.containsKey(k)) {
-					Bukkit.getLogger().info(PREFIX + " Creating missing key ("+k+") in language file.");
-					if (key.getValue() != null)
+					Bukkit.getLogger().info(PREFIX + " Creating missing key (" + k + ") in language file.");
+					if (key.getValue() != null && !key.getValue().getName().equals(""))
 						newEntries.put(k, key.getValue().getName());
 				}
 			}
