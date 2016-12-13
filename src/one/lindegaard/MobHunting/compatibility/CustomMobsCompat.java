@@ -18,6 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
+import de.hellfirepvp.api.CustomMobsAPI;
 import de.hellfirepvp.api.data.ICustomMob;
 import de.hellfirepvp.api.event.CustomMobDeathEvent;
 import de.hellfirepvp.api.event.CustomMobSpawnEvent;
@@ -66,15 +67,25 @@ public class CustomMobsCompat implements Listener {
 				return;
 
 			config.load(file);
-			for (String key : config.getKeys(false)) {
-				ConfigurationSection section = config.getConfigurationSection(key);
-				MobRewardData mob = new MobRewardData();
-				mob.read(section);
-				mob.setMobType(key);
-				if (mob.getMobName() == null)
-					mob.setMobName(mob.getMobType());
-				mMobRewardData.put(key, mob);
-				MobHunting.getStoreManager().insertCustomMobs(key);
+			for (String key : CustomMobsAPI.getKnownMobTypes()) {
+				if (config.contains(key)) {
+					ConfigurationSection section = config.getConfigurationSection(key);
+					MobRewardData mob = new MobRewardData();
+					if (isCustomMob(key)) {
+						mob.read(section);
+						mob.setMobType(key);
+						if (mob.getMobName() == null)
+							mob.setMobName(mob.getMobType());
+					} else
+						mob = new MobRewardData(MobPlugin.CustomMobs, CustomMobsAPI.getCustomMob(key).getName(),
+								CustomMobsAPI.getCustomMob(key).getDisplayName(), "10",
+								"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1);
+
+					mMobRewardData.put(key, mob);
+					MobHunting.getStoreManager().insertCustomMobs(key);
+				} else {
+					Messages.debug("The mob=%s cant be found in CustomMobs configuration file", key);
+				}
 			}
 			Messages.debug("Loaded %s CustomMobs", mMobRewardData.size());
 		} catch (IOException e) {
@@ -91,13 +102,17 @@ public class CustomMobsCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			MobRewardData mob = new MobRewardData();
-			mob.read(section);
-			mob.setMobType(key);
-			if (mob.getMobName() == null)
-				mob.setMobName(mob.getMobType());
-			mMobRewardData.put(key, mob);
-			MobHunting.getStoreManager().insertCustomMobs(key);
+			if (isCustomMob(key)) {
+				MobRewardData mob = new MobRewardData();
+				mob.read(section);
+				mob.setMobType(key);
+				if (mob.getMobName() == null)
+					mob.setMobName(mob.getMobType());
+				mMobRewardData.put(key, mob);
+				MobHunting.getStoreManager().insertCustomMobs(key);
+			} else {
+				Messages.debug("The mob=%s cant be found in CustomMobs configuration file", key);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -154,8 +169,16 @@ public class CustomMobsCompat implements Listener {
 		return supported;
 	}
 
-	public static boolean isCustomMob(Entity killed) {
-		return killed.hasMetadata(MH_CUSTOMMOBS);
+	public static boolean isCustomMob(Entity entity) {
+		if (isSupported())
+			return entity.hasMetadata(MH_CUSTOMMOBS);
+		return false;
+	}
+
+	public static boolean isCustomMob(String mob) {
+		if (isSupported())
+			return CustomMobsAPI.getCustomMob(mob) != null;
+		return false;
 	}
 
 	public static String getCustomMobType(Entity killed) {

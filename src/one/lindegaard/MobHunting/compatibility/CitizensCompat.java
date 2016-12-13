@@ -67,12 +67,12 @@ public class CitizensCompat implements Listener {
 
 			supported = true;
 
-			loadCitizensData();
-			saveCitizensData();
-
 			// wait x seconds or until Citizens is fully loaded.
 			Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
 				public void run() {
+					loadCitizensData();
+					saveCitizensData();
+
 					masterMobHunterManager.initialize();
 					findMissingSentry();
 					loadBountyDataForSentryOrSentinel();
@@ -186,9 +186,9 @@ public class CitizensCompat implements Listener {
 			return false;
 	}
 
-	public static boolean isNPC(int npc) {
+	public static boolean isNPC(Integer id) {
 		if (isSupported())
-			return CitizensAPI.getNPCRegistry().getById(npc) != null;
+			return CitizensAPI.getNPCRegistry().getById(id) != null;
 		else
 			return false;
 	}
