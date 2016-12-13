@@ -639,9 +639,9 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("KillBlocked:(2) %s is hiding in WG region with mob-damage=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
 					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
-					Messages.debug("Trying to remove natural drops");
-					cancelNaturalDrops = true;
-					event.getDrops().clear();
+						Messages.debug("Trying to remove natural drops");
+						cancelNaturalDrops = true;
+						event.getDrops().clear();
 					}
 					return;
 					// }
@@ -650,9 +650,9 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("KillBlocked: %s is in a protected region mobhunting=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
 					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
-					Messages.debug("Trying to remove natural drops");
-					cancelNaturalDrops = true;
-					event.getDrops().clear();
+						Messages.debug("Trying to remove natural drops");
+						cancelNaturalDrops = true;
+						event.getDrops().clear();
 					}
 					return;
 				}
@@ -769,8 +769,9 @@ public class MobHuntingManager implements Listener {
 			Messages.debug("%s killed Sentinel or a Sentry npc-%s (name=%s)", killer.getName(),
 					CitizensCompat.getNPCId(killed), CitizensCompat.getNPCName(killed));
 			if (MasterMobHunterManager.isMasterMobHunter(CitizensCompat.getNPC(killed))) {
-				//ItemStack is = ((Player) CitizensCompat.getNPC(killed).getEntity()).getItemInHand();
-				//killer.getWorld().dropItem(killed.getLocation(), is);
+				// ItemStack is = ((Player)
+				// CitizensCompat.getNPC(killed).getEntity()).getItemInHand();
+				// killer.getWorld().dropItem(killed.getLocation(), is);
 			}
 		}
 
@@ -958,9 +959,10 @@ public class MobHuntingManager implements Listener {
 				if (data.getDampenedKills() == 20) {
 					MobHunting.getAreaManager().registerKnownGrindingSpot(detectedGrindingArea);
 					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
-					Messages.debug("This is a registered grinding spot. Natural drops was removed.");
-					Messages.learn(killer, "This is a registered grinding spot. Natural drops was removed.");
-					cancelNaturalDrops = true;}
+						Messages.debug("This is a registered grinding spot. Natural drops was removed.");
+						Messages.learn(killer, "This is a registered grinding spot. Natural drops was removed.");
+						cancelNaturalDrops = true;
+					}
 				}
 			} else {
 				if (data.lastKillAreaCenter != null) {
@@ -977,8 +979,9 @@ public class MobHuntingManager implements Listener {
 											ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
 									data.recordGrindingArea();
 									if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
-									Messages.debug("Grinding caused natural drops to be removed.");
-									cancelNaturalDrops = true;}
+										Messages.debug("Grinding caused natural drops to be removed.");
+										cancelNaturalDrops = true;
+									}
 
 								}
 							}
@@ -1005,9 +1008,15 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Calculate basic the reward
+		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
+		if (mob.getMob_id() == 0) {
+			Bukkit.getLogger().warning("Unknown Mob:" + mob.getName() + " from plugin " + mob.getMobPlugin());
+			Bukkit.getLogger().warning("Please report this to developer!");
+			return;
+		}
 		double cash = MobHunting.getConfigManager().getBaseKillPrize(killed);
 
-		Messages.debug("Mob Basic Prize=%s for killing a %s", cash, killed.getType().getName());
+		Messages.debug("Basic Prize=%s for killing a %s", cash, mob.getName());
 		double multiplier = 1.0;
 
 		// Apply the modifiers to Basic reward
@@ -1139,7 +1148,6 @@ public class MobHuntingManager implements Listener {
 			}
 
 			// Record the kill in the Database
-			ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
 			if (killer != null) {
 				Messages.debug("RecordKill: %s killed a %s (%s)", killer.getName(), mob.getName(),
 						mob.getMobPlugin().name());
@@ -1252,10 +1260,16 @@ public class MobHuntingManager implements Listener {
 		else
 			cash = MobHunting.getConfigManager().getBaseKillPrize(killed) * multiplier;
 
-		if (cash >= 0.01) {
-			ExtendedMob mobStore = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
-			MobHunting.getDataStoreManager().recordAssist(player, killer, MinecraftMob.getExtendedMobType(killed),
-					mobStore, killed.hasMetadata("MH:hasBonus"));
+		if ((cash >= MobHunting.getConfigManager().minimumReward)
+				|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
+			ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
+			if (mob.getMob_id() == 0) {
+				Bukkit.getLogger().warning("Unknown Mob:" + mob.getName() + " from plugin " + mob.getMobPlugin());
+				Bukkit.getLogger().warning("Please report this to developer!");
+				return;
+			}
+			MobHunting.getDataStoreManager().recordAssist(player, killer, MinecraftMob.getExtendedMobType(killed), mob,
+					killed.hasMetadata("MH:hasBonus"));
 			MobHunting.getRewardManager().depositPlayer(player, cash);
 			Messages.debug("%s got a on assist reward (%s)", player.getName(),
 					MobHunting.getRewardManager().format(cash));
@@ -1269,12 +1283,7 @@ public class MobHuntingManager implements Listener {
 								+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
 										MobHunting.getRewardManager().format(cash), "bonuses",
 										String.format("x%.1f", ks)));
-		} else {
-			player.sendMessage("[MobHunting] Error - please contact server owner and ask him to check the serverlog.");
-			Bukkit.getLogger().warning(
-					"[MobHunting] WARNING - Assisted kill of a " + killed.getType() + ". Cant handle the entity type!");
 		}
-
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

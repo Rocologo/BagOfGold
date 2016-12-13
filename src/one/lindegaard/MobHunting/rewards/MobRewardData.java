@@ -161,10 +161,14 @@ public class MobRewardData {
 		objects.put("plugin", mobPluginName);
 		objects.put("mobName", mobName);
 		objects.put("rewardPrize", reward);
-		objects.put("consoleRunCommand", consoleRunCommand);
-		objects.put("rewardDescription", rewardDescription);
-		//objects.put("propability", propability);
-		//objects.put("propabilityBase", propabilityBase);
+		if (consoleRunCommand != null)
+			objects.put("consoleRunCommand", consoleRunCommand);
+		else
+			objects.put("consoleRunCommand", "''");
+		if (rewardDescription != null)
+			objects.put("rewardDescription", rewardDescription);
+		else
+			objects.put("rewardDescription", "''");
 		objects.put("chance", chance);
 		return objects;
 	}
@@ -187,8 +191,8 @@ public class MobRewardData {
 		mobPluginName = MobPlugin.valueOf(section.get("plugin").toString());
 		mobName = section.getString("mobName");
 		reward = section.getString("rewardPrize");
-		consoleRunCommand = section.getString("consoleRunCommand");
-		rewardDescription = section.getString("rewardDescription");
+		consoleRunCommand = section.getString("consoleRunCommand", "");
+		rewardDescription = section.getString("rewardDescription", "");
 		if (section.get("chance") != null)
 			chance = section.getDouble("chance");
 		else {

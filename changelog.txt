@@ -1,3 +1,6 @@
+V4.2.5
+* Fixed missing lines in mythicMobs-reward.yml file. (https://www.spigotmc.org/threads/mobhunting.46937/page-74#post-2083797 )
+* Fixed Minimums reward onAssisted kills
 V4.2.4
 * Fixed error when creating names in language file for missing Citizens.
 V4.2.3 New setting "try-to-cancel-natural-drops"

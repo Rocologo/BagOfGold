@@ -135,7 +135,7 @@ public class RewardListeners implements Listener {
 									if (ProtocolLibCompat.isSupported())
 										ProtocolLibHelper.pickupMoney(player, ent);
 									RewardManager.getDroppedMoney().remove(ent.getEntityId());
-									Messages.debug("%s picked up the %s money. (# of money left=%s)", player.getName(),
+									Messages.debug("%s picked up the %s money. (# of rewards left=%s)", player.getName(),
 											MobHunting.getRewardManager().format(money),
 											RewardManager.getDroppedMoney().size());
 									ent.remove();
@@ -163,7 +163,7 @@ public class RewardListeners implements Listener {
 				if (RewardManager.getDroppedMoney().containsKey(targetEntity.getEntityId()))
 					RewardManager.getDroppedMoney().remove(targetEntity.getEntityId());
 				targetEntity.remove();
-				Messages.debug("The reward was hit by %s and removed. (# of Rewards left=%s)", projectile.getType(),
+				Messages.debug("The reward was hit by %s and removed. (# of rewards left=%s)", projectile.getType(),
 						RewardManager.getDroppedMoney().size());
 				break;
 			}
