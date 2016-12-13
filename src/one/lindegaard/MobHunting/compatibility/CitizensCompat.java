@@ -37,8 +37,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import mc.alk.arena.events.ExtendedBukkitEvent;
-
 public class CitizensCompat implements Listener {
 
 	private static boolean supported = false;
@@ -91,17 +89,23 @@ public class CitizensCompat implements Listener {
 		try {
 			if (!fileMobRewardData.exists())
 				return;
-			Messages.debug("Loading extra MobRewards.");
+			Messages.debug("Loading extra MobRewards for Citizens NPC.");
 
 			config.load(fileMobRewardData);
+			int n = 0;
 			for (String key : config.getKeys(false)) {
-				ConfigurationSection section = config.getConfigurationSection(key);
-				MobRewardData mrd = new MobRewardData();
-				mrd.read(section);
-				mMobRewardData.put(key, mrd);
-				MobHunting.getStoreManager().insertCitizensMobs(key);
+				if (isNPC(Integer.valueOf(key))) {
+					ConfigurationSection section = config.getConfigurationSection(key);
+					MobRewardData mrd = new MobRewardData();
+					mrd.read(section);
+					mMobRewardData.put(key, mrd);
+					MobHunting.getStoreManager().insertCitizensMobs(key);
+					n++;
+				} else {
+					Messages.debug("The mob=%s cant be found in Citizens saves.yml file", key);
+				}
 			}
-			Messages.debug("Loaded %s extra MobRewards.", mMobRewardData.size());
+			Messages.debug("Loaded %s extra MobRewards.", n);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -178,6 +182,13 @@ public class CitizensCompat implements Listener {
 	public static boolean isNPC(Entity entity) {
 		if (isSupported())
 			return CitizensAPI.getNPCRegistry().isNPC(entity);
+		else
+			return false;
+	}
+
+	public static boolean isNPC(int npc) {
+		if (isSupported())
+			return CitizensAPI.getNPCRegistry().getById(npc) != null;
 		else
 			return false;
 	}

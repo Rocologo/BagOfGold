@@ -17,12 +17,11 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-//import net.elseland.xikage.MythicMobs.API.Events.MythicMobCustomSkillEvent;
-//import net.elseland.xikage.MythicMobs.API.Events.MythicMobDeathEvent;
-//import net.elseland.xikage.MythicMobs.API.Events.MythicMobSkillEvent;
-//import net.elseland.xikage.MythicMobs.API.Events.MythicMobSpawnEvent;
-//import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
+import net.elseland.xikage.MythicMobs.MythicMobs;
+import net.elseland.xikage.MythicMobs.API.IMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
+import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
+//import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
@@ -38,13 +37,16 @@ public class MythicMobsCompat implements Listener {
 	private File file = new File(MobHunting.getInstance().getDataFolder(), "mythicmobs-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_MYTHICMOBS = "MH:MYTHICMOBS";
+	private static MythicMobs mythicMobs;
+	private static IMobsAPI mobsAPI;
 
 	public MythicMobsCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MythicMobs is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
-
+			mythicMobs = (MythicMobs) mPlugin;
+			mobsAPI = mythicMobs.getAPI().getMobAPI();
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
@@ -65,17 +67,24 @@ public class MythicMobsCompat implements Listener {
 		try {
 			if (!file.exists())
 				return;
+			Messages.debug("Loading extra MobRewards for Citizens MythicMobs mobs.");
 
 			config.load(file);
+			int n = 0;
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config.getConfigurationSection(key);
-				MobRewardData mob = new MobRewardData();
-				mob.read(section);
-				mob.setMobType(key);
-				mMobRewardData.put(key, mob);
-				MobHunting.getStoreManager().insertMissingMythicMobs(key);
+				if (isMythicMob(key)) {
+					MobRewardData mob = new MobRewardData();
+					mob.read(section);
+					mob.setMobType(key);
+					mMobRewardData.put(key, mob);
+					MobHunting.getStoreManager().insertMissingMythicMobs(key);
+					n++;
+				} else {
+					Messages.debug("The mob=%s cant be found in MythicMobs configuration files", key);
+				}
 			}
-			Messages.debug("Loaded %s MythicMobs", mMobRewardData.size());
+			Messages.debug("Loaded %s MythicMobs", n);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -91,14 +100,18 @@ public class MythicMobsCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			MobRewardData mob = new MobRewardData();
-			mob.read(section);
-			mob.setMobType(key);
-			mMobRewardData.put(key, mob);
-			int n = StatType.values().length;
-			StatType.values()[n + 1] = new StatType(mob.getMobType() + "_kill", mob.getMobName());
-			StatType.values()[n + 2] = new StatType(mob.getMobType() + "_assist", mob.getMobName());
-			MobHunting.getStoreManager().insertMissingMythicMobs(key);
+			if (isMythicMob(key)) {
+				MobRewardData mob = new MobRewardData();
+				mob.read(section);
+				mob.setMobType(key);
+				mMobRewardData.put(key, mob);
+				int n = StatType.values().length;
+				StatType.values()[n + 1] = new StatType(mob.getMobType() + "_kill", mob.getMobName());
+				StatType.values()[n + 2] = new StatType(mob.getMobType() + "_assist", mob.getMobName());
+				MobHunting.getStoreManager().insertMissingMythicMobs(key);
+			} else {
+				Messages.debug("The mob=%s cant be found in MythicMobs configuration files", key);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -156,7 +169,20 @@ public class MythicMobsCompat implements Listener {
 	}
 
 	public static boolean isMythicMob(Entity killed) {
-		return killed.hasMetadata(MH_MYTHICMOBS);
+		if (isSupported())
+			return mobsAPI.isMythicMob(killed);
+		// return killed.hasMetadata(MH_MYTHICMOBS);
+		return false;
+	}
+
+	public static boolean isMythicMob(String killed) {
+		if (isSupported())
+			try {
+				return mobsAPI.getMythicMob(killed) != null;
+			} catch (InvalidMobTypeException e) {
+				e.printStackTrace();
+			}
+		return false;
 	}
 
 	public static String getMythicMobType(Entity killed) {

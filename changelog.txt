@@ -1,6 +1,7 @@
 V4.2.5
 * Fixed missing lines in mythicMobs-reward.yml file. (https://www.spigotmc.org/threads/mobhunting.46937/page-74#post-2083797 )
-* Temporary fix for Mythicmobs which are deleted from the MythicMobs configuration files, but still exists in MobHunting "mythicmobs-rewards.yml" file.
+* Fix for Mythicmobs which are deleted from the MythicMobs configuration files, but still exists in MobHunting "mythicmobs-rewards.yml" file.
+* Fix for Citizens which are deleted from the saves.yml configuration file, but still exists in MobHunting "citizens-rewards.yml" file.
 * Fixed Minimums reward onAssisted kills
 V4.2.4
 * Fixed error when creating names in language file for missing Citizens.

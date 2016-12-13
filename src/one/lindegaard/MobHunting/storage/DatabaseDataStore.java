@@ -564,7 +564,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Connection mConnection = setupConnection();
 			Statement statement = mConnection.createStatement();
 			for (String mob : MythicMobsCompat.getMobRewardData().keySet())
-				if (getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0) {
+				if (MythicMobsCompat.isMythicMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
 					n++;
 				}
@@ -580,7 +580,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertMissingMythicMobs(String mob) {
-		if (getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0)
+		if (MythicMobsCompat.isMythicMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0)
 			try {
 				Connection mConnection = setupConnection();
 				Statement statement = mConnection.createStatement();
@@ -601,7 +601,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Connection mConnection = setupConnection();
 			Statement statement = mConnection.createStatement();
 			for (String mob : CitizensCompat.getMobRewardData().keySet())
-				if (getMobIdFromExtendedMobType(mob, MobPlugin.Citizens) == 0) {
+				if (CitizensCompat.isNPC(Integer.valueOf(mob))
+						&& getMobIdFromExtendedMobType(mob, MobPlugin.Citizens) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (2,'" + mob + "')");
 					n++;
 				}
@@ -617,7 +618,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertCitizensMobs(String mob) {
-		if (getMobIdFromExtendedMobType(mob, MobPlugin.Citizens) == 0)
+		if (CitizensCompat.isNPC(Integer.valueOf(mob)) && getMobIdFromExtendedMobType(mob, MobPlugin.Citizens) == 0)
 			try {
 				Connection mConnection = setupConnection();
 				Statement statement = mConnection.createStatement();
@@ -932,7 +933,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
-
 	/**
 	 * getPlayerID. get the player ID and check if the player has change name
 	 * 
@@ -952,7 +952,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Connection mConnection;
 			try {
 				ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
-				
+
 				mConnection = setupConnection();
 				openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
 				mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
@@ -975,7 +975,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				result.close();
 				mGetPlayerData.close();
 				mConnection.close();
-				
+
 				Iterator<OfflinePlayer> itr = changedNames.iterator();
 				while (itr.hasNext()) {
 					OfflinePlayer p = itr.next();
@@ -1310,7 +1310,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				String insertStr = "INSERT INTO mh_Players(UUID, NAME, PLAYER_ID, LEARNING_MODE, MUTE_MODE)"
 						+ "SELECT UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE FROM mh_PlayersV2";
 				int n = statement.executeUpdate(insertStr);
-				if (n>0)
+				if (n > 0)
 					Bukkit.getLogger().info("[MobHunting] Migrated " + n + " players into the new mh_Players.");
 			} catch (SQLException e) {
 				Bukkit.getLogger().severe("[MobHunting] Error while inserting data to new mh_Players");
@@ -1325,7 +1325,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				statement.executeUpdate("ALTER TABLE mh_Monthly DROP FOREIGN KEY mh_Monthly_ibfk_1;");
 				statement.executeUpdate("ALTER TABLE mh_Yearly DROP FOREIGN KEY mh_Yearly_ibfk_1;");
 				statement.executeUpdate("ALTER TABLE mh_AllTime DROP FOREIGN KEY mh_AllTime_ibfk_1;");
-				
+
 				Bukkit.getLogger().info("[MobHunting] Dropped foreign keys on mh_Players.PLAYER_ID");
 				statement.executeUpdate(
 						"ALTER TABLE mh_Daily ADD CONSTRAINT mh_Daily_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE;");
@@ -1373,36 +1373,36 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Bukkit.getLogger().info("[MobHunting] Added constraints on mh_Bounties");
 			} catch (SQLException e) {
 			}
-			
+
 			try {
-			statement.executeUpdate("alter table mh_Daily drop FOREIGN KEY `mh_Daily_Player_Id`;");
-			statement.executeUpdate("alter table mh_Weekly drop FOREIGN KEY `mh_Weekly_Player_Id`;");
-			statement.executeUpdate("alter table mh_Monthly drop FOREIGN KEY `mh_Monthly_Player_Id`;");
-			statement.executeUpdate("alter table mh_Yearly drop FOREIGN KEY `mh_Yearly_Player_Id`;");
-			statement.executeUpdate("alter table mh_AllTime drop FOREIGN KEY `mh_AllTime_Player_Id`;");
-			statement.executeUpdate("alter table mh_Achievements drop FOREIGN KEY `mh_Achievements_Player_Id`;");
-			statement.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_1`;");
-			statement.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_2`;");
+				statement.executeUpdate("alter table mh_Daily drop FOREIGN KEY `mh_Daily_Player_Id`;");
+				statement.executeUpdate("alter table mh_Weekly drop FOREIGN KEY `mh_Weekly_Player_Id`;");
+				statement.executeUpdate("alter table mh_Monthly drop FOREIGN KEY `mh_Monthly_Player_Id`;");
+				statement.executeUpdate("alter table mh_Yearly drop FOREIGN KEY `mh_Yearly_Player_Id`;");
+				statement.executeUpdate("alter table mh_AllTime drop FOREIGN KEY `mh_AllTime_Player_Id`;");
+				statement.executeUpdate("alter table mh_Achievements drop FOREIGN KEY `mh_Achievements_Player_Id`;");
+				statement.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_1`;");
+				statement.executeUpdate("alter table mh_Bounties drop FOREIGN KEY `mh_Bounties_Player_Id_2`;");
 			} catch (SQLException e) {
 			}
-			
+
 			try {
-			statement.executeUpdate(
-					"alter table mh_Daily add CONSTRAINT `mh_Daily_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			statement.executeUpdate(
-					"alter table mh_Weekly add CONSTRAINT `mh_Weekly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			statement.executeUpdate(
-					"alter table mh_Monthly add CONSTRAINT `mh_Monthly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			statement.executeUpdate(
-					"alter table mh_Yearly add CONSTRAINT `mh_Yearly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			statement.executeUpdate(
-					"alter table mh_AllTime add CONSTRAINT `mh_AllTime_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			statement.executeUpdate(
-					"alter table mh_Achievements add CONSTRAINT `mh_Achievements_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			statement.executeUpdate(
-					"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_1` FOREIGN KEY (`BOUNTYOWNER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
-			statement.executeUpdate(
-					"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_2` FOREIGN KEY (`WANTEDPLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_Daily add CONSTRAINT `mh_Daily_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_Weekly add CONSTRAINT `mh_Weekly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_Monthly add CONSTRAINT `mh_Monthly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_Yearly add CONSTRAINT `mh_Yearly_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_AllTime add CONSTRAINT `mh_AllTime_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_Achievements add CONSTRAINT `mh_Achievements_Player_Id` FOREIGN KEY (`PLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_1` FOREIGN KEY (`BOUNTYOWNER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
+				statement.executeUpdate(
+						"alter table mh_Bounties add CONSTRAINT `mh_Bounties_Player_Id_2` FOREIGN KEY (`WANTEDPLAYER_ID`) REFERENCES `mh_Players` (`PLAYER_ID`) ON DELETE CASCADE;");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

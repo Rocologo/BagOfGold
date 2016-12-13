@@ -24,8 +24,8 @@ public class ExtendedMobManager {
 	public ExtendedMobManager() {
 		updateExtendedMobs();
 	}
-	
-	public static void updateExtendedMobs(){
+
+	public static void updateExtendedMobs() {
 		MobHunting.getStoreManager().insertMissingVanillaMobs();
 		if (CitizensCompat.isSupported())
 			MobHunting.getStoreManager().insertMissingCitizensMobs();
@@ -50,7 +50,8 @@ public class ExtendedMobManager {
 			ExtendedMob mob = (ExtendedMob) mobset.next();
 			switch (mob.getMobPlugin()) {
 			case MythicMobs:
-				if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig())
+				if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig()
+						|| !MythicMobsCompat.isMythicMob(mob.getMobtype()))
 					continue;
 				break;
 			case CustomMobs:
@@ -62,7 +63,8 @@ public class ExtendedMobManager {
 					continue;
 				break;
 			case Citizens:
-				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig())
+				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig()
+						|| CitizensCompat.isNPC(Integer.valueOf(mob.getMobtype())))
 					continue;
 				break;
 			case Minecraft:
