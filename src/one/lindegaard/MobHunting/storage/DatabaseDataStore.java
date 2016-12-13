@@ -567,7 +567,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 				if (getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
 					n++;
-					
 				}
 			if (n > 0)
 				Bukkit.getLogger().info("[MobHunting] " + n + " MythicMobs was inserted to mh_Mobs");
