@@ -13,8 +13,6 @@ public class Version implements Comparable<Version> {
 			throw new IllegalArgumentException("Version can not be null");
 		if (!version.matches("v?n[0-9]+(\\.[0-9]+)*"))
 			throw new IllegalArgumentException("Invalid version format");
-		if (version.toLowerCase().startsWith("v"))
-			version = version.substring(1,version.length());
 		this.version = version;
 	}
 

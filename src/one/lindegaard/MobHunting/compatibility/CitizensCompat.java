@@ -205,6 +205,16 @@ public class CitizensCompat implements Listener {
 		return CitizensAPI.getNPCRegistry().getNPC(entity);
 	}
 
+	public static boolean isSentryOrSentinel(String mobtype) {
+		if (isNPC(Integer.valueOf(mobtype)))
+			return CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
+					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
+					|| CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
+		else
+			return false;
+	}
+
 	public static boolean isSentryOrSentinel(Entity entity) {
 		if (isNPC(entity))
 			return CitizensAPI.getNPCRegistry().getNPC(entity)

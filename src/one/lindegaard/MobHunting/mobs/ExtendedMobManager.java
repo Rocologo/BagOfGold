@@ -65,7 +65,7 @@ public class ExtendedMobManager {
 				break;
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig()
-						|| CitizensCompat.isNPC(Integer.valueOf(mob.getMobtype())))
+						|| CitizensCompat.isSentryOrSentinel(mob.getMobtype()))
 					continue;
 				break;
 			case Minecraft:
