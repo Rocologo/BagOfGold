@@ -1294,6 +1294,9 @@ public class MobHuntingManager implements Listener {
 		if (event.getEntityType() == EntityType.ENDER_DRAGON)
 			return;
 
+		if (event.getEntityType() == EntityType.CREEPER)
+			return;
+
 		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getLocation().getWorld())
 				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getEntity()) <= 0
 						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getEntity()).equals(""))
