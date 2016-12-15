@@ -4,6 +4,7 @@ V4.2.5
 * Fix for Citizens which are deleted from the saves.yml configuration file, but still exists in MobHunting "citizens-rewards.yml" file.
 * Fix for CustomMobs which are deleted from the custommobs configuration file, but still exists in MobHunting "custommobs-rewards.yml" file.
 * Fixed Minimums reward onAssisted kills
+* Added a check for MythicMobs version. MobHunting only support MythicMobs V2.5.1 and newer.
 V4.2.4
 * Fixed error when creating names in language file for missing Citizens.
 V4.2.3 New setting "try-to-cancel-natural-drops"

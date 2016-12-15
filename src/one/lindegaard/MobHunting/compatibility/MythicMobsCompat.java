@@ -45,18 +45,23 @@ public class MythicMobsCompat implements Listener {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MythicMobs is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
-			mythicMobs = (MythicMobs) mPlugin;
-			mobsAPI = mythicMobs.getAPI().getMobAPI();
-			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+			if (mPlugin.getDescription().getVersion().compareTo("2.5.1") >= 0) {
+				mythicMobs = (MythicMobs) mPlugin;
+				mobsAPI = mythicMobs.getAPI().getMobAPI();
+				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
-					+ getMythicMobs().getDescription().getVersion() + ")");
-			// API:
-			// http://xikage.elseland.net/viewgit/?a=tree&p=MythicMobs&h=dec796decd1ef71fdd49aed69aef85dc7d82b1c1&hb=ffeb51fb84e882365846a30bd2b9753716faf51e&f=MythicMobs/src/net/elseland/xikage/MythicMobs/API
-			supported = true;
+				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
+						+ getMythicMobs().getDescription().getVersion() + ")");
+				// API:
+				// http://xikage.elseland.net/viewgit/?a=tree&p=MythicMobs&h=dec796decd1ef71fdd49aed69aef85dc7d82b1c1&hb=ffeb51fb84e882365846a30bd2b9753716faf51e&f=MythicMobs/src/net/elseland/xikage/MythicMobs/API
+				supported = true;
 
-			loadMythicMobsData();
-			saveMythicMobsData();
+				loadMythicMobsData();
+				saveMythicMobsData();
+			} else {
+				Bukkit.getLogger().warning(
+						"[MobHunting] MythicMobs is outdated. Please update to V2.5.1 or newer. Integration will be disabled");
+			}
 		}
 	}
 
@@ -73,7 +78,7 @@ public class MythicMobsCompat implements Listener {
 			int n = 0;
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config.getConfigurationSection(key);
-				if (isMythicMob(key)) {
+				if (MythicMobsHelper.isMythicMob(key)) {
 					MobRewardData mob = new MobRewardData();
 					mob.read(section);
 					mob.setMobType(key);
@@ -100,7 +105,7 @@ public class MythicMobsCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			if (isMythicMob(key)) {
+			if (MythicMobsHelper.isMythicMob(key)) {
 				MobRewardData mob = new MobRewardData();
 				mob.read(section);
 				mob.setMobType(key);
@@ -163,6 +168,10 @@ public class MythicMobsCompat implements Listener {
 	public static Plugin getMythicMobs() {
 		return mPlugin;
 	}
+	
+	public static IMobsAPI getAPI(){
+		return mobsAPI;
+	}
 
 	public static boolean isSupported() {
 		return supported;
@@ -172,16 +181,6 @@ public class MythicMobsCompat implements Listener {
 		if (isSupported())
 			return mobsAPI.isMythicMob(killed);
 		// return killed.hasMetadata(MH_MYTHICMOBS);
-		return false;
-	}
-
-	public static boolean isMythicMob(String killed) {
-		if (isSupported())
-			try {
-				return mobsAPI.getMythicMob(killed) != null;
-			} catch (InvalidMobTypeException e) {
-				e.printStackTrace();
-			}
 		return false;
 	}
 
