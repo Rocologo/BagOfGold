@@ -998,6 +998,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 					+ "CONSTRAINT mh_Bounties_Player_Id_1 FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
 					+ "CONSTRAINT mh_Bounties_Player_Id_2 FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE"
 					+ ")");
+			
+			//added because BOUNTYOWNER_ID is null for Random bounties.
+			create.executeUpdate("ALTER TABLE mh_Bounties MODIFY BOUNTYOWNER_ID INTEGER");
 		}
 
 		// Setup Database triggers

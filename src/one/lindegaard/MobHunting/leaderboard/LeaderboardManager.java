@@ -73,7 +73,7 @@ public class LeaderboardManager implements Listener {
 
 			for (WorldLeaderboard board : mLeaderboards.values())
 				board.update();
-			Messages.debug("Refeshed %s leaderboards.", mLegacyLeaderboards.size()+mLeaderboards.size());
+			Messages.debug("Refeshed %s leaderboards.", mLegacyLeaderboards.size() + mLeaderboards.size());
 		}
 	}
 
@@ -201,7 +201,7 @@ public class LeaderboardManager implements Listener {
 				board.refresh();
 				mLeaderboards.put(world, board);
 			}
-			Messages.debug("%s Leaderboards loaded from file: %s!", mLeaderboards.size(),
+			Messages.debug("%s Leaderboards in '%s' loaded from file: %s!", mLeaderboards.size(), world.getName(),
 					MobHunting.getInstance().getDataFolder(), "boards-" + world.getName() + ".yml");
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();

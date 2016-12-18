@@ -1,12 +1,13 @@
 V4.2.5
 * Fixed missing lines in mythicMobs-reward.yml file. (https://www.spigotmc.org/threads/mobhunting.46937/page-74#post-2083797 )
-* Fix for Mythicmobs which are deleted from the MythicMobs configuration files, but still exists in MobHunting "mythicmobs-rewards.yml" file.
+* Fix for MythicMobs which are deleted from the MythicMobs configuration files, but still exists in MobHunting "mythicmobs-rewards.yml" file.
 * Fix for Citizens which are deleted from the saves.yml configuration file, but still exists in MobHunting "citizens-rewards.yml" file.
-* Fix for CustomMobs which are deleted from the custommobs configuration file, but still exists in MobHunting "custommobs-rewards.yml" file.
+* Fix for CustomMobs which are deleted from the CustomMobs configuration file, but still exists in MobHunting "custommobs-rewards.yml" file.
 * Fixed Minimums reward onAssisted kills
 * Added a check for MythicMobs version. MobHunting only support MythicMobs V2.5.1 and newer.
 * Added missing text in lang files: mobhunting.commands.database.description=Fixing problems in the database.
-* Disabled Infinty Speed / Resistance bonus effect on creepers. 
+* Disabled Infinity Speed / Resistance bonus effect on creepers. 
+* Changed mh_Bounties to allow null in BOUNTYOWNER_ID, used for random bounties.
 V4.2.4
 * Fixed error when creating names in language file for missing Citizens.
 V4.2.3 New setting "try-to-cancel-natural-drops"
