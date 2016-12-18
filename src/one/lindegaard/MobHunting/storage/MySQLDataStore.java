@@ -998,19 +998,22 @@ public class MySQLDataStore extends DatabaseDataStore {
 					+ "CONSTRAINT mh_Bounties_Player_Id_1 FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
 					+ "CONSTRAINT mh_Bounties_Player_Id_2 FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE"
 					+ ")");
-			
-			
-			//added because BOUNTYOWNER_ID is null for Random bounties.
+
+			// added because BOUNTYOWNER_ID is null for Random bounties.
 			Statement statement = connection.createStatement();
 			try {
 				ResultSet rs = statement.executeQuery("SELECT PLAYER_ID from mh_Players WHERE NAME='RandomBounty'");
+				if (rs.isClosed()) {
+					System.out.println("[MobHunting] Adding RandomBounty (player_id) to MobHunting Database.");
+					statement.executeUpdate(
+							"insert into mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values (null,'RandomBounty',0,0,0)");
+					statement.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
+				}
 				rs.close();
 			} catch (SQLException e) {
-				System.out.println("[MobHunting] Adding RandomBounty (player_id) to MobHunting Database.");
-				statement.executeUpdate("insert into mh_Players (NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values ('RandomBounty',0,0,0)");
-				statement.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
+				e.printStackTrace();
 			}
-			
+
 		}
 
 		// Setup Database triggers
