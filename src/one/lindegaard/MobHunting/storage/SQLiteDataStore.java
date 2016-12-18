@@ -1032,8 +1032,17 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					+ "PRIMARY KEY(WORLDGROUP, WANTEDPLAYER_ID, BOUNTYOWNER_ID), "
 					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
 					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
+			
 			//added because BOUNTYOWNER_ID is null for Random bounties.
-			create.executeUpdate("ALTER TABLE mh_Bounties MODIFY BOUNTYOWNER_ID INTEGER");
+			Statement statement = connection.createStatement();
+			try {
+				ResultSet rs = statement.executeQuery("SELECT PLAYER_ID from mh_Players WHERE NAME='RandomBounty'");
+				rs.close();
+			} catch (SQLException e) {
+				System.out.println("[MobHunting] Adding RandomBounty (player_id) to MobHunting Database.");
+				statement.executeUpdate("insert into mh_Players (NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values ('RandomBounty',0,0,0)");
+				statement.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
+			}
 		}
 
 		// Setup Database triggers
