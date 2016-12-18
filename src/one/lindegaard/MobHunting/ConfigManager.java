@@ -1369,9 +1369,8 @@ public class ConfigManager extends AutoConfig {
 	public String dropMoneyOnGroundTextColor = "WHITE";
 
 	@ConfigField(name = "try-to-cancel-natural-drops", category = "dropmoneyonground", comment = "Try to cancel natural drops when a mob is killed while the MobHunting reward is cancelled "
-			+"\n(because player is in creative mode, grinding or protected by Worldguard)"
-			+ "\nIf you want the mobs to drops normal rewards set "
-			+ "\n\"try-to-cancel-natural-drops\"=false")
+			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
+			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"try-to-cancel-natural-drops\"=false")
 	public boolean tryToCancelNaturalDrops = true;
 
 	// #####################################################################################
@@ -2192,7 +2191,6 @@ public class ConfigManager extends AutoConfig {
 				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NITWIT)
 					return MobHunting.getConfigManager().nitwitCmdRunChance;
 
-
 			if (Misc.isMC110OrNewer())
 				if (mob instanceof PolarBear)
 					return (double) MobHunting.getConfigManager().polarBearFrequency
@@ -2243,9 +2241,7 @@ public class ConfigManager extends AutoConfig {
 
 			// MC1.7 or older
 			if (mob instanceof Player) {
-				Bukkit.getLogger()
-						.severe("[MobHunting] Error when caculate chance for running Cmd command on Mob kill");
-				return 1;
+				return pvpKillCmdRunChance;
 			} else if (mob instanceof Blaze)
 				return (double) MobHunting.getConfigManager().blazeFrequency
 						/ (double) MobHunting.getConfigManager().blazeFrequencyBase;

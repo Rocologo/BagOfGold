@@ -8,6 +8,7 @@ V4.2.5
 * Added missing text in lang files: mobhunting.commands.database.description=Fixing problems in the database.
 * Disabled Infinity Speed / Resistance bonus effect on creepers. 
 * Changed mh_Bounties to allow null in BOUNTYOWNER_ID, used for random bounties.
+* Fixed error when getting chance to run the command on a PVP Kill.
 V4.2.4
 * Fixed error when creating names in language file for missing Citizens.
 V4.2.3 New setting "try-to-cancel-natural-drops"
