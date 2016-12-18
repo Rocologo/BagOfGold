@@ -1002,16 +1002,14 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// added because BOUNTYOWNER_ID is null for Random bounties.
 			Statement statement = connection.createStatement();
 			try {
-				ResultSet rs = statement.executeQuery("SELECT PLAYER_ID from mh_Players WHERE NAME='RandomBounty'");
-				if (!rs.next()) {
-					System.out.println("[MobHunting] Adding RandomBounty (player_id) to MobHunting Database.");
-					statement.executeUpdate(
-							"insert into mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values (null,'RandomBounty',0,0,0)");
-					statement.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
-				}
+				ResultSet rs = statement
+						.executeQuery("SELECT PLAYER_ID from mh_Players WHERE NAME='RandomBounty' LIMIT 0");
 				rs.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.out.println("[MobHunting] Adding RandomBounty (player_id) to MobHunting Database.");
+				statement.executeUpdate(
+						"insert into mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values (null,'RandomBounty',0,0,0)");
+				statement.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
 			}
 
 		}
@@ -1024,7 +1022,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		insertMissingVanillaMobs();
 
-		Messages.debug("MobHunting V3 Database created.");
+		Messages.debug("MobHunting V3 Database created/updated.");
 	}
 
 	@Override
