@@ -1003,7 +1003,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			Statement statement = connection.createStatement();
 			try {
 				ResultSet rs = statement.executeQuery("SELECT PLAYER_ID from mh_Players WHERE NAME='RandomBounty'");
-				if (rs.isClosed()) {
+				if (rs.isClosed() || rs.wasNull()) {
 					System.out.println("[MobHunting] Adding RandomBounty (player_id) to MobHunting Database.");
 					statement.executeUpdate(
 							"insert into mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values (null,'RandomBounty',0,0,0)");
