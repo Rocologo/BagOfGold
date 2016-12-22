@@ -860,8 +860,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 				create.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
 			}
 			rs.close();
+			create.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
