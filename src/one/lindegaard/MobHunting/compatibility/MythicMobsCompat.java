@@ -205,19 +205,19 @@ public class MythicMobsCompat implements Listener {
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
 		// Messages.debug("MythicMob spawn event: MinecraftMobtype=%s
 		// MythicMobType=%s", event
 		// .getLivingEntity().getType(), event.getMobType().getInternalName());
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
 		String mobtype = event.getMobType().getInternalName();
 		Messages.debug("MythicMobSpawnEvent: MinecraftMobtype=%s MythicMobType=%s", event.getLivingEntity().getType(),
 				mobtype);
-		if (mMobRewardData != null && !mMobRewardData.containsKey(mobtype)) {
+		if (!mMobRewardData.containsKey(mobtype)) {
 			Messages.debug("New MythicMobType found=%s (%s)", mobtype, event.getMobType().getDisplayName());
 			mMobRewardData.put(mobtype,
 					new MobRewardData(MobPlugin.MythicMobs, mobtype, event.getMobType().getDisplayName(), "10",
@@ -226,6 +226,7 @@ public class MythicMobsCompat implements Listener {
 			MobHunting.getStoreManager().insertMissingMythicMobs(mobtype);
 			// Update mob loaded into memory
 			ExtendedMobManager.updateExtendedMobs();
+			Messages.injectMissingMobNamesToLangFiles();
 		}
 
 		event.getLivingEntity().setMetadata(MH_MYTHICMOBS,

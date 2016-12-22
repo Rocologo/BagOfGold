@@ -182,6 +182,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 						+ " detected. Migrating to V3");
 				migrateDatabaseLayoutFromV2toV3(mConnection);
 				migrate_mh_PlayersFromV2ToV3(mConnection);
+				createRandomBountyPlayer(mConnection);
 				setupTriggerV3(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 3;
 				MobHunting.getConfigManager().saveConfig();
@@ -192,6 +193,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				// DATABASE IS UPTODATE or NOT created => create new database
 				setupV3Tables(mConnection);
 				migrate_mh_PlayersFromV2ToV3(mConnection);
+				createRandomBountyPlayer(mConnection);
 				setupTriggerV3(mConnection);
 				break;
 			default: // not needed
@@ -200,6 +202,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				setupV3Tables(mConnection);
 				migrateDatabaseLayoutFromV2toV3(mConnection);
 				migrate_mh_PlayersFromV2ToV3(mConnection);
+				createRandomBountyPlayer(mConnection);
 				setupTriggerV3(mConnection);
 				MobHunting.getConfigManager().databaseVersion = 3;
 				MobHunting.getConfigManager().saveConfig();
@@ -838,6 +841,28 @@ public abstract class DatabaseDataStore implements IDataStore {
 			b.setStatus(BountyStatus.canceled);
 		}
 		insertBounty(bounties);
+	}
+
+	/**
+	 * create a RandomBountyPlayer if not exist in mh_Players
+	 * 
+	 * @param connection
+	 */
+	private void createRandomBountyPlayer(Connection connection) {
+		// added because BOUNTYOWNER_ID is null for Random bounties.
+		try {
+			Statement create = connection.createStatement();
+			ResultSet rs = create.executeQuery("SELECT PLAYER_ID from mh_Players WHERE NAME='RandomBounty' LIMIT 0");
+			if (!rs.next()) {
+				System.out.println("[MobHunting] Adding RandomBounty Player to MobHunting Database.");
+				create.executeUpdate(
+						"insert into mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values (null,'RandomBounty',0,0,0)");
+				create.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// ******************************************************************

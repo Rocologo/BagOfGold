@@ -307,6 +307,7 @@ public class CitizensCompat implements Listener {
 					MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
 					// Update mob loaded into memory
 					ExtendedMobManager.updateExtendedMobs();
+					Messages.injectMissingMobNamesToLangFiles();
 				}
 			}
 			if (masterMobHunterManager.isMasterMobHunter(npc.getEntity())) {

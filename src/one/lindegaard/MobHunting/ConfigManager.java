@@ -1605,9 +1605,17 @@ public class ConfigManager extends AutoConfig {
 			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			MetadataValue value = data.get(0);
-			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+				for (MetadataValue value : data) {
+					if (value.value() instanceof MobRewardData){
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+						}
+				}
+			} else {
+				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
+			}
+			return 0;
 
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
@@ -1617,6 +1625,7 @@ public class ConfigManager extends AutoConfig {
 						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
 				return 0;
+
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);

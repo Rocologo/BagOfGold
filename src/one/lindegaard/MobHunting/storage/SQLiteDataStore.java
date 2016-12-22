@@ -970,7 +970,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// Create new empty tables if they do not exist
 		String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players" + "(UUID TEXT," + " NAME TEXT, "
-				+ " PLAYER_ID INTEGER NOT NULL DEFAULT 0," + " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","
+				+ " PLAYER_ID INTEGER NOT NULL DEFAULT 1," + " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," + " PRIMARY KEY(PLAYER_ID))");
 
 		create.executeUpdate(
@@ -1007,7 +1007,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
 				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
 				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
-		;
 
 		create.executeUpdate(
 				"CREATE TABLE IF NOT EXISTS mh_AllTime" + " (MOB_ID INTEGER NOT NULL," + " PLAYER_ID INTEGER NOT NULL,"
@@ -1015,7 +1014,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 						+ " TOTAL_ASSIST INTEGER DEFAULT 0," + " PRIMARY KEY(MOB_ID, PLAYER_ID),"
 						+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
 						+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
-		;
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements " + "(PLAYER_ID INTEGER NOT NULL,"
 				+ " ACHIEVEMENT TEXT NOT NULL," + " DATE INTEGER NOT NULL," + " PROGRESS INTEGER NOT NULL,"
@@ -1032,21 +1030,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					+ "PRIMARY KEY(WORLDGROUP, WANTEDPLAYER_ID, BOUNTYOWNER_ID), "
 					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
 					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
-
-			// added because BOUNTYOWNER_ID is null for Random bounties.
-			try {
-				ResultSet rs = create
-						.executeQuery("SELECT PLAYER_ID from mh_Players WHERE NAME='RandomBounty' LIMIT 0");
-				if (!rs.next()) {
-					System.out.println("[MobHunting] Adding RandomBounty (player_id) to MobHunting Database.");
-					create.executeUpdate(
-							"insert into mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE) values (null,'RandomBounty',0,0,0)");
-					create.executeUpdate("update mh_Players set Player_id=0 where name='RandomBounty'");
-				}
-				;
-				rs.close();
-			} catch (SQLException e) {
-			}
 		}
 
 		// Setup Database triggers

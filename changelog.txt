@@ -1,3 +1,7 @@
+V4.2.6
+* Fix Sqlite error when starting the server/plugin after deleting the database file.
+* Adding missing mobNames immediately in lang file when a new mob type has been spawned. (Citizens, MythicMobs, CustomMobs).
+* Fixing Prize calculation for MythicMobs.  
 V4.2.5
 * Fixed missing lines in mythicMobs-reward.yml file. (https://www.spigotmc.org/threads/mobhunting.46937/page-74#post-2083797 )
 * Fix for MythicMobs which are deleted from the MythicMobs configuration files, but still exists in MobHunting "mythicmobs-rewards.yml" file.

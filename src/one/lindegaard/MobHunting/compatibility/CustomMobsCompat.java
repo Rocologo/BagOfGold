@@ -227,9 +227,7 @@ public class CustomMobsCompat implements Listener {
 			// Is only defined when the spawnReason is SPAWNER.
 		}
 
-		if (mMobRewardData != null && !mMobRewardData.containsKey(mob.getName()))
-
-		{
+		if (mMobRewardData != null && !mMobRewardData.containsKey(mob.getName())) {
 			Messages.debug("New CustomMobName found=%s,%s", mob.getName(), mob.getDisplayName());
 			String name = mob.getDisplayName() == null ? mob.getName() : mob.getDisplayName();
 			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(), name, "10",
@@ -238,6 +236,7 @@ public class CustomMobsCompat implements Listener {
 			MobHunting.getStoreManager().insertCustomMobs(mob.getName());
 			// Update mob loaded into memory
 			ExtendedMobManager.updateExtendedMobs();
+			Messages.injectMissingMobNamesToLangFiles();
 		}
 
 		entity.setMetadata(MH_CUSTOMMOBS, new FixedMetadataValue(mPlugin, mMobRewardData.get(mob.getName())));
