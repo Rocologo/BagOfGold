@@ -616,6 +616,7 @@ public class MobHuntingManager implements Listener {
 	private void onMobDeath(EntityDeathEvent event) {
 
 		boolean cancelNaturalDrops = false;
+		boolean cancelXPDrops = false;
 
 		LivingEntity killed = event.getEntity();
 
@@ -643,6 +644,11 @@ public class MobHuntingManager implements Listener {
 						cancelNaturalDrops = true;
 						event.getDrops().clear();
 					}
+					if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+						Messages.debug("Trying to remove XP drops");
+						cancelXPDrops = true;
+						event.setDroppedExp(0);
+					}
 					return;
 					// }
 				} else if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
@@ -653,6 +659,11 @@ public class MobHuntingManager implements Listener {
 						Messages.debug("Trying to remove natural drops");
 						cancelNaturalDrops = true;
 						event.getDrops().clear();
+					}
+					if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+						Messages.debug("Trying to remove XP drops");
+						cancelXPDrops = true;
+						event.setDroppedExp(0);
 					}
 					return;
 				}
@@ -963,6 +974,11 @@ public class MobHuntingManager implements Listener {
 						Messages.learn(killer, "This is a registered grinding spot. Natural drops was removed.");
 						cancelNaturalDrops = true;
 					}
+					if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+						Messages.debug("Trying to remove XP drops");
+						cancelXPDrops = true;
+						event.setDroppedExp(0);
+					}
 				}
 			} else {
 				if (data.lastKillAreaCenter != null) {
@@ -982,7 +998,11 @@ public class MobHuntingManager implements Listener {
 										Messages.debug("Grinding caused natural drops to be removed.");
 										cancelNaturalDrops = true;
 									}
-
+									if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+										Messages.debug("Trying to remove XP drops");
+										cancelXPDrops = true;
+										event.setDroppedExp(0);
+									}
 								}
 							}
 						} else {
@@ -1096,6 +1116,10 @@ public class MobHuntingManager implements Listener {
 			if (cancelNaturalDrops) {
 				Messages.debug("Natural drops removed.");
 				event.getDrops().clear();
+			}
+			if (cancelXPDrops) {
+				Messages.debug("XP drops removed.");
+				event.setDroppedExp(0);
 			}
 
 			// Handle reward on PVP kill. (Robbing)

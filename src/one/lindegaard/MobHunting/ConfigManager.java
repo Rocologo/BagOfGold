@@ -1368,11 +1368,6 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE")
 	public String dropMoneyOnGroundTextColor = "WHITE";
 
-	@ConfigField(name = "try-to-cancel-natural-drops", category = "dropmoneyonground", comment = "Try to cancel natural drops when a mob is killed while the MobHunting reward is cancelled "
-			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
-			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"try-to-cancel-natural-drops\"=false")
-	public boolean tryToCancelNaturalDrops = true;
-
 	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
@@ -1545,6 +1540,16 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "use_gui_for_bounties", category = "general", comment = "When use_gui_for_bounties=true the open bounties and most wanted players will"
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForBounties = true;
+	
+	@ConfigField(name = "try-to-cancel-natural-drops", category = "general", comment = "Try to cancel natural drops when a mob is killed while the MobHunting reward is cancelled "
+			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
+			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"try-to-cancel-natural-drops\"=false")
+	public boolean tryToCancelNaturalDrops = true;
+
+	@ConfigField(name = "try-to-cancel-xp-drops", category = "general", comment = "Try to cancel XP drops when a mob is killed while the MobHunting reward is cancelled "
+			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
+			+ "\nIf you want the mobs to drop normal XP set " + "\n\"try-to-cancel-xp-drops\"=false")
+	public boolean tryToCancelXPDrops = true;
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {

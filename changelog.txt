@@ -1,3 +1,5 @@
+V4.2.7 
+* New feature: XP removed when player is grinding or killing mobs while the player is protected. Can be disabled in config.yml
 V4.2.6
 * Fix Sqlite error when starting the server/plugin after deleting the database file.
 * Adding missing mobNames immediately in lang file when a new mob type has been spawned. (Citizens, MythicMobs, CustomMobs).
