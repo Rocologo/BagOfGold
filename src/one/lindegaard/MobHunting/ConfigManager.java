@@ -816,7 +816,7 @@ public class ConfigManager extends AutoConfig {
 	public String squidCmdDesc = "You got a Squid Skull";
 	@ConfigField(name = "squid-cmd-run-frequency", category = "passive")
 	public int squidFrequency = 0;
-	@ConfigField(name = "bat-cmd-run-frequency-base", category = "passive")
+	@ConfigField(name = "squid-cmd-run-frequency-base", category = "passive")
 	public int squidFrequencyBase = 100;
 
 	@ConfigField(name = "wolf", category = "passive")
