@@ -75,7 +75,7 @@ public class CitizensCompat implements Listener {
 
 					masterMobHunterManager.initialize();
 					findMissingSentry();
-					loadBountyDataForSentryOrSentinel();
+					//loadBountyDataForSentryOrSentinel();
 				}
 			}, 20 * 3); // 20ticks/sec * 3 sec.
 
@@ -252,15 +252,15 @@ public class CitizensCompat implements Listener {
 		}
 	}
 
-	private void loadBountyDataForSentryOrSentinel() {
-		NPCRegistry n = CitizensAPI.getNPCRegistry();
-		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
-			NPC npc = npcList.next();
-			if (isSentryOrSentinel(npc.getEntity())) {
+	//private void loadBountyDataForSentryOrSentinel() {
+	//	NPCRegistry n = CitizensAPI.getNPCRegistry();
+	//	for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
+	//		NPC npc = npcList.next();
+	//		if (isSentryOrSentinel(npc.getEntity())) {
 				// MobHunting.getBountyManager().loadBounties(npc);
-			}
-		}
-	}
+	//		}
+	//	}
+	//}
 
 	// **************************************************************************
 	// EVENTS

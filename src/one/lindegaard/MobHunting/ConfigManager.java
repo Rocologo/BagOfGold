@@ -1625,7 +1625,9 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)) {
+			if (CitizensCompat.isSentryOrSentinel(mob) 
+					&& CitizensCompat.getMobRewardData().
+					containsKey(String.valueOf(npc.getId()))) {
 				return getPrice(mob,
 						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
