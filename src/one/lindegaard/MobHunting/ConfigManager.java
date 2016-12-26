@@ -7,6 +7,7 @@ import java.util.List;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import one.lindegaard.MobHunting.util.AutoConfig;
@@ -1540,7 +1541,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "use_gui_for_bounties", category = "general", comment = "When use_gui_for_bounties=true the open bounties and most wanted players will"
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForBounties = true;
-	
+
 	@ConfigField(name = "try-to-cancel-natural-drops", category = "general", comment = "Try to cancel natural drops when a mob is killed while the MobHunting reward is cancelled "
 			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
 			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"try-to-cancel-natural-drops\"=false")
@@ -1613,9 +1614,9 @@ public class ConfigManager extends AutoConfig {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 				for (MetadataValue value : data) {
-					if (value.value() instanceof MobRewardData){
+					if (value.value() instanceof MobRewardData) {
 						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-						}
+					}
 				}
 			} else {
 				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
@@ -1625,9 +1626,8 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob) 
-					&& CitizensCompat.getMobRewardData().
-					containsKey(String.valueOf(npc.getId()))) {
+			if (CitizensCompat.isSentryOrSentinel(mob)
+					&& CitizensCompat.getMobRewardData().containsKey(String.valueOf(npc.getId()))) {
 				return getPrice(mob,
 						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
 			} else
@@ -1835,9 +1835,13 @@ public class ConfigManager extends AutoConfig {
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+				MetadataValue value = data.get(0);
+				return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else {
+				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
+			}
 
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
@@ -2002,9 +2006,13 @@ public class ConfigManager extends AutoConfig {
 			return ((MobRewardData) value.value()).getRewardDescription();
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getRewardDescription();
+			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+				MetadataValue value = data.get(0);
+				return ((MobRewardData) value.value()).getRewardDescription();
+			} else {
+				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
+			}
 
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
@@ -2163,9 +2171,13 @@ public class ConfigManager extends AutoConfig {
 			return ((MobRewardData) value.value()).getChance();
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getChance();
+			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+				MetadataValue value = data.get(0);
+				return ((MobRewardData) value.value()).getChance();
+			} else {
+				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
+			}
 
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();

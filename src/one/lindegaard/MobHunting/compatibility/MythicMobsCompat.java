@@ -20,8 +20,6 @@ import org.bukkit.plugin.Plugin;
 import net.elseland.xikage.MythicMobs.MythicMobs;
 import net.elseland.xikage.MythicMobs.API.IMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
-import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
-//import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
@@ -106,7 +104,7 @@ public class MythicMobsCompat implements Listener {
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
 			if (MythicMobsHelper.isMythicMob(key)) {
-				MobRewardData mob = new MobRewardData();
+			 MobRewardData mob = new MobRewardData();
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
@@ -168,8 +166,8 @@ public class MythicMobsCompat implements Listener {
 	public static Plugin getMythicMobs() {
 		return mPlugin;
 	}
-	
-	public static IMobsAPI getAPI(){
+
+	public static IMobsAPI getAPI() {
 		return mobsAPI;
 	}
 
@@ -179,8 +177,8 @@ public class MythicMobsCompat implements Listener {
 
 	public static boolean isMythicMob(Entity killed) {
 		if (isSupported())
-			return mobsAPI.isMythicMob(killed);
-		// return killed.hasMetadata(MH_MYTHICMOBS);
+			// return mobsAPI.isMythicMob(killed);
+			return killed.hasMetadata(MH_MYTHICMOBS);
 		return false;
 	}
 
