@@ -1208,8 +1208,8 @@ public class MobHuntingManager implements Listener {
 												extraString.trim()));
 				}
 		} else
-			Messages.debug("KillBlocked %s: Gained money was less than 1 cent (grinding or penalties) (%s)",
-					killer.getName(), extraString);
+			Messages.debug("KillBlocked %s: Reward was less than %s  (Bonuses=%s)",
+					killer.getName(), MobHunting.getConfigManager().minimumReward, extraString);
 
 		// Run console commands as a reward
 		if (data.getDampenedKills() < 10) {
@@ -1307,7 +1307,9 @@ public class MobHuntingManager implements Listener {
 								+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
 										MobHunting.getRewardManager().format(cash), "bonuses",
 										String.format("x%.1f", ks)));
-		}
+		} else 
+			Messages.debug("KillBlocked %s: Reward was less than %s.",
+					killer.getName(), MobHunting.getConfigManager().minimumReward);;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
