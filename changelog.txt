@@ -1,6 +1,8 @@
+V4.2.8
+* Removed some SPAM from the console. (https://www.spigotmc.org/threads/mobhunting.46937/page-78#post-2120503)
 V4.2.7 
 * New feature: XP removed when player is grinding or killing mobs while the player is protected. Can be disabled in config.yml
-* Fix NPE error when starting server
+* Fix NPE error when starting servers running MythicMobs 
 * Fixed missing setting squid-cmd-run-frequency-base in config.yml
 V4.2.6
 * Fix Sqlite error when starting the server/plugin after deleting the database file.

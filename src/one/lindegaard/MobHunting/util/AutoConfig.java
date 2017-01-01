@@ -49,6 +49,27 @@ public abstract class AutoConfig {
 		return nodes;
 	}
 
+	protected void deleteNode(String category, String node) {
+		for (Entry<String, String> e : mCategoryNodes.entrySet()) {
+			String key = e.getKey();
+			if (key.equals(category)) {
+				String value = e.getValue();
+				if (value.equals(node)) {
+					mCategoryNodes.remove(value);
+				}
+			}
+		}
+		for (Entry<String, String> e : mCategoryComments.entrySet()) {
+			String key = e.getKey();
+			if (key.equals(category)) {
+				String value = e.getValue();
+				if (value.equals(node)) {
+					mCategoryComments.remove(value);
+				}
+			}
+		}
+	}
+
 	protected void onPostLoad() throws InvalidConfigurationException {
 	};
 
@@ -67,8 +88,7 @@ public abstract class AutoConfig {
 			// Parse the config
 			yml.load(mFile);
 			for (Field field : getClass().getDeclaredFields()) {
-				ConfigField configField = field
-						.getAnnotation(ConfigField.class);
+				ConfigField configField = field.getAnnotation(ConfigField.class);
 				if (configField == null)
 					continue;
 
@@ -81,80 +101,51 @@ public abstract class AutoConfig {
 
 				field.setAccessible(true);
 
-				String path = (configField.category().isEmpty() ? ""
-						: configField.category() + ".") + optionName;
+				String path = (configField.category().isEmpty() ? "" : configField.category() + ".") + optionName;
 				mCategoryNodes.put(path, optionName);
 				if (!yml.contains(path)) {
 					if (field.get(this) == null)
-						throw new InvalidConfigurationException(path
-								+ " is required to be set! Info:\n"
-								+ configField.comment());
+						throw new InvalidConfigurationException(
+								path + " is required to be set! Info:\n" + configField.comment());
 				} else {
 					// Parse the value
 
 					if (field.getType().isArray()) {
 						// Integer
-						if (field.getType().getComponentType()
-								.equals(Integer.TYPE))
-							field.set(
-									this,
-									yml.getIntegerList(path).toArray(
-											new Integer[0]));
+						if (field.getType().getComponentType().equals(Integer.TYPE))
+							field.set(this, yml.getIntegerList(path).toArray(new Integer[0]));
 
 						// Float
-						else if (field.getType().getComponentType()
-								.equals(Float.TYPE))
-							field.set(this,
-									yml.getFloatList(path)
-											.toArray(new Float[0]));
+						else if (field.getType().getComponentType().equals(Float.TYPE))
+							field.set(this, yml.getFloatList(path).toArray(new Float[0]));
 
 						// Double
-						else if (field.getType().getComponentType()
-								.equals(Double.TYPE))
-							field.set(
-									this,
-									yml.getDoubleList(path).toArray(
-											new Double[0]));
+						else if (field.getType().getComponentType().equals(Double.TYPE))
+							field.set(this, yml.getDoubleList(path).toArray(new Double[0]));
 
 						// Long
-						else if (field.getType().getComponentType()
-								.equals(Long.TYPE))
-							field.set(this,
-									yml.getLongList(path).toArray(new Long[0]));
+						else if (field.getType().getComponentType().equals(Long.TYPE))
+							field.set(this, yml.getLongList(path).toArray(new Long[0]));
 
 						// Short
-						else if (field.getType().getComponentType()
-								.equals(Short.TYPE))
-							field.set(this,
-									yml.getShortList(path)
-											.toArray(new Short[0]));
+						else if (field.getType().getComponentType().equals(Short.TYPE))
+							field.set(this, yml.getShortList(path).toArray(new Short[0]));
 
 						// Boolean
-						else if (field.getType().getComponentType()
-								.equals(Boolean.TYPE))
-							field.set(
-									this,
-									yml.getBooleanList(path).toArray(
-											new Boolean[0]));
+						else if (field.getType().getComponentType().equals(Boolean.TYPE))
+							field.set(this, yml.getBooleanList(path).toArray(new Boolean[0]));
 
 						// String
-						else if (field.getType().getComponentType()
-								.equals(String.class)) {
-							field.set(
-									this,
-									yml.getStringList(path).toArray(
-											new String[0]));
+						else if (field.getType().getComponentType().equals(String.class)) {
+							field.set(this, yml.getStringList(path).toArray(new String[0]));
 						}
 
 						// HashMap
-						else if (field.getType().getComponentType()
-								.equals(HashMap.class)) {
+						else if (field.getType().getComponentType().equals(HashMap.class)) {
 							field.set(this, yml.getConfigurationSection(path).getValues(true));
 						} else
-							throw new IllegalArgumentException(
-									"LoadConfig - Cannot use type "
-											+ field.getType().getSimpleName()
-											+ " for AutoConfiguration (Is it an Array?)");
+							throw new IllegalArgumentException("LoadConfig - Cannot use type "
+									+ field.getType().getSimpleName() + " for AutoConfiguration (Is it an Array?)");
 					} else {
 						// Integer
 						if (field.getType().equals(Integer.TYPE))
@@ -191,10 +182,8 @@ public abstract class AutoConfig {
 						else if (field.getType().equals(HashMap.class)) {
 							field.set(this, yml.getConfigurationSection(path).getValues(true));
 						} else
-							throw new IllegalArgumentException(
-									"LoadConfig - Cannot use type "
-											+ field.getType().getSimpleName()
-											+ " for AutoConfiguration");
+							throw new IllegalArgumentException("LoadConfig - Cannot use type "
+									+ field.getType().getSimpleName() + " for AutoConfiguration");
 					}
 				}
 			}
@@ -230,8 +219,7 @@ public abstract class AutoConfig {
 
 			// Add all the values
 			for (Field field : getClass().getDeclaredFields()) {
-				ConfigField configField = field
-						.getAnnotation(ConfigField.class);
+				ConfigField configField = field.getAnnotation(ConfigField.class);
 				if (configField == null)
 					continue;
 
@@ -241,66 +229,46 @@ public abstract class AutoConfig {
 
 				field.setAccessible(true);
 
-				String path = (configField.category().isEmpty() ? ""
-						: configField.category() + ".") + optionName;
+				String path = (configField.category().isEmpty() ? "" : configField.category() + ".") + optionName;
 
 				// Ensure the secion exists
-				if (!configField.category().isEmpty()
-						&& !config.contains(configField.category()))
+				if (!configField.category().isEmpty() && !config.contains(configField.category()))
 					config.createSection(configField.category());
 
 				if (field.getType().isArray()) {
 					// Integer
 					if (field.getType().getComponentType().equals(Integer.TYPE))
-						config.set(path,
-								Arrays.asList((Integer[]) field.get(this)));
+						config.set(path, Arrays.asList((Integer[]) field.get(this)));
 
 					// Float
-					else if (field.getType().getComponentType()
-							.equals(Float.TYPE))
-						config.set(path,
-								Arrays.asList((Float[]) field.get(this)));
+					else if (field.getType().getComponentType().equals(Float.TYPE))
+						config.set(path, Arrays.asList((Float[]) field.get(this)));
 
 					// Double
-					else if (field.getType().getComponentType()
-							.equals(Double.TYPE))
-						config.set(path,
-								Arrays.asList((Double[]) field.get(this)));
+					else if (field.getType().getComponentType().equals(Double.TYPE))
+						config.set(path, Arrays.asList((Double[]) field.get(this)));
 
 					// Long
-					else if (field.getType().getComponentType()
-							.equals(Long.TYPE))
-						config.set(path,
-								Arrays.asList((Long[]) field.get(this)));
+					else if (field.getType().getComponentType().equals(Long.TYPE))
+						config.set(path, Arrays.asList((Long[]) field.get(this)));
 
 					// Short
-					else if (field.getType().getComponentType()
-							.equals(Short.TYPE))
-						config.set(path,
-								Arrays.asList((Short[]) field.get(this)));
+					else if (field.getType().getComponentType().equals(Short.TYPE))
+						config.set(path, Arrays.asList((Short[]) field.get(this)));
 
 					// Boolean
-					else if (field.getType().getComponentType()
-							.equals(Boolean.TYPE))
-						config.set(path,
-								Arrays.asList((Boolean[]) field.get(this)));
+					else if (field.getType().getComponentType().equals(Boolean.TYPE))
+						config.set(path, Arrays.asList((Boolean[]) field.get(this)));
 
 					// String
-					else if (field.getType().getComponentType()
-							.equals(String.class))
-						config.set(path,
-								Arrays.asList((String[]) field.get(this)));
+					else if (field.getType().getComponentType().equals(String.class))
+						config.set(path, Arrays.asList((String[]) field.get(this)));
 					// HashMap
-					else if (field.getType().getComponentType()
-							.equals(HashMap.class)) {
-						config.createSection(path,
-								(Map<String, String>) Arrays.asList(field
-										.get(this)));
+					else if (field.getType().getComponentType().equals(HashMap.class)) {
+						config.createSection(path, (Map<String, String>) Arrays.asList(field.get(this)));
 					} else
-						throw new IllegalArgumentException(
-								"SaveConfig - Cannot use type "
-										+ field.getType().getSimpleName()
-										+ " for AutoConfiguration (is it an Array)");
+						throw new IllegalArgumentException("SaveConfig - Cannot use type "
+								+ field.getType().getSimpleName() + " for AutoConfiguration (is it an Array)");
 				} else {
 					// Integer
 					if (field.getType().equals(Integer.TYPE))
@@ -335,13 +303,10 @@ public abstract class AutoConfig {
 						config.set(path, field.get(this));
 					// HashMap
 					else if (field.getType().equals(HashMap.class)) {
-						config.createSection(path,
-								(HashMap<String, String>) field.get(this));
+						config.createSection(path, (HashMap<String, String>) field.get(this));
 					} else
-						throw new IllegalArgumentException(
-								"SaveConfig - Cannot use type "
-										+ field.getType().getSimpleName()
-										+ " for AutoConfiguration ("+field.getName()+")");
+						throw new IllegalArgumentException("SaveConfig - Cannot use type "
+								+ field.getType().getSimpleName() + " for AutoConfiguration (" + field.getName() + ")");
 				}
 
 				// Record the comment
@@ -353,8 +318,7 @@ public abstract class AutoConfig {
 
 			// Apply comments
 			String category = "";
-			List<String> lines = new ArrayList<String>(Arrays.asList(output
-					.split("\n")));
+			List<String> lines = new ArrayList<String>(Arrays.asList(output.split("\n")));
 			for (int l = 0; l < lines.size(); l++) {
 				String line = lines.get(l);
 

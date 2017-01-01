@@ -167,7 +167,6 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 			if (mPeriodIndex >= mPeriod.length)
 				mPeriodIndex = 0;
 		}
-		//Messages.debug("Updating WorldLeaderboards (%s,%s) @ (%s,%s,%s)", getType().translateName(), getPeriod().translateName(), mLocation.getBlockX(), mLocation.getY(),mLocation.getZ());
 		MobHunting.getDataStoreManager().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
 	}
 

@@ -192,7 +192,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 			ResultSet results = statement
 					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
 							+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
-							+ " inner join mh_Mobs using (MOB_ID) WHERE NAME IS NOT NULL " + wherepart
+							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " 
+							+ wherepart
 							+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
