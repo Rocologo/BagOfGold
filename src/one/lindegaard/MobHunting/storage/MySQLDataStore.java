@@ -51,8 +51,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 			Connection c = dataSource.getConnection();
 			c.setAutoCommit(false);
 			return c;
-		} catch (ClassNotFoundException | SQLException e) {
-			throw new DataStoreException("MySQL not present on the classpath");
+		} catch (ClassNotFoundException classNotFoundEx) {
+			throw new DataStoreException("MySQL not present on the classpath", classNotFoundEx);
+		} catch (SQLException sqlEx) {
+			throw new DataStoreException("Error creating sql connection", sqlEx);
 		}
 	}
 
