@@ -457,7 +457,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "skeleton", category = "mobs")
 	public String skeletonPrize = "10:30";
 	@ConfigField(name = "skeleton-cmd", category = "mobs")
-	public String skeletonCmd = "mobhunt head give {player} Skeleton|give {player} 351:4 1";
+	public String skeletonCmd = "mobhunt head give {player} Skeleton|give {player} dye 1 4";
 	@ConfigField(name = "skeleton-cmd-desc", category = "mobs")
 	public String skeletonCmdDesc = "You got 1 Skeleton skull and 1 Lapis Lazuli.";
 	@ConfigField(name = "skeleton-cmd-run-frequency", category = "mobs")
