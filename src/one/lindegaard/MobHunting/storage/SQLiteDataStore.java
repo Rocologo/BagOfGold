@@ -35,8 +35,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 							+ MobHunting.getConfigManager().databaseName + ".db");
 			c.setAutoCommit(false);
 			return c;
-		} catch (ClassNotFoundException | SQLException e) {
-			throw new DataStoreException("SQLite not present on the classpath");
+		} catch (ClassNotFoundException classNotFoundEx) {
+			throw new DataStoreException("SQLite not present on the classpath", classNotFoundEx);
+		} catch (SQLException sqlEx) {
+			throw new DataStoreException("Error creating sql connection", sqlEx);
 		}
 	}
 
