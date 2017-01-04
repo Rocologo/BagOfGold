@@ -137,7 +137,6 @@
 	<!-- **************************** Repositories **************************** -->
 	<!-- ********************************************************************** -->
 	<repositories>
-
 		<repository>
 			<id>MobHunting-Repository</id>
 			<name>mobhunting-snapshots</name>
@@ -168,7 +167,7 @@
 		<!-- sk89q WorldGuard WorldEdit repositories -->
 		<repository>
 			<id>sk89q-repo</id>
-			<url>http://maven.sk89q.com/repo/com/sk89q/</url>
+			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
 
 		<!-- dmulloy2 repository / ProtocolLib -->
@@ -186,14 +185,14 @@
 		<!-- LibsDisguises -->
 		<repository>
 			<id>libsdisguises-repo</id>
-			<url>http://repo.md-5.net/content/repositories/public/LibsDisguises/LibsDisguises/</url>
+			<url>http://repo.md-5.net/content/repositories/public/</url>
 		</repository>
 
 		<!-- BattleArena -->
 		<repository>
 			<id>battleplugins-net</id>
 			<name>BattlePlugins</name>
-			<url>http://rainbowcraft.sytes.net/maven/repository/mc/alk/</url>
+			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
 		</repository>
 
 		<!-- BossBarAPI -->
@@ -205,7 +204,7 @@
 		<!-- BarAPI -->
 		<repository>
 			<id>confuser-repo</id>
-			<url>http://ci.frostcast.net/plugin/repository/everything/me/confuser/</url>
+			<url>http://ci.frostcast.net/plugin/repository/everything/</url>
 		</repository>
 
 		<!-- TitleManager -->
@@ -217,7 +216,7 @@
 		<!-- citizens repository -->
 		<repository>
 			<id>citizens-repo</id>
-			<url>http://repo.citizensnpcs.co/net/citizensnpcs/citizensapi/</url>
+			<url>http://repo.citizensnpcs.co/</url>
 		</repository>
 
 		<!-- Minigames / Addstar repo -->
