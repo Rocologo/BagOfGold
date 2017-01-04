@@ -180,6 +180,7 @@ public class MasterMobHunterManager implements Listener {
 		Messages.debug("NPCLeftClickEvent");
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
+			@SuppressWarnings("deprecation")
 			ItemStack is = event.getClicker().getItemInHand();
 			Messages.debug("ItemStack=%s", is);
 			if (!is.getType().equals(Material.STICK)) {
@@ -239,7 +240,8 @@ public class MasterMobHunterManager implements Listener {
 	public void onSpawnNPC(NPCSpawnEvent event) {
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
-			if (!npc.getStoredLocation().equals(mMasterMobHunter.get(npc.getId()).getHome())) {
+			if (npc.getStoredLocation()!=null 
+					&& !npc.getStoredLocation().equals(mMasterMobHunter.get(npc.getId()).getHome())) {
 				Messages.debug("NPC %s (ID=%s) return to home", npc.getName(), npc.getId());
 				Trait trait = getSentinelOrSentryTrait(npc);
 				if (trait != null) {
@@ -249,7 +251,7 @@ public class MasterMobHunterManager implements Listener {
 						public void run() {
 							npc1.teleport(mMasterMobHunter.get(npc1.getId()).getHome(), TeleportCause.UNKNOWN);
 						}
-					}, 20 * 10); // 20ticks/sec * 3 sec
+					}, 20 * 10); // 20ticks/sec * 10 sec
 				}
 			}
 		}
