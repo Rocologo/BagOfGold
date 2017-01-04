@@ -1208,8 +1208,8 @@ public class MobHuntingManager implements Listener {
 												extraString.trim()));
 				}
 		} else
-			Messages.debug("KillBlocked %s: Reward was less than %s  (Bonuses=%s)",
-					killer.getName(), MobHunting.getConfigManager().minimumReward, extraString);
+			Messages.debug("KillBlocked %s: Reward was less than %s  (Bonuses=%s)", killer.getName(),
+					MobHunting.getConfigManager().minimumReward, extraString);
 
 		// Run console commands as a reward
 		if (data.getDampenedKills() < 10) {
@@ -1307,9 +1307,10 @@ public class MobHuntingManager implements Listener {
 								+ Messages.getString("mobhunting.moneygain.assist.bonuses", "prize",
 										MobHunting.getRewardManager().format(cash), "bonuses",
 										String.format("x%.1f", ks)));
-		} else 
-			Messages.debug("KillBlocked %s: Reward was less than %s.",
-					killer.getName(), MobHunting.getConfigManager().minimumReward);;
+		} else
+			Messages.debug("KillBlocked %s: Reward was less than %s.", killer.getName(),
+					MobHunting.getConfigManager().minimumReward);
+		;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -1351,11 +1352,15 @@ public class MobHuntingManager implements Listener {
 						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
-		if (event.getSpawnReason() != SpawnReason.SPAWNER && event.getSpawnReason() != SpawnReason.SPAWNER_EGG)
-			return;
+		if (event.getSpawnReason() == SpawnReason.CUSTOM) {
+			Messages.debug("%s was spawned with SpawnReason.CUSTOM", event.getEntityType());
+			if (!MobHunting.getConfigManager().allowCustomMobsSpawners)
+				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
+		} else if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() != SpawnReason.SPAWNER_EGG) {
+			if (!MobHunting.getConfigManager().allowMobSpawners)
+				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
+		}
 
-		if (!MobHunting.getConfigManager().allowMobSpawners)
-			event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
