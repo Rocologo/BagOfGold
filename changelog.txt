@@ -1,7 +1,8 @@
 V4.2.8
 * Removed some SPAM from the console. (https://www.spigotmc.org/threads/mobhunting.46937/page-78#post-2120503)
-* Fixed NPE error i rare cases in the Citizens integration.
+* Fixed NPE error i rare cases in the Citizens integration. (https://www.spigotmc.org/threads/mobhunting.46937/page-79#post-2134012)
 * New feature - now handle Custom spawned mobs with SpawnReason.CUSTOM
+* Removed SQL lock when player joins the server. Thanks to Maxetto and Games647. (https://github.com/Rocologo/MobHunting/issues/108)
 V4.2.7 
 * New feature: XP removed when player is grinding or killing mobs while the player is protected. Can be disabled in config.yml
 * Fix NPE error when starting servers running MythicMobs 

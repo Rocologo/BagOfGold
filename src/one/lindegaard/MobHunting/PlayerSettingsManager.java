@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 
@@ -32,7 +33,10 @@ public class PlayerSettingsManager implements Listener {
 	 * @return PlayerSettings
 	 */
 	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) {
-		return mPlayerSettings.get(offlinePlayer);
+		if (mPlayerSettings.containsKey(offlinePlayer))
+			return mPlayerSettings.get(offlinePlayer);
+		else
+			return new PlayerSettings(offlinePlayer);
 	}
 
 	/**
@@ -78,17 +82,22 @@ public class PlayerSettingsManager implements Listener {
 	}
 
 	/**
-	 * Load PlayerSettings from Database
+	 * Load PlayerSettings asynchronously from Database
 	 * 
 	 * @param player
 	 */
-	public void load(Player player) {
-		PlayerSettings ps = MobHunting.getDataStoreManager().getPlayerSettings(player);
-		if (ps.isMuted())
-			Messages.debug("%s isMuted()", player.getName());
-		if (ps.isLearningMode())
-			Messages.debug("%s is in LearningMode()", player.getName());
-		mPlayerSettings.put(player, ps);
+	public void load(final Player player) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				PlayerSettings ps = MobHunting.getDataStoreManager().getPlayerSettings(player);
+				if (ps.isMuted())
+					Messages.debug("%s isMuted()", player.getName());
+				if (ps.isLearningMode())
+					Messages.debug("%s is in LearningMode()", player.getName());
+				mPlayerSettings.put(player, ps);
+			}
+		}.runTaskAsynchronously(MobHunting.getInstance());
 	}
 
 	/**
