@@ -226,6 +226,7 @@ bonus.undercover.message=${cause} disguise was blown!
 bonus.rank.name=Rank
 bonus.difficulty.name=Difficulty
 bonus.mobstacker.name=Stacked Mob
+bonus.conquestiamobs.name=ConquestiaMob
 
 penalty.flying.name=Flying Penalty
 penalty.grinding.name=Grinding Penalty

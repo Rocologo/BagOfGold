@@ -53,6 +53,7 @@
 		<VanishNoPacket.jar.version>VanishNoPacket3.20.jar</VanishNoPacket.jar.version>
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
 		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B85.jar</TARDISWeepingAngels.jar.version>
+		<ConquestiaMobs.jar.version>CqMobs-3.3.3.jar</ConquestiaMobs.jar.version>
 	</properties>
 
 	<organization>
@@ -377,6 +378,15 @@
 			<version>${TARDISWeepingAngels.jar.version}</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${TARDISWeepingAngels.jar.version}</systemPath>
+		</dependency>
+
+		<!-- ConquestiaMobs -->
+		<dependency>
+			<groupId>com.conquestiamc.cqmobs.CqMobs</groupId>
+			<artifactId>ConquestiaMobs</artifactId>
+			<version>${ConquestiaMobs.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${ConquestiaMobs.jar.version}</systemPath>
 		</dependency>
 
 		<!-- iDisguise -->

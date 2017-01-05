@@ -7,7 +7,6 @@ import java.util.List;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import one.lindegaard.MobHunting.util.AutoConfig;
@@ -215,6 +214,12 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nMobStacker settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of CustomMobs Integration, or you can disable"
+						+ "\nintegration completely.");
+
+		setCategoryComment("conquestiamobs",
+				"########################################################################" + "\nMobStacker settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of ConquestiaMobs Integration, or you can disable"
 						+ "\nintegration completely.");
 
 		setCategoryComment("grinding",
@@ -1345,9 +1350,34 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://dev.bukkit.org/bukkit-plugins/custom-mobs/")
 	public boolean disableIntegrationCustomMobs = false;
 
-	@ConfigField(name = "allow_custom_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from CustomMobs Spawners and eggs?")
+	@ConfigField(name = "allow_custom_mobspawners_and_eggs", category = "custommobs", comment = "Can the players earn money on mobs spawned from CustomMobs Spawners and eggs?")
 	public boolean allowCustomMobsSpawners = false;
 
+	// #####################################################################################
+	// ConquestiaMobs Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-conquestiamobs", category = "conquestiamobs", comment = "Disable integration with ConquestiaMobs"
+			+ "\nhttps://www.spigotmc.org/resources/conquesita-mobs.21307/")
+	public boolean disableIntegrationConquestiaMobs = false;
+
+	@ConfigField(name = "multiplier_per_level", category = "conquestiamobs", 
+			comment = "This is the multiplier per level mutiplied with the basic reward."
+					+"\nBecareful not to ruin the server economy by making the multiplier to big."
+					+"\nExample: If the reward is 10 and the multiplier is 1.05, the calculated"
+					+"\nreward is:"
+					+"\nLevel 1: reward=10"
+					+"\nLevel 2: reward=10*1.05=10.5"
+					+"\nLevel 3: reward=10*1.05*1.05=11.03"
+					+"\nLevel 4: reward=10*1.05*1.05*1.05=11.58"
+					+"\nLevel 5: reward=10*1.05*1.05*1.05*1.05=12.16"
+					+"\nLevel 6: reward=10*1.05*1.05*1.05*1.05*1.05=12.76"
+					+"\nLevel 7: reward=10*1.05*1.05*1.05*1.05*1.05*1.05=13.40"
+					+"\nLevel 8: reward=10*1.05*1.05*1.05*1.05*1.05*1.05*1.05=14.07"
+					+"\nLevel 9: reward=10*1.05*1.05*1.05*1.05*1.05*1.05*1.05*1.05=14.77"
+					+"\nLevel 10: reward=10*1.05*1.05*1.05*1.05*1.05*1.05*1.05*1.05*1.05=15.51"
+					)
+	public double mulitiplierPerLevel = 1.05;
+	
 	// #####################################################################################
 	// DropMoneyOnGrond settings
 	// #####################################################################################

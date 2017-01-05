@@ -57,6 +57,7 @@ import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaHelper;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
@@ -76,6 +77,7 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.modifier.BonusMobBonus;
 import one.lindegaard.MobHunting.modifier.BrawlerBonus;
+import one.lindegaard.MobHunting.modifier.ConquestiaBonus;
 import one.lindegaard.MobHunting.modifier.CoverBlown;
 import one.lindegaard.MobHunting.modifier.CriticalModifier;
 import one.lindegaard.MobHunting.modifier.DifficultyBonus;
@@ -275,8 +277,11 @@ public class MobHuntingManager implements Listener {
 		mModifiers.add(new ShoveBonus());
 		mModifiers.add(new SneakyBonus());
 		mModifiers.add(new SniperBonus());
-		mModifiers.add(new StackedMobBonus());
 		mModifiers.add(new Undercover());
+		if (MobStackerCompat.isSupported())
+			mModifiers.add(new StackedMobBonus());
+		if (ConquestiaMobsCompat.isSupported())
+			mModifiers.add(new ConquestiaBonus());
 	}
 
 	public double handleKillstreak(Player player) {
@@ -1348,19 +1353,21 @@ public class MobHuntingManager implements Listener {
 			return;
 
 		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getEntity()) <= 0)
+				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getEntity()) == 0)
 						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.CUSTOM) {
-			Messages.debug("%s was spawned with SpawnReason.CUSTOM", event.getEntityType());
-			if (!MobHunting.getConfigManager().allowCustomMobsSpawners)
+			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) {
+				Messages.debug("%s was spawned with SpawnReason.CUSTOM", event.getEntityType());
 				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
+			}
 		} else if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
 			if (!MobHunting.getConfigManager().allowMobSpawners)
 				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
 		} else {
-			//Messages.debug("%s was spawned with %s", event.getEntityType(), event.getSpawnReason());
+			// Messages.debug("%s was spawned with %s",
+			// event.getEntityType(),event.getSpawnReason());
 		}
 
 	}

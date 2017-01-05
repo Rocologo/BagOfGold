@@ -31,6 +31,7 @@ import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
+import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
@@ -176,6 +177,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
 			registerPlugin(CustomMobsCompat.class, "CustomMobs");
 			registerPlugin(MobStackerCompat.class, "MobStacker");
+			registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
 
 			mExtendedMobManager = new ExtendedMobManager();
 
