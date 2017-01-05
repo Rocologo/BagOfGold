@@ -1,5 +1,5 @@
 V4.2.8
-* Added support for ConquestiaMobs (https://www.spigotmc.org/resources/conquesita-mobs.21307/)
+* Added support for Conquestia Mobs (https://www.spigotmc.org/resources/conquesita-mobs.21307/)
 * Removed some SPAM from the console. (https://www.spigotmc.org/threads/mobhunting.46937/page-78#post-2120503)
 * Fixed NPE error i rare cases in the Citizens integration. (https://www.spigotmc.org/threads/mobhunting.46937/page-79#post-2134012)
 * New feature - now handle Custom spawned mobs with SpawnReason.CUSTOM

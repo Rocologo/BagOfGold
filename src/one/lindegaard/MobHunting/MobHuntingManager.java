@@ -1360,7 +1360,7 @@ public class MobHuntingManager implements Listener {
 		if (event.getSpawnReason() == SpawnReason.CUSTOM) {
 			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) {
 				Messages.debug("%s was spawned with SpawnReason.CUSTOM", event.getEntityType());
-				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
+				//event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
 			}
 		} else if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
 			if (!MobHunting.getConfigManager().allowMobSpawners)
