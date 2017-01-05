@@ -240,7 +240,7 @@ public class MasterMobHunterManager implements Listener {
 	public void onSpawnNPC(NPCSpawnEvent event) {
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
-			if (npc.getStoredLocation()!=null 
+			if (npc.getStoredLocation()!=null && mMasterMobHunter.containsKey(npc.getId())
 					&& !npc.getStoredLocation().equals(mMasterMobHunter.get(npc.getId()).getHome())) {
 				Messages.debug("NPC %s (ID=%s) return to home", npc.getName(), npc.getId());
 				Trait trait = getSentinelOrSentryTrait(npc);
