@@ -67,6 +67,7 @@ import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaHelper;
+import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
@@ -98,6 +99,7 @@ import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.update.UpdateHelper;
 import one.lindegaard.MobHunting.util.Misc;
+import uk.antiperson.stackmob.StackMob;
 
 public class MobHuntingManager implements Listener {
 
@@ -278,7 +280,7 @@ public class MobHuntingManager implements Listener {
 		mModifiers.add(new SneakyBonus());
 		mModifiers.add(new SniperBonus());
 		mModifiers.add(new Undercover());
-		if (MobStackerCompat.isSupported())
+		if (MobStackerCompat.isSupported() || StackMobCompat.isSupported())
 			mModifiers.add(new StackedMobBonus());
 		if (ConquestiaMobsCompat.isSupported())
 			mModifiers.add(new ConquestiaBonus());
@@ -1358,7 +1360,7 @@ public class MobHuntingManager implements Listener {
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.CUSTOM) {
-			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) {
+			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) { // used for TARDISweepingAngels / CustomMobs / MythicMobs
 				//Messages.debug("%s was spawned with SpawnReason.CUSTOM", event.getEntityType());
 				//event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
 			}

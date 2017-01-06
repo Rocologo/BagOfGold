@@ -204,20 +204,20 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere you can change the behavior of the Bounty Command or you can disable"
 						+ "\nthe command completely.");
 
-		setCategoryComment("mobstacker",
-				"########################################################################" + "\nMobStacker settings"
+		setCategoryComment("stackedmobs",
+				"########################################################################" + "\nStacked mobs settings"
 						+ "\n########################################################################"
-						+ "\nHere you can change the behavior of Mobstacker Integration, or you can disable"
+						+ "\nHere you can change the behavior of stacked mobs integration, or you can disable"
 						+ "\nintegration completely.");
 
 		setCategoryComment("custommobs",
-				"########################################################################" + "\nMobStacker settings"
+				"########################################################################" + "\nCustomMob settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of CustomMobs Integration, or you can disable"
 						+ "\nintegration completely.");
 
 		setCategoryComment("conquestiamobs",
-				"########################################################################" + "\nMobStacker settings"
+				"########################################################################" + "\nConquestia Mobs settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of ConquestiaMobs Integration, or you can disable"
 						+ "\nintegration completely.");
@@ -1195,7 +1195,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nIf number of kills exceeds 10, the reward will decrese with 10% until 20 kills with"
 			+ "\nthe range, whereafter the reward will be zero.")
 	public int grindingRangeDetection = 15;
-	@ConfigField(name = "grinding-stacked-mobs-allowed", category = "grinding", comment = "Killing stacked mobs (from the plugin MobStacker) "
+	@ConfigField(name = "grinding-stacked-mobs-allowed", category = "grinding", comment = "Killing stacked mobs (created by a mob stacking plugin) "
 			+ "\nis by nature detected as grinding and by default allowed. If you want to the the grinding detection to detect"
 			+ "\nkillings of stacked to be detected as gring, you must set grinding-stacked-mobs-allowed to false.")
 	public boolean isGrindingStackedMobsAllowed = true;
@@ -1335,13 +1335,18 @@ public class ConfigManager extends AutoConfig {
 	public String randomBounty = "50:100";
 
 	// #####################################################################################
-	// MobStacker Settings
+	// Stacked Mobs Settings
 	// #####################################################################################
-	@ConfigField(name = "disable-integration-mobstacker", category = "mobstacker", comment = "Disable integration with MobStacker.")
+	@ConfigField(name = "disable-integration-mobstacker", category = "stackedmobs", comment = "Disable integration with MobStacker."
+			+"\nhttps://www.spigotmc.org/resources/mobstacker.15596/")
 	public boolean disableIntegrationMobStacker = false;
 
-	@ConfigField(name = "get-reward-from-stacked-mobs", category = "mobstacker", comment = "Set to true if you want StackedMobs to pay a reward.")
-	public boolean getRewardFromStackedMobs = false;
+	@ConfigField(name = "disable-integration-stackmob", category = "stackedmobs", comment = "Disable integration with StackMob."
+			+"\nhttps://www.spigotmc.org/resources/stackmob.29999/")
+	public boolean disableIntegrationStackMob = false;
+
+	@ConfigField(name = "get-reward-from-stacked-mobs", category = "stackedmobs", comment = "Set to true if you want stacked mobs to pay a reward.")
+	public boolean getRewardFromStackedMobs = true;
 
 	// #####################################################################################
 	// CustomMobs Settings

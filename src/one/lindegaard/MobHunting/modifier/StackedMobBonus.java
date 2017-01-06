@@ -9,6 +9,7 @@ import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
+import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 
 public class StackedMobBonus implements IModifier {
 
@@ -20,9 +21,13 @@ public class StackedMobBonus implements IModifier {
 	@Override
 	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (MobStackerCompat.killHoleStackOnDeath(deadEntity) && MobStackerCompat.multiplyLoot()) {
+		if (MobStackerCompat.isSupported() && MobStackerCompat.killHoleStackOnDeath(deadEntity)
+				&& MobStackerCompat.multiplyLoot()) {
 			Messages.debug("StackedMobBonus: Pay reward for no %s mob", MobStackerCompat.getStackSize(deadEntity));
 			return MobStackerCompat.getStackSize(deadEntity);
+		} else if (StackMobCompat.isSupported() && StackMobCompat.killHoleStackOnDeath(deadEntity)) {
+			Messages.debug("StackedMobBonus: Pay reward for no %s mob", StackMobCompat.getStackSize(deadEntity));
+			return StackMobCompat.getStackSize(deadEntity);
 		} else {
 			Messages.debug("StackedMobBonus: Pay reward for one mob");
 			return 1;
@@ -32,6 +37,6 @@ public class StackedMobBonus implements IModifier {
 	@Override
 	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return MobStackerCompat.isStackedMob(deadEntity);
+		return MobStackerCompat.isStackedMob(deadEntity) || StackMobCompat.isStackedMob(deadEntity);
 	}
 }

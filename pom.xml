@@ -4,8 +4,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.2.8</version>
-	<!-- <version>4.2.8-SNAPSHOT-B${build.number}</version> -->
+	<version>4.2.9</version>
+	<!-- <version>4.2.9-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -54,6 +54,7 @@
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
 		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B85.jar</TARDISWeepingAngels.jar.version>
 		<ConquestiaMobs.jar.version>CqMobs-3.3.3.jar</ConquestiaMobs.jar.version>
+		<StackMob.jar.version>StackMob-1.5.6.jar</StackMob.jar.version>
 	</properties>
 
 	<organization>
@@ -387,6 +388,15 @@
 			<version>${ConquestiaMobs.jar.version}</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${ConquestiaMobs.jar.version}</systemPath>
+		</dependency>
+
+		<!-- MobStack -->
+		<dependency>
+			<groupId>uk.antiperson.stackmob.StackMob</groupId>
+			<artifactId>StackMob</artifactId>
+			<version>${StackMob.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${StackMob.jar.version}</systemPath>
 		</dependency>
 
 		<!-- iDisguise -->
