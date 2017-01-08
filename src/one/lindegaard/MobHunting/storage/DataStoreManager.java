@@ -19,8 +19,8 @@ import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
@@ -52,29 +52,30 @@ public class DataStoreManager {
 		return mTaskThread.getState() != Thread.State.WAITING && mTaskThread.getState() != Thread.State.TERMINATED
 				&& mStoreThread.getState() != Thread.State.WAITING
 				&& mStoreThread.getState() != Thread.State.TERMINATED;
-
-		// mTaskThread.isAlive() && mStoreThread.isAlive();
 	}
 
 	// **************************************************************************************
 	// PlayerStats
 	// **************************************************************************************
-	public void recordKill(OfflinePlayer player, MinecraftMob type, ExtendedMob mob, boolean bonusMob) {
+	public void recordKill(OfflinePlayer player, ExtendedMob mob, boolean bonusMob) {
 		synchronized (mWaiting) {
-			mWaiting.add(new StatStore(StatType.fromMobType(type, true), mob, player));
+			mWaiting.add(new StatStore(StatType.fromMobType(mob, true), mob, player));
 
 			if (bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(MinecraftMob.BonusMob, true), mob, player));
+				mWaiting.add(new StatStore(StatType.fromMobType(
+						new ExtendedMob(MinecraftMob.BonusMob.ordinal(), MobPlugin.Minecraft, "BonusMob"), true), mob,
+						player));
 		}
 	}
 
-	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, MinecraftMob type, ExtendedMob mob,
-			boolean bonusMob) {
+	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, ExtendedMob mob, boolean bonusMob) {
 		synchronized (mWaiting) {
-			mWaiting.add(new StatStore(StatType.fromMobType(type, false), mob, player));
+			mWaiting.add(new StatStore(StatType.fromMobType(mob, false), mob, player));
 
 			if (bonusMob)
-				mWaiting.add(new StatStore(StatType.fromMobType(MinecraftMob.BonusMob, false), mob, player));
+				mWaiting.add(new StatStore(StatType.fromMobType(
+						new ExtendedMob(MinecraftMob.BonusMob.ordinal(), MobPlugin.Minecraft, "BonusMob"), false), mob,
+						player));
 		}
 	}
 
@@ -88,7 +89,7 @@ public class DataStoreManager {
 	public void recordAchievement(OfflinePlayer player, Achievement achievement) {
 		synchronized (mWaiting) {
 			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
-			mWaiting.add(new StatStore(StatType.AchievementCount, ExtendedMobManager.getFirstMob(), player));
+			//mWaiting.add(new StatStore(StatType.AchievementCount, ExtendedMobManager.getFirstMob(), player));
 		}
 	}
 

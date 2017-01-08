@@ -268,6 +268,7 @@ public class AchievementManager implements Listener {
 			storage.enableAchievements = true;
 		}
 
+		Messages.debug("RecordAchievement: %s achieved.", achievement.getID());
 		MobHunting.getDataStoreManager().recordAchievement(player, achievement);
 		storage.gainedAchievements.add(achievement.getID());
 		mStorage.put(player.getUniqueId(), storage);
@@ -373,6 +374,7 @@ public class AchievementManager implements Listener {
 		else {
 			storage.progressAchievements.put(achievement.getID(), nextProgress);
 
+			Messages.debug("RecordAchievement: %s has %s kills", achievement.getID(), nextProgress);
 			MobHunting.getDataStoreManager().recordAchievementProgress(player, achievement, nextProgress);
 
 			int segment = Math.min(25, maxProgress / 2);
@@ -462,34 +464,6 @@ public class AchievementManager implements Listener {
 										storage.progressAchievements.put(achievement.id, achievement.progress);
 								}
 
-								// Fix achievement errors where an upper level
-								// progress
-								// achievement is in progress/complete, but a
-								// lower
-								// level one is not
-								/**
-								 * HashSet<String> toRemove = new HashSet
-								 * <String>(); for (Entry<String, Integer> prog
-								 * : storage.progressAchievements.entrySet()) {
-								 * Achievement raw =
-								 * getAchievement(prog.getKey()); if (raw
-								 * instanceof ProgressAchievement) {
-								 * ProgressAchievement achievement =
-								 * (ProgressAchievement) raw; while
-								 * (achievement.inheritFrom() != null) { String
-								 * parent = achievement.inheritFrom();
-								 * 
-								 * if (storage.progressAchievements.containsKey(
-								 * parent)) toRemove.add(parent); achievement =
-								 * (ProgressAchievement) getAchievement(parent);
-								 * } } }
-								 * 
-								 * storage.gainedAchievements.addAll(toRemove);
-								 * for (String id : toRemove) {
-								 * //storage.progressAchievements.remove(id);
-								 * MobHunting.getDataStoreManager().
-								 * recordAchievement(p, getAchievement(id)); }
-								 **/
 								storage.enableAchievements = true;
 								mStorage.put(p.getUniqueId(), storage);
 							}

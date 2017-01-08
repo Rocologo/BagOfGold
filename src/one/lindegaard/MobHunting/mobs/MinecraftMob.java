@@ -499,7 +499,6 @@ public enum MinecraftMob {
 			else if (this == Nitwit)
 				return entity instanceof org.bukkit.entity.Villager
 						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.NITWIT);
-
 		// TODO: Villagers: Cartographer
 
 		if (Misc.isMC110OrNewer())
@@ -547,8 +546,6 @@ public enum MinecraftMob {
 			return entity instanceof Skeleton && ((Skeleton) entity).getSkeletonType() == SkeletonType.WITHER;
 		else if (this == Skeleton)
 			return entity instanceof Skeleton && ((Skeleton) entity).getSkeletonType() == SkeletonType.NORMAL;
-		else if (this == Zombie)
-			return entity instanceof Zombie;
 		else if (this == BonusMob)
 			return entity.hasMetadata("MH:hasBonus");
 		else

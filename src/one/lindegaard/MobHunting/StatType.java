@@ -15,16 +15,17 @@ public class StatType {
 	public static final StatType AssistsTotal = new StatType("total_assist", "stats.total_assist");
 
 	// TODO: change 500
-	//private static StatType[] mValues = new StatType[3 + MinecraftMob.values().length * 2 + 500];
-	private static StatType[] mValues = new StatType[3 + MobHunting.getExtendedMobManager().getAllMobs().size()*2];
+	// private static StatType[] mValues = new StatType[3 +
+	// MinecraftMob.values().length * 2 + 500];
+	private static StatType[] mValues = new StatType[3 + MobHunting.getExtendedMobManager().getAllMobs().size() * 2];
 	private static HashMap<String, StatType> mNameLookup = new HashMap<String, StatType>();
 
 	static {
 		mValues[0] = KillsTotal;
 		mValues[1] = AssistsTotal;
 		mValues[2] = AchievementCount;
-		
-		//Adding Vanilla Minecraft mobTypes
+
+		// Adding Vanilla Minecraft mobTypes
 
 		for (int i = 0; i < MinecraftMob.values().length; ++i)
 			mValues[3 + i] = new StatType(MinecraftMob.values()[i] + "_kill", "stats.name-format", "mob",
@@ -32,25 +33,24 @@ public class StatType {
 
 		for (int i = 0; i < MinecraftMob.values().length; ++i)
 			mValues[3 + i + MinecraftMob.values().length] = new StatType(MinecraftMob.values()[i] + "_assist",
-					"stats.name-format", "mob", 
-					"mobs." + MinecraftMob.values()[i].name() + ".name", "stattype", 
+					"stats.name-format", "mob", "mobs." + MinecraftMob.values()[i].name() + ".name", "stattype",
 					"stats.assists");
-		
+
 		// adding other mobtypes from other plugins
-		Iterator<Entry<Integer, ExtendedMob>> itr = MobHunting.getExtendedMobManager().getAllMobs().entrySet().iterator();
+		Iterator<Entry<Integer, ExtendedMob>> itr = MobHunting.getExtendedMobManager().getAllMobs().entrySet()
+				.iterator();
 		int offset = 3 + MinecraftMob.values().length * 2;
 		while (itr.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) itr.next().getValue();
-			if (mob.getMobPlugin()!=MobPlugin.Minecraft) {
-				//Messages.debug("Adding new StatType(%s,%s)", mob.getMobtype(), mob.getMobPlugin().name());
+			if (mob.getMobPlugin() != MobPlugin.Minecraft) {
 				mValues[offset] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill",
-						 "stats.name-format", "mob",
-						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype()+".name","stattype", 
+						"stats.name-format", "mob",
+						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
 						"stats.kills");
-				
+
 				mValues[offset + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist",
-						 "stats.name-format", "mob",
-						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype()+".name" ,"stattype", 
+						"stats.name-format", "mob",
+						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
 						"stats.assists");
 
 				offset = offset + 2;
@@ -73,11 +73,15 @@ public class StatType {
 		mExtra = extra;
 	}
 
-	public static StatType fromMobType(MinecraftMob mob, boolean kill) {
-		int index = mob.ordinal();
-		if (!kill)
-			index += MinecraftMob.values().length;
-		return mValues[index + 3];
+	public static StatType fromMobType(ExtendedMob mob, boolean kill) {
+		if (mob.getMobPlugin() == MobPlugin.Minecraft) {
+			return new StatType(mob.getMobtype() + "_Kill", "stats.name-format", "mob",
+					"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype", "stats.kills");
+		} else {
+			return new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill", "stats.name-format",
+					"mob", "mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
+					"stats.kills");
+		}
 	}
 
 	public static StatType fromColumnName(String columnName) {
@@ -123,5 +127,5 @@ public class StatType {
 
 		return null;
 	}
-	
+
 }

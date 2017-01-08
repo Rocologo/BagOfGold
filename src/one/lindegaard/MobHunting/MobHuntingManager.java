@@ -75,7 +75,6 @@ import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
-import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.modifier.BonusMobBonus;
 import one.lindegaard.MobHunting.modifier.BrawlerBonus;
 import one.lindegaard.MobHunting.modifier.ConquestiaBonus;
@@ -1190,7 +1189,7 @@ public class MobHuntingManager implements Listener {
 			if (killer != null) {
 				Messages.debug("RecordKill: %s killed a %s (%s)", killer.getName(), mob.getName(),
 						mob.getMobPlugin().name());
-				MobHunting.getDataStoreManager().recordKill(killer, MinecraftMob.getExtendedMobType(killed), mob,
+				MobHunting.getDataStoreManager().recordKill(killer, mob,
 						killed.hasMetadata("MH:hasBonus"));
 			}
 
@@ -1307,7 +1306,7 @@ public class MobHuntingManager implements Listener {
 				Bukkit.getLogger().warning("Please report this to developer!");
 				return;
 			}
-			MobHunting.getDataStoreManager().recordAssist(player, killer, MinecraftMob.getExtendedMobType(killed), mob,
+			MobHunting.getDataStoreManager().recordAssist(player, killer, mob,
 					killed.hasMetadata("MH:hasBonus"));
 			MobHunting.getRewardManager().depositPlayer(player, cash);
 			Messages.debug("%s got a on assist reward (%s)", player.getName(),

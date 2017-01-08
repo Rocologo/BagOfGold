@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.mobs;
 
 import net.citizensnpcs.api.npc.NPC;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
@@ -59,7 +60,7 @@ public class ExtendedMob {
 
 		ExtendedMob other = (ExtendedMob) obj;
 
-		return mob_id==other.mob_id;
+		return mob_id.equals(other.mob_id);
 	}
 
 	@Override
@@ -76,7 +77,7 @@ public class ExtendedMob {
 		case 2:
 			// Citizens
 			NPC npc = CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mobtype));
-			if (npc!=null)
+			if (npc != null)
 				return npc.getName();
 			else
 				return "";
@@ -90,5 +91,12 @@ public class ExtendedMob {
 			// Minecraft
 			return mobtype;
 		}
+	}
+
+	public String getFriendlyName() {
+		if (mobPlugin == MobPlugin.Minecraft)
+			return Messages.getString("mobs." + getName() + ".name");
+		else
+			return Messages.getString("mobs." + mobPlugin + "_" + getName() + ".name");
 	}
 }

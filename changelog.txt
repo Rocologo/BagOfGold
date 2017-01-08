@@ -1,10 +1,10 @@
 V4.3.0
-* Trying to fix exploit where players could remove heads from the Bounty GUI. (Ticket 84: https://github.com/Rocologo/MobHunting/issues/84)
+* Fixing error where killing a PigZombie was counted in Achievements as both a PigZombie and a Zombie. 
 * Fix NPE when a player dies because of an arrow from a dispenser. (https://www.spigotmc.org/threads/mobhunting.46937/page-80#post-2144047)   
 V4.2.9
 * Added support for StackMob (https://www.spigotmc.org/resources/stackmob.29999/)
 * Conquestia Mobs added to MCStats.org (http://mcstats.org/plugin/MobHunting)
-V4.2.8
+V4.2.8t version 
 * Added support for Conquestia Mobs (https://www.spigotmc.org/resources/conquesita-mobs.21307/)
 * Removed some SPAM from the console. (https://www.spigotmc.org/threads/mobhunting.46937/page-78#post-2120503)
 * Fixed NPE error i rare cases in the Citizens integration. (https://www.spigotmc.org/threads/mobhunting.46937/page-79#post-2134012)
