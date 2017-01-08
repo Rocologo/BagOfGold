@@ -99,7 +99,6 @@ import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.update.UpdateHelper;
 import one.lindegaard.MobHunting.util.Misc;
-import uk.antiperson.stackmob.StackMob;
 
 public class MobHuntingManager implements Listener {
 
@@ -421,9 +420,18 @@ public class MobHuntingManager implements Listener {
 		EntityDamageEvent cause = player.getLastDamageCause();
 		if (cause instanceof EntityDamageByEntityEvent) {
 			Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
-			Entity killer = (damager instanceof Projectile) ? (Entity) ((Projectile) damager).getShooter() : damager;
+			Entity killer = null;
+			if (damager instanceof Player)
+				killer = damager;
+			else if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Player)
+				killer = (Entity) ((Projectile) damager).getShooter();
+			else {
+				Messages.debug("%s was killed by a %s", player.getName(), damager.getType());
+				if (damager instanceof Projectile)
+					Messages.debug("and shooter was %s", ((Projectile) damager).getShooter().toString());
+			}
 
-			if (!(killer instanceof Player)) {
+			if (killer != null && !(killer instanceof Player)) {
 				playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(player);
 				if (playerPenalty != 0) {
 					boolean killed_muted = false;
@@ -1360,9 +1368,17 @@ public class MobHuntingManager implements Listener {
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.CUSTOM) {
-			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) { // used for TARDISweepingAngels / CustomMobs / MythicMobs
-				//Messages.debug("%s was spawned with SpawnReason.CUSTOM", event.getEntityType());
-				//event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
+			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) { // used
+																			// for
+																			// TARDISweepingAngels
+																			// /
+																			// CustomMobs
+																			// /
+																			// MythicMobs
+				// Messages.debug("%s was spawned with SpawnReason.CUSTOM",
+				// event.getEntityType());
+				// event.getEntity().setMetadata("MH:blocked", new
+				// FixedMetadataValue(MobHunting.getInstance(), true));
 			}
 		} else if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
 			if (!MobHunting.getConfigManager().allowMobSpawners)

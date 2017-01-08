@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.bounty;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -339,6 +340,7 @@ public class BountyManager implements Listener {
 	// *************************************************************************************
 
 	// private static Inventory inventory;
+	private static HashMap<CommandSender, Inventory> inventoryMap = new HashMap<CommandSender, Inventory>();
 
 	public static void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
 			boolean useGui) {
@@ -349,7 +351,7 @@ public class BountyManager implements Listener {
 				Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getBounties(worldGroupName,
 						wantedPlayer);
 				if (useGui) {
-					Inventory inventory = Bukkit.createInventory(null, 54,
+					final Inventory inventory = Bukkit.createInventory(null, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
 					int n = 0;
 					for (Bounty bounty : bountiesOnWantedPlayer) {
@@ -371,13 +373,14 @@ public class BountyManager implements Listener {
 												"prize", MobHunting.getRewardManager().format(bounty.getPrize()),
 												"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
 												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
-							if (n < 52)
+							if (n < 53)
 								n++;
 						}
 					}
-					if (sender instanceof Player)
-						((Player) sender).openInventory(inventory);
-					else
+					if (sender instanceof Player) {
+						inventoryMap.put(sender, inventory);
+						((Player) sender).openInventory(inventoryMap.get(sender));
+					} else
 						Bukkit.getConsoleSender()
 								.sendMessage(ChatColor.RED + "This command can not used in the console");
 
@@ -438,12 +441,13 @@ public class BountyManager implements Listener {
 											"prize", MobHunting.getRewardManager().format(bounty.getPrize()),
 											"wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
-						if (n < 52)
+						if (n < 53)
 							n++;
 					}
-					if (sender instanceof Player)
-						((Player) sender).openInventory(inventory);
-					else
+					if (sender instanceof Player) {
+						inventoryMap.put(sender, inventory);
+						((Player) sender).openInventory(inventoryMap.get(sender));
+					} else
 						Bukkit.getConsoleSender()
 								.sendMessage(ChatColor.RED + "This command can not used in the console");
 				} else {
@@ -473,15 +477,16 @@ public class BountyManager implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		Inventory inv = event.getInventory();
+		final Inventory inv = event.getInventory();
+		final Player player = (Player) event.getWhoClicked();
 		if (ChatColor.stripColor(inv.getName()).startsWith("MostWanted:")
 				|| ChatColor.stripColor(inv.getName()).startsWith("Wanted:")) {
-			final Player player = (Player) event.getWhoClicked();
 			event.setCancelled(true);
 			Messages.debug("BountyManager: Player clicked on inventory - closing now");
 			Bukkit.getScheduler().runTask(instance, new Runnable() {
 				public void run() {
 					player.closeInventory();
+					inventoryMap.remove(player);
 				}
 			});
 		}

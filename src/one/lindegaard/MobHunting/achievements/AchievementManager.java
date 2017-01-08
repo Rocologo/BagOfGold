@@ -517,8 +517,8 @@ public class AchievementManager implements Listener {
 	// ACHIEVEMENTS GUI
 	// *************************************************************************************
 	// Inventory inventory, inventory2;
-	HashMap<CommandSender, Inventory> inventoryMap = new HashMap<CommandSender, Inventory>();
-	HashMap<CommandSender, Inventory> inventoryMap2 = new HashMap<CommandSender, Inventory>();
+	private static HashMap<CommandSender, Inventory> inventoryMap = new HashMap<CommandSender, Inventory>();
+	private static HashMap<CommandSender, Inventory> inventoryMap2 = new HashMap<CommandSender, Inventory>();
 
 	public void showAllAchievements(final CommandSender sender, final OfflinePlayer otherPlayer, final boolean gui,
 			final boolean self) {

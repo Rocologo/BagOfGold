@@ -1,3 +1,6 @@
+V4.3.0
+* Trying to fix exploit where players could remove heads from the Bounty GUI. (Ticket 84: https://github.com/Rocologo/MobHunting/issues/84)
+* Fix NPE when a player dies because of an arrow from a dispenser. (https://www.spigotmc.org/threads/mobhunting.46937/page-80#post-2144047)   
 V4.2.9
 * Added support for StackMob (https://www.spigotmc.org/resources/stackmob.29999/)
 * Conquestia Mobs added to MCStats.org (http://mcstats.org/plugin/MobHunting)
