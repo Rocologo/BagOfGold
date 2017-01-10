@@ -49,6 +49,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			}
 			dataSource.setDatabaseName(MobHunting.getConfigManager().databaseName + "?autoReconnect=true");
 			Connection c = dataSource.getConnection();
+			Statement statement = c.createStatement();
+			statement.executeQuery("SET NAMES 'utf8'");
+			statement.close();
 			c.setAutoCommit(false);
 			return c;
 		} catch (ClassNotFoundException classNotFoundEx) {

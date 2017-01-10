@@ -214,13 +214,15 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nCustomMob settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of CustomMobs Integration, or you can disable"
-						+ "\nintegration completely.");
+						+ "\nintegration completely."
+						+ "\nhttps://www.spigotmc.org/resources/custommobs.7339/");
 
 		setCategoryComment("conquestiamobs",
 				"########################################################################" + "\nConquestia Mobs settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of ConquestiaMobs Integration, or you can disable"
-						+ "\nintegration completely.");
+						+ "\nintegration completely."
+						+ "\nhttps://www.spigotmc.org/resources/conquesita-mobs.21307/");
 
 		setCategoryComment("grinding",
 				"########################################################################"
