@@ -1446,7 +1446,8 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-bossbarapi", category = "plugins", comment = "Disable integration with BossBarAPI. If you want messages in player chat you can set this to true.")
 	public boolean disableIntegrationBossBarAPI = false;
 
-	@ConfigField(name = "disable-integration-barapi", category = "plugins", comment = "Disable integration with BarAPI. If you want messages in player chat you can set this to true.")
+	@ConfigField(name = "disable-integration-barapi", category = "plugins", comment = "Disable integration with BarAPI. If you want messages in player chat you can set this to true."
+			+"\nhttps://dev.bukkit.org/projects/bar-api")
 	public boolean disableIntegrationBarAPI = false;
 
 	@ConfigField(name = "disable-integration-titleapi", category = "plugins", comment = "Disable integration with TitleAPI")
