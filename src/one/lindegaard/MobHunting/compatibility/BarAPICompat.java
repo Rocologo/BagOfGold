@@ -8,8 +8,8 @@ import me.confuser.barapi.BarAPI;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class BarAPICompat {
-	
-	//https://dev.bukkit.org/projects/bar-api
+
+	// https://dev.bukkit.org/projects/bar-api
 
 	private static Plugin mPlugin;
 	private static boolean supported = false;
@@ -18,13 +18,12 @@ public class BarAPICompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with BarAPI is disabled in config.yml");
 		} else {
-			if (mPlugin.getDescription().getVersion().compareTo("3.0") >= 0) {
+			mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
+			if (mPlugin != null && mPlugin.getDescription().getVersion().compareTo("3.0") < 0) {
 				Bukkit.getLogger().warning("[MobHunting] Your current version of BarAPI ("
 						+ mPlugin.getDescription().getVersion()
 						+ ") is not supported by MobHunting. Mobhunting does only support version 3.0 or newer.");
 			} else {
-				mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
-
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with BarAPI ("
 						+ getBarAPI().getDescription().getVersion() + ")");
 				supported = true;

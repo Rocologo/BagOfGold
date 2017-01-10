@@ -1,5 +1,6 @@
 V4.3.1
 * Add support for UTF8 in MySQL database
+* Fixed bug when disabling BarAPI
 V4.3.0
 * Fixing error where killing a PigZombie was counted in Achievements as both a PigZombie and a Zombie. 
 * Fix NPE when a player dies because of an arrow from a dispenser. (https://www.spigotmc.org/threads/mobhunting.46937/page-80#post-2144047) 

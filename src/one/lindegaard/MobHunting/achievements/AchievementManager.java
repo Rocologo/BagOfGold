@@ -42,6 +42,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -497,9 +498,9 @@ public class AchievementManager implements Listener {
 	public void showAllAchievements(final CommandSender sender, final OfflinePlayer otherPlayer, final boolean gui,
 			final boolean self) {
 
-		final Inventory inventory = Bukkit.createInventory(null, 54,
+		final Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
 				ChatColor.BLUE + "" + ChatColor.BOLD + "Achievements:" + otherPlayer.getName());
-		final Inventory inventory2 = Bukkit.createInventory(null, 54,
+		final Inventory inventory2 = Bukkit.createInventory((InventoryHolder) sender, 54,
 				ChatColor.BLUE + "" + ChatColor.BOLD + "Not started");
 
 		requestCompletedAchievements(otherPlayer, new IDataCallback<List<Entry<Achievement, Integer>>>() {

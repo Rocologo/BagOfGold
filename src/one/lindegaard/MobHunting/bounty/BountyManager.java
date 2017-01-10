@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.MobHunting.Messages;
@@ -351,7 +352,7 @@ public class BountyManager implements Listener {
 				Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getBounties(worldGroupName,
 						wantedPlayer);
 				if (useGui) {
-					final Inventory inventory = Bukkit.createInventory(null, 54,
+					final Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
 					int n = 0;
 					for (Bounty bounty : bountiesOnWantedPlayer) {
@@ -420,7 +421,7 @@ public class BountyManager implements Listener {
 				// Set<Bounty> bounties =
 				// MobHunting.getBountyManager().getAllBounties();
 				if (useGui) {
-					Inventory inventory = Bukkit.createInventory(player, 54,
+					Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
 					int n = 0;
 					for (Bounty bounty : mOpenBounties) {
