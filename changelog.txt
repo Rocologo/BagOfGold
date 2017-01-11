@@ -1,4 +1,4 @@
-V4.3.1
+V4.3.2
 * Add support for UTF8 in MySQL database
 * Fixed bug when disabling BarAPI
 V4.3.0

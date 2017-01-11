@@ -527,8 +527,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 			rs.close();
 			statement.close();
 			mConnection.close();
-		} catch (SQLException | DataStoreException e) {
+		} catch (SQLException e) {
 			Bukkit.getLogger().severe("[MobHunting] The ExtendedMobType " + mobtype + " was not found");
+			e.printStackTrace();
+		} catch (DataStoreException e) {
 			e.printStackTrace();
 		}
 		return res;
@@ -540,22 +542,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			connection = setupConnection();
 			int n = 0;
-			try {
-				Statement statement = connection.createStatement();
-				for (MinecraftMob mob : MinecraftMob.values())
-					if (getMobIdFromExtendedMobType(mob.name(), MobPlugin.Minecraft) == 0) {
-						statement.executeUpdate(
-								"INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES ( 0,'" + mob.name() + "')");
-						n++;
-					}
-				if (n > 0)
-					Bukkit.getLogger().info("[MobHunting] " + n + " Minecraft Vanilla Mobs was inserted to mh_Mobs");
-				statement.close();
-				connection.commit();
-				connection.close();
-			} catch (SQLException e) {
-
-			}
+			Statement statement = connection.createStatement();
+			for (MinecraftMob mob : MinecraftMob.values())
+				if (getMobIdFromExtendedMobType(mob.name(), MobPlugin.Minecraft) == 0) {
+					statement
+							.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES ( 0,'" + mob.name() + "')");
+					n++;
+				}
+			if (n > 0)
+				Bukkit.getLogger().info("[MobHunting] " + n + " Minecraft Vanilla Mobs was inserted to mh_Mobs");
+			statement.close();
+			connection.commit();
+			connection.close();
 		} catch (SQLException | DataStoreException e1) {
 			e1.printStackTrace();
 		}
@@ -862,7 +860,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			rs.close();
 			create.close();
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
