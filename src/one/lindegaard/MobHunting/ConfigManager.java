@@ -214,15 +214,14 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nCustomMob settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of CustomMobs Integration, or you can disable"
-						+ "\nintegration completely."
-						+ "\nhttps://www.spigotmc.org/resources/custommobs.7339/");
+						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/custommobs.7339/");
 
 		setCategoryComment("conquestiamobs",
-				"########################################################################" + "\nConquestia Mobs settings"
+				"########################################################################"
+						+ "\nConquestia Mobs settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of ConquestiaMobs Integration, or you can disable"
-						+ "\nintegration completely."
-						+ "\nhttps://www.spigotmc.org/resources/conquesita-mobs.21307/");
+						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/conquesita-mobs.21307/");
 
 		setCategoryComment("grinding",
 				"########################################################################"
@@ -1340,11 +1339,11 @@ public class ConfigManager extends AutoConfig {
 	// Stacked Mobs Settings
 	// #####################################################################################
 	@ConfigField(name = "disable-integration-mobstacker", category = "stackedmobs", comment = "Disable integration with MobStacker."
-			+"\nhttps://www.spigotmc.org/resources/mobstacker.15596/")
+			+ "\nhttps://www.spigotmc.org/resources/mobstacker.15596/")
 	public boolean disableIntegrationMobStacker = false;
 
 	@ConfigField(name = "disable-integration-stackmob", category = "stackedmobs", comment = "Disable integration with StackMob."
-			+"\nhttps://www.spigotmc.org/resources/stackmob.29999/")
+			+ "\nhttps://www.spigotmc.org/resources/stackmob.29999/")
 	public boolean disableIntegrationStackMob = false;
 
 	@ConfigField(name = "get-reward-from-stacked-mobs", category = "stackedmobs", comment = "Set to true if you want stacked mobs to pay a reward.")
@@ -1367,29 +1366,21 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/conquesita-mobs.21307/")
 	public boolean disableIntegrationConquestiaMobs = false;
 
-	@ConfigField(name = "multiplier_per_level", category = "conquestiamobs", 
-			comment = "This is the multiplier per level mutiplied with the basic reward."
-					+"\nBecareful not to ruin the server economy by making the multiplier to big."
-					+"\nExample: If the reward is 10 and the multiplier is 1.05, the calculated"
-					+"\nreward is:"
-					+"\nLevel 1: reward=10"
-					+"\nLevel 2: reward=10*1.05=10.5"
-					+"\nLevel 3: reward=10*1.05*1.05=11.03"
-					+"\nLevel 4: reward=10*1.05*1.05*1.05=11.58"
-					+"\nLevel 5: reward=10*1.05*1.05*1.05*1.05=12.16"
-					+"\nLevel 6: reward=10*1.05*1.05*1.05*1.05*1.05=12.76"
-					+"\nLevel 7: reward=10*1.05*1.05*1.05*1.05*1.05*1.05=13.40"
-					+"\nLevel 8: reward=10*1.05*1.05*1.05*1.05*1.05*1.05*1.05=14.07"
-					+"\nLevel 9: reward=10*1.05*1.05*1.05*1.05*1.05*1.05*1.05*1.05=14.77"
-					+"\nLevel 10: reward=10*1.05*1.05*1.05*.....=15.51"
-					+"\nLevel 20: reward=10*1.05*1.05*1.05*.....=25..27"
-					+"\nLevel 30: reward=10*1.05*1.05*1.05*.....=41.61"
-					+"\nLevel 40: reward=10*1.05*1.05*1.05*.....=67.05"
-					+"\nLevel 50: reward=10*1.05*1.05*1.05*.....=109.21"
-					+"\nLevel 100: reward=10*1.05*1.05*1.05*.....=1252.39"
-					)
+	@ConfigField(name = "multiplier_per_level", category = "conquestiamobs", comment = "This is the multiplier per level mutiplied with the basic reward."
+			+ "\nBecareful not to ruin the server economy by making the multiplier to big."
+			+ "\nExample: If the reward is 10 and the multiplier is 1.05, the calculated" + "\nreward is:"
+			+ "\nLevel 1: reward=10" + "\nLevel 2: reward=10*1.05=10.5" + "\nLevel 3: reward=10*1.05*1.05=11.03"
+			+ "\nLevel 4: reward=10*1.05*1.05*1.05=11.58" + "\nLevel 5: reward=10*1.05*1.05*1.05*1.05=12.16"
+			+ "\nLevel 6: reward=10*1.05*1.05*1.05*1.05*1.05=12.76"
+			+ "\nLevel 7: reward=10*1.05*1.05*1.05*1.05*1.05*1.05=13.40"
+			+ "\nLevel 8: reward=10*1.05*1.05*1.05*1.05*1.05*1.05*1.05=14.07"
+			+ "\nLevel 9: reward=10*1.05*1.05*1.05*1.05*1.05*1.05*1.05*1.05=14.77"
+			+ "\nLevel 10: reward=10*1.05*1.05*1.05*.....=15.51" + "\nLevel 20: reward=10*1.05*1.05*1.05*.....=25..27"
+			+ "\nLevel 30: reward=10*1.05*1.05*1.05*.....=41.61" + "\nLevel 40: reward=10*1.05*1.05*1.05*.....=67.05"
+			+ "\nLevel 50: reward=10*1.05*1.05*1.05*.....=109.21"
+			+ "\nLevel 100: reward=10*1.05*1.05*1.05*.....=1252.39")
 	public double mulitiplierPerLevel = 1.05;
-	
+
 	// #####################################################################################
 	// DropMoneyOnGrond settings
 	// #####################################################################################
@@ -1449,7 +1440,7 @@ public class ConfigManager extends AutoConfig {
 	public boolean disableIntegrationBossBarAPI = false;
 
 	@ConfigField(name = "disable-integration-barapi", category = "plugins", comment = "Disable integration with BarAPI. If you want messages in player chat you can set this to true."
-			+"\nhttps://dev.bukkit.org/projects/bar-api")
+			+ "\nhttps://dev.bukkit.org/projects/bar-api")
 	public boolean disableIntegrationBarAPI = false;
 
 	@ConfigField(name = "disable-integration-titleapi", category = "plugins", comment = "Disable integration with TitleAPI")
@@ -1889,8 +1880,10 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)) {
-				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getConsoleRunCommand();
+			String key = String.valueOf(npc.getId());
+			if (CitizensCompat.isSentryOrSentinel(mob)
+					&& CitizensCompat.getMobRewardData().containsKey(key)) {
+				return CitizensCompat.getMobRewardData().get(key).getConsoleRunCommand();
 			} else
 				return "";
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {

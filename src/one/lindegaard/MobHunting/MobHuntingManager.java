@@ -1189,8 +1189,7 @@ public class MobHuntingManager implements Listener {
 			if (killer != null) {
 				Messages.debug("RecordKill: %s killed a %s (%s)", killer.getName(), mob.getName(),
 						mob.getMobPlugin().name());
-				MobHunting.getDataStoreManager().recordKill(killer, mob,
-						killed.hasMetadata("MH:hasBonus"));
+				MobHunting.getDataStoreManager().recordKill(killer, mob, killed.hasMetadata("MH:hasBonus"));
 			}
 
 			// Tell the player that he got the reward/penalty, unless muted
@@ -1306,8 +1305,7 @@ public class MobHuntingManager implements Listener {
 				Bukkit.getLogger().warning("Please report this to developer!");
 				return;
 			}
-			MobHunting.getDataStoreManager().recordAssist(player, killer, mob,
-					killed.hasMetadata("MH:hasBonus"));
+			MobHunting.getDataStoreManager().recordAssist(player, killer, mob, killed.hasMetadata("MH:hasBonus"));
 			MobHunting.getRewardManager().depositPlayer(player, cash);
 			Messages.debug("%s got a on assist reward (%s)", player.getName(),
 					MobHunting.getRewardManager().format(cash));
@@ -1367,13 +1365,8 @@ public class MobHuntingManager implements Listener {
 			return;
 
 		if (event.getSpawnReason() == SpawnReason.CUSTOM) {
-			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) { // used
-																			// for
-																			// TARDISweepingAngels
-																			// /
-																			// CustomMobs
-																			// /
-																			// MythicMobs
+			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) {
+				// used for TARDISweepingAngels / CustomMobs / MythicMobs
 				// Messages.debug("%s was spawned with SpawnReason.CUSTOM",
 				// event.getEntityType());
 				// event.getEntity().setMetadata("MH:blocked", new
@@ -1391,13 +1384,22 @@ public class MobHuntingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void reinforcementMobSpawn(CreatureSpawnEvent event) {
-		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getEntity()) <= 0)
-						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getEntity()).equals(""))
+
+		if (event.getSpawnReason() != SpawnReason.REINFORCEMENTS)
 			return;
 
-		if (event.getSpawnReason() == SpawnReason.REINFORCEMENTS)
-			event.getEntity().setMetadata("MH:reinforcement", new FixedMetadataValue(MobHunting.getInstance(), true));
+		LivingEntity mob = event.getEntity();
+
+		if (CitizensCompat.isNPC(mob) && !CitizensCompat.isSentryOrSentinel(mob))
+			return;
+
+		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getLocation().getWorld())
+				|| (MobHunting.getConfigManager().getBaseKillPrize(mob) <= 0)
+						&& MobHunting.getConfigManager().getKillConsoleCmd(mob).equals(""))
+			return;
+
+		event.getEntity().setMetadata("MH:reinforcement", new FixedMetadataValue(MobHunting.getInstance(), true));
+
 	}
 
 	public Set<IModifier> getModifiers() {
