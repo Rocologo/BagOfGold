@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -193,7 +194,9 @@ public class LeaderboardManager implements Listener {
 			YamlConfiguration config = new YamlConfiguration();
 			config.load(file);
 
-			for (String key : config.getKeys(false)) {
+			Iterator<String> keys = config.getKeys(false).iterator();
+			while (keys.hasNext()) {
+				String key = keys.next();
 				ConfigurationSection section = config.getConfigurationSection(key);
 				WorldLeaderboard board = new WorldLeaderboard();
 				board.read(section);
@@ -201,8 +204,10 @@ public class LeaderboardManager implements Listener {
 				board.refresh();
 				mLeaderboards.put(world, board);
 			}
-			Messages.debug("%s Leaderboards in '%s' loaded from file: %s!", mLeaderboards.size(), world.getName(),
-					MobHunting.getInstance().getDataFolder(), "boards-" + world.getName() + ".yml");
+			
+			if (mLeaderboards.size() > 0)
+				Messages.debug("%s Leaderboards in '%s' loaded from file: %s!", mLeaderboards.size(), world.getName(),
+						MobHunting.getInstance().getDataFolder(), "boards-" + world.getName() + ".yml");
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

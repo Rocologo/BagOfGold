@@ -394,8 +394,8 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "killerrabbit-cmd-run-frequency-base", category = "mobs")
 	public int killerrabbitFrequencyBase = 100;
 
-	@ConfigField(name = "magma-cube", category = "mobs")
-	public String magmaCubePrize = "40:80";
+	@ConfigField(name = "magma-cube", category = "mobs", comment = "This is multiplied by the size of the magma cube. So a big natural magma cube is 4x this value")
+	public String magmaCubePrize = "10:20";
 	@ConfigField(name = "magma-cube-cmd", category = "mobs")
 	public String magmaCubeCmd = "mobhunt head give {player} MAGMA_CUBE|give {player} iron_ingot 1";
 	@ConfigField(name = "magma-cube-cmd-desc", category = "mobs")
@@ -1785,12 +1785,11 @@ public class ConfigManager extends AutoConfig {
 					return getPrice(mob, MobHunting.getConfigManager().zombiePrize);
 			else if (mob instanceof Ghast)
 				return getPrice(mob, MobHunting.getConfigManager().ghastPrize);
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime
+				return getPrice(mob, MobHunting.getConfigManager().magmaCubePrize) * ((MagmaCube) mob).getSize();
 			else if (mob instanceof Slime)
-				if (mob instanceof MagmaCube)
-					// MagmaCube is a subclass of Slime
-					return getPrice(mob, MobHunting.getConfigManager().magmaCubePrize) * ((MagmaCube) mob).getSize();
-				else
-					return getPrice(mob, MobHunting.getConfigManager().slimeTinyPrize) * ((Slime) mob).getSize();
+				return getPrice(mob, MobHunting.getConfigManager().slimeTinyPrize) * ((Slime) mob).getSize();
 			else if (mob instanceof EnderDragon)
 				return getPrice(mob, MobHunting.getConfigManager().enderdragonPrize);
 			else if (mob instanceof Wither)
@@ -1881,8 +1880,7 @@ public class ConfigManager extends AutoConfig {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
 			String key = String.valueOf(npc.getId());
-			if (CitizensCompat.isSentryOrSentinel(mob)
-					&& CitizensCompat.getMobRewardData().containsKey(key)) {
+			if (CitizensCompat.isSentryOrSentinel(mob) && CitizensCompat.getMobRewardData().containsKey(key)) {
 				return CitizensCompat.getMobRewardData().get(key).getConsoleRunCommand();
 			} else
 				return "";
@@ -1985,11 +1983,11 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().zombieCmd;
 			else if (mob instanceof Ghast)
 				return MobHunting.getConfigManager().ghastCmd;
+			else if (mob instanceof MagmaCube)
+				//Magmacube is an instance of slime and must be checked before the Slime itself
+				return MobHunting.getConfigManager().magmaCubeCmd;
 			else if (mob instanceof Slime)
-				if (mob instanceof MagmaCube)
-					return MobHunting.getConfigManager().magmaCubeCmd;
-				else
-					return MobHunting.getConfigManager().slimeCmd;
+				return MobHunting.getConfigManager().slimeCmd;
 			else if (mob instanceof EnderDragon)
 				return MobHunting.getConfigManager().enderdragonCmd;
 			else if (mob instanceof Wither)
@@ -2347,14 +2345,13 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Ghast)
 				return (double) MobHunting.getConfigManager().ghastFrequency
 						/ (double) MobHunting.getConfigManager().ghastFrequencyBase;
+			else if (mob instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime
+				return (double) MobHunting.getConfigManager().magmaCubeFrequency
+						/ (double) MobHunting.getConfigManager().magmaCubeFrequencyBase;
 			else if (mob instanceof Slime)
-				if (mob instanceof MagmaCube)
-					// MagmaCube is a subclass of Slime
-					return (double) MobHunting.getConfigManager().magmaCubeFrequency
-							/ (double) MobHunting.getConfigManager().magmaCubeFrequencyBase;
-				else
-					return (double) MobHunting.getConfigManager().slimeFrequency
-							/ (double) MobHunting.getConfigManager().slimeFrequencyBase;
+				return (double) MobHunting.getConfigManager().slimeFrequency
+						/ (double) MobHunting.getConfigManager().slimeFrequencyBase;
 			else if (mob instanceof EnderDragon)
 				return (double) MobHunting.getConfigManager().enderdragonFrequency
 						/ (double) MobHunting.getConfigManager().enderdragonFrequencyBase;

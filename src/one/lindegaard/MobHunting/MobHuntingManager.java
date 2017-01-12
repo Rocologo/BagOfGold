@@ -24,6 +24,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Skeleton;
@@ -970,9 +971,10 @@ public class MobHuntingManager implements Listener {
 		Area detectedGrindingArea = MobHunting.getAreaManager().getGrindingArea(loc);
 		if (detectedGrindingArea == null)
 			detectedGrindingArea = data.getGrindingArea(loc);
-		// Slimes are except from grinding due to their splitting nature
-		if (!(event.getEntity() instanceof Slime) && MobHunting.getConfigManager().penaltyGrindingEnable
-				&& !killed.hasMetadata("MH:reinforcement")
+		// Slimes ang magmacubes are except from grinding due to their splitting
+		// nature
+		if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
+				&& MobHunting.getConfigManager().penaltyGrindingEnable && !killed.hasMetadata("MH:reinforcement")
 				&& !MobHunting.getAreaManager().isWhitelisted(killed.getLocation())) {
 			Messages.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
 					data.getcDampnerRange());

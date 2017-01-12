@@ -22,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class NpcCommand implements ICommand, Listener {
 
@@ -33,7 +34,11 @@ public class NpcCommand implements ICommand, Listener {
 	// /mh npc create <stat type> <period> <number>
 	// /mh npc remove
 	// /mh npc update
+	// /mh npc spawn
+	// /mh npc despawn
 	// /mh npc select
+	// /mh npc tphere
+	// /mh npc sethome
 
 	@Override
 	public String getName() {
@@ -53,11 +58,11 @@ public class NpcCommand implements ICommand, Listener {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				ChatColor.GOLD + label + ChatColor.GREEN + " create <stattype> <period> <number>"
-						+ ChatColor.WHITE + " - to create a MasterMobHunter NPC",
-						ChatColor.GOLD + label + ChatColor.GREEN + " remove" + ChatColor.WHITE
+				ChatColor.GOLD + label + ChatColor.GREEN + " create <stattype> <period> <number>" + ChatColor.WHITE
+						+ " - to create a MasterMobHunter NPC",
+				ChatColor.GOLD + label + ChatColor.GREEN + " remove" + ChatColor.WHITE
 						+ " - to remove the selected MasterMobHunter",
-						ChatColor.GOLD + label + ChatColor.GREEN + " update" + ChatColor.WHITE
+				ChatColor.GOLD + label + ChatColor.GREEN + " update" + ChatColor.WHITE
 						+ " - to update selected the MasterMobHunter NPC" };
 	}
 
@@ -88,6 +93,8 @@ public class NpcCommand implements ICommand, Listener {
 				items.add("spawn");
 				items.add("despawn");
 				items.add("update");
+				items.add("tphere");
+				items.add("sethome");
 			} else if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("create")) {
 					StatType[] values = StatType.values();
@@ -118,30 +125,50 @@ public class NpcCommand implements ICommand, Listener {
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
 			MasterMobHunterManager masterMobHunterManager = CitizensCompat.getManager();
 			npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
+			if (npc == null && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete")
+					|| args[0].equalsIgnoreCase("spawn") || args[0].equalsIgnoreCase("despawn")
+					|| args[0].equalsIgnoreCase("tphere") || args[0].equalsIgnoreCase("sethome"))) {
+				sender.sendMessage(Messages.getString("mobhunting.commands.npc.no_npc_selected"));
+				return true;
+			}
+
 			if (args.length == 1 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete"))) {
-				if (npc != null) {
-					if (masterMobHunterManager.contains(npc.getId())) {
-						masterMobHunterManager.remove(npc.getId());
-					}
-					npc.destroy();
-				} else
-					sender.sendMessage("You have not selected a MasterMobhunter");
+				if (masterMobHunterManager.contains(npc.getId())) {
+					masterMobHunterManager.remove(npc.getId());
+				}
+				npc.destroy();
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
-				npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
-				// Location loc =p.getEyeLocation();
-				sender.sendMessage("NPC is " + npc.getName() + "(ID=" + npc.getId() + ")");
-				return true;
+				
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("spawn")) {
 				npc.spawn(npc.getStoredLocation());
 				return true;
+			
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("despawn")) {
 				npc.despawn();
 				return true;
+			
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("tphere")) {
+				if (masterMobHunterManager.contains(npc.getId())) {
+					npc.teleport(((Player) sender).getLocation(), TeleportCause.PLUGIN);
+				}
+				return true;
+			
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("sethome")) {
+				if (masterMobHunterManager.contains(npc.getId())) {
+					masterMobHunterManager.get(npc.getId()).setHome(npc.getEntity().getLocation());
+					sender.sendMessage(Messages.getString("mobhunting.commands.npc.home_set"));
+				}
+				return true;
+			
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("update")) {
-				sender.sendMessage("Updating all MasterMobHunter NPCs");
+				sender.sendMessage(Messages.getString("mobhunting.commands.npc.updating"));
 				masterMobHunterManager.forceUpdate();
 				return true;
+			
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
+				sender.sendMessage(Messages.getString("mobhunting.commands.npc.selected", npc.getName(), npc.getId()));
+				return true;
+			
 			} else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
 				StatType statType = StatType.parseStat(args[1]);
 				if (statType == null) {

@@ -182,7 +182,7 @@ public class MasterMobHunterManager implements Listener {
 		if (isMasterMobHunter(npc)) {
 			@SuppressWarnings("deprecation")
 			ItemStack is = event.getClicker().getItemInHand();
-			Messages.debug("ItemStack=%s", is);
+			// Messages.debug("ItemStack=%s", is);
 			if (!is.getType().equals(Material.STICK)) {
 				if (Misc.isMC110OrNewer()) {
 					// ((Player) npc).getInventory().setItemInMainHand(is);
@@ -221,18 +221,15 @@ public class MasterMobHunterManager implements Listener {
 	public void onKilledTarget(EntityDeathEvent event) {
 		if (isMasterMobHunter(event.getEntity().getKiller()) && event.getEntity() instanceof Player) {
 			NPC npc = (NPC) CitizensCompat.getNPC(event.getEntity().getKiller());
-			Player player = (Player) event.getEntity();
-			Messages.debug("NPC %s (ID=%s) killed %s - return to home", npc.getName(), npc.getId(), player.getName());
-			Trait trait = getSentinelOrSentryTrait(npc);
-			if (trait != null) {
-				trait.getNPC().getNavigator().setTarget(mMasterMobHunter.get(npc.getId()).getHome());
-				final NPC npc1 = npc;
-				Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
-					public void run() {
-						npc1.teleport(mMasterMobHunter.get(npc1.getId()).getHome(), TeleportCause.UNKNOWN);
-					}
-				}, 20 * 10); // 20ticks/sec * 3 sec
-			}
+			final Player player = (Player) event.getEntity();
+			final NPC npc1 = npc;
+			Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
+				public void run() {
+					Messages.debug("NPC %s (ID=%s) killed %s - return to home", npc1.getName(), npc1.getId(),
+							player.getName());
+					npc1.teleport(mMasterMobHunter.get(npc1.getId()).getHome(), TeleportCause.PLUGIN);
+				}
+			}, 20 * 10); // 20ticks/sec * 10 sec
 		}
 	}
 
@@ -240,19 +237,15 @@ public class MasterMobHunterManager implements Listener {
 	public void onSpawnNPC(NPCSpawnEvent event) {
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
-			if (npc.getStoredLocation()!=null && mMasterMobHunter.containsKey(npc.getId())
-					&& !npc.getStoredLocation().equals(mMasterMobHunter.get(npc.getId()).getHome())) {
+			if (npc.getStoredLocation() != null && mMasterMobHunter.containsKey(npc.getId())
+					&& npc.getEntity().getLocation().distance(mMasterMobHunter.get(npc.getId()).getHome()) > 0.2) {
 				Messages.debug("NPC %s (ID=%s) return to home", npc.getName(), npc.getId());
-				Trait trait = getSentinelOrSentryTrait(npc);
-				if (trait != null) {
-					trait.getNPC().getNavigator().setTarget(mMasterMobHunter.get(npc.getId()).getHome());
-					final NPC npc1 = npc;
-					Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
-						public void run() {
-							npc1.teleport(mMasterMobHunter.get(npc1.getId()).getHome(), TeleportCause.UNKNOWN);
-						}
-					}, 20 * 10); // 20ticks/sec * 10 sec
-				}
+				final NPC npc1 = npc;
+				Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
+					public void run() {
+						npc1.teleport(mMasterMobHunter.get(npc1.getId()).getHome(), TeleportCause.PLUGIN);
+					}
+				}, 20 * 10); // 20ticks/sec * 10 sec
 			}
 		}
 	}
