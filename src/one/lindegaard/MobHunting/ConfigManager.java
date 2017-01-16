@@ -239,7 +239,7 @@ public class ConfigManager extends AutoConfig {
 
 		setCategoryComment("dropmoneyonground",
 				"########################################################################"
-						+ "\nDropMoneyOnGroud Settings"
+						+ "\nDropMoneyOnGround Settings"
 						+ "\n########################################################################");
 		setCategoryComment("database",
 				"########################################################################" + "\nDatabase Settings."
@@ -1270,8 +1270,8 @@ public class ConfigManager extends AutoConfig {
 			+ "\nrob-from-victim=false to get the reward mpney from the server.")
 	public boolean robFromVictim = true;
 
-	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize kan be a number to stel x dollars from the killed player,"
-			+ "\nor it kan be a cut in percent of his balance.")
+	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize can be a number to steal x dollars from the killed player,"
+			+ "\nor it can be a cut in percent of his balance.")
 	public String pvpKillPrize = "1.5%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
 	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"}|give {player} diamond 1";
@@ -1387,10 +1387,10 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// DropMoneyOnGrond settings
 	// #####################################################################################
-	@ConfigField(name = "drop-money-on-groud", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
-			+ "\ninto his pocket. If you set dropMoneyOnGroud=true the reward will "
+	@ConfigField(name = "drop-money-on-ground", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
+			+ "\ninto his pocket. If you set dropMoneyOnGround=true the reward will "
 			+ "\ndropped on ground to be picked up by the player."
-			+ "\nNegative rewards will always be taken from det player. ")
+			+ "\nNegative rewards will always be taken from the player. ")
 	public boolean dropMoneyOnGroup = false;
 
 	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is denied by default."
