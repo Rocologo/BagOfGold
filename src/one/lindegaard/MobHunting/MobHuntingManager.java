@@ -1151,27 +1151,23 @@ public class MobHuntingManager implements Listener {
 
 			// Reward/Penalty for assisted kill
 			if (info.assister == null || MobHunting.getConfigManager().enableAssists == false) {
-				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup // &&
-																		// !robbing
-					) {
+				if (cash >= MobHunting.getConfigManager().minimumReward) {
+					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
 						RewardManager.dropMoneyOnGround(killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						Messages.debug("%s got a reward (%s)", killer.getName(),
 								MobHunting.getRewardManager().format(cash));
 					}
-				} else {
+				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(killer, -cash);
 					Messages.debug("%s got a penalty (%s)", killer.getName(),
 							MobHunting.getRewardManager().format(cash));
 				}
 			} else {
 				cash = cash / 2;
-				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup // &&
-																		// !robbing
-					) {
+				if (cash >= MobHunting.getConfigManager().minimumReward) {
+					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
 						RewardManager.dropMoneyOnGround(killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
@@ -1179,7 +1175,7 @@ public class MobHuntingManager implements Listener {
 						Messages.debug("%s got a ½ reward (%s)", killer.getName(),
 								MobHunting.getRewardManager().format(cash));
 					}
-				} else {
+				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(killer, -cash);
 					onAssist(info.assister, killer, killed, info.lastAssistTime);
 					Messages.debug("%s got a ½ penalty (%s)", killer.getName(),
@@ -1198,29 +1194,31 @@ public class MobHuntingManager implements Listener {
 			if (!killer_muted)
 
 				if (extraString.trim().isEmpty()) {
-					if (cash > 0) {
+					if (cash >= MobHunting.getConfigManager().minimumReward) {
 						if (!MobHunting.getConfigManager().dropMoneyOnGroup)
 							Messages.playerActionBarMessage(killer,
 									ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain",
 											"prize", MobHunting.getRewardManager().format(cash)));
-					} else
+					} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 						Messages.playerActionBarMessage(killer,
 								ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneylost",
 										"prize", MobHunting.getRewardManager().format(cash)));
+					}
 
 				} else {
-					if (cash > 0)
+					if (cash >= MobHunting.getConfigManager().minimumReward)
 						Messages.playerActionBarMessage(killer,
 								ChatColor.GREEN + "" + ChatColor.ITALIC
 										+ Messages.getString("mobhunting.moneygain.bonuses", "prize",
 												MobHunting.getRewardManager().format(cash), "bonuses",
 												extraString.trim()));
-					else
+					else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 						Messages.playerActionBarMessage(killer,
 								ChatColor.RED + "" + ChatColor.ITALIC
 										+ Messages.getString("mobhunting.moneylost.bonuses", "prize",
 												MobHunting.getRewardManager().format(cash), "bonuses",
 												extraString.trim()));
+					}
 				}
 		} else
 			Messages.debug("KillBlocked %s: Reward was less than %s  (Bonuses=%s)", killer.getName(),

@@ -91,12 +91,15 @@ public class ConfigManager extends AutoConfig {
 				+ "\nwhere the mob was killed or /summon apple {killerpos} 1. to summon an"
 				+ "\nan apple where the player is." + "\nAnother example could be to give the player permission to fly"
 				+ "\nfor 1 hour or use give command to the player items."
-				+ "\nYou can also specify the message send to the player."
-				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
+				+ "\n\nYou can also specify the message send to the player."
+				+ "\nThe text can be color coded with these codes:"
+				+ "\nhttp://minecraft.gamepedia.com/Formatting_codes"
+				+ "\n\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
 				+ "\nThe player will have the cmd run in {mob-cmd-run-frequency} out of"
 				+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
 				+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
-				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
+				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time."
+				);
 
 		setCategoryComment("boss",
 				"########################################################################"

@@ -1,8 +1,12 @@
 V4.3.3
+* Compiled HobHunting against WorldGuard 6.2
+* Compiled HobHunting against iDisguise 5.5.5
 * New commands "/mh npc tphere" and "/mh npc sethome"
 * Fix NPE error (Ticket 114 - https://github.com/Rocologo/MobHunting/issues/114)
 * Updated ConfigManager to make sure the Magmacube is handled correct in future MC releases.
-* Fix error when starting the server while board-world.yml exists but is empty. 
+* Fix error when starting the server while board-world.yml exists but is empty.
+* Remove Message "You lost 0 emeralds". (https://www.spigotmc.org/threads/mobhunting.46937/page-83#post-2161236)
+* Minor update of config.yml. Reward text can be color coded. 
 V4.3.2
 * Add support for UTF8 in MySQL database
 * Fixed bug when disabling BarAPI
