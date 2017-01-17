@@ -1385,13 +1385,13 @@ public class ConfigManager extends AutoConfig {
 	public double mulitiplierPerLevel = 1.05;
 
 	// #####################################################################################
-	// DropMoneyOnGrond settings
+	// DropMoneyOnGround settings
 	// #####################################################################################
 	@ConfigField(name = "drop-money-on-ground", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
 			+ "\ninto his pocket. If you set dropMoneyOnGround=true the reward will "
 			+ "\ndropped on ground to be picked up by the player."
 			+ "\nNegative rewards will always be taken from the player. ")
-	public boolean dropMoneyOnGroup = false;
+	public boolean dropMoneyOnGroup = true;
 
 	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is denied by default."
 			+ "\nIf you want HOPPERS to collect MobHunting Money rewards "
