@@ -1211,9 +1211,9 @@ public class ConfigManager extends AutoConfig {
 	public double penaltyFlying = 0.5;
 
 	@ConfigField(name = "mob-rob-from-player", category = "penalty", comment = "This is the penalty if the player gets killed by a mob."
-			+ "\nSet mob-kills-player-penalty=10 to let the mob steal 10 dollars"
+			+ "\nSet mob-rob-from-player=10 to let the mob steal 10 dollars"
 			+ "\n or 10% to let the mob steal 10% of the players balance."
-			+ "\nSet mob-kills-player-penalty=0 to disable this")
+			+ "\nSet mob-rob-from-player=0 to disable this")
 	public String mobKillsPlayerPenalty = "0%";
 
 	// #####################################################################################
@@ -1594,7 +1594,7 @@ public class ConfigManager extends AutoConfig {
 		Messages.setLanguage(language);
 	}
 
-	public double getPlayerKilledByMobPenalty(Player player) {
+	public double getPlayerKilledByMobPenalty(Player playerToBeRobbed) {
 		if (MobHunting.getConfigManager().mobKillsPlayerPenalty == null
 				|| MobHunting.getConfigManager().mobKillsPlayerPenalty.equals("")
 				|| MobHunting.getConfigManager().mobKillsPlayerPenalty.equals("0%")
@@ -1610,7 +1610,7 @@ public class ConfigManager extends AutoConfig {
 			double prize = Math.floor(Double
 					.valueOf(MobHunting.getConfigManager().mobKillsPlayerPenalty.substring(0,
 							MobHunting.getConfigManager().mobKillsPlayerPenalty.length() - 1))
-					* MobHunting.getRewardManager().getBalance(player) / 100);
+					* MobHunting.getRewardManager().getBalance(playerToBeRobbed) / 100);
 			return Misc.round(prize);
 		} else if (MobHunting.getConfigManager().mobKillsPlayerPenalty.contains(":")) {
 			String[] str1 = MobHunting.getConfigManager().mobKillsPlayerPenalty.split(":");

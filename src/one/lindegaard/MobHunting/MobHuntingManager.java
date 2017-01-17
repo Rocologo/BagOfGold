@@ -412,38 +412,66 @@ public class MobHuntingManager implements Listener {
 		data.setKillStreak(0);
 
 		double playerPenalty = 0;
-		Player player = event.getEntity();
+		Player killed = event.getEntity();
 
-		if (CitizensCompat.isNPC(player))
+		if (CitizensCompat.isNPC(killed))
 			return;
 
-		EntityDamageEvent cause = player.getLastDamageCause();
+		EntityDamageEvent cause = killed.getLastDamageCause();
 		if (cause instanceof EntityDamageByEntityEvent) {
 			Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
 			Entity killer = null;
+			LivingEntity mob = null;
+
 			if (damager instanceof Player)
 				killer = damager;
 			else if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Player)
 				killer = (Entity) ((Projectile) damager).getShooter();
-			else {
-				Messages.debug("%s was killed by a %s", player.getName(), damager.getType());
-				if (damager instanceof Projectile)
-					Messages.debug("and shooter was %s", ((Projectile) damager).getShooter().toString());
+			else if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof LivingEntity)
+				mob = (LivingEntity) ((Projectile) damager).getShooter();
+			else if (damager instanceof LivingEntity)
+				mob = (LivingEntity) damager;
+			else if (damager instanceof Projectile) {
+				Messages.debug("%s was killed by a %s shot by %s", killed.getName(), damager.getName(),
+						((Projectile) damager).getShooter().toString());
 			}
 
-			if (killer != null && !(killer instanceof Player)) {
-				playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(player);
+			if (mob != null) {
+
+				Messages.debug("%s was killed by a %s", killed.getName(), damager.getName());
+				if (damager instanceof Projectile)
+					Messages.debug("and shooter was %s", ((Projectile) damager).getShooter().toString());
+
+				// MobArena
+				if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)
+						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
+					Messages.debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
+					return;
+					// PVPArena
+				} else if (PVPArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)
+						&& !MobHunting.getConfigManager().pvparenaGetRewards) {
+					Messages.debug("KillBlocked: %s was killed while playing PvpArena.", killed.getName());
+					return;
+					// BattleArena
+				} else if (BattleArenaCompat.isEnabledInConfig()
+						&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
+					Messages.debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
+					return;
+				}
+
+				playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(killed);
 				if (playerPenalty != 0) {
 					boolean killed_muted = false;
-					if (MobHunting.getPlayerSettingsmanager().containsKey(player))
-						killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
-
-					MobHunting.getRewardManager().withdrawPlayer(player, playerPenalty);
+					if (MobHunting.getPlayerSettingsmanager().containsKey(killed))
+						killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(killed).isMuted();
+					MobHunting.getRewardManager().withdrawPlayer(killed, playerPenalty);
 					if (!killed_muted)
-						player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString(
+						killed.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString(
 								"mobhunting.moneylost", "prize", MobHunting.getRewardManager().format(playerPenalty)));
-					Messages.debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
-							MobHunting.getRewardManager().format(playerPenalty));
+					Messages.debug("%s lost %s for being killed by a %s", killed.getName(),
+							MobHunting.getRewardManager().format(playerPenalty), mob.getName());
+				} else {
+					Messages.debug("There is NO penalty for being killed by a %s", mob.getName());
 				}
 			}
 		}
@@ -725,21 +753,28 @@ public class MobHuntingManager implements Listener {
 		// Player died while playing a Minigame: MobArena, PVPArena,
 		// BattleArena, Suiside, PVP, penalty when Mobs kills player
 		if (killed instanceof Player) {
+			// MobArena
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)
 					&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 				Messages.debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.mobarena"));
 				return;
+
+				// PVPArena
 			} else if (PVPArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)
 					&& !MobHunting.getConfigManager().pvparenaGetRewards) {
 				Messages.debug("KillBlocked: %s was killed while playing PvpArena.", killed.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.pvparena"));
 				return;
+
+				// BattleArena
 			} else if (BattleArenaCompat.isEnabledInConfig()
 					&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
 				Messages.debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.battlearena"));
 				return;
+
+				//
 			} else if (killer != null) {
 				if (killed.equals(killer)) {
 					// Suicide
@@ -747,6 +782,7 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(),
 							killed.getName());
 					return;
+					// PVP
 				} else if (!MobHunting.getConfigManager().pvpAllowed) {
 					// PVP
 					Messages.learn(killer, Messages.getString("mobhunting.learn.nopvp"));
