@@ -25,14 +25,11 @@ public class MobStackerCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MobStacker");
 
-			if (mPlugin != null) {
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MobStacker ("
-						+ mPlugin.getDescription().getVersion() + ")");
-				supported = true;
-			}
+			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MobStacker ("
+					+ mPlugin.getDescription().getVersion() + ")");
+			supported = true;
 		}
 	}
 

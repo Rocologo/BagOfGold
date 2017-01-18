@@ -466,7 +466,7 @@ public class MobHuntingManager implements Listener {
 						killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(killed).isMuted();
 					MobHunting.getRewardManager().withdrawPlayer(killed, playerPenalty);
 					if (!killed_muted)
-						killed.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString(
+						Messages.playerActionBarMessage(killed, ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString(
 								"mobhunting.moneylost", "prize", MobHunting.getRewardManager().format(playerPenalty)));
 					Messages.debug("%s lost %s for being killed by a %s", killed.getName(),
 							MobHunting.getRewardManager().format(playerPenalty), mob.getName());

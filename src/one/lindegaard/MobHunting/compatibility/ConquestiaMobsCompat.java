@@ -30,14 +30,12 @@ public class ConquestiaMobsCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("ConquestiaMobs");
 
-			if (mPlugin != null) {
-				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with ConquestiaMobs ("
-						+ getCustomMobs().getDescription().getVersion() + ")");
-				supported = true;
-			}
-
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with ConquestiaMobs ("
+					+ getCustomMobs().getDescription().getVersion() + ")");
+			supported = true;
 		}
+
 	}
 
 	// **************************************************************************

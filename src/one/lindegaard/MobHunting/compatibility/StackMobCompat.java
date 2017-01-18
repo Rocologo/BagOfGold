@@ -23,14 +23,11 @@ public class StackMobCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("StackMob");
 
-			if (mPlugin != null) {
-
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with StackMob ("
 						+ mPlugin.getDescription().getVersion() + ")");
 				supported = true;
-			}
 		}
 	}
 

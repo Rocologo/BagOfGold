@@ -52,8 +52,6 @@ public class ActionbarCompat {
 			Messages.debug(
 					"[WARNING] ActionbarCompat: setMessage() is not made yet. I cant get access to source code or API.");
 			player.sendMessage(text);
-			// TODO: I need a copy of ActionBar.jar before I can implement
-			// anything.
 
 			// Show a specific actionbar group
 			// showActionbar(Player player, String actionbar);

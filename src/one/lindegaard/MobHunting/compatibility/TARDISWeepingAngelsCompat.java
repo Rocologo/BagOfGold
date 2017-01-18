@@ -40,17 +40,15 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		} else {
 			mPlugin = (TARDISWeepingAngels) Bukkit.getPluginManager().getPlugin("TARDISWeepingAngels");
 
-			if (mPlugin != null) {
-				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TARDISWeepingAngelsAPI ("
-						+ mPlugin.getDescription().getVersion() + ")");
+			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TARDISWeepingAngelsAPI ("
+					+ mPlugin.getDescription().getVersion() + ")");
 
-				supported = true;
+			supported = true;
 
-				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-				loadTARDISWeepingAngelsMobsData();
-				saveTARDISWeepingAngelsMobsData();
-			}
+			loadTARDISWeepingAngelsMobsData();
+			saveTARDISWeepingAngelsMobsData();
 		}
 	}
 

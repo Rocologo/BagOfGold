@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -57,8 +59,9 @@ public class MythicMobsCompat implements Listener {
 				loadMythicMobsData();
 				saveMythicMobsData();
 			} else {
-				Bukkit.getLogger().warning(
-						"[MobHunting] MythicMobs is outdated. Please update to V2.5.1 or newer. Integration will be disabled");
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				console.sendMessage(ChatColor.RED
+						+ "[MobHunting] MythicMobs is outdated. Please update to V2.5.1 or newer. Integration will be disabled");
 			}
 		}
 	}
@@ -104,7 +107,7 @@ public class MythicMobsCompat implements Listener {
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
 			if (MythicMobsHelper.isMythicMob(key)) {
-			 MobRewardData mob = new MobRewardData();
+				MobRewardData mob = new MobRewardData();
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
