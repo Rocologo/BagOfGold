@@ -1,5 +1,7 @@
 V4.3.4
+* Added support for MysteriousHalloween (https://www.spigotmc.org/resources/mysterioushalloween.13059/)
 * Compiled against TitleManager 2.0.x
+* Implemented new TitleMangerAPI V2
 * Fixed Penalty for being killed by a Mob. (mob-rob-from-player in config.yml).
 * Fixed some spelling errors in config.yml (DropMoneyOnGroup).
 V4.3.3

@@ -52,6 +52,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
+import de.hellfirepvp.api.CustomMobsAPI;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
@@ -59,12 +60,14 @@ import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaHelper;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaHelper;
@@ -384,6 +387,22 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("Permission mobhunting.mobs.'" + permission_postfix + "' not set, defaulting to True.");
 				return true;
 			}
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+			permission_postfix = CustomMobsCompat.getCustomMobType(mob);
+			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
+				return player.hasPermission("mobhunting.mobs." + permission_postfix);
+			else {
+				Messages.debug("Permission mobhunting.mobs.'" + permission_postfix + "' not set, defaulting to True.");
+				return true;
+			}
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			permission_postfix = "npc-" + MysteriousHalloweenCompat.getMysteriousHalloweenType(mob);
+			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
+				return player.hasPermission("mobhunting.mobs." + permission_postfix);
+			else {
+				Messages.debug("Permission mobhunting.mobs.'" + permission_postfix + "' not set, defaulting to True.");
+				return true;
+			}
 		} else {
 			permission_postfix = mob.getType().toString();
 			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
@@ -466,8 +485,9 @@ public class MobHuntingManager implements Listener {
 						killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(killed).isMuted();
 					MobHunting.getRewardManager().withdrawPlayer(killed, playerPenalty);
 					if (!killed_muted)
-						Messages.playerActionBarMessage(killed, ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString(
-								"mobhunting.moneylost", "prize", MobHunting.getRewardManager().format(playerPenalty)));
+						Messages.playerActionBarMessage(killed,
+								ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneylost",
+										"prize", MobHunting.getRewardManager().format(playerPenalty)));
 					Messages.debug("%s lost %s for being killed by a %s", killed.getName(),
 							MobHunting.getRewardManager().format(playerPenalty), mob.getName());
 				} else {
@@ -793,16 +813,24 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Player killed a MythicMob
-		if (MythicMobsCompat.isSupported() && killed.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+		if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
 			if (killer != null)
-				Messages.debug("%s killed a MythicMob", killer.getName());
+				Messages.debug("%s killed a MythicMob (%s)", killer.getName(),
+						MythicMobsCompat.getMythicMobType(killed));
 		}
 
 		// Player killed a TARDISWeepingAngelMob
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (killer != null)
 				Messages.debug("%s killed a TARDISWeepingAngelMob (%s)", killer.getName(),
-						TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed));
+						TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name());
+		}
+
+		// Player killed a MysteriousHalloween Mob
+		if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+			if (killer != null)
+				Messages.debug("%s killed a MysteriousHalloween Mob (%s)", killer.getName(),
+						MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name());
 		}
 
 		// Player killed a Stacked Mob

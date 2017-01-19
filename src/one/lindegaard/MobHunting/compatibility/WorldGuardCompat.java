@@ -21,7 +21,7 @@ public class WorldGuardCompat {
 			if (mPlugin.getDescription().getVersion().compareTo("6.0") < 0) {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of WorldGuard ("
-						+ getWorldGuardPlugin().getDescription().getVersion()
+						+ mPlugin.getDescription().getVersion()
 						+ ") is not supported by MobHunting. Mobhunting does only support 6.0+");
 			} else {
 

@@ -27,6 +27,7 @@ import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
@@ -243,6 +244,12 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return StackMobCompat.isSupported() ? 1 : 0;
+			}
+		});
+		mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("MysteriousHalloween") {
+			@Override
+			public int getValue() {
+				return MysteriousHalloweenCompat.isSupported() ? 1 : 0;
 			}
 		});
 		metrics.addGraph(mobPluginIntegrationsGraph);

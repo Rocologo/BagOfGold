@@ -13,6 +13,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
@@ -36,6 +37,8 @@ public class ExtendedMobManager {
 			MobHunting.getStoreManager().insertCustomMobs();
 		if (TARDISWeepingAngelsCompat.isSupported())
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs();
+		if (MysteriousHalloweenCompat.isSupported())
+			MobHunting.getStoreManager().insertMysteriousHalloweenMobs();
 
 		Set<ExtendedMob> set = new HashSet<ExtendedMob>();
 
@@ -68,7 +71,15 @@ public class ExtendedMobManager {
 						|| CitizensCompat.isSentryOrSentinel(mob.getMobtype()))
 					continue;
 				break;
+			case MysteriousHalloween:
+				if (!MysteriousHalloweenCompat.isSupported() || MysteriousHalloweenCompat.isDisabledInConfig())
+					continue;
+				break;
+			
 			case Minecraft:
+				break;
+			default:
+				break;
 
 			}
 			if (!mobs.containsKey(mob.getMob_id())) {
@@ -115,6 +126,9 @@ public class ExtendedMobManager {
 		} else if (CustomMobsCompat.isCustomMob(entity)) {
 			mobPlugin = MobPlugin.CustomMobs;
 			mobtype = CustomMobsCompat.getCustomMobType(entity);
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(entity)) {
+			mobPlugin = MobPlugin.MysteriousHalloween;
+			mobtype = MysteriousHalloweenCompat.getMysteriousHalloweenType(entity).name();
 		} else {
 			// StatType
 			mobPlugin = MobPlugin.Minecraft;

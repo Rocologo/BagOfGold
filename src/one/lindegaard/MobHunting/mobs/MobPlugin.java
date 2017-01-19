@@ -1,8 +1,8 @@
 package one.lindegaard.MobHunting.mobs;
 
 public enum MobPlugin {
-	Minecraft("Minecraft", 0), MythicMobs("MythicMobs", 1), Citizens("Citizens",
-			2), TARDISWeepingAngels("TARDISWeepingAngels", 3), CustomMobs("CustomMobs", 4);
+	Minecraft("Minecraft", 0), MythicMobs("MythicMobs", 1), Citizens("Citizens", 2), TARDISWeepingAngels(
+			"TARDISWeepingAngels", 3), CustomMobs("CustomMobs", 4), MysteriousHalloween("MysteriousHalloween", 5);
 
 	private final String name;
 	private final Integer id;
@@ -15,7 +15,7 @@ public enum MobPlugin {
 	public Integer getId() {
 		return id;
 	}
-	
+
 	public boolean equalsName(String otherName) {
 		return (otherName == null) ? false : name.equals(otherName);
 	}

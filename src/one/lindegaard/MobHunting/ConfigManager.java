@@ -6,6 +6,7 @@ import java.util.List;
 
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
@@ -1478,6 +1479,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-protocollib", category = "plugins", comment = "Disable integration with ProtocolLib."
 			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
 	public boolean disableIntegrationProtocolLib = false;
+	
+	@ConfigField(name = "disable-integration-mysterious-halloween", category = "plugins", comment = "Disable integration with MysteriousHalloween."
+			+ "\nhttps://www.spigotmc.org/resources/mysterioushalloween.13059/")
+	public boolean disableIntegrationMysteriousHalloween = false;
 
 	// #####################################################################################
 	// Database
@@ -1674,6 +1679,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+			MetadataValue value = data.get(0);
+			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -1891,6 +1902,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -2062,6 +2079,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
+			
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getRewardDescription();
+			
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -2227,6 +2250,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getChance();
+			
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+			MetadataValue value = data.get(0);
+			return ((MobRewardData) value.value()).getChance();
+			
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
