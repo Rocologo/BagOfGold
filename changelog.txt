@@ -3,7 +3,8 @@ V4.3.4
 * Compiled against TitleManager 2.0.x
 * Implemented new TitleMangerAPI V2
 * Fixed Penalty for being killed by a Mob. (mob-rob-from-player in config.yml).
-* Fixed some spelling errors in config.yml (DropMoneyOnGroup).
+* Fixed some spelling errors in config.yml (DropMoneyOnGround).
+* Added version check for Conquestia Mobs (>3.3.0)
 V4.3.3
 * Compiled HobHunting against WorldGuard 6.2
 * Compiled HobHunting against iDisguise 5.5.5
