@@ -32,7 +32,7 @@ public class ConquestiaMobsCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("ConquestiaMobs");
 
-			if (mPlugin.getDescription().getVersion().compareTo("3.3.0") >= 0) {
+			if (mPlugin.getDescription().getVersion().compareTo("3.3.3") >= 0) {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with ConquestiaMobs ("
 						+ getCustomMobs().getDescription().getVersion() + ")");
@@ -41,7 +41,7 @@ public class ConquestiaMobsCompat implements Listener {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of Conqustia Mobs ("
 						+ mPlugin.getDescription().getVersion()
-						+ ") is not supported by MobHunting. Please update Conquestia Mobs to version 3.3.0 or newer.");
+						+ ") is not supported by MobHunting. Please update Conquestia Mobs to version 3.3.3 or newer.");
 			}
 		}
 
