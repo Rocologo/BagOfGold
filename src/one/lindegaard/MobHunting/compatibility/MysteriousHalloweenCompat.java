@@ -87,7 +87,7 @@ public class MysteriousHalloweenCompat implements Listener {
 	 * @return true if the entity is a MysteriousHalloween entity
 	 */
 	public static boolean isMysteriousHalloween(Entity entity) {
-		return entity.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+		return MysteriousHalloweenAPI.isEntity(entity);
 	}
 
 	/**
@@ -98,7 +98,10 @@ public class MysteriousHalloweenCompat implements Listener {
 	 * @return the mob type or null if it is not MysteriousHalloween entity
 	 */
 	public static MobType getMysteriousHalloweenType(Entity entity) {
-		return MysteriousHalloweenAPI.getMobType(entity);
+		if (isMysteriousHalloween(entity))
+			return MysteriousHalloweenAPI.getMobType(entity);
+		else
+			return null;
 	}
 
 	public static HashMap<String, MobRewardData> getMobRewardData() {

@@ -1088,6 +1088,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 	@Override
 	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+		
+		// reference http://stackoverflow.com/questions/6115612/how-to-convert-an-entire-mysql-database-characterset-and-collation-to-utf-8
+		
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 		console.sendMessage(ChatColor.GREEN + "[MobHunting] Converting MobHunting Database to UTF8");
 

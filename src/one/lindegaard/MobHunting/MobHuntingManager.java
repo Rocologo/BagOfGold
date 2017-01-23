@@ -817,21 +817,14 @@ public class MobHuntingManager implements Listener {
 			if (killer != null)
 				Messages.debug("%s killed a MythicMob (%s)", killer.getName(),
 						MythicMobsCompat.getMythicMobType(killed));
-		}
+		} else
 
 		// Player killed a TARDISWeepingAngelMob
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (killer != null)
 				Messages.debug("%s killed a TARDISWeepingAngelMob (%s)", killer.getName(),
 						TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name());
-		}
-
-		// Player killed a MysteriousHalloween Mob
-		if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
-			if (killer != null)
-				Messages.debug("%s killed a MysteriousHalloween Mob (%s)", killer.getName(),
-						MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name());
-		}
+		} else
 
 		// Player killed a Stacked Mob
 		if (MobStackerCompat.isSupported()) {
@@ -852,7 +845,7 @@ public class MobHuntingManager implements Listener {
 					return;
 				}
 			}
-		}
+		} else
 
 		// Player killed a Citizens2 NPC
 		if (killer != null && CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinel(killed)) {
@@ -863,6 +856,15 @@ public class MobHuntingManager implements Listener {
 				// CitizensCompat.getNPC(killed).getEntity()).getItemInHand();
 				// killer.getWorld().dropItem(killed.getLocation(), is);
 			}
+		} else
+
+		// Player killed a MysteriousHalloween Mob
+		if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+			if (killer != null)
+				Messages.debug("%s killed a MysteriousHalloween Mob (%s)", killer.getName(),
+						MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name());
+		} else {
+			Messages.debug("This was not a MysteriousHalloween Mob");
 		}
 
 		// Player killed a mob while playing a minigame: MobArena, PVPVArena,
@@ -943,6 +945,16 @@ public class MobHuntingManager implements Listener {
 		if (killer != null && killer.getGameMode() == GameMode.CREATIVE) {
 			Messages.debug("KillBlocked %s: In creative mode", killer.getName());
 			Messages.learn(killer, Messages.getString("mobhunting.learn.creative"));
+			if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
+				Messages.debug("Trying to remove natural drops");
+				cancelNaturalDrops = true;
+				event.getDrops().clear();
+			}
+			if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+				Messages.debug("Trying to remove XP drops");
+				cancelXPDrops = true;
+				event.setDroppedExp(0);
+			}
 			return;
 		}
 
