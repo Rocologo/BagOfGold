@@ -1101,7 +1101,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			create.executeUpdate(
 					"ALTER TABLE mh_Achievements CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			create.executeUpdate("ALTER TABLE mh_AllTime CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Bounties TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Bounties CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			create.executeUpdate("ALTER TABLE mh_Daily CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			create.executeUpdate("ALTER TABLE mh_Mobs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			create.executeUpdate("ALTER TABLE mh_Monthly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
