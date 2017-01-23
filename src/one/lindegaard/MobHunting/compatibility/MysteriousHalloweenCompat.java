@@ -87,7 +87,10 @@ public class MysteriousHalloweenCompat implements Listener {
 	 * @return true if the entity is a MysteriousHalloween entity
 	 */
 	public static boolean isMysteriousHalloween(Entity entity) {
-		return MysteriousHalloweenAPI.isEntity(entity);
+		if (isSupported())
+			return MysteriousHalloweenAPI.isEntity(entity);
+		else
+			return false;
 	}
 
 	/**
