@@ -1,7 +1,7 @@
 V4.3.5
 * New command "/mh database convert-to-utf8 database_name" Converts MobHunting database and all MobHunting tables to UTF8 Character format. 
 * Added Support for MinigamesLib
-* Remove drops and exp if players kills a mob while in creative mode
+* Remove drops and exp if players kills a mob while in creative mode.
 * Fixed bug where killing a MysteriousHalloween mob was not rewarded. 
 V4.3.4
 * Added support for MysteriousHalloween (https://www.spigotmc.org/resources/mysterioushalloween.13059/)
