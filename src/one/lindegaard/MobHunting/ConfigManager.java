@@ -1430,6 +1430,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-minigames", category = "plugins", comment = "Disable integration with MiniGames")
 	public boolean disableIntegrationMinigames = false;
 
+	@ConfigField(name = "disable-integration-minigameslib", category = "plugins", comment = "Disable integration with MiniGamesLib"
+			+"\nhttps://www.spigotmc.org/resources/minigameslib.23844/")
+	public boolean disableIntegrationMinigamesLib = false;
+
 	@ConfigField(name = "disable-integration-worldguard", category = "plugins", comment = "Disable integration with WorldGuard")
 	public boolean disableIntegrationWorldGuard = false;
 

@@ -24,6 +24,7 @@ import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
+import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
@@ -155,6 +156,12 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return MinigamesCompat.isSupported() ? 1 : 0;
+			}
+		});
+		integrationsGraph.addPlotter(new Metrics.Plotter("MinigamesLib") {
+			@Override
+			public int getValue() {
+				return MinigamesLibCompat.isSupported() ? 1 : 0;
 			}
 		});
 		integrationsGraph.addPlotter(new Metrics.Plotter("PvpArena") {

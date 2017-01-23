@@ -12,7 +12,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -1110,6 +1112,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		connection.commit();
 
 		Messages.debug("Database trigger updated.");
+	}
+
+	@Override
+	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		console.sendMessage(ChatColor.RED + "[MobHunting] this command is only for MySQL");
 	}
 
 }

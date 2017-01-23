@@ -39,6 +39,7 @@ import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
+import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
@@ -157,6 +158,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(MyPetCompat.class, "MyPet");
 
 			registerPlugin(MinigamesCompat.class, "Minigames");
+			registerPlugin(MinigamesLibCompat.class, "MinigamesLib");
 			registerPlugin(MobArenaCompat.class, "MobArena");
 			registerPlugin(PVPArenaCompat.class, "PVPArena");
 			registerPlugin(BattleArenaCompat.class, "BattleArena");

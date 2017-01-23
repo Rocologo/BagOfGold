@@ -11,7 +11,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
@@ -197,8 +199,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			ResultSet results = statement
 					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
 							+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
-							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " 
-							+ wherepart
+							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
 							+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
@@ -1083,6 +1084,37 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// Do Nothing
 		}
 		connection.commit();
+	}
+
+	@Override
+	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		console.sendMessage(ChatColor.GREEN + "[MobHunting] Converting MobHunting Database to UTF8");
+
+		Connection connection = setupConnection();
+
+		try {
+			Statement create = connection.createStatement();
+
+			create.executeUpdate("IF EXISTS " + database_name + " ALTER DATABASE " + database_name
+					+ " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate(
+					"ALTER TABLE mh_Achievements CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_AllTime CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Bounties TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Daily CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Mobs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Monthly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Players CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Weekly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Yearly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			console.sendMessage(ChatColor.GREEN + "[MobHunting] Done.");
+
+		} catch (SQLException e) {
+			console.sendMessage(ChatColor.RED + "[MobHunting] Something went wrong.");
+			e.printStackTrace();
+		}
+
 	}
 
 }

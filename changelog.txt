@@ -1,3 +1,6 @@
+V4.3.5
+* New command "/mh database convert-to-utf8 database_name" Converts MobHunting database and all MobHunting tables to UTF8 Character format. 
+* Added Support for MinigamesLib
 V4.3.4
 * Added support for MysteriousHalloween (https://www.spigotmc.org/resources/mysterioushalloween.13059/)
 * Compiled against TitleManager 2.0.x

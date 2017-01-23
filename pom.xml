@@ -4,8 +4,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.3.4</version>
-	<!-- <version>4.3.4-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>4.3.5</version> -->
+	<version>4.3.5-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -42,6 +42,7 @@
 		<mythicmobs.jar.version>MythicMobs-2.4.5.jar</mythicmobs.jar.version>
 		<custommobs.jar.version>CustomMobs-4.16.jar</custommobs.jar.version>
 		<mobarena.jar.version>MobArena0.97.1.jar</mobarena.jar.version>
+		<minigameslib.jar.version>MinigamesLib-1.14.14.jar</minigameslib.jar.version>
 		<ActionBarAPI.jar.version>ActionBarAPI-1.5.2.jar</ActionBarAPI.jar.version>
 		<ActionAnnouncer.jar.version>ActionAnnouncer-1.10.jar</ActionAnnouncer.jar.version>
 		<Gringotts.jar.version>Gringotts-2.9.jar</Gringotts.jar.version>
@@ -435,6 +436,16 @@
 			<scope>system</scope>
 			<type>jar</type>
 			<systemPath>${project.basedir}/lib/${PvpArena.jar.version}</systemPath>
+		</dependency>
+
+		<!-- MinigamesLib -->
+		<dependency>
+			<groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
+			<artifactId>MinigamesLib</artifactId>
+			<version>${minigameslib.jar.version}</version>
+			<scope>system</scope>
+			<type>jar</type>
+			<systemPath>${project.basedir}/lib/${minigameslib.jar.version}</systemPath>
 		</dependency>
 
 		<!-- TitleAPI -->
