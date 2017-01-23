@@ -1096,7 +1096,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		try {
 			Statement create = connection.createStatement();
 
-			create.executeUpdate("IF EXISTS " + database_name + " ALTER DATABASE " + database_name
+			create.executeUpdate("ALTER DATABASE " + database_name
 					+ " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			create.executeUpdate(
 					"ALTER TABLE mh_Achievements CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
