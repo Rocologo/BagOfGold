@@ -863,9 +863,7 @@ public class MobHuntingManager implements Listener {
 			if (killer != null)
 				Messages.debug("%s killed a MysteriousHalloween Mob (%s)", killer.getName(),
 						MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name());
-		} else {
-			Messages.debug("This was not a MysteriousHalloween Mob");
-		}
+		} 
 
 		// Player killed a mob while playing a minigame: MobArena, PVPVArena,
 		// BattleArena
