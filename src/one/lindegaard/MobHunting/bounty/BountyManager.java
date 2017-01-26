@@ -25,9 +25,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.achievements.AchievementManager;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
-import one.lindegaard.MobHunting.util.Misc;
 
 public class BountyManager implements Listener {
 
@@ -358,7 +358,8 @@ public class BountyManager implements Listener {
 					for (Bounty bounty : bountiesOnWantedPlayer) {
 						if (bounty.isOpen()) {
 							if (bounty.getBountyOwner() != null)
-								AchievementManager.addInventoryDetails(Misc.getPlayerHead(wantedPlayer), inventory, n,
+								AchievementManager.addInventoryDetails(
+										CustomItems.getPlayerHead(wantedPlayer.getName()), inventory, n,
 										ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner",
@@ -367,7 +368,8 @@ public class BountyManager implements Listener {
 												bounty.getWantedPlayer().getName(), "daysleft",
 												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 							else
-								AchievementManager.addInventoryDetails(Misc.getPlayerHead(wantedPlayer), inventory, n,
+								AchievementManager.addInventoryDetails(
+										CustomItems.getPlayerHead(wantedPlayer.getName()), inventory, n,
 										ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
@@ -415,19 +417,16 @@ public class BountyManager implements Listener {
 
 	public static void showMostWanted(CommandSender sender, String worldGroupName, boolean useGui) {
 		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			// Messages.debug("mOpenBounties.size, args);
 			if (!mOpenBounties.isEmpty()) {
-				// Set<Bounty> bounties =
-				// MobHunting.getBountyManager().getAllBounties();
 				if (useGui) {
 					Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
 					int n = 0;
 					for (Bounty bounty : mOpenBounties) {
 						if (bounty.getBountyOwner() != null)
-							AchievementManager.addInventoryDetails(Misc.getPlayerHead(bounty.getWantedPlayer()),
-									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+							AchievementManager.addInventoryDetails(
+									CustomItems.getPlayerHead(bounty.getWantedPlayer().getName()), inventory, n,
+									ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner",
 											bounty.getBountyOwner().getName(), "prize",
@@ -435,8 +434,9 @@ public class BountyManager implements Listener {
 											bounty.getWantedPlayer().getName(), "daysleft",
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						else
-							AchievementManager.addInventoryDetails(Misc.getPlayerHead(bounty.getWantedPlayer()),
-									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+							AchievementManager.addInventoryDetails(
+									CustomItems.getPlayerHead(bounty.getWantedPlayer().getName()), inventory, n,
+									ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
 											"prize", MobHunting.getRewardManager().format(bounty.getPrize()),

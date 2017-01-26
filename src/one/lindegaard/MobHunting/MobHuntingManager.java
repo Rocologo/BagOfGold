@@ -863,7 +863,7 @@ public class MobHuntingManager implements Listener {
 			if (killer != null)
 				Messages.debug("%s killed a MysteriousHalloween Mob (%s)", killer.getName(),
 						MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name());
-		} 
+		}
 
 		// Player killed a mob while playing a minigame: MobArena, PVPVArena,
 		// BattleArena
@@ -943,12 +943,12 @@ public class MobHuntingManager implements Listener {
 		if (killer != null && killer.getGameMode() == GameMode.CREATIVE) {
 			Messages.debug("KillBlocked %s: In creative mode", killer.getName());
 			Messages.learn(killer, Messages.getString("mobhunting.learn.creative"));
-			if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
+			if (MobHunting.getConfigManager().tryToCancelNaturalDropsWhenInCreative) {
 				Messages.debug("Trying to remove natural drops");
 				cancelNaturalDrops = true;
 				event.getDrops().clear();
 			}
-			if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+			if (MobHunting.getConfigManager().tryToCancelXPDropsWhenInCreative) {
 				Messages.debug("Trying to remove XP drops");
 				cancelXPDrops = true;
 				event.setDroppedExp(0);
@@ -1227,7 +1227,7 @@ public class MobHuntingManager implements Listener {
 			if (info.assister == null || MobHunting.getConfigManager().enableAssists == false) {
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
-						RewardManager.dropMoneyOnGround(killed, cash);
+						RewardManager.dropMoneyOnGround(killer, killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						Messages.debug("%s got a reward (%s)", killer.getName(),
@@ -1242,7 +1242,7 @@ public class MobHuntingManager implements Listener {
 				cash = cash / 2;
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
-						RewardManager.dropMoneyOnGround(killed, cash);
+						RewardManager.dropMoneyOnGround(killer, killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						onAssist(info.assister, killer, killed, info.lastAssistTime);

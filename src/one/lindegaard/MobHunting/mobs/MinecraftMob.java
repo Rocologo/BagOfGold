@@ -1,8 +1,5 @@
 package one.lindegaard.MobHunting.mobs;
 
-import java.lang.reflect.Field;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -11,14 +8,10 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -580,7 +573,7 @@ public enum MinecraftMob {
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
 		case PvpPlayer:
 			if (name != null)
-				return getSkullFromPlayerProfileName(name);
+				return CustomItems.getPlayerHead(name);
 			else
 				return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 		case Creeper:
@@ -588,23 +581,8 @@ public enum MinecraftMob {
 		case EnderDragon:
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 		default:
-			return getCustomProfileHead();
+			return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature);
 		}
-	}
-
-	/**
-	 * getSkullFromPlayerProfileName. Gets the skull from a PlayerProfile. OBS.
-	 * If the player changes his skin the head will change here too.
-	 * 
-	 * @param playername
-	 * @return ItemStack with player profile skin
-	 */
-	private ItemStack getSkullFromPlayerProfileName(String playername) {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		skullMeta.setOwner(playername);
-		skull.setItemMeta(skullMeta);
-		return skull;
 	}
 
 	/**
@@ -613,36 +591,8 @@ public enum MinecraftMob {
 	 * 
 	 * @return ItemStack with custom texture.
 	 */
-	private ItemStack getCustomProfileHead() {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-
-		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
-			return skull;
-
-		ItemMeta skullMeta = skull.getItemMeta();
-		GameProfile profile = new GameProfile(UUID.fromString(mPlayerUUID), mDisplayName);
-		profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
-		// profile.getProperties().put("name", new Property("name",
-		// mDisplayName));
-		Field profileField = null;
-
-		try {
-			profileField = skullMeta.getClass().getDeclaredField("profile");
-		} catch (NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
-			return skull;
-		}
-
-		profileField.setAccessible(true);
-
-		try {
-			profileField.set(skullMeta, profile);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-
-		skull.setItemMeta(skullMeta);
-		return skull;
+	public ItemStack getCustomProfileHead() {
+		return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature);
 	}
 
 	/**

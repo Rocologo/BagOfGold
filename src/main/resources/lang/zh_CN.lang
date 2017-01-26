@@ -21,6 +21,7 @@ mobhunting.npc.notamastermobhuner=Id=${id} is not a MasterMobHuner.
 mobhunting.npc.clickednpc=&4${killer}&2 is a MasterMobHunter(&4${npcid}&2) - Rank &4${rank}&2 for &4${numberofkills}&2 ${stattype} ${period}
 mobhunting.npc.clickednpcsign=&2This is a MasterMobHunter sign connected to NPC &4${npcid}&2.
 mobhunting.npc.clickednpcsignpowered=&2This is a &4powered &2MasterMobHunter sign connected to NPC &4${npcid}&2.
+mobhunting.reward.name=MobHunting Reward
 
 mobhunting.killstreak.activated=x${multiplier} 奖励。
 mobhunting.killstreak.ended=Killstreak ended

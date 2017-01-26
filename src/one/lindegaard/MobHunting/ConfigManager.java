@@ -99,8 +99,7 @@ public class ConfigManager extends AutoConfig {
 				+ "\nThe player will have the cmd run in {mob-cmd-run-frequency} out of"
 				+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
 				+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
-				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time."
-				);
+				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
 
 		setCategoryComment("boss",
 				"########################################################################"
@@ -1399,6 +1398,27 @@ public class ConfigManager extends AutoConfig {
 			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=true")
 	public boolean denyHoppersToPickUpMoney = true;
 
+	@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "Here you can set the type of the ITEM to be dropped."
+			+ "\nYou can choose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\". The default is ITEM."
+			+ "\nThe value will be showed above the item."
+			+ "\nITEM: The reward is dropped as a normal Minecraft item."
+			+ "\nKILLED: The reward is dropped as the head of the mob/player you killed."
+			+ "\nSKULL: The reward is dropped as a SKULL with a custom texture. You can generate custom texture value"
+			+ "\nand custom texture signature at http://mineskin.org"
+			+ "\nKILLER: The reward is dropped as the killers head."
+			+ "\n\nOBS: If the Gringotts plugin is installed and support not disabled, the droped item will be the Gringotts chosen item."
+			+ "\nExamples:"
+			+ "\n\nChest: (https://mineskin.org/3136)"
+			+ "\n\ndrop-money-on-ground-skull-playerUUID: 'e572342f-5552-3c82-b163-c776e3b57da4'"
+			+ "\ndrop-money-on-ground-skull-texture-value: 'eyJ0aW1lc3RhbXAiOjE0NzI4Mzk3Nzk2ODMsInByb2ZpbGVJZCI6ImIwZDRiMjhiYzFkNzQ4ODlhZjBlODY2MWNlZTk2YWFiIiwicHJvZmlsZU5hbWUiOiJJbnZlbnRpdmVHYW1lcyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTY5NDcxMjQ1YmNhN2M0ZmUwNjQ0MGQ5YjRiOWY3NDIxN2VkNzM0M2FhZDU5YTc5MThiMWExZDYxZDhiYTZkYSJ9fX0='"
+			+ "\ndrop-money-on-ground-skull-texture-signature: 'lVA2QIbvybpzhcXof5yWz/7nkHdhG/3MGO+1DyD1txdRCALV6BRwsDUBwIUg06MkLUpBkjmiOvFcCRgal/jDE/xkkJPyk2tb/w4NtQ5PiPiAe0oInVnuiSIVFIE4tnsCdvX0joll3uKwVu6XY3t1KEsqJATcPhA5hslVn1iOp/IfMziIfuCzzob04rScpwcw0mLNtbtbMVAl6LYR9gXVuOkAfXujuYq4lbI/iW0yuLxSAzr8i9QWBP2ftup4qQHwocQRTdUE6/G5G9LwJWXhhnqKWjgjfvL0y2FRFJkgN1cvuq7DvUDBVsePnRIHwU5YvBPMjcZe/KE8VPTSodsN84/+++5p95Puxe1DXMX822xR71IQsxM7eax7Ffrr/Tzxw2rSDh9ivGGlRAB85OHwp/ouUgWNSrT8inNMYImque9EuZku9p3OFet8iZsFhkMXANeNtTVL7LKV7/L/0YWwoeyBnw5QQqvGyWKw3dac5eDkRNCyCtdDIntM5vsd8FxnIFj36zxLWgmrJmOM9hg5PBM4gcDxxryBcug8jSe+W9XDU39OOJotXajj8dgSL8yUn+d7l4Qvat/vJbAE8lonMl7P0P9QBPzmcIUvlRMuHSpRZQYkoCbwc2Filahd/5INtm7I4Y28XYzzupdwLk3cavKfOloL5YrWNqaZr/+9Tbk='"
+			+ "\n\nBirthday present: (https://mineskin.org/4743)"
+			+ "\n\ndrop-money-on-ground-skull-playerUUID: '6eb23602-2c22-34b8-b6b1-1847931c1a6d'"
+			+ "\ndrop-money-on-ground-skull-texture-value: 'eyJ0aW1lc3RhbXAiOjE0Nzk5MzEzNDMxMjgsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2NmNDRkZjIzMjBiNzYzMTI0N2FhZGY1OWMwZWNlOTdhNGJiNTdkZjI4YzFjZWU3OTM0ZjZhZTI4YWY4OTg5In19fQ=='"
+			+ "\ndrop-money-on-ground-skull-texture-signature: 'k1xQ6E1NuxG1ZN7nlQqRJltYrJn44XHVhNA9pSEu2Pt2mkuixMxhIDj2Tg6o+JWlTyGfXtPVWLxygeGymmeSGaVcmDTaCALg7PL11ZfSzSWSxaIufNbj1EcSi264jg5FrAa/2/DnFsgu16wjlWiIGtjCzgx2QabY8YofoPKw6Y6Y5FHZJVXpT8Rsxs8ok6ZHtfm/ZyyTgvRSzh2mKmVyQIYJ1ZKxuqWhDQfbtBpu3dlEzMAEJo85Dvb7uIFYa7WFitjFJue/c9qpqAnazWFLrx33nYpjjeYhcfAvsaNQW3JVFEkyxzEgzOHbdsbiZcqTCwO+49whu175xOqT7XhouEubDT7A3H1jiSvQvkUZJv/GzUF4qFYHSfxhr6OWoBrRGwWmPdcrYx7fUWKo43CAqa5inaiTV4gU70BWrx5i3LhIJxpnspAyTXs8tZBxeoh8IizWD7uXkYYqh3j9cwuHoxfwZuMpOx9CPTC6R/YwJ1YK5OgJBY1+QhNw+NOilWT3jTok82elFvOLm3a5yLyVs+/UPmLD7rZsFm7/DD3VnRcpgjKRiyy2j9vYsYLyNE2BVLVJxBVk2yyy9u7L4VR6PO+8v2dh9DQl7vM2ORCxKPl2lt6woHWM2+eT1PXr16LtMtAOGYT8mlKFhp8Ou2+9fu4AqWkX7n3swU6XLiK5cJs='"
+			+ "\n\nChoose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\"")
+	public String dropMoneyOnGroundItemtype = "ITEM";
+
 	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
@@ -1406,6 +1426,19 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE")
 	public String dropMoneyOnGroundTextColor = "WHITE";
 
+	@ConfigField(name = "drop-money-on-ground-skull-playerUUID", category = "dropmoneyonground", 
+			comment = "This is the Custom player UUID generated at http://mineskin.org")
+	public String dropMoneyOnGroundSkullPlayerUUID = "6eb23602-2c22-34b8-b6b1-1847931c1a6d";
+
+	@ConfigField(name = "drop-money-on-ground-skull-texture-value", category = "dropmoneyonground", 
+			comment = "This is the Custom Texture Value generated at http://mineskin.org")
+	public String dropMoneyOnGroundSkullTextureValue = "eyJ0aW1lc3RhbXAiOjE0NzI4Mzk3Nzk2ODMsInByb2ZpbGVJZCI6ImIwZDRiMjhiYzFkNzQ4ODlhZjBlODY2MWNlZTk2YWFiIiwicHJvZmlsZU5hbWUiOiJJbnZlbnRpdmVHYW1lcyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTY5NDcxMjQ1YmNhN2M0ZmUwNjQ0MGQ5YjRiOWY3NDIxN2VkNzM0M2FhZDU5YTc5MThiMWExZDYxZDhiYTZkYSJ9fX0=";
+
+	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", 
+			comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
+	public String dropMoneyOnGroundSkullTextureSignature = "lVA2QIbvybpzhcXof5yWz/7nkHdhG/3MGO+1DyD1txdRCALV6BRwsDUBwIUg06MkLUpBkjmiOvFcCRgal/jDE/xkkJPyk2tb/w4NtQ5PiPiAe0oInVnuiSIVFIE4tnsCdvX0joll3uKwVu6XY3t1KEsqJATcPhA5hslVn1iOp/IfMziIfuCzzob04rScpwcw0mLNtbtbMVAl6LYR9gXVuOkAfXujuYq4lbI/iW0yuLxSAzr8i9QWBP2ftup4qQHwocQRTdUE6/G5G9LwJWXhhnqKWjgjfvL0y2FRFJkgN1cvuq7DvUDBVsePnRIHwU5YvBPMjcZe/KE8VPTSodsN84/+++5p95Puxe1DXMX822xR71IQsxM7eax7Ffrr/Tzxw2rSDh9ivGGlRAB85OHwp/ouUgWNSrT8inNMYImque9EuZku9p3OFet8iZsFhkMXANeNtTVL7LKV7/L/0YWwoeyBnw5QQqvGyWKw3dac5eDkRNCyCtdDIntM5vsd8FxnIFj36zxLWgmrJmOM9hg5PBM4gcDxxryBcug8jSe+W9XDU39OOJotXajj8dgSL8yUn+d7l4Qvat/vJbAE8lonMl7P0P9QBPzmcIUvlRMuHSpRZQYkoCbwc2Filahd/5INtm7I4Y28XYzzupdwLk3cavKfOloL5YrWNqaZr/+9Tbk=";
+
+	
 	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
@@ -1431,7 +1464,7 @@ public class ConfigManager extends AutoConfig {
 	public boolean disableIntegrationMinigames = false;
 
 	@ConfigField(name = "disable-integration-minigameslib", category = "plugins", comment = "Disable integration with MiniGamesLib"
-			+"\nhttps://www.spigotmc.org/resources/minigameslib.23844/")
+			+ "\nhttps://www.spigotmc.org/resources/minigameslib.23844/")
 	public boolean disableIntegrationMinigamesLib = false;
 
 	@ConfigField(name = "disable-integration-worldguard", category = "plugins", comment = "Disable integration with WorldGuard")
@@ -1483,7 +1516,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-protocollib", category = "plugins", comment = "Disable integration with ProtocolLib."
 			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
 	public boolean disableIntegrationProtocolLib = false;
-	
+
 	@ConfigField(name = "disable-integration-mysterious-halloween", category = "plugins", comment = "Disable integration with MysteriousHalloween."
 			+ "\nhttps://www.spigotmc.org/resources/mysterioushalloween.13059/")
 	public boolean disableIntegrationMysteriousHalloween = false;
@@ -1589,14 +1622,23 @@ public class ConfigManager extends AutoConfig {
 	public boolean useGuiForBounties = true;
 
 	@ConfigField(name = "try-to-cancel-natural-drops", category = "general", comment = "Try to cancel natural drops when a mob is killed while the MobHunting reward is cancelled "
-			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
+			+ "\n(because player is grinding or protected by Worldguard)"
 			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"try-to-cancel-natural-drops\"=false")
 	public boolean tryToCancelNaturalDrops = true;
 
 	@ConfigField(name = "try-to-cancel-xp-drops", category = "general", comment = "Try to cancel XP drops when a mob is killed while the MobHunting reward is cancelled "
-			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
+			+ "\n(because player is grinding or protected by Worldguard)"
 			+ "\nIf you want the mobs to drop normal XP set " + "\n\"try-to-cancel-xp-drops\"=false")
 	public boolean tryToCancelXPDrops = true;
+
+	@ConfigField(name = "try-to-cancel-natural-drops-when-in-creative", category = "general", comment = "Try to cancel natural drops when a mob is killed the player is in creative mode."
+			+ "\nIf you want the mobs to drops normal rewards set "
+			+ "\n\"try-to-cancel-natural-drops-when-in-creative\"=false")
+	public boolean tryToCancelNaturalDropsWhenInCreative = true;
+
+	@ConfigField(name = "try-to-cancel-xp-drops-when-in-creative", category = "general", comment = "Try to cancel XP drops when a mob is killed while the player is in creative mode."
+			+ "\nIf you want the mobs to drop normal XP set " + "\n\"try-to-cancel-xp-drops-when-in-creative\"=false")
+	public boolean tryToCancelXPDropsWhenInCreative = true;
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
@@ -1683,12 +1725,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-			
+
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
 			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
 			MetadataValue value = data.get(0);
 			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-			
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -1906,12 +1948,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
-			
+
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
 			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getConsoleRunCommand();
-			
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -2008,7 +2050,8 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Ghast)
 				return MobHunting.getConfigManager().ghastCmd;
 			else if (mob instanceof MagmaCube)
-				//Magmacube is an instance of slime and must be checked before the Slime itself
+				// Magmacube is an instance of slime and must be checked before
+				// the Slime itself
 				return MobHunting.getConfigManager().magmaCubeCmd;
 			else if (mob instanceof Slime)
 				return MobHunting.getConfigManager().slimeCmd;
@@ -2083,12 +2126,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
-			
+
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
 			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getRewardDescription();
-			
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -2254,12 +2297,12 @@ public class ConfigManager extends AutoConfig {
 			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getChance();
-			
+
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
 			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
 			MetadataValue value = data.get(0);
 			return ((MobRewardData) value.value()).getChance();
-			
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
