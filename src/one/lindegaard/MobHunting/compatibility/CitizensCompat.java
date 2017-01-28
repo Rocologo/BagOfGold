@@ -36,6 +36,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class CitizensCompat implements Listener {
 
@@ -44,6 +45,7 @@ public class CitizensCompat implements Listener {
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
 	private File fileMobRewardData = new File(MobHunting.getInstance().getDataFolder(), "citizens-rewards.yml");
 	private YamlConfiguration config = new YamlConfiguration();
+	public static final String MH_CITIZENS = "MH:CITIZENS";
 
 	private static MasterMobHunterManager masterMobHunterManager = new MasterMobHunterManager();
 
@@ -75,7 +77,7 @@ public class CitizensCompat implements Listener {
 
 					masterMobHunterManager.initialize();
 					findMissingSentry();
-					//loadBountyDataForSentryOrSentinel();
+					// loadBountyDataForSentryOrSentinel();
 				}
 			}, 20 * 3); // 20ticks/sec * 3 sec.
 
@@ -252,15 +254,15 @@ public class CitizensCompat implements Listener {
 		}
 	}
 
-	//private void loadBountyDataForSentryOrSentinel() {
-	//	NPCRegistry n = CitizensAPI.getNPCRegistry();
-	//	for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
-	//		NPC npc = npcList.next();
-	//		if (isSentryOrSentinel(npc.getEntity())) {
-				// MobHunting.getBountyManager().loadBounties(npc);
-	//		}
-	//	}
-	//}
+	// private void loadBountyDataForSentryOrSentinel() {
+	// NPCRegistry n = CitizensAPI.getNPCRegistry();
+	// for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
+	// NPC npc = npcList.next();
+	// if (isSentryOrSentinel(npc.getEntity())) {
+	// MobHunting.getBountyManager().loadBounties(npc);
+	// }
+	// }
+	// }
 
 	// **************************************************************************
 	// EVENTS
@@ -309,6 +311,8 @@ public class CitizensCompat implements Listener {
 					ExtendedMobManager.updateExtendedMobs();
 					Messages.injectMissingMobNamesToLangFiles();
 				}
+				npc.getEntity().setMetadata(MH_CITIZENS, new FixedMetadataValue(MobHunting.getInstance(),
+						mMobRewardData.get(String.valueOf(npc.getId()))));
 			}
 			if (masterMobHunterManager.isMasterMobHunter(npc.getEntity())) {
 				if (!masterMobHunterManager.contains(npc.getId())) {

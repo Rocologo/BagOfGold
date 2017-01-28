@@ -239,7 +239,8 @@ public class CustomMobsCompat implements Listener {
 			Messages.injectMissingMobNamesToLangFiles();
 		}
 
-		entity.setMetadata(MH_CUSTOMMOBS, new FixedMetadataValue(mPlugin, mMobRewardData.get(mob.getName())));
+		entity.setMetadata(MH_CUSTOMMOBS,
+				new FixedMetadataValue(MobHunting.getInstance(), mMobRewardData.get(mob.getName())));
 	}
 
 }

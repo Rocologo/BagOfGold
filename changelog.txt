@@ -1,9 +1,11 @@
 V4.3.5
 * New feature: DropMoneyOnGround can now be dropped as a normal item, the killers head, the killed mobs head or as a Skull with a Custom texture from Http://mineskin.org 
-* New command "/mh database convert-to-utf8 database_name" Converts MobHunting database and all MobHunting tables to UTF8 Character format. 
+* Changed default DropMoneyOnGround to be a Bag of gold.* New command "/mh database convert-to-utf8 database_name" Converts MobHunting database and all MobHunting tables to UTF8 Character format. 
 * Added Support for MinigamesLib
 * Remove drops and exp if players kills a mob while in creative mode.
-* Fixed bug where killing a MysteriousHalloween mob was not rewarded. 
+* Fixed bug where killing a MysteriousHalloween mob was not rewarded.
+* Fixed bug where players was not enabled for MobHunting when the server was reloaded with players online.
+* Cleaned up in the RewardData code for MythicMobs, CustomMobs, TARDISWeepingAngels, Citizens, MysteriousHalloween mobs
 V4.3.4
 * Added support for MysteriousHalloween (https://www.spigotmc.org/resources/mysterioushalloween.13059/)
 * Compiled against TitleManager 2.0.x

@@ -87,7 +87,7 @@ public class MythicMobsCompat implements Listener {
 					MobHunting.getStoreManager().insertMissingMythicMobs(key);
 					n++;
 				} else {
-					Messages.debug("The mob=%s cant be found in MythicMobs configuration files", key);
+					Messages.debug("The mob=%s can't be found in MythicMobs configuration files", key);
 				}
 			}
 			Messages.debug("Loaded %s MythicMobs", n);
@@ -116,7 +116,7 @@ public class MythicMobsCompat implements Listener {
 				StatType.values()[n + 2] = new StatType(mob.getMobType() + "_assist", mob.getMobName());
 				MobHunting.getStoreManager().insertMissingMythicMobs(key);
 			} else {
-				Messages.debug("The mob=%s cant be found in MythicMobs configuration files", key);
+				Messages.debug("The mob=%s can't be found in MythicMobs configuration files", key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

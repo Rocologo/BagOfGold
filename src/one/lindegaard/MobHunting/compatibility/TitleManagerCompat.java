@@ -1,5 +1,7 @@
 package one.lindegaard.MobHunting.compatibility;
 
+import java.util.Iterator;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -7,7 +9,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import io.puharesource.mc.titlemanager.api.ActionbarTitleObject;
+import io.puharesource.mc.titlemanager.api.animations.ActionbarTitleAnimation;
+import io.puharesource.mc.titlemanager.api.animations.AnimationFrame;
+import io.puharesource.mc.titlemanager.api.animations.FrameSequence;
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
+import io.puharesource.mc.titlemanager.api.v2.animation.Animation;
+import io.puharesource.mc.titlemanager.api.v2.animation.SendableAnimation;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class TitleManagerCompat {
@@ -58,8 +65,10 @@ public class TitleManagerCompat {
 
 	public static void setActionBar(Player player, String message) {
 		if (supported) {
-			if (api != null)
+			
+			if (api != null) {
 				api.sendActionbar(player, message);
+			}
 			else {
 				ActionbarTitleObject actionbar = new ActionbarTitleObject(message);
 				actionbar.send(player);

@@ -131,7 +131,8 @@ public class RewardManager implements Listener {
 		}
 		if (item != null)
 			Messages.debug("%s dropped %s on the ground as item %s (# of rewards=%s)", entity.getType(),
-					MobHunting.getRewardManager().format(money), item.getType(), droppedMoney.size());
+					MobHunting.getRewardManager().format(money),
+					MobHunting.getConfigManager().dropMoneyOnGroundItemtype, droppedMoney.size());
 	}
 
 }

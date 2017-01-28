@@ -1400,14 +1400,16 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "Here you can set the type of the ITEM to be dropped."
 			+ "\nYou can choose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\". The default is ITEM."
-			+ "\nThe value will be showed above the item."
-			+ "\nITEM: The reward is dropped as a normal Minecraft item."
+			+ "\nThe value will be showed above the item." + "\nITEM: The reward is dropped as a normal Minecraft item."
 			+ "\nKILLED: The reward is dropped as the head of the mob/player you killed."
 			+ "\nSKULL: The reward is dropped as a SKULL with a custom texture. You can generate custom texture value"
 			+ "\nand custom texture signature at http://mineskin.org"
 			+ "\nKILLER: The reward is dropped as the killers head."
 			+ "\n\nOBS: If the Gringotts plugin is installed and support not disabled, the droped item will be the Gringotts chosen item."
-			+ "\nExamples:"
+			+ "\nExamples:" + "\n\nBag of gold: (https://mineskin.org/3384)"
+			+ "\n\ndrop-money-on-ground-skull-playerUUID: '3eb9e46c-72ca-374d-8314-058a96cd0e8d'"
+			+ "\ndrop-money-on-ground-skull-texture-value: 'eyJ0aW1lc3RhbXAiOjE0NzQzMzI0MzY1MDYsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg2NzczZDc0Y2Y1MDhmZDc3Yzc4MmZmZDI5ZGYyZmU0N2ZiNzE0YjViMGQ3ZGU2N2Q1Mjg2OTMxZTJmMWRmMiJ9fX0='"
+			+ "\ndrop-money-on-ground-skull-texture-signature: 'JdvJksowuxYQ0eqf56J+Dmczg7zvlw2DbIc58Q33kRt65uMUNn2iRCQsbNpztC1cAAgyYMOyFDiOUZQeIK03CSRoPLDtWp2u501YoGKqhjgrE0V0UDh3JetWKz4Ob0KmATtY+4R2vSoMjHFEFppM0Oq+8ZER12FAiVEMAzeseFN3Z9fWAMc/V10LoquGBpq6ExTfSCEEMDEGZopF1T8ZBKL0vf4DVendfz4v3yl7bRBzISZEAnF+ECTa9z36r8HRqS8+s0eO/AWYQcRaKIu9H+wSK5F/1v+rgifeSlMAnt1Na8m1b5tMfNuq6pXxWCq4nUGgYVTOLUinqs9ZcFz3Z6Mtx5YtymKk2M0mzxmTm9+AeOL4s3K/UrJYQlcmLBJSv4hd6EigJXoashzWNCHKmFDYCdEhh4FArq4G9vRZtoudcTeMsvi0VmXIgER8U5iSfoTtzXcGbf/GT0ECtgfeA40f5oCqyE4nXreudMmvlDCBr/KHbILQWeeH/jhtYqQ6OwJb3Ji2Bs9F5fQmICSqk7X4yKzexf8rdDhOG1z+/TCot7K8unPVuQx46sXPeP7t2hCiHOXMAnOMt8vuL3gQUURIEM6fMryjmlKsgvk8Jo0gawavRCIZQtA6vT0JRRnSAchzEOA7QP1iiVV3LnwX9Yqw7oMJ/+REV1hWesuzDOc='"
 			+ "\n\nChest: (https://mineskin.org/3136)"
 			+ "\n\ndrop-money-on-ground-skull-playerUUID: 'e572342f-5552-3c82-b163-c776e3b57da4'"
 			+ "\ndrop-money-on-ground-skull-texture-value: 'eyJ0aW1lc3RhbXAiOjE0NzI4Mzk3Nzk2ODMsInByb2ZpbGVJZCI6ImIwZDRiMjhiYzFkNzQ4ODlhZjBlODY2MWNlZTk2YWFiIiwicHJvZmlsZU5hbWUiOiJJbnZlbnRpdmVHYW1lcyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTY5NDcxMjQ1YmNhN2M0ZmUwNjQ0MGQ5YjRiOWY3NDIxN2VkNzM0M2FhZDU5YTc5MThiMWExZDYxZDhiYTZkYSJ9fX0='"
@@ -1419,26 +1421,22 @@ public class ConfigManager extends AutoConfig {
 			+ "\n\nChoose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\"")
 	public String dropMoneyOnGroundItemtype = "ITEM";
 
-	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
+	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used when you have chosen drop-money-on-ground-itemtype: ITEM. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE")
 	public String dropMoneyOnGroundTextColor = "WHITE";
 
-	@ConfigField(name = "drop-money-on-ground-skull-playerUUID", category = "dropmoneyonground", 
-			comment = "This is the Custom player UUID generated at http://mineskin.org")
-	public String dropMoneyOnGroundSkullPlayerUUID = "6eb23602-2c22-34b8-b6b1-1847931c1a6d";
+	@ConfigField(name = "drop-money-on-ground-skull-playerUUID", category = "dropmoneyonground", comment = "This is the Custom player UUID generated at http://mineskin.org")
+	public String dropMoneyOnGroundSkullPlayerUUID = "3eb9e46c-72ca-374d-8314-058a96cd0e8d";
 
-	@ConfigField(name = "drop-money-on-ground-skull-texture-value", category = "dropmoneyonground", 
-			comment = "This is the Custom Texture Value generated at http://mineskin.org")
-	public String dropMoneyOnGroundSkullTextureValue = "eyJ0aW1lc3RhbXAiOjE0NzI4Mzk3Nzk2ODMsInByb2ZpbGVJZCI6ImIwZDRiMjhiYzFkNzQ4ODlhZjBlODY2MWNlZTk2YWFiIiwicHJvZmlsZU5hbWUiOiJJbnZlbnRpdmVHYW1lcyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTY5NDcxMjQ1YmNhN2M0ZmUwNjQ0MGQ5YjRiOWY3NDIxN2VkNzM0M2FhZDU5YTc5MThiMWExZDYxZDhiYTZkYSJ9fX0=";
+	@ConfigField(name = "drop-money-on-ground-skull-texture-value", category = "dropmoneyonground", comment = "This is the Custom Texture Value generated at http://mineskin.org")
+	public String dropMoneyOnGroundSkullTextureValue = "eyJ0aW1lc3RhbXAiOjE0NzQzMzI0MzY1MDYsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg2NzczZDc0Y2Y1MDhmZDc3Yzc4MmZmZDI5ZGYyZmU0N2ZiNzE0YjViMGQ3ZGU2N2Q1Mjg2OTMxZTJmMWRmMiJ9fX0=";
 
-	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", 
-			comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
-	public String dropMoneyOnGroundSkullTextureSignature = "lVA2QIbvybpzhcXof5yWz/7nkHdhG/3MGO+1DyD1txdRCALV6BRwsDUBwIUg06MkLUpBkjmiOvFcCRgal/jDE/xkkJPyk2tb/w4NtQ5PiPiAe0oInVnuiSIVFIE4tnsCdvX0joll3uKwVu6XY3t1KEsqJATcPhA5hslVn1iOp/IfMziIfuCzzob04rScpwcw0mLNtbtbMVAl6LYR9gXVuOkAfXujuYq4lbI/iW0yuLxSAzr8i9QWBP2ftup4qQHwocQRTdUE6/G5G9LwJWXhhnqKWjgjfvL0y2FRFJkgN1cvuq7DvUDBVsePnRIHwU5YvBPMjcZe/KE8VPTSodsN84/+++5p95Puxe1DXMX822xR71IQsxM7eax7Ffrr/Tzxw2rSDh9ivGGlRAB85OHwp/ouUgWNSrT8inNMYImque9EuZku9p3OFet8iZsFhkMXANeNtTVL7LKV7/L/0YWwoeyBnw5QQqvGyWKw3dac5eDkRNCyCtdDIntM5vsd8FxnIFj36zxLWgmrJmOM9hg5PBM4gcDxxryBcug8jSe+W9XDU39OOJotXajj8dgSL8yUn+d7l4Qvat/vJbAE8lonMl7P0P9QBPzmcIUvlRMuHSpRZQYkoCbwc2Filahd/5INtm7I4Y28XYzzupdwLk3cavKfOloL5YrWNqaZr/+9Tbk=";
+	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
+	public String dropMoneyOnGroundSkullTextureSignature = "JdvJksowuxYQ0eqf56J+Dmczg7zvlw2DbIc58Q33kRt65uMUNn2iRCQsbNpztC1cAAgyYMOyFDiOUZQeIK03CSRoPLDtWp2u501YoGKqhjgrE0V0UDh3JetWKz4Ob0KmATtY+4R2vSoMjHFEFppM0Oq+8ZER12FAiVEMAzeseFN3Z9fWAMc/V10LoquGBpq6ExTfSCEEMDEGZopF1T8ZBKL0vf4DVendfz4v3yl7bRBzISZEAnF+ECTa9z36r8HRqS8+s0eO/AWYQcRaKIu9H+wSK5F/1v+rgifeSlMAnt1Na8m1b5tMfNuq6pXxWCq4nUGgYVTOLUinqs9ZcFz3Z6Mtx5YtymKk2M0mzxmTm9+AeOL4s3K/UrJYQlcmLBJSv4hd6EigJXoashzWNCHKmFDYCdEhh4FArq4G9vRZtoudcTeMsvi0VmXIgER8U5iSfoTtzXcGbf/GT0ECtgfeA40f5oCqyE4nXreudMmvlDCBr/KHbILQWeeH/jhtYqQ6OwJb3Ji2Bs9F5fQmICSqk7X4yKzexf8rdDhOG1z+/TCot7K8unPVuQx46sXPeP7t2hCiHOXMAnOMt8vuL3gQUURIEM6fMryjmlKsgvk8Jo0gawavRCIZQtA6vT0JRRnSAchzEOA7QP1iiVV3LnwX9Yqw7oMJ/+REV1hWesuzDOc=";
 
-	
 	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
@@ -1694,42 +1692,71 @@ public class ConfigManager extends AutoConfig {
 	 */
 	public double getBaseKillPrize(LivingEntity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+				return getPrice(mob, TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getRewardPrize());
+			Messages.debug("TARDISWeepingAngel %s has no reward data",
+					TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob));
+			return 0;
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				for (MetadataValue value : data) {
-					if (value.value() instanceof MobRewardData) {
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
 						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-					}
-				}
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+				return getPrice(mob, MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
+						.getRewardPrize());
+			Messages.debug("MythicMob %s has no reward data", MythicMobsCompat.getMythicMobType(mob));
 			return 0;
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)
-					&& CitizensCompat.getMobRewardData().containsKey(String.valueOf(npc.getId()))) {
-				return getPrice(mob,
-						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
-			} else
-				return 0;
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
+				&& CitizensCompat.isSentryOrSentinel(mob)) {
+			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
+			String key = String.valueOf(npc.getId());
+			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return getPrice(mob, CitizensCompat.getMobRewardData().get(key).getRewardPrize());
+			}
+			Messages.debug("Citizens mob %s has no reward data", npc.getName());
+			return 0;
 
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+				return getPrice(mob, CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
+						.getRewardPrize());
+			Messages.debug("CustomMob %s has no reward data", CustomMobsCompat.getCustomMobType(mob));
+			return 0;
 
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-			MetadataValue value = data.get(0);
-			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+				return getPrice(mob, MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getRewardPrize());
+			Messages.debug("MysteriousHalloween %s has no reward data",
+					MysteriousHalloweenCompat.getMysteriousHalloweenType(mob));
+			return 0;
 
 		} else {
 			if (Misc.isMC111OrNewer())
@@ -1886,6 +1913,7 @@ public class ConfigManager extends AutoConfig {
 				return getPrice(mob, MobHunting.getConfigManager().wolfPrize);
 
 		}
+		Messages.debug("Mobhunting could not find the prize for killing this mob");
 		return 0;
 	}
 
@@ -1923,36 +1951,64 @@ public class ConfigManager extends AutoConfig {
 	 */
 	public String getKillConsoleCmd(LivingEntity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getConsoleRunCommand();
+			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				MetadataValue value = data.get(0);
-				return ((MobRewardData) value.value()).getConsoleRunCommand();
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
+						.getConsoleRunCommand();
+			return "";
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
+				&& CitizensCompat.isSentryOrSentinel(mob)) {
+			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
-			if (CitizensCompat.isSentryOrSentinel(mob) && CitizensCompat.getMobRewardData().containsKey(key)) {
+			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
 				return CitizensCompat.getMobRewardData().get(key).getConsoleRunCommand();
-			} else
-				return "";
+			}
+			return "";
+
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
+						.getConsoleRunCommand();
+			return "";
 
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getConsoleRunCommand();
+			return "";
 
 		} else {
 			if (Misc.isMC111OrNewer())
@@ -2102,35 +2158,64 @@ public class ConfigManager extends AutoConfig {
 	 */
 	public String getKillRewardDescription(LivingEntity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getRewardDescription();
+			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getRewardDescription();
+			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				MetadataValue value = data.get(0);
-				return ((MobRewardData) value.value()).getRewardDescription();
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
+						.getRewardDescription();
+			return "";
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)) {
-				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardDescription();
-			} else
-				return "";
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
+				&& CitizensCompat.isSentryOrSentinel(mob)) {
+			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
+			String key = String.valueOf(npc.getId());
+			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return CitizensCompat.getMobRewardData().get(key).getRewardDescription();
+			}
+			return "";
+
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getRewardDescription();
+			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
+						.getRewardDescription();
+			return "";
 
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getRewardDescription();
+			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getRewardDescription();
+			return "";
 
 		} else {
 			if (Misc.isMC111OrNewer())
@@ -2273,35 +2358,64 @@ public class ConfigManager extends AutoConfig {
 
 	public double getCmdRunChance(LivingEntity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getChance();
+			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getChance();
+			return 0;
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				MetadataValue value = data.get(0);
-				return ((MobRewardData) value.value()).getChance();
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob)).getChance();
+			return 0;
+
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
+				&& CitizensCompat.isSentryOrSentinel(mob)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)) {
-				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getChance();
-			} else
-				return 1;
+			String key = String.valueOf(npc.getId());
+			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return CitizensCompat.getMobRewardData().get(key).getChance();
+			}
+			return 0;
+
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getChance();
+			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob)).getChance();
+			return 0;
 
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
-			List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getChance();
+			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getChance();
+			return 0;
 
 		} else {
 			if (Misc.isMC111OrNewer())
@@ -2481,7 +2595,7 @@ public class ConfigManager extends AutoConfig {
 				return (double) MobHunting.getConfigManager().wolfFequency
 						/ (double) MobHunting.getConfigManager().wolfFrequencyBase;
 		}
-		return 1;
+		return 0;
 	}
 
 	public boolean isCmdGointToBeExcuted(LivingEntity killed) {

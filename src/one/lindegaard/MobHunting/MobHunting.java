@@ -257,6 +257,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 				}
 			}, 20 * 5); // 20ticks/sec * 3 sec.
 
+			for (Player player : mMobHuntingManager.getOnlinePlayers())
+				mMobHuntingManager.setHuntEnabled(player, true);
+
 			mInitialized = true;
 
 		}
