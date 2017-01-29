@@ -21,6 +21,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.material.Sign;
 import org.bukkit.util.Vector;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.storage.IDataCallback;
@@ -155,8 +156,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	}
 
 	public void removeSigns() {
-		for (Block block : getSignBlocks())
-			block.setType(Material.AIR);
+		for (Block block : getSignBlocks()) 
+			block.setType(Material.AIR,false);
 	}
 
 	public void update() {

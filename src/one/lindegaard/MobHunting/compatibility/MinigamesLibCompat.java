@@ -50,8 +50,8 @@ public class MinigamesLibCompat implements Listener {
 	}
 
 	public static boolean isPlayingMinigame(Player player) {
-		MinigamesAPI minigamePlayer = MinigamesAPI.getAPI();//..pdata.getMinigamePlayer(player);
-		Player p = MinigamesAPI.getAPI().uuidToPlayer(player.getUniqueId());
+		//MinigamesAPI minigamePlayer = MinigamesAPI.getAPI();//..pdata.getMinigamePlayer(player);
+		//Player p = MinigamesAPI.getAPI().uuidToPlayer(player.getUniqueId());
 		//return player != null && minigamePlayer.isInMinigame();
 		return true;
 	}
@@ -61,7 +61,7 @@ public class MinigamesLibCompat implements Listener {
 	// **************************************************************************
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerJoinMinigameLib(MobHuntEnableCheckEvent event) {
-		Messages.debug("onPlayerJoinMinigame was run...");
+		//Messages.debug("onPlayerJoinMinigame was run...");
 		//MinigamePlayer player = MinigamesLib.plugin.pdata.getMinigamePlayer(event.getPlayer());
 		//if (player != null && player.isInMinigame())
 		//	event.setEnabled(false);

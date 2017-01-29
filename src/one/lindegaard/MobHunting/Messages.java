@@ -118,10 +118,23 @@ public class Messages {
 				else
 					k = "mobs." + key.getValue().getMobPlugin().name() + "_" + key.getValue().getMobtype() + ".name";
 				if (!dest.containsKey(k)) {
-					Bukkit.getLogger().info(PREFIX + " Creating missing key (" + k + ") in language file.");
+					Bukkit.getLogger().info(PREFIX + " Creating missing key (" + k + ") in language file "+onDisk.getName());
 					if (key.getValue() != null && key.getValue().getName() != null
 							&& !key.getValue().getName().equals(""))
 						newEntries.put(k, key.getValue().getName());
+				}
+			}
+
+			for (MobPlugin p : MobPlugin.values()) {
+				String k = "stats." + p.name() + ".kill";
+				if (!dest.containsKey(k)) {
+					Bukkit.getLogger().info(PREFIX + " Creating missing key (" + k + ") in language file"+onDisk.getName());
+					newEntries.put(k, p.name() + " kills");
+				}
+				k = "stats." + p.name() + ".assist";
+				if (!dest.containsKey(k)) {
+					Bukkit.getLogger().info(PREFIX + " Creating missing key (" + k + ") in language file "+onDisk.getName());
+					newEntries.put(k, p.name() + " assists");
 				}
 			}
 
@@ -129,7 +142,6 @@ public class Messages {
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
 				for (Entry<String, String> entry : newEntries.entrySet()) {
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
-
 				}
 				writer.close();
 

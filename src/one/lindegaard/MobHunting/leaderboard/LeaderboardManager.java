@@ -344,6 +344,7 @@ public class LeaderboardManager implements Listener {
 		if (block.getType() != Material.WALL_SIGN || !event.getPlayer().hasPermission("mobhunting.leaderboard"))
 			return;
 
+		//TODO: break does not remove the signs??????
 		for (WorldLeaderboard board : mLeaderboards.get(block.getWorld())) {
 			if (block.getLocation().equals(board.getLocation())) {
 				board.removeSigns();

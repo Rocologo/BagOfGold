@@ -1,6 +1,11 @@
+V4.3.6
+* You can now create Leaderboards and MasterMobHunters for specific plugins (StatTypes): Minecraft_kills, MythicMobs_kills, CustomMobs_kills, Citizens_kills, TARDISWeekpingAngels_kill)
+* Changed default DropMoneyOnGround to be a Bag of gold. 
+* Leaderboard signs is now removed when you break the main sign.
 V4.3.5
 * New feature: DropMoneyOnGround can now be dropped as a normal item, the killers head, the killed mobs head or as a Skull with a Custom texture from Http://mineskin.org 
-* Changed default DropMoneyOnGround to be a Bag of gold.* New command "/mh database convert-to-utf8 database_name" Converts MobHunting database and all MobHunting tables to UTF8 Character format. 
+* Changed default DropMoneyOnGround to be a Bag of gold.
+* New command "/mh database convert-to-utf8 database_name" Converts MobHunting database and all MobHunting tables to UTF8 Character format. 
 * Added Support for MinigamesLib
 * Remove drops and exp if players kills a mob while in creative mode.
 * Fixed bug where killing a MysteriousHalloween mob was not rewarded.
