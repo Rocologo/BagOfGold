@@ -101,6 +101,8 @@ public class HappyHourCommand implements ICommand {
 				if (happyhourevent != null && (Bukkit.getScheduler().isCurrentlyRunning(happyhourevent.getTaskId())
 						|| Bukkit.getScheduler().isQueued(happyhourevent.getTaskId()))) {
 					happyhourevent.cancel();
+					minutesLeft = 0;
+					multiplier = 1;
 					Messages.debug("Happy hour was cancelled");
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						Messages.playerSendTitlesMessage(player,
