@@ -1,7 +1,9 @@
 V4.3.7
-* New feature HAPPY HOUR event. /mh happyhour <minutes> <multiplier>
+* New feature HAPPY HOUR event. "/mh happyhour <minutes> <multiplier>" to create or restart the event.
 * Stop the event with /mh happyhour cancel
 * Get a status with /mh happyhour
+* Get help  /mh happyhour help
+* Earn money for fishing, see Fishing section in config.yml
 * Whitelisting of a Grinding Area was broken. Fixed.
 * Fix error where LeaderBoards lost configuration when on of the supported MobPlugins was not loaded.
 V4.3.6

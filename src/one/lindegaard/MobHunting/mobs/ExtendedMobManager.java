@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import one.lindegaard.MobHunting.Messages;
@@ -111,7 +112,7 @@ public class ExtendedMobManager {
 		return 0;
 	}
 
-	public ExtendedMob getExtendedMobFromEntity(LivingEntity entity) {
+	public ExtendedMob getExtendedMobFromEntity(Entity entity) {
 		int mob_id;
 		MobPlugin mobPlugin;
 		String mobtype;
@@ -134,7 +135,13 @@ public class ExtendedMobManager {
 		} else {
 			// StatType
 			mobPlugin = MobPlugin.Minecraft;
-			mobtype = MinecraftMob.getExtendedMobType(entity).name();
+			MinecraftMob mob = MinecraftMob.getExtendedMobType(entity);
+			if (mob != null)
+				mobtype = mob.name();
+			else {
+				Messages.debug("ERROR!!! Unsupported minecraft mob %s", mob);
+				mobtype = "";
+			}
 		}
 		mob_id = getMobIdFromMobTypeAndPluginID(mobtype, mobPlugin);
 		return new ExtendedMob(mob_id, mobPlugin, mobtype);

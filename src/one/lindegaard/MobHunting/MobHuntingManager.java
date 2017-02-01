@@ -935,14 +935,14 @@ public class MobHuntingManager implements Listener {
 
 		// MobHunting is disabled for the player
 		if (killer != null && !MobHunting.getMobHuntingManager().isHuntEnabled(killer)) {
-			Messages.debug("KillBlocked %s: Hunting is disabled for player", killer.getName());
+			Messages.debug("KillBlocked: %s Hunting is disabled for player", killer.getName());
 			Messages.learn(killer, Messages.getString("mobhunting.learn.huntdisabled"));
 			return;
 		}
 
 		// The player is in Creative mode
-		if (killer != null && killer.getGameMode() == GameMode.CREATIVE) {
-			Messages.debug("KillBlocked %s: In creative mode", killer.getName());
+		if (killer != null && killer.getGameMode() != GameMode.SURVIVAL) {
+			Messages.debug("KillBlocked: %s is not in survival mode", killer.getName());
 			Messages.learn(killer, Messages.getString("mobhunting.learn.creative"));
 			if (MobHunting.getConfigManager().tryToCancelNaturalDropsWhenInCreative) {
 				Messages.debug("Trying to remove natural drops");

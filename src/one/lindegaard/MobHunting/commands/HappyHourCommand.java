@@ -14,10 +14,13 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class HappyHourCommand implements ICommand {
 
+	public static int minutesToRun = 0;
 	public static int minutesLeft = 0;
 	public static double multiplier = 1;
+	long starttime;
 
 	BukkitTask happyhourevent = null;
+	BukkitTask happyhoureventStop = null;
 
 	public HappyHourCommand() {
 
@@ -76,7 +79,8 @@ public class HappyHourCommand implements ICommand {
 			// status of happyhour
 			if (happyhourevent != null && (Bukkit.getScheduler().isCurrentlyRunning(happyhourevent.getTaskId())
 					|| Bukkit.getScheduler().isQueued(happyhourevent.getTaskId()))) {
-				Messages.debug("Happy hour is ongoing");
+				minutesLeft = minutesToRun - (int) (System.currentTimeMillis() - starttime) / (1000 * 60);
+				Messages.debug("The happy hour ends in %s minutes", minutesLeft);
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					Messages.playerSendTitlesMessage(player,
 							Messages.getString("mobhunting.commands.happyhour.ongoing_title"),
@@ -93,7 +97,7 @@ public class HappyHourCommand implements ICommand {
 
 			// /mh happyhour help
 			// Show help
-			if (args[0].equalsIgnoreCase("help"))
+			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))
 				return false;
 
 			// /mh happyhour cancel|stop
@@ -101,6 +105,8 @@ public class HappyHourCommand implements ICommand {
 				if (happyhourevent != null && (Bukkit.getScheduler().isCurrentlyRunning(happyhourevent.getTaskId())
 						|| Bukkit.getScheduler().isQueued(happyhourevent.getTaskId()))) {
 					happyhourevent.cancel();
+					happyhoureventStop.cancel();
+					minutesToRun = 0;
 					minutesLeft = 0;
 					multiplier = 1;
 					Messages.debug("Happy hour was cancelled");
@@ -118,28 +124,39 @@ public class HappyHourCommand implements ICommand {
 
 			// /mh happyhour <minutes> <multiplier>
 
-			minutesLeft = Integer.valueOf(args[0]);
+			minutesToRun = Integer.valueOf(args[0]);
+			minutesLeft = minutesToRun;
 			multiplier = Double.valueOf(args[1]);
+			starttime = System.currentTimeMillis();
 
-			if (minutesLeft <= 0 || multiplier <= 0)
+			if (minutesToRun <= 0 || multiplier <= 0)
 				return false;
 
-			Messages.debug("Happy hour started");
+			if (happyhourevent != null && (Bukkit.getScheduler().isCurrentlyRunning(happyhourevent.getTaskId())
+					|| Bukkit.getScheduler().isQueued(happyhourevent.getTaskId()))) {
+				happyhourevent.cancel();
+				happyhoureventStop.cancel();
+				Messages.debug("Happy hour restarted");
+			} else {
+				Messages.debug("Happy hour started");
+			}
+
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				Messages.playerSendTitlesMessage(player,
 						Messages.getString("mobhunting.commands.happyhour.started_title"),
 						Messages.getString("mobhunting.commands.happyhour.started_subtitle", "multiplier", multiplier,
-								"minutes", minutesLeft),
+								"minutes", minutesToRun),
 						20, 100, 20);
 			}
 
 			happyhourevent = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Runnable() {
 				public void run() {
-					Messages.debug("Its happy hour now");
+					Messages.debug("The happy hour ends in %s minutes",
+							minutesToRun - (int) (System.currentTimeMillis() - starttime) / (1000 * 60));
 				}
 			}, 18000, 18000);
 
-			Bukkit.getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
+			happyhoureventStop = Bukkit.getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
 				public void run() {
 					minutesLeft = 0;
 					multiplier = 1;

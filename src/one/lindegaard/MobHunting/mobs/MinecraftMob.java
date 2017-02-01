@@ -3,6 +3,8 @@ package one.lindegaard.MobHunting.mobs;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fish;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
@@ -291,7 +293,11 @@ public enum MinecraftMob {
 	// EnderDragon
 	EnderDragon("ENDER_DRAGON", "MHF_EnderDragon", "bd3802bb-be48-438c-bafb-cb9510e2aa2d", "Ender Dragon",
 			"eyJ0aW1lc3RhbXAiOjE0ODEwNDg2NTY1ODcsInByb2ZpbGVJZCI6ImJkMzgwMmJiYmU0ODQzOGNiYWZiY2I5NTEwZTJhYTJkIiwicHJvZmlsZU5hbWUiOiJNSEZfRW5kZXJEcmFnb24iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzMwZjFiN2RkM2ViMWRjYmYyZmU2ZGU5NmVlY2IzNDI2ZDRjNjU5YWQ5Y2QzNDFkYjNjNjM5YzJkNWRmNjVhNiJ9fX0=",
-			"AF8zxQOXgt4VBMQlFb/crbAqgcoOGMDgNHDo4m6F3wLNKNy/Gp7f5gmqc3FJLc7VEWSU2d7LOPx/R6Rn/qIeYZbspei5RVgFsEgW1GcwRf+L4pf2x+BUEy06qvVl0uuDIxMiYBLUXTpPArAI792LeRXyuI/I12jYVnT6t5Evpv7WLs6Z3kynLdX4evgCvbkFArh8cdCw8cTobEHOF3UQFH2Z6KTMF0dVG6JX9eqGNjESHpnbBtvIjyxKdd+azSZsI5GwJm729wWBb1HopC5vnVbKt0pxEp0oXFbh8xQssXZe8HXJcGu7cakSYXBIg+xYsaqlnOq1BsUub4zrCgSm38h4Tr18wJjmsYuiamPTf4jJZXT4OwUYhEX4rd9wMCOwLRYwsL1q9apZ92ZYKvD9cc8Y44EGsLbsVY1Pjjl0rBqebPW0FD6M82/obxbXEfoLemmJH+We6PPVYyNAIMIFdP+BtSsOTBGKYe41TSr7bCYWAm7fOj1+6gl9ftd9JuuRhK/8CEY2gNKoMZDE2tWYLglaL8Ztbi0FsPhdLynIP1JojpvaDOc2aD4xSQCn8xQu73AQyNSOp4AeqjXAQnp3911T5lPYHCu1HgB5bTwUQP7vG8iTg7TiRL/mYLgEnqSbuhyPOn0w9MzOu0n40E1EBji8OW/OApH0zup84h0jOPw=");
+			"AF8zxQOXgt4VBMQlFb/crbAqgcoOGMDgNHDo4m6F3wLNKNy/Gp7f5gmqc3FJLc7VEWSU2d7LOPx/R6Rn/qIeYZbspei5RVgFsEgW1GcwRf+L4pf2x+BUEy06qvVl0uuDIxMiYBLUXTpPArAI792LeRXyuI/I12jYVnT6t5Evpv7WLs6Z3kynLdX4evgCvbkFArh8cdCw8cTobEHOF3UQFH2Z6KTMF0dVG6JX9eqGNjESHpnbBtvIjyxKdd+azSZsI5GwJm729wWBb1HopC5vnVbKt0pxEp0oXFbh8xQssXZe8HXJcGu7cakSYXBIg+xYsaqlnOq1BsUub4zrCgSm38h4Tr18wJjmsYuiamPTf4jJZXT4OwUYhEX4rd9wMCOwLRYwsL1q9apZ92ZYKvD9cc8Y44EGsLbsVY1Pjjl0rBqebPW0FD6M82/obxbXEfoLemmJH+We6PPVYyNAIMIFdP+BtSsOTBGKYe41TSr7bCYWAm7fOj1+6gl9ftd9JuuRhK/8CEY2gNKoMZDE2tWYLglaL8Ztbi0FsPhdLynIP1JojpvaDOc2aD4xSQCn8xQu73AQyNSOp4AeqjXAQnp3911T5lPYHCu1HgB5bTwUQP7vG8iTg7TiRL/mYLgEnqSbuhyPOn0w9MzOu0n40E1EBji8OW/OApH0zup84h0jOPw="),
+
+	RawFish("RAW_FISH", "Raw_Fish", "", "Raw fish", "", ""), RawSalmon("RAW_SALMON", "Raw_Salmon", "", "Raw Salmon", "",
+			""), Clownfish("CLOWNFISH", "Clownfish", "", "Clownfish", "",
+					""), Pufferfish("PUFFERFISH", "Pufferfish", "", "Pufferfish", "", "");
 
 	// OBS values() used for tableName in Database IE. EnderDragon ~
 	// "Enderdragon_kill" & "Enderdragon_assist"
@@ -541,6 +547,19 @@ public enum MinecraftMob {
 			return entity instanceof Skeleton && ((Skeleton) entity).getSkeletonType() == SkeletonType.NORMAL;
 		else if (this == BonusMob)
 			return entity.hasMetadata("MH:hasBonus");
+		// else
+		if (this == RawFish)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 0;
+		else if (this == RawSalmon)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 1;
+		else if (this == Clownfish)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 2;
+		else if (this == Pufferfish)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 3;
 		else
 			return entity.getType().toString().equals(mMinecraftMobType);
 	}
