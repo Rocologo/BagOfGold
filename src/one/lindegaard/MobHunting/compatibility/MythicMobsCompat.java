@@ -25,7 +25,6 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
@@ -226,7 +225,7 @@ public class MythicMobsCompat implements Listener {
 			saveMythicMobsData(mobtype);
 			MobHunting.getStoreManager().insertMissingMythicMobs(mobtype);
 			// Update mob loaded into memory
-			ExtendedMobManager.updateExtendedMobs();
+			MobHunting.getExtendedMobManager().updateExtendedMobs();
 			Messages.injectMissingMobNamesToLangFiles();
 		}
 

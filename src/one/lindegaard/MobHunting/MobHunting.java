@@ -10,6 +10,7 @@ import one.lindegaard.MobHunting.commands.ClearGrindingCommand;
 import one.lindegaard.MobHunting.commands.CommandDispatcher;
 import one.lindegaard.MobHunting.commands.DatabaseCommand;
 import one.lindegaard.MobHunting.commands.DebugCommand;
+import one.lindegaard.MobHunting.commands.HappyHourCommand;
 import one.lindegaard.MobHunting.commands.HeadCommand;
 import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
@@ -155,6 +156,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(WorldEditCompat.class, "WorldEdit");
 			registerPlugin(WorldGuardCompat.class, "WorldGuard");
 			registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
+			
 			registerPlugin(MyPetCompat.class, "MyPet");
 
 			registerPlugin(MinigamesCompat.class, "Minigames");
@@ -229,6 +231,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					for (Player player : mMobHuntingManager.getOnlinePlayers())
 						mBountyManager.loadOpenBounties(player);
 			}
+			cmd.registerCommand(new HappyHourCommand());
 
 			mAchievementManager = new AchievementManager();
 

@@ -20,7 +20,6 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
@@ -78,6 +77,7 @@ public class CitizensCompat implements Listener {
 					masterMobHunterManager.initialize();
 					findMissingSentry();
 					// loadBountyDataForSentryOrSentinel();
+					MobHunting.getExtendedMobManager().updateExtendedMobs();
 				}
 			}, 20 * 3); // 20ticks/sec * 3 sec.
 
@@ -104,7 +104,7 @@ public class CitizensCompat implements Listener {
 					MobHunting.getStoreManager().insertCitizensMobs(key);
 					n++;
 				} else {
-					Messages.debug("The mob=%s cant be found in Citizens saves.yml file", key);
+					Messages.debug("The mob=%s can't be found in Citizens saves.yml file", key);
 				}
 			}
 			Messages.debug("Loaded %s extra MobRewards.", n);
@@ -308,7 +308,7 @@ public class CitizensCompat implements Listener {
 					// Insert new mob to Database
 					MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
 					// Update mob loaded into memory
-					ExtendedMobManager.updateExtendedMobs();
+					MobHunting.getExtendedMobManager().updateExtendedMobs();
 					Messages.injectMissingMobNamesToLangFiles();
 				}
 				npc.getEntity().setMetadata(MH_CITIZENS, new FixedMetadataValue(MobHunting.getInstance(),

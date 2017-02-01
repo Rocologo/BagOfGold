@@ -1,3 +1,8 @@
+V4.3.7
+* New feature HAPPY HOUR event. /mh happyhour <minutes> <multiplier>
+* Stop the event with /mh happyhour cancel
+* Whitelisting of a Grinding Area was broken. Fixed.
+* Fix error where LeaderBoards lost configuration when on of the supported MobPlugins was not loaded.
 V4.3.6
 * You can now create Leaderboards and MasterMobHunters for specific plugins (StatTypes): Minecraft_kills, MythicMobs_kills, CustomMobs_kills, Citizens_kills, TARDISWeekpingAngels_kill)
 * Changed default DropMoneyOnGround to be a Bag of gold. 

@@ -190,29 +190,33 @@ public class LeaderboardManager implements Listener {
 		if (!file.exists())
 			return;
 
+		YamlConfiguration config = new YamlConfiguration();
 		try {
-			YamlConfiguration config = new YamlConfiguration();
 			config.load(file);
+		} catch (IOException | InvalidConfigurationException e1) {
+			e1.printStackTrace();
+		}
 
-			Iterator<String> keys = config.getKeys(false).iterator();
-			while (keys.hasNext()) {
-				String key = keys.next();
-				ConfigurationSection section = config.getConfigurationSection(key);
-				WorldLeaderboard board = new WorldLeaderboard();
+		Iterator<String> keys = config.getKeys(false).iterator();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			ConfigurationSection section = config.getConfigurationSection(key);
+			WorldLeaderboard board = new WorldLeaderboard();
+			try {
 				board.read(section);
 				board.update();
 				board.refresh();
-				mLeaderboards.put(world, board);
+			} catch (IllegalStateException | InvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
-			if (mLeaderboards.size() > 0)
-				Messages.debug("%s Leaderboards in '%s' loaded from file: %s!", mLeaderboards.size(), world.getName(),
-						MobHunting.getInstance().getDataFolder(), "boards-" + world.getName() + ".yml");
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			mLeaderboards.put(world, board);
 		}
+
+		if (mLeaderboards.size() > 0)
+			Messages.debug("%s Leaderboards in '%s' loaded from file: %s!", mLeaderboards.size(), world.getName(),
+					MobHunting.getInstance().getDataFolder(), "boards-" + world.getName() + ".yml");
+
 	}
 
 	public void saveWorld(World world) {
@@ -344,7 +348,7 @@ public class LeaderboardManager implements Listener {
 		if (block.getType() != Material.WALL_SIGN || !event.getPlayer().hasPermission("mobhunting.leaderboard"))
 			return;
 
-		//TODO: break does not remove the signs??????
+		// TODO: break does not remove the signs??????
 		for (WorldLeaderboard board : mLeaderboards.get(block.getWorld())) {
 			if (block.getLocation().equals(board.getLocation())) {
 				board.removeSigns();

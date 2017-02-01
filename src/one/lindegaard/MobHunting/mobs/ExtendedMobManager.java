@@ -27,7 +27,7 @@ public class ExtendedMobManager {
 		updateExtendedMobs();
 	}
 
-	public static void updateExtendedMobs() {
+	public void updateExtendedMobs() {
 		MobHunting.getStoreManager().insertMissingVanillaMobs();
 		if (CitizensCompat.isSupported())
 			MobHunting.getStoreManager().insertMissingCitizensMobs();
@@ -49,6 +49,7 @@ public class ExtendedMobManager {
 			e.printStackTrace();
 		}
 
+		int n = 0;
 		Iterator<ExtendedMob> mobset = set.iterator();
 		while (mobset.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) mobset.next();
@@ -68,14 +69,14 @@ public class ExtendedMobManager {
 				break;
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig()
-						|| CitizensCompat.isSentryOrSentinel(mob.getMobtype()))
+						|| !CitizensCompat.isSentryOrSentinel(mob.getMobtype()))
 					continue;
 				break;
 			case MysteriousHalloween:
 				if (!MysteriousHalloweenCompat.isSupported() || MysteriousHalloweenCompat.isDisabledInConfig())
 					continue;
 				break;
-			
+
 			case Minecraft:
 				break;
 			default:
@@ -83,10 +84,11 @@ public class ExtendedMobManager {
 
 			}
 			if (!mobs.containsKey(mob.getMob_id())) {
+				n++;
 				mobs.put(mob.getMob_id(), mob);
 			}
 		}
-		Messages.debug("%s mobs was loaded into MobHunting", mobs.size());
+		Messages.debug("%s mobs was loaded into memory. Total mobs=%s", n, mobs.size());
 	}
 
 	public ExtendedMob getExtendedMobFromMobID(int i) {

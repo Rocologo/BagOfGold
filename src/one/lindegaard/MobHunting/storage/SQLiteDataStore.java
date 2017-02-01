@@ -150,7 +150,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			plugins_assist.add(p.name() + "_assist");
 			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
 				plugin = p;
-				if (type.getDBColumn().indexOf("_")!=type.getDBColumn().lastIndexOf("_"))
+				if (type.getDBColumn().indexOf("_") != type.getDBColumn().lastIndexOf("_"))
 					mobType = type.getDBColumn().substring(type.getDBColumn().indexOf("_") + 1,
 							type.getDBColumn().lastIndexOf("_"));
 			}
@@ -195,11 +195,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			Connection mConnection = setupConnection();
 
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement
-					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
-							+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
-							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
-							+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count);
+			String exestr = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name" + " from mh_"
+					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
+					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
+					+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count;
+			// Messages.debug("exestr=%s",exestr);
+			ResultSet results = statement.executeQuery(exestr);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
 				try {
@@ -227,6 +228,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	@Override
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
+		Messages.debug("Number of kills to save=%s", stats.size());
 		Connection mConnection = setupConnection();
 		try {
 			Messages.debug("Saving PlayerStats to Database.");
@@ -259,12 +261,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				}
 				int amount = stat.getAmount();
 				int player_id = getPlayerId(stat.getPlayer());
-				statement
-						.addBatch(
-								String.format(
-										"UPDATE mh_Daily SET %1$s = %1$s + %2$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
-												+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;",
-										column, amount, mob_id, player_id));
+				String str = String
+						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id);
+				statement.addBatch(str);
 			}
 			statement.executeBatch();
 			statement.close();

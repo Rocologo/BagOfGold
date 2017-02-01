@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import io.puharesource.mc.titlemanager.api.ActionbarTitleObject;
+import io.puharesource.mc.titlemanager.api.TitleObject;
 import io.puharesource.mc.titlemanager.api.animations.ActionbarTitleAnimation;
 import io.puharesource.mc.titlemanager.api.animations.AnimationFrame;
 import io.puharesource.mc.titlemanager.api.animations.FrameSequence;
@@ -65,13 +66,25 @@ public class TitleManagerCompat {
 
 	public static void setActionBar(Player player, String message) {
 		if (supported) {
-			
+
 			if (api != null) {
 				api.sendActionbar(player, message);
-			}
-			else {
+			} else {
 				ActionbarTitleObject actionbar = new ActionbarTitleObject(message);
 				actionbar.send(player);
+			}
+		}
+	}
+
+	public static void sendTitles(Player player, String title, String subtitle, int fadein, int stay, int fadeout) {
+		if (supported) {
+
+			if (api != null) {
+				api.sendTitles(player, title, subtitle, fadein, stay, fadeout);
+
+			} else {
+				TitleObject titleObject = new TitleObject(title, subtitle);
+				titleObject.send(player);
 			}
 		}
 	}

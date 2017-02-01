@@ -1192,8 +1192,10 @@ public class ConfigManager extends AutoConfig {
 	// Grinding detection
 	// #####################################################################################
 	@ConfigField(name = "enable-grinding-penalty", category = "grinding", comment = "Grinding detection."
-			+ "\nEnabling this prevents a player from earning too much money from using a mob grinder"
-			+ "\nIf you enable kill_debug in config.yml you will get debug information when grinding appears.")
+			+ "\nEnabling this prevents a player from earning too much money from using a mob grinder."
+			+ "\nSet 'enable-grinding-penalty: false' to disable the grinding detection."
+			+ "\nOBS: You can whitelist an area to allow grinding using '/mobhunt whitelistarea <add|remove>'"
+			+ "\nif the area is detected as a grinding area. See also '/mobhunt checkgrinding'")
 	public boolean penaltyGrindingEnable = true;
 	@ConfigField(name = "grinding-range-detection", category = "grinding", comment = "For each kill MobHunting check number of kills within this number of blocks."
 			+ "\nIf number of kills exceeds 10, the reward will decrese with 10% until 20 kills with"
@@ -1913,7 +1915,7 @@ public class ConfigManager extends AutoConfig {
 				return getPrice(mob, MobHunting.getConfigManager().wolfPrize);
 
 		}
-		Messages.debug("Mobhunting could not find the prize for killing this mob");
+		Messages.debug("Mobhunting could not find the prize for killing this mob %s", mob.getName());
 		return 0;
 	}
 

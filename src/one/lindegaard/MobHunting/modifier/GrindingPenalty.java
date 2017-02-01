@@ -28,7 +28,7 @@ public class GrindingPenalty implements IModifier
 	@Override
 	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
-		if(MobHunting.getConfigManager().penaltyGrindingEnable)
+		if(MobHunting.getConfigManager().penaltyGrindingEnable && !MobHunting.getAreaManager().isWhitelisted(deadEntity.getLocation()))
 			return data.getDampnerMultiplier() < 1;
 		return false;
 	}

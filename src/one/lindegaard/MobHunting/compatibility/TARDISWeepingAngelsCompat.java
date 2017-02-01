@@ -16,7 +16,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import me.eccentric_nz.tardisweepingangels.TARDISWeepingAngelSpawnEvent;
@@ -209,7 +208,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			saveTARDISWeepingAngelsMobsData(monster.name());
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
 			// Update mob loaded into memory
-			ExtendedMobManager.updateExtendedMobs();
+			MobHunting.getExtendedMobManager().updateExtendedMobs();
 		}
 
 		event.getEntity().setMetadata(MH_TARDISWEEPINGANGELS,

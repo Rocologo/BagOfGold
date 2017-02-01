@@ -87,6 +87,7 @@ import one.lindegaard.MobHunting.modifier.DifficultyBonus;
 import one.lindegaard.MobHunting.modifier.FlyingPenalty;
 import one.lindegaard.MobHunting.modifier.FriendleFireBonus;
 import one.lindegaard.MobHunting.modifier.GrindingPenalty;
+import one.lindegaard.MobHunting.modifier.HappyHourBonus;
 import one.lindegaard.MobHunting.modifier.IModifier;
 import one.lindegaard.MobHunting.modifier.MountedBonus;
 import one.lindegaard.MobHunting.modifier.ProSniperBonus;
@@ -273,6 +274,7 @@ public class MobHuntingManager implements Listener {
 		mModifiers.add(new FlyingPenalty());
 		mModifiers.add(new FriendleFireBonus());
 		mModifiers.add(new GrindingPenalty());
+		mModifiers.add(new HappyHourBonus());
 		mModifiers.add(new MountedBonus());
 		mModifiers.add(new ProSniperBonus());
 		mModifiers.add(new RankBonus());
@@ -1047,8 +1049,9 @@ public class MobHuntingManager implements Listener {
 		// Slimes ang magmacubes are except from grinding due to their splitting
 		// nature
 		if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
-				&& MobHunting.getConfigManager().penaltyGrindingEnable && !killed.hasMetadata("MH:reinforcement")
-				&& !MobHunting.getAreaManager().isWhitelisted(killed.getLocation())) {
+				&& MobHunting.getConfigManager().penaltyGrindingEnable 
+				&& !killed.hasMetadata("MH:reinforcement")
+				&& !MobHunting.getAreaManager().isWhitelisted(loc)) {
 			Messages.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
 					data.getcDampnerRange());
 			Messages.debug("DampendKills=%s", data.getDampenedKills());

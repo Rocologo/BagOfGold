@@ -655,7 +655,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void insertTARDISWeepingAngelsMobs(String mob) {
 		if (getMobIdFromExtendedMobType(mob, MobPlugin.TARDISWeepingAngels) == 0)
@@ -671,7 +671,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 	}
-	
+
 	@Override
 	public void insertCustomMobs() {
 		int n = 0;
@@ -1271,6 +1271,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 					break;
 				case TARDISWeepingAngels:
 					if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
+						continue;
+					break;
+				case MysteriousHalloween:
+					if (!MysteriousHalloweenCompat.isSupported() || MysteriousHalloweenCompat.isDisabledInConfig())
 						continue;
 					break;
 				case Minecraft:

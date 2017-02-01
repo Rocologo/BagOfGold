@@ -20,7 +20,6 @@ import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import me.F_o_F_1092.MysteriousHalloween.MysteriousHalloweenAPI;
@@ -226,7 +225,7 @@ public class MysteriousHalloweenCompat implements Listener {
 				saveMysteriousHalloweenMobsData(monster.name());
 				MobHunting.getStoreManager().insertMysteriousHalloweenMobs(monster.name());
 				// Update mob loaded into memory
-				ExtendedMobManager.updateExtendedMobs();
+				MobHunting.getExtendedMobManager().updateExtendedMobs();
 			}
 
 			event.getEntity().setMetadata(MH_MYSTERIOUSHALLOWEEN,

@@ -49,6 +49,8 @@ public class MetricsManager {
 			mobPluginIntegrationsGraph;
 	private MobHunting instance;
 
+	private org.bStats.Metrics bStatsMetrics;
+
 	public MetricsManager(MobHunting instance) {
 		this.instance = instance;
 	}
@@ -60,21 +62,25 @@ public class MetricsManager {
 			e1.printStackTrace();
 		}
 
+		bStatsMetrics = new org.bStats.Metrics(instance);
+
 		databaseGraph = metrics.createGraph("Database used for MobHunting");
-		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL"))
+		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
 			databaseGraph.addPlotter(new Metrics.Plotter("MySQL") {
 				@Override
 				public int getValue() {
 					return 1;
 				}
 			});
-		else if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("SQLite"))
+			
+		} else if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("SQLite")){
 			databaseGraph.addPlotter(new Metrics.Plotter("SQLite") {
 				@Override
 				public int getValue() {
 					return 1;
 				}
 			});
+		}
 		else {
 			databaseGraph.addPlotter(new Metrics.Plotter(MobHunting.getConfigManager().databaseType) {
 				@Override
@@ -84,6 +90,12 @@ public class MetricsManager {
 			});
 		}
 		metrics.addGraph(databaseGraph);
+		bStatsMetrics.addCustomChart(new org.bStats.Metrics.SimplePie("Database used for MobHunting") {
+			@Override
+			public String getValue() {
+				return MobHunting.getConfigManager().databaseType;
+			}
+		});
 
 		integrationsGraph = metrics.createGraph("MobHunting integrations");
 		integrationsGraph.addPlotter(new Metrics.Plotter("Citizens") {
@@ -355,7 +367,7 @@ public class MetricsManager {
 
 			}
 		}, 100, 36000);
-		
+
 	}
 
 	public static boolean isMCStatsReachable() {
