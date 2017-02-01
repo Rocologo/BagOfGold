@@ -156,7 +156,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(WorldEditCompat.class, "WorldEdit");
 			registerPlugin(WorldGuardCompat.class, "WorldGuard");
 			registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
-			
+
 			registerPlugin(MyPetCompat.class, "MyPet");
 
 			registerPlugin(MinigamesCompat.class, "Minigames");
@@ -253,6 +253,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			Bukkit.getPluginManager().registerEvents(this, this);
+			Bukkit.getServer().getPluginManager().registerEvents(new Fishing(), MobHunting.getInstance());
 
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 				public void run() {
