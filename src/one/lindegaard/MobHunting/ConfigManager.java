@@ -124,7 +124,7 @@ public class ConfigManager extends AutoConfig {
 						+ "\nBy default the player does not get a reward for killing friendly mobs."
 						+ "\nIf you make the number negative, the reward will be a fine for killing a passive animal.");
 
-		setCategoryComment("fish",
+		setCategoryComment("fishing",
 				"########################################################################" + "\nRewards for fishing"
 						+ "\n########################################################################"
 						+ "\nHere is where you set the base prize in $ for catching a fish");
@@ -860,41 +860,41 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Fish / Fishing
 	// #####################################################################################
-	@ConfigField(name = "rawfish", category = "fish")
+	@ConfigField(name = "rawfish", category = "fishing")
 	public String rawFishPrize = "1:3";
-	@ConfigField(name = "rawfish-cmd", category = "fish")
-	public String rawFishCmd = "";
-	@ConfigField(name = "rawfish-cmd-desc", category = "fish")
-	public String rawFishCmdDesc = "";
-	@ConfigField(name = "rawfish-cmd-run-chance", category = "fish")
-	public double rawFishCmdRunChance = 0;
+	@ConfigField(name = "rawfish-cmd", category = "fishing")
+	public String rawFishCmd = "mobhunt head give {player} rawfish";
+	@ConfigField(name = "rawfish-cmd-desc", category = "fishing")
+	public String rawFishCmdDesc = "You got a head of a fish";
+	@ConfigField(name = "rawfish-cmd-run-chance", category = "fishing")
+	public double rawFishCmdRunChance = 0.05;
 
-	@ConfigField(name = "rawsalmon", category = "fish")
+	@ConfigField(name = "rawsalmon", category = "fishing")
 	public String rawSalmonPrize = "2:8";
-	@ConfigField(name = "rawsalmon-cmd", category = "fish")
-	public String rawSalmonCmd = "";
-	@ConfigField(name = "rawsalmon-cmd-desc", category = "fish")
-	public String rawSalmonCmdDesc = "";
-	@ConfigField(name = "rawsalmon-cmd-run-chance", category = "fish")
-	public double rawSalmonCmdRunChance = 0;
+	@ConfigField(name = "rawsalmon-cmd", category = "fishing")
+	public String rawSalmonCmd = "mobhunt head give {player} rawsalmon";
+	@ConfigField(name = "rawsalmon-cmd-desc", category = "fishing")
+	public String rawSalmonCmdDesc = "You got a head of a Salmon";
+	@ConfigField(name = "rawsalmon-cmd-run-chance", category = "fishing")
+	public double rawSalmonCmdRunChance = 0.1;
 
-	@ConfigField(name = "clownfish", category = "fish")
+	@ConfigField(name = "clownfish", category = "fishing")
 	public String clownfishPrize = "20:40";
-	@ConfigField(name = "clownfish-cmd", category = "fish")
-	public String clownfishCmd = "";
-	@ConfigField(name = "clownfish-cmd-desc", category = "fish")
-	public String clownfishCmdDesc = "";
-	@ConfigField(name = "clownfish-cmd-run-chance", category = "fish")
-	public double clownfishCmdRunChance = 0;
+	@ConfigField(name = "clownfish-cmd", category = "fishing")
+	public String clownfishCmd = "mobhunt head give {player} clownfish";
+	@ConfigField(name = "clownfish-cmd-desc", category = "fishing")
+	public String clownfishCmdDesc = "You got a head of a Clownfish";
+	@ConfigField(name = "clownfish-cmd-run-chance", category = "fishing")
+	public double clownfishCmdRunChance = 0.5;
 
-	@ConfigField(name = "pufferfish", category = "fish")
+	@ConfigField(name = "pufferfish", category = "fishing")
 	public String pufferfishPrize = "5:15";
-	@ConfigField(name = "pufferfish-cmd", category = "fish")
-	public String pufferfishCmd = "";
-	@ConfigField(name = "pufferfish-cmd-desc", category = "fish")
-	public String pufferfishCmdDesc = "";
-	@ConfigField(name = "pufferfish-cmd-run-chance", category = "fish")
-	public double pufferfishCmdRunChance = 0;
+	@ConfigField(name = "pufferfish-cmd", category = "fishing")
+	public String pufferfishCmd = "mobhunt head give {player} pufferfish";
+	@ConfigField(name = "pufferfish-cmd-desc", category = "fishing")
+	public String pufferfishCmdDesc = "You got a head of a Pufferfish";
+	@ConfigField(name = "pufferfish-cmd-run-chance", category = "fishing")
+	public double pufferfishCmdRunChance = 0.4;
 
 	// #####################################################################################
 	// Bonuses - multipliers
@@ -1221,6 +1221,15 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "zombie_villager_level1", category = "achievement_levels")
 	public int zombieVillagerLevel1 = 100;
+	
+	@ConfigField(name = "rawfish_level1", category = "achievement_levels")
+	public int rawfishLevel1 = 100;
+	@ConfigField(name = "rawsalmon_level1", category = "achievement_levels")
+	public int rawsalmonLevel1 = 100;
+	@ConfigField(name = "clownfish_level1", category = "achievement_levels")
+	public int clownfishLevel1 = 100;
+	@ConfigField(name = "pufferfish_level1", category = "achievement_levels")
+	public int pufferfishLevel1 = 100;
 
 	// #####################################################################################
 	// Assists

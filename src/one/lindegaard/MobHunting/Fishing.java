@@ -28,16 +28,17 @@ public class Fishing implements Listener {
 
 		Player p = e.getPlayer();
 
-		if (p.getGameMode() != GameMode.SURVIVAL) {
-			Messages.debug("FishingBlocked: %s is not in survival mode", p.getName());
-			Messages.learn(p, Messages.getString("mobhunting.fishing.survival"));
-			return;
-		}
-
 		State state = e.getState();
 
 		switch (state) {
 		case CAUGHT_FISH:
+			
+			if (p.getGameMode() != GameMode.SURVIVAL) {
+				Messages.debug("FishingBlocked: %s is not in survival mode", p.getName());
+				Messages.learn(p, Messages.getString("mobhunting.learn.survival"));
+				return;
+			}
+
 			Entity entity = e.getCaught();
 			ItemStack is = ((Item) entity).getItemStack();
 			if (is.getType() == Material.RAW_FISH) {
@@ -140,7 +141,8 @@ public class Fishing implements Listener {
 
 						Messages.debug("Description to be send:" + message);
 
-						Messages.playerActionBarMessage(p, message);
+						p.sendMessage(message);
+						//Messages.playerActionBarMessage(p, message);
 					}
 				}
 

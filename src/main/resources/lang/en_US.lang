@@ -324,6 +324,7 @@ mobhunting.learn.no-permission=No permission to get rewards for killing this mob
 mobhunting.learn.no-reward=There is no reward for killing this mob/player: ${killed}
 mobhunting.learn.mobspawner=No reward:${killed} was probably spawned from a mob spawner
 mobhunting.learn.creative=No MobHunting rewards, while you are in Creative mode.
+mobhunting.learn.survival=You must be in survival mode to get rewards.
 mobhunting.learn.killedcreative=No MobHunting reward for killing a player who is in Creative mode.
 mobhunting.learn.huntdisabled=Admin has disabled MobHunting.
 mobhunting.learn.suiside=Suicide is not rewarded
