@@ -3,7 +3,7 @@ package one.lindegaard.MobHunting.modifier;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.LargeFireball;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -20,13 +20,13 @@ public class ReturnToSenderBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		return MobHunting.getConfigManager().bonusReturnToSender;
 	}
 
 	@Override
-	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (!(deadEntity instanceof Ghast))
 			return false;

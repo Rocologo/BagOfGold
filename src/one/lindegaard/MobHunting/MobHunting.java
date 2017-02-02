@@ -216,7 +216,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new VersionCommand());
 			cmd.registerCommand(new DebugCommand());
 
-			getMobHuntingManager().registerModifiers();
+			getMobHuntingManager().registerHuntingModifiers();
 
 			if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
 				Messages.debug("Reloading %s online player settings from the database",
@@ -293,7 +293,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!mConfig.disablePlayerBounties)
 			mBountyManager.shutdown();
 
-		getMobHuntingManager().getModifiers().clear();
+		getMobHuntingManager().getHuntingModifiers().clear();
 
 		try {
 			mStoreManager.shutdown();

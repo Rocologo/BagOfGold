@@ -110,7 +110,8 @@ public class MobHuntingManager implements Listener {
 	private final String HUNTDATA = "MH:HuntData";
 
 	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
-	private Set<IModifier> mModifiers = new HashSet<IModifier>();
+	private Set<IModifier> mHuntingModifiers = new HashSet<IModifier>();
+	private Set<IModifier> mFishingModifiers = new HashSet<IModifier>();
 
 	/**
 	 * Constructor for MobHuntingManager
@@ -265,28 +266,35 @@ public class MobHuntingManager implements Listener {
 		return data;
 	}
 
-	public void registerModifiers() {
-		mModifiers.add(new BonusMobBonus());
-		mModifiers.add(new BrawlerBonus());
-		mModifiers.add(new CoverBlown());
-		mModifiers.add(new CriticalModifier());
-		mModifiers.add(new DifficultyBonus());
-		mModifiers.add(new FlyingPenalty());
-		mModifiers.add(new FriendleFireBonus());
-		mModifiers.add(new GrindingPenalty());
-		mModifiers.add(new HappyHourBonus());
-		mModifiers.add(new MountedBonus());
-		mModifiers.add(new ProSniperBonus());
-		mModifiers.add(new RankBonus());
-		mModifiers.add(new ReturnToSenderBonus());
-		mModifiers.add(new ShoveBonus());
-		mModifiers.add(new SneakyBonus());
-		mModifiers.add(new SniperBonus());
-		mModifiers.add(new Undercover());
+	public void registerHuntingModifiers() {
+		mHuntingModifiers.add(new BonusMobBonus());
+		mHuntingModifiers.add(new BrawlerBonus());
+		mHuntingModifiers.add(new CoverBlown());
+		mHuntingModifiers.add(new CriticalModifier());
+		mHuntingModifiers.add(new DifficultyBonus());
+		mHuntingModifiers.add(new FlyingPenalty());
+		mHuntingModifiers.add(new FriendleFireBonus());
+		mHuntingModifiers.add(new GrindingPenalty());
+		mHuntingModifiers.add(new HappyHourBonus());
+		mHuntingModifiers.add(new MountedBonus());
+		mHuntingModifiers.add(new ProSniperBonus());
+		mHuntingModifiers.add(new RankBonus());
+		mHuntingModifiers.add(new ReturnToSenderBonus());
+		mHuntingModifiers.add(new ShoveBonus());
+		mHuntingModifiers.add(new SneakyBonus());
+		mHuntingModifiers.add(new SniperBonus());
+		mHuntingModifiers.add(new Undercover());
 		if (MobStackerCompat.isSupported() || StackMobCompat.isSupported())
-			mModifiers.add(new StackedMobBonus());
+			mHuntingModifiers.add(new StackedMobBonus());
 		if (ConquestiaMobsCompat.isSupported())
-			mModifiers.add(new ConquestiaBonus());
+			mHuntingModifiers.add(new ConquestiaBonus());
+	}
+
+	public void registerFishingModifiers() {
+		mFishingModifiers.add(new DifficultyBonus());
+		mFishingModifiers.add(new HappyHourBonus());
+		mFishingModifiers.add(new RankBonus());
+		
 	}
 
 	public double handleKillstreak(Player player) {
@@ -1133,7 +1141,7 @@ public class MobHuntingManager implements Listener {
 
 		// Apply the modifiers to Basic reward
 		ArrayList<String> modifiers = new ArrayList<String>();
-		for (IModifier mod : mModifiers) {
+		for (IModifier mod : mHuntingModifiers) {
 			if (mod.doesApply(killed, killer, data, info, lastDamageCause)) {
 				double amt = mod.getMultiplier(killed, killer, data, info, lastDamageCause);
 				if (amt != 1.0) {
@@ -1478,8 +1486,12 @@ public class MobHuntingManager implements Listener {
 
 	}
 
-	public Set<IModifier> getModifiers() {
-		return mModifiers;
+	public Set<IModifier> getHuntingModifiers() {
+		return mHuntingModifiers;
+	}
+	
+	public Set<IModifier> getFishingModifiers() {
+		return mFishingModifiers;
 	}
 
 }

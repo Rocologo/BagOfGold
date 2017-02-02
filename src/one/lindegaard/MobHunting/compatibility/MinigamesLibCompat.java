@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.comze_instancelabs.minigamesapi.MinigamesAPI;
 
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
 

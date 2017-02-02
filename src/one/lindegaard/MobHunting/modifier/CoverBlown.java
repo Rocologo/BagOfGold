@@ -1,7 +1,7 @@
 package one.lindegaard.MobHunting.modifier;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -18,14 +18,14 @@ public class CoverBlown implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer,
+	public double getMultiplier(Entity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		return MobHunting.getConfigManager().coverBlownMultiplier;
 	}
 
 	@Override
-	public boolean doesApply(LivingEntity deadEntity, Player killer,
+	public boolean doesApply(Entity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (extraInfo.mobCoverBlown) {

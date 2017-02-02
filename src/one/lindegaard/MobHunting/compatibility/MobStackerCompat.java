@@ -59,8 +59,8 @@ public class MobStackerCompat implements Listener {
 		// return StackUtils.hasRequiredData(entity);
 	}
 
-	public static int getStackSize(LivingEntity livingEntity) {
-		return StackUtils.getStackSize(livingEntity);
+	public static int getStackSize(Entity deadEntity) {
+		return StackUtils.getStackSize((LivingEntity) deadEntity);
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {

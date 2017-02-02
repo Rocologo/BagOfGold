@@ -1,7 +1,7 @@
 package one.lindegaard.MobHunting.modifier;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -20,13 +20,13 @@ public class GrindingPenalty implements IModifier
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause)
+	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause)
 	{
 		return data.getDampnerMultiplier();
 	}
 
 	@Override
-	public boolean doesApply( LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
+	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo, EntityDamageByEntityEvent lastDamageCause )
 	{
 		if(MobHunting.getConfigManager().penaltyGrindingEnable && !MobHunting.getAreaManager().isWhitelisted(deadEntity.getLocation()))
 			return data.getDampnerMultiplier() < 1;

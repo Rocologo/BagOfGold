@@ -1,3 +1,7 @@
+V4.3.8
+* Fixed bug where you got a reward no matter what you catches (Needs more testing)
+* Added Happy hour, Dificulty and rank multipliers to Fishing 
+* Added dedicated text for text when the player catches a fish  
 V4.3.7
 * New feature HAPPY HOUR event. "/mh happyhour <minutes> <multiplier>" to create or restart the event.
 * Stop the event with /mh happyhour cancel

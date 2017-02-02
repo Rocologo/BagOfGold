@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
@@ -23,11 +22,11 @@ public class StackMobCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("StackMob");
 
-				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with StackMob ("
-						+ mPlugin.getDescription().getVersion() + ")");
-				supported = true;
+			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with StackMob ("
+					+ mPlugin.getDescription().getVersion() + ")");
+			supported = true;
 		}
 	}
 
@@ -54,8 +53,8 @@ public class StackMobCompat implements Listener {
 		return getStackMobAPI().getEntityManager().isStackedEntity(entity);
 	}
 
-	public static int getStackSize(LivingEntity livingEntity) {
-		return getStackMobAPI().getEntityManager().getStackedEntity(livingEntity).getStackAmount();
+	public static int getStackSize(Entity deadEntity) {
+		return getStackMobAPI().getEntityManager().getStackedEntity(deadEntity).getStackAmount();
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {
