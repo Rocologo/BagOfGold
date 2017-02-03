@@ -1,8 +1,44 @@
+V4.3.8
+* Fixed bug where you got a reward no matter what you catches (Needs more testing)
+* Added Happy hour, Dificulty and rank multipliers to Fishing 
+* Added dedicated text for text when the player catches a fish  
+V4.3.7
+* New feature HAPPY HOUR event. "/mh happyhour <minutes> <multiplier>" to create or restart the event.
+* Stop the event with /mh happyhour cancel
+* Get a status with /mh happyhour
+* Get help  /mh happyhour help
+* Earn money for fishing, see Fishing section in config.yml
+* Whitelisting of a Grinding Area was broken. Fixed.
+* Fix error where LeaderBoards lost configuration when on of the supported MobPlugins was not loaded.
+V4.3.6
+* You can now create Leaderboards and MasterMobHunters for specific plugins (StatTypes): Minecraft_kills, MythicMobs_kills, CustomMobs_kills, Citizens_kills, TARDISWeekpingAngels_kill)
+* Changed default DropMoneyOnGround to be a Bag of gold. 
+* Leaderboard signs is now removed when you break the main sign.
+V4.3.5
+* New feature: DropMoneyOnGround can now be dropped as a normal item, the killers head, the killed mobs head or as a Skull with a Custom texture from Http://mineskin.org 
+* Changed default DropMoneyOnGround to be a Bag of gold.
+* New command "/mh database convert-to-utf8 database_name" Converts MobHunting database and all MobHunting tables to UTF8 Character format. 
+* Added Support for MinigamesLib
+* Remove drops and exp if players kills a mob while in creative mode.
+* Fixed bug where killing a MysteriousHalloween mob was not rewarded.
+* Fixed bug where players was not enabled for MobHunting when the server was reloaded with players online.
+* Cleaned up in the RewardData code for MythicMobs, CustomMobs, TARDISWeepingAngels, Citizens, MysteriousHalloween mobs
+V4.3.4
+* Added support for MysteriousHalloween (https://www.spigotmc.org/resources/mysterioushalloween.13059/)
+* Compiled against TitleManager 2.0.x
+* Implemented new TitleMangerAPI V2
+* Fixed Penalty for being killed by a Mob. (mob-rob-from-player in config.yml).
+* Fixed some spelling errors in config.yml (DropMoneyOnGround).
+* Added version check for Conquestia Mobs (>3.3.3)
 V4.3.3
+* Compiled HobHunting against WorldGuard 6.2
+* Compiled HobHunting against iDisguise 5.5.5
 * New commands "/mh npc tphere" and "/mh npc sethome"
 * Fix NPE error (Ticket 114 - https://github.com/Rocologo/MobHunting/issues/114)
 * Updated ConfigManager to make sure the Magmacube is handled correct in future MC releases.
-* Fix error when starting the server while board-world.yml exists but is empty. 
+* Fix error when starting the server while board-world.yml exists but is empty.
+* Remove Message "You lost 0 emeralds". (https://www.spigotmc.org/threads/mobhunting.46937/page-83#post-2161236)
+* Minor update of config.yml. Reward text can be color coded. 
 V4.3.2
 * Add support for UTF8 in MySQL database
 * Fixed bug when disabling BarAPI

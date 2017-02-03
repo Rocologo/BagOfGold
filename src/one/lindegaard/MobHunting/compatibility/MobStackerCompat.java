@@ -25,14 +25,11 @@ public class MobStackerCompat implements Listener {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MobStacker");
 
-			if (mPlugin != null) {
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MobStacker ("
-						+ mPlugin.getDescription().getVersion() + ")");
-				supported = true;
-			}
+			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MobStacker ("
+					+ mPlugin.getDescription().getVersion() + ")");
+			supported = true;
 		}
 	}
 
@@ -62,8 +59,8 @@ public class MobStackerCompat implements Listener {
 		// return StackUtils.hasRequiredData(entity);
 	}
 
-	public static int getStackSize(LivingEntity livingEntity) {
-		return StackUtils.getStackSize(livingEntity);
+	public static int getStackSize(Entity deadEntity) {
+		return StackUtils.getStackSize((LivingEntity) deadEntity);
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {

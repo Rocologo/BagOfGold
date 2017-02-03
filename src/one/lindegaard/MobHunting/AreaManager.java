@@ -125,8 +125,10 @@ public class AreaManager implements Listener {
 			return false;
 
 		for (Area area : areas) {
-			if (area.center.distance(location) < area.range)
+			if (area.center.distance(location) < area.range) {
+				Messages.debug("The GrindingArea is whitelisted");
 				return true;
+			}
 		}
 
 		return false;

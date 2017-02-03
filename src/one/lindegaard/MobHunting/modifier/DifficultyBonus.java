@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.bukkit.Difficulty;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -21,7 +21,7 @@ public class DifficultyBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer,
+	public double getMultiplier(Entity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Difficulty worldDifficulty = killer.getWorld().getDifficulty();
@@ -47,7 +47,7 @@ public class DifficultyBonus implements IModifier {
 	}
 
 	@Override
-	public boolean doesApply(LivingEntity deadEntity, Player killer,
+	public boolean doesApply(Entity deadEntity, Player killer,
 			HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Difficulty worldDifficulty = killer.getWorld().getDifficulty();

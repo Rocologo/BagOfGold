@@ -59,12 +59,14 @@ import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaHelper;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaHelper;
@@ -85,6 +87,7 @@ import one.lindegaard.MobHunting.modifier.DifficultyBonus;
 import one.lindegaard.MobHunting.modifier.FlyingPenalty;
 import one.lindegaard.MobHunting.modifier.FriendleFireBonus;
 import one.lindegaard.MobHunting.modifier.GrindingPenalty;
+import one.lindegaard.MobHunting.modifier.HappyHourBonus;
 import one.lindegaard.MobHunting.modifier.IModifier;
 import one.lindegaard.MobHunting.modifier.MountedBonus;
 import one.lindegaard.MobHunting.modifier.ProSniperBonus;
@@ -107,7 +110,8 @@ public class MobHuntingManager implements Listener {
 	private final String HUNTDATA = "MH:HuntData";
 
 	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
-	private Set<IModifier> mModifiers = new HashSet<IModifier>();
+	private Set<IModifier> mHuntingModifiers = new HashSet<IModifier>();
+	private Set<IModifier> mFishingModifiers = new HashSet<IModifier>();
 
 	/**
 	 * Constructor for MobHuntingManager
@@ -262,27 +266,35 @@ public class MobHuntingManager implements Listener {
 		return data;
 	}
 
-	public void registerModifiers() {
-		mModifiers.add(new BonusMobBonus());
-		mModifiers.add(new BrawlerBonus());
-		mModifiers.add(new CoverBlown());
-		mModifiers.add(new CriticalModifier());
-		mModifiers.add(new DifficultyBonus());
-		mModifiers.add(new FlyingPenalty());
-		mModifiers.add(new FriendleFireBonus());
-		mModifiers.add(new GrindingPenalty());
-		mModifiers.add(new MountedBonus());
-		mModifiers.add(new ProSniperBonus());
-		mModifiers.add(new RankBonus());
-		mModifiers.add(new ReturnToSenderBonus());
-		mModifiers.add(new ShoveBonus());
-		mModifiers.add(new SneakyBonus());
-		mModifiers.add(new SniperBonus());
-		mModifiers.add(new Undercover());
+	public void registerHuntingModifiers() {
+		mHuntingModifiers.add(new BonusMobBonus());
+		mHuntingModifiers.add(new BrawlerBonus());
+		mHuntingModifiers.add(new CoverBlown());
+		mHuntingModifiers.add(new CriticalModifier());
+		mHuntingModifiers.add(new DifficultyBonus());
+		mHuntingModifiers.add(new FlyingPenalty());
+		mHuntingModifiers.add(new FriendleFireBonus());
+		mHuntingModifiers.add(new GrindingPenalty());
+		mHuntingModifiers.add(new HappyHourBonus());
+		mHuntingModifiers.add(new MountedBonus());
+		mHuntingModifiers.add(new ProSniperBonus());
+		mHuntingModifiers.add(new RankBonus());
+		mHuntingModifiers.add(new ReturnToSenderBonus());
+		mHuntingModifiers.add(new ShoveBonus());
+		mHuntingModifiers.add(new SneakyBonus());
+		mHuntingModifiers.add(new SniperBonus());
+		mHuntingModifiers.add(new Undercover());
 		if (MobStackerCompat.isSupported() || StackMobCompat.isSupported())
-			mModifiers.add(new StackedMobBonus());
+			mHuntingModifiers.add(new StackedMobBonus());
 		if (ConquestiaMobsCompat.isSupported())
-			mModifiers.add(new ConquestiaBonus());
+			mHuntingModifiers.add(new ConquestiaBonus());
+	}
+
+	public void registerFishingModifiers() {
+		mFishingModifiers.add(new DifficultyBonus());
+		mFishingModifiers.add(new HappyHourBonus());
+		mFishingModifiers.add(new RankBonus());
+		
 	}
 
 	public double handleKillstreak(Player player) {
@@ -384,6 +396,22 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("Permission mobhunting.mobs.'" + permission_postfix + "' not set, defaulting to True.");
 				return true;
 			}
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+			permission_postfix = CustomMobsCompat.getCustomMobType(mob);
+			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
+				return player.hasPermission("mobhunting.mobs." + permission_postfix);
+			else {
+				Messages.debug("Permission mobhunting.mobs.'" + permission_postfix + "' not set, defaulting to True.");
+				return true;
+			}
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			permission_postfix = "npc-" + MysteriousHalloweenCompat.getMysteriousHalloweenType(mob);
+			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
+				return player.hasPermission("mobhunting.mobs." + permission_postfix);
+			else {
+				Messages.debug("Permission mobhunting.mobs.'" + permission_postfix + "' not set, defaulting to True.");
+				return true;
+			}
 		} else {
 			permission_postfix = mob.getType().toString();
 			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
@@ -412,38 +440,67 @@ public class MobHuntingManager implements Listener {
 		data.setKillStreak(0);
 
 		double playerPenalty = 0;
-		Player player = event.getEntity();
+		Player killed = event.getEntity();
 
-		if (CitizensCompat.isNPC(player))
+		if (CitizensCompat.isNPC(killed))
 			return;
 
-		EntityDamageEvent cause = player.getLastDamageCause();
+		EntityDamageEvent cause = killed.getLastDamageCause();
 		if (cause instanceof EntityDamageByEntityEvent) {
 			Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
 			Entity killer = null;
+			LivingEntity mob = null;
+
 			if (damager instanceof Player)
 				killer = damager;
 			else if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Player)
 				killer = (Entity) ((Projectile) damager).getShooter();
-			else {
-				Messages.debug("%s was killed by a %s", player.getName(), damager.getType());
-				if (damager instanceof Projectile)
-					Messages.debug("and shooter was %s", ((Projectile) damager).getShooter().toString());
+			else if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof LivingEntity)
+				mob = (LivingEntity) ((Projectile) damager).getShooter();
+			else if (damager instanceof LivingEntity)
+				mob = (LivingEntity) damager;
+			else if (damager instanceof Projectile) {
+				Messages.debug("%s was killed by a %s shot by %s", killed.getName(), damager.getName(),
+						((Projectile) damager).getShooter().toString());
 			}
 
-			if (killer != null && !(killer instanceof Player)) {
-				playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(player);
+			if (mob != null) {
+
+				Messages.debug("%s was killed by a %s", killed.getName(), damager.getName());
+				if (damager instanceof Projectile)
+					Messages.debug("and shooter was %s", ((Projectile) damager).getShooter().toString());
+
+				// MobArena
+				if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)
+						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
+					Messages.debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
+					return;
+					// PVPArena
+				} else if (PVPArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)
+						&& !MobHunting.getConfigManager().pvparenaGetRewards) {
+					Messages.debug("KillBlocked: %s was killed while playing PvpArena.", killed.getName());
+					return;
+					// BattleArena
+				} else if (BattleArenaCompat.isEnabledInConfig()
+						&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
+					Messages.debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
+					return;
+				}
+
+				playerPenalty = MobHunting.getConfigManager().getPlayerKilledByMobPenalty(killed);
 				if (playerPenalty != 0) {
 					boolean killed_muted = false;
-					if (MobHunting.getPlayerSettingsmanager().containsKey(player))
-						killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
-
-					MobHunting.getRewardManager().withdrawPlayer(player, playerPenalty);
+					if (MobHunting.getPlayerSettingsmanager().containsKey(killed))
+						killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(killed).isMuted();
+					MobHunting.getRewardManager().withdrawPlayer(killed, playerPenalty);
 					if (!killed_muted)
-						player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString(
-								"mobhunting.moneylost", "prize", MobHunting.getRewardManager().format(playerPenalty)));
-					Messages.debug("%s was killed by %s and lost %s", player.getName(), killer.getType(),
-							MobHunting.getRewardManager().format(playerPenalty));
+						Messages.playerActionBarMessage(killed,
+								ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneylost",
+										"prize", MobHunting.getRewardManager().format(playerPenalty)));
+					Messages.debug("%s lost %s for being killed by a %s", killed.getName(),
+							MobHunting.getRewardManager().format(playerPenalty), mob.getName());
+				} else {
+					Messages.debug("There is NO penalty for being killed by a %s", mob.getName());
 				}
 			}
 		}
@@ -725,21 +782,28 @@ public class MobHuntingManager implements Listener {
 		// Player died while playing a Minigame: MobArena, PVPArena,
 		// BattleArena, Suiside, PVP, penalty when Mobs kills player
 		if (killed instanceof Player) {
+			// MobArena
 			if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) killed)
 					&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 				Messages.debug("KillBlocked: %s was killed while playing MobArena.", killed.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.mobarena"));
 				return;
+
+				// PVPArena
 			} else if (PVPArenaCompat.isEnabledInConfig() && PVPArenaHelper.isPlayingPVPArena((Player) killed)
 					&& !MobHunting.getConfigManager().pvparenaGetRewards) {
 				Messages.debug("KillBlocked: %s was killed while playing PvpArena.", killed.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.pvparena"));
 				return;
+
+				// BattleArena
 			} else if (BattleArenaCompat.isEnabledInConfig()
 					&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
 				Messages.debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.battlearena"));
 				return;
+
+				//
 			} else if (killer != null) {
 				if (killed.equals(killer)) {
 					// Suicide
@@ -747,6 +811,7 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("KillBlocked: Suiside not allowed (Killer=%s, Killed=%s)", killer.getName(),
 							killed.getName());
 					return;
+					// PVP
 				} else if (!MobHunting.getConfigManager().pvpAllowed) {
 					// PVP
 					Messages.learn(killer, Messages.getString("mobhunting.learn.nopvp"));
@@ -757,17 +822,18 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Player killed a MythicMob
-		if (MythicMobsCompat.isSupported() && killed.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+		if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
 			if (killer != null)
-				Messages.debug("%s killed a MythicMob", killer.getName());
-		}
+				Messages.debug("%s killed a MythicMob (%s)", killer.getName(),
+						MythicMobsCompat.getMythicMobType(killed));
+		} else
 
 		// Player killed a TARDISWeepingAngelMob
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (killer != null)
 				Messages.debug("%s killed a TARDISWeepingAngelMob (%s)", killer.getName(),
-						TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed));
-		}
+						TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name());
+		} else
 
 		// Player killed a Stacked Mob
 		if (MobStackerCompat.isSupported()) {
@@ -788,7 +854,7 @@ public class MobHuntingManager implements Listener {
 					return;
 				}
 			}
-		}
+		} else
 
 		// Player killed a Citizens2 NPC
 		if (killer != null && CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinel(killed)) {
@@ -799,6 +865,13 @@ public class MobHuntingManager implements Listener {
 				// CitizensCompat.getNPC(killed).getEntity()).getItemInHand();
 				// killer.getWorld().dropItem(killed.getLocation(), is);
 			}
+		} else
+
+		// Player killed a MysteriousHalloween Mob
+		if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+			if (killer != null)
+				Messages.debug("%s killed a MysteriousHalloween Mob (%s)", killer.getName(),
+						MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name());
 		}
 
 		// Player killed a mob while playing a minigame: MobArena, PVPVArena,
@@ -870,15 +943,25 @@ public class MobHuntingManager implements Listener {
 
 		// MobHunting is disabled for the player
 		if (killer != null && !MobHunting.getMobHuntingManager().isHuntEnabled(killer)) {
-			Messages.debug("KillBlocked %s: Hunting is disabled for player", killer.getName());
+			Messages.debug("KillBlocked: %s Hunting is disabled for player", killer.getName());
 			Messages.learn(killer, Messages.getString("mobhunting.learn.huntdisabled"));
 			return;
 		}
 
 		// The player is in Creative mode
-		if (killer != null && killer.getGameMode() == GameMode.CREATIVE) {
-			Messages.debug("KillBlocked %s: In creative mode", killer.getName());
+		if (killer != null && killer.getGameMode() != GameMode.SURVIVAL) {
+			Messages.debug("KillBlocked: %s is not in survival mode", killer.getName());
 			Messages.learn(killer, Messages.getString("mobhunting.learn.creative"));
+			if (MobHunting.getConfigManager().tryToCancelNaturalDropsWhenInCreative) {
+				Messages.debug("Trying to remove natural drops");
+				cancelNaturalDrops = true;
+				event.getDrops().clear();
+			}
+			if (MobHunting.getConfigManager().tryToCancelXPDropsWhenInCreative) {
+				Messages.debug("Trying to remove XP drops");
+				cancelXPDrops = true;
+				event.setDroppedExp(0);
+			}
 			return;
 		}
 
@@ -974,8 +1057,9 @@ public class MobHuntingManager implements Listener {
 		// Slimes ang magmacubes are except from grinding due to their splitting
 		// nature
 		if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
-				&& MobHunting.getConfigManager().penaltyGrindingEnable && !killed.hasMetadata("MH:reinforcement")
-				&& !MobHunting.getAreaManager().isWhitelisted(killed.getLocation())) {
+				&& MobHunting.getConfigManager().penaltyGrindingEnable 
+				&& !killed.hasMetadata("MH:reinforcement")
+				&& !MobHunting.getAreaManager().isWhitelisted(loc)) {
 			Messages.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
 					data.getcDampnerRange());
 			Messages.debug("DampendKills=%s", data.getDampenedKills());
@@ -1057,7 +1141,7 @@ public class MobHuntingManager implements Listener {
 
 		// Apply the modifiers to Basic reward
 		ArrayList<String> modifiers = new ArrayList<String>();
-		for (IModifier mod : mModifiers) {
+		for (IModifier mod : mHuntingModifiers) {
 			if (mod.doesApply(killed, killer, data, info, lastDamageCause)) {
 				double amt = mod.getMultiplier(killed, killer, data, info, lastDamageCause);
 				if (amt != 1.0) {
@@ -1151,35 +1235,31 @@ public class MobHuntingManager implements Listener {
 
 			// Reward/Penalty for assisted kill
 			if (info.assister == null || MobHunting.getConfigManager().enableAssists == false) {
-				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup // &&
-																		// !robbing
-					) {
-						RewardManager.dropMoneyOnGround(killed, cash);
+				if (cash >= MobHunting.getConfigManager().minimumReward) {
+					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
+						RewardManager.dropMoneyOnGround(killer, killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						Messages.debug("%s got a reward (%s)", killer.getName(),
 								MobHunting.getRewardManager().format(cash));
 					}
-				} else {
+				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(killer, -cash);
 					Messages.debug("%s got a penalty (%s)", killer.getName(),
 							MobHunting.getRewardManager().format(cash));
 				}
 			} else {
 				cash = cash / 2;
-				if (cash > 0) {
-					if (MobHunting.getConfigManager().dropMoneyOnGroup // &&
-																		// !robbing
-					) {
-						RewardManager.dropMoneyOnGround(killed, cash);
+				if (cash >= MobHunting.getConfigManager().minimumReward) {
+					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
+						RewardManager.dropMoneyOnGround(killer, killed, cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						onAssist(info.assister, killer, killed, info.lastAssistTime);
 						Messages.debug("%s got a ½ reward (%s)", killer.getName(),
 								MobHunting.getRewardManager().format(cash));
 					}
-				} else {
+				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(killer, -cash);
 					onAssist(info.assister, killer, killed, info.lastAssistTime);
 					Messages.debug("%s got a ½ penalty (%s)", killer.getName(),
@@ -1198,29 +1278,31 @@ public class MobHuntingManager implements Listener {
 			if (!killer_muted)
 
 				if (extraString.trim().isEmpty()) {
-					if (cash > 0) {
+					if (cash >= MobHunting.getConfigManager().minimumReward) {
 						if (!MobHunting.getConfigManager().dropMoneyOnGroup)
 							Messages.playerActionBarMessage(killer,
 									ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain",
 											"prize", MobHunting.getRewardManager().format(cash)));
-					} else
+					} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 						Messages.playerActionBarMessage(killer,
 								ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneylost",
 										"prize", MobHunting.getRewardManager().format(cash)));
+					}
 
 				} else {
-					if (cash > 0)
+					if (cash >= MobHunting.getConfigManager().minimumReward)
 						Messages.playerActionBarMessage(killer,
 								ChatColor.GREEN + "" + ChatColor.ITALIC
 										+ Messages.getString("mobhunting.moneygain.bonuses", "prize",
 												MobHunting.getRewardManager().format(cash), "bonuses",
 												extraString.trim()));
-					else
+					else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 						Messages.playerActionBarMessage(killer,
 								ChatColor.RED + "" + ChatColor.ITALIC
 										+ Messages.getString("mobhunting.moneylost.bonuses", "prize",
 												MobHunting.getRewardManager().format(cash), "bonuses",
 												extraString.trim()));
+					}
 				}
 		} else
 			Messages.debug("KillBlocked %s: Reward was less than %s  (Bonuses=%s)", killer.getName(),
@@ -1404,8 +1486,12 @@ public class MobHuntingManager implements Listener {
 
 	}
 
-	public Set<IModifier> getModifiers() {
-		return mModifiers;
+	public Set<IModifier> getHuntingModifiers() {
+		return mHuntingModifiers;
+	}
+	
+	public Set<IModifier> getFishingModifiers() {
+		return mFishingModifiers;
 	}
 
 }

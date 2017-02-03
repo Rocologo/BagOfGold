@@ -1,6 +1,6 @@
 package one.lindegaard.MobHunting.modifier;
 
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -18,7 +18,7 @@ public class ConquestiaBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Messages.debug("ConquestiaMob total multiplier = %s", Math.pow(
 				MobHunting.getConfigManager().mulitiplierPerLevel, ConquestiaMobsCompat.getCqLevel(deadEntity)-1));
@@ -27,7 +27,7 @@ public class ConquestiaBonus implements IModifier {
 	}
 
 	@Override
-	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Messages.debug("%s killed a ConquestiaMob %s level %s", killer.getName(), deadEntity.getType(),
 				ConquestiaMobsCompat.getCqLevel(deadEntity));

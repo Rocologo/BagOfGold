@@ -1,24 +1,18 @@
 package one.lindegaard.MobHunting.mobs;
 
-import java.lang.reflect.Field;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -298,7 +292,24 @@ public enum MinecraftMob {
 	// EnderDragon
 	EnderDragon("ENDER_DRAGON", "MHF_EnderDragon", "bd3802bb-be48-438c-bafb-cb9510e2aa2d", "Ender Dragon",
 			"eyJ0aW1lc3RhbXAiOjE0ODEwNDg2NTY1ODcsInByb2ZpbGVJZCI6ImJkMzgwMmJiYmU0ODQzOGNiYWZiY2I5NTEwZTJhYTJkIiwicHJvZmlsZU5hbWUiOiJNSEZfRW5kZXJEcmFnb24iLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzMwZjFiN2RkM2ViMWRjYmYyZmU2ZGU5NmVlY2IzNDI2ZDRjNjU5YWQ5Y2QzNDFkYjNjNjM5YzJkNWRmNjVhNiJ9fX0=",
-			"AF8zxQOXgt4VBMQlFb/crbAqgcoOGMDgNHDo4m6F3wLNKNy/Gp7f5gmqc3FJLc7VEWSU2d7LOPx/R6Rn/qIeYZbspei5RVgFsEgW1GcwRf+L4pf2x+BUEy06qvVl0uuDIxMiYBLUXTpPArAI792LeRXyuI/I12jYVnT6t5Evpv7WLs6Z3kynLdX4evgCvbkFArh8cdCw8cTobEHOF3UQFH2Z6KTMF0dVG6JX9eqGNjESHpnbBtvIjyxKdd+azSZsI5GwJm729wWBb1HopC5vnVbKt0pxEp0oXFbh8xQssXZe8HXJcGu7cakSYXBIg+xYsaqlnOq1BsUub4zrCgSm38h4Tr18wJjmsYuiamPTf4jJZXT4OwUYhEX4rd9wMCOwLRYwsL1q9apZ92ZYKvD9cc8Y44EGsLbsVY1Pjjl0rBqebPW0FD6M82/obxbXEfoLemmJH+We6PPVYyNAIMIFdP+BtSsOTBGKYe41TSr7bCYWAm7fOj1+6gl9ftd9JuuRhK/8CEY2gNKoMZDE2tWYLglaL8Ztbi0FsPhdLynIP1JojpvaDOc2aD4xSQCn8xQu73AQyNSOp4AeqjXAQnp3911T5lPYHCu1HgB5bTwUQP7vG8iTg7TiRL/mYLgEnqSbuhyPOn0w9MzOu0n40E1EBji8OW/OApH0zup84h0jOPw=");
+			"AF8zxQOXgt4VBMQlFb/crbAqgcoOGMDgNHDo4m6F3wLNKNy/Gp7f5gmqc3FJLc7VEWSU2d7LOPx/R6Rn/qIeYZbspei5RVgFsEgW1GcwRf+L4pf2x+BUEy06qvVl0uuDIxMiYBLUXTpPArAI792LeRXyuI/I12jYVnT6t5Evpv7WLs6Z3kynLdX4evgCvbkFArh8cdCw8cTobEHOF3UQFH2Z6KTMF0dVG6JX9eqGNjESHpnbBtvIjyxKdd+azSZsI5GwJm729wWBb1HopC5vnVbKt0pxEp0oXFbh8xQssXZe8HXJcGu7cakSYXBIg+xYsaqlnOq1BsUub4zrCgSm38h4Tr18wJjmsYuiamPTf4jJZXT4OwUYhEX4rd9wMCOwLRYwsL1q9apZ92ZYKvD9cc8Y44EGsLbsVY1Pjjl0rBqebPW0FD6M82/obxbXEfoLemmJH+We6PPVYyNAIMIFdP+BtSsOTBGKYe41TSr7bCYWAm7fOj1+6gl9ftd9JuuRhK/8CEY2gNKoMZDE2tWYLglaL8Ztbi0FsPhdLynIP1JojpvaDOc2aD4xSQCn8xQu73AQyNSOp4AeqjXAQnp3911T5lPYHCu1HgB5bTwUQP7vG8iTg7TiRL/mYLgEnqSbuhyPOn0w9MzOu0n40E1EBji8OW/OApH0zup84h0jOPw="),
+
+	// Raw Fish
+	RawFish("RAW_FISH", "Raw_Fish", "3c9a8292-0fa7-4e7c-8413-2bcb15968204", "Raw fish",
+			"eyJ0aW1lc3RhbXAiOjE0ODYwMjIyMjA2NjAsInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzE3MTI1MWQyNDkwZmVkYmYyMmNjZGNmZGFhZDIzN2M3YmIyMzFhNjM2ZDUxY2M0ZWMwOTA1NTRkMTRlYTg3In19fQ==",
+			"WHFevVtoxJqilEbp6qWlZm1glH1Q7+4NJ8YYaJhZXEgdAvkloHPHw0bVypONB7PMRp8NeZUv9j8aj5RAwfcQlJW25sFEXqsWYKTeBxsUB7XAX5ctNK6v7Aync3I+WyMysoPmpFBjJrTOjDB+0MgqZ2KXS4BEjFlS/kRML31LiwvVjxtv1yT1FzLcMHRmPaBSBRND+4B287lKxKTwpvfvL+tpdifp3vKFeEO3ArIt4SDZaAxDBDAJ5CCmWK+iBOecRHMdxMVioooi9MHSk/ulmHd0LbM6bQL+20xa9M+wAu69gj5jKOF8NctJ+XM0KNM4khYc3tTP5sqg8iO1LGpcWuTvawdfV0yS9OKdY1nsll9e8pf5sACje3YaPB0g/Ze9IQ2bgq9stETSJVCyOp9hGZCi4uBC0iT8bFvYrL+Caau+VxiHZKCPzKEsbN0IbYNWi9VCVclwHrQA26WQ031RMOrNkb0JChoocv2mAOKojJ0KyZ3JyMS9WL9pjt9Wt0/PAMD0lOnbFQ8yY7QzrmQQc0/KwJNHsdndI7W7NW89wMJGwalppUvdtJd8YOJbg4KUoIy8IY2RHuscC/Efjda2Clai7wg2gPSDUp9ymACSsblp6KQDYxErmKnH2TNDzH4hpmoZ1/knnmntE8Zs7pAEfY6C0sFq/weCpMBbIz12Kc0="),
+	// Raw Salmon
+	RawSalmon("RAW_SALMON", "Raw_Salmon", "3c9a8292-0fa7-4e7c-8413-2bcb15968204", "Raw Salmon",
+			"eyJ0aW1lc3RhbXAiOjE0ODYwMjM0NzU1NDksInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjAxMmNjZThkNTZlNDRmNzZkOTJiNDg4NThlNTgyYjk1YTQ1ZWU2NjRmYTYyNjBiYWIwOGMzMmU5ZTgxNCJ9fX0=",
+			"uvCGssPndOLDxULU5Lh1XPCKXkjA8w+fmrJZsfCfrFThx9pJElnsRB5k8X95zRN2l0gD/FApZS7QlyfuTb1hF3mK3gVqUTwIoZlH+sJKzqVxdGzGX8uzz+3kPXbo9snNCKszPIaTWwIfianTRTEeDKDc+8JieRmCg1y38YFicOBNXL+ysEIzlI+QMPYJ9H9ENnoM7WJy3iTsL1Doe8yXVO+IeFEPbSIUKK/E6KF6fdE+AwthWeZq2ubvePYYSz8qMPbYxvLViPWf9bekNM2+/eNIRjqyNAIeaVfD/ElRRfAhW1NduW0G1CjkgtfkWngQpHsfX9gHqnF89txjTUNsAHi3rp58GpC5ZHM3iOlXzW5UowQH/8VoUGObXaNe9Z2InfYJXY35fQJ+ZCZfeOxY7NauGDIj2yFSz+AiG1txhOAgyjMMtRKul2XDfuSVFvQ3OOmQOCS3mdvwo4f7PCn5zbtUDuBEgjbVhyXUYPAGTOWdHSKtIv9FaKwpGM0GB2ewIOre6gIuUrTMupznsrK4QcHQqf7cuZHYemz/yLGshamRMj9VHIW2udgsUlvZoBr4jMlQxpt8iXVCVExeHOTSCvkHRgtMNaJMpnlBa5P2iiHfHLvuf1teBj1ojsqsKGIoDA6HZgUFmSSd+Bcl47BZkEDnr6QwXGrhLQNwfFnmyIE="),
+	// Clownfish
+	Clownfish("CLOWNFISH", "Clownfish", "3c9a8292-0fa7-4e7c-8413-2bcb15968204", "Clownfish",
+			"eyJ0aW1lc3RhbXAiOjE0ODYwMjE4MTg3NTcsInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2ZmYTQ2ZTQ1ODFlN2FkM2E3OTdmMzhkOTAyNTFiMzhmMDU0YWI4NTVmNjVlMTYwNDlkOWUxZDhlZDM0In19fQ==",
+			"gaZktAlhiaRiT8+V4GJm0EwX4iBiKwn6N7MiOglt1OhAy/dWrWjPlRz9qchNLxnrjLTW2J2OHZ+z/mgWJJ7R3Og3IKDG/q/zZbnZshgP6UaKa3530QNluX6S1SOh68+MbuhqSphJpBJUrRKHvtBvELiZEAS9FvoxS7d8dSqjpQwANn7MoYhG6lRCHSxfh/9ccUvb0SltCp8wHifYqCYaanYgTLfNGVQFdl5ew+0MVcTQjrFbkWCF8Ajooyim9oK54bEQEVDB1CQccOZf41mHHt0NFIByEDw/s2g9+9IugB6FmRLsBH+DbDHNF6QFbaxtYTmc0ABTnF7Ejb/JfmrQFjfjF2scICq3/JO/PWxGCeiQbQ+ZLk4bmO2r6BRlmOM85RNmbER/z0cv07417qVFy/iUM1XTj9rawTxpL233QAqHTlrZIUk8O4p3dFMRgOobX3oJ7Ip+3HAe55B3NJwCrjBItHQW3w/oTJpcOeJs+3ojacYMN5lgBfNJiK7+xxsSrQUjS+OTtrlnOEmvhicE3ByHN54FIDue5Db1JyfULmPiSR198Bae2CVn10x/W5yio/mjG5aFImBqOFHcOabupaz8402BGs8120B2NGtiCTRBnxT5vkHfg7/J15X/jLxbp4s020o5K08Fn37kw1Y9MVZVxsx5PAQr1c/9aS21q2A="),
+	// Pufferfish
+	Pufferfish("PUFFERFISH", "Pufferfish", "3c9a8292-0fa7-4e7c-8413-2bcb15968204", "Pufferfish",
+			"eyJ0aW1lc3RhbXAiOjE0ODYwMjE1ODI1NzQsInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGZlMzg0NzBjMjc1OTU2MmU0NTU5NTQ5NmFhYjcyZWVhMjI4OTEyNGZhZTVjMmFiYWE3NjlhNmVkMjg1MDQifX19",
+			"JGP4zKKTeEDs3CgHDZaSHifc5fHyLA5uoTo5hN7XGhYjnCc/anM6o8Pf5eeaxitda7PUNDORd+UFXcbvuTqC5J/EUqlLzihaFr/4PMII8b+meEVy0cWVSsjvy+A3Iu/FWT+XnSt3bePcImzZnk0aBD2ojsh9NhkJulLdOBtR4pLSvm9q+LeSgCNwDxv5ZznxcXLbuoxo2Kf2l/fymCo9SpmxBheV3j6vihYPWVuF3XxpB5OJcHpWOlnmf9ukGi1NZwv1MvrWmXljMLxji8bMBJHb8Dmr6AM1gdvtxB8MVJdHPg9OKo+1hnL5FmnB0RNFVbS8aNztQZHa1VDng0AtufiXgduqK2lp9kyaENEZDDWZ0seghd5xPkatYe/p9lkzyx79OgqVX8ADplbfBToTlzi7ra3DTb82jKri5F20A6QmYVJVU5ULtFkCBrAIe+tVOfqk2bvLj0rewAgElB68CDCyY+vq876Xvui9PzWvqMNJctknYNB+LjOM4hGaWLK4G9lyyjAGqwwgJ9VCRZnSn8TXgY4uVoZfIpWc4obLfwAzBkPG+57FJ7BAtnd9Xq1ENBhEGoTmUvjLtV7THIKuAM4CZAvA/pvX+rdIrnzXXb7BQOrydLfwtba7P6tgWgzOqMf+Dvl49NEi+tb7KnZ2HihiBbq7r3T0ZPG/0Lz7RDs=");
 
 	// OBS values() used for tableName in Database IE. EnderDragon ~
 	// "Enderdragon_kill" & "Enderdragon_assist"
@@ -464,6 +475,16 @@ public enum MinecraftMob {
 			return MobHunting.getConfigManager().librarianLevel1;
 		case Priest:
 			return MobHunting.getConfigManager().priestLevel1;
+		case Clownfish:
+			return MobHunting.getConfigManager().clownfishLevel1;
+		case Pufferfish:
+			return MobHunting.getConfigManager().pufferfishLevel1;
+		case RawFish:
+			return MobHunting.getConfigManager().rawfishLevel1;
+		case RawSalmon:
+			return MobHunting.getConfigManager().rawsalmonLevel1;
+		default:
+			break;
 		}
 		return 100;
 	}
@@ -548,6 +569,19 @@ public enum MinecraftMob {
 			return entity instanceof Skeleton && ((Skeleton) entity).getSkeletonType() == SkeletonType.NORMAL;
 		else if (this == BonusMob)
 			return entity.hasMetadata("MH:hasBonus");
+		// else
+		if (this == RawFish)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 0;
+		else if (this == RawSalmon)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 1;
+		else if (this == Clownfish)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 2;
+		else if (this == Pufferfish)
+			return entity instanceof Item && ((Item) entity).getItemStack().getType() == Material.RAW_FISH
+					&& ((Item) entity).getItemStack().getData().getData() == 3;
 		else
 			return entity.getType().toString().equals(mMinecraftMobType);
 	}
@@ -556,7 +590,7 @@ public enum MinecraftMob {
 		for (MinecraftMob type : values())
 			if (type.matches(entity))
 				return type;
-		Bukkit.getLogger().severe("ERROR!!! - Unhandled Entity: " + entity.getName() + "(" + entity.getCustomName()
+		Bukkit.getLogger().severe("[MobHunting] ERROR!!! - Unhandled Entity: " + entity.getName() + "(" + entity.getCustomName()
 				+ ") Type:" + entity.getType().toString());
 		return null;
 	}
@@ -580,7 +614,7 @@ public enum MinecraftMob {
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
 		case PvpPlayer:
 			if (name != null)
-				return getSkullFromPlayerProfileName(name);
+				return CustomItems.getPlayerHead(name);
 			else
 				return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 		case Creeper:
@@ -588,23 +622,8 @@ public enum MinecraftMob {
 		case EnderDragon:
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 		default:
-			return getCustomProfileHead();
+			return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature);
 		}
-	}
-
-	/**
-	 * getSkullFromPlayerProfileName. Gets the skull from a PlayerProfile. OBS.
-	 * If the player changes his skin the head will change here too.
-	 * 
-	 * @param playername
-	 * @return ItemStack with player profile skin
-	 */
-	private ItemStack getSkullFromPlayerProfileName(String playername) {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		skullMeta.setOwner(playername);
-		skull.setItemMeta(skullMeta);
-		return skull;
 	}
 
 	/**
@@ -613,36 +632,8 @@ public enum MinecraftMob {
 	 * 
 	 * @return ItemStack with custom texture.
 	 */
-	private ItemStack getCustomProfileHead() {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-
-		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
-			return skull;
-
-		ItemMeta skullMeta = skull.getItemMeta();
-		GameProfile profile = new GameProfile(UUID.fromString(mPlayerUUID), mDisplayName);
-		profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
-		// profile.getProperties().put("name", new Property("name",
-		// mDisplayName));
-		Field profileField = null;
-
-		try {
-			profileField = skullMeta.getClass().getDeclaredField("profile");
-		} catch (NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
-			return skull;
-		}
-
-		profileField.setAccessible(true);
-
-		try {
-			profileField.set(skullMeta, profile);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-
-		skull.setItemMeta(skullMeta);
-		return skull;
+	public ItemStack getCustomProfileHead() {
+		return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature);
 	}
 
 	/**

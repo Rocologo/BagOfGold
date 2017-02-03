@@ -155,8 +155,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	}
 
 	public void removeSigns() {
-		for (Block block : getSignBlocks())
-			block.setType(Material.AIR);
+		for (Block block : getSignBlocks()) 
+			block.setType(Material.AIR,false);
 	}
 
 	public void update() {

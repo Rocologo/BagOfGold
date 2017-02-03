@@ -119,15 +119,6 @@ public class Misc {
 		return true;
 	}
 
-	public static ItemStack getPlayerHead(OfflinePlayer offlinePlayer) {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
-		skull.setDurability((short) 3);
-		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		skullMeta.setOwner(offlinePlayer.getName());
-		skull.setItemMeta(skullMeta);
-		return skull;
-	}
-
 	public static Player getOnlinePlayer(OfflinePlayer offlinePlayer) {
 		for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
 			if (player.getName().equals(offlinePlayer.getName()))

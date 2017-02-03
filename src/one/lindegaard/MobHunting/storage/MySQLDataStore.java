@@ -11,7 +11,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
@@ -50,7 +52,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			dataSource.setDatabaseName(MobHunting.getConfigManager().databaseName + "?autoReconnect=true");
 			Connection c = dataSource.getConnection();
 			Statement statement = c.createStatement();
-			statement.executeQuery("SET NAMES 'utf8'");
+			statement.executeUpdate("SET NAMES 'utf8'");
 			statement.close();
 			c.setAutoCommit(false);
 			return c;
@@ -139,7 +141,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException {
 		ArrayList<StatStore> list = new ArrayList<StatStore>();
 		String id;
-		// If The NPC has an invalid period or timeperiod return and empty list
+		// If The NPC has an invalid period or timeperiod return an empty list
 		if (period == null || type == null) {
 			return list;
 		}
@@ -161,6 +163,21 @@ public class MySQLDataStore extends DatabaseDataStore {
 			break;
 		}
 
+		MobPlugin plugin = MobPlugin.Minecraft;
+		String mobType = type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_"));
+		ArrayList<String> plugins_kill = new ArrayList<String>();
+		ArrayList<String> plugins_assist = new ArrayList<String>();
+		for (MobPlugin p : MobPlugin.values()) {
+			plugins_kill.add(p.name() + "_kill");
+			plugins_assist.add(p.name() + "_assist");
+			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
+				plugin = p;
+				if (type.getDBColumn().indexOf("_")!=type.getDBColumn().lastIndexOf("_"))
+					mobType = type.getDBColumn().substring(type.getDBColumn().indexOf("_") + 1,
+							type.getDBColumn().lastIndexOf("_"));
+			}
+		}
+
 		String column = "";
 		if (type.getDBColumn().equalsIgnoreCase("achievement_count"))
 			column = "sum(achievement_count) amount ";
@@ -168,6 +185,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 			column = "sum(total_kill) amount ";
 		else if (type.getDBColumn().equalsIgnoreCase("total_assist"))
 			column = "sum(total_assist) amount ";
+		else if (plugins_kill.contains(type.getDBColumn()))
+			column = "mh_Mobs.plugin_id, sum(total_kill) amount ";
+		else if (plugins_assist.contains(type.getDBColumn()))
+			column = "mh_Mobs.plugin_id, sum(total_assist) amount ";
 		else if (type.getDBColumn().substring(type.getDBColumn().lastIndexOf("_"), type.getDBColumn().length())
 				.equalsIgnoreCase("_kill"))
 			column = "mh_Mobs.mob_id, mh_Mobs.MOBTYPE mt, sum(total_kill) amount ";
@@ -184,11 +205,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 		} else {
 			wherepart = (id != null
 					? " AND ID=" + id + " and mh_Mobs.MOB_ID="
-							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
-									type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")),
-									MobPlugin.Minecraft)
-					: " AND mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
-							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft));
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, plugin)
+					: " AND mh_Mobs.MOB_ID="
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, plugin));
 		}
 
 		try {
@@ -197,8 +216,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			ResultSet results = statement
 					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
 							+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
-							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " 
-							+ wherepart
+							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
 							+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
@@ -1083,6 +1101,42 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// Do Nothing
 		}
 		connection.commit();
+	}
+
+	@Override
+	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+
+		// reference
+		// http://stackoverflow.com/questions/6115612/how-to-convert-an-entire-mysql-database-characterset-and-collation-to-utf-8
+
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		console.sendMessage(ChatColor.GREEN + "[MobHunting] Converting MobHunting Database to UTF8");
+
+		Connection connection = setupConnection();
+
+		try {
+			Statement create = connection.createStatement();
+
+			create.executeUpdate(
+					"ALTER DATABASE " + database_name + " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate(
+					"ALTER TABLE mh_Achievements CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_AllTime CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate(
+					"ALTER TABLE mh_Bounties CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Daily CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Mobs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Monthly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Players CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Weekly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Yearly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			console.sendMessage(ChatColor.GREEN + "[MobHunting] Done.");
+
+		} catch (SQLException e) {
+			console.sendMessage(ChatColor.RED + "[MobHunting] Something went wrong.");
+			e.printStackTrace();
+		}
+
 	}
 
 }

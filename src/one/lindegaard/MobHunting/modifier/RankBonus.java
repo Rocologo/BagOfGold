@@ -3,7 +3,7 @@ package one.lindegaard.MobHunting.modifier;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -20,7 +20,7 @@ public class RankBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (!killer.isOp()) {
 			Iterator<Entry<String, String>> ranks = MobHunting.getConfigManager().rankMultiplier.entrySet().iterator();
@@ -42,7 +42,7 @@ public class RankBonus implements IModifier {
 	}
 
 	@Override
-	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (!killer.isOp()) {
 			Iterator<Entry<String, String>> ranks = MobHunting.getConfigManager().rankMultiplier.entrySet().iterator();
@@ -52,7 +52,8 @@ public class RankBonus implements IModifier {
 				if (!rank.getKey().equalsIgnoreCase("mobhunting")
 						&& !rank.getKey().equalsIgnoreCase("mobhunting.multiplier")) {
 					if (killer.hasPermission(rank.getKey())) {
-						//Messages.debug("RankMultiplier Key=%s Value=%s", rank.getKey(), rank.getValue());
+						// Messages.debug("RankMultiplier Key=%s Value=%s",
+						// rank.getKey(), rank.getValue());
 						hasRank = true;
 					}
 				}

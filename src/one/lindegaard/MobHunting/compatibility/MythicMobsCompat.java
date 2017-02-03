@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,7 +25,6 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
@@ -57,8 +58,9 @@ public class MythicMobsCompat implements Listener {
 				loadMythicMobsData();
 				saveMythicMobsData();
 			} else {
-				Bukkit.getLogger().warning(
-						"[MobHunting] MythicMobs is outdated. Please update to V2.5.1 or newer. Integration will be disabled");
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				console.sendMessage(ChatColor.RED
+						+ "[MobHunting] MythicMobs is outdated. Please update to V2.5.1 or newer. Integration will be disabled");
 			}
 		}
 	}
@@ -84,7 +86,7 @@ public class MythicMobsCompat implements Listener {
 					MobHunting.getStoreManager().insertMissingMythicMobs(key);
 					n++;
 				} else {
-					Messages.debug("The mob=%s cant be found in MythicMobs configuration files", key);
+					Messages.debug("The mob=%s can't be found in MythicMobs configuration files", key);
 				}
 			}
 			Messages.debug("Loaded %s MythicMobs", n);
@@ -104,7 +106,7 @@ public class MythicMobsCompat implements Listener {
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
 			if (MythicMobsHelper.isMythicMob(key)) {
-			 MobRewardData mob = new MobRewardData();
+				MobRewardData mob = new MobRewardData();
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
@@ -113,7 +115,7 @@ public class MythicMobsCompat implements Listener {
 				StatType.values()[n + 2] = new StatType(mob.getMobType() + "_assist", mob.getMobName());
 				MobHunting.getStoreManager().insertMissingMythicMobs(key);
 			} else {
-				Messages.debug("The mob=%s cant be found in MythicMobs configuration files", key);
+				Messages.debug("The mob=%s can't be found in MythicMobs configuration files", key);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -223,7 +225,7 @@ public class MythicMobsCompat implements Listener {
 			saveMythicMobsData(mobtype);
 			MobHunting.getStoreManager().insertMissingMythicMobs(mobtype);
 			// Update mob loaded into memory
-			ExtendedMobManager.updateExtendedMobs();
+			MobHunting.getExtendedMobManager().updateExtendedMobs();
 			Messages.injectMissingMobNamesToLangFiles();
 		}
 

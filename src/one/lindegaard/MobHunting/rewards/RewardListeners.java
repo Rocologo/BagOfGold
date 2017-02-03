@@ -126,7 +126,6 @@ public class RewardListeners implements Listener {
 					if (ent.hasMetadata(RewardManager.MH_MONEY)) {
 						List<MetadataValue> metadata = ent.getMetadata(RewardManager.MH_MONEY);
 						for (MetadataValue mdv : metadata) {
-							// Messages.debug("mdv=%s", mdv.toString());
 							if (mdv.getOwningPlugin() == MobHunting.getInstance()) {
 								money = (Double) metadata.get(0).value();
 								// If not Gringotts
@@ -135,8 +134,8 @@ public class RewardListeners implements Listener {
 									if (ProtocolLibCompat.isSupported())
 										ProtocolLibHelper.pickupMoney(player, ent);
 									RewardManager.getDroppedMoney().remove(ent.getEntityId());
-									Messages.debug("%s picked up the %s money. (# of rewards left=%s)", player.getName(),
-											MobHunting.getRewardManager().format(money),
+									Messages.debug("%s picked up the %s money. (# of rewards left=%s)",
+											player.getName(), MobHunting.getRewardManager().format(money),
 											RewardManager.getDroppedMoney().size());
 									ent.remove();
 									Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
@@ -168,7 +167,6 @@ public class RewardListeners implements Listener {
 				break;
 			}
 		}
-		// }
 	}
 
 }

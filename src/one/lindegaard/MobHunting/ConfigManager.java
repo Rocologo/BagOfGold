@@ -6,6 +6,7 @@ import java.util.List;
 
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
@@ -15,6 +16,7 @@ import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Blaze;
@@ -26,6 +28,7 @@ import org.bukkit.entity.Donkey;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Endermite;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Evoker;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
@@ -33,7 +36,7 @@ import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Husk;
 import org.bukkit.entity.IronGolem;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Llama;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Mule;
@@ -61,6 +64,7 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieHorse;
 import org.bukkit.entity.ZombieVillager;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.SkeletonHorse;
 import org.bukkit.entity.Villager.Profession;
@@ -91,8 +95,10 @@ public class ConfigManager extends AutoConfig {
 				+ "\nwhere the mob was killed or /summon apple {killerpos} 1. to summon an"
 				+ "\nan apple where the player is." + "\nAnother example could be to give the player permission to fly"
 				+ "\nfor 1 hour or use give command to the player items."
-				+ "\nYou can also specify the message send to the player."
-				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
+				+ "\n\nYou can also specify the message send to the player."
+				+ "\nThe text can be color coded with these codes:"
+				+ "\nhttp://minecraft.gamepedia.com/Formatting_codes"
+				+ "\n\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
 				+ "\nThe player will have the cmd run in {mob-cmd-run-frequency} out of"
 				+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
 				+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
@@ -117,6 +123,11 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere is where you set the base prize in $ for killing passive/friendly mobs."
 						+ "\nBy default the player does not get a reward for killing friendly mobs."
 						+ "\nIf you make the number negative, the reward will be a fine for killing a passive animal.");
+
+		setCategoryComment("fishing",
+				"########################################################################" + "\nRewards for fishing"
+						+ "\n########################################################################"
+						+ "\nHere is where you set the base prize in $ for catching a fish");
 
 		setCategoryComment("bonus", "########################################################################"
 				+ "\n Bonus multipliers" + "\n########################################################################"
@@ -236,7 +247,7 @@ public class ConfigManager extends AutoConfig {
 
 		setCategoryComment("dropmoneyonground",
 				"########################################################################"
-						+ "\nDropMoneyOnGroud Settings"
+						+ "\nDropMoneyOnGround Settings"
 						+ "\n########################################################################");
 		setCategoryComment("database",
 				"########################################################################" + "\nDatabase Settings."
@@ -847,6 +858,45 @@ public class ConfigManager extends AutoConfig {
 	public double zombiehorseCmdRunChance = 0.25;
 
 	// #####################################################################################
+	// Fish / Fishing
+	// #####################################################################################
+	@ConfigField(name = "rawfish", category = "fishing")
+	public String rawFishPrize = "1:3";
+	@ConfigField(name = "rawfish-cmd", category = "fishing")
+	public String rawFishCmd = "mobhunt head give {player} rawfish";
+	@ConfigField(name = "rawfish-cmd-desc", category = "fishing")
+	public String rawFishCmdDesc = "You got a head of a fish";
+	@ConfigField(name = "rawfish-cmd-run-chance", category = "fishing")
+	public double rawFishCmdRunChance = 0.05;
+
+	@ConfigField(name = "rawsalmon", category = "fishing")
+	public String rawSalmonPrize = "2:8";
+	@ConfigField(name = "rawsalmon-cmd", category = "fishing")
+	public String rawSalmonCmd = "mobhunt head give {player} rawsalmon";
+	@ConfigField(name = "rawsalmon-cmd-desc", category = "fishing")
+	public String rawSalmonCmdDesc = "You got a head of a Salmon";
+	@ConfigField(name = "rawsalmon-cmd-run-chance", category = "fishing")
+	public double rawSalmonCmdRunChance = 0.1;
+
+	@ConfigField(name = "clownfish", category = "fishing")
+	public String clownfishPrize = "20:40";
+	@ConfigField(name = "clownfish-cmd", category = "fishing")
+	public String clownfishCmd = "mobhunt head give {player} clownfish";
+	@ConfigField(name = "clownfish-cmd-desc", category = "fishing")
+	public String clownfishCmdDesc = "You got a head of a Clownfish";
+	@ConfigField(name = "clownfish-cmd-run-chance", category = "fishing")
+	public double clownfishCmdRunChance = 0.5;
+
+	@ConfigField(name = "pufferfish", category = "fishing")
+	public String pufferfishPrize = "5:15";
+	@ConfigField(name = "pufferfish-cmd", category = "fishing")
+	public String pufferfishCmd = "mobhunt head give {player} pufferfish";
+	@ConfigField(name = "pufferfish-cmd-desc", category = "fishing")
+	public String pufferfishCmdDesc = "You got a head of a Pufferfish";
+	@ConfigField(name = "pufferfish-cmd-run-chance", category = "fishing")
+	public double pufferfishCmdRunChance = 0.4;
+
+	// #####################################################################################
 	// Bonuses - multipliers
 	// #####################################################################################
 	@ConfigField(name = "sneaky", category = "bonus")
@@ -1171,6 +1221,15 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "zombie_villager_level1", category = "achievement_levels")
 	public int zombieVillagerLevel1 = 100;
+	
+	@ConfigField(name = "rawfish_level1", category = "achievement_levels")
+	public int rawfishLevel1 = 100;
+	@ConfigField(name = "rawsalmon_level1", category = "achievement_levels")
+	public int rawsalmonLevel1 = 100;
+	@ConfigField(name = "clownfish_level1", category = "achievement_levels")
+	public int clownfishLevel1 = 100;
+	@ConfigField(name = "pufferfish_level1", category = "achievement_levels")
+	public int pufferfishLevel1 = 100;
 
 	// #####################################################################################
 	// Assists
@@ -1189,8 +1248,10 @@ public class ConfigManager extends AutoConfig {
 	// Grinding detection
 	// #####################################################################################
 	@ConfigField(name = "enable-grinding-penalty", category = "grinding", comment = "Grinding detection."
-			+ "\nEnabling this prevents a player from earning too much money from using a mob grinder"
-			+ "\nIf you enable kill_debug in config.yml you will get debug information when grinding appears.")
+			+ "\nEnabling this prevents a player from earning too much money from using a mob grinder."
+			+ "\nSet 'enable-grinding-penalty: false' to disable the grinding detection."
+			+ "\nOBS: You can whitelist an area to allow grinding using '/mobhunt whitelistarea <add|remove>'"
+			+ "\nif the area is detected as a grinding area. See also '/mobhunt checkgrinding'")
 	public boolean penaltyGrindingEnable = true;
 	@ConfigField(name = "grinding-range-detection", category = "grinding", comment = "For each kill MobHunting check number of kills within this number of blocks."
 			+ "\nIf number of kills exceeds 10, the reward will decrese with 10% until 20 kills with"
@@ -1208,9 +1269,9 @@ public class ConfigManager extends AutoConfig {
 	public double penaltyFlying = 0.5;
 
 	@ConfigField(name = "mob-rob-from-player", category = "penalty", comment = "This is the penalty if the player gets killed by a mob."
-			+ "\nSet mob-kills-player-penalty=10 to let the mob steal 10 dollars"
+			+ "\nSet mob-rob-from-player=10 to let the mob steal 10 dollars"
 			+ "\n or 10% to let the mob steal 10% of the players balance."
-			+ "\nSet mob-kills-player-penalty=0 to disable this")
+			+ "\nSet mob-rob-from-player=0 to disable this")
 	public String mobKillsPlayerPenalty = "0%";
 
 	// #####################################################################################
@@ -1267,8 +1328,8 @@ public class ConfigManager extends AutoConfig {
 			+ "\nrob-from-victim=false to get the reward mpney from the server.")
 	public boolean robFromVictim = true;
 
-	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize kan be a number to stel x dollars from the killed player,"
-			+ "\nor it kan be a cut in percent of his balance.")
+	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize can be a number to steal x dollars from the killed player,"
+			+ "\nor it can be a cut in percent of his balance.")
 	public String pvpKillPrize = "1.5%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
 	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"}|give {player} diamond 1";
@@ -1382,25 +1443,57 @@ public class ConfigManager extends AutoConfig {
 	public double mulitiplierPerLevel = 1.05;
 
 	// #####################################################################################
-	// DropMoneyOnGrond settings
+	// DropMoneyOnGround settings
 	// #####################################################################################
-	@ConfigField(name = "drop-money-on-groud", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
-			+ "\ninto his pocket. If you set dropMoneyOnGroud=true the reward will "
+	@ConfigField(name = "drop-money-on-ground", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
+			+ "\ninto his pocket. If you set dropMoneyOnGround=true the reward will "
 			+ "\ndropped on ground to be picked up by the player."
-			+ "\nNegative rewards will always be taken from det player. ")
-	public boolean dropMoneyOnGroup = false;
+			+ "\nNegative rewards will always be taken from the player. ")
+	public boolean dropMoneyOnGroup = true;
 
 	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is denied by default."
 			+ "\nIf you want HOPPERS to collect MobHunting Money rewards "
 			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=true")
 	public boolean denyHoppersToPickUpMoney = true;
 
-	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used. "
+	@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "Here you can set the type of the ITEM to be dropped."
+			+ "\nYou can choose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\". The default is ITEM."
+			+ "\nThe value will be showed above the item." + "\nITEM: The reward is dropped as a normal Minecraft item."
+			+ "\nKILLED: The reward is dropped as the head of the mob/player you killed."
+			+ "\nSKULL: The reward is dropped as a SKULL with a custom texture. You can generate custom texture value"
+			+ "\nand custom texture signature at http://mineskin.org"
+			+ "\nKILLER: The reward is dropped as the killers head."
+			+ "\n\nOBS: If the Gringotts plugin is installed and support not disabled, the droped item will be the Gringotts chosen item."
+			+ "\nExamples:" + "\n\nBag of gold: (https://mineskin.org/3384)"
+			+ "\n\ndrop-money-on-ground-skull-playerUUID: '3eb9e46c-72ca-374d-8314-058a96cd0e8d'"
+			+ "\ndrop-money-on-ground-skull-texture-value: 'eyJ0aW1lc3RhbXAiOjE0NzQzMzI0MzY1MDYsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg2NzczZDc0Y2Y1MDhmZDc3Yzc4MmZmZDI5ZGYyZmU0N2ZiNzE0YjViMGQ3ZGU2N2Q1Mjg2OTMxZTJmMWRmMiJ9fX0='"
+			+ "\ndrop-money-on-ground-skull-texture-signature: 'JdvJksowuxYQ0eqf56J+Dmczg7zvlw2DbIc58Q33kRt65uMUNn2iRCQsbNpztC1cAAgyYMOyFDiOUZQeIK03CSRoPLDtWp2u501YoGKqhjgrE0V0UDh3JetWKz4Ob0KmATtY+4R2vSoMjHFEFppM0Oq+8ZER12FAiVEMAzeseFN3Z9fWAMc/V10LoquGBpq6ExTfSCEEMDEGZopF1T8ZBKL0vf4DVendfz4v3yl7bRBzISZEAnF+ECTa9z36r8HRqS8+s0eO/AWYQcRaKIu9H+wSK5F/1v+rgifeSlMAnt1Na8m1b5tMfNuq6pXxWCq4nUGgYVTOLUinqs9ZcFz3Z6Mtx5YtymKk2M0mzxmTm9+AeOL4s3K/UrJYQlcmLBJSv4hd6EigJXoashzWNCHKmFDYCdEhh4FArq4G9vRZtoudcTeMsvi0VmXIgER8U5iSfoTtzXcGbf/GT0ECtgfeA40f5oCqyE4nXreudMmvlDCBr/KHbILQWeeH/jhtYqQ6OwJb3Ji2Bs9F5fQmICSqk7X4yKzexf8rdDhOG1z+/TCot7K8unPVuQx46sXPeP7t2hCiHOXMAnOMt8vuL3gQUURIEM6fMryjmlKsgvk8Jo0gawavRCIZQtA6vT0JRRnSAchzEOA7QP1iiVV3LnwX9Yqw7oMJ/+REV1hWesuzDOc='"
+			+ "\n\nChest: (https://mineskin.org/3136)"
+			+ "\n\ndrop-money-on-ground-skull-playerUUID: 'e572342f-5552-3c82-b163-c776e3b57da4'"
+			+ "\ndrop-money-on-ground-skull-texture-value: 'eyJ0aW1lc3RhbXAiOjE0NzI4Mzk3Nzk2ODMsInByb2ZpbGVJZCI6ImIwZDRiMjhiYzFkNzQ4ODlhZjBlODY2MWNlZTk2YWFiIiwicHJvZmlsZU5hbWUiOiJJbnZlbnRpdmVHYW1lcyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTY5NDcxMjQ1YmNhN2M0ZmUwNjQ0MGQ5YjRiOWY3NDIxN2VkNzM0M2FhZDU5YTc5MThiMWExZDYxZDhiYTZkYSJ9fX0='"
+			+ "\ndrop-money-on-ground-skull-texture-signature: 'lVA2QIbvybpzhcXof5yWz/7nkHdhG/3MGO+1DyD1txdRCALV6BRwsDUBwIUg06MkLUpBkjmiOvFcCRgal/jDE/xkkJPyk2tb/w4NtQ5PiPiAe0oInVnuiSIVFIE4tnsCdvX0joll3uKwVu6XY3t1KEsqJATcPhA5hslVn1iOp/IfMziIfuCzzob04rScpwcw0mLNtbtbMVAl6LYR9gXVuOkAfXujuYq4lbI/iW0yuLxSAzr8i9QWBP2ftup4qQHwocQRTdUE6/G5G9LwJWXhhnqKWjgjfvL0y2FRFJkgN1cvuq7DvUDBVsePnRIHwU5YvBPMjcZe/KE8VPTSodsN84/+++5p95Puxe1DXMX822xR71IQsxM7eax7Ffrr/Tzxw2rSDh9ivGGlRAB85OHwp/ouUgWNSrT8inNMYImque9EuZku9p3OFet8iZsFhkMXANeNtTVL7LKV7/L/0YWwoeyBnw5QQqvGyWKw3dac5eDkRNCyCtdDIntM5vsd8FxnIFj36zxLWgmrJmOM9hg5PBM4gcDxxryBcug8jSe+W9XDU39OOJotXajj8dgSL8yUn+d7l4Qvat/vJbAE8lonMl7P0P9QBPzmcIUvlRMuHSpRZQYkoCbwc2Filahd/5INtm7I4Y28XYzzupdwLk3cavKfOloL5YrWNqaZr/+9Tbk='"
+			+ "\n\nBirthday present: (https://mineskin.org/4743)"
+			+ "\n\ndrop-money-on-ground-skull-playerUUID: '6eb23602-2c22-34b8-b6b1-1847931c1a6d'"
+			+ "\ndrop-money-on-ground-skull-texture-value: 'eyJ0aW1lc3RhbXAiOjE0Nzk5MzEzNDMxMjgsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2NmNDRkZjIzMjBiNzYzMTI0N2FhZGY1OWMwZWNlOTdhNGJiNTdkZjI4YzFjZWU3OTM0ZjZhZTI4YWY4OTg5In19fQ=='"
+			+ "\ndrop-money-on-ground-skull-texture-signature: 'k1xQ6E1NuxG1ZN7nlQqRJltYrJn44XHVhNA9pSEu2Pt2mkuixMxhIDj2Tg6o+JWlTyGfXtPVWLxygeGymmeSGaVcmDTaCALg7PL11ZfSzSWSxaIufNbj1EcSi264jg5FrAa/2/DnFsgu16wjlWiIGtjCzgx2QabY8YofoPKw6Y6Y5FHZJVXpT8Rsxs8ok6ZHtfm/ZyyTgvRSzh2mKmVyQIYJ1ZKxuqWhDQfbtBpu3dlEzMAEJo85Dvb7uIFYa7WFitjFJue/c9qpqAnazWFLrx33nYpjjeYhcfAvsaNQW3JVFEkyxzEgzOHbdsbiZcqTCwO+49whu175xOqT7XhouEubDT7A3H1jiSvQvkUZJv/GzUF4qFYHSfxhr6OWoBrRGwWmPdcrYx7fUWKo43CAqa5inaiTV4gU70BWrx5i3LhIJxpnspAyTXs8tZBxeoh8IizWD7uXkYYqh3j9cwuHoxfwZuMpOx9CPTC6R/YwJ1YK5OgJBY1+QhNw+NOilWT3jTok82elFvOLm3a5yLyVs+/UPmLD7rZsFm7/DD3VnRcpgjKRiyy2j9vYsYLyNE2BVLVJxBVk2yyy9u7L4VR6PO+8v2dh9DQl7vM2ORCxKPl2lt6woHWM2+eT1PXr16LtMtAOGYT8mlKFhp8Ou2+9fu4AqWkX7n3swU6XLiK5cJs='"
+			+ "\n\nChoose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\"")
+	public String dropMoneyOnGroundItemtype = "SKULL";
+
+	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used when you have chosen drop-money-on-ground-itemtype: ITEM. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE")
 	public String dropMoneyOnGroundTextColor = "WHITE";
+
+	@ConfigField(name = "drop-money-on-ground-skull-playerUUID", category = "dropmoneyonground", comment = "This is the Custom player UUID generated at http://mineskin.org")
+	public String dropMoneyOnGroundSkullPlayerUUID = "3eb9e46c-72ca-374d-8314-058a96cd0e8d";
+
+	@ConfigField(name = "drop-money-on-ground-skull-texture-value", category = "dropmoneyonground", comment = "This is the Custom Texture Value generated at http://mineskin.org")
+	public String dropMoneyOnGroundSkullTextureValue = "eyJ0aW1lc3RhbXAiOjE0NzQzMzI0MzY1MDYsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg2NzczZDc0Y2Y1MDhmZDc3Yzc4MmZmZDI5ZGYyZmU0N2ZiNzE0YjViMGQ3ZGU2N2Q1Mjg2OTMxZTJmMWRmMiJ9fX0=";
+
+	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
+	public String dropMoneyOnGroundSkullTextureSignature = "JdvJksowuxYQ0eqf56J+Dmczg7zvlw2DbIc58Q33kRt65uMUNn2iRCQsbNpztC1cAAgyYMOyFDiOUZQeIK03CSRoPLDtWp2u501YoGKqhjgrE0V0UDh3JetWKz4Ob0KmATtY+4R2vSoMjHFEFppM0Oq+8ZER12FAiVEMAzeseFN3Z9fWAMc/V10LoquGBpq6ExTfSCEEMDEGZopF1T8ZBKL0vf4DVendfz4v3yl7bRBzISZEAnF+ECTa9z36r8HRqS8+s0eO/AWYQcRaKIu9H+wSK5F/1v+rgifeSlMAnt1Na8m1b5tMfNuq6pXxWCq4nUGgYVTOLUinqs9ZcFz3Z6Mtx5YtymKk2M0mzxmTm9+AeOL4s3K/UrJYQlcmLBJSv4hd6EigJXoashzWNCHKmFDYCdEhh4FArq4G9vRZtoudcTeMsvi0VmXIgER8U5iSfoTtzXcGbf/GT0ECtgfeA40f5oCqyE4nXreudMmvlDCBr/KHbILQWeeH/jhtYqQ6OwJb3Ji2Bs9F5fQmICSqk7X4yKzexf8rdDhOG1z+/TCot7K8unPVuQx46sXPeP7t2hCiHOXMAnOMt8vuL3gQUURIEM6fMryjmlKsgvk8Jo0gawavRCIZQtA6vT0JRRnSAchzEOA7QP1iiVV3LnwX9Yqw7oMJ/+REV1hWesuzDOc=";
 
 	// #####################################################################################
 	// Plugin integration
@@ -1425,6 +1518,10 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "disable-integration-minigames", category = "plugins", comment = "Disable integration with MiniGames")
 	public boolean disableIntegrationMinigames = false;
+
+	@ConfigField(name = "disable-integration-minigameslib", category = "plugins", comment = "Disable integration with MiniGamesLib"
+			+ "\nhttps://www.spigotmc.org/resources/minigameslib.23844/")
+	public boolean disableIntegrationMinigamesLib = false;
 
 	@ConfigField(name = "disable-integration-worldguard", category = "plugins", comment = "Disable integration with WorldGuard")
 	public boolean disableIntegrationWorldGuard = false;
@@ -1475,6 +1572,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-protocollib", category = "plugins", comment = "Disable integration with ProtocolLib."
 			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
 	public boolean disableIntegrationProtocolLib = false;
+
+	@ConfigField(name = "disable-integration-mysterious-halloween", category = "plugins", comment = "Disable integration with MysteriousHalloween."
+			+ "\nhttps://www.spigotmc.org/resources/mysterioushalloween.13059/")
+	public boolean disableIntegrationMysteriousHalloween = false;
 
 	// #####################################################################################
 	// Database
@@ -1577,21 +1678,30 @@ public class ConfigManager extends AutoConfig {
 	public boolean useGuiForBounties = true;
 
 	@ConfigField(name = "try-to-cancel-natural-drops", category = "general", comment = "Try to cancel natural drops when a mob is killed while the MobHunting reward is cancelled "
-			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
+			+ "\n(because player is grinding or protected by Worldguard)"
 			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"try-to-cancel-natural-drops\"=false")
 	public boolean tryToCancelNaturalDrops = true;
 
 	@ConfigField(name = "try-to-cancel-xp-drops", category = "general", comment = "Try to cancel XP drops when a mob is killed while the MobHunting reward is cancelled "
-			+ "\n(because player is in creative mode, grinding or protected by Worldguard)"
+			+ "\n(because player is grinding or protected by Worldguard)"
 			+ "\nIf you want the mobs to drop normal XP set " + "\n\"try-to-cancel-xp-drops\"=false")
 	public boolean tryToCancelXPDrops = true;
+
+	@ConfigField(name = "try-to-cancel-natural-drops-when-in-creative", category = "general", comment = "Try to cancel natural drops when a mob is killed the player is in creative mode."
+			+ "\nIf you want the mobs to drops normal rewards set "
+			+ "\n\"try-to-cancel-natural-drops-when-in-creative\"=false")
+	public boolean tryToCancelNaturalDropsWhenInCreative = true;
+
+	@ConfigField(name = "try-to-cancel-xp-drops-when-in-creative", category = "general", comment = "Try to cancel XP drops when a mob is killed while the player is in creative mode."
+			+ "\nIf you want the mobs to drop normal XP set " + "\n\"try-to-cancel-xp-drops-when-in-creative\"=false")
+	public boolean tryToCancelXPDropsWhenInCreative = true;
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
 		Messages.setLanguage(language);
 	}
 
-	public double getPlayerKilledByMobPenalty(Player player) {
+	public double getPlayerKilledByMobPenalty(Player playerToBeRobbed) {
 		if (MobHunting.getConfigManager().mobKillsPlayerPenalty == null
 				|| MobHunting.getConfigManager().mobKillsPlayerPenalty.equals("")
 				|| MobHunting.getConfigManager().mobKillsPlayerPenalty.equals("0%")
@@ -1607,7 +1717,7 @@ public class ConfigManager extends AutoConfig {
 			double prize = Math.floor(Double
 					.valueOf(MobHunting.getConfigManager().mobKillsPlayerPenalty.substring(0,
 							MobHunting.getConfigManager().mobKillsPlayerPenalty.length() - 1))
-					* MobHunting.getRewardManager().getBalance(player) / 100);
+					* MobHunting.getRewardManager().getBalance(playerToBeRobbed) / 100);
 			return Misc.round(prize);
 		} else if (MobHunting.getConfigManager().mobKillsPlayerPenalty.contains(":")) {
 			String[] str1 = MobHunting.getConfigManager().mobKillsPlayerPenalty.split(":");
@@ -1638,39 +1748,74 @@ public class ConfigManager extends AutoConfig {
 	 * @param mob
 	 * @return value
 	 */
-	public double getBaseKillPrize(LivingEntity mob) {
+	public double getBaseKillPrize(Entity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+				return getPrice(mob, TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getRewardPrize());
+			Messages.debug("TARDISWeepingAngel %s has no reward data",
+					TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob));
+			return 0;
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				for (MetadataValue value : data) {
-					if (value.value() instanceof MobRewardData) {
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
 						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-					}
-				}
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+				return getPrice(mob, MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
+						.getRewardPrize());
+			Messages.debug("MythicMob %s has no reward data", MythicMobsCompat.getMythicMobType(mob));
 			return 0;
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)
-					&& CitizensCompat.getMobRewardData().containsKey(String.valueOf(npc.getId()))) {
-				return getPrice(mob,
-						CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardPrize());
-			} else
-				return 0;
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
+				&& CitizensCompat.isSentryOrSentinel(mob)) {
+			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
+			String key = String.valueOf(npc.getId());
+			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return getPrice(mob, CitizensCompat.getMobRewardData().get(key).getRewardPrize());
+			}
+			Messages.debug("Citizens mob %s has no reward data", npc.getName());
+			return 0;
 
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+				return getPrice(mob, CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
+						.getRewardPrize());
+			Messages.debug("CustomMob %s has no reward data", CustomMobsCompat.getCustomMobType(mob));
+			return 0;
+
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+				return getPrice(mob, MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getRewardPrize());
+			Messages.debug("MysteriousHalloween %s has no reward data",
+					MysteriousHalloweenCompat.getMysteriousHalloweenType(mob));
+			return 0;
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -1824,12 +1969,24 @@ public class ConfigManager extends AutoConfig {
 				return getPrice(mob, MobHunting.getConfigManager().villagerPrize);
 			else if (mob instanceof Wolf)
 				return getPrice(mob, MobHunting.getConfigManager().wolfPrize);
-
+			else if (mob instanceof Item && ((Item) mob).getItemStack().getType() == Material.RAW_FISH) {
+				ItemStack is = ((Item) mob).getItemStack();
+				if (is.getData().getData() == (byte) 0) {
+					return getPrice(mob, MobHunting.getConfigManager().rawFishPrize);
+				} else if (is.getData().getData() == (byte) 1) {
+					return getPrice(mob, MobHunting.getConfigManager().rawSalmonPrize);
+				} else if (is.getData().getData() == (byte) 2) {
+					return getPrice(mob, MobHunting.getConfigManager().clownfishPrize);
+				} else if (is.getData().getData() == (byte) 3) {
+					return getPrice(mob, MobHunting.getConfigManager().pufferfishPrize);
+				}
+			}
 		}
+		Messages.debug("Mobhunting could not find the prize for killing this mob %s", mob.getName());
 		return 0;
 	}
 
-	private double getPrice(LivingEntity mob, String str) {
+	private double getPrice(Entity mob, String str) {
 		if (str == null || str.equals("") || str.isEmpty()) {
 			Bukkit.getServer().getConsoleSender()
 					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
@@ -1861,33 +2018,67 @@ public class ConfigManager extends AutoConfig {
 	 * @return a number of commands to be run in the console. Each command must
 	 *         be separeted by a "|"
 	 */
-	public String getKillConsoleCmd(LivingEntity mob) {
+	public String getKillConsoleCmd(Entity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getConsoleRunCommand();
+			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				MetadataValue value = data.get(0);
-				return ((MobRewardData) value.value()).getConsoleRunCommand();
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
+						.getConsoleRunCommand();
+			return "";
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
+				&& CitizensCompat.isSentryOrSentinel(mob)) {
+			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
-			if (CitizensCompat.isSentryOrSentinel(mob) && CitizensCompat.getMobRewardData().containsKey(key)) {
+			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
 				return CitizensCompat.getMobRewardData().get(key).getConsoleRunCommand();
-			} else
-				return "";
+			}
+			return "";
+
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
+						.getConsoleRunCommand();
+			return "";
+
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getConsoleRunCommand();
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getConsoleRunCommand();
+			return "";
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -1984,7 +2175,8 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof Ghast)
 				return MobHunting.getConfigManager().ghastCmd;
 			else if (mob instanceof MagmaCube)
-				//Magmacube is an instance of slime and must be checked before the Slime itself
+				// Magmacube is an instance of slime and must be checked before
+				// the Slime itself
 				return MobHunting.getConfigManager().magmaCubeCmd;
 			else if (mob instanceof Slime)
 				return MobHunting.getConfigManager().slimeCmd;
@@ -2022,6 +2214,18 @@ public class ConfigManager extends AutoConfig {
 				return MobHunting.getConfigManager().villagerCmd;
 			else if (mob instanceof Wolf)
 				return MobHunting.getConfigManager().wolfCmd;
+			else if (mob instanceof Item && ((Item) mob).getItemStack().getType() == Material.RAW_FISH) {
+				ItemStack is = ((Item) mob).getItemStack();
+				if (is.getData().getData() == (byte) 0) {
+					return MobHunting.getConfigManager().rawFishCmd;
+				} else if (is.getData().getData() == (byte) 1) {
+					return MobHunting.getConfigManager().rawSalmonCmd;
+				} else if (is.getData().getData() == (byte) 2) {
+					return MobHunting.getConfigManager().clownfishCmd;
+				} else if (is.getData().getData() == (byte) 3) {
+					return MobHunting.getConfigManager().pufferfishCmd;
+				}
+			}
 
 		}
 		return "";
@@ -2033,32 +2237,67 @@ public class ConfigManager extends AutoConfig {
 	 * @param mob
 	 * @return String
 	 */
-	public String getKillRewardDescription(LivingEntity mob) {
+	public String getKillRewardDescription(Entity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getRewardDescription();
+			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getRewardDescription();
+			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				MetadataValue value = data.get(0);
-				return ((MobRewardData) value.value()).getRewardDescription();
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
+						.getRewardDescription();
+			return "";
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
-			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)) {
-				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getRewardDescription();
-			} else
-				return "";
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
+				&& CitizensCompat.isSentryOrSentinel(mob)) {
+			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
+			String key = String.valueOf(npc.getId());
+			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return CitizensCompat.getMobRewardData().get(key).getRewardDescription();
+			}
+			return "";
+
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getRewardDescription();
+			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
+						.getRewardDescription();
+			return "";
+
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getRewardDescription();
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getRewardDescription();
+			return "";
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -2193,108 +2432,155 @@ public class ConfigManager extends AutoConfig {
 				return MobHunting.getConfigManager().villagerCmdDesc;
 			else if (mob instanceof Wolf)
 				return MobHunting.getConfigManager().wolfCmdDesc;
+			else if (mob instanceof Item && ((Item) mob).getItemStack().getType() == Material.RAW_FISH) {
+				ItemStack is = ((Item) mob).getItemStack();
+				if (is.getData().getData() == (byte) 0) {
+					return MobHunting.getConfigManager().rawFishCmdDesc;
+				} else if (is.getData().getData() == (byte) 1) {
+					return MobHunting.getConfigManager().rawSalmonCmdDesc;
+				} else if (is.getData().getData() == (byte) 2) {
+					return MobHunting.getConfigManager().clownfishCmdDesc;
+				} else if (is.getData().getData() == (byte) 3) {
+					return MobHunting.getConfigManager().pufferfishCmdDesc;
+				}
+			}
 
 		}
 		return "";
 	}
 
-	public double getCmdRunChance(LivingEntity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getChance();
+	public double getCmdRunChance(Entity killed) {
+		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
+			if (killed.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
+				List<MetadataValue> data = killed.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed)))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed)).getChance();
+			return 0;
 
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				MetadataValue value = data.get(0);
-				return ((MobRewardData) value.value()).getChance();
-			} else {
-				Messages.debug("MythicMob is not tagged with MH_MYTHICMOBS");
-			}
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
+			if (killed.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+				List<MetadataValue> data = killed.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)) {
+			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed)).getChance();
+			return 0;
+
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(killed)
+				&& CitizensCompat.isSentryOrSentinel(killed)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
-			NPC npc = registry.getNPC(mob);
-			if (CitizensCompat.isSentryOrSentinel(mob)) {
-				return CitizensCompat.getMobRewardData().get(String.valueOf(npc.getId())).getChance();
-			} else
-				return 1;
-		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-			MetadataValue value = data.get(0);
-			return ((MobRewardData) value.value()).getChance();
+			NPC npc = registry.getNPC(killed);
+			String key = String.valueOf(npc.getId());
+			if (killed.hasMetadata(CitizensCompat.MH_CITIZENS)) {
+				List<MetadataValue> data = killed.getMetadata(CitizensCompat.MH_CITIZENS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return CitizensCompat.getMobRewardData().get(key).getChance();
+			}
+			return 0;
+
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(killed)) {
+			if (killed.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
+				List<MetadataValue> data = killed.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(killed)).getChance();
+			return 0;
+
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+			if (killed.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
+				List<MetadataValue> data = killed.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
+				for (MetadataValue value : data)
+					if (value.value() instanceof MobRewardData)
+						return ((MobRewardData) value.value()).getChance();
+			} else if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed)))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed)).getChance();
+			return 0;
+
 		} else {
 			if (Misc.isMC111OrNewer())
-				if (mob instanceof Llama)
+				if (killed instanceof Llama)
 					return MobHunting.getConfigManager().llamaCmdRunChance;
-				else if (mob instanceof Vex)
+				else if (killed instanceof Vex)
 					return MobHunting.getConfigManager().vexCmdRunChance;
-				else if (mob instanceof Vindicator)
+				else if (killed instanceof Vindicator)
 					return MobHunting.getConfigManager().vindicatorCmdRunChance;
-				else if (mob instanceof Evoker)
+				else if (killed instanceof Evoker)
 					return MobHunting.getConfigManager().evokerCmdRunChance;
-				else if (mob instanceof Donkey)
+				else if (killed instanceof Donkey)
 					return MobHunting.getConfigManager().donkeyCmdRunChance;
-				else if (mob instanceof Mule)
+				else if (killed instanceof Mule)
 					return MobHunting.getConfigManager().muleCmdRunChance;
-				else if (mob instanceof SkeletonHorse)
+				else if (killed instanceof SkeletonHorse)
 					return MobHunting.getConfigManager().skeletonhorseCmdRunChance;
-				else if (mob instanceof ZombieHorse)
+				else if (killed instanceof ZombieHorse)
 					return MobHunting.getConfigManager().zombiehorseCmdRunChance;
-				else if (mob instanceof Stray)
+				else if (killed instanceof Stray)
 					return (double) MobHunting.getConfigManager().strayFrequency
 							/ (double) MobHunting.getConfigManager().strayFrequencyBase;
-				else if (mob instanceof Husk)
+				else if (killed instanceof Husk)
 					return (double) MobHunting.getConfigManager().huskFrequency
 							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
-				else if (mob instanceof ZombieVillager)
+				else if (killed instanceof ZombieVillager)
 					return MobHunting.getConfigManager().zombieVillagerCmdRunChance;
-				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NITWIT)
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NITWIT)
 					return MobHunting.getConfigManager().nitwitCmdRunChance;
 
 			if (Misc.isMC110OrNewer())
-				if (mob instanceof PolarBear)
+				if (killed instanceof PolarBear)
 					return (double) MobHunting.getConfigManager().polarBearFrequency
 							/ (double) MobHunting.getConfigManager().polarBearFrequencyBase;
-				else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.STRAY)
+				else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.STRAY)
 					return (double) MobHunting.getConfigManager().strayFrequency
 							/ (double) MobHunting.getConfigManager().strayFrequencyBase;
-				else if (mob instanceof Zombie && ((Zombie) mob).getVillagerProfession() == Profession.HUSK)
+				else if (killed instanceof Zombie && ((Zombie) killed).getVillagerProfession() == Profession.HUSK)
 					return (double) MobHunting.getConfigManager().huskFrequency
 							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
 
-				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.NORMAL)
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NORMAL)
 					return (double) MobHunting.getConfigManager().villagerFequency
 							/ (double) MobHunting.getConfigManager().villagerFrequencyBase;
-				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.PRIEST)
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.PRIEST)
 					return MobHunting.getConfigManager().priestCmdRunChance;
-				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BUTCHER)
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.BUTCHER)
 					return MobHunting.getConfigManager().butcherCmdRunChance;
-				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.BLACKSMITH)
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.BLACKSMITH)
 					return MobHunting.getConfigManager().blacksmithCmdRunChance;
-				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.LIBRARIAN)
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.LIBRARIAN)
 					return MobHunting.getConfigManager().librarianCmdRunChance;
-				else if (mob instanceof Villager && ((Villager) mob).getProfession() == Profession.FARMER)
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.FARMER)
 					return MobHunting.getConfigManager().farmerCmdRunChance;
 
 			if (Misc.isMC19OrNewer())
-				if (mob instanceof Shulker)
+				if (killed instanceof Shulker)
 					return (double) MobHunting.getConfigManager().shulkerFrequency
 							/ (double) MobHunting.getConfigManager().shulkerFrequencyBase;
 
 			if (Misc.isMC18OrNewer())
-				if (mob instanceof Guardian && ((Guardian) mob).isElder())
+				if (killed instanceof Guardian && ((Guardian) killed).isElder())
 					return (double) MobHunting.getConfigManager().elderGuardianFrequency
 							/ (double) MobHunting.getConfigManager().elderGuardianFrequencyBase;
-				else if (mob instanceof Guardian)
+				else if (killed instanceof Guardian)
 					return (double) MobHunting.getConfigManager().guardianFrequency
 							/ (double) MobHunting.getConfigManager().guardianFrequencyBase;
-				else if (mob instanceof Endermite)
+				else if (killed instanceof Endermite)
 					return (double) MobHunting.getConfigManager().endermiteFrequency
 							/ (double) MobHunting.getConfigManager().endermiteFrequencyBase;
-				else if (mob instanceof Rabbit)
-					if ((((Rabbit) mob).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+				else if (killed instanceof Rabbit)
+					if ((((Rabbit) killed).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
 						return (double) MobHunting.getConfigManager().killerrabbitFrequency
 								/ (double) MobHunting.getConfigManager().killerrabbitFrequencyBase;
 					else
@@ -2302,110 +2588,122 @@ public class ConfigManager extends AutoConfig {
 								/ (double) MobHunting.getConfigManager().rabbitFrequencyBase;
 
 			// MC1.7 or older
-			if (mob instanceof Player) {
+			if (killed instanceof Player) {
 				return pvpKillCmdRunChance;
-			} else if (mob instanceof Blaze)
+			} else if (killed instanceof Blaze)
 				return (double) MobHunting.getConfigManager().blazeFrequency
 						/ (double) MobHunting.getConfigManager().blazeFrequencyBase;
-			else if (mob instanceof Creeper)
+			else if (killed instanceof Creeper)
 				return (double) MobHunting.getConfigManager().creeperFrequency
 						/ (double) MobHunting.getConfigManager().creeperFrequencyBase;
-			else if (mob instanceof Silverfish)
+			else if (killed instanceof Silverfish)
 				return (double) MobHunting.getConfigManager().silverfishFrequency
 						/ (double) MobHunting.getConfigManager().silverfishFrequencyBase;
-			else if (mob instanceof Enderman)
+			else if (killed instanceof Enderman)
 				return (double) MobHunting.getConfigManager().endermanFrequency
 						/ (double) MobHunting.getConfigManager().endermanFrequencyBase;
-			else if (mob instanceof Giant)
+			else if (killed instanceof Giant)
 				return (double) MobHunting.getConfigManager().giantFrequency
 						/ (double) MobHunting.getConfigManager().giantFrequencyBase;
-			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.NORMAL)
+			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.NORMAL)
 				return (double) MobHunting.getConfigManager().skeletonFrequency
 						/ (double) MobHunting.getConfigManager().skeletonFrequencyBase;
-			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
+			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.WITHER)
 				return (double) MobHunting.getConfigManager().witherSkeletonFrequency
 						/ (double) MobHunting.getConfigManager().witherSkeletonFrequencyBase;
-			else if (mob instanceof CaveSpider)
+			else if (killed instanceof CaveSpider)
 				// CaveSpider is a subclass of Spider
 				return (double) MobHunting.getConfigManager().caveSpiderFrequency
 						/ (double) MobHunting.getConfigManager().caveSpiderFrequencyBase;
-			else if (mob instanceof Spider)
+			else if (killed instanceof Spider)
 				return (double) MobHunting.getConfigManager().spiderFrequency
 						/ (double) MobHunting.getConfigManager().spiderFrequencyBase;
-			else if (mob instanceof Witch)
+			else if (killed instanceof Witch)
 				return (double) MobHunting.getConfigManager().witchFrequency
 						/ (double) MobHunting.getConfigManager().witchFrequencyBase;
-			else if (mob instanceof PigZombie)
+			else if (killed instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
 				return (double) MobHunting.getConfigManager().zombiePigmanFrequency
 						/ (double) MobHunting.getConfigManager().zombiePigmanFrequencyBase;
-			else if (mob instanceof Zombie)
+			else if (killed instanceof Zombie)
 				return (double) MobHunting.getConfigManager().zombieFrequency
 						/ (double) MobHunting.getConfigManager().zombieFrequencyBase;
-			else if (mob instanceof Ghast)
+			else if (killed instanceof Ghast)
 				return (double) MobHunting.getConfigManager().ghastFrequency
 						/ (double) MobHunting.getConfigManager().ghastFrequencyBase;
-			else if (mob instanceof MagmaCube)
+			else if (killed instanceof MagmaCube)
 				// MagmaCube is a subclass of Slime
 				return (double) MobHunting.getConfigManager().magmaCubeFrequency
 						/ (double) MobHunting.getConfigManager().magmaCubeFrequencyBase;
-			else if (mob instanceof Slime)
+			else if (killed instanceof Slime)
 				return (double) MobHunting.getConfigManager().slimeFrequency
 						/ (double) MobHunting.getConfigManager().slimeFrequencyBase;
-			else if (mob instanceof EnderDragon)
+			else if (killed instanceof EnderDragon)
 				return (double) MobHunting.getConfigManager().enderdragonFrequency
 						/ (double) MobHunting.getConfigManager().enderdragonFrequencyBase;
-			else if (mob instanceof Wither)
+			else if (killed instanceof Wither)
 				return (double) MobHunting.getConfigManager().witherFrequency
 						/ (double) MobHunting.getConfigManager().witherFrequencyBase;
-			else if (mob instanceof IronGolem)
+			else if (killed instanceof IronGolem)
 				return (double) MobHunting.getConfigManager().ironGolemFrequency
 						/ (double) MobHunting.getConfigManager().ironGolemFrequencyBase;
 
 			// Passive mobs
-			else if (mob instanceof Bat)
+			else if (killed instanceof Bat)
 				return (double) MobHunting.getConfigManager().batFrequency
 						/ (double) MobHunting.getConfigManager().batFrequencyBase;
-			else if (mob instanceof Chicken)
+			else if (killed instanceof Chicken)
 				return (double) MobHunting.getConfigManager().chickenFrequency
 						/ (double) MobHunting.getConfigManager().chickenFrequencyBase;
-			else if (mob instanceof Cow)
-				if (mob instanceof MushroomCow)
+			else if (killed instanceof Cow)
+				if (killed instanceof MushroomCow)
 					// MushroomCow is a subclass of Cow
 					return (double) MobHunting.getConfigManager().mushroomCowFrequency
 							/ (double) MobHunting.getConfigManager().mushroomCowFrequencyBase;
 				else
 					return (double) MobHunting.getConfigManager().cowFrequency
 							/ (double) MobHunting.getConfigManager().cowFrequencyBase;
-			else if (mob instanceof Horse)
+			else if (killed instanceof Horse)
 				return (double) MobHunting.getConfigManager().horseFrequency
 						/ (double) MobHunting.getConfigManager().horseFrequencyBase;
-			else if (mob instanceof Ocelot)
+			else if (killed instanceof Ocelot)
 				return (double) MobHunting.getConfigManager().ocelotFrequency
 						/ (double) MobHunting.getConfigManager().ocelotFrequencyBase;
-			else if (mob instanceof Pig)
+			else if (killed instanceof Pig)
 				return (double) MobHunting.getConfigManager().pigFrequency
 						/ (double) MobHunting.getConfigManager().pigFrequencyBase;
-			else if (mob instanceof Sheep)
+			else if (killed instanceof Sheep)
 				return (double) MobHunting.getConfigManager().sheepFrequency
 						/ (double) MobHunting.getConfigManager().sheepFrequencyBase;
-			else if (mob instanceof Snowman)
+			else if (killed instanceof Snowman)
 				return (double) MobHunting.getConfigManager().snowmanFrequency
 						/ (double) MobHunting.getConfigManager().snowmanFrequencyBase;
-			else if (mob instanceof Squid)
+			else if (killed instanceof Squid)
 				return (double) MobHunting.getConfigManager().squidFrequency
 						/ (double) MobHunting.getConfigManager().squidFrequencyBase;
-			else if (mob instanceof Villager)
+			else if (killed instanceof Villager)
 				return (double) MobHunting.getConfigManager().villagerFequency
 						/ (double) MobHunting.getConfigManager().villagerFrequencyBase;
-			else if (mob instanceof Wolf)
+			else if (killed instanceof Wolf)
 				return (double) MobHunting.getConfigManager().wolfFequency
 						/ (double) MobHunting.getConfigManager().wolfFrequencyBase;
+			else if (killed instanceof Item && ((Item) killed).getItemStack().getType() == Material.RAW_FISH) {
+				ItemStack is = ((Item) killed).getItemStack();
+				if (is.getData().getData() == (byte) 0) {
+					return MobHunting.getConfigManager().rawFishCmdRunChance;
+				} else if (is.getData().getData() == (byte) 1) {
+					return MobHunting.getConfigManager().rawSalmonCmdRunChance;
+				} else if (is.getData().getData() == (byte) 2) {
+					return MobHunting.getConfigManager().clownfishCmdRunChance;
+				} else if (is.getData().getData() == (byte) 3) {
+					return MobHunting.getConfigManager().pufferfishCmdRunChance;
+				}
+			}
 		}
-		return 1;
+		return 0;
 	}
 
-	public boolean isCmdGointToBeExcuted(LivingEntity killed) {
+	public boolean isCmdGointToBeExcuted(Entity killed) {
 		double randomDouble = MobHunting.getMobHuntingManager().mRand.nextDouble();
 		double runChanceDouble = getCmdRunChance(killed);
 		Messages.debug("random double=%s < chance=%s", randomDouble, runChanceDouble);

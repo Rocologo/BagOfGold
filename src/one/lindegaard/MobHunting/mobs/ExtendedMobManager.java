@@ -7,12 +7,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
@@ -26,7 +28,7 @@ public class ExtendedMobManager {
 		updateExtendedMobs();
 	}
 
-	public static void updateExtendedMobs() {
+	public void updateExtendedMobs() {
 		MobHunting.getStoreManager().insertMissingVanillaMobs();
 		if (CitizensCompat.isSupported())
 			MobHunting.getStoreManager().insertMissingCitizensMobs();
@@ -36,6 +38,8 @@ public class ExtendedMobManager {
 			MobHunting.getStoreManager().insertCustomMobs();
 		if (TARDISWeepingAngelsCompat.isSupported())
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs();
+		if (MysteriousHalloweenCompat.isSupported())
+			MobHunting.getStoreManager().insertMysteriousHalloweenMobs();
 
 		Set<ExtendedMob> set = new HashSet<ExtendedMob>();
 
@@ -46,6 +50,7 @@ public class ExtendedMobManager {
 			e.printStackTrace();
 		}
 
+		int n = 0;
 		Iterator<ExtendedMob> mobset = set.iterator();
 		while (mobset.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) mobset.next();
@@ -65,17 +70,26 @@ public class ExtendedMobManager {
 				break;
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig()
-						|| CitizensCompat.isSentryOrSentinel(mob.getMobtype()))
+						|| !CitizensCompat.isSentryOrSentinel(mob.getMobtype()))
 					continue;
 				break;
+			case MysteriousHalloween:
+				if (!MysteriousHalloweenCompat.isSupported() || MysteriousHalloweenCompat.isDisabledInConfig())
+					continue;
+				break;
+
 			case Minecraft:
+				break;
+			default:
+				break;
 
 			}
 			if (!mobs.containsKey(mob.getMob_id())) {
+				n++;
 				mobs.put(mob.getMob_id(), mob);
 			}
 		}
-		Messages.debug("%s mobs was loaded into MobHunting", mobs.size());
+		Messages.debug("%s mobs was loaded into memory. Total mobs=%s", n, mobs.size());
 	}
 
 	public ExtendedMob getExtendedMobFromMobID(int i) {
@@ -98,7 +112,7 @@ public class ExtendedMobManager {
 		return 0;
 	}
 
-	public ExtendedMob getExtendedMobFromEntity(LivingEntity entity) {
+	public ExtendedMob getExtendedMobFromEntity(Entity entity) {
 		int mob_id;
 		MobPlugin mobPlugin;
 		String mobtype;
@@ -115,10 +129,19 @@ public class ExtendedMobManager {
 		} else if (CustomMobsCompat.isCustomMob(entity)) {
 			mobPlugin = MobPlugin.CustomMobs;
 			mobtype = CustomMobsCompat.getCustomMobType(entity);
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(entity)) {
+			mobPlugin = MobPlugin.MysteriousHalloween;
+			mobtype = MysteriousHalloweenCompat.getMysteriousHalloweenType(entity).name();
 		} else {
 			// StatType
 			mobPlugin = MobPlugin.Minecraft;
-			mobtype = MinecraftMob.getExtendedMobType(entity).name();
+			MinecraftMob mob = MinecraftMob.getExtendedMobType(entity);
+			if (mob != null)
+				mobtype = mob.name();
+			else {
+				Messages.debug("ERROR!!! Unsupported minecraft mob %s", mob);
+				mobtype = "";
+			}
 		}
 		mob_id = getMobIdFromMobTypeAndPluginID(mobtype, mobPlugin);
 		return new ExtendedMob(mob_id, mobPlugin, mobtype);

@@ -1,7 +1,7 @@
 package one.lindegaard.MobHunting.modifier;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -19,7 +19,7 @@ public class StackedMobBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		if (MobStackerCompat.isSupported() && MobStackerCompat.killHoleStackOnDeath(deadEntity)
 				&& MobStackerCompat.multiplyLoot()) {
@@ -35,7 +35,7 @@ public class StackedMobBonus implements IModifier {
 	}
 
 	@Override
-	public boolean doesApply(LivingEntity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		return MobStackerCompat.isStackedMob(deadEntity) || StackMobCompat.isStackedMob(deadEntity);
 	}

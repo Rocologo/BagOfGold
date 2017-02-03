@@ -104,6 +104,8 @@ public interface IDataStore {
 	 * @throws DataStoreException 
 	 */
 	public void databaseFixLeaderboard() throws DataStoreException;
+	
+	public void databaseConvertToUtf8(String database_name) throws DataStoreException;
 
 	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
 
@@ -129,6 +131,8 @@ public interface IDataStore {
 
 	public void insertTARDISWeepingAngelsMobs();
 
+	public void insertMysteriousHalloweenMobs();
+
 	public void insertCustomMobs();
 
 	public void insertMobs(Set<ExtendedMob> mobs) throws DataStoreException;
@@ -141,6 +145,8 @@ public interface IDataStore {
 
 	public void insertTARDISWeepingAngelsMobs(String mob);
 
+	public void insertMysteriousHalloweenMobs(String mob);
+	
 	public void insertCustomMobs(String mob);
-
+	
 }

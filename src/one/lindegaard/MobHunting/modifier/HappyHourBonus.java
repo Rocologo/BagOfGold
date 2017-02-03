@@ -4,35 +4,29 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.commands.HappyHourCommand;
 
-public class ShoveBonus implements IModifier {
+public class HappyHourBonus implements IModifier {
 
 	@Override
 	public String getName() {
-		return ChatColor.AQUA + Messages.getString("bonus.ashove.name"); //$NON-NLS-1$
+		return ChatColor.LIGHT_PURPLE + Messages.getString("bonus.happyhour.name");
 	}
 
 	@Override
 	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return MobHunting.getConfigManager().bonusSendFalling;
+		return HappyHourCommand.multiplier;
 	}
 
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (extraInfo.attacker != killer)
-			return false;
-
-		if (deadEntity.getLastDamageCause() != null)
-			return deadEntity.getLastDamageCause().getCause() == DamageCause.FALL;
-		return false;
+		return HappyHourCommand.minutesLeft != 0;
 	}
 
 }

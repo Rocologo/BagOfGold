@@ -132,7 +132,7 @@ public class HeadCommand implements ICommand, Listener {
 				}
 				if (mob != null) {
 					if (Misc.isMC18OrNewer()) {
-						//Use GameProfile
+						// Use GameProfile
 						((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(),
 								mob.getHead(displayName));
 					} else {

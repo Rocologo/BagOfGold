@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -29,21 +31,17 @@ public class DisguiseCraftCompat implements Listener {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with DisguiseCraft is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getServer().getPluginManager().getPlugin("DisguiseCraft");
-			if (mPlugin != null) {
-				// dcAPI = DisguiseCraft.getAPI();
-				if (mPlugin.getDescription().getVersion().startsWith("1.")
-						|| mPlugin.getDescription().getVersion().startsWith("2.")
-						|| mPlugin.getDescription().getVersion().startsWith("3.")
-						|| mPlugin.getDescription().getVersion().startsWith("4."))
-					Bukkit.getLogger().info("[MobHunting] Your version (" + mPlugin.getDescription().getVersion()
-							+ ") of DisguisCraft is too old and not supported by MobHunting.");
-				else {
-					Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+			if (mPlugin.getDescription().getVersion().compareTo("4.") <= 0) {
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				console.sendMessage(
+						ChatColor.RED + "[MobHunting] Your version (" + mPlugin.getDescription().getVersion()
+								+ ") of DisguisCraft is too old and not supported by MobHunting.");
+			} else {
+				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-					Bukkit.getLogger().info("[MobHunting] Enabling compatibility with DisguiseCraft ("
-							+ getDisguiseCraft().getDescription().getVersion() + ")");
-					supported = true;
-				}
+				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with DisguiseCraft ("
+						+ getDisguiseCraft().getDescription().getVersion() + ")");
+				supported = true;
 			}
 		}
 	}

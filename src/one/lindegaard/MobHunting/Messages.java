@@ -27,6 +27,7 @@ import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
@@ -118,10 +119,26 @@ public class Messages {
 				else
 					k = "mobs." + key.getValue().getMobPlugin().name() + "_" + key.getValue().getMobtype() + ".name";
 				if (!dest.containsKey(k)) {
-					Bukkit.getLogger().info(PREFIX + " Creating missing key (" + k + ") in language file.");
+					Bukkit.getLogger()
+							.info(PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
 					if (key.getValue() != null && key.getValue().getName() != null
 							&& !key.getValue().getName().equals(""))
 						newEntries.put(k, key.getValue().getName());
+				}
+			}
+
+			for (MobPlugin p : MobPlugin.values()) {
+				String k = "stats." + p.name() + ".kill";
+				if (!dest.containsKey(k)) {
+					Bukkit.getLogger()
+							.info(PREFIX + " Creating missing key (" + k + ") in language file" + onDisk.getName());
+					newEntries.put(k, p.name() + " kills");
+				}
+				k = "stats." + p.name() + ".assist";
+				if (!dest.containsKey(k)) {
+					Bukkit.getLogger()
+							.info(PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
+					newEntries.put(k, p.name() + " assists");
 				}
 			}
 
@@ -129,7 +146,6 @@ public class Messages {
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
 				for (Entry<String, String> entry : newEntries.entrySet()) {
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
-
 				}
 				writer.close();
 
@@ -304,7 +320,8 @@ public class Messages {
 	}
 
 	/**
-	 * Broadcast message to all players except Player.
+	 * Broadcast message to all players except Player using the ActionBar. if
+	 * the no plugins for the actionbar is available the chat will be used.
 	 * 
 	 * @param message
 	 * @param except
@@ -322,17 +339,38 @@ public class Messages {
 		}
 	}
 
+	/**
+	 * Show debug information in the Server console log
+	 * 
+	 * @param text
+	 * @param args
+	 */
 	public static void debug(String text, Object... args) {
 		if (MobHunting.getConfigManager().killDebug)
 			Bukkit.getLogger().info(PREFIX + "[Debug] " + String.format(text, args));
 	}
 
+	/**
+	 * Show learning messages to the player
+	 * 
+	 * @param player
+	 * @param text
+	 * @param args
+	 */
 	public static void learn(Player player, String text, Object... args) {
 		if (player != null && !CitizensCompat.isNPC(player)
 				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode())
 			playerBossbarMessage(player, text, args);
 	}
 
+	/**
+	 * Show message to the player using the BossBar. If no BossBar plugin is
+	 * available the player chat will be used.
+	 * 
+	 * @param player
+	 * @param text
+	 * @param args
+	 */
 	public static void playerBossbarMessage(Player player, String text, Object... args) {
 		if (BossBarAPICompat.isSupported()) {
 			BossBarAPICompat.addBar(player, String.format(text, args));
@@ -344,6 +382,12 @@ public class Messages {
 		}
 	}
 
+	/**
+	 * Show message to the player using the ActionBar
+	 * 
+	 * @param player
+	 * @param message
+	 */
 	public static void playerActionBarMessage(Player player, String message) {
 		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.setActionBar(player, message);
@@ -355,6 +399,17 @@ public class Messages {
 			ActionBarAPICompat.setMessage(player, message);
 		} else {
 			player.sendMessage(message);
+		}
+	}
+
+	public static void playerSendTitlesMessage(Player player, String title, String subtitle, int fadein, int stay,
+			int fadeout) {
+		if (TitleManagerCompat.isSupported()) {
+			TitleManagerCompat.sendTitles(player, title, subtitle, fadein, stay, fadeout);
+		} else if (TitleAPICompat.isSupported()) {
+			TitleAPICompat.sendTitles(player, title, subtitle, fadein, stay, fadeout);
+		} else {
+			player.sendMessage(new String[] { title, subtitle });
 		}
 	}
 

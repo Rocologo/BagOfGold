@@ -10,6 +10,7 @@ import one.lindegaard.MobHunting.commands.ClearGrindingCommand;
 import one.lindegaard.MobHunting.commands.CommandDispatcher;
 import one.lindegaard.MobHunting.commands.DatabaseCommand;
 import one.lindegaard.MobHunting.commands.DebugCommand;
+import one.lindegaard.MobHunting.commands.HappyHourCommand;
 import one.lindegaard.MobHunting.commands.HeadCommand;
 import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
@@ -39,9 +40,11 @@ import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
+import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
@@ -153,9 +156,11 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(WorldEditCompat.class, "WorldEdit");
 			registerPlugin(WorldGuardCompat.class, "WorldGuard");
 			registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
+
 			registerPlugin(MyPetCompat.class, "MyPet");
 
 			registerPlugin(MinigamesCompat.class, "Minigames");
+			registerPlugin(MinigamesLibCompat.class, "MinigamesLib");
 			registerPlugin(MobArenaCompat.class, "MobArena");
 			registerPlugin(PVPArenaCompat.class, "PVPArena");
 			registerPlugin(BattleArenaCompat.class, "BattleArena");
@@ -180,6 +185,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			registerPlugin(MobStackerCompat.class, "MobStacker");
 			registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
 			registerPlugin(StackMobCompat.class, "StackMob");
+			registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
 
 			mExtendedMobManager = new ExtendedMobManager();
 
@@ -210,7 +216,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new VersionCommand());
 			cmd.registerCommand(new DebugCommand());
 
-			getMobHuntingManager().registerModifiers();
+			getMobHuntingManager().registerHuntingModifiers();
 
 			if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
 				Messages.debug("Reloading %s online player settings from the database",
@@ -225,6 +231,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 					for (Player player : mMobHuntingManager.getOnlinePlayers())
 						mBountyManager.loadOpenBounties(player);
 			}
+			cmd.registerCommand(new HappyHourCommand());
 
 			mAchievementManager = new AchievementManager();
 
@@ -246,12 +253,16 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			Bukkit.getPluginManager().registerEvents(this, this);
+			Bukkit.getServer().getPluginManager().registerEvents(new Fishing(), MobHunting.getInstance());
 
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 				public void run() {
 					Messages.injectMissingMobNamesToLangFiles();
 				}
 			}, 20 * 5); // 20ticks/sec * 3 sec.
+
+			for (Player player : mMobHuntingManager.getOnlinePlayers())
+				mMobHuntingManager.setHuntEnabled(player, true);
 
 			mInitialized = true;
 
@@ -282,7 +293,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 		if (!mConfig.disablePlayerBounties)
 			mBountyManager.shutdown();
 
-		getMobHuntingManager().getModifiers().clear();
+		getMobHuntingManager().getHuntingModifiers().clear();
 
 		try {
 			mStoreManager.shutdown();

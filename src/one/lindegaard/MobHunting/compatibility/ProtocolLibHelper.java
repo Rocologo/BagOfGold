@@ -14,18 +14,25 @@ public class ProtocolLibHelper {
 	public static void enableProtocolLib() {
 		protocolManager = ProtocolLibrary.getProtocolManager();
 
-		/**protocolManager.addPacketListener(
-				new PacketAdapter(MobHunting.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.COLLECT) {
-					@Override
-					public void onPacketSending(PacketEvent event) {
-						// Item packets (id: 0x29)
-						if (event.getPacketType() == PacketType.Play.Server.COLLECT) {
-							//Messages.debug("Server send a COLLECT packet type=%s", event.getPacketType());
+		//protocolManager.addPacketListener(
+		//		new PacketAdapter(MobHunting.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.COLLECT) {
+		//			@Override
+		//			public void onPacketSending(PacketEvent event) {
+		//				if (event.getPacketType() == PacketType.Play.Server.COLLECT) {
+							//WrapperPlayServerCollect wpsc = new WrapperPlayServerCollect();
+							//int entityID = wpsc.getCollectorEntityId();
+							//Messages.debug("Server send a COLLECT packet type=%s, EntityID=%s", event.getPacketType(),
+							//		entityID);
+							// /summon Zombie ~ ~1 ~ {CanPickUpLoot:1}
+							// if ( instanceof Player)
+							// Messages.debug("A player picked up the item");
+							// else if (wpsc.getCollectorEntityId() instanceof
+							// Zombie)
+							// Messages.debug("A player picked up the item");
 							// event.setCancelled(true);
-						}
-					}
-				});
-				**/
+		//				}
+		//			}
+		//		});
 	}
 
 	public static ProtocolManager getProtocolmanager() {

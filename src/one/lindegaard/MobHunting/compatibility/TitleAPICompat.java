@@ -18,8 +18,8 @@ public class TitleAPICompat {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("TitleAPI");
 
-			Bukkit.getLogger()
-					.info("[MobHunting] Enabling compatibility with TitleAPI (" + getTitleAPI().getDescription().getVersion() + ")");
+			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TitleAPI ("
+					+ getTitleAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}
@@ -44,10 +44,9 @@ public class TitleAPICompat {
 		return !MobHunting.getConfigManager().disableIntegrationTitleAPI;
 	}
 
-	public static void sendTitle(Player player, int fadeIn, int stay, int fadeOut, String title, String subtitle) {
+	public static void sendTitles(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
 		if (supported)
 			TitleAPI.sendTitle(player, fadeIn, stay, fadeOut, title, subtitle);
-
 	}
 
 	public static void sendTabTitle(Player player, String header, String footer) {

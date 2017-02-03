@@ -4,6 +4,7 @@ import net.citizensnpcs.api.npc.NPC;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 
@@ -87,10 +88,13 @@ public class ExtendedMob {
 		case 4:
 			// CustomMobs
 			return CustomMobsCompat.getMobRewardData().get(mobtype).getMobName();
-		default:
+		case 5:
+			//MysteriousHalloween
+			return MysteriousHalloweenCompat.getMobRewardData().get(mobtype).getMobName();
+		case 0:
 			// Minecraft
-			return mobtype;
 		}
+		return mobtype;
 	}
 
 	public String getFriendlyName() {

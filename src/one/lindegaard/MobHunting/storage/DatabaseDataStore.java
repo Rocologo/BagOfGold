@@ -17,6 +17,7 @@ import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
@@ -708,6 +709,43 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 	}
 
+	@Override
+	public void insertMysteriousHalloweenMobs() {
+		int n = 0;
+		try {
+			Connection mConnection = setupConnection();
+			Statement statement = mConnection.createStatement();
+			for (String mob : MysteriousHalloweenCompat.getMobRewardData().keySet())
+				if (getMobIdFromExtendedMobType(mob, MobPlugin.MysteriousHalloween) == 0) {
+					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (5,'" + mob + "')");
+					n++;
+				}
+			if (n > 0)
+				Bukkit.getLogger().info("[MobHunting] " + n + " MysteriousHalloween mobs was inserted to mh_Mobs");
+			statement.close();
+			mConnection.commit();
+			mConnection.close();
+		} catch (SQLException | DataStoreException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void insertMysteriousHalloweenMobs(String mob) {
+		if (getMobIdFromExtendedMobType(mob, MobPlugin.MysteriousHalloween) == 0)
+			try {
+				Connection mConnection = setupConnection();
+				Statement statement = mConnection.createStatement();
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (5,'" + mob + "')");
+				Bukkit.getLogger().info("[MobHunting] MysteriousHalloween MobType " + mob + " was inserted to mh_Mobs");
+				statement.close();
+				mConnection.commit();
+				mConnection.close();
+			} catch (SQLException | DataStoreException e) {
+				e.printStackTrace();
+			}
+	}
+
 	// ******************************************************************
 	// Bounties
 	// ******************************************************************
@@ -1233,6 +1271,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 					break;
 				case TARDISWeepingAngels:
 					if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
+						continue;
+					break;
+				case MysteriousHalloween:
+					if (!MysteriousHalloweenCompat.isSupported() || MysteriousHalloweenCompat.isDisabledInConfig())
 						continue;
 					break;
 				case Minecraft:

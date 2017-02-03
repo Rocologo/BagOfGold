@@ -12,7 +12,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -118,7 +120,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	public List<StatStore> loadPlayerStats(StatType type, TimePeriod period, int count) throws DataStoreException {
 		ArrayList<StatStore> list = new ArrayList<StatStore>();
 		String id;
-		// If The NPC has an invalid period or timeperiod return and empty list
+		// If The NPC has an invalid period or timeperiod return an empty list
 		if (period == null || type == null)
 			return list;
 		switch (period) {
@@ -139,6 +141,21 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			break;
 		}
 
+		MobPlugin plugin = MobPlugin.Minecraft;
+		String mobType = type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_"));
+		ArrayList<String> plugins_kill = new ArrayList<String>();
+		ArrayList<String> plugins_assist = new ArrayList<String>();
+		for (MobPlugin p : MobPlugin.values()) {
+			plugins_kill.add(p.name() + "_kill");
+			plugins_assist.add(p.name() + "_assist");
+			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
+				plugin = p;
+				if (type.getDBColumn().indexOf("_") != type.getDBColumn().lastIndexOf("_"))
+					mobType = type.getDBColumn().substring(type.getDBColumn().indexOf("_") + 1,
+							type.getDBColumn().lastIndexOf("_"));
+			}
+		}
+
 		String column = "";
 		if (type.getDBColumn().equalsIgnoreCase("achievement_count"))
 			column = "sum(achievement_count) amount ";
@@ -146,6 +163,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			column = "sum(total_kill) amount ";
 		else if (type.getDBColumn().equalsIgnoreCase("total_assist"))
 			column = "sum(total_assist) amount ";
+		else if (plugins_kill.contains(type.getDBColumn()))
+			column = "mh_Mobs.plugin_id, sum(total_kill) amount ";
+		else if (plugins_assist.contains(type.getDBColumn()))
+			column = "mh_Mobs.plugin_id, sum(total_assist) amount ";
 		else if (type.getDBColumn().substring(type.getDBColumn().lastIndexOf("_"), type.getDBColumn().length())
 				.equalsIgnoreCase("_kill"))
 			column = "mh_Mobs.mob_id, mh_Mobs.MOBTYPE mt, sum(total_kill) amount ";
@@ -159,26 +180,27 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		if (type.getDBColumn().equalsIgnoreCase("total_kill") || type.getDBColumn().equalsIgnoreCase("total_assist")
 				|| type.getDBColumn().equalsIgnoreCase("achievement_count")) {
 			wherepart = (id != null ? " AND ID=" + id : "");
+		} else if (plugins_kill.contains(type.getDBColumn()) || plugins_assist.contains(type.getDBColumn())) {
+			wherepart = (id != null ? " AND ID=" + id + " AND mh_Mobs.PLUGIN_ID=" + plugin.getId()
+					: " AND mh_Mobs.PLUGIN_ID=" + plugin.getId());
 		} else {
 			wherepart = (id != null
 					? " AND ID=" + id + " and mh_Mobs.MOB_ID="
-							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
-									type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")),
-									MobPlugin.Minecraft)
-					: " AND mh_Mobs.MOB_ID=" + MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(
-							type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_")), MobPlugin.Minecraft));
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, plugin)
+					: " AND mh_Mobs.MOB_ID="
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, plugin));
 		}
 
 		try {
 			Connection mConnection = setupConnection();
 
 			Statement statement = mConnection.createStatement();
-			ResultSet results = statement
-					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
-							+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
-							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " 
-							+ wherepart
-							+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count);
+			String exestr = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name" + " from mh_"
+					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
+					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
+					+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count;
+			// Messages.debug("exestr=%s",exestr);
+			ResultSet results = statement.executeQuery(exestr);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
 				try {
@@ -206,6 +228,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	@Override
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
+		Messages.debug("Number of kills to save=%s", stats.size());
 		Connection mConnection = setupConnection();
 		try {
 			Messages.debug("Saving PlayerStats to Database.");
@@ -238,12 +261,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				}
 				int amount = stat.getAmount();
 				int player_id = getPlayerId(stat.getPlayer());
-				statement
-						.addBatch(
-								String.format(
-										"UPDATE mh_Daily SET %1$s = %1$s + %2$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
-												+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;",
-										column, amount, mob_id, player_id));
+				String str = String
+						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id);
+				statement.addBatch(str);
 			}
 			statement.executeBatch();
 			statement.close();
@@ -1110,6 +1131,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		connection.commit();
 
 		Messages.debug("Database trigger updated.");
+	}
+
+	@Override
+	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		console.sendMessage(ChatColor.RED + "[MobHunting] this command is only for MySQL");
 	}
 
 }

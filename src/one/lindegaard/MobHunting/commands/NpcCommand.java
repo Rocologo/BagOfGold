@@ -84,17 +84,16 @@ public class NpcCommand implements ICommand, Listener {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 
+		String[] subcmds = { "create", "remove", "select", "spawn", "despawn", "update", "tphere", "sethome" };
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			if (args.length < 2) {
-				items.add("create");
-				items.add("remove");
-				items.add("select");
-				items.add("spawn");
-				items.add("despawn");
-				items.add("update");
-				items.add("tphere");
-				items.add("sethome");
+			if (args.length < 2 ) {
+				for (String cmd : subcmds)
+					items.add(cmd);
+			} else if (args.length == 1) { //does not work
+				for (String cmd : subcmds)
+					if (args[0].startsWith(cmd))
+						items.add(cmd);
 			} else if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("create")) {
 					StatType[] values = StatType.values();
@@ -111,6 +110,7 @@ public class NpcCommand implements ICommand, Listener {
 							items.add(values[i].translateName().replace(" ", "_"));
 					}
 				}
+
 			}
 		}
 		return items;
@@ -138,37 +138,39 @@ public class NpcCommand implements ICommand, Listener {
 				}
 				npc.destroy();
 				return true;
-				
+
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("spawn")) {
 				npc.spawn(npc.getStoredLocation());
 				return true;
-			
+
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("despawn")) {
 				npc.despawn();
 				return true;
-			
+
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("tphere")) {
 				if (masterMobHunterManager.contains(npc.getId())) {
 					npc.teleport(((Player) sender).getLocation(), TeleportCause.PLUGIN);
+					npc.faceLocation(((Player) sender).getEyeLocation());
+					// npc.getEntity().teleport((Player)sender);
 				}
 				return true;
-			
+
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("sethome")) {
 				if (masterMobHunterManager.contains(npc.getId())) {
 					masterMobHunterManager.get(npc.getId()).setHome(npc.getEntity().getLocation());
 					sender.sendMessage(Messages.getString("mobhunting.commands.npc.home_set"));
 				}
 				return true;
-			
+
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("update")) {
 				sender.sendMessage(Messages.getString("mobhunting.commands.npc.updating"));
 				masterMobHunterManager.forceUpdate();
 				return true;
-			
+
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
 				sender.sendMessage(Messages.getString("mobhunting.commands.npc.selected", npc.getName(), npc.getId()));
 				return true;
-			
+
 			} else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
 				StatType statType = StatType.parseStat(args[1]);
 				if (statType == null) {

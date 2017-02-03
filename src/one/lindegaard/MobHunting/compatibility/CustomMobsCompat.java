@@ -25,7 +25,6 @@ import de.hellfirepvp.api.event.CustomMobSpawnEvent;
 import de.hellfirepvp.api.event.CustomMobSpawnEvent.SpawnReason;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
@@ -84,7 +83,7 @@ public class CustomMobsCompat implements Listener {
 					mMobRewardData.put(key, mob);
 					MobHunting.getStoreManager().insertCustomMobs(key);
 				} else {
-					Messages.debug("The mob=%s cant be found in CustomMobs configuration file", key);
+					Messages.debug("The mob=%s can't be found in CustomMobs configuration file", key);
 				}
 			}
 			Messages.debug("Loaded %s CustomMobs", mMobRewardData.size());
@@ -235,11 +234,12 @@ public class CustomMobsCompat implements Listener {
 			saveCustomMobsData(mob.getName());
 			MobHunting.getStoreManager().insertCustomMobs(mob.getName());
 			// Update mob loaded into memory
-			ExtendedMobManager.updateExtendedMobs();
+			MobHunting.getExtendedMobManager().updateExtendedMobs();
 			Messages.injectMissingMobNamesToLangFiles();
 		}
 
-		entity.setMetadata(MH_CUSTOMMOBS, new FixedMetadataValue(mPlugin, mMobRewardData.get(mob.getName())));
+		entity.setMetadata(MH_CUSTOMMOBS,
+				new FixedMetadataValue(MobHunting.getInstance(), mMobRewardData.get(mob.getName())));
 	}
 
 }
