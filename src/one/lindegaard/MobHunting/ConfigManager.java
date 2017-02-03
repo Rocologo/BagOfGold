@@ -1669,7 +1669,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mobhunt learn'")
 	public boolean learningMode = false;
 
-	@ConfigField(name = "use_gui_for_achievements", category = "general", comment = "When use_gui_for_archivements=true the status of players achievements will"
+	@ConfigField(name = "use_gui_for_achievements", category = "general", comment = "When use_gui_for_achivements=true the status of players achievements will"
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForAchievements = true;
 
