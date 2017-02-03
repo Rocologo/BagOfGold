@@ -1659,7 +1659,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "minimum_reward", category = "general", comment = "This is the minimum reward which will which will be paid to the player 0.01 will be fine"
 			+ "\nin most installation, but Gringott users who want very low rewards (like 0.001  for killing"
-			+ "\na mob) will have to lower the minimum reward. Remember that some multipiers are less than 1"
+			+ "\na mob) will have to lower the minimum reward. Remember that some multipliers are less than 1"
 			+ "\n and grinding detection and penalties. The minimum_reward should therefor be less than 10%"
 			+ "\n of smallest reward. In the Gringotts example minimum_reward should be 0.0001 or 0.00005.")
 	public double minimumReward = 0.01;
@@ -1669,7 +1669,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mobhunt learn'")
 	public boolean learningMode = false;
 
-	@ConfigField(name = "use_gui_for_achievements", category = "general", comment = "When use_gui_for_archivements=true the status of players achievemens will"
+	@ConfigField(name = "use_gui_for_achievements", category = "general", comment = "When use_gui_for_archivements=true the status of players achievements will"
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForAchievements = true;
 
