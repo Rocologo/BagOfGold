@@ -1,3 +1,5 @@
+V4.4.1
+* Bug: The text mobhunting.fishcaught.reward was not shown. Fixed.
 V4.4.0
 * Forgot to initiate FishingManager
 V4.3.9

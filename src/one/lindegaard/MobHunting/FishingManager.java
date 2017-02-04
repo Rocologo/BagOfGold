@@ -157,11 +157,10 @@ public class FishingManager implements Listener {
 				if (!fisherman_muted)
 					if (extraString.trim().isEmpty()) {
 						if (cash >= MobHunting.getConfigManager().minimumReward) {
-							if (!MobHunting.getConfigManager().dropMoneyOnGroup)
-								Messages.playerActionBarMessage(player,
-										ChatColor.GREEN + "" + ChatColor.ITALIC
-												+ Messages.getString("mobhunting.fishcaught.reward", "prize",
-														MobHunting.getRewardManager().format(cash)));
+							Messages.playerActionBarMessage(player,
+									ChatColor.GREEN + "" + ChatColor.ITALIC
+											+ Messages.getString("mobhunting.fishcaught.reward", "prize",
+													MobHunting.getRewardManager().format(cash)));
 						} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 							Messages.playerActionBarMessage(player,
 									ChatColor.RED + "" + ChatColor.ITALIC
