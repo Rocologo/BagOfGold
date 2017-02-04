@@ -1,3 +1,5 @@
+V4.3.9
+* Worked on Fishing 
 V4.3.8
 * Fixed bug where you got a reward no matter what you catches (Needs more testing)
 * Added Happy hour, Dificulty and rank multipliers to Fishing 

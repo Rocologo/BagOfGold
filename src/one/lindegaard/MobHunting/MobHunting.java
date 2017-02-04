@@ -217,6 +217,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new DebugCommand());
 
 			getMobHuntingManager().registerHuntingModifiers();
+			getMobHuntingManager().registerFishingModifiers();
 
 			if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
 				Messages.debug("Reloading %s online player settings from the database",

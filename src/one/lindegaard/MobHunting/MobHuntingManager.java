@@ -1357,8 +1357,9 @@ public class MobHuntingManager implements Listener {
 						message = message.replaceAll("\\{killed_player\\}", killed.getType().getName())
 								.replaceAll("\\{killed\\}", killed.getType().getName());
 					Messages.debug("Description to be send:" + message);
+					
+					killer.sendMessage(message);
 
-					Messages.playerActionBarMessage(killer, message);
 				}
 			}
 		}
