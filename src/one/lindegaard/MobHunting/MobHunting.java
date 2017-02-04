@@ -79,6 +79,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 
 	private static RewardManager mRewardManager;
 	private static MobHuntingManager mMobHuntingManager;
+	private static FishingManager mFishingManager;
 	private static AreaManager mAreaManager;
 	private static LeaderboardManager mLeaderboardManager;
 	private static AchievementManager mAchievementManager;
@@ -217,7 +218,9 @@ public class MobHunting extends JavaPlugin implements Listener {
 			cmd.registerCommand(new DebugCommand());
 
 			getMobHuntingManager().registerHuntingModifiers();
-			getMobHuntingManager().registerFishingModifiers();
+
+			if (!getConfigManager().disableFishingRewards)
+				getFishingManager().registerFishingModifiers();
 
 			if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
 				Messages.debug("Reloading %s online player settings from the database",
@@ -254,7 +257,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			}
 
 			Bukkit.getPluginManager().registerEvents(this, this);
-			Bukkit.getServer().getPluginManager().registerEvents(new Fishing(), MobHunting.getInstance());
+			Bukkit.getServer().getPluginManager().registerEvents(new FishingManager(), MobHunting.getInstance());
 
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 				public void run() {
@@ -423,6 +426,15 @@ public class MobHunting extends JavaPlugin implements Listener {
 	 */
 	public static ExtendedMobManager getExtendedMobManager() {
 		return mExtendedMobManager;
+	}
+
+	/**
+	 * Get the FishingManager
+	 * 
+	 * @return
+	 */
+	public static FishingManager getFishingManager() {
+		return mFishingManager;
 	}
 
 }

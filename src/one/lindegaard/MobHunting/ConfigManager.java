@@ -860,6 +860,10 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Fish / Fishing
 	// #####################################################################################
+	@ConfigField(name = "disable-fishing-rewards", category = "fishing", 
+			comment = "Set this to true if you want to disable all fishing rewards / features.")
+	public boolean disableFishingRewards = false;
+
 	@ConfigField(name = "rawfish", category = "fishing")
 	public String rawFishPrize = "1:3";
 	@ConfigField(name = "rawfish-cmd", category = "fishing")

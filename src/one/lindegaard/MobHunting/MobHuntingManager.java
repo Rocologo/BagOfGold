@@ -111,7 +111,6 @@ public class MobHuntingManager implements Listener {
 
 	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Set<IModifier> mHuntingModifiers = new HashSet<IModifier>();
-	private Set<IModifier> mFishingModifiers = new HashSet<IModifier>();
 
 	/**
 	 * Constructor for MobHuntingManager
@@ -288,13 +287,6 @@ public class MobHuntingManager implements Listener {
 			mHuntingModifiers.add(new StackedMobBonus());
 		if (ConquestiaMobsCompat.isSupported())
 			mHuntingModifiers.add(new ConquestiaBonus());
-	}
-
-	public void registerFishingModifiers() {
-		mFishingModifiers.add(new DifficultyBonus());
-		mFishingModifiers.add(new HappyHourBonus());
-		mFishingModifiers.add(new RankBonus());
-
 	}
 
 	public double handleKillstreak(Player player) {
@@ -1505,10 +1497,6 @@ public class MobHuntingManager implements Listener {
 
 	public Set<IModifier> getHuntingModifiers() {
 		return mHuntingModifiers;
-	}
-
-	public Set<IModifier> getFishingModifiers() {
-		return mFishingModifiers;
 	}
 
 }

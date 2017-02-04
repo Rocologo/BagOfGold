@@ -2,6 +2,8 @@ package one.lindegaard.MobHunting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,17 +20,35 @@ import org.bukkit.event.player.PlayerFishEvent.State;
 
 import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.modifier.DifficultyBonus;
+import one.lindegaard.MobHunting.modifier.HappyHourBonus;
 import one.lindegaard.MobHunting.modifier.IModifier;
+import one.lindegaard.MobHunting.modifier.RankBonus;
 
-public class Fishing implements Listener {
+public class FishingManager implements Listener {
 
-	public Fishing() {
+	private Set<IModifier> mFishingModifiers = new HashSet<IModifier>();
 
+	public FishingManager() {
+
+	}
+
+	public void registerFishingModifiers() {
+		mFishingModifiers.add(new DifficultyBonus());
+		mFishingModifiers.add(new HappyHourBonus());
+		mFishingModifiers.add(new RankBonus());
+	}
+
+	public Set<IModifier> getFishingModifiers() {
+		return mFishingModifiers;
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void Fish(PlayerFishEvent event) {
+		if (MobHunting.getConfigManager().disableFishingRewards)
+			return;
+
 		if (event.isCancelled())
 			return;
 
@@ -77,7 +97,7 @@ public class Fishing implements Listener {
 				double multiplier = 1.0;
 				HashMap<String, Double> multiplierList = new HashMap<String, Double>();
 				ArrayList<String> modifiers = new ArrayList<String>();
-				for (IModifier mod : MobHunting.getMobHuntingManager().getFishingModifiers()) {
+				for (IModifier mod : mFishingModifiers) {
 					if (mod.doesApply(fish, player, null, null, null)) {
 						double amt = mod.getMultiplier(fish, player, null, null, null);
 						if (amt != 1.0) {
@@ -187,19 +207,18 @@ public class Fishing implements Listener {
 						} while (str.contains("|"));
 						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
 					}
-				}
-				// send a message to the player
-				if (!MobHunting.getConfigManager().getKillRewardDescription(fish).equals("") && !fisherman_muted) {
-					String worldname = player.getWorld().getName();
-					String message = ChatColor.GREEN + "" + ChatColor.ITALIC
-							+ MobHunting.getConfigManager().getKillRewardDescription(fish)
-									.replaceAll("\\{player\\}", player.getName())
-									.replaceAll("\\{killer\\}", player.getName())
-									.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
-									.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", fishermanPos);
 
-					Messages.debug("Description to be send:" + message);
-					player.sendMessage(message);
+					// send a message to the player
+					if (!MobHunting.getConfigManager().getKillRewardDescription(fish).equals("") && !fisherman_muted) {
+						String message = ChatColor.GREEN + "" + ChatColor.ITALIC + MobHunting.getConfigManager()
+								.getKillRewardDescription(fish).replaceAll("\\{player\\}", player.getName())
+								.replaceAll("\\{killer\\}", player.getName())
+								.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
+								.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", fishermanPos);
+
+						Messages.debug("Description to be send:" + message);
+						player.sendMessage(message);
+					}
 				}
 			}
 
