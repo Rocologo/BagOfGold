@@ -116,6 +116,7 @@ public class MobHunting extends JavaPlugin implements Listener {
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
 
 		mMobHuntingManager = new MobHuntingManager(this);
+		mFishingManager = new FishingManager();
 
 		mWorldGroupManager = new WorldGroup();
 		mWorldGroupManager.load();
