@@ -228,7 +228,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	@Override
 	public void savePlayerStats(Set<StatStore> stats) throws DataStoreException {
-		Messages.debug("Number of kills to save=%s", stats.size());
 		Connection mConnection = setupConnection();
 		try {
 			Messages.debug("Saving PlayerStats to Database.");

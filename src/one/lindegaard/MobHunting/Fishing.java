@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +15,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
-import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
@@ -43,9 +41,9 @@ public class Fishing implements Listener {
 			return;
 
 		State state = event.getState();
-		Messages.debug("FishingEvent: %s %s, caught=%s", player.getName(), state, event.getCaught());
-		if (event.getCaught() != null)
-			Messages.debug("FishingEvent: Caught=%s ", (Item) event.getCaught());
+		if (fish != null)
+			Messages.debug("FishingEvent:%s caught a %s (State=%s) ", player.getName(),
+					((Item) fish).getItemStack().getData(), state);
 
 		switch (state) {
 		case CAUGHT_FISH:
@@ -59,9 +57,6 @@ public class Fishing implements Listener {
 				Messages.learn(player, Messages.getString("mobhunting.learn.survival"));
 				return;
 			}
-
-			ItemStack is = ((Item) fish).getItemStack();
-			Messages.debug("%s caught a %s ", player.getName(), is.getData());
 
 			// Calculate basic the reward
 			ExtendedMob eMob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(fish);

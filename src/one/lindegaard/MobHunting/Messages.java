@@ -389,7 +389,7 @@ public class Messages {
 	 * @param player
 	 * @param message
 	 */
-	public static void playerActionBarMessage(Player player, String message) {
+	public static void playerActionBarMessage(final Player player, final String message) {
 		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.setActionBar(player, message);
 		} else if (ActionbarCompat.isSupported()) {
