@@ -863,25 +863,25 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "rawfish", category = "fishing")
 	public String rawFishPrize = "1:3";
 	@ConfigField(name = "rawfish-cmd", category = "fishing")
-	public String rawFishCmd = "mobhunt head give {player} rawfish";
+	public String rawFishCmd = "mobhunt head give {player} rawfish Raw_Fish 1 silent";
 	@ConfigField(name = "rawfish-cmd-desc", category = "fishing")
-	public String rawFishCmdDesc = "You got a head of a fish";
+	public String rawFishCmdDesc = "You got a head of a Raw Fish";
 	@ConfigField(name = "rawfish-cmd-run-chance", category = "fishing")
 	public double rawFishCmdRunChance = 0.05;
 
 	@ConfigField(name = "rawsalmon", category = "fishing")
 	public String rawSalmonPrize = "2:8";
 	@ConfigField(name = "rawsalmon-cmd", category = "fishing")
-	public String rawSalmonCmd = "mobhunt head give {player} rawsalmon";
+	public String rawSalmonCmd = "mobhunt head give {player} rawsalmon Raw_Salmon 1 silent";
 	@ConfigField(name = "rawsalmon-cmd-desc", category = "fishing")
-	public String rawSalmonCmdDesc = "You got a head of a Salmon";
+	public String rawSalmonCmdDesc = "You got a head of a Raw Salmon";
 	@ConfigField(name = "rawsalmon-cmd-run-chance", category = "fishing")
 	public double rawSalmonCmdRunChance = 0.1;
 
 	@ConfigField(name = "clownfish", category = "fishing")
 	public String clownfishPrize = "20:40";
 	@ConfigField(name = "clownfish-cmd", category = "fishing")
-	public String clownfishCmd = "mobhunt head give {player} clownfish";
+	public String clownfishCmd = "mobhunt head give {player} clownfish Clowfish 1 silent";
 	@ConfigField(name = "clownfish-cmd-desc", category = "fishing")
 	public String clownfishCmdDesc = "You got a head of a Clownfish";
 	@ConfigField(name = "clownfish-cmd-run-chance", category = "fishing")
@@ -890,7 +890,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "pufferfish", category = "fishing")
 	public String pufferfishPrize = "5:15";
 	@ConfigField(name = "pufferfish-cmd", category = "fishing")
-	public String pufferfishCmd = "mobhunt head give {player} pufferfish";
+	public String pufferfishCmd = "mobhunt head give {player} pufferfish Pufferfish 1 silent";
 	@ConfigField(name = "pufferfish-cmd-desc", category = "fishing")
 	public String pufferfishCmdDesc = "You got a head of a Pufferfish";
 	@ConfigField(name = "pufferfish-cmd-run-chance", category = "fishing")

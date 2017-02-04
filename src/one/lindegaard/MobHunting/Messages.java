@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
@@ -347,7 +348,7 @@ public class Messages {
 	 */
 	public static void debug(String text, Object... args) {
 		if (MobHunting.getConfigManager().killDebug)
-			Bukkit.getLogger().info(PREFIX + "[Debug] " + String.format(text, args));
+			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + "[Debug] " + String.format(text, args));
 	}
 
 	/**
@@ -398,7 +399,8 @@ public class Messages {
 		} else if (ActionBarAPICompat.isSupported()) {
 			ActionBarAPICompat.setMessage(player, message);
 		} else {
-			player.sendMessage(message);
+			if (!message.isEmpty())
+				player.sendMessage(message);
 		}
 	}
 
@@ -409,7 +411,8 @@ public class Messages {
 		} else if (TitleAPICompat.isSupported()) {
 			TitleAPICompat.sendTitles(player, title, subtitle, fadein, stay, fadeout);
 		} else {
-			player.sendMessage(new String[] { title, subtitle });
+			if (!(title.isEmpty() && subtitle.isEmpty()))
+				player.sendMessage(new String[] { title, subtitle });
 		}
 	}
 

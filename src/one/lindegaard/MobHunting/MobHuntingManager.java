@@ -294,7 +294,7 @@ public class MobHuntingManager implements Listener {
 		mFishingModifiers.add(new DifficultyBonus());
 		mFishingModifiers.add(new HappyHourBonus());
 		mFishingModifiers.add(new RankBonus());
-		
+
 	}
 
 	public double handleKillstreak(Player player) {
@@ -1057,8 +1057,7 @@ public class MobHuntingManager implements Listener {
 		// Slimes ang magmacubes are except from grinding due to their splitting
 		// nature
 		if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
-				&& MobHunting.getConfigManager().penaltyGrindingEnable 
-				&& !killed.hasMetadata("MH:reinforcement")
+				&& MobHunting.getConfigManager().penaltyGrindingEnable && !killed.hasMetadata("MH:reinforcement")
 				&& !MobHunting.getAreaManager().isWhitelisted(loc)) {
 			Messages.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
 					data.getcDampnerRange());
@@ -1135,9 +1134,10 @@ public class MobHuntingManager implements Listener {
 			return;
 		}
 		double cash = MobHunting.getConfigManager().getBaseKillPrize(killed);
+		double basic_prize = cash;
 
 		Messages.debug("Basic Prize=%s for killing a %s", cash, mob.getName());
-		double multiplier = 1.0;
+		double multipliers = 1.0;
 
 		// Apply the modifiers to Basic reward
 		ArrayList<String> modifiers = new ArrayList<String>();
@@ -1146,7 +1146,7 @@ public class MobHuntingManager implements Listener {
 				double amt = mod.getMultiplier(killed, killer, data, info, lastDamageCause);
 				if (amt != 1.0) {
 					modifiers.add(mod.getName());
-					multiplier *= amt;
+					multipliers *= amt;
 					data.addModifier(mod.getName(), amt);
 					Messages.debug("Multiplier: %s = %s", mod.getName(), amt);
 				}
@@ -1156,19 +1156,19 @@ public class MobHuntingManager implements Listener {
 
 		Messages.debug("Killstreak=%s, level=%s, multiplier=%s ", data.getKillStreak(), data.getKillstreakLevel(),
 				data.getKillstreakMultiplier());
-		multiplier *= data.getKillstreakMultiplier();
+		multipliers *= data.getKillstreakMultiplier();
 
 		String extraString = "";
 
 		// Only display the multiplier if its not 1
-		if (Math.abs(multiplier - 1) > 0.05)
-			extraString += String.format("x%.1f", multiplier);
+		if (Math.abs(multipliers - 1) > 0.05)
+			extraString += String.format("x%.1f", multipliers);
 
 		// Add on modifiers
 		for (String modifier : modifiers)
 			extraString += ChatColor.WHITE + " * " + modifier;
 
-		cash *= multiplier;
+		cash *= multipliers;
 
 		// Handle Bounty Kills
 		double reward = 0;
@@ -1281,27 +1281,46 @@ public class MobHuntingManager implements Listener {
 					if (cash >= MobHunting.getConfigManager().minimumReward) {
 						if (!MobHunting.getConfigManager().dropMoneyOnGroup)
 							Messages.playerActionBarMessage(killer,
-									ChatColor.GREEN + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneygain",
-											"prize", MobHunting.getRewardManager().format(cash)));
+									ChatColor.GREEN + "" + ChatColor.ITALIC
+											+ Messages.getString("mobhunting.moneygain", "prize",
+													MobHunting.getRewardManager().format(cash), "killed",
+													mob.getFriendlyName()));
+						else
+							Messages.playerActionBarMessage(killer,
+									ChatColor.GREEN + "" + ChatColor.ITALIC
+											+ Messages.getString("mobhunting.moneygain.drop", "prize",
+													MobHunting.getRewardManager().format(cash), "killed",
+													mob.getFriendlyName()));
 					} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 						Messages.playerActionBarMessage(killer,
-								ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.moneylost",
-										"prize", MobHunting.getRewardManager().format(cash)));
+								ChatColor.RED + "" + ChatColor.ITALIC
+										+ Messages.getString("mobhunting.moneylost", "prize",
+												MobHunting.getRewardManager().format(cash), "killed",
+												mob.getFriendlyName()));
 					}
 
 				} else {
-					if (cash >= MobHunting.getConfigManager().minimumReward)
-						Messages.playerActionBarMessage(killer,
-								ChatColor.GREEN + "" + ChatColor.ITALIC
-										+ Messages.getString("mobhunting.moneygain.bonuses", "prize",
-												MobHunting.getRewardManager().format(cash), "bonuses",
-												extraString.trim()));
-					else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-						Messages.playerActionBarMessage(killer,
-								ChatColor.RED + "" + ChatColor.ITALIC
-										+ Messages.getString("mobhunting.moneylost.bonuses", "prize",
-												MobHunting.getRewardManager().format(cash), "bonuses",
-												extraString.trim()));
+					if (cash >= MobHunting.getConfigManager().minimumReward) {
+						if (!MobHunting.getConfigManager().dropMoneyOnGroup)
+							Messages.playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.moneygain.bonuses", "basic_prize",
+											MobHunting.getRewardManager().format(basic_prize), "prize",
+											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+											"multipliers", MobHunting.getRewardManager().format(multipliers), "killed",
+											mob.getFriendlyName()));
+						else
+							Messages.playerActionBarMessage(killer, ChatColor.GREEN + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.moneygain.bonuses.drop", "basic_prize",
+											MobHunting.getRewardManager().format(basic_prize), "prize",
+											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+											"multipliers", MobHunting.getRewardManager().format(multipliers), "killed",
+											mob.getFriendlyName()));
+					} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
+						Messages.playerActionBarMessage(killer, ChatColor.RED + "" + ChatColor.ITALIC
+								+ Messages.getString("mobhunting.moneylost.bonuses", "basic_prize",
+										MobHunting.getRewardManager().format(basic_prize), "prize",
+										MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+										"multipliers", multipliers, "killed", mob.getFriendlyName()));
 					}
 				}
 		} else
@@ -1349,7 +1368,6 @@ public class MobHuntingManager implements Listener {
 									.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
 									.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
 									.replaceAll("\\{killedpos\\}", killedpos);
-
 					if (killed instanceof Player)
 						message = message.replaceAll("\\{killed_player\\}", killed.getName()).replaceAll("\\{killed\\}",
 								killed.getName());
@@ -1357,9 +1375,7 @@ public class MobHuntingManager implements Listener {
 						message = message.replaceAll("\\{killed_player\\}", killed.getType().getName())
 								.replaceAll("\\{killed\\}", killed.getType().getName());
 					Messages.debug("Description to be send:" + message);
-					
 					killer.sendMessage(message);
-
 				}
 			}
 		}
@@ -1490,7 +1506,7 @@ public class MobHuntingManager implements Listener {
 	public Set<IModifier> getHuntingModifiers() {
 		return mHuntingModifiers;
 	}
-	
+
 	public Set<IModifier> getFishingModifiers() {
 		return mFishingModifiers;
 	}

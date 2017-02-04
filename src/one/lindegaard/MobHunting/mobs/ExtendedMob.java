@@ -101,6 +101,6 @@ public class ExtendedMob {
 		if (mobPlugin == MobPlugin.Minecraft)
 			return Messages.getString("mobs." + getName() + ".name");
 		else
-			return Messages.getString("mobs." + mobPlugin + "_" + getName() + ".name");
+			return Messages.getString("mobs." + mobPlugin + "_" + getMobtype() + ".name");
 	}
 }

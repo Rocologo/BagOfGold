@@ -1,5 +1,8 @@
 V4.3.9
 * Worked on Fishing 
+* Created MobHuntFishingEvent for the API
+* Added silent parameter to /mobhunt head give {player} {mobname} {displayname} {amount} {silent} - to give the head to the player silent
+* Added to new text messages to the lang file.
 V4.3.8
 * Fixed bug where you got a reward no matter what you catches (Needs more testing)
 * Added Happy hour, Dificulty and rank multipliers to Fishing 

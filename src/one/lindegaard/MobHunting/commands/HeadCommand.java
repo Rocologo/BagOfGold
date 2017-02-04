@@ -61,7 +61,7 @@ public class HeadCommand implements ICommand, Listener {
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
 				ChatColor.GOLD + label + ChatColor.GREEN + " give" + " [toPlayername] [playername|mobname]"
-						+ ChatColor.YELLOW + " [displayname] [amount]" + ChatColor.WHITE + " - to give a head",
+						+ ChatColor.YELLOW + " [displayname] [amount] [silent]" + ChatColor.WHITE + " - to give a head",
 				ChatColor.GOLD + label + ChatColor.GREEN + " rename [new displayname]" + ChatColor.WHITE
 						+ " - to rename the head in players name" };
 	}
@@ -130,6 +130,12 @@ public class HeadCommand implements ICommand, Listener {
 						return false;
 					}
 				}
+				// silent
+				boolean silent = false;
+				if (args.length >= 6 && (args[5].equalsIgnoreCase("silent") || args[5].equalsIgnoreCase("true")
+						|| args[5].equalsIgnoreCase("1"))) {
+					silent = true;
+				}
 				if (mob != null) {
 					if (Misc.isMC18OrNewer()) {
 						// Use GameProfile
@@ -145,7 +151,7 @@ public class HeadCommand implements ICommand, Listener {
 						Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
 						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 					}
-					if (toPlayer.isOnline()) {
+					if (toPlayer.isOnline() && !silent) {
 						((Player) toPlayer).sendMessage("You got a head of " + displayName + ".");
 					}
 

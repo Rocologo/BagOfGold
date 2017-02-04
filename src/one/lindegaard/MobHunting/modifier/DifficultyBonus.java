@@ -35,7 +35,6 @@ public class DifficultyBonus implements IModifier {
 							"difficulty.multiplier")
 							&& (difficulty.getKey().equals("difficulty.multiplier."
 									+ worldDifficulty.name().toLowerCase()))) {
-				Messages.debug("WorldDifficulty=%s, multiplier=%s", worldDifficulty, difficulty.getValue() );
 				multiplierStr = difficulty.getValue();
 				break;
 			}
@@ -62,7 +61,6 @@ public class DifficultyBonus implements IModifier {
 					&& (difficulty.getKey().equals("difficulty.multiplier."
 							+ worldDifficulty.name().toLowerCase()))) {
 				multiplierStr = difficulty.getValue();
-				Messages.debug("DifficultyMultiplier: %s=%s",difficulty.getKey(),multiplierStr);
 				break;
 			}
 		}

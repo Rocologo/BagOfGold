@@ -1,13 +1,14 @@
 package one.lindegaard.MobHunting;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
 import org.bukkit.inventory.ItemStack;
+
+import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.modifier.IModifier;
 
@@ -25,7 +28,7 @@ public class Fishing implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void Fish(PlayerFishEvent event) {
 		if (event.isCancelled())
@@ -75,18 +78,9 @@ public class Fishing implements Listener {
 			if ((cash >= MobHunting.getConfigManager().minimumReward)
 					|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
 
-				// Handle MobHuntFishingEvent
-				// MobHuntKillEvent event2 = new MobHuntKillEvent(data,
-				// info, killed, killer);
-				// Bukkit.getPluginManager().callEvent(event2);
-				// if (event2.isCancelled()) {
-				// Messages.debug("KillBlocked %s: MobHuntKillEvent was
-				// cancelled", killer.getName());
-				// return;
-				// }
-
 				// Apply the modifiers to Basic reward
 				double multiplier = 1.0;
+				HashMap<String, Double> multiplierList = new HashMap<String, Double>();
 				ArrayList<String> modifiers = new ArrayList<String>();
 				for (IModifier mod : MobHunting.getMobHuntingManager().getFishingModifiers()) {
 					if (mod.doesApply(fish, player, null, null, null)) {
@@ -94,9 +88,18 @@ public class Fishing implements Listener {
 						if (amt != 1.0) {
 							Messages.debug("Multiplier: %s = %s", mod.getName(), amt);
 							modifiers.add(mod.getName());
+							multiplierList.put(mod.getName(), amt);
 							multiplier *= amt;
 						}
 					}
+				}
+
+				// Handle MobHuntFishingEvent
+				MobHuntFishingEvent event2 = new MobHuntFishingEvent(player, fish, cash, multiplierList);
+				Bukkit.getPluginManager().callEvent(event2);
+				if (event2.isCancelled()) {
+					Messages.debug("FishingBlocked %s: MobHuntFishingEvent was cancelled", player.getName());
+					return;
 				}
 
 				String extraString = "";
