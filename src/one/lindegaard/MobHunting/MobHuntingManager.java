@@ -824,7 +824,7 @@ public class MobHuntingManager implements Listener {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (killer != null)
 				Messages.debug("%s killed a TARDISWeepingAngelMob (%s)", killer.getName(),
-						TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name());
+						TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).getName());
 		} else
 
 		// Player killed a Stacked Mob
@@ -1468,11 +1468,7 @@ public class MobHuntingManager implements Listener {
 		} else if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
 			if (!MobHunting.getConfigManager().allowMobSpawners)
 				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
-		} else {
-			// Messages.debug("%s was spawned with %s",
-			// event.getEntityType(),event.getSpawnReason());
-		}
-
+		} 
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

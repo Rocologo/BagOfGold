@@ -1760,11 +1760,11 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
-					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return getPrice(mob, TARDISWeepingAngelsCompat.getMobRewardData()
-						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getRewardPrize());
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getRewardPrize());
 			Messages.debug("TARDISWeepingAngel %s has no reward data",
-					TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob));
+					TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).getName());
 			return 0;
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
@@ -1813,11 +1813,11 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
 			} else if (MysteriousHalloweenCompat.getMobRewardData()
-					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return getPrice(mob, MysteriousHalloweenCompat.getMobRewardData()
-						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getRewardPrize());
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardPrize());
 			Messages.debug("MysteriousHalloween %s has no reward data",
-					MysteriousHalloweenCompat.getMysteriousHalloweenType(mob));
+					MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name());
 			return 0;
 
 		} else {
@@ -2030,9 +2030,9 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return ((MobRewardData) value.value()).getConsoleRunCommand();
 			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
-					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
-						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getConsoleRunCommand();
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getConsoleRunCommand();
 			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
@@ -2078,9 +2078,9 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return ((MobRewardData) value.value()).getConsoleRunCommand();
 			} else if (MysteriousHalloweenCompat.getMobRewardData()
-					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
-						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getConsoleRunCommand();
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getConsoleRunCommand();
 			return "";
 
 		} else {
@@ -2249,9 +2249,9 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return ((MobRewardData) value.value()).getRewardDescription();
 			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
-					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)))
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
-						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob)).getRewardDescription();
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getRewardDescription();
 			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
@@ -2297,9 +2297,9 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return ((MobRewardData) value.value()).getRewardDescription();
 			} else if (MysteriousHalloweenCompat.getMobRewardData()
-					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)))
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
-						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob)).getRewardDescription();
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardDescription();
 			return "";
 
 		} else {
@@ -2461,9 +2461,9 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return ((MobRewardData) value.value()).getChance();
 			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
-					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed)))
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
-						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed)).getChance();
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()).getChance();
 			return 0;
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
@@ -2509,9 +2509,9 @@ public class ConfigManager extends AutoConfig {
 					if (value.value() instanceof MobRewardData)
 						return ((MobRewardData) value.value()).getChance();
 			} else if (MysteriousHalloweenCompat.getMobRewardData()
-					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed)))
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
-						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed)).getChance();
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()).getChance();
 			return 0;
 
 		} else {

@@ -79,7 +79,7 @@ public class HappyHourCommand implements ICommand {
 			// status of happyhour
 			if (happyhourevent != null && (Bukkit.getScheduler().isCurrentlyRunning(happyhourevent.getTaskId())
 					|| Bukkit.getScheduler().isQueued(happyhourevent.getTaskId()))) {
-				minutesLeft = minutesToRun - (int) (System.currentTimeMillis() - starttime) / (1000 * 60);
+				minutesLeft = minutesToRun - ((int) (System.currentTimeMillis() - starttime) / (1000 * 60));
 				Messages.debug("The happy hour ends in %s minutes", minutesLeft);
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					Messages.playerSendTitlesMessage(player,
@@ -136,9 +136,9 @@ public class HappyHourCommand implements ICommand {
 					|| Bukkit.getScheduler().isQueued(happyhourevent.getTaskId()))) {
 				happyhourevent.cancel();
 				happyhoureventStop.cancel();
-				Messages.debug("Happy hour restarted");
+				Messages.debug("Happy hour restarted, minutes left:%s", minutesLeft);
 			} else {
-				Messages.debug("Happy hour started");
+				Messages.debug("Happy hour started, minutes left:%s", minutesLeft);
 			}
 
 			for (Player player : Bukkit.getOnlinePlayers()) {
@@ -151,14 +151,15 @@ public class HappyHourCommand implements ICommand {
 
 			happyhourevent = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Runnable() {
 				public void run() {
-					Messages.debug("The happy hour ends in %s minutes",
-							minutesToRun - (int) (System.currentTimeMillis() - starttime) / (1000 * 60));
+					minutesLeft = minutesToRun - ((int) (System.currentTimeMillis() - starttime) / (1000 * 60));
+					Messages.debug("The happy hour ends in %s minutes", minutesLeft);
 				}
 			}, 18000, 18000);
 
 			happyhoureventStop = Bukkit.getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
 				public void run() {
 					minutesLeft = 0;
+					minutesToRun=0;
 					multiplier = 1;
 					happyhourevent.cancel();
 					Messages.debug("Happy hour ended");
@@ -168,7 +169,7 @@ public class HappyHourCommand implements ICommand {
 								Messages.getString("mobhunting.commands.happyhour.ended_subtitle"), 20, 100, 20);
 					}
 				}
-			}, (long) (minutesLeft * 20 * 60));
+			}, (long) (minutesToRun * 20 * 60));
 
 			return true;
 		}

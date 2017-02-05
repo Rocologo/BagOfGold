@@ -238,7 +238,7 @@ public class MasterMobHunterManager implements Listener {
 		NPC npc = event.getNPC();
 		if (isMasterMobHunter(npc)) {
 			if (npc.getStoredLocation() != null && mMasterMobHunter.containsKey(npc.getId())
-					&& npc.getEntity().getLocation().distance(mMasterMobHunter.get(npc.getId()).getHome()) > 0.2) {
+					&& npc.getStoredLocation().distance(mMasterMobHunter.get(npc.getId()).getHome()) > 0.2) {
 				Messages.debug("NPC %s (ID=%s) return to home", npc.getName(), npc.getId());
 				final NPC npc1 = npc;
 				Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {

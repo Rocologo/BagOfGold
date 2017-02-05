@@ -87,12 +87,13 @@ public class NpcCommand implements ICommand, Listener {
 		String[] subcmds = { "create", "remove", "select", "spawn", "despawn", "update", "tphere", "sethome" };
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			if (args.length < 2 ) {
+			//if (args.length < 2 ) {
+			//	for (String cmd : subcmds)
+			//		items.add(cmd);
+			//} else
+			if (args.length == 1) { 
 				for (String cmd : subcmds)
-					items.add(cmd);
-			} else if (args.length == 1) { //does not work
-				for (String cmd : subcmds)
-					if (args[0].startsWith(cmd))
+					if (args[0].toLowerCase().startsWith(cmd.toLowerCase()))
 						items.add(cmd);
 			} else if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("create")) {
