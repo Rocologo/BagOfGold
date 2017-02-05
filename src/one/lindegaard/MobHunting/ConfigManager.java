@@ -9,6 +9,7 @@ import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
+import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 import one.lindegaard.MobHunting.util.AutoConfig;
 import one.lindegaard.MobHunting.util.ConfigField;
@@ -860,8 +861,7 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Fish / Fishing
 	// #####################################################################################
-	@ConfigField(name = "disable-fishing-rewards", category = "fishing", 
-			comment = "Set this to true if you want to disable all fishing rewards / features.")
+	@ConfigField(name = "disable-fishing-rewards", category = "fishing", comment = "Set this to true if you want to disable all fishing rewards / features.")
 	public boolean disableFishingRewards = false;
 
 	@ConfigField(name = "rawfish", category = "fishing")
@@ -1225,7 +1225,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "zombie_villager_level1", category = "achievement_levels")
 	public int zombieVillagerLevel1 = 100;
-	
+
 	@ConfigField(name = "rawfish_level1", category = "achievement_levels")
 	public int rawfishLevel1 = 100;
 	@ConfigField(name = "rawsalmon_level1", category = "achievement_levels")
@@ -1986,7 +1986,7 @@ public class ConfigManager extends AutoConfig {
 				}
 			}
 		}
-		Messages.debug("Mobhunting could not find the prize for killing this mob %s", mob.getName());
+		Messages.debug("Mobhunting could not find the prize for killing this mob %s", ExtendedMobManager.getMobName(mob));
 		return 0;
 	}
 
@@ -1994,13 +1994,13 @@ public class ConfigManager extends AutoConfig {
 		if (str == null || str.equals("") || str.isEmpty()) {
 			Bukkit.getServer().getConsoleSender()
 					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
-							+ " The prize for killing a " + mob.getName()
+							+ " The prize for killing a " + ExtendedMobManager.getMobName(mob)
 							+ " is not set in config.yml. Please set the prize to 0 or a positive or negative number.");
 			return 0;
 		} else if (str.startsWith(":")) {
 			Bukkit.getServer().getConsoleSender()
 					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
-							+ " The prize for killing a " + mob.getName()
+							+ " The prize for killing a " + ExtendedMobManager.getMobName(mob)
 							+ " in config.yml has a wrong format. The prize can't start with \":\"");
 			if (str.length() > 1)
 				return getPrice(mob, str.substring(1, str.length()));

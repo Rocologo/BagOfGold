@@ -18,6 +18,7 @@ import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.storage.DataStoreException;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class ExtendedMobManager {
 
@@ -151,6 +152,13 @@ public class ExtendedMobManager {
 	public static ExtendedMob getFirstMob() {
 		int mob_id = mobs.keySet().iterator().next().intValue();
 		return mobs.get(mob_id);
+	}
+
+	public static String getMobName(Entity mob) {
+		if (Misc.isMC18OrNewer())
+			return mob.getName();
+		else
+			return mob.getType().toString();
 	}
 
 }

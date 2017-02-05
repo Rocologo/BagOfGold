@@ -3,6 +3,7 @@ V4.4.1
 * Removed potential bug when a player killed a TARDISWeepingAngel or a MysteriousHalloween Mob
 * Fixed bug, which caused MasterMobHunters to be moved to "home" all the time. (You might need to use /mobhunt npc sethome to save a new MasterMobHunter home). Known caveat. After moving a NPC with the teleport command, the head will turn in the wrong direction) This is a Minecraft/Citizens bug and happens also if you use /npc tphere.
 * Fixed bug where /mobhunt happyhour did not shoe left time correct.
+* Fixed error on Thermos 1.7.10 servers (https://github.com/Rocologo/MobHunting/issues/128)
 V4.4.0
 * Forgot to initiate FishingManager
 V4.3.9
