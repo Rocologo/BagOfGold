@@ -12,73 +12,128 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import net.elseland.xikage.MythicMobs.MythicMobs;
-import net.elseland.xikage.MythicMobs.API.IMobsAPI;
-import net.elseland.xikage.MythicMobs.API.Bukkit.Events.*;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
-import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.rewards.MobRewardData;
 
-public class MythicMobsCompat implements Listener {
+public class MythicMobsCompat {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
-	private File file = new File(MobHunting.getInstance().getDataFolder(), "mythicmobs-rewards.yml");
-	private YamlConfiguration config = new YamlConfiguration();
+	private static File file = new File(MobHunting.getInstance().getDataFolder(), "mythicmobs-rewards.yml");
+	private static YamlConfiguration config = new YamlConfiguration();
+
 	public static final String MH_MYTHICMOBS = "MH:MYTHICMOBS";
-	private static MythicMobs mythicMobs;
-	private static IMobsAPI mobsAPI;
+
+	public enum MythicMobVersion {
+		NOT_DETECTED, MYTHICMOBS_V251, MYTHICMOBS_V400
+	};
+
+	public static MythicMobVersion mmVersion = MythicMobVersion.NOT_DETECTED;
 
 	public MythicMobsCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MythicMobs is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
-			if (mPlugin.getDescription().getVersion().compareTo("2.5.1") >= 0) {
-				mythicMobs = (MythicMobs) mPlugin;
-				mobsAPI = mythicMobs.getAPI().getMobAPI();
-				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+			if (mPlugin.getDescription().getVersion().compareTo("4.0.0") >= 0) {
 
 				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
-						+ getMythicMobs().getDescription().getVersion() + ")");
-				// API:
-				// http://xikage.elseland.net/viewgit/?a=tree&p=MythicMobs&h=dec796decd1ef71fdd49aed69aef85dc7d82b1c1&hb=ffeb51fb84e882365846a30bd2b9753716faf51e&f=MythicMobs/src/net/elseland/xikage/MythicMobs/API
+						+ mPlugin.getDescription().getVersion() + ")");
+				mmVersion = MythicMobVersion.MYTHICMOBS_V400;
 				supported = true;
+				Bukkit.getPluginManager().registerEvents(new MythicMobsV400Compat(), MobHunting.getInstance());
 
-				loadMythicMobsData();
-				saveMythicMobsData();
+			} else if (mPlugin.getDescription().getVersion().compareTo("2.5.1") >= 0) {
+				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
+						+ mPlugin.getDescription().getVersion() + ")");
+				mmVersion = MythicMobVersion.MYTHICMOBS_V251;
+				supported = true;
+				Bukkit.getPluginManager().registerEvents(new MythicMobsV251Compat(), MobHunting.getInstance());
+
 			} else {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 				console.sendMessage(ChatColor.RED
 						+ "[MobHunting] MythicMobs is outdated. Please update to V2.5.1 or newer. Integration will be disabled");
+				return;
 			}
+			MythicMobsCompat.loadMythicMobsData();
+			MythicMobsCompat.saveMythicMobsData();
 		}
+	}
+
+	public static boolean isSupported() {
+		return supported;
+	}
+
+	public static void setSupported(boolean status) {
+		supported = status;
+	}
+
+	public static MythicMobVersion getMythicMobVersion() {
+		return mmVersion;
+	}
+
+	public static boolean isDisabledInConfig() {
+		return MobHunting.getConfigManager().disableIntegrationMythicmobs;
+	}
+
+	public static boolean isEnabledInConfig() {
+		return !MobHunting.getConfigManager().disableIntegrationMythicmobs;
+	}
+
+	public static boolean isMythicMob(String mob) {
+		switch (mmVersion) {
+		case MYTHICMOBS_V251:
+			return MythicMobsV251Compat.isMythicMobV251(mob);
+		case MYTHICMOBS_V400:
+			return MythicMobsV400Compat.isMythicMobV400(mob);
+		case NOT_DETECTED:
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+
+	public static boolean isMythicMob(Entity killed) {
+		if (isSupported())
+			return killed.hasMetadata(MH_MYTHICMOBS);
+		return false;
+	}
+
+	public static String getMythicMobType(Entity killed) {
+		List<MetadataValue> data = killed.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+		for (MetadataValue mdv : data) {
+			if (mdv.value() instanceof MobRewardData)
+				return ((MobRewardData) mdv.value()).getMobType();
+		}
+		return null;
+	}
+
+	public static HashMap<String, MobRewardData> getMobRewardData() {
+		return mMobRewardData;
 	}
 
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
-	public void loadMythicMobsData() {
+	public static void loadMythicMobsData() {
 		try {
 			if (!file.exists())
 				return;
-			Messages.debug("Loading extra MobRewards for Citizens MythicMobs mobs.");
+			Messages.debug("Loading extra MobRewards for MythicMobs mobs.");
 
 			config.load(file);
 			int n = 0;
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config.getConfigurationSection(key);
-				if (MythicMobsHelper.isMythicMob(key)) {
+				if (isMythicMob(key)) {
 					MobRewardData mob = new MobRewardData();
 					mob.read(section);
 					mob.setMobType(key);
@@ -105,7 +160,7 @@ public class MythicMobsCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			if (MythicMobsHelper.isMythicMob(key)) {
+			if (isMythicMob(key)) {
 				MobRewardData mob = new MobRewardData();
 				mob.read(section);
 				mob.setMobType(key);
@@ -124,7 +179,7 @@ public class MythicMobsCompat implements Listener {
 		}
 	}
 
-	public void saveMythicMobsData() {
+	public static void saveMythicMobsData() {
 		try {
 			config.options().header("This a extra MobHunting config data for the MythicMobs on your server.");
 
@@ -147,7 +202,7 @@ public class MythicMobsCompat implements Listener {
 		}
 	}
 
-	public void saveMythicMobsData(String key) {
+	public static void saveMythicMobsData(String key) {
 		try {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);
@@ -160,87 +215,6 @@ public class MythicMobsCompat implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	// **************************************************************************
-	// OTHER FUNCTIONS
-	// **************************************************************************
-	public static Plugin getMythicMobs() {
-		return mPlugin;
-	}
-
-	public static IMobsAPI getAPI() {
-		return mobsAPI;
-	}
-
-	public static boolean isSupported() {
-		return supported;
-	}
-
-	public static boolean isMythicMob(Entity killed) {
-		if (isSupported())
-			// return mobsAPI.isMythicMob(killed);
-			return killed.hasMetadata(MH_MYTHICMOBS);
-		return false;
-	}
-
-	public static String getMythicMobType(Entity killed) {
-		List<MetadataValue> data = killed.getMetadata(MH_MYTHICMOBS);
-		MetadataValue value = data.get(0);
-		return ((MobRewardData) value.value()).getMobType();
-	}
-
-	public static HashMap<String, MobRewardData> getMobRewardData() {
-		return mMobRewardData;
-	}
-
-	public static boolean isDisabledInConfig() {
-		return MobHunting.getConfigManager().disableIntegrationMythicmobs;
-	}
-
-	public static boolean isEnabledInConfig() {
-		return !MobHunting.getConfigManager().disableIntegrationMythicmobs;
-	}
-
-	// **************************************************************************
-	// EVENTS
-	// **************************************************************************
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	private void onMythicMobDeathEvent(MythicMobDeathEvent event) {
-		// Messages.debug("MythicMob spawn event: MinecraftMobtype=%s
-		// MythicMobType=%s", event
-		// .getLivingEntity().getType(), event.getMobType().getInternalName());
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	private void onMythicMobSpawnEvent(MythicMobSpawnEvent event) {
-		String mobtype = event.getMobType().getInternalName();
-		Messages.debug("MythicMobSpawnEvent: MinecraftMobtype=%s MythicMobType=%s", event.getLivingEntity().getType(),
-				mobtype);
-		if (!mMobRewardData.containsKey(mobtype)) {
-			Messages.debug("New MythicMobType found=%s (%s)", mobtype, event.getMobType().getDisplayName());
-			mMobRewardData.put(mobtype,
-					new MobRewardData(MobPlugin.MythicMobs, mobtype, event.getMobType().getDisplayName(), "10",
-							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
-			saveMythicMobsData(mobtype);
-			MobHunting.getStoreManager().insertMissingMythicMobs(mobtype);
-			// Update mob loaded into memory
-			MobHunting.getExtendedMobManager().updateExtendedMobs();
-			Messages.injectMissingMobNamesToLangFiles();
-		}
-
-		event.getLivingEntity().setMetadata(MH_MYTHICMOBS,
-				new FixedMetadataValue(mPlugin, mMobRewardData.get(event.getMobType().getInternalName())));
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onMythicMobSkillEvent(MythicMobSkillEvent event) {
-		// Messages.debug("MythicMob Skill event");
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onMythicMobCustomSkillEvent(MythicMobCustomSkillEvent event) {
-		// Messages.debug("MythicMob Custom Skill event");
 	}
 
 }

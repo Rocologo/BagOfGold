@@ -19,7 +19,6 @@ import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.mobs.PluginManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
@@ -567,7 +566,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Connection mConnection = setupConnection();
 			Statement statement = mConnection.createStatement();
 			for (String mob : MythicMobsCompat.getMobRewardData().keySet())
-				if (MythicMobsHelper.isMythicMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0) {
+				if (MythicMobsCompat.isMythicMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0) {
 					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (1,'" + mob + "')");
 					n++;
 				}
@@ -583,7 +582,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	@Override
 	public void insertMissingMythicMobs(String mob) {
-		if (MythicMobsHelper.isMythicMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0)
+		if (MythicMobsCompat.isMythicMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.MythicMobs) == 0)
 			try {
 				Connection mConnection = setupConnection();
 				Statement statement = mConnection.createStatement();

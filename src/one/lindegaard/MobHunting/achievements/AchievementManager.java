@@ -436,7 +436,7 @@ public class AchievementManager implements Listener {
 		if (!player.hasPermission("mobhunting.achievements.disabled") || player.hasPermission("*")) {
 
 			if (!mStorage.containsKey(player.getUniqueId())) {
-				Messages.debug("Loading Achievements for player %s", player);
+				Messages.debug("Loading %s's Achievements", player.getName());
 
 				final PlayerStorage storage = new PlayerStorage();
 				storage.enableAchievements = false;
@@ -457,7 +457,7 @@ public class AchievementManager implements Listener {
 
 							@Override
 							public void onCompleted(Set<AchievementStore> data) {
-								Messages.debug("Achievements returned data set size = %s", data.size());
+								Messages.debug("Loaded %s Achievements.", data.size());
 								for (AchievementStore achievement : data) {
 									if (achievement.progress == -1)
 										storage.gainedAchievements.add(achievement.id);
@@ -470,7 +470,7 @@ public class AchievementManager implements Listener {
 							}
 						});
 			} else {
-				Messages.debug("Using cached achievements for player %s", player);
+				Messages.debug("Using cached achievements for player %s", player.getName());
 			}
 		} else {
 			Messages.debug("achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",

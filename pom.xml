@@ -4,8 +4,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<!-- <version>4.4.1</version> -->
-	<version>4.4.1-SNAPSHOT-B${build.number}</version>
+	<version>4.4.1</version>
+	<!-- <version>4.4.1-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -40,7 +40,9 @@
 		<slf4j.version>1.7.21</slf4j.version>
 		<slf4j-log4j.jar.version>slf4j-log4j12-1.7.21.jar</slf4j-log4j.jar.version>
 
-		<mythicmobs.jar.version>MythicMobs-2.4.5.jar</mythicmobs.jar.version>
+		<mythicmobsold.jar.version>MythicMobs-2.5.1.jar</mythicmobsold.jar.version>
+		<mythicmobs.jar.version>MythicMobs-4.0.0.jar</mythicmobs.jar.version>
+		<mythiclib.jar.version>MythicLib-4.0.0.jar</mythiclib.jar.version>
 		<custommobs.jar.version>CustomMobs-4.16.jar</custommobs.jar.version>
 		<mobarena.jar.version>MobArena0.97.1.jar</mobarena.jar.version>
 		<minigameslib.jar.version>MinigamesLib-1.14.15-SNAPSHOT.jar</minigameslib.jar.version>
@@ -173,6 +175,12 @@
 		<repository>
 			<id>sk89q-repo</id>
 			<url>http://maven.sk89q.com/repo/</url>
+		</repository>
+
+		<!--MD5 / mcMMO -->
+		<repository>
+			<id>md-5-public</id>
+			<url>http://repo.md-5.net/content/groups/public/</url>
 		</repository>
 
 		<!-- dmulloy2 repository / ProtocolLib -->
@@ -317,10 +325,19 @@
 		<!-- <dependency> <groupId>org.mcstats.bukkit</groupId> <artifactId>metrics</artifactId> 
 			<version>${metrics.version}</version> <scope>compile</scope> </dependency> -->
 
+		<!-- ProtocolLib -->
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib-API</artifactId>
 			<version>${protocollib.version}</version>
+		</dependency>
+
+		<!-- McMMO -->
+		<dependency>
+			<groupId>com.gmail.nossr50.mcMMO</groupId>
+			<artifactId>mcMMO</artifactId>
+			<version>1.5.01-SNAPSHOT</version>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- MyPet -->
@@ -413,7 +430,7 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${StackMob.jar.version}</systemPath>
 		</dependency>
-		
+
 		<!-- MysteriousHalloween -->
 		<dependency>
 			<groupId>me.F_o_F_1092.MysteriousHalloween.Main</groupId>
@@ -507,15 +524,34 @@
 			<systemPath>${project.basedir}/lib/Gringotts-2.9.jar</systemPath>
 		</dependency>
 
+		<!-- MythicMobs Old-->
+		<dependency>
+			<groupId>net.elseland.xikage.MythicMobs</groupId>
+			<artifactId>MythicMobs</artifactId>
+			<version>${mythicmobsold.jar.version}</version>
+			<type>jar</type>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${mythicmobsold.jar.version}</systemPath>
+		</dependency>
+
 		<!-- MythicMobs -->
 		<dependency>
-			<groupId>net.elseland.mythicmobs</groupId>
+			<groupId>io.lumine.xikage.mythicmobs</groupId>
 			<artifactId>MythicMobs</artifactId>
 			<version>${mythicmobs.jar.version}</version>
 			<type>jar</type>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>io.lumine.xikage.MythicLib</groupId>
+			<artifactId>MythicPlugin</artifactId>
+			<version>${mythiclib.jar.version}</version>
+			<type>jar</type>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${mythiclib.jar.version}</systemPath>
+		</dependency>
+		
 
 		<!-- CustomMobs -->
 		<dependency>

@@ -155,8 +155,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	}
 
 	public void removeSigns() {
-		for (Block block : getSignBlocks()) 
-			block.setType(Material.AIR,false);
+		for (Block block : getSignBlocks())
+			block.setType(Material.AIR, false);
 	}
 
 	public void update() {
@@ -283,34 +283,35 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 	public boolean isInChunk(Chunk chunk) {
 		BlockFace horizontal;
 
-		switch (mFacing) {
-		case NORTH:
-			horizontal = BlockFace.WEST;
-			break;
-		case SOUTH:
-			horizontal = BlockFace.EAST;
-			break;
-		case WEST:
-			horizontal = BlockFace.SOUTH;
-			break;
-		case EAST:
-			horizontal = BlockFace.NORTH;
-			break;
-		default:
-			throw new AssertionError("Invalid facing " + mFacing);
+		if (mFacing != null) {
+			switch (mFacing) {
+			case NORTH:
+				horizontal = BlockFace.WEST;
+				break;
+			case SOUTH:
+				horizontal = BlockFace.EAST;
+				break;
+			case WEST:
+				horizontal = BlockFace.SOUTH;
+				break;
+			case EAST:
+				horizontal = BlockFace.NORTH;
+				break;
+			default:
+				throw new AssertionError("Invalid facing " + mFacing);
+			}
+
+			Location min = mLocation.clone();
+			min.add(-horizontal.getModX() * (mWidth / 2), -1, -horizontal.getModZ() * (mWidth / 2));
+
+			for (int x = 0; x < mWidth; ++x) {
+				int xx = min.getBlockX() + horizontal.getModX() * x;
+				int zz = min.getBlockZ() + horizontal.getModZ() * x;
+
+				if (xx >> 4 == chunk.getX() && zz >> 4 == chunk.getZ())
+					return true;
+			}
 		}
-
-		Location min = mLocation.clone();
-		min.add(-horizontal.getModX() * (mWidth / 2), -1, -horizontal.getModZ() * (mWidth / 2));
-
-		for (int x = 0; x < mWidth; ++x) {
-			int xx = min.getBlockX() + horizontal.getModX() * x;
-			int zz = min.getBlockZ() + horizontal.getModZ() * x;
-
-			if (xx >> 4 == chunk.getX() && zz >> 4 == chunk.getZ())
-				return true;
-		}
-
 		return false;
 	}
 

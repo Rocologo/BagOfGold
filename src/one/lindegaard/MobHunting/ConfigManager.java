@@ -1329,7 +1329,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
 	public boolean pvpAllowed = true;
 	@ConfigField(name = "rob-from-victim", category = "pvp", comment = "Set rob-from-victim=true to steal from the victim or "
-			+ "\nrob-from-victim=false to get the reward mpney from the server.")
+			+ "\nrob-from-victim=false to get the reward money from the server.")
 	public boolean robFromVictim = true;
 
 	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize can be a number to steal x dollars from the killed player,"
@@ -1580,6 +1580,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-mysterious-halloween", category = "plugins", comment = "Disable integration with MysteriousHalloween."
 			+ "\nhttps://www.spigotmc.org/resources/mysterioushalloween.13059/")
 	public boolean disableIntegrationMysteriousHalloween = false;
+
+	@ConfigField(name = "disable-integration-mcmmo", category = "plugins", comment = "Disable integration with McMMO."
+			+ "\nhttps://www.spigotmc.org/resources/mcmmo.2445/")
+	public boolean disableIntegrationMcMMO = false;
 
 	// #####################################################################################
 	// Database

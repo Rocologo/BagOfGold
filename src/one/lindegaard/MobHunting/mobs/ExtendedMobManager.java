@@ -15,7 +15,6 @@ import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsHelper;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.util.Misc;
@@ -57,7 +56,7 @@ public class ExtendedMobManager {
 			switch (mob.getMobPlugin()) {
 			case MythicMobs:
 				if (!MythicMobsCompat.isSupported() || MythicMobsCompat.isDisabledInConfig()
-						|| !MythicMobsHelper.isMythicMob(mob.getMobtype()))
+						|| !MythicMobsCompat.isMythicMob(mob.getMobtype()))
 					continue;
 				break;
 			case CustomMobs:
