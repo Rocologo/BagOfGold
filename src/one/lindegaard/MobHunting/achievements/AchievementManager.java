@@ -55,6 +55,12 @@ public class AchievementManager implements Listener {
 
 	public AchievementManager() {
 		registerAchievements();
+
+		// this is only need when server owner upgrades from very old
+		// version of Mobhunting
+		if (upgradeAchievements())
+			MobHunting.getDataStoreManager().waitForUpdates();
+
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -64,7 +70,7 @@ public class AchievementManager implements Listener {
 		return mAchievements.get(id);
 	}
 
-	public void registerAchievement(Achievement achievement) {
+	private void registerAchievement(Achievement achievement) {
 		Validate.notNull(achievement);
 
 		if (achievement instanceof ProgressAchievement) {
@@ -82,7 +88,7 @@ public class AchievementManager implements Listener {
 			Bukkit.getPluginManager().registerEvents((Listener) achievement, MobHunting.getInstance());
 	}
 
-	public void registerAchievements() {
+	private void registerAchievements() {
 		registerAchievement(new AxeMurderer());
 		registerAchievement(new CreeperBoxing());
 		registerAchievement(new Electrifying());

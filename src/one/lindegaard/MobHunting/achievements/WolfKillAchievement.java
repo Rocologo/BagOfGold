@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
-import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
@@ -72,7 +71,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 			Player owner = ((OfflinePlayer) killer.getOwner()).getPlayer();
 
 			if (owner != null && MobHunting.getMobHuntingManager().isHuntEnabled(owner)) {
-				if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) owner)
+				if (MobArenaCompat.isPlayingMobArena((Player) owner)
 						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 					Messages.debug("AchiveBlocked: FangMaster was achieved while %s was playing MobArena.",
 							owner.getName());

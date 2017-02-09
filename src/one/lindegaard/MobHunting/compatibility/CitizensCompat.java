@@ -184,15 +184,13 @@ public class CitizensCompat implements Listener {
 	public static boolean isNPC(Entity entity) {
 		if (isSupported())
 			return CitizensAPI.getNPCRegistry().isNPC(entity);
-		else
-			return false;
+		return false;
 	}
 
 	public static boolean isNPC(Integer id) {
 		if (isSupported())
 			return CitizensAPI.getNPCRegistry().getById(id) != null;
-		else
-			return false;
+		return false;
 	}
 
 	public static int getNPCId(Entity entity) {
@@ -223,8 +221,7 @@ public class CitizensCompat implements Listener {
 					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
 					|| CitizensAPI.getNPCRegistry().getNPC(entity)
 							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
-		else
-			return false;
+		return false;
 	}
 
 	public static HashMap<String, MobRewardData> getMobRewardData() {

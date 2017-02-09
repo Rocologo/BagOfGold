@@ -14,7 +14,6 @@ import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
-import one.lindegaard.MobHunting.compatibility.MobArenaHelper;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class Creepercide implements Achievement, Listener {
@@ -74,7 +73,7 @@ public class Creepercide implements Achievement, Listener {
 
 			if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator)) {
 				// Check if player (initiator) is playing MobArena.
-				if (MobArenaCompat.isEnabledInConfig() && MobArenaHelper.isPlayingMobArena((Player) initiator)
+				if (MobArenaCompat.isPlayingMobArena((Player) initiator)
 						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 					Messages.debug("AchiveBlocked: CreeperCide was achieved while %s was playing MobArena.",
 							initiator.getName());

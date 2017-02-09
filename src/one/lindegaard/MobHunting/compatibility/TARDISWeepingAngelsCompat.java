@@ -79,7 +79,9 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	 * @return true if the entity is a TARDISWeepingAngels entity
 	 */
 	public static boolean isWeepingAngelMonster(Entity entity) {
-		return entity.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+		if (isSupported())
+			return entity.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
+		return false;
 		// return ((TARDISWeepingAngels)
 		// mPlugin).getWeepingAngelsAPI().isWeepingAngelMonster(entity);
 	}

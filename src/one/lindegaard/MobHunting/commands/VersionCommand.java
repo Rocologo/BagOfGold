@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.update.UpdateHelper;
+import one.lindegaard.MobHunting.update.Updater;
 import one.lindegaard.MobHunting.update.UpdateStatus;
 
 public class VersionCommand implements ICommand {
@@ -54,13 +54,13 @@ public class VersionCommand implements ICommand {
 				+ Messages.getString(
 						"mobhunting.commands.version.currentversion","currentversion",
 						MobHunting.getInstance().getDescription().getVersion()));
-		if (UpdateHelper.getUpdateAvailable() == UpdateStatus.AVAILABLE)
+		if (Updater.getUpdateAvailable() == UpdateStatus.AVAILABLE)
 			sender.sendMessage(ChatColor.GREEN
 					+ Messages.getString(
 							"mobhunting.commands.version.newversion","newversion",
-							UpdateHelper.getBukkitUpdate().getVersionName()));
+							Updater.getBukkitUpdate().getVersionName()));
 		if (sender.hasPermission("mobhunting.update")) {
-			UpdateHelper.pluginUpdateCheck(sender, true, true);
+			Updater.pluginUpdateCheck(sender, true, true);
 		}
 		return true;
 	}

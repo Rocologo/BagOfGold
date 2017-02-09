@@ -88,8 +88,7 @@ public class MysteriousHalloweenCompat implements Listener {
 	public static boolean isMysteriousHalloween(Entity entity) {
 		if (isSupported())
 			return MysteriousHalloweenAPI.isEntity(entity);
-		else
-			return false;
+		return false;
 	}
 
 	/**
@@ -102,8 +101,7 @@ public class MysteriousHalloweenCompat implements Listener {
 	public static MobType getMysteriousHalloweenType(Entity entity) {
 		if (isMysteriousHalloween(entity))
 			return MysteriousHalloweenAPI.getMobType(entity);
-		else
-			return null;
+		return null;
 	}
 
 	public static HashMap<String, MobRewardData> getMobRewardData() {

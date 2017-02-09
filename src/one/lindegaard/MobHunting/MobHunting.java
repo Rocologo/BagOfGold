@@ -47,8 +47,6 @@ import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsV400Compat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsV251Compat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
@@ -66,14 +64,13 @@ import one.lindegaard.MobHunting.storage.DataStoreManager;
 import one.lindegaard.MobHunting.storage.IDataStore;
 import one.lindegaard.MobHunting.storage.MySQLDataStore;
 import one.lindegaard.MobHunting.storage.SQLiteDataStore;
-import one.lindegaard.MobHunting.update.UpdateHelper;
+import one.lindegaard.MobHunting.update.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class MobHunting extends JavaPlugin implements Listener {
+public class MobHunting extends JavaPlugin {
 
 	// Constants
 	private final static String pluginName = "mobhunting";
@@ -118,164 +115,154 @@ public class MobHunting extends JavaPlugin implements Listener {
 		} else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
 
-		mMobHuntingManager = new MobHuntingManager(this);
-		mFishingManager = new FishingManager();
-
 		mWorldGroupManager = new WorldGroup();
 		mWorldGroupManager.load();
 
 		mRewardManager = new RewardManager(this);
-		if (mRewardManager.getEconomy() != null) {
+		if (mRewardManager.getEconomy() == null)
+			return;
 
-			mAreaManager = new AreaManager(this);
+		mAreaManager = new AreaManager(this);
 
-			if (mConfig.databaseType.equalsIgnoreCase("mysql"))
-				mStore = new MySQLDataStore();
-			else
-				mStore = new SQLiteDataStore();
+		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
+			mStore = new MySQLDataStore();
+		else
+			mStore = new SQLiteDataStore();
+
+		try {
+			mStore.initialize();
+		} catch (DataStoreException e) {
+			e.printStackTrace();
 
 			try {
-				mStore.initialize();
-			} catch (DataStoreException e) {
-				e.printStackTrace();
-
-				try {
-					mStore.shutdown();
-				} catch (DataStoreException e1) {
-					e1.printStackTrace();
-				}
-				setEnabled(false);
-				return;
+				mStore.shutdown();
+			} catch (DataStoreException e1) {
+				e1.printStackTrace();
 			}
-
-			UpdateHelper.setCurrentJarFile(this.getFile().getName());
-
-			mStoreManager = new DataStoreManager(mStore);
-
-			mPlayerSettingsManager = new PlayerSettingsManager();
-
-			// Handle compatibility stuff
-			registerPlugin(EssentialsCompat.class, "Essentials");
-			registerPlugin(GringottsCompat.class, "Gringotts");
-
-			registerPlugin(WorldEditCompat.class, "WorldEdit");
-			registerPlugin(WorldGuardCompat.class, "WorldGuard");
-			registerPlugin(McMMOCompat.class, "mcMMO");
-			registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
-
-			registerPlugin(MyPetCompat.class, "MyPet");
-
-			registerPlugin(MinigamesCompat.class, "Minigames");
-			registerPlugin(MinigamesLibCompat.class, "MinigamesLib");
-			registerPlugin(MobArenaCompat.class, "MobArena");
-			registerPlugin(PVPArenaCompat.class, "PVPArena");
-			registerPlugin(BattleArenaCompat.class, "BattleArena");
-
-			registerPlugin(LibsDisguisesCompat.class, "LibsDisguises");
-			registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
-			registerPlugin(IDisguiseCompat.class, "iDisguise");
-			registerPlugin(VanishNoPacketCompat.class, "VanishNoPacket");
-
-			registerPlugin(BossBarAPICompat.class, "BossBarAPI");
-			registerPlugin(TitleAPICompat.class, "TitleAPI");
-			registerPlugin(BarAPICompat.class, "BarAPI");
-			registerPlugin(TitleManagerCompat.class, "TitleManager");
-			registerPlugin(ActionbarCompat.class, "Actionbar");
-			registerPlugin(ActionBarAPICompat.class, "ActionBarAPI");
-			registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
-
-			registerPlugin(CitizensCompat.class, "Citizens");
-			registerPlugin(MythicMobsCompat.class, "MythicMobs");
-			registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
-			registerPlugin(CustomMobsCompat.class, "CustomMobs");
-			registerPlugin(MobStackerCompat.class, "MobStacker");
-			registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
-			registerPlugin(StackMobCompat.class, "StackMob");
-			registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
-
-			mExtendedMobManager = new ExtendedMobManager();
-
-			// register commands
-			CommandDispatcher cmd = new CommandDispatcher("mobhunt",
-					Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
-			getCommand("mobhunt").setExecutor(cmd);
-			getCommand("mobhunt").setTabCompleter(cmd);
-			cmd.registerCommand(new AchievementsCommand());
-			cmd.registerCommand(new CheckGrindingCommand());
-			cmd.registerCommand(new ClearGrindingCommand());
-			cmd.registerCommand(new DatabaseCommand());
-			cmd.registerCommand(new HeadCommand(this));
-			cmd.registerCommand(new LeaderboardCommand(this));
-			cmd.registerCommand(new LearnCommand());
-			cmd.registerCommand(new MuteCommand());
-			if (CompatibilityManager.isPluginLoaded(CitizensCompat.class) && CitizensCompat.isSupported()) {
-				cmd.registerCommand(new NpcCommand(this));
-			}
-			cmd.registerCommand(new ReloadCommand());
-			if (WorldGuardCompat.isSupported())
-				cmd.registerCommand(new RegionCommand());
-			if (CompatibilityManager.isPluginLoaded(WorldEditCompat.class) && WorldEditCompat.isSupported())
-				cmd.registerCommand(new SelectCommand());
-			cmd.registerCommand(new TopCommand());
-			cmd.registerCommand(new WhitelistAreaCommand());
-			cmd.registerCommand(new UpdateCommand());
-			cmd.registerCommand(new VersionCommand());
-			cmd.registerCommand(new DebugCommand());
-
-			getMobHuntingManager().registerHuntingModifiers();
-
-			if (!getConfigManager().disableFishingRewards)
-				getFishingManager().registerFishingModifiers();
-
-			if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
-				Messages.debug("Reloading %s online player settings from the database",
-						mMobHuntingManager.getOnlinePlayersAmount());
-				for (Player player : mMobHuntingManager.getOnlinePlayers())
-					mPlayerSettingsManager.load(player);
-			}
-			if (!mConfig.disablePlayerBounties) {
-				mBountyManager = new BountyManager(this);
-				cmd.registerCommand(new BountyCommand());
-				if (mMobHuntingManager.getOnlinePlayersAmount() > 0)
-					for (Player player : mMobHuntingManager.getOnlinePlayers())
-						mBountyManager.loadOpenBounties(player);
-			}
-			cmd.registerCommand(new HappyHourCommand());
-
-			mAchievementManager = new AchievementManager();
-
-			// this is only need when server owner upgrades from very old
-			// version of Mobhunting
-			if (mAchievementManager.upgradeAchievements())
-				mStoreManager.waitForUpdates();
-
-			for (Player player : mMobHuntingManager.getOnlinePlayers())
-				mAchievementManager.load(player);
-
-			mLeaderboardManager = new LeaderboardManager(this);
-
-			UpdateHelper.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
-
-			if (!getServer().getName().toLowerCase().contains("glowstone")) {
-				mMetricsManager = new MetricsManager(this);
-				mMetricsManager.startMetrics();
-			}
-
-			Bukkit.getPluginManager().registerEvents(this, this);
-			Bukkit.getServer().getPluginManager().registerEvents(new FishingManager(), MobHunting.getInstance());
-
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-				public void run() {
-					Messages.injectMissingMobNamesToLangFiles();
-				}
-			}, 20 * 5); // 20ticks/sec * 3 sec.
-
-			for (Player player : mMobHuntingManager.getOnlinePlayers())
-				mMobHuntingManager.setHuntEnabled(player, true);
-
-			mInitialized = true;
-
+			setEnabled(false);
+			return;
 		}
+
+		Updater.setCurrentJarFile(this.getFile().getName());
+
+		mStoreManager = new DataStoreManager(mStore);
+
+		mPlayerSettingsManager = new PlayerSettingsManager();
+
+		// Handle compatibility stuff
+		registerPlugin(EssentialsCompat.class, "Essentials");
+		registerPlugin(GringottsCompat.class, "Gringotts");
+
+		registerPlugin(WorldEditCompat.class, "WorldEdit");
+		registerPlugin(WorldGuardCompat.class, "WorldGuard");
+		registerPlugin(McMMOCompat.class, "mcMMO");
+		registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
+
+		registerPlugin(MyPetCompat.class, "MyPet");
+
+		//Minigame plugins
+		registerPlugin(MinigamesCompat.class, "Minigames");
+		registerPlugin(MinigamesLibCompat.class, "MinigamesLib");
+		registerPlugin(MobArenaCompat.class, "MobArena");
+		registerPlugin(PVPArenaCompat.class, "PVPArena");
+		registerPlugin(BattleArenaCompat.class, "BattleArena");
+
+		//Disguise and Vanish plugins
+		registerPlugin(LibsDisguisesCompat.class, "LibsDisguises");
+		registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
+		registerPlugin(IDisguiseCompat.class, "iDisguise");
+		registerPlugin(VanishNoPacketCompat.class, "VanishNoPacket");
+
+		//Plugins used for presentation information in the BossBar, ActionBar, Title or Subtitle
+		registerPlugin(BossBarAPICompat.class, "BossBarAPI");
+		registerPlugin(TitleAPICompat.class, "TitleAPI");
+		registerPlugin(BarAPICompat.class, "BarAPI");
+		registerPlugin(TitleManagerCompat.class, "TitleManager");
+		registerPlugin(ActionbarCompat.class, "Actionbar");
+		registerPlugin(ActionBarAPICompat.class, "ActionBarAPI");
+		registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
+		
+		//Plugins where the reward is a multiplier
+		registerPlugin(StackMobCompat.class, "StackMob");
+		registerPlugin(MobStackerCompat.class, "MobStacker");
+		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
+		
+		//ExtendedMob Plugins where special mobs are created
+		registerPlugin(CitizensCompat.class, "Citizens");
+		registerPlugin(MythicMobsCompat.class, "MythicMobs");
+		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
+		registerPlugin(CustomMobsCompat.class, "CustomMobs");
+		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
+		mExtendedMobManager = new ExtendedMobManager();
+
+		//Register commands
+		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
+				Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
+		getCommand("mobhunt").setExecutor(cmd);
+		getCommand("mobhunt").setTabCompleter(cmd);
+		cmd.registerCommand(new AchievementsCommand());
+		cmd.registerCommand(new CheckGrindingCommand());
+		cmd.registerCommand(new ClearGrindingCommand());
+		cmd.registerCommand(new DatabaseCommand());
+		cmd.registerCommand(new HeadCommand(this));
+		cmd.registerCommand(new LeaderboardCommand(this));
+		cmd.registerCommand(new LearnCommand());
+		cmd.registerCommand(new MuteCommand());
+		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class) && CitizensCompat.isSupported()) {
+			cmd.registerCommand(new NpcCommand(this));
+		}
+		cmd.registerCommand(new ReloadCommand());
+		if (WorldGuardCompat.isSupported())
+			cmd.registerCommand(new RegionCommand());
+		if (CompatibilityManager.isPluginLoaded(WorldEditCompat.class) && WorldEditCompat.isSupported())
+			cmd.registerCommand(new SelectCommand());
+		cmd.registerCommand(new TopCommand());
+		cmd.registerCommand(new WhitelistAreaCommand());
+		cmd.registerCommand(new UpdateCommand());
+		cmd.registerCommand(new VersionCommand());
+		cmd.registerCommand(new DebugCommand());
+		if (!mConfig.disablePlayerBounties) {
+			mBountyManager = new BountyManager(this);
+			cmd.registerCommand(new BountyCommand());
+		}
+		cmd.registerCommand(new HappyHourCommand());
+
+		mAchievementManager = new AchievementManager();
+
+		mLeaderboardManager = new LeaderboardManager(this);
+
+		mMobHuntingManager = new MobHuntingManager(this);
+		if (!mConfig.disableFishingRewards)
+			mFishingManager = new FishingManager();
+		
+		//Check for new MobHuntig updates
+		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
+
+		if (!getServer().getName().toLowerCase().contains("glowstone")) {
+			mMetricsManager = new MetricsManager(this);
+			mMetricsManager.startMetrics();
+		}
+
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			public void run() {
+				Messages.injectMissingMobNamesToLangFiles();
+			}
+		}, 20 * 5); // 20ticks/sec * 3 sec.
+
+		// Handle online players when server admin do a /reload or /mh reload
+		if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
+			Messages.debug("Reloading %s player settings from the database",
+					mMobHuntingManager.getOnlinePlayersAmount());
+			for (Player player : mMobHuntingManager.getOnlinePlayers()) {
+				mPlayerSettingsManager.load(player);
+				mAchievementManager.load(player);
+				if (!mConfig.disablePlayerBounties)
+					mBountyManager.loadOpenBounties(player);
+				mMobHuntingManager.setHuntEnabled(player, true);
+			}
+		}
+
+		mInitialized = true;
 
 	}
 

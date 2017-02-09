@@ -53,7 +53,9 @@ public class MobStackerCompat implements Listener {
 	}
 
 	public static boolean isStackedMob(Entity entity) {
-		return entity.hasMetadata("max-stack");
+		if (isSupported())
+			return entity.hasMetadata("max-stack");
+		return false;
 		// return entity.hasMetadata("quantity"); // quantity is removed from
 		// the dead entity
 		// return StackUtils.hasRequiredData(entity);

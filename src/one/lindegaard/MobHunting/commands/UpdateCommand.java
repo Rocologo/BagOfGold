@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.update.UpdateHelper;
+import one.lindegaard.MobHunting.update.Updater;
 import one.lindegaard.MobHunting.update.UpdateStatus;
 
 public class UpdateCommand implements ICommand {
@@ -47,16 +47,16 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-		if (UpdateHelper.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
-			if (UpdateHelper.downloadAndUpdateJar()) {
+		if (Updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
+			if (Updater.downloadAndUpdateJar()) {
 				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
 			} else {
 				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.could-not-update"));
 			}
-		} else if (UpdateHelper.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
+		} else if (Updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
 			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
 		} else {
-			UpdateHelper.pluginUpdateCheck(sender, true, false);
+			Updater.pluginUpdateCheck(sender, true, false);
 		}
 		return true;
 	}

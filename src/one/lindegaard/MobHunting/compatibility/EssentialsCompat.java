@@ -21,8 +21,8 @@ public class EssentialsCompat implements Listener {
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			Bukkit.getLogger().info(
-					"[MobHunting] Enabling compatibility with Essentials (" + getEssentials().getDescription().getVersion() + ")");
+			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with Essentials ("
+					+ getEssentials().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}
@@ -48,13 +48,19 @@ public class EssentialsCompat implements Listener {
 	}
 
 	public static boolean isGodModeEnabled(Player player) {
-		User user = getEssentials().getUser(player);
-		return user.isGodModeEnabled();
+		if (isSupported()) {
+			User user = getEssentials().getUser(player);
+			return user.isGodModeEnabled();
+		}
+		return false;
 	}
 
 	public static boolean isVanishedModeEnabled(Player player) {
-		User user = getEssentials().getUser(player);
-		return user.isVanished();
+		if (isSupported()) {
+			User user = getEssentials().getUser(player);
+			return user.isVanished();
+		}
+		return false;
 	}
 
 	// **************************************************************************

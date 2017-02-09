@@ -48,10 +48,9 @@ public class VanishNoPacketCompat implements Listener {
 	}
 
 	public static boolean isVanishedModeEnabled(Player player) {
-		if (supported)
+		if (isSupported())
 			return getVanishNoPacket().getManager().isVanished(player);
-		else
-			return false;
+		return false;
 	}
 
 }

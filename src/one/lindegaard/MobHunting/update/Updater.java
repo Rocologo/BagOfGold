@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
-public class UpdateHelper {
+public class Updater {
 
 	// ***************************************************************************
 	// UPDATECHECK - Check if there is a new version available at
@@ -135,7 +135,7 @@ public class UpdateHelper {
 				succes = downloadFile(getBukkitUpdate().getVersionLink(), "plugins/update/");
 				if (succes) {
 					File downloadedJar = new File(
-							"plugins/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+							"plugins/update/" + Updater.getBukkitUpdate().getVersionFileName());
 					File newJar = new File("plugins/update/MobHunting.jar");
 					if (newJar.exists())
 						newJar.delete();
@@ -160,8 +160,8 @@ public class UpdateHelper {
 						currentJar.renameTo(disabledJar);
 
 						File downloadedJar = new File(
-								"plugins/MobHunting/update/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
-						File newJar = new File("plugins/" + UpdateHelper.getBukkitUpdate().getVersionFileName());
+								"plugins/MobHunting/update/" + Updater.getBukkitUpdate().getVersionFileName());
+						File newJar = new File("plugins/" + Updater.getBukkitUpdate().getVersionFileName());
 						downloadedJar.renameTo(newJar);
 						updateAvailable = UpdateStatus.RESTART_NEEDED;
 						return true;
@@ -183,7 +183,7 @@ public class UpdateHelper {
 		int updateCheck = 0, pluginCheck = 0;
 		boolean snapshot = false;
 		// Check to see if the latest file is newer that this one
-		String[] split = UpdateHelper.getBukkitUpdate().getVersionName().split(" V");
+		String[] split = Updater.getBukkitUpdate().getVersionName().split(" V");
 		// Only do this if the format is what we expect
 		if (split.length == 2) {
 			// Need to escape the period in the regex expression
@@ -216,7 +216,7 @@ public class UpdateHelper {
 					MobHunting.getInstance().getLogger().warning(
 							"Installed plugin version: " + MobHunting.getInstance().getDescription().getVersion());
 					MobHunting.getInstance().getLogger().warning(
-							"Newest version on Bukkit.org: " + UpdateHelper.getBukkitUpdate().getVersionName());
+							"Newest version on Bukkit.org: " + Updater.getBukkitUpdate().getVersionName());
 					return UpdateStatus.UNKNOWN;
 				}
 			}
@@ -225,7 +225,7 @@ public class UpdateHelper {
 			MobHunting.getInstance().getLogger()
 					.warning("Installed plugin version: " + MobHunting.getInstance().getDescription().getVersion());
 			MobHunting.getInstance().getLogger()
-					.warning("Newest version on Bukkit.org: " + UpdateHelper.getBukkitUpdate().getVersionName());
+					.warning("Newest version on Bukkit.org: " + Updater.getBukkitUpdate().getVersionName());
 			return UpdateStatus.UNKNOWN;
 		}
 		if ((updateCheck == pluginCheck && snapshot))
