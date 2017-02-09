@@ -16,7 +16,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
-import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 
@@ -50,12 +49,13 @@ public class RegionCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " <id>" + ChatColor.WHITE + " mobhunting allow",
+		return new String[] {
+				ChatColor.GOLD + label + ChatColor.GREEN + " <id>" + ChatColor.WHITE + " mobhunting allow",
 				ChatColor.GOLD + label + ChatColor.GREEN + " <id>" + ChatColor.WHITE + " mobhunting deny",
 				ChatColor.GOLD + label + ChatColor.GREEN + " <id>" + ChatColor.WHITE + " mobhunting",
 				ChatColor.GOLD + label + ChatColor.GREEN + " mobhunting allow",
-				label + ChatColor.GREEN + " mobhunting deny", 
-				ChatColor.GOLD + label + ChatColor.GREEN + " mobhunting" + ChatColor.WHITE + " - to remove the flag"};
+				label + ChatColor.GREEN + " mobhunting deny",
+				ChatColor.GOLD + label + ChatColor.GREEN + " mobhunting" + ChatColor.WHITE + " - to remove the flag" };
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class RegionCommand implements ICommand {
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)) {
 			if (args.length == 1) {
-				if (sender instanceof Player || MyPetCompat.isMyPet(sender)) {
+				if (sender instanceof Player) {
 
 					RegionManager regionManager = WorldGuardCompat.getWorldGuardPlugin()
 							.getRegionManager(((Player) sender).getWorld());
@@ -128,7 +128,7 @@ public class RegionCommand implements ICommand {
 			return false;
 
 		if (CompatibilityManager.isPluginLoaded(WorldGuardCompat.class)) {
-			if (sender instanceof Player || MyPetCompat.isMyPet(sender)) {
+			if (sender instanceof Player) {
 				RegionQuery query = WorldGuardHelper.getRegionContainer().createQuery();
 				ApplicableRegionSet set = query.getApplicableRegions(((Player) sender).getLocation());
 				if (set.size() == 1) {

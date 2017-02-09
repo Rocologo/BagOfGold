@@ -1,7 +1,8 @@
 V4.4.2
-* Fixed the bug I intruduced in V4.4.1 where Fishing Multipliers was ignored.
+* Added support for all MyPet types (Not only the wolf)
+* Fixed the bug I introduced in V4.4.1 where Fishing Multipliers was ignored.
 * Fix ticket 126 (https://github.com/Rocologo/MobHunting/issues/126)
-* Uptimized the plugin upstart sequence.
+* Optimized the plugin startup sequence.
 * Cleaned up in my code.
 V4.4.1
 * Added Support for MythicMobs V2.5.1, V2.6.0 and V4.0.0

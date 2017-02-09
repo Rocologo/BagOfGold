@@ -560,8 +560,6 @@ public class MobHuntingManager implements Listener {
 
 		if (WorldGuardCompat.isSupported()
 				&& !WorldGuardHelper.isAllowedByWorldGuard(damager, damaged, DefaultFlag.MOB_DAMAGE, true)) {
-			// Messages.debug("KillBlocked:(1) %s is hiding in WG region with
-			// mob-damage=DENY", damager.getName());
 			return;
 		}
 
@@ -1421,7 +1419,8 @@ public class MobHuntingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
-		if (CitizensCompat.isNPC(event.getEntity()))
+		//Bonus Mob can't be Citizens and MyPet 
+		if (CitizensCompat.isNPC(event.getEntity()) || MyPetCompat.isMyPet(event.getEntity()))
 			return;
 
 		if (event.getEntityType() == EntityType.ENDER_DRAGON)

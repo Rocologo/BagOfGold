@@ -41,9 +41,9 @@ public class MyPetCompat implements Listener {
 		return mPlugin;
 	}
 
-	public static boolean isMyPet(Object obj) {
+	public static boolean isMyPet(Entity entity) {
 		if (isSupported())
-			return obj instanceof MyPetBukkitEntity;
+			return entity instanceof MyPetBukkitEntity;
 		return false;
 	}
 
@@ -60,7 +60,22 @@ public class MyPetCompat implements Listener {
 		return false;
 	}
 
+	public static MyPetBukkitEntity getMyPet(Entity entity) {
+		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) entity.getLastDamageCause();
+
+		if (dmg == null || !(dmg.getDamager() instanceof MyPetBukkitEntity))
+			return null;
+
+		MyPetBukkitEntity killer = (MyPetBukkitEntity) dmg.getDamager();
+
+		return killer;
+	}
+
 	public static Player getMyPetOwner(Entity entity) {
+
+		if (!(entity.getLastDamageCause() instanceof EntityDamageByEntityEvent))
+			return null;
+
 		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) entity.getLastDamageCause();
 
 		if (dmg == null || !(dmg.getDamager() instanceof MyPetBukkitEntity))

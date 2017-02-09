@@ -6,6 +6,7 @@ import java.util.List;
 
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
@@ -72,6 +73,7 @@ import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Vindicator;
 import org.bukkit.metadata.MetadataValue;
 
+import de.Keyle.MyPet.api.entity.MyPetBukkitEntity;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
@@ -1757,7 +1759,7 @@ public class ConfigManager extends AutoConfig {
 	 * @return value
 	 */
 	public double getBaseKillPrize(Entity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
+		if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
 			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
 				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
 				for (MetadataValue value : data)
@@ -1771,7 +1773,7 @@ public class ConfigManager extends AutoConfig {
 					TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).getName());
 			return 0;
 
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+		} else if (MythicMobsCompat.isMythicMob(mob)) {
 			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 				for (MetadataValue value : data)
@@ -1783,8 +1785,7 @@ public class ConfigManager extends AutoConfig {
 			Messages.debug("MythicMob %s has no reward data", MythicMobsCompat.getMythicMobType(mob));
 			return 0;
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
-				&& CitizensCompat.isSentryOrSentinel(mob)) {
+		} else if (CitizensCompat.isSentryOrSentinel(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
 			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
@@ -1798,7 +1799,7 @@ public class ConfigManager extends AutoConfig {
 			Messages.debug("Citizens mob %s has no reward data", npc.getName());
 			return 0;
 
-		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+		} else if (CustomMobsCompat.isCustomMob(mob)) {
 			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 				for (MetadataValue value : data)
@@ -1810,7 +1811,7 @@ public class ConfigManager extends AutoConfig {
 			Messages.debug("CustomMob %s has no reward data", CustomMobsCompat.getCustomMobType(mob));
 			return 0;
 
-		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
 			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
 				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
 				for (MetadataValue value : data)
@@ -1823,6 +1824,11 @@ public class ConfigManager extends AutoConfig {
 			Messages.debug("MysteriousHalloween %s has no reward data",
 					MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name());
 			return 0;
+
+		} else if (MyPetCompat.isMyPet(mob)) {
+			Messages.debug("Tried to find a prize for a MyPet: %s (Owner=%s)", MyPetCompat.getMyPet(mob),
+					MyPetCompat.getMyPetOwner(mob));
+			return getPrice(mob, MobHunting.getConfigManager().wolfPrize);
 
 		} else {
 			if (Misc.isMC111OrNewer())
@@ -1917,11 +1923,10 @@ public class ConfigManager extends AutoConfig {
 				return getPrice(mob, MobHunting.getConfigManager().skeletonPrize);
 			else if (mob instanceof Skeleton && ((Skeleton) mob).getSkeletonType() == SkeletonType.WITHER)
 				return getPrice(mob, MobHunting.getConfigManager().witherSkeletonPrize);
+			else if (mob instanceof CaveSpider)
+				return getPrice(mob, MobHunting.getConfigManager().caveSpiderPrize);
 			else if (mob instanceof Spider)
-				if (mob instanceof CaveSpider)
-					return getPrice(mob, MobHunting.getConfigManager().caveSpiderPrize);
-				else
-					return getPrice(mob, MobHunting.getConfigManager().spiderPrize);
+				return getPrice(mob, MobHunting.getConfigManager().spiderPrize);
 			else if (mob instanceof Witch)
 				return getPrice(mob, MobHunting.getConfigManager().witchPrize);
 			else if (mob instanceof PigZombie)
@@ -1975,9 +1980,9 @@ public class ConfigManager extends AutoConfig {
 				return getPrice(mob, MobHunting.getConfigManager().squidPrize);
 			else if (mob instanceof Villager)
 				return getPrice(mob, MobHunting.getConfigManager().villagerPrize);
-			else if (mob instanceof Wolf)
+			else if (mob instanceof Wolf) {
 				return getPrice(mob, MobHunting.getConfigManager().wolfPrize);
-			else if (mob instanceof Item && ((Item) mob).getItemStack().getType() == Material.RAW_FISH) {
+			} else if (mob instanceof Item && ((Item) mob).getItemStack().getType() == Material.RAW_FISH) {
 				ItemStack is = ((Item) mob).getItemStack();
 				if (is.getData().getData() == (byte) 0) {
 					return getPrice(mob, MobHunting.getConfigManager().rawFishPrize);
@@ -1990,7 +1995,8 @@ public class ConfigManager extends AutoConfig {
 				}
 			}
 		}
-		Messages.debug("Mobhunting could not find the prize for killing this mob %s", ExtendedMobManager.getMobName(mob));
+		Messages.debug("Mobhunting could not find the prize for killing this mob: %s (%s)",
+				ExtendedMobManager.getMobName(mob), mob.getType());
 		return 0;
 	}
 
@@ -2086,6 +2092,9 @@ public class ConfigManager extends AutoConfig {
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getConsoleRunCommand();
 			return "";
+
+		} else if (MyPetCompat.isMyPet(mob)) {
+			return MobHunting.getConfigManager().wolfCmd;
 
 		} else {
 			if (Misc.isMC111OrNewer())
@@ -2306,6 +2315,9 @@ public class ConfigManager extends AutoConfig {
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardDescription();
 			return "";
 
+		} else if (MyPetCompat.isMyPet(mob)) {
+			return MobHunting.getConfigManager().wolfCmdDesc;
+
 		} else {
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
@@ -2517,6 +2529,10 @@ public class ConfigManager extends AutoConfig {
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()).getChance();
 			return 0;
+
+		} else if (MyPetCompat.isMyPet(killed)) {
+			return (double) MobHunting.getConfigManager().wolfFequency
+					/ (double) MobHunting.getConfigManager().wolfFrequencyBase;
 
 		} else {
 			if (Misc.isMC111OrNewer())
