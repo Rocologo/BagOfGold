@@ -1,3 +1,5 @@
+V4.4.4
+* Fixed Start/stop events for MiniGamesLib - games.
 V4.4.3
 * Fixed: https://www.spigotmc.org/threads/mobhunting.46937/page-102#post-2226536
 * Trying to fix: https://www.spigotmc.org/threads/mobhunting.46937/page-102#post-2226535

@@ -95,25 +95,19 @@ public class PVPArenaCompat implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPvpPlayerDeath(PADeathEvent event) {
 		Messages.debug("[MH]Player %s died in PVPArena: %s", event.getPlayer().getName(), event.getArena());
-		startPlayingPVPArena(event.getPlayer());
+		//startPlayingPVPArena(event.getPlayer());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPvpPlayerLeave(PALeaveEvent event) {
 		Messages.debug("[MH]Player %s left PVPArena: %s", event.getPlayer().getName(), event.getArena());
-		startPlayingPVPArena(event.getPlayer());
+		stopPlayingPVPArena(event.getPlayer());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPAExit(PAExitEvent event) {
 		Messages.debug("[MH]Player %s exit PVPArena: %s", event.getPlayer().getName(), event.getArena());
-		startPlayingPVPArena(event.getPlayer());
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	private void onPADeath(PADeathEvent event) {
-		Messages.debug("[MH]Player %s died in PVPArena: %s", event.getPlayer().getName(), event.getArena());
-		startPlayingPVPArena(event.getPlayer());
+		stopPlayingPVPArena(event.getPlayer());
 	}
 
 	// More events at
