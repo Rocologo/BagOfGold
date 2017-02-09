@@ -1030,11 +1030,16 @@ public class MobHuntingManager implements Listener {
 			}
 
 		HuntData data = new HuntData(instance);
-
-		data = MobHunting.getMobHuntingManager().getHuntData(killer);
-
-		// Killstreak
-		MobHunting.getMobHuntingManager().handleKillstreak(killer);
+		if (killer != null) {
+			data = getHuntData(killer);
+			// Killstreak
+			handleKillstreak(killer);
+		} else if (MyPetCompat.isKilledByMyPet(killed)) {
+			data = getHuntData(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
+			// Killstreak
+			handleKillstreak(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
+		} else
+			return;
 
 		// Record kills that are still within a small area
 		Location loc = killed.getLocation();
@@ -1043,7 +1048,8 @@ public class MobHuntingManager implements Listener {
 		Area detectedGrindingArea = MobHunting.getAreaManager().getGrindingArea(loc);
 		if (detectedGrindingArea == null)
 			detectedGrindingArea = data.getGrindingArea(loc);
-		// Slimes ang magmacubes are except from grinding due to their splitting
+		// Slimes ang magmacubes are except from grinding due to their
+		// splitting
 		// nature
 		if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
 				&& MobHunting.getConfigManager().penaltyGrindingEnable && !killed.hasMetadata("MH:reinforcement")
@@ -1419,7 +1425,7 @@ public class MobHuntingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void bonusMobSpawn(CreatureSpawnEvent event) {
-		//Bonus Mob can't be Citizens and MyPet 
+		// Bonus Mob can't be Citizens and MyPet
 		if (CitizensCompat.isNPC(event.getEntity()) || MyPetCompat.isMyPet(event.getEntity()))
 			return;
 

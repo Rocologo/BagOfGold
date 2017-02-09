@@ -1,3 +1,6 @@
+V4.4.3
+* Fixed: https://www.spigotmc.org/threads/mobhunting.46937/page-102#post-2226536
+* Trying to fix: https://www.spigotmc.org/threads/mobhunting.46937/page-102#post-2226535
 V4.4.2
 * Added support for all MyPet types (Not only the wolf)
 * Fixed the bug I introduced in V4.4.1 where Fishing Multipliers was ignored.

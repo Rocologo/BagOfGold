@@ -25,7 +25,6 @@ import one.lindegaard.MobHunting.modifier.DifficultyBonus;
 import one.lindegaard.MobHunting.modifier.HappyHourBonus;
 import one.lindegaard.MobHunting.modifier.IModifier;
 import one.lindegaard.MobHunting.modifier.RankBonus;
-import com.gmail.nossr50.events.skills.fishing.*;
 
 public class FishingManager implements Listener {
 
@@ -49,44 +48,7 @@ public class FishingManager implements Listener {
 		return mFishingModifiers;
 	}
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-	public void Fish2(McMMOPlayerFishingTreasureEvent event) {
-		Player p = event.getPlayer();
-		ItemStack s = event.getTreasure();
-		Messages.debug("FISH2: %s caught a %s", p.getName(), s.getType());
-		// if (s.getType() != Material.RAW_FISH)
-		// playerTreasures.put(p, s);
-		// if (event.isCancelled()) {
-		// Messages.debug("McMMOPlayerFishingTreasureEvent is cancelled");
-		// return;
-		// }
-	}
-
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-	public void Fish3(McMMOPlayerFishingEvent event) {
-		Player p = event.getPlayer();
-		Messages.debug("FISH3: %s is fishing", p.getName());
-		// if (event.isCancelled()) {
-		// Messages.debug("McMMOPlayerFishingEvent is cancelled");
-		// return;
-		// }
-	}
-
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-	public void Fish4(McMMOPlayerMagicHunterEvent event) {
-		Player p = event.getPlayer();
-		ItemStack is = event.getTreasure();
-		Messages.debug("FISH4: %s, Tresure = %s", p.getName(), is.getType());
-	}
-
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-	public void Fish5(McMMOPlayerShakeEvent event) {
-		Player p = event.getPlayer();
-		ItemStack is = event.getDrop();
-		Messages.debug("FISH5: %s, Drop = %s", p.getName(), is.getType());
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+		@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void Fish(PlayerFishEvent event) {
 		if (MobHunting.getConfigManager().disableFishingRewards)

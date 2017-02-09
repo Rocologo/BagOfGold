@@ -5,8 +5,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+
+import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingEvent;
+import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingTreasureEvent;
+import com.gmail.nossr50.events.skills.fishing.McMMOPlayerMagicHunterEvent;
+import com.gmail.nossr50.events.skills.fishing.McMMOPlayerShakeEvent;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -68,6 +77,44 @@ public class McMMOCompat implements Listener {
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	public void Fish2(McMMOPlayerFishingTreasureEvent event) {
+		Player p = event.getPlayer();
+		ItemStack s = event.getTreasure();
+		Messages.debug("FISH2: %s caught a %s", p.getName(), s.getType());
+		// if (s.getType() != Material.RAW_FISH)
+		// playerTreasures.put(p, s);
+		// if (event.isCancelled()) {
+		// Messages.debug("McMMOPlayerFishingTreasureEvent is cancelled");
+		// return;
+		// }
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	public void Fish3(McMMOPlayerFishingEvent event) {
+		Player p = event.getPlayer();
+		Messages.debug("FISH3: %s is fishing", p.getName());
+		// if (event.isCancelled()) {
+		// Messages.debug("McMMOPlayerFishingEvent is cancelled");
+		// return;
+		// }
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	public void Fish4(McMMOPlayerMagicHunterEvent event) {
+		Player p = event.getPlayer();
+		ItemStack is = event.getTreasure();
+		Messages.debug("FISH4: %s, Treasure = %s", p.getName(), is.getType());
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	public void Fish5(McMMOPlayerShakeEvent event) {
+		Player p = event.getPlayer();
+		ItemStack is = event.getDrop();
+		Messages.debug("FISH5: %s, Drop = %s", p.getName(), is.getType());
+	}
+
 
 
 }
