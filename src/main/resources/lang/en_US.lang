@@ -322,6 +322,7 @@ mobhunting.learn.mobhunting-deny=No reward: You are in a protected region with M
 mobhunting.learn.mobarena=You don't get rewards while playing MobArena
 mobhunting.learn.pvparena=You don't get rewards while playing PvpArena
 mobhunting.learn.battlearena=You don't get rewards while playing BattleArena
+mobhunting.learn.minigameslib=You don't get rewards while playing MiniGames
 mobhunting.learn.godmode=You don't get rewards while you are in God mode
 mobhunting.learn.vanished=You don't get rewards while you are Vanished
 mobhunting.learn.no-permission=No permission to get rewards for killing this mob: ${killed-mob}

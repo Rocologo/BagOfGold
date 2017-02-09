@@ -56,12 +56,12 @@ import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
-import one.lindegaard.MobHunting.compatibility.BattleArenaHelper;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
@@ -472,8 +472,7 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("KillBlocked: %s was killed while playing PvpArena.", killed.getName());
 					return;
 					// BattleArena
-				} else if (BattleArenaCompat.isEnabledInConfig()
-						&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
+				} else if (BattleArenaCompat.isPlayingBattleArena((Player) killed)) {
 					Messages.debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
 					return;
 				}
@@ -798,10 +797,15 @@ public class MobHuntingManager implements Listener {
 				return;
 
 				// BattleArena
-			} else if (BattleArenaCompat.isEnabledInConfig()
-					&& BattleArenaHelper.isPlayingBattleArena((Player) killed)) {
+			} else if (BattleArenaCompat.isPlayingBattleArena((Player) killed)) {
 				Messages.debug("KillBlocked: %s was killed while playing BattleArena.", killed.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.battlearena"));
+				return;
+
+				// MiniGamesLib
+			} else if (MinigamesLibCompat.isPlayingMinigame((Player) killed)) {
+				Messages.debug("KillBlocked: %s was killed while playing a MiniGame.", killed.getName());
+				Messages.learn(killer, Messages.getString("mobhunting.learn.minigameslib"));
 				return;
 
 				//
@@ -883,7 +887,7 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("KillBlocked: %s is currently playing PvpArena.", killer.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.pvparena"));
 				return;
-			} else if (BattleArenaCompat.isEnabledInConfig() && BattleArenaHelper.isPlayingBattleArena(killer)) {
+			} else if (BattleArenaCompat.isPlayingBattleArena(killer)) {
 				Messages.debug("KillBlocked: %s is currently playing BattleArena.", killer.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.battlearena"));
 				return;
