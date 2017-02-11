@@ -9,7 +9,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -89,7 +88,8 @@ public class DataStoreManager {
 	public void recordAchievement(OfflinePlayer player, Achievement achievement) {
 		synchronized (mWaiting) {
 			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
-			//mWaiting.add(new StatStore(StatType.AchievementCount, ExtendedMobManager.getFirstMob(), player));
+			// mWaiting.add(new StatStore(StatType.AchievementCount,
+			// ExtendedMobManager.getFirstMob(), player));
 		}
 	}
 
@@ -190,7 +190,7 @@ public class DataStoreManager {
 	 *         Database, a new record will be created.
 	 * @throws SQLException
 	 */
-	public PlayerSettings getPlayerSettings(Player player) {
+	public PlayerSettings getPlayerSettings(OfflinePlayer player) {
 		try {
 			return mStore.getPlayerSettings(player);
 		} catch (UserNotFoundException e) {
@@ -218,14 +218,15 @@ public class DataStoreManager {
 	 * @param learning_mode
 	 * @param muted
 	 */
-	public void updatePlayerSettings(Player player, boolean learning_mode, boolean muted) {
-		Set<PlayerSettings> ps = new HashSet<PlayerSettings>();
-		ps.add(new PlayerSettings(player, learning_mode, muted));
-		try {
-			mStore.updatePlayerSettings(ps);
-		} catch (DataStoreException e) {
-			e.printStackTrace();
+	public void updatePlayerSettings(OfflinePlayer player, boolean learning_mode, boolean muted) {
+		synchronized (mWaiting) {
+			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
 		}
+		//try {
+		//	mStore.updatePlayerSettings(new PlayerSettings(player, learning_mode, muted));
+		//} catch (DataStoreException e) {
+		//	e.printStackTrace();
+		//}
 	}
 
 	/**

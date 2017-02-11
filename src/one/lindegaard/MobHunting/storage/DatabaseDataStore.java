@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -854,7 +855,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			mConnection.close();
 		} catch (SQLException e1) {
-			throw new DataStoreException(e1);
+			e1.printStackTrace();
 		}
 	};
 
@@ -963,7 +964,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				throw new DataStoreException(e);
 			}
 		} catch (SQLException e1) {
-			throw new DataStoreException(e1);
+			e1.printStackTrace();
 		}
 
 	}
@@ -985,6 +986,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mUpdatePlayerSettings.close();
 				mConnection.commit();
 				mConnection.close();
+				for (PlayerSettings playerData : playerDataSet) {
+					if (MobHunting.getPlayerSettingsmanager().containsKey(playerData.getPlayer()))
+						MobHunting.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
+				}
 			} catch (SQLException e) {
 				rollback(mConnection);
 				mConnection.close();
@@ -1076,7 +1081,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 				throw new DataStoreException(e);
 			}
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 

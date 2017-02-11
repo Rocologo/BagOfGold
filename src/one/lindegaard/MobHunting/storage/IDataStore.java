@@ -148,5 +148,6 @@ public interface IDataStore {
 	public void insertMysteriousHalloweenMobs(String mob);
 	
 	public void insertCustomMobs(String mob);
+
 	
 }

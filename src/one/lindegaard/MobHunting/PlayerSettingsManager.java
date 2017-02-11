@@ -1,10 +1,10 @@
 package one.lindegaard.MobHunting;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,7 +17,7 @@ import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class PlayerSettingsManager implements Listener {
 
-	private static HashMap<OfflinePlayer, PlayerSettings> mPlayerSettings = new HashMap<OfflinePlayer, PlayerSettings>();
+	private static HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
 
 	/**
 	 * Constructor for the PlayerSettingsmanager
@@ -34,7 +34,7 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) {
 		if (mPlayerSettings.containsKey(offlinePlayer))
-			return mPlayerSettings.get(offlinePlayer);
+			return mPlayerSettings.get(offlinePlayer.getUniqueId());
 		else
 			return new PlayerSettings(offlinePlayer);
 	}
@@ -44,8 +44,8 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param playerSettings
 	 */
-	public void setPlayerSettings(Player player, PlayerSettings playerSettings) {
-		mPlayerSettings.put(player, playerSettings);
+	public void setPlayerSettings(OfflinePlayer player, PlayerSettings playerSettings) {
+		mPlayerSettings.put(player.getUniqueId(), playerSettings);
 	}
 
 	/**
@@ -53,8 +53,9 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param player
 	 */
-	public void removePlayerSettings(Player player) {
-		mPlayerSettings.remove(player);
+	public void removePlayerSettings(OfflinePlayer player) {
+		Messages.debug("Removing %s from player settings cache", player.getName());
+		mPlayerSettings.remove(player.getUniqueId());
 	}
 
 	/**
@@ -65,7 +66,10 @@ public class PlayerSettingsManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
-		load(player);
+		if (containsKey(player))
+			Messages.debug("Using cached player settings");
+		else
+			load(player);
 	}
 
 	/**
@@ -78,7 +82,7 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		save(player);
-		removePlayerSettings(player);
+		// removePlayerSettings(player);
 	}
 
 	/**
@@ -86,7 +90,7 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param player
 	 */
-	public void load(final Player player) {
+	public void load(final OfflinePlayer player) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -95,7 +99,7 @@ public class PlayerSettingsManager implements Listener {
 					Messages.debug("%s isMuted()", player.getName());
 				if (ps.isLearningMode())
 					Messages.debug("%s is in LearningMode()", player.getName());
-				mPlayerSettings.put(player, ps);
+				mPlayerSettings.put(player.getUniqueId(), ps);
 			}
 		}.runTaskAsynchronously(MobHunting.getInstance());
 	}
@@ -105,22 +109,24 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param player
 	 */
-	public void save(Player player) {
-		MobHunting.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player).isLearningMode(),
-				getPlayerSettings(player).isMuted());
+	public void save(final OfflinePlayer player) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				MobHunting.getDataStoreManager().updatePlayerSettings(player,
+						getPlayerSettings(player).isLearningMode(), getPlayerSettings(player).isMuted());
+			}
+		}.runTaskAsynchronously(MobHunting.getInstance());
 	}
 
 	/**
 	 * Test if PlayerSettings contains data for Player
 	 * 
-	 * @param entity
+	 * @param player
 	 * @return true if player exists in PlayerSettings in Memory
 	 */
-	public boolean containsKey(LivingEntity entity) {
-		if (entity instanceof Player)
-			return mPlayerSettings.containsKey((Player) entity);
-		else
-			return false;
+	public boolean containsKey(final OfflinePlayer player) {
+		return mPlayerSettings.containsKey(player.getUniqueId());
 	}
 
 }

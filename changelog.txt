@@ -1,3 +1,5 @@
+V4.4.5
+* Optimized PlayerSettings loading and saving
 V4.4.4
 * Support for McMMO added. If McMMO changes a caught fish to TNT, Record, Spade or something else the player will not get a reward. 
 * Fixed Start/stop events for MiniGamesLib - games.

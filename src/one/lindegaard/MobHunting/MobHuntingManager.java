@@ -21,8 +21,10 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Player;
@@ -515,28 +517,57 @@ public class MobHuntingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onSkeletonShoot(ProjectileLaunchEvent event) {
-		// TODO: can Skeleton use other weapons than an Arrow?
-		if (!(event.getEntity() instanceof Arrow) || !(event.getEntity().getShooter() instanceof Skeleton)
-				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
+		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
 			return;
 
-		Skeleton shooter = (Skeleton) event.getEntity().getShooter();
+		if (event.getEntity() instanceof Arrow) {
+			if (event.getEntity().getShooter() instanceof Skeleton) {
+				Skeleton shooter = (Skeleton) event.getEntity().getShooter();
+				if (shooter.getTarget() instanceof Player
+						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) shooter.getTarget())
+						&& ((Player) shooter.getTarget()).getGameMode() != GameMode.CREATIVE) {
+					DamageInformation info = null;
+					info = mDamageHistory.get(shooter);
+					if (info == null)
+						info = new DamageInformation();
+					info.time = System.currentTimeMillis();
+					info.attacker = (Player) shooter.getTarget();
+					info.attackerPosition = shooter.getTarget().getLocation().clone();
+					mDamageHistory.put(shooter, info);
+				}
+			} else {
+				Messages.debug("WARNING: The arrow was shut from %s, this situation is not handled by MobHunting.",
+						event.getEntity().getShooter().toString());
+				return;
+			}
+		}
+	}
 
-		if (shooter.getTarget() instanceof Player
-				&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) shooter.getTarget())
-				&& ((Player) shooter.getTarget()).getGameMode() != GameMode.CREATIVE) {
-			DamageInformation info = null;
-			info = mDamageHistory.get(shooter);
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onFireballShoot(ProjectileLaunchEvent event) {
+		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld()))
+			return;
 
-			if (info == null)
-				info = new DamageInformation();
-
-			info.time = System.currentTimeMillis();
-
-			info.attacker = (Player) shooter.getTarget();
-
-			info.attackerPosition = shooter.getTarget().getLocation().clone();
-			mDamageHistory.put(shooter, info);
+		if (event.getEntity() instanceof Fireball) {
+			if (event.getEntity().getShooter() instanceof Blaze) {
+				Blaze blaze = (Blaze) event.getEntity().getShooter();
+				if (blaze.getTarget() instanceof Player
+						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) blaze.getTarget())
+						&& ((Player) blaze.getTarget()).getGameMode() == GameMode.SURVIVAL) {
+					DamageInformation info = null;
+					info = mDamageHistory.get(blaze);
+					if (info == null)
+						info = new DamageInformation();
+					info.time = System.currentTimeMillis();
+					info.attacker = (Player) blaze.getTarget();
+					info.attackerPosition = blaze.getTarget().getLocation().clone();
+					mDamageHistory.put(blaze, info);
+				}
+			} else {
+				Messages.debug("WARNING: The firewall was shut from %s, this situation is not handled by MobHunting.",
+						event.getEntity().getShooter().toString());
+				return;
+			}
 		}
 	}
 
@@ -774,9 +805,9 @@ public class MobHuntingManager implements Listener {
 		// Handle Muted mode
 		boolean killer_muted = false;
 		boolean killed_muted = false;
-		if (MobHunting.getPlayerSettingsmanager().containsKey(killer))
+		if (killer instanceof Player && MobHunting.getPlayerSettingsmanager().containsKey((Player) killer))
 			killer_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isMuted();
-		if (MobHunting.getPlayerSettingsmanager().containsKey(killed))
+		if (killed instanceof Player && MobHunting.getPlayerSettingsmanager().containsKey((Player) killed))
 			killed_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings((Player) killed).isMuted();
 
 		// Player died while playing a Minigame: MobArena, PVPArena,
