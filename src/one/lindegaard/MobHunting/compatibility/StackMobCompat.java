@@ -53,6 +53,7 @@ public class StackMobCompat implements Listener {
 
 	public static boolean isStackedMob(Entity entity) {
 		if (isSupported()) {
+			//return ((StackMob) Bukkit.getPluginManager().getPlugin("StackMob")).amountMap.containsKey(entity.getUniqueId());
 			return getStackMobAPI().getEntityManager().isStackedEntity(entity);
 		}
 		return false;
