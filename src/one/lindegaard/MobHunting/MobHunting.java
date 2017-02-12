@@ -162,20 +162,21 @@ public class MobHunting extends JavaPlugin {
 
 		registerPlugin(MyPetCompat.class, "MyPet");
 
-		//Minigame plugins
+		// Minigame plugins
 		registerPlugin(MinigamesCompat.class, "Minigames");
 		registerPlugin(MinigamesLibCompat.class, "MinigamesLib");
 		registerPlugin(MobArenaCompat.class, "MobArena");
 		registerPlugin(PVPArenaCompat.class, "PVPArena");
 		registerPlugin(BattleArenaCompat.class, "BattleArena");
 
-		//Disguise and Vanish plugins
+		// Disguise and Vanish plugins
 		registerPlugin(LibsDisguisesCompat.class, "LibsDisguises");
 		registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
 		registerPlugin(IDisguiseCompat.class, "iDisguise");
 		registerPlugin(VanishNoPacketCompat.class, "VanishNoPacket");
 
-		//Plugins used for presentation information in the BossBar, ActionBar, Title or Subtitle
+		// Plugins used for presentation information in the BossBar, ActionBar,
+		// Title or Subtitle
 		registerPlugin(BossBarAPICompat.class, "BossBarAPI");
 		registerPlugin(TitleAPICompat.class, "TitleAPI");
 		registerPlugin(BarAPICompat.class, "BarAPI");
@@ -183,13 +184,13 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(ActionbarCompat.class, "Actionbar");
 		registerPlugin(ActionBarAPICompat.class, "ActionBarAPI");
 		registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
-		
-		//Plugins where the reward is a multiplier
+
+		// Plugins where the reward is a multiplier
 		registerPlugin(StackMobCompat.class, "StackMob");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
-		
-		//ExtendedMob Plugins where special mobs are created
+
+		// ExtendedMob Plugins where special mobs are created
 		registerPlugin(CitizensCompat.class, "Citizens");
 		registerPlugin(MythicMobsCompat.class, "MythicMobs");
 		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
@@ -197,7 +198,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
 		mExtendedMobManager = new ExtendedMobManager();
 
-		//Register commands
+		// Register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 				Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
 		getCommand("mobhunt").setExecutor(cmd);
@@ -236,8 +237,8 @@ public class MobHunting extends JavaPlugin {
 		mMobHuntingManager = new MobHuntingManager(this);
 		if (!mConfig.disableFishingRewards)
 			mFishingManager = new FishingManager();
-		
-		//Check for new MobHuntig updates
+
+		// Check for new MobHuntig updates
 		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
 		if (!getServer().getName().toLowerCase().contains("glowstone")) {
@@ -265,11 +266,11 @@ public class MobHunting extends JavaPlugin {
 		}
 
 		mInitialized = true;
-		
-		//for (int i=0; i<10; i++){
-		//	Bukkit.getServer().getConsoleSender()
-		//	.sendMessage(ChatColor.RED + "[MobHunting]"+UUID.randomUUID());
-		//}
+
+		// for (int i=0; i<10; i++){
+		// Bukkit.getServer().getConsoleSender()
+		// .sendMessage(ChatColor.RED + "[MobHunting]"+UUID.randomUUID());
+		// }
 
 	}
 
@@ -291,21 +292,31 @@ public class MobHunting extends JavaPlugin {
 		if (!mInitialized)
 			return;
 
+		Messages.debug("Shutdown LeaderBoardManager");
 		mLeaderboardManager.shutdown();
+		Messages.debug("Shutdown AreaManager");
 		mAreaManager.shutdown();
-		if (!mConfig.disablePlayerBounties)
+		if (!mConfig.disablePlayerBounties) {
+			Messages.debug("Shutdown BountyManager");
 			mBountyManager.shutdown();
+		}
 
 		getMobHuntingManager().getHuntingModifiers().clear();
+		getFishingManager().getFishingModifiers().clear();
 
 		try {
+			Messages.debug("Shutdown StoreManager");
 			mStoreManager.shutdown();
+			Messages.debug("Shutdown Store");
 			mStore.shutdown();
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 		}
+		Messages.debug("Shutdown CitizensCompat");
 		CitizensCompat.shutdown();
+		Messages.debug("Shutdown WorldGroupManager");
 		mWorldGroupManager.save();
+		Messages.debug("MobHunting disabled.");
 	}
 
 	// ************************************************************************************

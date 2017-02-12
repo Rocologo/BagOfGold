@@ -33,6 +33,7 @@ public class RewardListeners implements Listener {
 		// This event is NOT called when the inventory is full.
 		double money = 0;
 		Item item = e.getItem();
+		
 		if (item.hasMetadata(RewardManager.MH_MONEY)) {
 			List<MetadataValue> metadata = item.getMetadata(RewardManager.MH_MONEY);
 			for (MetadataValue mdv : metadata) {

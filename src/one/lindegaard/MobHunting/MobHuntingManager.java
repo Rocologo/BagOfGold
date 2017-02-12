@@ -1159,7 +1159,7 @@ public class MobHuntingManager implements Listener {
 		double cash = MobHunting.getConfigManager().getBaseKillPrize(killed);
 		double basic_prize = cash;
 
-		Messages.debug("Basic Prize=%s for killing a %s", cash, mob.getName());
+		Messages.debug("Basic Prize=%s for killing a %s", MobHunting.getRewardManager().format(cash), mob.getName());
 		double multipliers = 1.0;
 
 		// Apply the modifiers to Basic reward
@@ -1209,7 +1209,7 @@ public class MobHuntingManager implements Listener {
 					if (bountyOwner != null && bountyOwner.isOnline())
 						Messages.playerActionBarMessage(Misc.getOnlinePlayer(bountyOwner),
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
-										"prize", b.getPrize(), "killed", killed.getName()));
+										"prize", MobHunting.getRewardManager().format(b.getPrize()), "killed", killed.getName()));
 					b.setStatus(BountyStatus.completed);
 					MobHunting.getDataStoreManager().updateBounty(b);
 				}
