@@ -452,10 +452,10 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		section.set("height", mHeight);
 	}
 
-	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
+	public void read(ConfigurationSection section) throws InvalidConfigurationException{
 		World world = Bukkit.getWorld(UUID.fromString(section.getString("world")));
 		if (world == null)
-			throw new IllegalStateException();
+			throw new InvalidConfigurationException("Unknown world:"+section.getString("world"));
 
 		Vector pos = section.getVector("position");
 

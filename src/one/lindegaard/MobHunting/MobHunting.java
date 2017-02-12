@@ -1,6 +1,8 @@
 package one.lindegaard.MobHunting;
 
 import java.io.File;
+import java.util.UUID;
+
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.BountyManager;
 import one.lindegaard.MobHunting.bounty.WorldGroup;
@@ -263,6 +265,11 @@ public class MobHunting extends JavaPlugin {
 		}
 
 		mInitialized = true;
+		
+		//for (int i=0; i<10; i++){
+		//	Bukkit.getServer().getConsoleSender()
+		//	.sendMessage(ChatColor.RED + "[MobHunting]"+UUID.randomUUID());
+		//}
 
 	}
 

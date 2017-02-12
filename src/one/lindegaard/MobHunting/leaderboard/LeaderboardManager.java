@@ -206,9 +206,10 @@ public class LeaderboardManager implements Listener {
 				board.read(section);
 				board.update();
 				board.refresh();
-			} catch (IllegalStateException | InvalidConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (InvalidConfigurationException e) {
+				Messages.debug(e.getMessage());
+				if (MobHunting.getConfigManager().killDebug)
+					e.printStackTrace();
 			}
 			mLeaderboards.put(world, board);
 		}
