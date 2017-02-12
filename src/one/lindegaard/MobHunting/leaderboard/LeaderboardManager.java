@@ -194,7 +194,8 @@ public class LeaderboardManager implements Listener {
 		try {
 			config.load(file);
 		} catch (IOException | InvalidConfigurationException e) {
-			Messages.debug("Could not read file for world: %s", world.getName());
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "Could not read world leaderboard file: boards-" + world.getName() + ".yml");
 			if (MobHunting.getConfigManager().killDebug)
 				e.printStackTrace();
 		}
@@ -209,7 +210,7 @@ public class LeaderboardManager implements Listener {
 				board.update();
 				board.refresh();
 			} catch (InvalidConfigurationException e) {
-				Messages.debug(e.getMessage());
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getMessage());
 				if (MobHunting.getConfigManager().killDebug)
 					e.printStackTrace();
 			}
