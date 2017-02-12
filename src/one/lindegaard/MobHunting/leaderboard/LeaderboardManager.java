@@ -193,8 +193,10 @@ public class LeaderboardManager implements Listener {
 		YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(file);
-		} catch (IOException | InvalidConfigurationException e1) {
-			e1.printStackTrace();
+		} catch (IOException | InvalidConfigurationException e) {
+			Messages.debug("Could not read file for world: %s", world.getName());
+			if (MobHunting.getConfigManager().killDebug)
+				e.printStackTrace();
 		}
 
 		Iterator<String> keys = config.getKeys(false).iterator();
