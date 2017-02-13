@@ -27,7 +27,7 @@ public class MountedBonus implements IModifier {
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (killer.isInsideVehicle() && killer.getVehicle() instanceof Creature)
+		if (killer != null && killer.isInsideVehicle() && killer.getVehicle() instanceof Creature)
 			return true;
 
 		return false;

@@ -1,8 +1,11 @@
 V4.4.5
 * Optimized PlayerSettings loading and saving
 * Added debug information for Ticket 143 (https://github.com/Rocologo/MobHunting/issues/143)
+* Fixed Ticket 147 (https://github.com/Rocologo/MobHunting/issues/147)
+* Fixed Ticket 146 (https://github.com/Rocologo/MobHunting/issues/146)
+* Fixed Ticket 145 (https://github.com/Rocologo/MobHunting/issues/145)
 * Created unique UUID for all MobHunting Heads, updated PlayerProfile names.
-* Added debug information onDisable() 
+* Added debug information onDisable() to hunt to /mh reload bug 
 V4.4.4
 * Support for McMMO added. If McMMO changes a caught fish to TNT, Record, Spade or something else the player will not get a reward. 
 * Fixed Start/stop events for MiniGamesLib - games.

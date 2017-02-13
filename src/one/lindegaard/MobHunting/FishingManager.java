@@ -59,7 +59,7 @@ public class FishingManager implements Listener {
 
 		State state = event.getState();
 		Entity fish = event.getCaught();
-		if (fish == null)
+		if (fish == null || (fish != null && !(fish instanceof Item)))
 			Messages.debug("FishingEvent: State=%s", state);
 		else
 			Messages.debug("FishingEvent: State=%s, %s caught a %s", state, player.getName(),
@@ -120,7 +120,8 @@ public class FishingManager implements Listener {
 				MobHuntFishingEvent event2 = new MobHuntFishingEvent(player, fish, cash, multiplierList);
 				Bukkit.getPluginManager().callEvent(event2);
 				if (event2.isCancelled()) {
-					Messages.debug("FishingBlocked %s: MobHuntFishingEvent was cancelled by another plugin", player.getName());
+					Messages.debug("FishingBlocked %s: MobHuntFishingEvent was cancelled by another plugin",
+							player.getName());
 					return;
 				}
 
@@ -131,8 +132,16 @@ public class FishingManager implements Listener {
 					extraString += String.format("x%.1f", multipliers);
 
 				// Add on modifiers
-				for (String modifier : modifiers)
-					extraString += ChatColor.WHITE + " * " + modifier;
+				int i = 0;
+				for (String modifier : modifiers) {
+					if (i == 0)
+						extraString += ChatColor.WHITE + " ( " + modifier;
+					else
+						extraString += ChatColor.WHITE + " * " + modifier;
+					i++;
+				}
+				if (i != 0)
+					extraString += ChatColor.WHITE + " ) ";
 
 				cash *= multipliers;
 
@@ -177,6 +186,10 @@ public class FishingManager implements Listener {
 
 					} else {
 						if (cash >= MobHunting.getConfigManager().minimumReward) {
+							Messages.debug("Message to send to ActionBar=%s", ChatColor.GREEN + "" + ChatColor.ITALIC
+									+ Messages.getString("mobhunting.fishcaught.reward.bonuses", "prize",
+											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+											"multipliers", MobHunting.getRewardManager().format(multipliers)));
 							Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
 									+ Messages.getString("mobhunting.fishcaught.reward.bonuses", "prize",
 											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),

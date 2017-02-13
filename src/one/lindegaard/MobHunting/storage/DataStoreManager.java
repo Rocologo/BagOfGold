@@ -335,7 +335,7 @@ public class DataStoreManager {
 					Thread.sleep(mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {
-				System.out.println("[MobHunting] StoreThread was interrupted");
+				Messages.debug("StoreThread was interrupted");
 			}
 		}
 	}
@@ -448,7 +448,7 @@ public class DataStoreManager {
 				}
 
 			} catch (InterruptedException e) {
-				System.out.println("[MobHunting] TaskThread was interrupted");
+				Messages.debug(" TaskThread was interrupted");
 			}
 		}
 	}
