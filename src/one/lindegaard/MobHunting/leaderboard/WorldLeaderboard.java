@@ -161,13 +161,18 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 	public void update() {
 		++mTypeIndex;
-		if (mTypeIndex >= mType.length) {
-			mTypeIndex = 0;
-			++mPeriodIndex;
-			if (mPeriodIndex >= mPeriod.length)
-				mPeriodIndex = 0;
+		if (mType != null) {
+			if (mTypeIndex >= mType.length) {
+				mTypeIndex = 0;
+				++mPeriodIndex;
+				if (mPeriodIndex >= mPeriod.length)
+					mPeriodIndex = 0;
+			}
+			MobHunting.getDataStoreManager().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
+		} else {
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.RED + "[MobHunting][WARNING] The leaderboard at (%s,%s,%s) has no StatType");
 		}
-		MobHunting.getDataStoreManager().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
 	}
 
 	public void refresh() {
@@ -452,10 +457,10 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		section.set("height", mHeight);
 	}
 
-	public void read(ConfigurationSection section) throws InvalidConfigurationException{
+	public void read(ConfigurationSection section) throws InvalidConfigurationException {
 		World world = Bukkit.getWorld(UUID.fromString(section.getString("world")));
 		if (world == null)
-			throw new InvalidConfigurationException("Unknown world:"+section.getString("world"));
+			throw new InvalidConfigurationException("Unknown world:" + section.getString("world"));
 
 		Vector pos = section.getVector("position");
 

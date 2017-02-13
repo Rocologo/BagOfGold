@@ -535,10 +535,11 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = shooter.getTarget().getLocation().clone();
 					mDamageHistory.put(shooter, info);
 				}
-			} else {
+			} else if (event.getEntity().getShooter() != null) {
 				Messages.debug("WARNING: The arrow was shut from %s, this situation is not handled by MobHunting.",
 						event.getEntity().getShooter().toString());
-				return;
+			} else {
+				Messages.debug("WARNING: The arrow was shut from %s", event.getEntity());
 			}
 		}
 	}
@@ -563,10 +564,11 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = blaze.getTarget().getLocation().clone();
 					mDamageHistory.put(blaze, info);
 				}
-			} else {
+			} else if (event.getEntity().getShooter() != null) {
 				Messages.debug("WARNING: The firewall was shut from %s, this situation is not handled by MobHunting.",
 						event.getEntity().getShooter().toString());
-				return;
+			} else {
+				Messages.debug("WARNING: The firewall was shut from %s", event.getEntity());
 			}
 		}
 	}
@@ -1209,7 +1211,8 @@ public class MobHuntingManager implements Listener {
 					if (bountyOwner != null && bountyOwner.isOnline())
 						Messages.playerActionBarMessage(Misc.getOnlinePlayer(bountyOwner),
 								Messages.getString("mobhunting.bounty.bounty-claimed", "killer", killer.getName(),
-										"prize", MobHunting.getRewardManager().format(b.getPrize()), "killed", killed.getName()));
+										"prize", MobHunting.getRewardManager().format(b.getPrize()), "killed",
+										killed.getName()));
 					b.setStatus(BountyStatus.completed);
 					MobHunting.getDataStoreManager().updateBounty(b);
 				}

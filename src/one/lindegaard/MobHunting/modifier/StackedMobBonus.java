@@ -37,7 +37,6 @@ public class StackedMobBonus implements IModifier {
 	@Override
 	public boolean doesApply(Entity entity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		Messages.debug("StackMobCompat.isStackedMob=%s", StackMobCompat.isStackedMob(entity));
 		return MobStackerCompat.isStackedMob(entity) || StackMobCompat.isStackedMob(entity);
 	}
 }

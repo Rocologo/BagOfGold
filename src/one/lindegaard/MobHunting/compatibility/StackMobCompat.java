@@ -5,7 +5,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import uk.antiperson.stackmob.StackMob;
 import uk.antiperson.stackmob.api.StackMobAPI;
@@ -16,6 +15,7 @@ public class StackMobCompat implements Listener {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
+	private final static String STACKMOB_STACK_SIZE = "stackmob:stack-size";
 
 	public StackMobCompat() {
 		if (isDisabledInConfig()) {
@@ -53,14 +53,20 @@ public class StackMobCompat implements Listener {
 
 	public static boolean isStackedMob(Entity entity) {
 		if (isSupported()) {
-			//return ((StackMob) Bukkit.getPluginManager().getPlugin("StackMob")).amountMap.containsKey(entity.getUniqueId());
-			return getStackMobAPI().getEntityManager().isStackedEntity(entity);
+			return entity.hasMetadata(STACKMOB_STACK_SIZE);
+			// return
+			// getStackMobAPI().getEntityManager().isStackedEntity(entity);
 		}
 		return false;
 	}
 
 	public static int getStackSize(Entity entity) {
-		return getStackMobAPI().getEntityManager().getStackedEntity(entity).getStackAmount();
+		if (entity.hasMetadata(STACKMOB_STACK_SIZE)) {
+			return (Integer) entity.getMetadata(STACKMOB_STACK_SIZE).get(0).value();
+		}
+		return 1;
+		// return
+		// getStackMobAPI().getEntityManager().getStackedEntity(entity).getStackAmount();
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {
