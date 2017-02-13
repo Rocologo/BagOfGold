@@ -170,8 +170,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 			}
 			MobHunting.getDataStoreManager().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
 		} else {
-			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.RED + "[MobHunting][WARNING] The leaderboard at (%s,%s,%s) has no StatType");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting][WARNING] The leaderboard at "
+					+ mLocation.toString() + " has no StatType");
 		}
 	}
 
