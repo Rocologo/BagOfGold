@@ -79,7 +79,7 @@ public interface IDataStore {
 	 * @throws DataStoreException
 	 * @throws SQLException
 	 */
-	public PlayerSettings getPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException;
+	public PlayerSettings loadPlayerSettings(OfflinePlayer player) throws DataStoreException, SQLException;
 
 	/**
 	 * Update the players Settings in the Database

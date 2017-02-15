@@ -140,7 +140,7 @@ public class HeadCommand implements ICommand, Listener {
 					if (Misc.isMC18OrNewer()) {
 						// Use GameProfile
 						((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(),
-								mob.getHead(displayName));
+								mob.getHead(displayName, 0));
 					} else {
 						String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
 								.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
@@ -310,7 +310,7 @@ public class HeadCommand implements ICommand, Listener {
 		if (event.getItemInHand() != null && event.getItemInHand().hasItemMeta()) {
 			ItemMeta im = event.getItemInHand().getItemMeta();
 			if (im.hasLore() && im.getLore().get(0).equalsIgnoreCase(HeadCommand.MH_REWARD)
-					&& !im.getDisplayName().isEmpty()) {
+					&& !(im.getDisplayName()==null)) {
 				event.getBlockPlaced().setMetadata(HeadCommand.MH_HEAD,
 						new FixedMetadataValue(MobHunting.getInstance(), im.getDisplayName()));
 				Messages.debug("You placed a MH Head DisplayName=%s", im.getDisplayName());

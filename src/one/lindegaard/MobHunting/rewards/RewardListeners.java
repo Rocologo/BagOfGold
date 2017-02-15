@@ -56,6 +56,7 @@ public class RewardListeners implements Listener {
 				}
 			}
 		}
+		CustomItems.showLore(e.getItem().getItemStack());
 	}
 
 	@SuppressWarnings("deprecation")

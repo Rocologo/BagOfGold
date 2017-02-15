@@ -39,7 +39,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -207,8 +207,6 @@ public class AchievementManager implements Listener {
 									getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
 					}
 				}
-
-				// achievements.removeAll(toRemove);
 
 				callback.onCompleted(achievements);
 			}
@@ -484,9 +482,16 @@ public class AchievementManager implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	private void onPlayerJoin(PlayerLoginEvent event) {
-		load(event.getPlayer());
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onPlayerJoin(final PlayerJoinEvent event) {
+		Bukkit.getScheduler().runTaskLater(MobHunting.getInstance(), new Runnable() {
+
+			@Override
+			public void run() {
+				load(event.getPlayer());
+			}
+		}, (long) 5);
+		
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

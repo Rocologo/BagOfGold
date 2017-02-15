@@ -22,6 +22,7 @@ import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
+import one.lindegaard.MobHunting.storage.asynch.PlayerSettingsRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.StoreTask;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask.Mode;
@@ -88,8 +89,6 @@ public class DataStoreManager {
 	public void recordAchievement(OfflinePlayer player, Achievement achievement) {
 		synchronized (mWaiting) {
 			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
-			// mWaiting.add(new StatStore(StatType.AchievementCount,
-			// ExtendedMobManager.getFirstMob(), player));
 		}
 	}
 
@@ -136,9 +135,6 @@ public class DataStoreManager {
 
 	public void cancelBounty(Bounty bounty) {
 		bounty.setStatus(BountyStatus.canceled);
-		// synchronized (mWaiting) {
-		// mWaiting.add(new Bounty(bounty));
-		// }
 		HashSet<Bounty> bounties = new HashSet<Bounty>();
 		bounties.add(bounty);
 		try {
@@ -149,9 +145,6 @@ public class DataStoreManager {
 	}
 
 	public void updateBounty(Bounty bounty) {
-		// synchronized (mWaiting) {
-		// mWaiting.add(new Bounty(bounty));
-		// }
 		HashSet<Bounty> bounties = new HashSet<Bounty>();
 		bounties.add(bounty);
 		try {
@@ -169,19 +162,8 @@ public class DataStoreManager {
 	// *****************************************************************************
 	// PlayerSettings
 	// *****************************************************************************
-	/**
-	 * Gets an offline player using the last known name. WARNING: This does a
-	 * database lookup directly. This will block waiting for a reply
-	 */
-	public OfflinePlayer getPlayerByName(String name) {
-		try {
-			return mStore.getPlayerByName(name);
-		} catch (UserNotFoundException e) {
-			return null;
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public void requestPlayerSettings(OfflinePlayer player, IDataCallback<PlayerSettings> callback) {
+		mTaskThread.addTask(new PlayerSettingsRetrieverTask(player, mWaiting), callback);
 	}
 
 	/**
@@ -192,7 +174,7 @@ public class DataStoreManager {
 	 */
 	public PlayerSettings getPlayerSettings(OfflinePlayer player) {
 		try {
-			return mStore.getPlayerSettings(player);
+			return mStore.loadPlayerSettings(player);
 		} catch (UserNotFoundException e) {
 			Messages.debug("Saving new PlayerSettings for %s to database.", player.getName());
 			PlayerSettings ps = new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
@@ -214,19 +196,29 @@ public class DataStoreManager {
 	/**
 	 * Update the playerSettings in the Database
 	 * 
-	 * @param player
+	 * @param offlinePlayer
 	 * @param learning_mode
 	 * @param muted
 	 */
-	public void updatePlayerSettings(OfflinePlayer player, boolean learning_mode, boolean muted) {
+	public void updatePlayerSettings(OfflinePlayer offlinePlayer, boolean learning_mode, boolean muted) {
 		synchronized (mWaiting) {
-			mWaiting.add(new PlayerSettings(player, learning_mode, muted));
+			mWaiting.add(new PlayerSettings(offlinePlayer, learning_mode, muted));
 		}
-		//try {
-		//	mStore.updatePlayerSettings(new PlayerSettings(player, learning_mode, muted));
-		//} catch (DataStoreException e) {
-		//	e.printStackTrace();
-		//}
+	}
+
+	/**
+	 * Gets an offline player using the last known name. WARNING: This does a
+	 * database lookup directly. This will block waiting for a reply
+	 */
+	public OfflinePlayer getPlayerByName(String name) {
+		try {
+			return mStore.getPlayerByName(name);
+		} catch (UserNotFoundException e) {
+			return null;
+		} catch (DataStoreException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

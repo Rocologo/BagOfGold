@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class PlayerSettingsManager implements Listener {
@@ -69,7 +71,8 @@ public class PlayerSettingsManager implements Listener {
 		if (containsKey(player))
 			Messages.debug("Using cached player settings");
 		else
-			load(player);
+			// load(player);
+			load_ny(player);
 	}
 
 	/**
@@ -82,7 +85,6 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		save(player);
-		// removePlayerSettings(player);
 	}
 
 	/**
@@ -104,19 +106,34 @@ public class PlayerSettingsManager implements Listener {
 		}.runTaskAsynchronously(MobHunting.getInstance());
 	}
 
+	public void load_ny(final OfflinePlayer player) {
+		MobHunting.getDataStoreManager().requestPlayerSettings(player, new IDataCallback<PlayerSettings>() {
+
+			@Override
+			public void onCompleted(PlayerSettings ps) {
+				if (ps.isMuted())
+					Messages.debug("%s isMuted()", player.getName());
+				if (ps.isLearningMode())
+					Messages.debug("%s is in LearningMode()", player.getName());
+				mPlayerSettings.put(player.getUniqueId(), ps);
+			}
+
+			@Override
+			public void onError(Throwable error) {
+				Bukkit.getConsoleSender().sendMessage(
+						ChatColor.RED + "[MobHunting][ERROR] Could not load playerSettings for " + player.getName());
+			}
+		});
+	}
+
 	/**
 	 * Write PlayerSettings to Database
 	 * 
 	 * @param player
 	 */
 	public void save(final OfflinePlayer player) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				MobHunting.getDataStoreManager().updatePlayerSettings(player,
-						getPlayerSettings(player).isLearningMode(), getPlayerSettings(player).isMuted());
-			}
-		}.runTaskAsynchronously(MobHunting.getInstance());
+		MobHunting.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player).isLearningMode(),
+				getPlayerSettings(player).isMuted());
 	}
 
 	/**

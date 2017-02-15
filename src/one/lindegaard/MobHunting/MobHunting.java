@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting;
 
 import java.io.File;
-import java.util.UUID;
 
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.BountyManager;
@@ -224,19 +223,20 @@ public class MobHunting extends JavaPlugin {
 		cmd.registerCommand(new UpdateCommand());
 		cmd.registerCommand(new VersionCommand());
 		cmd.registerCommand(new DebugCommand());
-		if (!mConfig.disablePlayerBounties) {
-			mBountyManager = new BountyManager(this);
+		if (!mConfig.disablePlayerBounties)
 			cmd.registerCommand(new BountyCommand());
-		}
 		cmd.registerCommand(new HappyHourCommand());
-
-		mAchievementManager = new AchievementManager();
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
 		mMobHuntingManager = new MobHuntingManager(this);
 		if (!mConfig.disableFishingRewards)
 			mFishingManager = new FishingManager();
+
+		mAchievementManager = new AchievementManager();
+
+		if (!mConfig.disablePlayerBounties)
+			mBountyManager = new BountyManager(this);
 
 		// Check for new MobHuntig updates
 		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
@@ -267,10 +267,9 @@ public class MobHunting extends JavaPlugin {
 
 		mInitialized = true;
 
-		// for (int i=0; i<10; i++){
-		// Bukkit.getServer().getConsoleSender()
-		// .sendMessage(ChatColor.RED + "[MobHunting]"+UUID.randomUUID());
-		// }
+		//for (int i = 0; i < 5; i++) {
+		//	Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting]" + UUID.randomUUID());
+		//}
 
 	}
 

@@ -1,6 +1,8 @@
 package one.lindegaard.MobHunting.rewards;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -11,6 +13,9 @@ import org.bukkit.inventory.meta.SkullMeta;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
+import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
+
 public class CustomItems {
 
 	/**
@@ -19,7 +24,7 @@ public class CustomItems {
 	 * @param offlinePlayer
 	 * @return
 	 */
-	public static ItemStack getPlayerHead(String name) {
+	public static ItemStack getPlayerHead(String name, double money) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
 		skull.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
@@ -36,17 +41,19 @@ public class CustomItems {
 	 * @param mDisplayName
 	 * @param mTextureValue
 	 * @param mTextureSignature
+	 * @param money
 	 * 
 	 * @return ItemStack with custom texture.
 	 */
 	public static ItemStack getCustomtexture(String mPlayerUUID, String mDisplayName, String mTextureValue,
-			String mTextureSignature) {
+			String mTextureSignature, double money) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;
 
 		ItemMeta skullMeta = skull.getItemMeta();
+
 		GameProfile profile = new GameProfile(UUID.fromString(mPlayerUUID), mDisplayName);
 		profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
 		Field profileField = null;
@@ -66,8 +73,22 @@ public class CustomItems {
 			e.printStackTrace();
 		}
 
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList(Messages.getString("mobhunting.reward.name"), mPlayerUUID,
+				MobHunting.getRewardManager().format(money))));
 		skull.setItemMeta(skullMeta);
 		return skull;
+	}
+
+	public static UUID showLore(ItemStack itemStack) {
+		if (itemStack.getData().getItemType() == Material.SKULL_ITEM) {
+			if (itemStack.hasItemMeta()) {
+				ItemMeta itemMeta = itemStack.getItemMeta();
+				if (itemMeta.hasLore())
+					Messages.debug("itemMeta.getLore()=%s", itemMeta.getLore());
+			}
+		}
+		//TODO: get the UUID from the Lore
+		return null;
 	}
 
 }

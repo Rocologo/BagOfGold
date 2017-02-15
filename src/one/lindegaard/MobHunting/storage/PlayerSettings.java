@@ -5,8 +5,8 @@ import org.bukkit.OfflinePlayer;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class PlayerSettings {
-	private int playerId;
 	private OfflinePlayer player;
+	private int playerId;
 	private boolean learning_mode=false;
 	private boolean mute=false;
 

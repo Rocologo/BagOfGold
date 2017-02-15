@@ -602,7 +602,7 @@ public enum MinecraftMob {
 		return null;
 	}
 
-	public ItemStack getHead(String name) {
+	public ItemStack getHead(String name, double money) {
 		switch (this) {
 		case Skeleton:
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
@@ -612,7 +612,7 @@ public enum MinecraftMob {
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
 		case PvpPlayer:
 			if (name != null)
-				return CustomItems.getPlayerHead(name);
+				return CustomItems.getPlayerHead(name,0);
 			else
 				return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 		case Creeper:
@@ -620,7 +620,7 @@ public enum MinecraftMob {
 		case EnderDragon:
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 		default:
-			return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature);
+			return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature,money);
 		}
 	}
 
@@ -630,8 +630,8 @@ public enum MinecraftMob {
 	 * 
 	 * @return ItemStack with custom texture.
 	 */
-	public ItemStack getCustomProfileHead() {
-		return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature);
+	public ItemStack getCustomProfileHead(double money) {
+		return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature,money);
 	}
 
 	/**

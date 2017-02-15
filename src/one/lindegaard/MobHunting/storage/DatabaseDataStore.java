@@ -917,7 +917,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	@Override
-	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
+	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
 		Connection mConnection = setupConnection();
 		openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
 		mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
@@ -986,10 +986,13 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mUpdatePlayerSettings.close();
 				mConnection.commit();
 				mConnection.close();
+				
 				for (PlayerSettings playerData : playerDataSet) {
-					if (MobHunting.getPlayerSettingsmanager().containsKey(playerData.getPlayer()))
+					if (MobHunting.getPlayerSettingsmanager().containsKey(playerData.getPlayer())
+							&& !playerData.getPlayer().isOnline())
 						MobHunting.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
 				}
+				
 			} catch (SQLException e) {
 				rollback(mConnection);
 				mConnection.close();

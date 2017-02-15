@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -251,21 +252,29 @@ public class BountyManager implements Listener {
 	// ****************************************************************************
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		Player player = e.getPlayer();
-		if (!MobHunting.getConfigManager().disablePlayerBounties) {
-			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(player);
-			addMarkOnWantedPlayer(player);
-			loadOpenBounties(player);
-			if (hasBounties(worldGroupName, player)) {
-				Messages.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
-				Messages.broadcast(
-						Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()), player);
+	public void onPlayerJoin(final PlayerJoinEvent e) {
+		Bukkit.getScheduler().runTaskLater(instance, new Runnable() {
+			
+			@Override
+			public void run() {
+				Messages.debug("BountyManager - PlayerJoinEvent");
+				Player player = e.getPlayer();
+				if (!MobHunting.getConfigManager().disablePlayerBounties) {
+					String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(player);
+					addMarkOnWantedPlayer(player);
+					loadOpenBounties(player);
+					if (hasBounties(worldGroupName, player)) {
+						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
+						Messages.broadcast(
+								Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()), player);
+					}
+				}
 			}
-		}
+		},(long)5);
+		
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		// saveBounties(e.getPlayer());
 		Set<Bounty> toBeRemoved = new HashSet<Bounty>();
@@ -359,8 +368,8 @@ public class BountyManager implements Listener {
 						if (bounty.isOpen()) {
 							if (bounty.getBountyOwner() != null)
 								AchievementManager.addInventoryDetails(
-										CustomItems.getPlayerHead(wantedPlayer.getName()), inventory, n,
-										ChatColor.GREEN + wantedPlayer.getName(),
+										CustomItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
+										n, ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner",
 												bounty.getBountyOwner().getName(), "prize",
@@ -369,8 +378,8 @@ public class BountyManager implements Listener {
 												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 							else
 								AchievementManager.addInventoryDetails(
-										CustomItems.getPlayerHead(wantedPlayer.getName()), inventory, n,
-										ChatColor.GREEN + wantedPlayer.getName(),
+										CustomItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
+										n, ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
 												"prize", MobHunting.getRewardManager().format(bounty.getPrize()),
@@ -425,8 +434,8 @@ public class BountyManager implements Listener {
 					for (Bounty bounty : mOpenBounties) {
 						if (bounty.getBountyOwner() != null)
 							AchievementManager.addInventoryDetails(
-									CustomItems.getPlayerHead(bounty.getWantedPlayer().getName()), inventory, n,
-									ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+									CustomItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner",
 											bounty.getBountyOwner().getName(), "prize",
@@ -435,8 +444,8 @@ public class BountyManager implements Listener {
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						else
 							AchievementManager.addInventoryDetails(
-									CustomItems.getPlayerHead(bounty.getWantedPlayer().getName()), inventory, n,
-									ChatColor.GREEN + bounty.getWantedPlayer().getName(),
+									CustomItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
 											"prize", MobHunting.getRewardManager().format(bounty.getPrize()),

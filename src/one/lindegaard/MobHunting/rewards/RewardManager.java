@@ -29,6 +29,7 @@ import one.lindegaard.MobHunting.util.Misc;
 public class RewardManager implements Listener {
 
 	public static final String MH_MONEY = "MH:Money";
+	public static final String MH_REWARD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f";
 
 	private static Economy mEconomy;
 
@@ -104,19 +105,19 @@ public class RewardManager implements Listener {
 			if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED")) {
 				MinecraftMob mob = MinecraftMob.getExtendedMobType(entity);
 				if (mob != null)
-					is = mob.getCustomProfileHead();
+					is = mob.getCustomProfileHead(money);
 				else // return texture https://mineskin.org/4539
-					is = CustomItems.getCustomtexture("5db7c779-322a-3d6b-9ebc-5ed947982b85",
-							Messages.getString("mobhunting.reward.name"),
+					is = CustomItems.getCustomtexture(MH_REWARD_UUID, Messages.getString("mobhunting.reward.name"),
 							"eyJ0aW1lc3RhbXAiOjE0Nzg5NzgwNzg4MDQsInByb2ZpbGVJZCI6ImRhNzQ2NWVkMjljYjRkZTA5MzRkOTIwMTc0NDkxMzU1IiwicHJvZmlsZU5hbWUiOiJJc2F5bGEiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2FiODg0NmU2MmY5ZjU5ODFiOTVkZGExYzFlYjU1YzUxZGRhYjEwNGU4MmYzMWFiM2QxMWJkZjhjZDc2N2VlNjEifX19",
-							"pGbvG0ULeTi9G2HYzaPt7UvFuqXudnDbHS9ppWiMjdozfoKXu2wraEeiVkd5Qw3MCcyAi6M/+YMOwa3Yb9N+mBvkUTAhT4AXBGt4OjPNfkEl4bbP4iVpaZNHA+Id+hPlFHKIzIhQ4wi75WuhkIkEtj7HiGoIipeSQOudr/p3AtzNYRoSGci78YZLblXAjK8FnevdTy2zKHIqg96c3D3d8Nu4qaZIPcUeIB7LFZNem9xjCIqPwQqjRIxg9qF4xxiJa7SHVJETvj7DP4GOLee87vaae5amgpa+doYH8ecx9qatzr6QSlrVoIA1zndDV1uf7nY6jdTiPVnAM3tdk9HZ5yiQ0yOpj1sPh7NAhwp70cBCH+owH8aSqdykhe3Kk8WbVodEwbN5CMkYpI9DnceWovtGNHS9yZam8VmZXM7VevYt49jwzTPaQrzCyjlEOW7wpMxedJ/T9346c03IjybWW7e+G8YPwJ9tgo5tcFHx1QReIv7qcNJ54dIM06JxeG/CnIeLBrAOK6A2eWw6/QYzpPdD8+xZgvA8nBE8NpNRXhPxSBYEIT9YhPesnjC5nHACBaY9OtRJHLvTQQICJaMmjTX6xJJpczU0I8USOVjZAPSGTwkymS+DTAp2oBFsdWBOkeXcCrT56sj5pl/uLyNS2X9WDkCisEiG3eznZ1lQ4Tw=");
+							"pGbvG0ULeTi9G2HYzaPt7UvFuqXudnDbHS9ppWiMjdozfoKXu2wraEeiVkd5Qw3MCcyAi6M/+YMOwa3Yb9N+mBvkUTAhT4AXBGt4OjPNfkEl4bbP4iVpaZNHA+Id+hPlFHKIzIhQ4wi75WuhkIkEtj7HiGoIipeSQOudr/p3AtzNYRoSGci78YZLblXAjK8FnevdTy2zKHIqg96c3D3d8Nu4qaZIPcUeIB7LFZNem9xjCIqPwQqjRIxg9qF4xxiJa7SHVJETvj7DP4GOLee87vaae5amgpa+doYH8ecx9qatzr6QSlrVoIA1zndDV1uf7nY6jdTiPVnAM3tdk9HZ5yiQ0yOpj1sPh7NAhwp70cBCH+owH8aSqdykhe3Kk8WbVodEwbN5CMkYpI9DnceWovtGNHS9yZam8VmZXM7VevYt49jwzTPaQrzCyjlEOW7wpMxedJ/T9346c03IjybWW7e+G8YPwJ9tgo5tcFHx1QReIv7qcNJ54dIM06JxeG/CnIeLBrAOK6A2eWw6/QYzpPdD8+xZgvA8nBE8NpNRXhPxSBYEIT9YhPesnjC5nHACBaY9OtRJHLvTQQICJaMmjTX6xJJpczU0I8USOVjZAPSGTwkymS+DTAp2oBFsdWBOkeXcCrT56sj5pl/uLyNS2X9WDkCisEiG3eznZ1lQ4Tw=",
+							money);
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
-				is = CustomItems.getCustomtexture(MobHunting.getConfigManager().dropMoneyOnGroundSkullPlayerUUID,
-						Messages.getString("mobhunting.reward.name"),
+				is = CustomItems.getCustomtexture(MH_REWARD_UUID,
+						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature);
+						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money);
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLER")) {
-				is = CustomItems.getPlayerHead(player.getName());
+				is = CustomItems.getPlayerHead(player.getName(),money);
 			} else { // ITEM
 				is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
 			}
