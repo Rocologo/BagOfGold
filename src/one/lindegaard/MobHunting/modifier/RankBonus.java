@@ -22,7 +22,7 @@ public class RankBonus implements IModifier {
 	@Override
 	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (!killer.isOp()) {
+		if (killer!=null && !killer.isOp()) {
 			Iterator<Entry<String, String>> ranks = MobHunting.getConfigManager().rankMultiplier.entrySet().iterator();
 			double mul = 0;
 			while (ranks.hasNext()) {
@@ -44,7 +44,7 @@ public class RankBonus implements IModifier {
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (!killer.isOp()) {
+		if (killer!=null && !killer.isOp()) {
 			Iterator<Entry<String, String>> ranks = MobHunting.getConfigManager().rankMultiplier.entrySet().iterator();
 			boolean hasRank = false;
 			while (ranks.hasNext()) {

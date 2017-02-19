@@ -7,6 +7,7 @@ mobhunting.moneylost.bonuses=You lost ${prize}! With: ${bonuses}
 mobhunting.moneygain=You gained ${prize}!
 mobhunting.moneygain.drop=${killed} dropped ${prize} on the ground!
 mobhunting.moneypickup=You found ${money}
+mobhunting.moneydrop=You dropped ${money}
 mobhunting.moneygain-for-killing=You got ${money} for killing ${killed}.
 mobhunting.moneylost=You lost ${prize}!
 mobhunting.moneygain.assist=Assist! You got ${prize}

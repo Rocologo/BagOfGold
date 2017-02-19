@@ -257,7 +257,6 @@ public class BountyManager implements Listener {
 			
 			@Override
 			public void run() {
-				Messages.debug("BountyManager - PlayerJoinEvent");
 				Player player = e.getPlayer();
 				if (!MobHunting.getConfigManager().disablePlayerBounties) {
 					String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(player);

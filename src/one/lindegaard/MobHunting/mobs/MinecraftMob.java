@@ -1,5 +1,7 @@
 package one.lindegaard.MobHunting.mobs;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -588,8 +590,8 @@ public enum MinecraftMob {
 		for (MinecraftMob type : values())
 			if (type.matches(entity))
 				return type;
-		Bukkit.getLogger().severe("[MobHunting] ERROR!!! - Unhandled Entity: " + entity.getName() + "(" + entity.getCustomName()
-				+ ") Type:" + entity.getType().toString());
+		Bukkit.getLogger().severe("[MobHunting] ERROR!!! - Unhandled Entity: " + entity.getName() + "("
+				+ entity.getCustomName() + ") Type:" + entity.getType().toString());
 		return null;
 	}
 
@@ -612,7 +614,7 @@ public enum MinecraftMob {
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
 		case PvpPlayer:
 			if (name != null)
-				return CustomItems.getPlayerHead(name,0);
+				return CustomItems.getPlayerHead(name, 0);
 			else
 				return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 		case Creeper:
@@ -620,7 +622,8 @@ public enum MinecraftMob {
 		case EnderDragon:
 			return new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 		default:
-			return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature,money);
+			return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature, money,
+					UUID.randomUUID());
 		}
 	}
 
@@ -631,7 +634,8 @@ public enum MinecraftMob {
 	 * @return ItemStack with custom texture.
 	 */
 	public ItemStack getCustomProfileHead(double money) {
-		return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature,money);
+		return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature, money,
+				UUID.randomUUID());
 	}
 
 	/**

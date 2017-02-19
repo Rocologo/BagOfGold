@@ -1,5 +1,8 @@
+V4.4.9
+* Fixed: MythicMobs 4.0.0 release broke the integration. MobHunting updated for the new MythicMob V4.0.0 (https://dev.bukkit.org/projects/mythicmobs/files)
+* BETA: Began new feature where a "Bag of gold" can be picked up, into the player inventory and stored in a chest. You should ONLY use this on test servers.   
 V4.4.8
-* Bug fixing: Changed how PlayerSettingsManager saves/loads data. Hoping this wil solve the Sqlite Database locking problems.
+* Bug fixing: Changed how PlayerSettingsManager saves/loads data. Hoping this will solve the Sqlite Database locking problems.
 V4.4.7
 * Changed simple debug information.
 V4.4.6

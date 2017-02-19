@@ -46,7 +46,7 @@ public class CustomItems {
 	 * @return ItemStack with custom texture.
 	 */
 	public static ItemStack getCustomtexture(String mPlayerUUID, String mDisplayName, String mTextureValue,
-			String mTextureSignature, double money) {
+			String mTextureSignature, double money, UUID uniqueRewardUuid) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
@@ -73,9 +73,13 @@ public class CustomItems {
 			e.printStackTrace();
 		}
 
-		skullMeta.setLore(new ArrayList<String>(Arrays.asList(Messages.getString("mobhunting.reward.name"), mPlayerUUID,
-				MobHunting.getRewardManager().format(money))));
-		skull.setItemMeta(skullMeta);
+		if (MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
+			skullMeta.setLore(new ArrayList<String>(
+					Arrays.asList("Hidden:" + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+							"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID,
+							"Hidden:"+uniqueRewardUuid)));
+			skull.setItemMeta(skullMeta);
+		}
 		return skull;
 	}
 
@@ -87,7 +91,7 @@ public class CustomItems {
 					Messages.debug("itemMeta.getLore()=%s", itemMeta.getLore());
 			}
 		}
-		//TODO: get the UUID from the Lore
+		// TODO: get the UUID from the Lore
 		return null;
 	}
 

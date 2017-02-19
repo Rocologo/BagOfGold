@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobSpawnEvent;
-import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -39,11 +38,7 @@ public class MythicMobsV400Compat implements Listener {
 
 	public static MythicMob getMythicMobV400(String killed) {
 		if (MythicMobsCompat.isSupported())
-			try {
-				return getMythicMobsV400().getAPIHelper().getMythicMob(killed);
-			} catch (InvalidMobTypeException e) {
-				e.printStackTrace();
-			}
+			return getMythicMobsV400().getAPIHelper().getMythicMob(killed);
 		return null;
 	}
 
@@ -62,8 +57,7 @@ public class MythicMobsV400Compat implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	private void onMythicMobV400SpawnEvent(MythicMobSpawnEvent event) {
 		String mobtype = event.getMobType().getInternalName();
-		Messages.debug("MythicMobSpawnEvent: MinecraftMobtype=%s MythicMobType=%s", event.getLivingEntity().getType(),
-				mobtype);
+		Messages.debug("MythicMobSpawnEvent: MythicMobType=%s", mobtype);
 		if (!MythicMobsCompat.getMobRewardData().containsKey(mobtype)) {
 			Messages.debug("New MythicMobType found=%s (%s)", mobtype, event.getMobType().getDisplayName());
 			MythicMobsCompat.getMobRewardData().put(mobtype,

@@ -267,9 +267,10 @@ public class MobHunting extends JavaPlugin {
 
 		mInitialized = true;
 
-		//for (int i = 0; i < 5; i++) {
-		//	Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting]" + UUID.randomUUID());
-		//}
+		// for (int i = 0; i < 5; i++) {
+		// Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED +
+		// "[MobHunting]" + UUID.randomUUID());
+		// }
 
 	}
 
@@ -299,9 +300,9 @@ public class MobHunting extends JavaPlugin {
 			Messages.debug("Shutdown BountyManager");
 			mBountyManager.shutdown();
 		}
-
 		getMobHuntingManager().getHuntingModifiers().clear();
-		getFishingManager().getFishingModifiers().clear();
+		if (!mConfig.disableFishingRewards)
+			getFishingManager().getFishingModifiers().clear();
 
 		try {
 			Messages.debug("Shutdown StoreManager");
