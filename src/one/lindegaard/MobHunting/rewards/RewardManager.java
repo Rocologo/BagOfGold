@@ -105,13 +105,12 @@ public class RewardManager implements Listener {
 		return mEconomy.has(offlinePlayer, amount);
 	}
 
-	public static void dropMoneyOnGround(Player player, Entity killedEntity, double money) {
+	public static void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
 		if (GringottsCompat.isSupported()) {
 			List<Denomination> denoms = Configuration.CONF.currency.denominations();
 			int unit = Configuration.CONF.currency.unit;
 			double rest = money;
-			Location location = killedEntity.getLocation();
 			for (Denomination d : denoms) {
 				ItemStack is = new ItemStack(d.key.type.getType(), 1);
 				while (rest >= (d.value / unit)) {
@@ -123,7 +122,6 @@ public class RewardManager implements Listener {
 				}
 			}
 		} else {
-			Location location = killedEntity.getLocation();
 			ItemStack is;
 			if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED")) {
 				MinecraftMob mob = MinecraftMob.getExtendedMobType(killedEntity);
@@ -160,7 +158,7 @@ public class RewardManager implements Listener {
 			}
 		}
 		if (item != null)
-			Messages.debug("%s dropped %s on the ground as item %s (# of rewards=%s)", killedEntity.getType(),
+			Messages.debug("%s was dropped on the ground as item %s (# of rewards=%s)", 
 					MobHunting.getRewardManager().format(money),
 					MobHunting.getConfigManager().dropMoneyOnGroundItemtype, droppedMoney.size());
 	}

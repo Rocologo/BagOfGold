@@ -15,6 +15,7 @@ import one.lindegaard.MobHunting.commands.HappyHourCommand;
 import one.lindegaard.MobHunting.commands.HeadCommand;
 import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
+import one.lindegaard.MobHunting.commands.MoneyCommand;
 import one.lindegaard.MobHunting.commands.AchievementsCommand;
 import one.lindegaard.MobHunting.commands.MuteCommand;
 import one.lindegaard.MobHunting.commands.NpcCommand;
@@ -120,7 +121,7 @@ public class MobHunting extends JavaPlugin {
 		mWorldGroupManager.load();
 
 		mRewardManager = new RewardManager(this);
-		if (mRewardManager.getEconomy() == null)
+		if (RewardManager.getEconomy() == null)
 			return;
 
 		mAreaManager = new AreaManager(this);
@@ -226,6 +227,7 @@ public class MobHunting extends JavaPlugin {
 		if (!mConfig.disablePlayerBounties)
 			cmd.registerCommand(new BountyCommand());
 		cmd.registerCommand(new HappyHourCommand());
+		cmd.registerCommand(new MoneyCommand());
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
@@ -237,6 +239,8 @@ public class MobHunting extends JavaPlugin {
 
 		if (!mConfig.disablePlayerBounties)
 			mBountyManager = new BountyManager(this);
+		
+		
 
 		// Check for new MobHuntig updates
 		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);

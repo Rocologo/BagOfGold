@@ -15,9 +15,11 @@ import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 import one.lindegaard.MobHunting.npc.MasterMobHunterTrait;
 import one.lindegaard.MobHunting.storage.TimePeriod;
+import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -151,7 +153,9 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("tphere")) {
 				if (masterMobHunterManager.contains(npc.getId())) {
 					npc.teleport(((Player) sender).getLocation(), TeleportCause.PLUGIN);
-					npc.faceLocation(((Player) sender).getEyeLocation());
+					Block b = Misc.getTargetBlock((Player)sender, 200);
+					if (b!=null)
+						npc.faceLocation(b.getLocation());
 					// npc.getEntity().teleport((Player)sender);
 				}
 				return true;
@@ -195,7 +199,7 @@ public class NpcCommand implements ICommand, Listener {
 				npc = registry.createNPC(EntityType.PLAYER, "MasterMobHunter");
 				npc.addTrait(MasterMobHunterTrait.class);
 				masterMobHunterManager.put(npc.getId(), new MasterMobHunter(npc.getId(), statType, period, 0, rank));
-				npc.spawn(p.getEyeLocation());
+				npc.spawn(p.getLocation());
 				masterMobHunterManager.update(npc);
 				sender.sendMessage(
 						ChatColor.GREEN + Messages.getString("mobhunting.commands.npc.created", "npcid", npc.getId()));

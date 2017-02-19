@@ -70,7 +70,7 @@ public class MythicMobsV400Compat implements Listener {
 			Messages.injectMissingMobNamesToLangFiles();
 		}
 
-		event.getLivingEntity().setMetadata(MythicMobsCompat.MH_MYTHICMOBS, new FixedMetadataValue(mPlugin,
+		event.getEntity().setMetadata(MythicMobsCompat.MH_MYTHICMOBS, new FixedMetadataValue(mPlugin,
 				MythicMobsCompat.getMobRewardData().get(event.getMobType().getInternalName())));
 	}
 

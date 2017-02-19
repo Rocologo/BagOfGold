@@ -20,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.command.CommandException;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Entity;
@@ -721,7 +722,8 @@ public class MobHuntingManager implements Listener {
 
 		// Killer is not a player and not a MyPet.
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
-			Messages.debug("KillBlocked: Killer is null and Killed is not killed by MyPet");
+			// Messages.debug("KillBlocked: Killer is null and Killed is not
+			// killed by MyPet");
 			return;
 		}
 
@@ -1166,9 +1168,11 @@ public class MobHuntingManager implements Listener {
 
 		// Apply the modifiers to Basic reward
 		ArrayList<String> modifiers = new ArrayList<String>();
+		// only add modifiers if the killer is the player.
 		for (IModifier mod : mHuntingModifiers) {
-			if (mod.doesApply(killed, killer, data, info, lastDamageCause)) {
-				double amt = mod.getMultiplier(killed, killer, data, info, lastDamageCause);
+			if (mod.doesApply(killed, killer != null ? killer : info.assister, data, info, lastDamageCause)) {
+				double amt = mod.getMultiplier(killed, killer != null ? killer : info.assister, data, info,
+						lastDamageCause);
 				if (amt != 1.0) {
 					modifiers.add(mod.getName());
 					multipliers *= amt;
@@ -1232,10 +1236,11 @@ public class MobHuntingManager implements Listener {
 				|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
 
 			// Handle MobHuntKillEvent
-			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, killer);
+			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, killer != null ? killer : info.assister);
 			Bukkit.getPluginManager().callEvent(event2);
 			if (event2.isCancelled()) {
-				Messages.debug("KillBlocked %s: MobHuntKillEvent was cancelled", killer.getName());
+				Messages.debug("KillBlocked %s: MobHuntKillEvent was cancelled",
+						(killer != null ? killer : info.assister).getName());
 				return;
 			}
 
@@ -1263,7 +1268,7 @@ public class MobHuntingManager implements Listener {
 			if (info.assister == null || MobHunting.getConfigManager().enableAssists == false) {
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
-						RewardManager.dropMoneyOnGround(killer, killed, cash);
+						RewardManager.dropMoneyOnGround(killer, killed, killed.getLocation(), cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						Messages.debug("%s got a reward (%s)", killer.getName(),
@@ -1279,17 +1284,20 @@ public class MobHuntingManager implements Listener {
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
 						Messages.debug("Assisted kill. Reward/Penalty is ½");
-						RewardManager.dropMoneyOnGround(killer, killed, cash);
+						RewardManager.dropMoneyOnGround(killer != null ? killer : info.assister, killed,
+								killed.getLocation(), cash);
 					} else {
-						MobHunting.getRewardManager().depositPlayer(killer, cash);
-						onAssist(info.assister, killer, killed, info.lastAssistTime);
-						Messages.debug("Assisted kill. %s got a ½ reward (%s)", killer.getName(),
+						MobHunting.getRewardManager().depositPlayer(info.assister, cash);
+						onAssist(killer != null ? killer : info.assister, killer, killed, info.lastAssistTime);
+						Messages.debug("Assisted kill. %s got a ½ reward (%s)",
+								(killer != null ? killer : info.assister).getName(),
 								MobHunting.getRewardManager().format(cash));
 					}
 				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-					MobHunting.getRewardManager().withdrawPlayer(killer, -cash);
-					onAssist(info.assister, killer, killed, info.lastAssistTime);
-					Messages.debug("Assisted kill. %s got a ½ penalty (%s)", killer.getName(),
+					MobHunting.getRewardManager().withdrawPlayer(killer != null ? killer : info.assister, -cash);
+					onAssist(killer != null ? killer : info.assister, killer, killed, info.lastAssistTime);
+					Messages.debug("Assisted kill. %s got a ½ penalty (%s)",
+							(killer != null ? killer : info.assister).getName(),
 							MobHunting.getRewardManager().format(cash));
 				}
 			}
@@ -1376,15 +1384,30 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("command to be run is:" + prizeCommand);
 				if (!MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
 					String str = prizeCommand;
+					boolean error = false;
 					do {
 						if (str.contains("|")) {
 							int n = str.indexOf("|");
-							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
-									str.substring(0, n));
+							try {
+								error = Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
+										str.substring(0, n));
+							} catch (CommandException e) {
+								Bukkit.getConsoleSender()
+										.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
+												+ str.substring(0, n) + " when Mob:" + mob.getName() + " was killed by "
+												+ killer.getName());
+								// e.printStackTrace();
+							}
 							str = str.substring(n + 1, str.length()).toString();
 						}
 					} while (str.contains("|"));
-					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+					try {
+						error = Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+					} catch (CommandException e) {
+						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
+								+ str + " when Mob:" + mob.getName() + " was killed by " + killer.getName());
+						// e.printStackTrace();
+					}
 				}
 				// send a message to the player
 				if (!MobHunting.getConfigManager().getKillRewardDescription(killed).equals("") && !killer_muted) {
