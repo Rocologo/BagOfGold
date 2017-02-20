@@ -3,28 +3,23 @@ package one.lindegaard.MobHunting.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class MoneyCommand implements ICommand {
-
-	public static int minutesToRun = 0;
-	public static int minutesLeft = 0;
-	public static double multiplier = 1;
-	long starttime;
-
-	BukkitTask happyhourevent = null;
-	BukkitTask happyhoureventStop = null;
 
 	public MoneyCommand() {
 
@@ -105,9 +100,23 @@ public class MoneyCommand implements ICommand {
 			if (args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place")) {
 				if (sender instanceof Player) {
 					if (sender.hasPermission("mobhunting.money.drop")) {
-						if (args[1].matches("\\d+(\\.\\d+)?")) {
+						if (args[1].matches("\\d+(\\.\\d+)?") || 
+								(Bukkit.getServer().getOfflinePlayer(args[1]).isOnline() &&
+										args[2].matches("\\d+(\\.\\d+)?"))) {
 							Player player = (Player) sender;
-							Block b = Misc.getTargetBlock(player, 100);
+							Block b;
+							if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()){
+								Player p = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
+								Vector direction = p.getEyeLocation().getDirection();
+								b = p.getLocation().add(direction.multiply(4/direction.length())).getBlock();
+								if (b.getType()!=Material.AIR) {
+									sender.sendMessage(ChatColor.RED
+											+ Messages.getString("mobhunting.commands.money.coun-not-find-space"));
+									return true;
+								}
+							} else {
+								b = Misc.getTargetBlock(player, 100);
+							}
 							Location location = b.getLocation();
 							if (location != null) {
 								RewardManager.dropMoneyOnGround(player, null, location, Double.valueOf(args[1]));

@@ -1,8 +1,10 @@
+V4.5.1
+* Fixed another MyPet related bug.
 V4.5.0
 * Bug fix: Show a nice error text if the server-owner has entered a faulty "command to be run" as a reward when a player kills a mob.
 * Fixed another MythicMobs V4.0.0 related bug.
 * Added new command /mh money drop <amount> to drop money on the ground for other players. Permission mobhunting.money.drop needed.
-* Fixed when a MyPet killed a mob.
+* Fixed bug when a MyPet killed a mob.
 V4.4.9
 * Fixed: MythicMobs 4.0.0 release broke the integration. MobHunting updated for the new MythicMob V4.0.0 (https://dev.bukkit.org/projects/mythicmobs/files)
 * BETA: Began new feature where a "Bag of gold" can be picked up, into the player inventory and stored in a chest. You should ONLY use this on test servers.   

@@ -20,6 +20,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -195,7 +198,7 @@ public class RewardListeners implements Listener {
 				Entity entity = entityList.next();
 				if (!(entity instanceof Item))
 					continue;
-				Item item = (Item) entity;
+				// Item item = (Item) entity;
 				if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId())) {
 					if (entity.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA)) {
 						Messages.debug("Item has MetaData (Hidden)");
@@ -219,10 +222,6 @@ public class RewardListeners implements Listener {
 										"money",
 										MobHunting.getRewardManager().format(hiddenRewardDataOnGround.getMoney())));
 							} else {
-								// TODO: Check if there is another
-								// reward in the inventory and merge
-								// the
-								// rewards.
 								int slot = player.getInventory().first(Material.SKULL_ITEM);
 								Messages.debug("%s has a Bag of Gold in slot %s", player.getName(), slot);
 								if (slot != -1) {
@@ -357,6 +356,70 @@ public class RewardListeners implements Listener {
 				RewardManager.getHiddenRewardData().remove(hiddenRewardData.getUniqueId());
 
 		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onInventoryClick(InventoryClickEvent event) {
+		// Inventory inv = event.getClickedInventory();
+		InventoryAction action = event.getAction();
+		ClickType clickType = event.getClick();
+		ItemStack isCurrentSlot = event.getCurrentItem();
+		if (isCurrentSlot == null)
+			return;
+		ItemStack isCursor = event.getCursor();
+		Player player = (Player) event.getWhoClicked();
+		if (isCurrentSlot.getType() == Material.SKULL_ITEM && isCurrentSlot.getType() == isCursor.getType()
+				&& action == InventoryAction.SWAP_WITH_CURSOR) {
+			if (isCurrentSlot.hasItemMeta() && isCursor.hasItemMeta()) {
+				ItemMeta imCurrent = isCurrentSlot.getItemMeta();
+				ItemMeta imCursor = isCursor.getItemMeta();
+				if (imCurrent.hasLore()
+						&& imCurrent.getLore().get(2).equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)
+						&& imCursor.hasLore()
+						&& imCursor.getLore().get(2).equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)) {
+					HiddenRewardData hiddenRewardData1 = new HiddenRewardData(imCurrent.getLore());
+					HiddenRewardData hiddenRewardData2 = new HiddenRewardData(imCursor.getLore());
+					hiddenRewardData2.setMoney(hiddenRewardData1.getMoney() + hiddenRewardData2.getMoney());
+					imCursor.setLore(hiddenRewardData2.getLore());
+					imCursor.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+							+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+							+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
+					isCursor.setItemMeta(imCursor);
+					isCurrentSlot.setAmount(0);
+					isCurrentSlot.setType(Material.AIR);
+					Messages.debug("Merged");
+				}
+			}
+		} else if (isCursor.getType() == Material.AIR && isCurrentSlot.getType() == Material.SKULL_ITEM
+				&& action == InventoryAction.PICKUP_HALF) {
+			if (isCurrentSlot.hasItemMeta()) {
+				ItemMeta imCurrentSlot = isCurrentSlot.getItemMeta();
+				ItemMeta imCursor = imCurrentSlot;
+				if (imCurrentSlot.hasLore()
+						&& imCurrentSlot.getLore().get(2).equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)) {
+					Messages.debug("%s: clicktype=%s, Action=%s (%s on %s)", player.getName(), clickType, action,
+							isCursor.getType(), isCurrentSlot.getType());
+					HiddenRewardData hiddenRewardData2 = new HiddenRewardData(imCurrentSlot.getLore());
+					hiddenRewardData2.setMoney(hiddenRewardData2.getMoney() / 2);
+					imCurrentSlot.setLore(hiddenRewardData2.getLore());
+					imCurrentSlot
+							.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+									+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+									+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
+					isCurrentSlot.setItemMeta(imCurrentSlot);
+					event.setCurrentItem(isCurrentSlot);
+
+					imCursor.setLore(hiddenRewardData2.getLore());
+					imCursor.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+							+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+							+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
+					isCursor.setType(Material.SKULL_ITEM);
+					isCursor.setItemMeta(imCursor);
+					Messages.debug("Halfed");
+				}
+			}
+		}
+
 	}
 
 }
