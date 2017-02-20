@@ -585,7 +585,7 @@ public class MobHuntingManager implements Listener {
 						"WARNING: The fireball was shut from %s, this situation is not handled by MobHunting. Make a ticket for the developer.",
 						event.getEntity().getShooter().toString());
 			} else {
-				Messages.debug("WARNING: The fireball was shut from %s", event.getEntity());
+				//Messages.debug("WARNING: The fireball was shut from %s", event.getEntity());
 			}
 		}
 	}
@@ -1416,7 +1416,8 @@ public class MobHuntingManager implements Listener {
 							} catch (CommandException e) {
 								Bukkit.getConsoleSender()
 										.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
-												+ str.substring(0, n) + "\" when Mob:" + mob.getName() + " was killed by "
+												+ str.substring(0, n) + "\" when Mob:" + mob.getName()
+												+ " was killed by "
 												+ (killer != null ? killer : info.assister).getName());
 								// e.printStackTrace();
 							}
