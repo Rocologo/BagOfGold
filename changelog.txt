@@ -1,3 +1,7 @@
+V4.5.2
+* Added support for fireballs shot from a Wither (Ticket 153: https://github.com/Rocologo/MobHunting/issues/153)
+* Fix broken head /mh head give <player> wither & /mh head give <player> pigzombie (Ticket 153: https://github.com/Rocologo/MobHunting/issues/153)
+* Fixed IndexOutOfBoundsException (Ticket 165: https://github.com/Rocologo/MobHunting/issues/165) 
 V4.5.1
 * Fixed another MyPet related bug.
 V4.5.0

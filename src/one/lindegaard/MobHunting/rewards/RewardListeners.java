@@ -107,8 +107,7 @@ public class RewardListeners implements Listener {
 		ItemStack is = item.getItemStack();
 		Player player = event.getPlayer();
 		Messages.debug("%s dropped %s on ground", player.getName(), is.getType());
-		if (item.getItemStack().hasItemMeta() && is.getItemMeta().hasLore()
-				&& is.getItemMeta().getLore().get(2).equals("Hidden:" + RewardManager.MH_REWARD_UUID)) {
+		if (HiddenRewardData.hasHiddenRewardData(item)) {
 			List<String> lore = is.getItemMeta().getLore();
 			double money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
 			item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
@@ -198,9 +197,8 @@ public class RewardListeners implements Listener {
 				Entity entity = entityList.next();
 				if (!(entity instanceof Item))
 					continue;
-				// Item item = (Item) entity;
 				if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId())) {
-					if (entity.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA)) {
+					if (HiddenRewardData.hasHiddenRewardData(entity)) {
 						Messages.debug("Item has MetaData (Hidden)");
 						HiddenRewardData hiddenRewardDataOnGround = (HiddenRewardData) entity
 								.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
@@ -226,28 +224,22 @@ public class RewardListeners implements Listener {
 								Messages.debug("%s has a Bag of Gold in slot %s", player.getName(), slot);
 								if (slot != -1) {
 									ItemStack is = player.getInventory().getItem(slot);
-									if (is.hasItemMeta()) {
+									if (HiddenRewardData.hasHiddenRewardData(is)) {
 										ItemMeta im = is.getItemMeta();
-										if (im.hasLore() && im.getLore().get(2)
-												.equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)) {
-											HiddenRewardData newHiddenRewardData = new HiddenRewardData(im.getLore());
-											newHiddenRewardData.setMoney(newHiddenRewardData.getMoney()
-													+ hiddenRewardDataOnGround.getMoney());
-											im.setLore(newHiddenRewardData.getLore());
-											im.setDisplayName(ChatColor
-													.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-													+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName
-													+ " (" + MobHunting.getRewardManager()
-															.format(newHiddenRewardData.getMoney())
-													+ " )");
-											is.setItemMeta(im);
-											is.setAmount(1);
-											// item.remove();
-											entity.remove();
-											Messages.debug("ItemStack in slot %s added value %s, new value %s", slot,
-													hiddenRewardDataOnGround.getMoney(),
-													newHiddenRewardData.getMoney());
-										}
+										HiddenRewardData newHiddenRewardData = new HiddenRewardData(im.getLore());
+										newHiddenRewardData.setMoney(
+												newHiddenRewardData.getMoney() + hiddenRewardDataOnGround.getMoney());
+										im.setLore(newHiddenRewardData.getLore());
+										im.setDisplayName(ChatColor
+												.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+												+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+												+ MobHunting.getRewardManager().format(newHiddenRewardData.getMoney())
+												+ " )");
+										is.setItemMeta(im);
+										is.setAmount(1);
+										entity.remove();
+										Messages.debug("ItemStack in slot %s added value %s, new value %s", slot,
+												hiddenRewardDataOnGround.getMoney(), newHiddenRewardData.getMoney());
 									}
 								}
 							}
@@ -288,7 +280,7 @@ public class RewardListeners implements Listener {
 		while (nearby.hasNext()) {
 			targetEntity = nearby.next();
 			if (targetEntity.hasMetadata(RewardManager.MH_MONEY)
-					|| targetEntity.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA)) {
+					|| HiddenRewardData.hasHiddenRewardData(targetEntity)) {
 				if (RewardManager.getDroppedMoney().containsKey(targetEntity.getEntityId()))
 					RewardManager.getDroppedMoney().remove(targetEntity.getEntityId());
 				targetEntity.remove();
@@ -309,19 +301,17 @@ public class RewardListeners implements Listener {
 		Block block = event.getBlockPlaced();
 		Messages.debug("%s placed a %s on a %s while holding %s", event.getPlayer().getName(), block.getType(),
 				event.getBlockAgainst().getType(), is.getType());
-		if (is.hasItemMeta() && is.getItemMeta().hasLore()) {
+		if (HiddenRewardData.hasHiddenRewardData(is)) {
 			List<String> lore = is.getItemMeta().getLore();
-			if (lore.get(2).equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)) {
-				HiddenRewardData hiddenRewardData = new HiddenRewardData(lore);
-				block.setMetadata(RewardManager.MH_HIDDEN_REWARD_DATA,
-						new FixedMetadataValue(MobHunting.getInstance(), hiddenRewardData));
-				RewardManager.getLocations().put(hiddenRewardData.getUniqueId(), hiddenRewardData);
-				RewardManager.getHiddenRewardData().put(hiddenRewardData.getUniqueId(), block.getLocation());
-				Messages.debug("HiddenRewardData added=%s",
-						((HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value())
-								.getLore());
-				RewardManager.saveReward(hiddenRewardData.getUniqueId());
-			}
+			HiddenRewardData hiddenRewardData = new HiddenRewardData(lore);
+			block.setMetadata(RewardManager.MH_HIDDEN_REWARD_DATA,
+					new FixedMetadataValue(MobHunting.getInstance(), hiddenRewardData));
+			RewardManager.getLocations().put(hiddenRewardData.getUniqueId(), hiddenRewardData);
+			RewardManager.getHiddenRewardData().put(hiddenRewardData.getUniqueId(), block.getLocation());
+			Messages.debug("HiddenRewardData added=%s",
+					((HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value())
+							.getLore());
+			RewardManager.saveReward(hiddenRewardData.getUniqueId());
 		}
 	}
 
@@ -330,7 +320,7 @@ public class RewardListeners implements Listener {
 		Messages.debug("%s broke a %s", event.getPlayer().getName(), event.getBlock().getType());
 		Messages.debug("Block has Metadata=%s", event.getBlock().hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
 		Block block = event.getBlock();
-		if (block.getType() == Material.SKULL && block.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA)) {
+		if (HiddenRewardData.hasHiddenRewardData(block)) {
 			event.setCancelled(true);
 			block.setType(Material.AIR);
 
@@ -370,53 +360,44 @@ public class RewardListeners implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		if (isCurrentSlot.getType() == Material.SKULL_ITEM && isCurrentSlot.getType() == isCursor.getType()
 				&& action == InventoryAction.SWAP_WITH_CURSOR) {
-			if (isCurrentSlot.hasItemMeta() && isCursor.hasItemMeta()) {
+			if (HiddenRewardData.hasHiddenRewardData(isCurrentSlot) && HiddenRewardData.hasHiddenRewardData(isCursor)) {
 				ItemMeta imCurrent = isCurrentSlot.getItemMeta();
 				ItemMeta imCursor = isCursor.getItemMeta();
-				if (imCurrent.hasLore()
-						&& imCurrent.getLore().get(2).equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)
-						&& imCursor.hasLore()
-						&& imCursor.getLore().get(2).equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)) {
-					HiddenRewardData hiddenRewardData1 = new HiddenRewardData(imCurrent.getLore());
-					HiddenRewardData hiddenRewardData2 = new HiddenRewardData(imCursor.getLore());
-					hiddenRewardData2.setMoney(hiddenRewardData1.getMoney() + hiddenRewardData2.getMoney());
-					imCursor.setLore(hiddenRewardData2.getLore());
-					imCursor.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-							+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
-							+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
-					isCursor.setItemMeta(imCursor);
-					isCurrentSlot.setAmount(0);
-					isCurrentSlot.setType(Material.AIR);
-					Messages.debug("Merged");
-				}
+				HiddenRewardData hiddenRewardData1 = new HiddenRewardData(imCurrent.getLore());
+				HiddenRewardData hiddenRewardData2 = new HiddenRewardData(imCursor.getLore());
+				hiddenRewardData2.setMoney(hiddenRewardData1.getMoney() + hiddenRewardData2.getMoney());
+				imCursor.setLore(hiddenRewardData2.getLore());
+				imCursor.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+						+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
+				isCursor.setItemMeta(imCursor);
+				isCurrentSlot.setAmount(0);
+				isCurrentSlot.setType(Material.AIR);
+				Messages.debug("Merged");
 			}
 		} else if (isCursor.getType() == Material.AIR && isCurrentSlot.getType() == Material.SKULL_ITEM
 				&& action == InventoryAction.PICKUP_HALF) {
-			if (isCurrentSlot.hasItemMeta()) {
+			if (HiddenRewardData.hasHiddenRewardData(isCurrentSlot)) {
 				ItemMeta imCurrentSlot = isCurrentSlot.getItemMeta();
 				ItemMeta imCursor = imCurrentSlot;
-				if (imCurrentSlot.hasLore()
-						&& imCurrentSlot.getLore().get(2).equalsIgnoreCase("Hidden:" + RewardManager.MH_REWARD_UUID)) {
-					Messages.debug("%s: clicktype=%s, Action=%s (%s on %s)", player.getName(), clickType, action,
-							isCursor.getType(), isCurrentSlot.getType());
-					HiddenRewardData hiddenRewardData2 = new HiddenRewardData(imCurrentSlot.getLore());
-					hiddenRewardData2.setMoney(hiddenRewardData2.getMoney() / 2);
-					imCurrentSlot.setLore(hiddenRewardData2.getLore());
-					imCurrentSlot
-							.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-									+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
-									+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
-					isCurrentSlot.setItemMeta(imCurrentSlot);
-					event.setCurrentItem(isCurrentSlot);
+				Messages.debug("%s: clicktype=%s, Action=%s (%s on %s)", player.getName(), clickType, action,
+						isCursor.getType(), isCurrentSlot.getType());
+				HiddenRewardData hiddenRewardData2 = new HiddenRewardData(imCurrentSlot.getLore());
+				hiddenRewardData2.setMoney(hiddenRewardData2.getMoney() / 2);
+				imCurrentSlot.setLore(hiddenRewardData2.getLore());
+				imCurrentSlot.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+						+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
+				isCurrentSlot.setItemMeta(imCurrentSlot);
+				event.setCurrentItem(isCurrentSlot);
 
-					imCursor.setLore(hiddenRewardData2.getLore());
-					imCursor.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-							+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
-							+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
-					isCursor.setType(Material.SKULL_ITEM);
-					isCursor.setItemMeta(imCursor);
-					Messages.debug("Halfed");
-				}
+				imCursor.setLore(hiddenRewardData2.getLore());
+				imCursor.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+						+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
+				isCursor.setType(Material.SKULL_ITEM);
+				isCursor.setItemMeta(imCursor);
+				Messages.debug("Halfed");
 			}
 		}
 

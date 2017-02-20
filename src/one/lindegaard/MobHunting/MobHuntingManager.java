@@ -33,6 +33,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.ThrownPotion;
+import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -565,11 +566,26 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = blaze.getTarget().getLocation().clone();
 					mDamageHistory.put(blaze, info);
 				}
+			} else if (event.getEntity().getShooter() instanceof Wither) {
+				Wither wither = (Wither) event.getEntity().getShooter();
+				if (wither.getTarget() instanceof Player
+						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) wither.getTarget())
+						&& ((Player) wither.getTarget()).getGameMode() == GameMode.SURVIVAL) {
+					DamageInformation info = null;
+					info = mDamageHistory.get(wither);
+					if (info == null)
+						info = new DamageInformation();
+					info.time = System.currentTimeMillis();
+					info.attacker = (Player) wither.getTarget();
+					info.attackerPosition = wither.getTarget().getLocation().clone();
+					mDamageHistory.put(wither, info);
+				}
 			} else if (event.getEntity().getShooter() != null) {
-				Messages.debug("WARNING: The firewall was shut from %s, this situation is not handled by MobHunting.",
+				Messages.debug(
+						"WARNING: The fireball was shut from %s, this situation is not handled by MobHunting. Make a ticket for the developer.",
 						event.getEntity().getShooter().toString());
 			} else {
-				Messages.debug("WARNING: The firewall was shut from %s", event.getEntity());
+				Messages.debug("WARNING: The fireball was shut from %s", event.getEntity());
 			}
 		}
 	}
@@ -1387,7 +1403,7 @@ public class MobHuntingManager implements Listener {
 				else
 					prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getType().getName())
 							.replaceAll("\\{killed\\}", killed.getType().getName());
-				Messages.debug("command to be run is:" + prizeCommand);
+				Messages.debug("Command to be run:" + prizeCommand);
 				if (!MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
 					String str = prizeCommand;
 					boolean error = false;
@@ -1400,7 +1416,7 @@ public class MobHuntingManager implements Listener {
 							} catch (CommandException e) {
 								Bukkit.getConsoleSender()
 										.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
-												+ str.substring(0, n) + " when Mob:" + mob.getName() + " was killed by "
+												+ str.substring(0, n) + "\" when Mob:" + mob.getName() + " was killed by "
 												+ (killer != null ? killer : info.assister).getName());
 								// e.printStackTrace();
 							}
@@ -1412,7 +1428,7 @@ public class MobHuntingManager implements Listener {
 					} catch (CommandException e) {
 						Bukkit.getConsoleSender()
 								.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\"" + str
-										+ " when Mob:" + mob.getName() + " was killed by "
+										+ "\" when Mob:" + mob.getName() + " was killed by "
 										+ (killer != null ? killer : info.assister).getName());
 						// e.printStackTrace();
 					}

@@ -5,8 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 
 public class HiddenRewardData {
 
@@ -14,6 +19,7 @@ public class HiddenRewardData {
 	private double money = 0;
 	private UUID uuid = null;
 	private UUID uniqueId;
+	private final static int NUMBER_OF_DATA = 4;
 
 	HiddenRewardData() {
 		this.description = "Bag of gold";
@@ -127,8 +133,7 @@ public class HiddenRewardData {
 	}
 
 	public String toString() {
-		return "{Description=" + description + ", money=" +money + ", UUID="
-				+ uuid.toString() + "}";
+		return "{Description=" + description + ", money=" + money + ", UUID=" + uuid.toString() + "}";
 	}
 
 	public void save(ConfigurationSection section) {
@@ -143,6 +148,24 @@ public class HiddenRewardData {
 		money = section.getDouble("money");
 		uuid = UUID.fromString(section.getString("uuid"));
 		uniqueId = UUID.fromString(section.getString("uniqueid"));
+	}
+
+	public static boolean hasHiddenRewardData(Item item) {
+		return hasHiddenRewardData(item.getItemStack());
+	}
+
+	public static boolean hasHiddenRewardData(ItemStack itemStack) {
+		return itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
+				&& itemStack.getItemMeta().getLore().size() == NUMBER_OF_DATA
+				&& itemStack.getItemMeta().getLore().get(2).equals("Hidden:" + RewardManager.MH_REWARD_UUID);
+	}
+	
+	public static boolean hasHiddenRewardData(Block block) {
+		return block.getType() == Material.SKULL && block.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA);
+	}
+	
+	public static boolean hasHiddenRewardData(Entity entity) {
+		return entity.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA);
 	}
 
 }
