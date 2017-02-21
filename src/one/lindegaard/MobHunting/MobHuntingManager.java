@@ -537,6 +537,8 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = shooter.getTarget().getLocation().clone();
 					mDamageHistory.put(shooter, info);
 				}
+			} else if (event.getEntity() instanceof Player && !CitizensCompat.isNPC(event.getEntity())) {
+				// OK - Do Nothing. A player can't have a target.
 			} else if (event.getEntity().getShooter() != null) {
 				Messages.debug("WARNING: The arrow was shut from %s, this situation is not handled by MobHunting.",
 						event.getEntity().getShooter().toString());
@@ -580,6 +582,8 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = wither.getTarget().getLocation().clone();
 					mDamageHistory.put(wither, info);
 				}
+			} else if (event.getEntity() instanceof Player && !CitizensCompat.isNPC(event.getEntity())) {
+				// OK - Do Nothing. A player can't have a target.
 			} else if (event.getEntity().getShooter() != null) {
 				Messages.debug(
 						"WARNING: The fireball was shut from %s, this situation is not handled by MobHunting. Make a ticket for the developer.",
@@ -748,11 +752,13 @@ public class MobHuntingManager implements Listener {
 			Messages.debug("KillBlocked: Killer is a Citizen NPC.");
 			return;
 		}
+		
+		if (killed!=null && killed.getType()==EntityType.UNKNOWN){
+			return;
+		}
 
 		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
 		if (mob.getMob_id() == 0) {
-			Bukkit.getLogger().warning("Unknown Mob:" + mob.getName() + " from plugin " + mob.getMobPlugin());
-			Bukkit.getLogger().warning("Please report this to developer!");
 			return;
 		}
 

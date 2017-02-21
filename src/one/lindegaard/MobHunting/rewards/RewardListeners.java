@@ -107,9 +107,9 @@ public class RewardListeners implements Listener {
 		ItemStack is = item.getItemStack();
 		Player player = event.getPlayer();
 		Messages.debug("%s dropped %s on ground", player.getName(), is.getType());
-		if (HiddenRewardData.hasHiddenRewardData(item)) {
-			List<String> lore = is.getItemMeta().getLore();
-			double money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
+		if (HiddenRewardData.hasHiddenRewardData(is)) {
+			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+			double money = hiddenRewardData.getMoney();
 			item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 					+ MobHunting.getRewardManager().format(money));
 			item.setCustomNameVisible(true);
@@ -163,7 +163,7 @@ public class RewardListeners implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onMoneyDespawnEvent(ItemDespawnEvent event) {
 		if (event.getEntity().hasMetadata(RewardManager.MH_MONEY)
-				|| event.getEntity().hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA)) {
+				|| HiddenRewardData.hasHiddenRewardData(event.getEntity())) {
 			if (RewardManager.getDroppedMoney().containsKey(event.getEntity().getEntityId()))
 				RewardManager.getDroppedMoney().remove(event.getEntity().getEntityId());
 			Messages.debug("The money was lost - despawned (# of rewards left=%s)",
@@ -200,8 +200,7 @@ public class RewardListeners implements Listener {
 				if (RewardManager.getDroppedMoney().containsKey(entity.getEntityId())) {
 					if (HiddenRewardData.hasHiddenRewardData(entity)) {
 						Messages.debug("Item has MetaData (Hidden)");
-						HiddenRewardData hiddenRewardDataOnGround = (HiddenRewardData) entity
-								.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
+						HiddenRewardData hiddenRewardDataOnGround = HiddenRewardData.getHiddenRewardData(entity);
 						double moneyOnGround = hiddenRewardDataOnGround.getMoney();
 						// If not Gringotts
 						if (hiddenRewardDataOnGround.getMoney() != 0) {
@@ -226,7 +225,7 @@ public class RewardListeners implements Listener {
 									ItemStack is = player.getInventory().getItem(slot);
 									if (HiddenRewardData.hasHiddenRewardData(is)) {
 										ItemMeta im = is.getItemMeta();
-										HiddenRewardData newHiddenRewardData = new HiddenRewardData(im.getLore());
+										HiddenRewardData newHiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 										newHiddenRewardData.setMoney(
 												newHiddenRewardData.getMoney() + hiddenRewardDataOnGround.getMoney());
 										im.setLore(newHiddenRewardData.getLore());
@@ -302,8 +301,7 @@ public class RewardListeners implements Listener {
 		Messages.debug("%s placed a %s on a %s while holding %s", event.getPlayer().getName(), block.getType(),
 				event.getBlockAgainst().getType(), is.getType());
 		if (HiddenRewardData.hasHiddenRewardData(is)) {
-			List<String> lore = is.getItemMeta().getLore();
-			HiddenRewardData hiddenRewardData = new HiddenRewardData(lore);
+			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 			block.setMetadata(RewardManager.MH_HIDDEN_REWARD_DATA,
 					new FixedMetadataValue(MobHunting.getInstance(), hiddenRewardData));
 			RewardManager.getLocations().put(hiddenRewardData.getUniqueId(), hiddenRewardData);
@@ -323,10 +321,7 @@ public class RewardListeners implements Listener {
 		if (HiddenRewardData.hasHiddenRewardData(block)) {
 			event.setCancelled(true);
 			block.setType(Material.AIR);
-
-			HiddenRewardData hiddenRewardData = (HiddenRewardData) block
-					.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
-
+			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData( block);
 			ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
 					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 							+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,

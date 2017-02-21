@@ -56,8 +56,14 @@ public class LeaderboardManager implements Listener {
 	}
 
 	private void initialize() {
+		int leaderboardUpdatePeriod = MobHunting.getConfigManager().leaderboardUpdatePeriod;
+		if (leaderboardUpdatePeriod < 1200) {
+			leaderboardUpdatePeriod = 1200;
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
+					+ "[MobHunting][Warning] leaderboard-update-period: in your config.yml is too low. Please raise it to 1200 or higher. Reccommended is 6000. ");
+		}
 		mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Updater(), 1L,
-				MobHunting.getConfigManager().leaderboardUpdatePeriod);
+				leaderboardUpdatePeriod);
 		loadLegacy();
 
 		for (World world : Bukkit.getWorlds())

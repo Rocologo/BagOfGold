@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.MalformedInputException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -48,13 +49,18 @@ public class Updater {
 	}
 
 	public static void hourlyUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
+		long seconds = MobHunting.getConfigManager().checkEvery;
+		if (seconds<900){
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"[MobHunting][Warning] check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
+			seconds=900;
+		}
 		if (updateCheck) {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					pluginUpdateCheck(sender, true, false);
 				}
-			}.runTaskTimer(MobHunting.getInstance(), 0L, MobHunting.getConfigManager().checkEvery * 20L);
+			}.runTaskTimer(MobHunting.getInstance(), 0L,  seconds * 20L);
 			// Check for update timer
 		}
 	}

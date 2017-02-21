@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.MobHunting.Messages;
@@ -45,7 +46,12 @@ public class DataStoreManager {
 	public DataStoreManager(IDataStore store) {
 		mStore = store;
 		mTaskThread = new TaskThread();
-		mStoreThread = new StoreThread(MobHunting.getConfigManager().savePeriod);
+		int savePeriod=MobHunting.getConfigManager().savePeriod;
+		if (savePeriod<1200){
+			savePeriod=1200;
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"[MobHunting][Warning] save-period in your config.yml is too low. Please raise it to 1200 or higher");
+		}
+		mStoreThread = new StoreThread(savePeriod);
 	}
 
 	public boolean isRunning() {

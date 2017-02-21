@@ -160,12 +160,24 @@ public class HiddenRewardData {
 				&& itemStack.getItemMeta().getLore().get(2).equals("Hidden:" + RewardManager.MH_REWARD_UUID);
 	}
 	
+	public static HiddenRewardData getHiddenRewardData(ItemStack itemStack) {
+		return new HiddenRewardData(itemStack.getItemMeta().getLore());
+	}
+	
 	public static boolean hasHiddenRewardData(Block block) {
 		return block.getType() == Material.SKULL && block.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA);
+	}
+
+	public static HiddenRewardData getHiddenRewardData(Block block){ 
+		return (HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
 	}
 	
 	public static boolean hasHiddenRewardData(Entity entity) {
 		return entity.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA);
 	}
+	public static HiddenRewardData getHiddenRewardData(Entity entity){
+		return  (HiddenRewardData) entity.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
+	}
+			
 
 }
