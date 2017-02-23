@@ -36,7 +36,8 @@ public class RewardManager implements Listener {
 
 	public static final String MH_MONEY = "MH:Money";
 	public static final String MH_HIDDEN_REWARD_DATA = "MH:HiddenRewardData";
-	public static final String MH_REWARD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f";
+	//public static final String MH_REWARD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f";
+	public static final String MH_REWARD_UUID = "3eb9e46c-72ca-374d-8314-058a96cd0e8d";
 
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
@@ -127,10 +128,10 @@ public class RewardManager implements Listener {
 				MinecraftMob mob = MinecraftMob.getExtendedMobType(killedEntity);
 				if (mob != null)
 					is = mob.getCustomProfileHead(money);
-				else // return texture https://mineskin.org/4539
+				else // return texture https://mineskin.org/3384
 					is = CustomItems.getCustomtexture(MH_REWARD_UUID, Messages.getString("mobhunting.reward.name"),
-							"eyJ0aW1lc3RhbXAiOjE0Nzg5NzgwNzg4MDQsInByb2ZpbGVJZCI6ImRhNzQ2NWVkMjljYjRkZTA5MzRkOTIwMTc0NDkxMzU1IiwicHJvZmlsZU5hbWUiOiJJc2F5bGEiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2FiODg0NmU2MmY5ZjU5ODFiOTVkZGExYzFlYjU1YzUxZGRhYjEwNGU4MmYzMWFiM2QxMWJkZjhjZDc2N2VlNjEifX19",
-							"pGbvG0ULeTi9G2HYzaPt7UvFuqXudnDbHS9ppWiMjdozfoKXu2wraEeiVkd5Qw3MCcyAi6M/+YMOwa3Yb9N+mBvkUTAhT4AXBGt4OjPNfkEl4bbP4iVpaZNHA+Id+hPlFHKIzIhQ4wi75WuhkIkEtj7HiGoIipeSQOudr/p3AtzNYRoSGci78YZLblXAjK8FnevdTy2zKHIqg96c3D3d8Nu4qaZIPcUeIB7LFZNem9xjCIqPwQqjRIxg9qF4xxiJa7SHVJETvj7DP4GOLee87vaae5amgpa+doYH8ecx9qatzr6QSlrVoIA1zndDV1uf7nY6jdTiPVnAM3tdk9HZ5yiQ0yOpj1sPh7NAhwp70cBCH+owH8aSqdykhe3Kk8WbVodEwbN5CMkYpI9DnceWovtGNHS9yZam8VmZXM7VevYt49jwzTPaQrzCyjlEOW7wpMxedJ/T9346c03IjybWW7e+G8YPwJ9tgo5tcFHx1QReIv7qcNJ54dIM06JxeG/CnIeLBrAOK6A2eWw6/QYzpPdD8+xZgvA8nBE8NpNRXhPxSBYEIT9YhPesnjC5nHACBaY9OtRJHLvTQQICJaMmjTX6xJJpczU0I8USOVjZAPSGTwkymS+DTAp2oBFsdWBOkeXcCrT56sj5pl/uLyNS2X9WDkCisEiG3eznZ1lQ4Tw=",
+							"eyJ0aW1lc3RhbXAiOjE0NzQzMzI0MzY1MDYsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg2NzczZDc0Y2Y1MDhmZDc3Yzc4MmZmZDI5ZGYyZmU0N2ZiNzE0YjViMGQ3ZGU2N2Q1Mjg2OTMxZTJmMWRmMiJ9fX0=",
+							"JdvJksowuxYQ0eqf56J+Dmczg7zvlw2DbIc58Q33kRt65uMUNn2iRCQsbNpztC1cAAgyYMOyFDiOUZQeIK03CSRoPLDtWp2u501YoGKqhjgrE0V0UDh3JetWKz4Ob0KmATtY+4R2vSoMjHFEFppM0Oq+8ZER12FAiVEMAzeseFN3Z9fWAMc/V10LoquGBpq6ExTfSCEEMDEGZopF1T8ZBKL0vf4DVendfz4v3yl7bRBzISZEAnF+ECTa9z36r8HRqS8+s0eO/AWYQcRaKIu9H+wSK5F/1v+rgifeSlMAnt1Na8m1b5tMfNuq6pXxWCq4nUGgYVTOLUinqs9ZcFz3Z6Mtx5YtymKk2M0mzxmTm9+AeOL4s3K/UrJYQlcmLBJSv4hd6EigJXoashzWNCHKmFDYCdEhh4FArq4G9vRZtoudcTeMsvi0VmXIgER8U5iSfoTtzXcGbf/GT0ECtgfeA40f5oCqyE4nXreudMmvlDCBr/KHbILQWeeH/jhtYqQ6OwJb3Ji2Bs9F5fQmICSqk7X4yKzexf8rdDhOG1z+/TCot7K8unPVuQx46sXPeP7t2hCiHOXMAnOMt8vuL3gQUURIEM6fMryjmlKsgvk8Jo0gawavRCIZQtA6vT0JRRnSAchzEOA7QP1iiVV3LnwX9Yqw7oMJ/+REV1hWesuzDOc=",
 							money,UUID.randomUUID());
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 				is = CustomItems.getCustomtexture(MH_REWARD_UUID,
