@@ -1483,6 +1483,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-use-item-as-currency", category = "dropmoneyonground", comment = "BETATESTING new faeture - DONT USE THIS UNTIL THIS TEXT IS REMOWED: Use the reward as a currency (bag of gold) which can be sold, bought, stored in a chest (in a Bank?)")
 	public boolean dropMoneyOnGroundUseAsCurrency = false;
 
+	@ConfigField(name = "drop-money-command-alias", category = "dropmoneyonground", comment = "Here you can change the command /mh money ... to /mh <alias> ..."
+			+ "\nExample: gold,bag,silver,coin,???? ")
+	public String dropMoneyOnGroundMoneyCommandAlias = "money";
+
 	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used when you have chosen drop-money-on-ground-itemtype: ITEM. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
@@ -1499,9 +1503,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
 	public String dropMoneyOnGroundSkullTextureSignature = "JdvJksowuxYQ0eqf56J+Dmczg7zvlw2DbIc58Q33kRt65uMUNn2iRCQsbNpztC1cAAgyYMOyFDiOUZQeIK03CSRoPLDtWp2u501YoGKqhjgrE0V0UDh3JetWKz4Ob0KmATtY+4R2vSoMjHFEFppM0Oq+8ZER12FAiVEMAzeseFN3Z9fWAMc/V10LoquGBpq6ExTfSCEEMDEGZopF1T8ZBKL0vf4DVendfz4v3yl7bRBzISZEAnF+ECTa9z36r8HRqS8+s0eO/AWYQcRaKIu9H+wSK5F/1v+rgifeSlMAnt1Na8m1b5tMfNuq6pXxWCq4nUGgYVTOLUinqs9ZcFz3Z6Mtx5YtymKk2M0mzxmTm9+AeOL4s3K/UrJYQlcmLBJSv4hd6EigJXoashzWNCHKmFDYCdEhh4FArq4G9vRZtoudcTeMsvi0VmXIgER8U5iSfoTtzXcGbf/GT0ECtgfeA40f5oCqyE4nXreudMmvlDCBr/KHbILQWeeH/jhtYqQ6OwJb3Ji2Bs9F5fQmICSqk7X4yKzexf8rdDhOG1z+/TCot7K8unPVuQx46sXPeP7t2hCiHOXMAnOMt8vuL3gQUURIEM6fMryjmlKsgvk8Jo0gawavRCIZQtA6vT0JRRnSAchzEOA7QP1iiVV3LnwX9Yqw7oMJ/+REV1hWesuzDOc=";
 
-	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is denied by default."
-			+ "\nIf you want HOPPERS to collect MobHunting Money rewards "
-			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=true")
+	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is allowed by default."
+			+ "\nIf you want to deny HOPPERS to collect MobHunting Money rewards "
+			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=false")
 	public boolean denyHoppersToPickUpMoney = true;
 
 	// #####################################################################################

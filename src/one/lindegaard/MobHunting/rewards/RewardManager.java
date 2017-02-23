@@ -36,8 +36,11 @@ public class RewardManager implements Listener {
 
 	public static final String MH_MONEY = "MH:Money";
 	public static final String MH_HIDDEN_REWARD_DATA = "MH:HiddenRewardData";
-	//public static final String MH_REWARD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f";
-	public static final String MH_REWARD_UUID = "3eb9e46c-72ca-374d-8314-058a96cd0e8d";
+	public static final String MH_REWARD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f"; // Unique
+																						// randomgenerated
+																						// UUID
+	// public static final String MH_REWARD_UUID =
+	// "3eb9e46c-72ca-374d-8314-058a96cd0e8d"; //UUID from mineskin
 
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
@@ -116,10 +119,8 @@ public class RewardManager implements Listener {
 				ItemStack is = new ItemStack(d.key.type.getType(), 1);
 				while (rest >= (d.value / unit)) {
 					item = location.getWorld().dropItem(location, is);
-					if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
-						item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), (double) 0));
-						rest = rest - (d.value / unit);
-					}
+					item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), (double) 0));
+					rest = rest - (d.value / unit);
 				}
 			}
 		} else {
@@ -132,7 +133,7 @@ public class RewardManager implements Listener {
 					is = CustomItems.getCustomtexture(MH_REWARD_UUID, Messages.getString("mobhunting.reward.name"),
 							"eyJ0aW1lc3RhbXAiOjE0NzQzMzI0MzY1MDYsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg2NzczZDc0Y2Y1MDhmZDc3Yzc4MmZmZDI5ZGYyZmU0N2ZiNzE0YjViMGQ3ZGU2N2Q1Mjg2OTMxZTJmMWRmMiJ9fX0=",
 							"JdvJksowuxYQ0eqf56J+Dmczg7zvlw2DbIc58Q33kRt65uMUNn2iRCQsbNpztC1cAAgyYMOyFDiOUZQeIK03CSRoPLDtWp2u501YoGKqhjgrE0V0UDh3JetWKz4Ob0KmATtY+4R2vSoMjHFEFppM0Oq+8ZER12FAiVEMAzeseFN3Z9fWAMc/V10LoquGBpq6ExTfSCEEMDEGZopF1T8ZBKL0vf4DVendfz4v3yl7bRBzISZEAnF+ECTa9z36r8HRqS8+s0eO/AWYQcRaKIu9H+wSK5F/1v+rgifeSlMAnt1Na8m1b5tMfNuq6pXxWCq4nUGgYVTOLUinqs9ZcFz3Z6Mtx5YtymKk2M0mzxmTm9+AeOL4s3K/UrJYQlcmLBJSv4hd6EigJXoashzWNCHKmFDYCdEhh4FArq4G9vRZtoudcTeMsvi0VmXIgER8U5iSfoTtzXcGbf/GT0ECtgfeA40f5oCqyE4nXreudMmvlDCBr/KHbILQWeeH/jhtYqQ6OwJb3Ji2Bs9F5fQmICSqk7X4yKzexf8rdDhOG1z+/TCot7K8unPVuQx46sXPeP7t2hCiHOXMAnOMt8vuL3gQUURIEM6fMryjmlKsgvk8Jo0gawavRCIZQtA6vT0JRRnSAchzEOA7QP1iiVV3LnwX9Yqw7oMJ/+REV1hWesuzDOc=",
-							money,UUID.randomUUID());
+							money, UUID.randomUUID());
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 				is = CustomItems.getCustomtexture(MH_REWARD_UUID,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
@@ -159,7 +160,7 @@ public class RewardManager implements Listener {
 			}
 		}
 		if (item != null)
-			Messages.debug("%s was dropped on the ground as item %s (# of rewards=%s)", 
+			Messages.debug("%s was dropped on the ground as item %s (# of rewards=%s)",
 					MobHunting.getRewardManager().format(money),
 					MobHunting.getConfigManager().dropMoneyOnGroundItemtype, droppedMoney.size());
 	}
@@ -180,23 +181,23 @@ public class RewardManager implements Listener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void loadReward(UUID uuid) {
 		try {
-			
+
 			if (!file.exists())
 				return;
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(uuid.toString());
-			
+
 			HiddenRewardData hiddenRewardData = new HiddenRewardData();
 			hiddenRewardData.read(section);
 			placedMoney_hiddenRewardData.put(uuid, hiddenRewardData);
 
 			Location location = (Location) section.get("location");
 			placedMoney_Location.put(uuid, location);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -206,31 +207,30 @@ public class RewardManager implements Listener {
 
 	public static void loadAllStoredRewards() {
 		try {
-			
+
 			if (!file.exists())
 				return;
 
 			config.load(file);
-			int n=0;
-			for (String key : config.getKeys(false)){
+			int n = 0;
+			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config.getConfigurationSection(key);
-			
+
 				HiddenRewardData hiddenRewardData = new HiddenRewardData();
 				hiddenRewardData.read(section);
 				placedMoney_hiddenRewardData.put(UUID.fromString(key), hiddenRewardData);
 
 				Location location = (Location) section.get("location");
 				placedMoney_Location.put(UUID.fromString(key), location);
-				
-				location.getBlock().setMetadata(MH_HIDDEN_REWARD_DATA, 
-						new FixedMetadataValue(MobHunting.getInstance(),
-								new HiddenRewardData(hiddenRewardData)));
+
+				location.getBlock().setMetadata(MH_HIDDEN_REWARD_DATA,
+						new FixedMetadataValue(MobHunting.getInstance(), new HiddenRewardData(hiddenRewardData)));
 				n++;
 			}
-			if (n>0){
-				Messages.debug("Loaded %s \"bags of gold\" from disk.",n);
+			if (n > 0) {
+				Messages.debug("Loaded %s \"bags of gold\" from disk.", n);
 			}
-						
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {

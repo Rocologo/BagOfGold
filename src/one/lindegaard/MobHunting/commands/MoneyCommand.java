@@ -2,7 +2,7 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,7 +12,11 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.rewards.HiddenRewardData;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.util.Misc;
@@ -45,7 +49,7 @@ public class MoneyCommand implements ICommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[] { "gold", "bag" };
+		return new String[] { "gold", "bag", MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias };
 	}
 
 	@Override
@@ -56,25 +60,38 @@ public class MoneyCommand implements ICommand {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				ChatColor.GOLD + label + ChatColor.GREEN + " drop <amount>" + ChatColor.WHITE
-						+ " - to drop <amount> of Bag of gold, where you look.",
-				ChatColor.GOLD + label + ChatColor.GREEN + " drop <playername> " + ChatColor.YELLOW + "<amount>"
-						+ ChatColor.WHITE + " - to drop <amount> of Bag of gold 3 block in front of the <player>.",
-				ChatColor.GOLD + label + ChatColor.GREEN + " give <player>" + ChatColor.YELLOW + " <amount>"
-						+ ChatColor.WHITE + " - to give the player a bag of gold in his inventory.",
-				ChatColor.GOLD + label + ChatColor.GREEN + " take <player>" + ChatColor.YELLOW + " <amount>"
-						+ ChatColor.WHITE + " - to take <amount> gold from the bag of gold in the players inventory",
-				ChatColor.GOLD + label + ChatColor.GREEN + " sell" + ChatColor.WHITE
-						+ " - to sell the bag of gold in your hand.",
-				ChatColor.GOLD + label + ChatColor.GREEN + " sell" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
-						+ " - to sell some of the gold in your bag of gold and get the money.",
-				ChatColor.GOLD + label + ChatColor.GREEN + " buy" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
-						+ " - to buy some more gold with your money and put it into your bag of gold." };
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " drop <amount>" + ChatColor.WHITE + " - to drop <amount> of "
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + ", where you look.",
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " drop <playername> " + ChatColor.YELLOW + "<amount>" + ChatColor.WHITE
+						+ " - to drop <amount> of " + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName
+						+ " 3 block in front of the <player>.",
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+						+ " - to give the player a " + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName
+						+ " in his inventory.",
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " take <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+						+ " - to take <amount> gold from the "
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " in the players inventory",
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " sell" + ChatColor.WHITE + " - to sell the "
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " in your hand.",
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " sell" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+						+ " - to sell some of the gold in your "
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " and get the money.",
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " buy" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+						+ " - to buy some more gold with your money and put it into your "
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + "." };
 	}
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("mobhunting.commands.money.description");
+		return Messages.getString("mobhunting.commands.money.description", "rewardname",
+				MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName);
 	}
 
 	@Override
@@ -87,30 +104,67 @@ public class MoneyCommand implements ICommand {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 
-		if (args.length == 0) {
-			// mh money
-			// show the total amount of "bag of gold" in the players inventory.
-			sender.sendMessage(ChatColor.RED + "Not implemented yet.");
-			return true;
-
-		} else if (args.length == 1) {
+		if (args.length == 1) {
 			// /mh money help
 			// Show help
 			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))
 				return false;
+		}
+
+		if (args.length == 0 || (args.length == 1 && Bukkit.getServer().getOfflinePlayer(args[1]).isOnline())) {
+			// mh money
+			// mh money <player>
+			// show the total amount of "bag of gold" in the players inventory.
+
+			if (sender.hasPermission("mobhunting.money.balance")) {
+				Player player = null;
+				if (args.length == 0) {
+					if (!(sender instanceof Player)) {
+						sender.sendMessage(ChatColor.RED
+								+ Messages.getString("mobhunting.commands.base.noconsole", "command", "'money sell'"));
+						return true;
+					} else
+						player = (Player) sender;
+				} else {
+					if (sender.hasPermission("mobhunting.money.balance.other"))
+						player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
+					else {
+						sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission",
+								"perm", "mobhunting.money.balance.other", "command", "money <playername>"));
+						return true;
+					}
+				}
+
+				double sum = 0;
+				for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+					ItemStack is = player.getInventory().getItem(slot);
+					if (HiddenRewardData.hasHiddenRewardData(is)) {
+						HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+						sum = sum + hiddenRewardData.getMoney();
+					}
+				}
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.money.balance", "money",
+						RewardManager.getEconomy().format(sum), "rewardname",
+						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
+			} else {
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "perm",
+						"mobhunting.money.balance", "command", "money"));
+			}
+			return true;
 
 		}
 
-		if (args.length >= 2 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place")) {
+		else if (args.length >= 2 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place")) {
 			// /mh money drop <amount>
 			// /mh money drop <player> <amount>
 			if (sender.hasPermission("mobhunting.money.drop")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					sender.sendMessage(
-							Messages.getString(ChatColor.RED + "mobhunting.commands.base.playername-missing"));
+							ChatColor.RED + Messages.getString("mobhunting.commands.base.playername-missing"));
 				} else {
 					if (args[1].matches("\\d+(\\.\\d+)?")) {
 						Player player = (Player) sender;
@@ -119,7 +173,9 @@ public class MoneyCommand implements ICommand {
 						if (location != null) {
 							RewardManager.dropMoneyOnGround(player, null, location, Double.valueOf(args[1]));
 							Messages.playerActionBarMessage(player,
-									Messages.getString("mobhunting.moneydrop", "money", Double.valueOf(args[1])));
+									Messages.getString("mobhunting.moneydrop", "rewardname",
+											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+											Double.valueOf(args[1])));
 						}
 					} else if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
@@ -130,14 +186,16 @@ public class MoneyCommand implements ICommand {
 										Double.valueOf(args[2]));
 							}
 							Messages.playerActionBarMessage(player,
-									Messages.getString("mobhunting.moneydrop", "money", Double.valueOf(args[2])));
+									Messages.getString("mobhunting.moneydrop", "rewardname",
+											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+											Double.valueOf(args[2])));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
 						}
 					} else {
-						sender.sendMessage(Messages.getString(
-								ChatColor.RED + "mobhunting.commands.base.playername-missing", "player", args[1]));
+						sender.sendMessage(ChatColor.RED
+								+ Messages.getString("mobhunting.commands.base.playername-missing", "player", args[1]));
 					}
 				}
 			} else {
@@ -151,7 +209,7 @@ public class MoneyCommand implements ICommand {
 			if (sender.hasPermission("mobhunting.money.give")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					sender.sendMessage(
-							Messages.getString(ChatColor.RED + "mobhunting.commands.base.playername-missing"));
+							ChatColor.RED + Messages.getString("mobhunting.commands.base.playername-missing"));
 				} else {
 					if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
@@ -159,16 +217,19 @@ public class MoneyCommand implements ICommand {
 							RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
 									Double.valueOf(args[2]));
 							Messages.playerActionBarMessage(player,
-									Messages.getString("mobhunting.money.give", "money", Double.valueOf(args[2])));
-							sender.sendMessage(Messages.getString("mobhunting.commands.money.give-sender", "money",
+									Messages.getString("mobhunting.commands.money.give", "rewardname",
+											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+											Double.valueOf(args[2])));
+							sender.sendMessage(Messages.getString("mobhunting.commands.money.give-sender", "rewardname",
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
 									Double.valueOf(args[2]), "player", player.getName()));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
 						}
 					} else {
-						sender.sendMessage(Messages.getString(
-								ChatColor.RED + "mobhunting.commands.base.playername-missing", "player", args[1]));
+						sender.sendMessage(ChatColor.RED
+								+ Messages.getString("mobhunting.commands.base.playername-missing", "player", args[1]));
 					}
 				}
 			} else {
@@ -176,15 +237,14 @@ public class MoneyCommand implements ICommand {
 						"mobhunting.money.give", "command", "money give"));
 			}
 			return true;
+		}
 
-		} else
-
-		if (args.length >= 2 && args[0].equalsIgnoreCase("take")) {
+		else if (args.length >= 2 && args[0].equalsIgnoreCase("take")) {
 			// /mh money take <player> <amount>
 			if (sender.hasPermission("mobhunting.money.take")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					sender.sendMessage(
-							Messages.getString(ChatColor.RED + "mobhunting.commands.base.playername-missing"));
+							ChatColor.RED + Messages.getString("mobhunting.commands.base.playername-missing"));
 				} else {
 					if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
@@ -192,38 +252,54 @@ public class MoneyCommand implements ICommand {
 
 							double taken = 0;
 							double rest = Double.valueOf(args[2]);
-							ListIterator<ItemStack> itr = player.getInventory().iterator();
-							while (itr.hasNext()) {
-								ItemStack is = (ItemStack) itr.next();
+							for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+								ItemStack is = player.getInventory().getItem(slot);
 								if (HiddenRewardData.hasHiddenRewardData(is)) {
 									HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 									double saldo = hiddenRewardData.getMoney();
 									if (saldo >= rest) {
 										hiddenRewardData.setMoney(saldo - rest);
+										is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+												MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+												MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+												MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+												saldo - rest, UUID.randomUUID());
+										ItemMeta im = is.getItemMeta();
+										im.setLore(hiddenRewardData.getLore());
+										im.setDisplayName(ChatColor
+												.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+												+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+												+ MobHunting.getRewardManager().format(saldo - rest) + " )");
+										is.setItemMeta(im);
+										player.getInventory().setItem(slot, is);
 										taken = taken + rest;
 										rest = 0;
 										break;
 									} else {
-										hiddenRewardData.setMoney(0);
+										is.setItemMeta(null);
 										is.setType(Material.AIR);
 										is.setAmount(0);
+										player.getInventory().setItem(slot, is);
 										taken = taken + saldo;
 										rest = rest - saldo;
 									}
 								}
 							}
 
-							Messages.playerActionBarMessage(player, Messages.getString("mobhunting.commands.money.take",
-									"money", RewardManager.getEconomy().format(taken)));
-							sender.sendMessage(Messages.getString("mobhunting.commands.money.take-sender", "money",
+							Messages.playerActionBarMessage(player,
+									Messages.getString("mobhunting.commands.money.take", "rewardname",
+											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+											RewardManager.getEconomy().format(taken)));
+							sender.sendMessage(Messages.getString("mobhunting.commands.money.take-sender", "rewardname",
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
 									RewardManager.getEconomy().format(taken), "player", player.getName()));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
 						}
 					} else {
-						sender.sendMessage(Messages.getString(
-								ChatColor.RED + "mobhunting.commands.base.playername-missing", "player", args[1]));
+						sender.sendMessage(ChatColor.RED
+								+ Messages.getString("mobhunting.commands.base.playername-missing", "player", args[1]));
 					}
 				}
 			} else {
@@ -232,14 +308,14 @@ public class MoneyCommand implements ICommand {
 			}
 			return true;
 
-		} else if (args[0].equalsIgnoreCase("sell")
-				|| (args[0].equalsIgnoreCase("sell") && (args[1].matches("\\d+(\\.\\d+)?")))) {
+		} else if ((args.length == 1 && args[0].equalsIgnoreCase("sell"))
+				|| (args.length == 2 && args[0].equalsIgnoreCase("sell") && (args[1].matches("\\d+(\\.\\d+)?")))) {
 			// /mh money sell
 			// /mh money sell <amount>
 			if (sender.hasPermission("mobhunting.money.sell")) {
 				if (!(sender instanceof Player)) {
-					sender.sendMessage(Messages.getString(ChatColor.RED + "mobhunting.commands.base.noconsole",
-							"command", "'money sell'"));
+					sender.sendMessage(ChatColor.RED
+							+ Messages.getString("mobhunting.commands.base.noconsole", "command", "'money sell'"));
 					return true;
 				}
 
@@ -251,41 +327,60 @@ public class MoneyCommand implements ICommand {
 						RewardManager.getEconomy().depositPlayer(player, hiddenRewardData.getMoney());
 						is.setType(Material.AIR);
 						is.setAmount(0);
-						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.commands.money.sell",
-								"money", RewardManager.getEconomy().format(hiddenRewardData.getMoney())));
-						return true;
+						is.setItemMeta(null);
+						player.setItemInHand(is);
+						Messages.playerActionBarMessage(player,
+								Messages.getString("mobhunting.commands.money.sell", "rewardname",
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+										RewardManager.getEconomy().format(hiddenRewardData.getMoney())));
 					}
 				} else if ((args[0].equalsIgnoreCase("sell") && (args[1].matches("\\d+(\\.\\d+)?")))) {
 					double sold = 0;
 					double toBeSold = Double.valueOf(args[1]);
-					ListIterator<ItemStack> itr = player.getInventory().iterator();
-					while (itr.hasNext()) {
-						ItemStack is = (ItemStack) itr.next();
+					for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+						ItemStack is = player.getInventory().getItem(slot);
 						if (HiddenRewardData.hasHiddenRewardData(is)) {
 							HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 							double saldo = hiddenRewardData.getMoney();
 							if (saldo >= toBeSold) {
 								hiddenRewardData.setMoney(saldo - toBeSold);
+								is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+										saldo - toBeSold, UUID.randomUUID());
+								ItemMeta im = is.getItemMeta();
+								im.setLore(hiddenRewardData.getLore());
+								im.setDisplayName(
+										ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+												+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+												+ MobHunting.getRewardManager().format(saldo - toBeSold) + " )");
+								is.setItemMeta(im);
+								player.getInventory().setItem(slot, is);
 								sold = sold + toBeSold;
 								toBeSold = 0;
 								break;
 							} else {
-								hiddenRewardData.setMoney(0);
+								is.setItemMeta(null);
 								is.setType(Material.AIR);
 								is.setAmount(0);
+								player.getInventory().setItem(slot, is);
 								sold = sold + saldo;
 								toBeSold = toBeSold - saldo;
 							}
 						}
 					}
 					RewardManager.getEconomy().depositPlayer(player, sold);
-					Messages.playerActionBarMessage(player, Messages.getString("mobhunting.commands.money.sell",
-							"money", RewardManager.getEconomy().format(sold)));
+					Messages.playerActionBarMessage(player,
+							Messages.getString("mobhunting.commands.money.sell", "rewardname",
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+									RewardManager.getEconomy().format(sold)));
 				}
 			} else {
 				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "perm",
 						"mobhunting.money.sell", "command", "money sell"));
 			}
+			return true;
 		}
 
 		else if (args.length >= 2 && args[0].equalsIgnoreCase("buy")) {
@@ -296,7 +391,9 @@ public class MoneyCommand implements ICommand {
 					RewardManager.dropMoneyOnGround(player, null, player.getLocation(), Double.valueOf(args[1]));
 					RewardManager.getEconomy().withdrawPlayer(player, Double.valueOf(args[1]));
 					Messages.playerActionBarMessage(player,
-							Messages.getString("mobhunting.commands.money.buy", "money", Double.valueOf(args[1])));
+							Messages.getString("mobhunting.commands.money.buy", "rewardname",
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+									Double.valueOf(args[1])));
 				} else {
 					sender.sendMessage(ChatColor.RED
 							+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[1]));
@@ -306,7 +403,6 @@ public class MoneyCommand implements ICommand {
 						"mobhunting.money.buy", "command", "money buy"));
 			}
 			return true;
-
 		}
 
 		return false;
@@ -322,6 +418,12 @@ public class MoneyCommand implements ICommand {
 			items.add("take");
 			items.add("sell");
 			items.add("buy");
+		} else if (args.length == 2) {
+			String partial = args[1].toLowerCase();
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (player.getName().toLowerCase().startsWith(partial))
+					items.add(player.getName());
+			}
 		}
 		return items;
 	}

@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting.rewards;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -210,7 +209,6 @@ public class RewardListeners implements Listener {
 							if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
 								MobHunting.getRewardManager().depositPlayer(player, moneyOnGround);
 								entity.remove();
-								// item.remove();
 								Messages.debug("HIDDEN(2): %s picked up the %s money. (# of rewards left=%s)",
 										player.getName(),
 										MobHunting.getRewardManager().format(hiddenRewardDataOnGround.getMoney()),
@@ -395,7 +393,6 @@ public class RewardListeners implements Listener {
 				Messages.debug("Halfed");
 			}
 		}
-
 	}
 
 }

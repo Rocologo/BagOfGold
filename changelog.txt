@@ -1,6 +1,8 @@
 V4.5.3
 * Added Minimum values for Leaderboard updates, MasterMobHunter updates, save data. (leaderboard-update-period, masterMobHunter_check_every, save-period) Too low numbers seems to cause server crashes.
 * Added new commands
+			/mh money                            (Permission mobhunting.money.balance)
+			/mh money <player>                   (Permission mobhunting.money.balance.other)
 			/mh money drop <amount>              (Permission mobhunting.money.drop needed)
 			/mh money drop <player> <amount>     (Permission mobhunting.money.drop needed)
 			/mh money sell                       (Permission mobhunting.money.sell needed)
@@ -8,7 +10,9 @@ V4.5.3
 			/mh money give <player> <amount>     (Permission mobhunting.money.give needed)
 			/mh money take <player> <amount>     (Permission mobhunting.money.take needed)
 			/mh money buy <amount>               (Permission mobhunting.money.buy needed)
-* Created new UUID for the Bag og Gold (https://mineskin.org/3384)
+* Bag of gold can now be renamed, to Sack of gold, Iron Chest or what ever you want
+* Fixing Gringotts bug which caused the server to crash hard.
+* You can change the alias for /mh money command to something else. Ex /mh bag... /mh gold... or whatever.
 V4.5.2
 * Added support for fireballs shot from a Wither (Ticket 153: https://github.com/Rocologo/MobHunting/issues/153)
 * Fix broken head /mh head give <player> wither & /mh head give <player> pigzombie (Ticket 153: https://github.com/Rocologo/MobHunting/issues/153)

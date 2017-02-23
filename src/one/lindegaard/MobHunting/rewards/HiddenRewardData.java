@@ -155,7 +155,7 @@ public class HiddenRewardData {
 	}
 
 	public static boolean hasHiddenRewardData(ItemStack itemStack) {
-		return itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
+		return itemStack!=null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
 				&& itemStack.getItemMeta().getLore().size() == NUMBER_OF_DATA
 				&& itemStack.getItemMeta().getLore().get(2).equals("Hidden:" + RewardManager.MH_REWARD_UUID);
 	}
