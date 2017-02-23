@@ -191,11 +191,11 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
 
 		// ExtendedMob Plugins where special mobs are created
-		registerPlugin(CitizensCompat.class, "Citizens");
 		registerPlugin(MythicMobsCompat.class, "MythicMobs");
 		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
 		registerPlugin(CustomMobsCompat.class, "CustomMobs");
 		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
+		registerPlugin(CitizensCompat.class, "Citizens");
 		mExtendedMobManager = new ExtendedMobManager();
 
 		// Register commands

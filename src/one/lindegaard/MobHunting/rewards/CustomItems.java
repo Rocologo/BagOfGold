@@ -76,23 +76,13 @@ public class CustomItems {
 		if (MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
 			skullMeta.setLore(new ArrayList<String>(
 					Arrays.asList("Hidden:" + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-							"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID,
-							"Hidden:"+uniqueRewardUuid)));
-			skull.setItemMeta(skullMeta);
+							"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID, "Hidden:" + uniqueRewardUuid)));
+		} else {
+			skullMeta.setLore(new ArrayList<String>(Arrays.asList(Messages.getString("mobhunting.reward.name"),
+					mPlayerUUID, MobHunting.getRewardManager().format(money))));
 		}
+		skull.setItemMeta(skullMeta);
 		return skull;
-	}
-
-	public static UUID showLore(ItemStack itemStack) {
-		if (itemStack.getData().getItemType() == Material.SKULL_ITEM) {
-			if (itemStack.hasItemMeta()) {
-				ItemMeta itemMeta = itemStack.getItemMeta();
-				if (itemMeta.hasLore())
-					Messages.debug("itemMeta.getLore()=%s", itemMeta.getLore());
-			}
-		}
-		// TODO: get the UUID from the Lore
-		return null;
 	}
 
 }

@@ -1480,7 +1480,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\n\nChoose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\"")
 	public String dropMoneyOnGroundItemtype = "SKULL";
 
-	@ConfigField(name = "drop-money-use-item-as-currency", category = "dropmoneyonground", comment = "BETATESTING new faeture - DONT USE THIS UNTIL THIS TEXT IS REMOWED: Use the reward as a currency (bag of gold) which can be sold, bought, stored in a chest (in a Bank?)")
+	@ConfigField(name = "drop-money-use-item-as-currency", category = "dropmoneyonground", comment = "Use the reward as a currency (bag of gold) which can be sold, bought, stored in a chest (in a Bank?)")
 	public boolean dropMoneyOnGroundUseAsCurrency = false;
 
 	@ConfigField(name = "drop-money-command-alias", category = "dropmoneyonground", comment = "Here you can change the command /mh money ... to /mh <alias> ..."

@@ -194,8 +194,12 @@ public class MoneyCommand implements ICommand {
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED
-								+ Messages.getString("mobhunting.commands.base.playername-missing", "player", args[1]));
+						if (args.length >= 2)
+							sender.sendMessage(ChatColor.RED + Messages
+									.getString("mobhunting.commands.base.playername-missing", "player", args[1]));
+						else
+							sender.sendMessage(ChatColor.RED
+									+ Messages.getString("mobhunting.commands.base.playername-missing", "player", ""));
 					}
 				}
 			} else {

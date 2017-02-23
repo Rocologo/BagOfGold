@@ -1,3 +1,6 @@
+V4.5.4
+* Fixed error when "/mh money drop" was called without an amount of money to drop.
+* Changed CitizensCompat initialization delay from 3 to 5 seconds, to make sure that Citizens is fully loaded. (To fix ticket 161: https://github.com/Rocologo/MobHunting/issues/161)
 V4.5.3
 * Added Minimum values for Leaderboard updates, MasterMobHunter updates, save data. (leaderboard-update-period, masterMobHunter_check_every, save-period) Too low numbers seems to cause server crashes.
 * Added new commands

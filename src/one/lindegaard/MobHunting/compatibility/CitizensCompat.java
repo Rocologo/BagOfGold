@@ -79,7 +79,7 @@ public class CitizensCompat implements Listener {
 					// loadBountyDataForSentryOrSentinel();
 					MobHunting.getExtendedMobManager().updateExtendedMobs();
 				}
-			}, 20 * 3); // 20ticks/sec * 3 sec.
+			}, 20 * 5); // 20ticks/sec * 3 sec.
 
 		}
 	}
