@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +28,10 @@ public class CustomItems {
 		skull.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		skullMeta.setOwner(name);
+		if (money == 0)
+			skullMeta.setDisplayName(name);
+		else
+			skullMeta.setDisplayName(name + " (" + RewardManager.getEconomy().format(money) + ")");
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
@@ -76,9 +79,13 @@ public class CustomItems {
 		skullMeta.setLore(new ArrayList<String>(
 				Arrays.asList("Hidden:" + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 						"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID, "Hidden:" + uniqueRewardUuid)));
-		skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-				+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
-				+ MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
+		if (money == 0)
+			skullMeta.setDisplayName(
+					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
+		else
+			skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+					+ mDisplayName + " (" + MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
+
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
