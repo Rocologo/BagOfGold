@@ -34,7 +34,7 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class RewardManager implements Listener {
 
-	public static final String MH_MONEY = "MH:Money";
+	// public static final String MH_MONEY = "MH:Money";
 	public static final String MH_HIDDEN_REWARD_DATA = "MH:HiddenRewardData";
 	public static final String MH_REWARD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f"; // Unique
 																						// randomgenerated
@@ -119,7 +119,10 @@ public class RewardManager implements Listener {
 				ItemStack is = new ItemStack(d.key.type.getType(), 1);
 				while (rest >= (d.value / unit)) {
 					item = location.getWorld().dropItem(location, is);
-					item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), (double) 0));
+					item.setMetadata(MH_HIDDEN_REWARD_DATA,
+							new FixedMetadataValue(MobHunting.getInstance(),
+									new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+											money, UUID.fromString(MH_REWARD_UUID), UUID.randomUUID())));
 					rest = rest - (d.value / unit);
 				}
 			}
@@ -146,13 +149,10 @@ public class RewardManager implements Listener {
 			}
 			item = location.getWorld().dropItem(location, is);
 			RewardManager.getDroppedMoney().put(item.getEntityId(), money);
-			if (MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
-				item.setMetadata(MH_HIDDEN_REWARD_DATA,
-						new FixedMetadataValue(MobHunting.getInstance(),
-								new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-										money, UUID.fromString(MH_REWARD_UUID), UUID.randomUUID())));
-			} else
-				item.setMetadata(MH_MONEY, new FixedMetadataValue(MobHunting.getInstance(), money));
+			item.setMetadata(MH_HIDDEN_REWARD_DATA,
+					new FixedMetadataValue(MobHunting.getInstance(),
+							new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, money,
+									UUID.fromString(MH_REWARD_UUID), UUID.randomUUID())));
 			if (Misc.isMC18OrNewer()) {
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 						+ MobHunting.getRewardManager().format(money));
@@ -213,20 +213,30 @@ public class RewardManager implements Listener {
 
 			config.load(file);
 			int n = 0;
+			int deleted = 0;
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config.getConfigurationSection(key);
 
 				HiddenRewardData hiddenRewardData = new HiddenRewardData();
 				hiddenRewardData.read(section);
-				placedMoney_hiddenRewardData.put(UUID.fromString(key), hiddenRewardData);
 
 				Location location = (Location) section.get("location");
-				placedMoney_Location.put(UUID.fromString(key), location);
 
-				location.getBlock().setMetadata(MH_HIDDEN_REWARD_DATA,
-						new FixedMetadataValue(MobHunting.getInstance(), new HiddenRewardData(hiddenRewardData)));
-				n++;
+				Messages.debug("Blocktype=%s", location.getBlock().getType());
+				if (location.getBlock().getType() == Material.SKULL) {
+					location.getBlock().setMetadata(MH_HIDDEN_REWARD_DATA,
+							new FixedMetadataValue(MobHunting.getInstance(), new HiddenRewardData(hiddenRewardData)));
+					placedMoney_hiddenRewardData.put(UUID.fromString(key), hiddenRewardData);
+					placedMoney_Location.put(UUID.fromString(key), location);
+					n++;
+				} else {
+					deleted++;
+					section.set(key, null);
+				}
 			}
+			Messages.debug("Deleted %s rewards from rewards.yml", deleted);
+			if (deleted > 0)
+				config.save(file);
 			if (n > 0) {
 				Messages.debug("Loaded %s \"bags of gold\" from disk.", n);
 			}

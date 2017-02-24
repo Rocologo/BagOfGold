@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,7 +14,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class CustomItems {
@@ -73,14 +73,12 @@ public class CustomItems {
 			e.printStackTrace();
 		}
 
-		if (MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
-			skullMeta.setLore(new ArrayList<String>(
-					Arrays.asList("Hidden:" + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-							"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID, "Hidden:" + uniqueRewardUuid)));
-		} else {
-			skullMeta.setLore(new ArrayList<String>(Arrays.asList(Messages.getString("mobhunting.reward.name"),
-					mPlayerUUID, MobHunting.getRewardManager().format(money))));
-		}
+		skullMeta.setLore(new ArrayList<String>(
+				Arrays.asList("Hidden:" + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+						"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID, "Hidden:" + uniqueRewardUuid)));
+		skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+				+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
+				+ MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}

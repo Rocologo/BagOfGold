@@ -1,6 +1,11 @@
 V4.5.4
+* Tried to fix the missing texture on "Bag of gold"... It works on my test server, but I know this is not a guarantee since I can't test all possible configurations.
+* Bag of gold in the inventory, can now be halfed in two
 * Fixed error when "/mh money drop" was called without an amount of money to drop.
 * Changed CitizensCompat initialization delay from 3 to 5 seconds, to make sure that Citizens is fully loaded. (To fix ticket 161: https://github.com/Rocologo/MobHunting/issues/161)
+* Replaced MH_REWARD (containing only the value) with MH_HIDDEN_DATA (Containing DisplayText, reward value, Unique UUID, Reward IID)
+* Fixed some minor bugs in the new money commands
+* Fixed ItemPickupEvet when the inventory is full. (Reported by Mr Killer)
 V4.5.3
 * Added Minimum values for Leaderboard updates, MasterMobHunter updates, save data. (leaderboard-update-period, masterMobHunter_check_every, save-period) Too low numbers seems to cause server crashes.
 * Added new commands

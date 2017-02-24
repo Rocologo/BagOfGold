@@ -35,7 +35,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @return PlayerSettings
 	 */
 	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) {
-		if (mPlayerSettings.containsKey(offlinePlayer))
+		if (mPlayerSettings.containsKey(offlinePlayer.getUniqueId()))
 			return mPlayerSettings.get(offlinePlayer.getUniqueId());
 		else
 			return new PlayerSettings(offlinePlayer);

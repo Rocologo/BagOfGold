@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.storage.asynch;
 
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.bukkit.OfflinePlayer;
 
@@ -23,16 +22,16 @@ public class PlayerSettingsRetrieverTask implements DataStoreTask<PlayerSettings
 		mWaiting = waiting;
 	}
 
-	private void updateUsingCache(Set<PlayerSettings> achievements) {
-		for (Object obj : mWaiting) {
-			if (obj instanceof PlayerSettings) {
-				PlayerSettings cached = (PlayerSettings) obj;
-				if (!cached.getPlayer().equals(mPlayer))
-					continue;
-
-			}
-		}
-	}
+	//private void updateUsingCache(Set<PlayerSettings> achievements) {
+	//	for (Object obj : mWaiting) {
+	//		if (obj instanceof PlayerSettings) {
+	//			PlayerSettings cached = (PlayerSettings) obj;
+	//			if (!cached.getPlayer().equals(mPlayer))
+	//				continue;
+    //
+	//		}
+	//	}
+	//}
 
 	public PlayerSettings run(IDataStore store) throws DataStoreException {
 		synchronized (mWaiting) {

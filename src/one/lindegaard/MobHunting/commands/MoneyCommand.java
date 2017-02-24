@@ -12,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -115,7 +114,7 @@ public class MoneyCommand implements ICommand {
 				return false;
 		}
 
-		if (args.length == 0 || (args.length == 1 && Bukkit.getServer().getOfflinePlayer(args[1]).isOnline())) {
+		if (args.length == 0 || (args.length == 1 && Bukkit.getServer().getOfflinePlayer(args[0]).isOnline())) {
 			// mh money
 			// mh money <player>
 			// show the total amount of "bag of gold" in the players inventory.
@@ -218,8 +217,17 @@ public class MoneyCommand implements ICommand {
 					if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
-							RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
-									Double.valueOf(args[2]));
+							if (player.getInventory().firstEmpty() == -1)
+								RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
+										Double.valueOf(args[2]));
+							else {
+								ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+										Double.valueOf(args[2]), UUID.randomUUID());
+								player.getInventory().addItem(is);
+							}
 							Messages.playerActionBarMessage(player,
 									Messages.getString("mobhunting.commands.money.give", "rewardname",
 											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
@@ -268,13 +276,6 @@ public class MoneyCommand implements ICommand {
 												MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 												MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
 												saldo - rest, UUID.randomUUID());
-										ItemMeta im = is.getItemMeta();
-										im.setLore(hiddenRewardData.getLore());
-										im.setDisplayName(ChatColor
-												.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-												+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
-												+ MobHunting.getRewardManager().format(saldo - rest) + " )");
-										is.setItemMeta(im);
 										player.getInventory().setItem(slot, is);
 										taken = taken + rest;
 										rest = 0;
@@ -353,13 +354,6 @@ public class MoneyCommand implements ICommand {
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
 										saldo - toBeSold, UUID.randomUUID());
-								ItemMeta im = is.getItemMeta();
-								im.setLore(hiddenRewardData.getLore());
-								im.setDisplayName(
-										ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-												+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
-												+ MobHunting.getRewardManager().format(saldo - toBeSold) + " )");
-								is.setItemMeta(im);
 								player.getInventory().setItem(slot, is);
 								sold = sold + toBeSold;
 								toBeSold = 0;
@@ -392,7 +386,16 @@ public class MoneyCommand implements ICommand {
 			if (sender.hasPermission("mobhunting.money.buy")) {
 				if (args.length == 2 && args[1].matches("\\d+(\\.\\d+)?")) {
 					Player player = (Player) sender;
-					RewardManager.dropMoneyOnGround(player, null, player.getLocation(), Double.valueOf(args[1]));
+					if (player.getInventory().firstEmpty() == -1)
+						RewardManager.dropMoneyOnGround(player, null, player.getLocation(), Double.valueOf(args[1]));
+					else {
+						ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+								MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+								Double.valueOf(args[1]), UUID.randomUUID());
+						player.getInventory().addItem(is);
+					}
 					RewardManager.getEconomy().withdrawPlayer(player, Double.valueOf(args[1]));
 					Messages.playerActionBarMessage(player,
 							Messages.getString("mobhunting.commands.money.buy", "rewardname",
