@@ -1,5 +1,7 @@
 V4.5.5
 * Fixed the DisplayName on MobHeads
+* Missing keys in custom language files will now be added.
+* Keys in current language file is now sorted when the plugin is enabled.
 V4.5.4
 * Tried to fix the missing texture on "Bag of gold"... It works on my test server, but I know this is not a guarantee since I can't test all possible configurations.
 * Bag of gold in the inventory, can now be halfed in two

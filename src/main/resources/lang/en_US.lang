@@ -300,6 +300,10 @@ mobs.Vex.name=Vex
 mobs.Evoker.name=Evoker
 mobs.SkeletonHorse.name=SkeletonHorse
 mobs.Mule.name=Mule
+mobs.RawFish.name=Raw fish
+mobs.RawSalmon.name=Raw salmon
+mobs.Clownfish.name=Clownfish
+mobs.Pufferfish.name=Pufferfish
 
 mobs.Villager.name=Villager
 mobs.Farmer.name=Farmer
