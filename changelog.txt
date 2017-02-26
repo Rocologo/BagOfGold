@@ -1,3 +1,7 @@
+V4.5.6
+* When using /mh money .... the amount is rounded according to you reward_rounding in config.yml 
+* Deleting placed rewards from rewards.yml if the block on the location is not a SKULL. A copy of rewards.yml will be made before deleting anything.
+* Fixed bug when creating a Language file if the MobHunting folder is not present. Only impacts new installations
 V4.5.5
 * Fixed the DisplayName on MobHeads
 * Missing keys in custom language files will now be added.

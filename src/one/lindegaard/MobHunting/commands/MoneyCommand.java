@@ -167,27 +167,23 @@ public class MoneyCommand implements ICommand {
 				} else {
 					if (args[1].matches("\\d+(\\.\\d+)?")) {
 						Player player = (Player) sender;
-						Block b = Misc.getTargetBlock(player, 20);
-						Location location = b.getLocation();
-						if (location != null) {
-							RewardManager.dropMoneyOnGround(player, null, location, Double.valueOf(args[1]));
-							Messages.playerActionBarMessage(player,
-									Messages.getString("mobhunting.moneydrop", "rewardname",
-											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-											Double.valueOf(args[1])));
-						}
+						Location location = Misc.getTargetBlock(player, 20).getLocation();
+						Messages.debug("The Bag of gold was dropped at %s", location);
+						RewardManager.dropMoneyOnGround(player, null, location, Misc.ceil(Double.valueOf(args[1])));
+						Messages.playerActionBarMessage(player,
+								Messages.getString("mobhunting.moneydrop", "rewardname",
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+										Misc.ceil(Double.valueOf(args[1]))));
 					} else if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
-							Block block = Misc.getTargetBlock(player, 3);
-							if (block != null) {
-								RewardManager.dropMoneyOnGround(player, null, block.getLocation(),
-										Double.valueOf(args[2]));
-							}
+							Location location = Misc.getTargetBlock(player, 3).getLocation();
+							Messages.debug("The Bag of gold was dropped at %s", location);
+							RewardManager.dropMoneyOnGround(player, null, location, Misc.ceil(Double.valueOf(args[2])));
 							Messages.playerActionBarMessage(player,
 									Messages.getString("mobhunting.moneydrop", "rewardname",
 											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-											Double.valueOf(args[2])));
+											Misc.ceil(Double.valueOf(args[2]))));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
@@ -219,22 +215,22 @@ public class MoneyCommand implements ICommand {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
 							if (player.getInventory().firstEmpty() == -1)
 								RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
-										Double.valueOf(args[2]));
+										Misc.ceil(Double.valueOf(args[2])));
 							else {
 								ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-										Double.valueOf(args[2]), UUID.randomUUID());
+										Misc.ceil(Double.valueOf(args[2])), UUID.randomUUID());
 								player.getInventory().addItem(is);
 							}
 							Messages.playerActionBarMessage(player,
 									Messages.getString("mobhunting.commands.money.give", "rewardname",
 											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-											Double.valueOf(args[2])));
+											Misc.ceil(Double.valueOf(args[2]))));
 							sender.sendMessage(Messages.getString("mobhunting.commands.money.give-sender", "rewardname",
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-									Double.valueOf(args[2]), "player", player.getName()));
+									Misc.ceil(Double.valueOf(args[2])), "player", player.getName()));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
@@ -263,7 +259,7 @@ public class MoneyCommand implements ICommand {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
 
 							double taken = 0;
-							double rest = Double.valueOf(args[2]);
+							double rest = Misc.ceil(Double.valueOf(args[2]));
 							for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 								ItemStack is = player.getInventory().getItem(slot);
 								if (HiddenRewardData.hasHiddenRewardData(is)) {
@@ -341,7 +337,7 @@ public class MoneyCommand implements ICommand {
 					}
 				} else if ((args[0].equalsIgnoreCase("sell") && (args[1].matches("\\d+(\\.\\d+)?")))) {
 					double sold = 0;
-					double toBeSold = Double.valueOf(args[1]);
+					double toBeSold = Misc.ceil(Double.valueOf(args[1]));
 					for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 						ItemStack is = player.getInventory().getItem(slot);
 						if (HiddenRewardData.hasHiddenRewardData(is)) {
@@ -387,20 +383,20 @@ public class MoneyCommand implements ICommand {
 				if (args.length == 2 && args[1].matches("\\d+(\\.\\d+)?")) {
 					Player player = (Player) sender;
 					if (player.getInventory().firstEmpty() == -1)
-						RewardManager.dropMoneyOnGround(player, null, player.getLocation(), Double.valueOf(args[1]));
+						RewardManager.dropMoneyOnGround(player, null, player.getLocation(), Misc.ceil(Double.valueOf(args[1])));
 					else {
 						ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
 								MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-								Double.valueOf(args[1]), UUID.randomUUID());
+								Misc.ceil(Double.valueOf(args[1])), UUID.randomUUID());
 						player.getInventory().addItem(is);
 					}
-					RewardManager.getEconomy().withdrawPlayer(player, Double.valueOf(args[1]));
+					RewardManager.getEconomy().withdrawPlayer(player, Misc.ceil(Double.valueOf(args[1])));
 					Messages.playerActionBarMessage(player,
 							Messages.getString("mobhunting.commands.money.buy", "rewardname",
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-									Double.valueOf(args[1])));
+									Misc.ceil(Double.valueOf(args[1]))));
 				} else {
 					sender.sendMessage(ChatColor.RED
 							+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[1]));

@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -69,7 +70,7 @@ public class RewardListeners implements Listener {
 			Messages.debug("%s picked up %s money. (# of rewards left=%s)", player.getName(),
 					MobHunting.getRewardManager().format(hiddenRewardData.getMoney()),
 					RewardManager.getDroppedMoney().size());
-		} 
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -77,7 +78,8 @@ public class RewardListeners implements Listener {
 		Item item = event.getItemDrop();
 		ItemStack is = item.getItemStack();
 		Player player = event.getPlayer();
-		//Messages.debug("%s dropped %s on ground", player.getName(), is.getType());
+		// Messages.debug("%s dropped %s on ground", player.getName(),
+		// is.getType());
 		if (HiddenRewardData.hasHiddenRewardData(is)) {
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 			double money = hiddenRewardData.getMoney();
@@ -95,7 +97,8 @@ public class RewardListeners implements Listener {
 					new FixedMetadataValue(MobHunting.getInstance(),
 							new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, money,
 									UUID.fromString(RewardManager.MH_REWARD_UUID), UUID.randomUUID())));
-			//Messages.debug("Item has hidden MetaData=%s", item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
+			// Messages.debug("Item has hidden MetaData=%s",
+			// item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
 		}
 	}
 
@@ -104,13 +107,32 @@ public class RewardListeners implements Listener {
 	public void onMobPickupMoney(EntityInteractEvent event) {
 		if (event.getEntity() instanceof Item) {
 			Item item = (Item) event.getEntity();
-			if (//item.hasMetadata(RewardManager.MH_MONEY) || 
-					item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA))
+			if (item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA))
 				Messages.debug("RewardListeners: EventInteractEvent MH_MONEY - %s, %s, %s ",
 						event.getEntity().getType(), event.getEntityType(), event.getBlock().getType());
 		}
 		if (event.getEntity() instanceof Zombie) {
 			Zombie z = (Zombie) event.getEntity();
+			if (event.getBlock().hasMetadata(HeadCommand.MH_HEAD))
+				Messages.debug("A Zombie did something, with a MobHuntingHead %s", event.getBlock());
+			if (Misc.isMC19OrNewer()) {
+				if ((z.getEquipment().getItemInMainHand().hasItemMeta()
+						&& z.getEquipment().getItemInMainHand().getItemMeta().hasLore()
+						&& z.getEquipment().getItemInMainHand().getItemMeta().getLore().get(0)
+								.equals(HeadCommand.MH_HEAD))
+						|| (z.getEquipment().getItemInOffHand().hasItemMeta()
+								&& z.getEquipment().getItemInOffHand().getItemMeta().hasLore() && z.getEquipment()
+										.getItemInOffHand().getItemMeta().getLore().get(0).equals(HeadCommand.MH_HEAD)))
+					Messages.debug("Zombie hands = %s,%s", z.getEquipment().getItemInMainHand(),
+							z.getEquipment().getItemInOffHand());
+			} else {
+				if (z.getEquipment().getItemInHand().hasItemMeta()
+						&& z.getEquipment().getItemInHand().getItemMeta().hasLore()
+						&& z.getEquipment().getItemInHand().getItemMeta().getLore().get(0).equals(HeadCommand.MH_HEAD))
+					Messages.debug("Zombie hand = %s", z.getEquipment().getItemInHand());
+			}
+		} else if (event.getEntity() instanceof Skeleton) {
+			Skeleton z = (Skeleton) event.getEntity();
 			if (event.getBlock().hasMetadata(HeadCommand.MH_HEAD))
 				Messages.debug("A Zombie did something, with a MobHuntingHead %s", event.getBlock());
 			if (Misc.isMC19OrNewer()) {
@@ -180,8 +202,7 @@ public class RewardListeners implements Listener {
 							if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
 								MobHunting.getRewardManager().depositPlayer(player, moneyOnGround);
 								entity.remove();
-								Messages.debug("%s picked up the %s money. (# of rewards left=%s)",
-										player.getName(),
+								Messages.debug("%s picked up the %s money. (# of rewards left=%s)", player.getName(),
 										MobHunting.getRewardManager().format(hiddenRewardDataOnGround.getMoney()),
 										RewardManager.getDroppedMoney().size());
 								Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
@@ -189,7 +210,8 @@ public class RewardListeners implements Listener {
 										MobHunting.getRewardManager().format(hiddenRewardDataOnGround.getMoney())));
 							} else {
 								int slot = player.getInventory().first(Material.SKULL_ITEM);
-								//Messages.debug("%s has a Bag of Gold in slot %s", player.getName(), slot);
+								// Messages.debug("%s has a Bag of Gold in slot
+								// %s", player.getName(), slot);
 								if (slot != -1) {
 									ItemStack is = player.getInventory().getItem(slot);
 									if (HiddenRewardData.hasHiddenRewardData(is)) {
@@ -213,7 +235,7 @@ public class RewardListeners implements Listener {
 							}
 						}
 					}
-				} 
+				}
 			}
 		}
 
@@ -240,8 +262,9 @@ public class RewardListeners implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack is = event.getItemInHand();
 		Block block = event.getBlockPlaced();
-		//Messages.debug("%s placed a %s on a %s while holding %s", event.getPlayer().getName(), block.getType(),
-		//		event.getBlockAgainst().getType(), is.getType());
+		// Messages.debug("%s placed a %s on a %s while holding %s",
+		// event.getPlayer().getName(), block.getType(),
+		// event.getBlockAgainst().getType(), is.getType());
 		if (HiddenRewardData.hasHiddenRewardData(is)) {
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 			block.setMetadata(RewardManager.MH_HIDDEN_REWARD_DATA,
@@ -252,18 +275,20 @@ public class RewardListeners implements Listener {
 					((HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value())
 							.getLore());
 			RewardManager.saveReward(hiddenRewardData.getUniqueId());
-		} 
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
-		//Messages.debug("%s broke a %s", event.getPlayer().getName(), event.getBlock().getType());
-		//Messages.debug("Block has Metadata=%s", event.getBlock().hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
+		// Messages.debug("%s broke a %s", event.getPlayer().getName(),
+		// event.getBlock().getType());
+		// Messages.debug("Block has Metadata=%s",
+		// event.getBlock().hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
 		Block block = event.getBlock();
 		if (HiddenRewardData.hasHiddenRewardData(block)) {
 			event.setCancelled(true);
 			block.setType(Material.AIR);
-			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData( block);
+			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(block);
 			ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
 					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 							+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
@@ -282,7 +307,7 @@ public class RewardListeners implements Listener {
 			if (RewardManager.getHiddenRewardData().containsKey(hiddenRewardData.getUniqueId()))
 				RewardManager.getHiddenRewardData().remove(hiddenRewardData.getUniqueId());
 
-		} 
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -290,7 +315,7 @@ public class RewardListeners implements Listener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		// Inventory inv = event.getClickedInventory();
 		InventoryAction action = event.getAction();
-		//ClickType clickType = event.getClick();
+		// ClickType clickType = event.getClick();
 		ItemStack isCurrentSlot = event.getCurrentItem();
 		if (isCurrentSlot == null)
 			return;
@@ -311,27 +336,31 @@ public class RewardListeners implements Listener {
 				isCursor.setItemMeta(imCursor);
 				isCurrentSlot.setAmount(0);
 				isCurrentSlot.setType(Material.AIR);
-				Messages.debug("%s merged two rewards",player.getName());
+				Messages.debug("%s merged two rewards", player.getName());
 			}
 		} else if (isCursor.getType() == Material.AIR && isCurrentSlot.getType() == Material.SKULL_ITEM
 				&& action == InventoryAction.PICKUP_HALF) {
 			if (HiddenRewardData.hasHiddenRewardData(isCurrentSlot)) {
-				event.setCancelled(true);
 				ItemMeta imCurrentSlot = isCurrentSlot.getItemMeta();
-				double money = new HiddenRewardData(imCurrentSlot.getLore()).getMoney()/2;
-				isCurrentSlot=CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-						Double.valueOf(money), UUID.randomUUID());
-				isCursor=CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-						Double.valueOf(money), UUID.randomUUID());
-				event.setCurrentItem(isCurrentSlot);
-				event.setCursor(isCursor);
-				Messages.debug("%s halfed a reward in two",player.getName());
+				double money = new HiddenRewardData(imCurrentSlot.getLore()).getMoney() / 2;
+				if (Misc.floor(money) >= MobHunting.getConfigManager().minimumReward) {
+					event.setCancelled(true);
+					isCurrentSlot = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+							Misc.ceil(Double.valueOf(money)), UUID.randomUUID());
+					event.setCurrentItem(isCurrentSlot);
+					isCursor = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+							Misc.floor(Double.valueOf(money)), UUID.randomUUID());
+					event.setCursor(isCursor);
+					Messages.debug("%s halfed a reward in two (%s,%s)", player.getName(), Misc.floor(money),
+							Misc.ceil(money));
+				}
+				
 			}
 		}
 	}

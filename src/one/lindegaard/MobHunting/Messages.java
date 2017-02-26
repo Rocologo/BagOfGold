@@ -308,7 +308,7 @@ public class Messages {
 	}
 
 	public static void setLanguage(String lang) {
-		File file = new File(MobHunting.getInstance().getDataFolder(), "lang/" + lang + ".lang");
+		File file = new File(MobHunting.getInstance().getDataFolder(), "lang/" + lang);
 		if (!file.exists()) {
 			Bukkit.getLogger().severe(PREFIX
 					+ " Language file does not exist. Creating a new file based on en_US. You need to translate the file yourself.");

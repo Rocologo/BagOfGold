@@ -1717,7 +1717,7 @@ public class ConfigManager extends AutoConfig {
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
-		Messages.setLanguage(language);
+		Messages.setLanguage(language+".lang");
 	}
 
 	public double getPlayerKilledByMobPenalty(Player playerToBeRobbed) {

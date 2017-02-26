@@ -137,6 +137,16 @@ public class Misc {
 				* MobHunting.getConfigManager().rewardRounding;
 	}
 
+	public static double ceil(double d) {
+		return Math.ceil(d / MobHunting.getConfigManager().rewardRounding)
+				* MobHunting.getConfigManager().rewardRounding;
+	}
+
+	public static double floor(double d) {
+		return Math.floor(d / MobHunting.getConfigManager().rewardRounding)
+				* MobHunting.getConfigManager().rewardRounding;
+	}
+
 	public static final Block getTargetBlock(Player player, int range) {
         BlockIterator iter = new BlockIterator(player, range);
         Block lastBlock = iter.next();
