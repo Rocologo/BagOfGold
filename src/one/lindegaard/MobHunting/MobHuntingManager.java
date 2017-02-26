@@ -589,7 +589,8 @@ public class MobHuntingManager implements Listener {
 						"WARNING: The fireball was shut from %s, this situation is not handled by MobHunting. Make a ticket for the developer.",
 						event.getEntity().getShooter().toString());
 			} else {
-				//Messages.debug("WARNING: The fireball was shut from %s", event.getEntity());
+				// Messages.debug("WARNING: The fireball was shut from %s",
+				// event.getEntity());
 			}
 		}
 	}
@@ -752,8 +753,8 @@ public class MobHuntingManager implements Listener {
 			Messages.debug("KillBlocked: Killer is a Citizen NPC.");
 			return;
 		}
-		
-		if (killed!=null && killed.getType()==EntityType.UNKNOWN){
+
+		if (killed != null && killed.getType() == EntityType.UNKNOWN) {
 			return;
 		}
 
@@ -1221,6 +1222,8 @@ public class MobHuntingManager implements Listener {
 
 		cash *= multipliers;
 
+		cash = Misc.ceil(cash);
+
 		// Handle Bounty Kills
 		double reward = 0;
 		if (killer != null && !MobHunting.getConfigManager().disablePlayerBounties && killed instanceof Player) {
@@ -1547,18 +1550,20 @@ public class MobHuntingManager implements Listener {
 						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
-		if (event.getSpawnReason() == SpawnReason.CUSTOM) {
-			if (!MobHunting.getConfigManager().allowCustomMobsSpawners) {
-				// used for TARDISweepingAngels / CustomMobs / MythicMobs
-				// Messages.debug("%s was spawned with SpawnReason.CUSTOM",
-				// event.getEntityType());
-				// event.getEntity().setMetadata("MH:blocked", new
-				// FixedMetadataValue(MobHunting.getInstance(), true));
-			}
-		} else if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
-			if (!MobHunting.getConfigManager().allowMobSpawners)
+		if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
+			if (!MobHunting.getConfigManager().allowMobSpawnersAndEggs)
 				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
+		} else if (event.getSpawnReason() != SpawnReason.NATURAL) {
+			// used for TARDISweepingAngels / CustomMobs / MythicMobs
+			ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getEntity());
+			if (mob != null)
+				Messages.debug("%s was spawned with %s", mob.getFriendlyName(), event.getSpawnReason());
+			else
+				Messages.debug("%s was spawned with %s", event.getEntityType(), event.getSpawnReason());
+			// event.getEntity().setMetadata("MH:blocked", new
+			// FixedMetadataValue(MobHunting.getInstance(), true));
 		}
+		
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -25,6 +25,7 @@ import one.lindegaard.MobHunting.modifier.DifficultyBonus;
 import one.lindegaard.MobHunting.modifier.HappyHourBonus;
 import one.lindegaard.MobHunting.modifier.IModifier;
 import one.lindegaard.MobHunting.modifier.RankBonus;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class FishingManager implements Listener {
 
@@ -144,6 +145,8 @@ public class FishingManager implements Listener {
 					extraString += ChatColor.WHITE + " ) ";
 
 				cash *= multipliers;
+				
+				cash = Misc.ceil(cash);
 
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().depositPlayer(player, cash);

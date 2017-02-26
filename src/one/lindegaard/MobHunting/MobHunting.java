@@ -38,6 +38,7 @@ import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
@@ -157,6 +158,7 @@ public class MobHunting extends JavaPlugin {
 
 		registerPlugin(WorldEditCompat.class, "WorldEdit");
 		registerPlugin(WorldGuardCompat.class, "WorldGuard");
+		registerPlugin(FactionsCompat.class, "Factions");
 		registerPlugin(McMMOCompat.class, "mcMMO");
 		registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
 

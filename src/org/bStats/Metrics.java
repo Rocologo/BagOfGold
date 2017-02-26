@@ -7,6 +7,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import one.lindegaard.MobHunting.Messages;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -56,7 +58,7 @@ public class Metrics {
 
         // Get the config file
         File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
-        File configFile = new File(bStatsFolder, "config.yml");
+        File configFile = new File(bStatsFolder, "config-mobhunting.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         // Check if the config file exists
@@ -84,7 +86,7 @@ public class Metrics {
         // Load the data
         serverUUID = config.getString("serverUuid");
         logFailedRequests = config.getBoolean("logFailedRequests", false);
-        if (config.getBoolean("enabled", true)) {
+        //if (config.getBoolean("enabled", true)) {
             boolean found = false;
             // Search for all other bStats Metrics classes to see if we are the first one
             for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
@@ -100,7 +102,7 @@ public class Metrics {
                 // We are the first!
                 startSubmitting();
             }
-        }
+        //}
     }
 
     /**
@@ -235,11 +237,11 @@ public class Metrics {
                 try {
                     // Send the data
                     sendData(data);
-                    plugin.getLogger().log(Level.INFO,"Data sent to bStats.org");
+                    Messages.debug("Data sent to bStats.org");
                 } catch (Exception e) {
                     // Something went wrong! :(
                     if (logFailedRequests) {
-                        plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
+                    	Messages.debug("Could not submit plugin stats of " + plugin.getName(), e);
                     }
                 }
             }

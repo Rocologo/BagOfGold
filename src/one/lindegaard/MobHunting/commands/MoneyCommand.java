@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -173,7 +172,7 @@ public class MoneyCommand implements ICommand {
 						Messages.playerActionBarMessage(player,
 								Messages.getString("mobhunting.moneydrop", "rewardname",
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-										Misc.ceil(Double.valueOf(args[1]))));
+										RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[1])))));
 					} else if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
@@ -183,7 +182,7 @@ public class MoneyCommand implements ICommand {
 							Messages.playerActionBarMessage(player,
 									Messages.getString("mobhunting.moneydrop", "rewardname",
 											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-											Misc.ceil(Double.valueOf(args[2]))));
+											RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[2])))));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
@@ -227,10 +226,10 @@ public class MoneyCommand implements ICommand {
 							Messages.playerActionBarMessage(player,
 									Messages.getString("mobhunting.commands.money.give", "rewardname",
 											MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-											Misc.ceil(Double.valueOf(args[2]))));
+											RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[2])))));
 							sender.sendMessage(Messages.getString("mobhunting.commands.money.give-sender", "rewardname",
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-									Misc.ceil(Double.valueOf(args[2])), "player", player.getName()));
+									RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[2]))), "player", player.getName()));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
@@ -396,7 +395,7 @@ public class MoneyCommand implements ICommand {
 					Messages.playerActionBarMessage(player,
 							Messages.getString("mobhunting.commands.money.buy", "rewardname",
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-									Misc.ceil(Double.valueOf(args[1]))));
+									RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[1])))));
 				} else {
 					sender.sendMessage(ChatColor.RED
 							+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[1]));
