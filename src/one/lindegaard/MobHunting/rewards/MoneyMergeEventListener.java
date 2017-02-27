@@ -42,7 +42,6 @@ public class MoneyMergeEventListener implements Listener {
 		}**/
 		ItemStack is1 = item1.getItemStack();
 		ItemStack is2 = item2.getItemStack();
-		Messages.debug("is1=%s, is2=%s",is1.getType(),is2.getType());
 		if (is1.getType()==Material.SKULL_ITEM&&is2.getType()==Material.SKULL_ITEM){
 			Messages.debug("try to merge two SKULL_ITEM");
 		if (HiddenRewardData.hasHiddenRewardData(is1) && HiddenRewardData.hasHiddenRewardData(is2)) {
@@ -54,7 +53,7 @@ public class MoneyMergeEventListener implements Listener {
 				im.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
 						+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")");
-				im.setLore(hiddenRewardData2.getLore());
+				im.setLore(hiddenRewardData2.getHiddenLore());
 				is2.setItemMeta(im);
 				item2.setItemStack(is2);
 				

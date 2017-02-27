@@ -8,6 +8,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import net.elseland.xikage.MythicMobs.MythicMobs;
+import net.elseland.xikage.MythicMobs.API.Bukkit.Events.MythicMobDeathEvent;
 import net.elseland.xikage.MythicMobs.API.Bukkit.Events.MythicMobSpawnEvent;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
@@ -70,6 +71,10 @@ public class MythicMobsV251Compat implements Listener {
 
 		event.getLivingEntity().setMetadata(MythicMobsCompat.MH_MYTHICMOBS, new FixedMetadataValue(mPlugin,
 				MythicMobsCompat.getMobRewardData().get(event.getMobType().getInternalName())));
+	}
+	
+	private void onMythicMobV251DeathEvent(MythicMobDeathEvent event) {
+		
 	}
 
 }

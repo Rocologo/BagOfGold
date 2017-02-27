@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,9 +18,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
 
+import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.modifier.DifficultyBonus;
+import one.lindegaard.MobHunting.modifier.FactionWarZoneBonus;
 import one.lindegaard.MobHunting.modifier.HappyHourBonus;
 import one.lindegaard.MobHunting.modifier.IModifier;
 import one.lindegaard.MobHunting.modifier.RankBonus;
@@ -42,6 +43,8 @@ public class FishingManager implements Listener {
 		mFishingModifiers.add(new DifficultyBonus());
 		mFishingModifiers.add(new HappyHourBonus());
 		mFishingModifiers.add(new RankBonus());
+		if (FactionsCompat.isSupported())
+			mFishingModifiers.add(new FactionWarZoneBonus());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
@@ -145,7 +148,7 @@ public class FishingManager implements Listener {
 					extraString += ChatColor.WHITE + " ) ";
 
 				cash *= multipliers;
-				
+
 				cash = Misc.ceil(cash);
 
 				if (cash >= MobHunting.getConfigManager().minimumReward) {

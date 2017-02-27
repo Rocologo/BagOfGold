@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting;
 
 import java.io.File;
+import java.util.UUID;
 
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.BountyManager;
@@ -241,8 +242,6 @@ public class MobHunting extends JavaPlugin {
 
 		if (!mConfig.disablePlayerBounties)
 			mBountyManager = new BountyManager(this);
-		
-		
 
 		// Check for new MobHuntig updates
 		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
@@ -273,10 +272,9 @@ public class MobHunting extends JavaPlugin {
 
 		mInitialized = true;
 
-		// for (int i = 0; i < 5; i++) {
-		// Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED +
-		// "[MobHunting]" + UUID.randomUUID());
-		// }
+		//for (int i = 0; i < 5; i++) {
+		//	Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting]" + UUID.randomUUID());
+		//}
 
 	}
 

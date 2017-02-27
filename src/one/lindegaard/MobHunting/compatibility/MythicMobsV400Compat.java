@@ -8,6 +8,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobSpawnEvent;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import one.lindegaard.MobHunting.Messages;
@@ -73,6 +74,10 @@ public class MythicMobsV400Compat implements Listener {
 
 		event.getEntity().setMetadata(MythicMobsCompat.MH_MYTHICMOBS, new FixedMetadataValue(mPlugin,
 				MythicMobsCompat.getMobRewardData().get(event.getMobType().getInternalName())));
+	}
+	
+	private void onMythicMobV400DeathEvent(MythicMobDeathEvent event) {
+
 	}
 
 }

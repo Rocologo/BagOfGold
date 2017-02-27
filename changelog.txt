@@ -1,7 +1,9 @@
 V4.5.7
-* Hook for Factions added. 
+* Support for Factions added. Players does not get any rewards while being in a SafeZone. Can be disabled in config.yml
+* Factions WarZoneMultiplier added. The player get 10% bonus for killing mobs/players in a WarZone. Can be changed in config.yml.
 * Format rewards in a lot of strings printed to the player
 * Changed how MobSpawners is detected. 
+* Fixed bug where mobheads lost texture/displayname (Enderdragon does still not work)
 V4.5.6
 * When using /mh money .... the amount is rounded according to you reward_rounding in config.yml 
 * Deleting placed rewards from rewards.yml if the block on the location is not a SKULL. A copy of rewards.yml will be made before deleting anything.

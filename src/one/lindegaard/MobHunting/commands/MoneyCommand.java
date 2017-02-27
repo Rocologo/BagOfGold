@@ -216,7 +216,8 @@ public class MoneyCommand implements ICommand {
 								RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
 										Misc.ceil(Double.valueOf(args[2])));
 							else {
-								ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+								ItemStack is = CustomItems.getCustomtexture(
+										UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID),
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
@@ -229,7 +230,8 @@ public class MoneyCommand implements ICommand {
 											RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[2])))));
 							sender.sendMessage(Messages.getString("mobhunting.commands.money.give-sender", "rewardname",
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-									RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[2]))), "player", player.getName()));
+									RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[2]))), "player",
+									player.getName()));
 						} else {
 							sender.sendMessage(ChatColor.RED
 									+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[2]));
@@ -266,7 +268,8 @@ public class MoneyCommand implements ICommand {
 									double saldo = hiddenRewardData.getMoney();
 									if (saldo >= rest) {
 										hiddenRewardData.setMoney(saldo - rest);
-										is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+										is = CustomItems.getCustomtexture(
+												UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID),
 												MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 												MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 												MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
@@ -344,7 +347,8 @@ public class MoneyCommand implements ICommand {
 							double saldo = hiddenRewardData.getMoney();
 							if (saldo >= toBeSold) {
 								hiddenRewardData.setMoney(saldo - toBeSold);
-								is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+								is = CustomItems.getCustomtexture(
+										UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID),
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
@@ -382,9 +386,11 @@ public class MoneyCommand implements ICommand {
 				if (args.length == 2 && args[1].matches("\\d+(\\.\\d+)?")) {
 					Player player = (Player) sender;
 					if (player.getInventory().firstEmpty() == -1)
-						RewardManager.dropMoneyOnGround(player, null, player.getLocation(), Misc.ceil(Double.valueOf(args[1])));
+						RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
+								Misc.ceil(Double.valueOf(args[1])));
 					else {
-						ItemStack is = CustomItems.getCustomtexture(RewardManager.MH_REWARD_UUID,
+						ItemStack is = CustomItems.getCustomtexture(
+								UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID),
 								MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,

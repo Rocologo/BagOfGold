@@ -1,8 +1,11 @@
 package one.lindegaard.MobHunting.mobs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -11,10 +14,12 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.rewards.CustomItems;
+import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
@@ -353,6 +358,10 @@ public enum MinecraftMob {
 		return mTextureValue;
 	}
 
+	public CharSequence getTextureSignature() {
+		return mTextureSignature;
+	}
+
 	public CharSequence getPlayerUUID() {
 		return mPlayerUUID;
 	}
@@ -490,7 +499,7 @@ public enum MinecraftMob {
 	}
 
 	public boolean matches(Entity entity) {
-		if (Misc.isMC111())
+		if (Misc.isMC111OrNewer())
 			if (this == Llama)
 				return entity instanceof org.bukkit.entity.Llama;
 			else if (this == Evoker)
@@ -505,8 +514,6 @@ public enum MinecraftMob {
 				return entity instanceof org.bukkit.entity.Mule;
 			else if (this == Donkey)
 				return entity instanceof org.bukkit.entity.Donkey;
-			else if (this == Husk)
-				return entity instanceof org.bukkit.entity.Husk;
 			else if (this == ZombieHorse)
 				return entity instanceof org.bukkit.entity.ZombieHorse;
 			else if (this == SkeletonHorse)
@@ -605,26 +612,39 @@ public enum MinecraftMob {
 	}
 
 	public ItemStack getHead(String name, double money) {
+		ItemStack skull;
 		switch (this) {
-		case Skeleton:
-			return new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
-		case WitherSkeleton:
-			return new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
-		case Zombie:
-			return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
-		case PvpPlayer:
-			if (name != null)
-				return CustomItems.getPlayerHead(name, 0);
-			else
-				return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		case Creeper:
-			return new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
+		/**
+		 * case Skeleton: skull = new ItemStack(Material.SKULL_ITEM, 1, (short)
+		 * 0); break; case WitherSkeleton: skull = new
+		 * ItemStack(Material.SKULL_ITEM, 1, (short) 1); break; case Zombie:
+		 * skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 2); break; case
+		 * PvpPlayer: if (name != null) skull = CustomItems.getPlayerHead(name,
+		 * 0); else skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		 * break; case Creeper: skull = new ItemStack(Material.SKULL_ITEM, 1,
+		 * (short) 4); break;
+		 **/
 		case EnderDragon:
-			return new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
+			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
+			ItemMeta skullMeta = skull.getItemMeta();
+			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
+					"Hidden:" + String.valueOf(money), "Hidden:" + UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID),
+					"Hidden:" + UUID.randomUUID())));
+			if (money == 0)
+				skullMeta.setDisplayName(
+						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
+			else
+				skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ mDisplayName + " (" + MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
+
+			skull.setItemMeta(skullMeta);
+
+			break;
 		default:
-			return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature, money,
-					UUID.randomUUID());
+			return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID), name, mTextureValue,
+					mTextureSignature, money, UUID.randomUUID());
 		}
+		return skull;
 	}
 
 	/**
@@ -634,8 +654,8 @@ public enum MinecraftMob {
 	 * @return ItemStack with custom texture.
 	 */
 	public ItemStack getCustomProfileHead(double money) {
-		return CustomItems.getCustomtexture(mPlayerUUID, mDisplayName, mTextureValue, mTextureSignature, money,
-				UUID.randomUUID());
+		return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID), mDisplayName,
+				mTextureValue, mTextureSignature, money, UUID.fromString(mPlayerUUID));
 	}
 
 	/**
@@ -653,5 +673,28 @@ public enum MinecraftMob {
 		default:
 			return "minecraft:give {player} skull {amount} 3 {SkullOwner:{Id:\"{playerid}\",Properties:{textures:[{Value:\"{texturevalue}\"}]}},display:{Name:\"{displayname}\",Lore:[{lore}]}}";
 		}
+	}
+
+	public static String getTexture(String displayname) {
+		for (MinecraftMob mob : MinecraftMob.values()) {
+			if (mob.mDisplayName.equalsIgnoreCase(displayname)) {
+				Messages.debug("%s texture found", mob.getName());
+				return String.valueOf(mob.getTextureValue());
+			}
+		}
+		Messages.debug("ERROR] %s NO texture found", displayname);
+		return "";
+	}
+
+	public static String getSignature(String displayname) {
+		for (MinecraftMob mob : MinecraftMob.values()) {
+			if (mob.mDisplayName.equalsIgnoreCase(displayname)) {
+				Messages.debug("%s signature found", mob.getName());
+				return String.valueOf(mob.getTextureSignature());
+			}
+		}
+		Messages.debug("ERROR] %s NO Signature found", displayname);
+		return "";
+
 	}
 }

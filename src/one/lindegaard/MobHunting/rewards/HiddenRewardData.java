@@ -29,7 +29,7 @@ public class HiddenRewardData {
 	}
 
 	HiddenRewardData(HiddenRewardData hiddenRewardData) {
-		this.description = hiddenRewardData.getDescription();
+		this.description = hiddenRewardData.getDisplayname();
 		this.money = hiddenRewardData.getMoney();
 		this.uuid = hiddenRewardData.getUuid();
 		this.uniqueId = hiddenRewardData.uniqueId;
@@ -67,7 +67,7 @@ public class HiddenRewardData {
 		this.uniqueId = uniqueId;
 	}
 
-	public ArrayList<String> getLore() {
+	public ArrayList<String> getHiddenLore() {
 		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + String.valueOf(money),
 				"Hidden:" + uuid.toString(), "Hidden:" + uniqueId.toString()));
 	}
@@ -75,8 +75,8 @@ public class HiddenRewardData {
 	/**
 	 * @return the description
 	 */
-	public String getDescription() {
-		return "Hidden:" + description;
+	public String getDisplayname() {
+		return description;
 	}
 
 	/**
@@ -157,7 +157,8 @@ public class HiddenRewardData {
 	public static boolean hasHiddenRewardData(ItemStack itemStack) {
 		return itemStack!=null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
 				&& itemStack.getItemMeta().getLore().size() == NUMBER_OF_DATA
-				&& itemStack.getItemMeta().getLore().get(2).equals("Hidden:" + RewardManager.MH_REWARD_UUID);
+				&& (itemStack.getItemMeta().getLore().get(2).equals("Hidden:" + RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)
+						|| itemStack.getItemMeta().getLore().get(2).equals("Hidden:" + RewardManager.MH_REWARD_HEAD_UUID));
 	}
 	
 	public static HiddenRewardData getHiddenRewardData(ItemStack itemStack) {

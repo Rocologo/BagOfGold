@@ -236,6 +236,13 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere you can change the behavior of ConquestiaMobs Integration, or you can disable"
 						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/conquesita-mobs.21307/");
 
+		setCategoryComment("factions",
+				"########################################################################"
+						+ "\nFactions settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of the Factions integration, or you can disable"
+						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/factions.1900/");
+
 		setCategoryComment("grinding",
 				"########################################################################"
 						+ "\nGrinding detection settings"
@@ -1450,6 +1457,16 @@ public class ConfigManager extends AutoConfig {
 	public double mulitiplierPerLevel = 1.05;
 
 	// #####################################################################################
+	// Factions Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-factions", category = "factions", comment = "Disable integration with Factions."
+			+ "\nhttps://www.massivecraft.com/")
+	public boolean disableIntegrationFactions = false;
+
+	@ConfigField(name = "factions_warzone_multiplier", category = "factions", comment = "This is the bonus when a player kills a mob or a player in a Factions WarZone.")
+	public double factionWarZoneBonusMultiplier = 1.1;
+	
+	// #####################################################################################
 	// DropMoneyOnGround settings
 	// #####################################################################################
 	@ConfigField(name = "drop-money-on-ground", category = "dropmoneyonground", comment = "When a player get a money reward for a kill, the money will go directly"
@@ -1485,7 +1502,7 @@ public class ConfigManager extends AutoConfig {
 	public String dropMoneyOnGroundItemtype = "SKULL";
 
 	@ConfigField(name = "drop-money-use-item-as-currency", category = "dropmoneyonground", comment = "Use the reward as a currency (bag of gold) which can be sold, bought, stored in a chest (in a Bank?)")
-	public boolean dropMoneyOnGroundUseAsCurrency = false;
+	public boolean dropMoneyOnGroundUseAsCurrency = true;
 
 	@ConfigField(name = "drop-money-command-alias", category = "dropmoneyonground", comment = "Here you can change the command /mh money ... to /mh <alias> ..."
 			+ "\nExample: gold,bag,silver,coin,???? ")
@@ -1506,7 +1523,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
 	public String dropMoneyOnGroundSkullTextureSignature = "m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=";
-
+                                                            
 	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is allowed by default."
 			+ "\nIf you want to deny HOPPERS to collect MobHunting Money rewards "
 			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=false")
@@ -1597,10 +1614,6 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-mcmmo", category = "plugins", comment = "Disable integration with McMMO."
 			+ "\nhttps://www.spigotmc.org/resources/mcmmo.2445/")
 	public boolean disableIntegrationMcMMO = false;
-
-	@ConfigField(name = "disable-integration-factions", category = "plugins", comment = "Disable integration with Factions."
-			+ "\nhttps://www.massivecraft.com/")
-	public boolean disableIntegrationFactions = false;
 
 	// #####################################################################################
 	// Database

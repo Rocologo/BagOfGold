@@ -65,6 +65,7 @@ import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
@@ -86,6 +87,7 @@ import one.lindegaard.MobHunting.modifier.ConquestiaBonus;
 import one.lindegaard.MobHunting.modifier.CoverBlown;
 import one.lindegaard.MobHunting.modifier.CriticalModifier;
 import one.lindegaard.MobHunting.modifier.DifficultyBonus;
+import one.lindegaard.MobHunting.modifier.FactionWarZoneBonus;
 import one.lindegaard.MobHunting.modifier.FlyingPenalty;
 import one.lindegaard.MobHunting.modifier.FriendleFireBonus;
 import one.lindegaard.MobHunting.modifier.GrindingPenalty;
@@ -271,9 +273,13 @@ public class MobHuntingManager implements Listener {
 	private void registerHuntingModifiers() {
 		mHuntingModifiers.add(new BonusMobBonus());
 		mHuntingModifiers.add(new BrawlerBonus());
+		if (ConquestiaMobsCompat.isSupported())
+			mHuntingModifiers.add(new ConquestiaBonus());
 		mHuntingModifiers.add(new CoverBlown());
 		mHuntingModifiers.add(new CriticalModifier());
 		mHuntingModifiers.add(new DifficultyBonus());
+		if (FactionsCompat.isSupported())
+			mHuntingModifiers.add(new FactionWarZoneBonus());
 		mHuntingModifiers.add(new FlyingPenalty());
 		mHuntingModifiers.add(new FriendleFireBonus());
 		mHuntingModifiers.add(new GrindingPenalty());
@@ -285,11 +291,10 @@ public class MobHuntingManager implements Listener {
 		mHuntingModifiers.add(new ShoveBonus());
 		mHuntingModifiers.add(new SneakyBonus());
 		mHuntingModifiers.add(new SniperBonus());
-		mHuntingModifiers.add(new Undercover());
 		if (MobStackerCompat.isSupported() || StackMobCompat.isSupported())
 			mHuntingModifiers.add(new StackedMobBonus());
-		if (ConquestiaMobsCompat.isSupported())
-			mHuntingModifiers.add(new ConquestiaBonus());
+		mHuntingModifiers.add(new Undercover());
+
 	}
 
 	public double handleKillstreak(Player player) {
@@ -785,6 +790,28 @@ public class MobHuntingManager implements Listener {
 						true)) {
 					Messages.debug("KillBlocked: %s is in a protected region mobhunting=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
+					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
+						Messages.debug("Trying to remove natural drops");
+						cancelNaturalDrops = true;
+						event.getDrops().clear();
+					}
+					if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+						Messages.debug("Trying to remove XP drops");
+						cancelXPDrops = true;
+						event.setDroppedExp(0);
+					}
+					return;
+				}
+			}
+		}
+
+		// Factions Compatibility - no reward when player are in SafeZone
+		if (FactionsCompat.isSupported()) {
+			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
+				Player player = killer != null ? killer : MyPetCompat.getMyPetOwner(killer);
+				if (FactionsCompat.isInSafeZone(player)) {
+					Messages.debug("KillBlocked:(2) %s is hiding in Factions SafeZone", player.getName());
+					Messages.learn(killer, Messages.getString("mobhunting.learn.factions-safezone"));
 					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 						Messages.debug("Trying to remove natural drops");
 						cancelNaturalDrops = true;
@@ -1563,7 +1590,7 @@ public class MobHuntingManager implements Listener {
 			// event.getEntity().setMetadata("MH:blocked", new
 			// FixedMetadataValue(MobHunting.getInstance(), true));
 		}
-		
+
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

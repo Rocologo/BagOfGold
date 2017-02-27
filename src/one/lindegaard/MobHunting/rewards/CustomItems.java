@@ -48,7 +48,7 @@ public class CustomItems {
 	 * 
 	 * @return ItemStack with custom texture.
 	 */
-	public static ItemStack getCustomtexture(String mPlayerUUID, String mDisplayName, String mTextureValue,
+	public static ItemStack getCustomtexture(UUID mPlayerUUID, String mDisplayName, String mTextureValue,
 			String mTextureSignature, double money, UUID uniqueRewardUuid) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 
@@ -57,7 +57,7 @@ public class CustomItems {
 
 		ItemMeta skullMeta = skull.getItemMeta();
 
-		GameProfile profile = new GameProfile(UUID.fromString(mPlayerUUID), mDisplayName);
+		GameProfile profile = new GameProfile(mPlayerUUID, mDisplayName);
 		profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
 		Field profileField = null;
 
@@ -76,9 +76,8 @@ public class CustomItems {
 			e.printStackTrace();
 		}
 
-		skullMeta.setLore(new ArrayList<String>(
-				Arrays.asList("Hidden:" + MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-						"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID, "Hidden:" + uniqueRewardUuid)));
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
+				"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID, "Hidden:" + uniqueRewardUuid)));
 		if (money == 0)
 			skullMeta.setDisplayName(
 					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);

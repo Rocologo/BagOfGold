@@ -526,7 +526,7 @@
 			<systemPath>${project.basedir}/lib/Gringotts-2.9.jar</systemPath>
 		</dependency>
 
-		<!-- MythicMobs Old-->
+		<!-- MythicMobs Old -->
 		<dependency>
 			<groupId>net.elseland.xikage.MythicMobs</groupId>
 			<artifactId>MythicMobs</artifactId>
@@ -553,7 +553,7 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${mythiclib.jar.version}</systemPath>
 		</dependency>
-		
+
 
 		<!-- CustomMobs -->
 		<dependency>
@@ -611,7 +611,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<!-- MassiveCore / Factions -->
 		<dependency>
 			<groupId>com.massivecraft.massivecore.MassiveCore</groupId>
