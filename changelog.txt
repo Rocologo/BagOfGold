@@ -1,4 +1,4 @@
-V4.5.8
+V4.6.0
 * Debug information removed from Head/Money commands/listeners.
 * Added "/mh head drop <mobname>" & "/mh head drop <mobname> <playername>
 * Fixed bug where Bag of gold could not be halfed when kept in the player inventory.
