@@ -145,9 +145,11 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		String mobType = type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_"));
 		ArrayList<String> plugins_kill = new ArrayList<String>();
 		ArrayList<String> plugins_assist = new ArrayList<String>();
+		ArrayList<String> plugins_cash = new ArrayList<String>();
 		for (MobPlugin p : MobPlugin.values()) {
 			plugins_kill.add(p.name() + "_kill");
 			plugins_assist.add(p.name() + "_assist");
+			plugins_cash.add(p.name() + "_cash");
 			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
 				plugin = p;
 				if (type.getDBColumn().indexOf("_") != type.getDBColumn().lastIndexOf("_"))
@@ -176,9 +178,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		else
 			column = "sum(total_kill) amount ";
 
+		column = column + ", sum(total_cash) cash ";
+
 		String wherepart = "";
 		if (type.getDBColumn().equalsIgnoreCase("total_kill") || type.getDBColumn().equalsIgnoreCase("total_assist")
-				|| type.getDBColumn().equalsIgnoreCase("achievement_count")) {
+				|| type.getDBColumn().equalsIgnoreCase("achievement_count")
+				|| type.getDBColumn().equalsIgnoreCase("total_cash")) {
 			wherepart = (id != null ? " AND ID=" + id : "");
 		} else if (plugins_kill.contains(type.getDBColumn()) || plugins_assist.contains(type.getDBColumn())) {
 			wherepart = (id != null ? " AND ID=" + id + " AND mh_Mobs.PLUGIN_ID=" + plugin.getId()
@@ -199,7 +204,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
 					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
 					+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count;
-			// Messages.debug("exestr=%s",exestr);
+			//Messages.debug("Load str=%s",exestr);
 			ResultSet results = statement.executeQuery(exestr);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
@@ -215,7 +220,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				if (offlinePlayer == null)
 					Messages.debug("getOfflinePlayer(%s) was not in cache.", results.getString("name"));
 				else
-					list.add(new StatStore(type, offlinePlayer, results.getInt("amount")));
+					list.add(new StatStore(type, offlinePlayer, results.getInt("amount"), results.getDouble("cash")));
 			}
 			results.close();
 			statement.close();
@@ -250,6 +255,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			Statement statement = mConnection.createStatement();
 			for (StatStore stat : stats) {
 				String column = "";
+				String column2 = "";
 				int mob_id = stat.getMob().getMob_id();
 				if (stat.getType().getDBColumn().substring(0, stat.getType().getDBColumn().lastIndexOf("_"))
 						.equalsIgnoreCase("achievement")) {
@@ -258,11 +264,14 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					column = "total" + stat.getType().getDBColumn().substring(
 							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
 				}
+				column2="total_cash";
 				int amount = stat.getAmount();
+				double cash = stat.getCash();
 				int player_id = getPlayerId(stat.getPlayer());
 				String str = String
-						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d WHERE ID = strftime(\"%%Y%%j\",\"now\")"
-								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id);
+						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d, %5$s = %5$s + %6$f WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id, column2, cash);
+				//Messages.debug("Save Str=%s", str);
 				statement.addBatch(str);
 			}
 			statement.executeBatch();
@@ -274,6 +283,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			rollback(mConnection);
 			throw new DataStoreException(e);
 		}
+	}
+
+	@Override
+	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		console.sendMessage(ChatColor.RED + "[MobHunting] this command is only for MySQL");
 	}
 
 	// *******************************************************************************
@@ -1132,10 +1147,178 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		Messages.debug("Database trigger updated.");
 	}
 
+	// *******************************************************************************
+	// V4 DATABASE SETUP / MIGRATION
+	// *******************************************************************************
+
 	@Override
-	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
-		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-		console.sendMessage(ChatColor.RED + "[MobHunting] this command is only for MySQL");
+	protected void setupV4Tables(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
+
+		// Create new empty tables if they do not exist
+		String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players" + "(UUID TEXT," + " NAME TEXT, "
+				+ " PLAYER_ID INTEGER NOT NULL DEFAULT 1," + " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","
+				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," + " PRIMARY KEY(PLAYER_ID))");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Mobs "//
+				+ "(MOB_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT 0,"//
+				+ " PLUGIN_ID INTEGER NOT NULL," + " MOBTYPE TEXT)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily"//
+				+ "(ID CHAR(7) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL," //
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0," //
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0," //
+				+ " TOTAL_CASH REAL DEFAULT 0," //
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
+				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly"//
+				+ "(ID CHAR(6) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0," //
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
+				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly"//
+				+ "(ID CHAR(6) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0," //
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
+				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly"//
+				+ "(ID CHAR(4) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0," //
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"
+				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime"//
+				+ " (MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0," //
+				+ " PRIMARY KEY(MOB_ID, PLAYER_ID),"
+				+ " FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE,"
+				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements "//
+				+ "(PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT TEXT NOT NULL,"//
+				+ " DATE INTEGER NOT NULL,"//
+				+ " PROGRESS INTEGER NOT NULL," + " PRIMARY KEY(PLAYER_ID, ACHIEVEMENT), "
+				+ " FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID))");
+
+		if (!MobHunting.getConfigManager().disablePlayerBounties) {
+			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties ("
+					+ "BOUNTYOWNER_ID INTEGER REFERENCES mh_Players(PLAYER_ID) NOT NULL, " + "MOBTYPE TEXT, "
+					+ "WANTEDPLAYER_ID INTEGER REFERENCES mh_Players(PLAYER_ID), " + "NPC_ID INTEGER, "
+					+ "MOB_ID TEXT, " + "WORLDGROUP TEXT NOT NULL, " + "CREATED_DATE INTEGER NOT NULL, "
+					+ "END_DATE INTEGER NOT NULL, " + "PRIZE FLOAT NOT NULL, " + "MESSAGE TEXT, "
+					+ "STATUS INTEGER NOT NULL DEFAULT 0, "
+					+ "PRIMARY KEY(WORLDGROUP, WANTEDPLAYER_ID, BOUNTYOWNER_ID), "
+					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
+					+ "FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE" + ")");
+		}
+
+		// Setup Database triggers
+		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
+		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
+
+		create.close();
+		connection.commit();
+
+		insertMissingVanillaMobs();
+
+		Messages.debug("MobHunting V4 Database created.");
+
+	}
+
+	@Override
+	protected void setupTriggerV4(Connection connection) throws SQLException {
+
+		Statement create = connection.createStatement();
+
+		create.executeUpdate("create trigger if not exists mh_DailyInsert after insert on mh_Daily" + " begin"
+
+				+ " insert or ignore into mh_Weekly(ID, MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+				+ " values(strftime(\"%Y%W\",\"now\"), NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+				+ " insert or ignore into mh_Monthly(ID, MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+				+ " values(strftime(\"%Y%m\",\"now\"), NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+				+ " insert or ignore into mh_Yearly(ID, MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+				+ " values(strftime(\"%Y\",\"now\"), NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+				+ " insert or ignore into mh_AllTime(MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+				+ " values(NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+				+ " end");
+
+		// Create the cascade update trigger. It will allow us to only modify
+		// the Daily table, and the rest will happen automatically
+		StringBuilder updateStringBuilder = new StringBuilder();
+
+		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
+		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
+
+		String updateString = updateStringBuilder.toString();
+
+		StringBuilder updateTrigger = new StringBuilder();
+		updateTrigger.append("create trigger if not exists mh_DailyUpdate after update on mh_Daily BEGIN ");
+
+		// Weekly
+		updateTrigger.append(" update mh_Weekly set ");
+		updateTrigger.append(updateString);
+		updateTrigger.append(" where ID=strftime('%Y%W','now') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+		// Monthly
+		updateTrigger.append(" update mh_Monthly set ");
+		updateTrigger.append(updateString);
+		updateTrigger.append(" where ID=strftime('%Y%m','now') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+		// Yearly
+		updateTrigger.append(" update mh_Yearly set ");
+		updateTrigger.append(updateString);
+		updateTrigger.append(" where ID=strftime('%Y','now') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+		// AllTime
+		updateTrigger.append(" update mh_AllTime set ");
+		updateTrigger.append(updateString);
+		updateTrigger.append(" where MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+		updateTrigger.append("END");
+
+		create.executeUpdate(updateTrigger.toString());
+
+		create.close();
+		connection.commit();
+
+		Messages.debug("Database trigger updated.");
 	}
 
 }

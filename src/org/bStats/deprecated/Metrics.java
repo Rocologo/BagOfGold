@@ -1,4 +1,4 @@
-package org.bStats;
+package org.bStats.deprecated;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

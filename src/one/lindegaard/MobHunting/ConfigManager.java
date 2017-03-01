@@ -101,10 +101,8 @@ public class ConfigManager extends AutoConfig {
 				+ "\nThe text can be color coded with these codes:"
 				+ "\nhttp://minecraft.gamepedia.com/Formatting_codes"
 				+ "\n\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
-				+ "\nThe player will have the cmd run in {mob-cmd-run-frequency} out of"
-				+ "\n{mob-cmd-run-frequency-base} times in average. If mob-cmd-run-frequency=0 it"
-				+ "\nwill never run. If f.ex. mob-cmd-run-frequency=50 and "
-				+ "\nmob-cmd-run-frequency-base=100 it will run run every second time.");
+				+ "\nThe player will have the cmd run in {mob-cmd-run-chance} times in average. If mob-cmd-run-chance=0 it"
+				+ "\nwill never run. If f.ex. mob-cmd-run-chance=0.50 and it will run run every second time in average.");
 
 		setCategoryComment("boss",
 				"########################################################################"
@@ -237,8 +235,7 @@ public class ConfigManager extends AutoConfig {
 						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/conquesita-mobs.21307/");
 
 		setCategoryComment("factions",
-				"########################################################################"
-						+ "\nFactions settings"
+				"########################################################################" + "\nFactions settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of the Factions integration, or you can disable"
 						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/factions.1900/");
@@ -276,293 +273,299 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "blaze", category = "mobs")
 	public String blazePrize = "10.0";
 	@ConfigField(name = "blaze-cmd", category = "mobs")
-	public String blazeCmd = "mobhunt head give {player} Blaze|give {player} iron_ingot 1";
+	public String blazeCmd = "mobhunt head give {player} Blaze Blaze 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "blaze-cmd-desc", category = "mobs")
 	public String blazeCmdDesc = "You got a Blaze skull and an Iron ingot.";
-	@ConfigField(name = "blaze-cmd-run-frequency", category = "mobs")
-	public int blazeFrequency = 10;
-	@ConfigField(name = "blaze-cmd-run-frequency-base", category = "mobs")
-	public int blazeFrequencyBase = 100;
+	@ConfigField(name = "blaze-cmd-run-chance", category = "mobs")
+	public double blazeCmdRunChance = 0.10;
+	@ConfigField(name = "blaze-head-prize", category = "mobs")
+	public String blazeHeadPrize = "0";
 
 	@ConfigField(name = "cave-spider", category = "mobs")
 	public String caveSpiderPrize = "10:20";
 	@ConfigField(name = "cave-spider-cmd", category = "mobs")
-	public String caveSpiderCmd = "mobhunt head give {player} Cave_Spider|give {player} iron_ingot 1";
+	public String caveSpiderCmd = "mobhunt head give {player} Cave_Spider Cave_Spider 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "cave-spider-cmd-desc", category = "mobs")
 	public String caveSpiderCmdDesc = "You got a Cave Spider skull and an Iron ingot.";
-	@ConfigField(name = "cave-spider-cmd-run-frequency", category = "mobs")
-	public int caveSpiderFrequency = 10;
-	@ConfigField(name = "cave-spider-cmd-run-frequency-base", category = "mobs")
-	public int caveSpiderFrequencyBase = 100;
+	@ConfigField(name = "cave-spider-cmd-run-chance", category = "mobs")
+	public double caveSpiderRunChance = 0.10;
+	@ConfigField(name = "cave-spider-head-prize", category = "mobs")
+	public String caveSpiderHeadPrize = "0";
 
 	@ConfigField(name = "creeper", category = "mobs")
 	public String creeperPrize = "10.0";
 	@ConfigField(name = "creeper-cmd", category = "mobs")
-	public String creeperCmd = "mobhunt head give {player} Creeper|give {player} iron_ingot 1";
+	public String creeperCmd = "mobhunt head give {player} Creeper Creeper 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "creeper-cmd-desc", category = "mobs")
 	public String creeperCmdDesc = "You got a Creeper skull and an Iron ingot.";
-	@ConfigField(name = "creeper-cmd-run-frequency", category = "mobs")
-	public int creeperFrequency = 5;
-	@ConfigField(name = "creeper-cmd-run-frequency-base", category = "mobs")
-	public int creeperFrequencyBase = 100;
+	@ConfigField(name = "creeper-cmd-run-chance", category = "mobs")
+	public double creeperCmdRunChance = 0.05;
+	@ConfigField(name = "creeper-head-prize", category = "mobs")
+	public String creeperHeadPrize = "0";
 
 	@ConfigField(name = "elder-guardian", category = "mobs")
 	public String elderGuardianPrize = "40:80";
 	@ConfigField(name = "elder-guardian-cmd", category = "mobs")
-	public String elderGuardianCmd = "mobhunt head give {player} ElderGuardian|give {player} iron_ingot 1";
+	public String elderGuardianCmd = "mobhunt head give {player} ElderGuardian ElderGuardian 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "elder-guardian-cmd-desc", category = "mobs")
 	public String elderGuardianCmdDesc = "You got a Elder Guardian skull and an Iron ingot.";
-	@ConfigField(name = "elder-guardian-cmd-run-frequency", category = "mobs")
-	public int elderGuardianFrequency = 33;
-	@ConfigField(name = "elder-guardian-cmd-run-frequency-base", category = "mobs")
-	public int elderGuardianFrequencyBase = 100;
+	@ConfigField(name = "elder-guardian-cmd-run-chance", category = "mobs")
+	public double elderGuardianCmdRunChance = 0.33;
+	@ConfigField(name = "elder-guardian-head-prize", category = "mobs")
+	public String elderGuardianHeadPrize = "0";
 
 	@ConfigField(name = "enderman", category = "mobs")
 	public String endermanPrize = "20:40";
 	@ConfigField(name = "enderman-cmd", category = "mobs")
-	public String endermanCmd = "mobhunt head give {player} Enderman|give {player} gold_ingot 1";
+	public String endermanCmd = "mobhunt head give {player} Enderman Enderman 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "enderman-cmd-desc", category = "mobs")
 	public String endermanCmdDesc = "You got a Enderman skull and an Gold ingot.";
-	@ConfigField(name = "enderman-cmd-run-frequency", category = "mobs")
-	public int endermanFrequency = 20;
-	@ConfigField(name = "enderman-cmd-run-frequency-base", category = "mobs")
-	public int endermanFrequencyBase = 100;
+	@ConfigField(name = "enderman-cmd-run-chance", category = "mobs")
+	public double endermanCmdRunChance = 0.20;
+	@ConfigField(name = "enderman-head-prize", category = "mobs")
+	public String endermanHeadPrize = "0";
 
 	@ConfigField(name = "endermite", category = "mobs")
 	public String endermitePrize = "10";
 	@ConfigField(name = "endermite-cmd", category = "mobs")
-	public String endermiteCmd = "mobhunt head give {player} Endermite|give {player} iron_ingot 1";
+	public String endermiteCmd = "mobhunt head give {player} Endermite Endermite 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "endermite-cmd-desc", category = "mobs")
 	public String endermiteCmdDesc = "You got a Endermite skull and an Iron ingot.";
-	@ConfigField(name = "endermite-cmd-run-frequency", category = "mobs")
-	public int endermiteFrequency = 10;
-	@ConfigField(name = "endermite-cmd-run-frequency-base", category = "mobs")
-	public int endermiteFrequencyBase = 100;
+	@ConfigField(name = "endermite-cmd-run-chance", category = "mobs")
+	public double endermiteCmdRunChance = 0.10;
+	@ConfigField(name = "endermite-head-prize", category = "mobs")
+	public String endermiteHeadPrize = "0";
 
 	@ConfigField(name = "evoker", category = "mobs")
 	public String evokerPrize = "10";
 	@ConfigField(name = "evoker-cmd", category = "mobs")
-	public String evokerCmd = "mobhunt head give {player} evoker|give {player} iron_ingot 1";
+	public String evokerCmd = "mobhunt head give {player} Evoker Evoker 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "evoker-cmd-desc", category = "mobs")
 	public String evokerCmdDesc = "You got a Evoker skull and an Iron ingot.";
 	@ConfigField(name = "evoker-cmd-run-chance", category = "mobs")
 	public double evokerCmdRunChance = 0.50;
+	@ConfigField(name = "evoker-head-prize", category = "mobs")
+	public String evokerHeadPrize = "0";
 
 	@ConfigField(name = "ghast", category = "mobs")
 	public String ghastPrize = "40:80";
 	@ConfigField(name = "ghast-cmd", category = "mobs")
-	public String ghastCmd = "mobhunt head give {player} Ghast|give {player} 406 4";
+	public String ghastCmd = "mobhunt head give {player} Ghast Ghast 1 silent|give {player} 406 4";
 	@ConfigField(name = "ghast-cmd-desc", category = "mobs")
 	public String ghastCmdDesc = "You got a Ghast skull and 4 Nether Quartz.";
-	@ConfigField(name = "ghast-cmd-run-frequency", category = "mobs")
-	public int ghastFrequency = 10;
-	@ConfigField(name = "ghast-cmd-run-frequency-base", category = "mobs")
-	public int ghastFrequencyBase = 100;
+	@ConfigField(name = "ghast-cmd-run-chance", category = "mobs")
+	public double ghastCmdRunChance = 0.10;
+	@ConfigField(name = "ghast-head-prize", category = "mobs")
+	public String ghastHeadPrize = "0";
 
 	@ConfigField(name = "giant", category = "mobs")
 	public String giantPrize = "5.0";
 	@ConfigField(name = "giant-cmd", category = "mobs")
-	public String giantCmd = "mobhunt head give {player} Giant|give {player} iron_ingot 1";
+	public String giantCmd = "mobhunt head give {player} Giant Giant 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "giant-cmd-desc", category = "mobs")
 	public String giantCmdDesc = "You got a Giant head and an iron ingot.";
-	@ConfigField(name = "giant-cmd-run-frequency", category = "mobs")
-	public int giantFrequency = 5;
-	@ConfigField(name = "giant-cmd-run-frequency-base", category = "mobs")
-	public int giantFrequencyBase = 100;
+	@ConfigField(name = "giant-cmd-run-chance", category = "mobs")
+	public double giantCmdRunChance = 0.05;
+	@ConfigField(name = "giant-head-prize", category = "mobs")
+	public String giantHeadPrize = "0";
 
 	@ConfigField(name = "iron-golem", category = "mobs")
 	public String ironGolemPrize = "20:40";
 	@ConfigField(name = "iron-golem-cmd", category = "mobs")
-	public String ironGolemCmd = "mobhunt head give {player} Iron_Golem|give {player} iron_ingot 4";
+	public String ironGolemCmd = "mobhunt head give {player} Iron_Golem Iron_Golem 1 silent|give {player} iron_ingot 4";
 	@ConfigField(name = "iron-golem-cmd-desc", category = "mobs")
 	public String ironGolemCmdDesc = "You got an Iron Golem skull and 4 Iron ingot.";
-	@ConfigField(name = "iron-golem-cmd-run-frequency", category = "mobs")
-	public int ironGolemFrequency = 10;
-	@ConfigField(name = "iron-golem-cmd-run-frequency-base", category = "mobs")
-	public int ironGolemFrequencyBase = 100;
+	@ConfigField(name = "iron-golem-cmd-run-chance", category = "mobs")
+	public double ironGolemCmdRunChance = 0.10;
+	@ConfigField(name = "iron-golem-head-prize", category = "mobs")
+	public String ironGolemHeadPrize = "0";
 
 	@ConfigField(name = "guardian", category = "mobs")
 	public String guardianPrize = "20:40";
 	@ConfigField(name = "guardian-cmd", category = "mobs")
-	public String guardianCmd = "mobhunt head give {player} Guardian|give {player} iron_ingot 1";
+	public String guardianCmd = "mobhunt head give {player} Guardian Guardian 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "guardian-cmd-desc", category = "mobs")
 	public String guardianCmdDesc = "You got a Guardian skull and an Iron ingot.";
-	@ConfigField(name = "guardian-cmd-run-frequency", category = "mobs")
-	public int guardianFrequency = 10;
-	@ConfigField(name = "guardian-cmd-run-frequency-base", category = "mobs")
-	public int guardianFrequencyBase = 100;
+	@ConfigField(name = "guardian-cmd-run-chance", category = "mobs")
+	public double guardianCmdRunChance = 0.10;
+	@ConfigField(name = "guardian-head-prize", category = "mobs")
+	public String guardianHeadPrize = "0";
 
 	@ConfigField(name = "husk", category = "mobs")
 	public String huskPrize = "9:13";
 	@ConfigField(name = "husk-cmd", category = "mobs")
-	public String huskCmd = "mobhunt head give {player} Husk|give {player} iron_ingot 1";
+	public String huskCmd = "mobhunt head give {player} Husk Husk 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "husk-cmd-desc", category = "mobs")
 	public String huskCmdDesc = "You got a Zombie Husk skull and an Iron ingot.";
-	@ConfigField(name = "husk-cmd-run-frequency", category = "mobs")
-	public int huskFrequency = 50;
-	@ConfigField(name = "husk-cmd-run-frequency-base", category = "mobs")
-	public int huskFrequencyBase = 100;
+	@ConfigField(name = "husk-cmd-run-chance", category = "mobs")
+	public double huskCmdRunChance = 0.20;
+	@ConfigField(name = "husk-head-prize", category = "mobs")
+	public String huskHeadPrize = "0";
 
 	@ConfigField(name = "killerrabbit", category = "mobs")
 	public String killerrabbitPrize = "200";
 	@ConfigField(name = "killerrabbit-cmd", category = "mobs")
-	public String killerrabbitCmd = "mobhunt head give {player} KillerRabbit|give {player} iron_ingot 1";
+	public String killerrabbitCmd = "mobhunt head give {player} KillerRabbit KillerRabbit 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "killerrabbit-cmd-desc", category = "mobs")
 	public String killerrabbitCmdDesc = "You got Killer Rabbit Skull and an iron ingot.";
-	@ConfigField(name = "killerrabbit-cmd-run-frequency", category = "mobs")
-	public int killerrabbitFrequency = 25;
-	@ConfigField(name = "killerrabbit-cmd-run-frequency-base", category = "mobs")
-	public int killerrabbitFrequencyBase = 100;
+	@ConfigField(name = "killerrabbit-cmd-run-chance", category = "mobs")
+	public double killerrabbitCmdRunChance = 0.25;
+	@ConfigField(name = "killerrabbit-head-prize", category = "mobs")
+	public String killerrabbitHeadPrize = "0";
 
 	@ConfigField(name = "magma-cube", category = "mobs", comment = "This is multiplied by the size of the magma cube. So a big natural magma cube is 4x this value")
 	public String magmaCubePrize = "10:20";
 	@ConfigField(name = "magma-cube-cmd", category = "mobs")
-	public String magmaCubeCmd = "mobhunt head give {player} MAGMA_CUBE|give {player} iron_ingot 1";
+	public String magmaCubeCmd = "mobhunt head give {player} MAGMA_CUBE MAGMA_CUBE 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "magma-cube-cmd-desc", category = "mobs")
 	public String magmaCubeCmdDesc = "You got a Magma Cube skull and an Iron ingot.";
-	@ConfigField(name = "magma-cube-cmd-run-frequency", category = "mobs")
-	public int magmaCubeFrequency = 10;
-	@ConfigField(name = "magma-cube-cmd-run-frequency-base", category = "mobs")
-	public int magmaCubeFrequencyBase = 100;
+	@ConfigField(name = "magma-cube-cmd-run-chance", category = "mobs")
+	public double magmaCubeCmdRunChance = 0.10;
+	@ConfigField(name = "magma-cube-head-prize", category = "mobs")
+	public String magmaCubeHeadPrize = "0";
 
 	@ConfigField(name = "polar-bear", category = "mobs")
 	public String polarBearPrize = "25";
 	@ConfigField(name = "polar-bear-cmd", category = "mobs")
-	public String polarBearCmd = "mobhunt head give {player} Polar_Bear|give {player} iron_ingot 1";
+	public String polarBearCmd = "mobhunt head give {player} Polar_Bear Polar_Bear 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "polar-bear-cmd-desc", category = "mobs")
 	public String polarBearCmdDesc = "You got a Polar Bear skull and an Iron ingot.";
-	@ConfigField(name = "polar-bear-cmd-run-frequency", category = "mobs")
-	public int polarBearFrequency = 50;
-	@ConfigField(name = "polar-bear-cmd-run-frequency-base", category = "mobs")
-	public int polarBearFrequencyBase = 100;
+	@ConfigField(name = "polar-bear-cmd-run-chance", category = "mobs")
+	public double polarBearCmdRunChance = 0.25;
+	@ConfigField(name = "polar-bear-head-prize", category = "mobs")
+	public String polarBearHeadPrize = "0";
 
 	@ConfigField(name = "slime-base", category = "mobs", comment = "This is multiplied by the size of the slime. So a big natural slime is 4x this value")
 	public String slimeTinyPrize = "25";
 	@ConfigField(name = "slime-cmd", category = "mobs")
-	public String slimeCmd = "mobhunt head give {player} Slime|give {player} iron_ingot 1";
+	public String slimeCmd = "mobhunt head give {player} Slime Slime 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "slime-cmd-desc", category = "mobs")
 	public String slimeCmdDesc = "You got a Slime skull and an Iron ingot.";
-	@ConfigField(name = "slime-cmd-run-frequency", category = "mobs")
-	public int slimeFrequency = 5;
-	@ConfigField(name = "slime-cmd-run-frequency-base", category = "mobs")
-	public int slimeFrequencyBase = 100;
+	@ConfigField(name = "slime-cmd-run-chance", category = "mobs")
+	public double slimeCmdRunChance = 0.05;
+	@ConfigField(name = "slime-head-prize", category = "mobs")
+	public String slimeHeadPrize = "0";
 
 	@ConfigField(name = "shulker", category = "mobs")
 	public String shulkerPrize = "25";
 	@ConfigField(name = "shulker-cmd", category = "mobs")
-	public String shulkerCmd = "mobhunt head give {player} Shulker|give {player} iron_ingot 1";
+	public String shulkerCmd = "mobhunt head give {player} Shulker Shulker 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "shulker-cmd-desc", category = "mobs")
 	public String shulkerCmdDesc = "You got a Shulker skull and an Iron ingot.";
-	@ConfigField(name = "shulker-cmd-run-frequency", category = "mobs")
-	public int shulkerFrequency = 50;
-	@ConfigField(name = "shulker-cmd-run-frequency-base", category = "mobs")
-	public int shulkerFrequencyBase = 100;
+	@ConfigField(name = "shulker-cmd-run-chance", category = "mobs")
+	public double shulkerCmdRunChance = 0.50;
+	@ConfigField(name = "shulker-head-prize", category = "mobs")
+	public String shulkerHeadPrize = "0";
 
 	@ConfigField(name = "stray", category = "mobs")
 	public String strayPrize = "15:35";
 	@ConfigField(name = "stray-cmd", category = "mobs")
-	public String strayCmd = "mobhunt head give {player} Stray|give {player} iron_ingot 1";
+	public String strayCmd = "mobhunt head give {player} Stray Stray 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "stray-cmd-desc", category = "mobs")
 	public String strayCmdDesc = "You got a Skeleton Stray skull and an Iron ingot.";
-	@ConfigField(name = "stray-cmd-run-frequency", category = "mobs")
-	public int strayFrequency = 50;
-	@ConfigField(name = "stray-cmd-run-frequency-base", category = "mobs")
-	public int strayFrequencyBase = 100;
+	@ConfigField(name = "stray-cmd-run-chance", category = "mobs")
+	public double strayCmdRunChance = 0.20;
+	@ConfigField(name = "stray-head-prize", category = "mobs")
+	public String strayHeadPrize = "0";
 
 	@ConfigField(name = "silverfish", category = "mobs")
 	public String silverfishPrize = "10";
 	@ConfigField(name = "silverfish-cmd", category = "mobs")
-	public String silverfishCmd = "mobhunt head give {player} SilverFish|give {player} iron_ingot 1";
-	@ConfigField(name = "silver-cmd-desc", category = "mobs")
+	public String silverfishCmd = "mobhunt head give {player} SilverFish SilverFish 1 silent|give {player} iron_ingot 1";
+	@ConfigField(name = "silverfish-cmd-desc", category = "mobs")
 	public String silverfishCmdDesc = "You got a SilverFish head and an iron ingot.";
-	@ConfigField(name = "silverfish-cmd-run-frequency", category = "mobs")
-	public int silverfishFrequency = 10;
-	@ConfigField(name = "silverfish-cmd-run-frequency-base", category = "mobs")
-	public int silverfishFrequencyBase = 100;
+	@ConfigField(name = "silverfish-cmd-run-chance", category = "mobs")
+	public double silverfishCmdRunChance = 0.20;
+	@ConfigField(name = "silverfish-head-prize", category = "mobs")
+	public String silverfishHeadPrize = "0";
 
 	@ConfigField(name = "skeleton", category = "mobs")
 	public String skeletonPrize = "10:30";
 	@ConfigField(name = "skeleton-cmd", category = "mobs")
-	public String skeletonCmd = "mobhunt head give {player} Skeleton|give {player} dye 1 4";
+	public String skeletonCmd = "mobhunt head give {player} Skeleton Skeleton 1 silent|give {player} dye 1 4";
 	@ConfigField(name = "skeleton-cmd-desc", category = "mobs")
 	public String skeletonCmdDesc = "You got 1 Skeleton skull and 1 Lapis Lazuli.";
-	@ConfigField(name = "skeleton-cmd-run-frequency", category = "mobs")
-	public int skeletonFrequency = 5;
-	@ConfigField(name = "skeleton-cmd-run-frequency-base", category = "mobs")
-	public int skeletonFrequencyBase = 100;
+	@ConfigField(name = "skeleton-cmd-run-chance", category = "mobs")
+	public double skeletonCmdRunChance = 0.05;
+	@ConfigField(name = "skeleton-head-prize", category = "mobs")
+	public String skeletonHeadPrize = "0";
 
 	@ConfigField(name = "spider", category = "mobs")
 	public String spiderPrize = "5.5:10.5";
 	@ConfigField(name = "spider-cmd", category = "mobs")
-	public String spiderCmd = "mobhunt head give {player} Spider|give {player} iron_ingot 1";
+	public String spiderCmd = "mobhunt head give {player} Spider Spider 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "spider-cmd-desc", category = "mobs")
 	public String spiderCmdDesc = "You got a Spider skull and an Iron ingot.";
-	@ConfigField(name = "spider-cmd-run-frequency", category = "mobs")
-	public int spiderFrequency = 5;
-	@ConfigField(name = "spider-cmd-run-frequency-base", category = "mobs")
-	public int spiderFrequencyBase = 100;
+	@ConfigField(name = "spider-cmd-run-chance", category = "mobs")
+	public double spiderCmdRunChance = 0.05;
+	@ConfigField(name = "spider-head-prize", category = "mobs")
+	public String spiderHeadPrize = "0";
 
 	@ConfigField(name = "zombie", category = "mobs")
 	public String zombiePrize = "7:11";
 	@ConfigField(name = "zombie-cmd", category = "mobs")
-	public String zombieCmd = "mobhunt head give {player} Zombie|give {player} iron_ingot 1";
+	public String zombieCmd = "mobhunt head give {player} Zombie Zombie 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "zombie-cmd-desc", category = "mobs")
 	public String zombieCmdDesc = "You got a Zombie skull and an Iron ingot.";
-	@ConfigField(name = "zombie-cmd-run-frequency", category = "mobs")
-	public int zombieFrequency = 50;
-	@ConfigField(name = "zombie-cmd-run-frequency-base", category = "mobs")
-	public int zombieFrequencyBase = 1000;
+	@ConfigField(name = "zombie-cmd-run-chance", category = "mobs")
+	public double zombieCmdRunChance = 0.005;
+	@ConfigField(name = "zombie-head-prize", category = "mobs")
+	public String zombieHeadPrize = "0";
 
 	@ConfigField(name = "zombie-pigman", category = "mobs")
 	public String zombiePigmanPrize = "4:8";
 	@ConfigField(name = "zombie-pigman-cmd", category = "mobs")
-	public String zombiePigmanCmd = "mobhunt head give {player} Pig_Zombie|give {player} iron_ingot 1";
+	public String zombiePigmanCmd = "mobhunt head give {player} Pig_Zombie Pig_Zombie 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "zombie-pigman-cmd-desc", category = "mobs")
 	public String zombiePigmanCmdDesc = "You got a Zombie Pigman skull and an Iron ingot.";
-	@ConfigField(name = "zombie-pigman-cmd-run-frequency", category = "mobs")
-	public int zombiePigmanFrequency = 10;
-	@ConfigField(name = "zombie-pigman-cmd-run-frequency-base", category = "mobs")
-	public int zombiePigmanFrequencyBase = 100;
+	@ConfigField(name = "zombie-pigman-cmd-run-chance", category = "mobs")
+	public double zombiepigmanCmdRunChance = 0.10;
+	@ConfigField(name = "zombie-pigman-head-prize", category = "mobs")
+	public String zombiePigmanHeadPrize = "0";
 
 	@ConfigField(name = "vex", category = "mobs")
 	public String vexPrize = "10:15";
 	@ConfigField(name = "vex-cmd", category = "mobs")
-	public String vexCmd = "mobhunt head give {player} Witch|give {player} gold_ingot 1";
+	public String vexCmd = "mobhunt head give {player} Vex Vex 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "vex-cmd-desc", category = "mobs")
 	public String vexCmdDesc = "You got a Vex skull and an Gold ingot.";
 	@ConfigField(name = "vex-cmd-run-chance", category = "mobs")
 	public double vexCmdRunChance = 0.5;
+	@ConfigField(name = "vex-head-prize", category = "mobs")
+	public String vexHeadPrize = "0";
 
 	@ConfigField(name = "vindicator", category = "mobs")
 	public String vindicatorPrize = "10:15";
 	@ConfigField(name = "vindicator-cmd", category = "mobs")
-	public String vindicatorCmd = "mobhunt head give {player} Witch|give {player} gold_ingot 1";
+	public String vindicatorCmd = "mobhunt head give {player} vindicator Vindicator 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "vindicator-cmd-desc", category = "mobs")
 	public String vindicatorCmdDesc = "You got a Vindicator skull and an Gold ingot.";
 	@ConfigField(name = "vindicator-cmd-run-chance", category = "mobs")
 	public double vindicatorCmdRunChance = 0.05;
+	@ConfigField(name = "vindicator-head-prize", category = "mobs")
+	public String vindicatorHeadPrize = "0";
 
 	@ConfigField(name = "witch", category = "mobs")
 	public String witchPrize = "10:15";
 	@ConfigField(name = "witch-cmd", category = "mobs")
-	public String witchCmd = "mobhunt head give {player} Witch|give {player} gold_ingot 1";
+	public String witchCmd = "mobhunt head give {player} Witch Witch 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "witch-cmd-desc", category = "mobs")
 	public String witchCmdDesc = "You got a Witch skull and an Gold ingot.";
-	@ConfigField(name = "witch-cmd-run-frequency", category = "mobs")
-	public int witchFrequency = 5;
-	@ConfigField(name = "witch-cmd-run-frequency-base", category = "mobs")
-	public int witchFrequencyBase = 100;
+	@ConfigField(name = "witch-cmd-run-chance", category = "mobs")
+	public double witchCmdRunChance = 0.05;
+	@ConfigField(name = "witch-head-prize", category = "mobs")
+	public String witchHeadPrize = "0";
 
 	@ConfigField(name = "wither-skeleton", category = "mobs")
 	public String witherSkeletonPrize = "30:50";
 	@ConfigField(name = "wither-skeleton-cmd", category = "mobs")
-	public String witherSkeletonCmd = "mobhunt head give {player} WitherSkeleton|give {player} gold_ingot 1";
+	public String witherSkeletonCmd = "mobhunt head give {player} WitherSkeleton WitherSkeleton 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "wither-skeleton-cmd-desc", category = "mobs")
 	public String witherSkeletonCmdDesc = "You got 1 Wither Skeleton skull and 1 Gold ingot.";
-	@ConfigField(name = "wither-skeleton-cmd-run-frequency", category = "mobs")
-	public int witherSkeletonFrequency = 10;
-	@ConfigField(name = "wither-skeleton-cmd-run-frequency-base", category = "mobs")
-	public int witherSkeletonFrequencyBase = 100;
+	@ConfigField(name = "wither-skeleton-cmd-run-chance", category = "mobs")
+	public double witherSkeletonCmdRunChance = 0.10;
+	@ConfigField(name = "wither-skeleton-head-prize", category = "mobs")
+	public String witherSkeletonHeadPrize = "0";
 
 	// #####################################################################################
 	// Bosses
@@ -570,24 +573,24 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "wither", category = "boss")
 	public String witherPrize = "1000.0:2000.0";
 	@ConfigField(name = "wither-cmd", category = "boss")
-	public String witherCmd = "mobhunt head give {player} Wither|give {player} diamond 10";
+	public String witherCmd = "mobhunt head give {player} Wither Wither 1 silent|give {player} diamond 10";
 	@ConfigField(name = "wither-cmd-desc", category = "boss")
 	public String witherCmdDesc = "You got a Wither skull and 10 Diamonds.";
-	@ConfigField(name = "wither-cmd-run-frequency", category = "boss")
-	public int witherFrequency = 100;
-	@ConfigField(name = "wither-cmd-run-frequency-base", category = "boss")
-	public int witherFrequencyBase = 100;
+	@ConfigField(name = "wither-cmd-run-chance", category = "boss")
+	public double witherCmdRunChance = 0.5;
+	@ConfigField(name = "wither-head-prize", category = "boss")
+	public String witherHeadPrize = "0";
 
 	@ConfigField(name = "enderdragon", category = "boss")
 	public String enderdragonPrize = "2000.0:5000.0";
 	@ConfigField(name = "enderdragon-cmd", category = "boss")
-	public String enderdragonCmd = "mobhunt head give {player} Enderdragon|give {player} diamond 10";
+	public String enderdragonCmd = "mobhunt head give {player} Enderdragon Enderdragon 1 silent|give {player} diamond 10";
 	@ConfigField(name = "enderdragon-cmd-desc", category = "boss")
 	public String enderdragonCmdDesc = "You got a Enderdragon skull and 10 Diamonds.";
-	@ConfigField(name = "enderdragon-cmd-run-frequency", category = "boss")
-	public int enderdragonFrequency = 100;
-	@ConfigField(name = "enderdragon-cmd-run-frequency-base", category = "boss")
-	public int enderdragonFrequencyBase = 100;
+	@ConfigField(name = "enderdragon-cmd-run-chance", category = "boss")
+	public double enderdragonCmdRunChance = 0.50;
+	@ConfigField(name = "enderdragon-head-prize", category = "boss")
+	public String enderdragonHeadPrize = "0";
 
 	// Usage: /summon <EntityName> [x] [y] [z] [dataTag]
 	// Try this!!!! /summon Minecart ~ ~ ~20 {Riding:{id:EnderDragon}}
@@ -606,65 +609,79 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "cartographer", category = "villager")
 	public String cartographerPrize = "1:2";
 	@ConfigField(name = "cartographer-cmd", category = "villager")
-	public String cartographerCmd = "";
+	public String cartographerCmd = "mobhunt head give {player} cartographer Cartographer 1";
 	@ConfigField(name = "cartographer-cmd-desc", category = "villager")
-	public String cartographerCmdDesc = "";
+	public String cartographerCmdDesc = "You got a Cartographer Skull";
 	@ConfigField(name = "cartographer-cmd-run-chance", category = "villager")
 	public double cartographerCmdRunChance = 1.00;
+	@ConfigField(name = "cartographer-head-prize", category = "villager")
+	public String cartographerHeadPrize = "0";
 
 	@ConfigField(name = "nitwit", category = "villager")
 	public String nitwitPrize = "1:2";
 	@ConfigField(name = "nitwit-cmd", category = "villager")
-	public String nitwitCmd = "";
+	public String nitwitCmd = "mobhunt head give {player} nitwit Nitwit 1";
 	@ConfigField(name = "nitwit-cmd-desc", category = "villager")
-	public String nitwitCmdDesc = "";
+	public String nitwitCmdDesc = "You got a Nitwit Skull";
 	@ConfigField(name = "nitwit-cmd-run-chance", category = "villager")
 	public double nitwitCmdRunChance = 1.00;
+	@ConfigField(name = "nitwit-head-prize", category = "villager")
+	public String nitwitHeadPrize = "0";
 
 	@ConfigField(name = "farmer", category = "villager")
 	public String farmerPrize = "1:2";
 	@ConfigField(name = "farmer-cmd", category = "villager")
-	public String farmerCmd = "";
+	public String farmerCmd = "mobhunt head give {player} farmer Farmer 1";
 	@ConfigField(name = "farmer-cmd-desc", category = "villager")
-	public String farmerCmdDesc = "";
+	public String farmerCmdDesc = "You got a Farmer Skull";
 	@ConfigField(name = "farmer-cmd-run-chance", category = "villager")
 	public double farmerCmdRunChance = 1.00;
+	@ConfigField(name = "farmer-head-prize", category = "villager")
+	public String farmerHeadPrize = "0";
 
 	@ConfigField(name = "priest", category = "villager")
 	public String priestPrize = "1:2";
 	@ConfigField(name = "priest-cmd", category = "villager")
-	public String priestCmd = "";
+	public String priestCmd = "mobhunt head give {player} Priest Priest 1";
 	@ConfigField(name = "priest-cmd-desc", category = "villager")
-	public String priestCmdDesc = "";
+	public String priestCmdDesc = "You got a Priest Skull";
 	@ConfigField(name = "priest-cmd-run-chance", category = "villager")
 	public double priestCmdRunChance = 1.00;
+	@ConfigField(name = "priest-head-prize", category = "villager")
+	public String priestHeadPrize = "0";
 
 	@ConfigField(name = "blacksmith", category = "villager")
 	public String blacksmithPrize = "1:2";
 	@ConfigField(name = "blacksmith-cmd", category = "villager")
-	public String blacksmithCmd = "";
+	public String blacksmithCmd = "mobhunt head give {player} Blacksmith Blacksmith 1";
 	@ConfigField(name = "blacksmith-cmd-desc", category = "villager")
-	public String blacksmithCmdDesc = "";
+	public String blacksmithCmdDesc = "You got a Blacksmith Skull";
 	@ConfigField(name = "blacksmith-cmd-run-chance", category = "villager")
 	public double blacksmithCmdRunChance = 1.00;
+	@ConfigField(name = "blacksmith-head-prize", category = "villager")
+	public String blacksmithHeadPrize = "0";
 
 	@ConfigField(name = "butcher", category = "villager")
 	public String butcherPrize = "1:2";
 	@ConfigField(name = "butcher-cmd", category = "villager")
-	public String butcherCmd = "";
+	public String butcherCmd = "mobhunt head give {player} Butcher Butcher 1";
 	@ConfigField(name = "butcher-cmd-desc", category = "villager")
-	public String butcherCmdDesc = "";
+	public String butcherCmdDesc = "You got a Butcher Skull";
 	@ConfigField(name = "butcher-cmd-run-chance", category = "villager")
 	public double butcherCmdRunChance = 1.00;
+	@ConfigField(name = "butcher-head-prize", category = "villager")
+	public String butcherHeadPrize = "0";
 
 	@ConfigField(name = "librarian", category = "villager")
 	public String librarianPrize = "1:2";
 	@ConfigField(name = "librarian-cmd", category = "villager")
-	public String librarianCmd = "";
+	public String librarianCmd = "mobhunt head give {player} Libraian Librarian 1";
 	@ConfigField(name = "librarian-cmd-desc", category = "villager")
-	public String librarianCmdDesc = "";
+	public String librarianCmdDesc = "You got a Librarian Skull";
 	@ConfigField(name = "librarian-cmd-run-chance", category = "villager")
 	public double librarianCmdRunChance = 1.00;
+	@ConfigField(name = "librarian-head-prize", category = "villager")
+	public String librarianHeadPrize = "0";
 
 	@ConfigField(name = "villager", category = "villager")
 	public String villagerPrize = "1";
@@ -672,19 +689,21 @@ public class ConfigManager extends AutoConfig {
 	public String villagerCmd = "mobhunt head give {player} Villager";
 	@ConfigField(name = "villager-cmd-desc", category = "villager")
 	public String villagerCmdDesc = "You got a Villager Skull";
-	@ConfigField(name = "villager-cmd-run-frequency", category = "villager")
-	public int villagerFequency = 0;
-	@ConfigField(name = "villager-cmd-run-frequency-base", category = "villager")
-	public int villagerFrequencyBase = 100;
+	@ConfigField(name = "villager-cmd-run-chance", category = "villager")
+	public double villagerCmdRunChance = 0.30;
+	@ConfigField(name = "villager-head-prize", category = "villager")
+	public String villagerHeadPrize = "0";
 
 	@ConfigField(name = "zombie-villager", category = "villager")
 	public String zombieVillagerPrize = "1:2";
 	@ConfigField(name = "zombie-villager-cmd", category = "villager")
-	public String zombieVillagerCmd = "";
+	public String zombieVillagerCmd = "mobhunt head give {player} ZombieVillager ZombieVillager 1 silent";
 	@ConfigField(name = "zombie-villager-cmd-desc", category = "villager")
-	public String zombieVillagerCmdDesc = "";
+	public String zombieVillagerCmdDesc = "You got a ZombieVillager Skull";
 	@ConfigField(name = "zombie-villager-cmd-run-chance", category = "villager")
 	public double zombieVillagerCmdRunChance = 1.00;
+	@ConfigField(name = "zombie-head-prize", category = "villager")
+	public String zombieVillagerHeadPrize = "0";
 
 	// #####################################################################################
 	// Passive Mobs
@@ -692,179 +711,189 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "bat", category = "passive")
 	public String batPrize = "0";
 	@ConfigField(name = "bat-cmd", category = "passive")
-	public String batCmd = "mobhunt head give {player} Bat";
+	public String batCmd = "mobhunt head give {player} Bat Bat 1 silent";
 	@ConfigField(name = "bat-cmd-desc", category = "passive")
 	public String batCmdDesc = "You got a Bat Skull";
-	@ConfigField(name = "bat-cmd-run-frequency", category = "passive")
-	public int batFrequency = 0;
-	@ConfigField(name = "bat-cmd-run-frequency-base", category = "passive")
-	public int batFrequencyBase = 100;
+	@ConfigField(name = "bat-cmd-run-chance", category = "passive")
+	public double batCmdRunChance = 0.05;
+	@ConfigField(name = "bat-head-prize", category = "passive")
+	public String batHeadPrize = "0";
 
 	@ConfigField(name = "chicken", category = "passive")
 	public String chickenPrize = "0";
 	@ConfigField(name = "chicken-cmd", category = "passive")
-	public String chickenCmd = "mobhunt head give {player} Chicken";
+	public String chickenCmd = "mobhunt head give {player} Chicken Chicken 1 silent";
 	@ConfigField(name = "chicken-cmd-desc", category = "passive")
 	public String chickenCmdDesc = "You got a Chicken Skull";
-	@ConfigField(name = "chicken-cmd-run-frequency", category = "passive")
-	public int chickenFrequency = 0;
-	@ConfigField(name = "chicken-cmd-run-frequency-base", category = "passive")
-	public int chickenFrequencyBase = 100;
+	@ConfigField(name = "chicken-cmd-run-chance", category = "passive")
+	public double chickenCmdRunChance = 0.05;
+	@ConfigField(name = "chicken-head-prize", category = "passive")
+	public String chickenHeadPrize = "0";
 
 	@ConfigField(name = "cow", category = "passive")
 	public String cowPrize = "5";
 	@ConfigField(name = "cow-cmd", category = "passive")
-	public String cowCmd = "mobhunt head give {player} Cow";
+	public String cowCmd = "mobhunt head give {player} Cow Cow 1 silent";
 	@ConfigField(name = "cow-cmd-desc", category = "passive")
 	public String cowCmdDesc = "You got a Cow Skull";
-	@ConfigField(name = "cow-cmd-run-frequency", category = "passive")
-	public int cowFrequency = 0;
-	@ConfigField(name = "cow-cmd-run-frequency-base", category = "passive")
-	public int cowFrequencyBase = 100;
+	@ConfigField(name = "cow-cmd-run-chance", category = "passive")
+	public double cowCmdRunChance = 0.05;
+	@ConfigField(name = "cow-head-prize", category = "passive")
+	public String cowHeadPrize = "0";
 
 	@ConfigField(name = "donkey", category = "passive")
 	public String donkeyPrize = "5";
 	@ConfigField(name = "donkey-cmd", category = "passive")
-	public String donkeyCmd = "mobhunt head give {player} donkey";
+	public String donkeyCmd = "mobhunt head give {player} donkey Donkey 1 silent";
 	@ConfigField(name = "donkey-cmd-desc", category = "passive")
 	public String donkeyCmdDesc = "You got a Donkey Skull";
 	@ConfigField(name = "donkey-cmd-run-chance", category = "passive")
-	public double donkeyCmdRunChance = 0.00;
+	public double donkeyCmdRunChance = 0.05;
+	@ConfigField(name = "donkey-head-prize", category = "passive")
+	public String donkeyHeadPrize = "0";
 
 	@ConfigField(name = "horse", category = "passive")
 	public String horsePrize = "0";
 	@ConfigField(name = "horse-cmd", category = "passive")
-	public String horseCmd = "mobhunt head give {player} Horse";
+	public String horseCmd = "mobhunt head give {player} Horse Horse 1 silent";
 	@ConfigField(name = "horse-cmd-desc", category = "passive")
 	public String horseCmdDesc = "You got a Horse Skull";
-	@ConfigField(name = "horse-cmd-run-frequency", category = "passive")
-	public int horseFrequency = 0;
-	@ConfigField(name = "horse-cmd-run-frequency-base", category = "passive")
-	public int horseFrequencyBase = 100;
+	@ConfigField(name = "horse-cmd-run-chance", category = "passive")
+	public double horseCmdRunChance = 0.05;
+	@ConfigField(name = "horse-head-prize", category = "passive")
+	public String horseHeadPrize = "0";
 
 	@ConfigField(name = "llama", category = "passive")
 	public String llamaPrize = "0";
 	@ConfigField(name = "llama-cmd", category = "passive")
-	public String llamaCmd = "mobhunt head give {player} llama";
+	public String llamaCmd = "mobhunt head give {player} llama Llama 1";
 	@ConfigField(name = "llama-cmd-desc", category = "passive")
 	public String llamaCmdDesc = "You got a Llama Skull";
 	@ConfigField(name = "llama-cmd-run-chance", category = "passive")
-	public double llamaCmdRunChance = 0.00;
+	public double llamaCmdRunChance = 0.05;
+	@ConfigField(name = "llama-head-prize", category = "passive")
+	public String llamaHeadPrize = "0";
 
 	@ConfigField(name = "mule", category = "passive")
 	public String mulePrize = "0";
 	@ConfigField(name = "mule-cmd", category = "passive")
-	public String muleCmd = "mobhunt head give {player} mule";
+	public String muleCmd = "mobhunt head give {player} mule Mule 1 silent";
 	@ConfigField(name = "mule-cmd-desc", category = "passive")
 	public String muleCmdDesc = "You got a Mule Skull";
 	@ConfigField(name = "mule-cmd-run-chance", category = "passive")
-	public double muleCmdRunChance = 0.00;
+	public double muleCmdRunChance = 0.05;
+	@ConfigField(name = "mule-head-prize", category = "passive")
+	public String muleHeadPrize = "0";
 
 	@ConfigField(name = "mushroom-cow", category = "passive")
 	public String mushroomCowPrize = "0";
 	@ConfigField(name = "mushroom-cow-cmd", category = "passive")
-	public String mushroomCowCmd = "mobhunt head give {player} Mushroom_Cow";
+	public String mushroomCowCmd = "mobhunt head give {player} Mushroom_Cow Mushroom_Cow 1 silent";
 	@ConfigField(name = "mushroom-cow-cmd-desc", category = "passive")
 	public String mushroomCowCmdDesc = "You got a Mushroom Cow Skull";
-	@ConfigField(name = "mushroom-cow-cmd-run-frequency", category = "passive")
-	public int mushroomCowFrequency = 0;
-	@ConfigField(name = "mushroom-cow-cmd-run-frequency-base", category = "passive")
-	public int mushroomCowFrequencyBase = 100;
+	@ConfigField(name = "mushroom-cow-cmd-run-chance", category = "passive")
+	public double mushroomCowCmdRunChance = 0.05;
+	@ConfigField(name = "mushroom-cow-head-prize", category = "passive")
+	public String mushroomCowHeadPrize = "0";
 
 	@ConfigField(name = "ocelot", category = "passive")
 	public String ocelotPrize = "0";
 	@ConfigField(name = "ocelot-cmd", category = "passive")
-	public String ocelotCmd = "mobhunt head give {player} Ocelot";
+	public String ocelotCmd = "mobhunt head give {player} Ocelot Ocelot 1 silent";
 	@ConfigField(name = "ocelot-cmd-desc", category = "passive")
 	public String ocelotCmdDesc = "";
-	@ConfigField(name = "ocelot-cmd-run-frequency", category = "passive")
-	public int ocelotFrequency = 0;
-	@ConfigField(name = "ocelot-cmd-run-frequency-base", category = "passive")
-	public int ocelotFrequencyBase = 100;
+	@ConfigField(name = "ocelot-cmd-run-chance", category = "passive")
+	public double ocelotCmdRunChance = 0.05;
+	@ConfigField(name = "ocelot-head-prize", category = "passive")
+	public String ocelotHeadPrize = "0";
 
 	@ConfigField(name = "pig", category = "passive")
 	public String pigPrize = "0";
 	@ConfigField(name = "pig-cmd", category = "passive")
-	public String pigCmd = "mobhunt head give {player} Pig";
+	public String pigCmd = "mobhunt head give {player} Pig Pig 1 silent";
 	@ConfigField(name = "pig-cmd-desc", category = "passive")
 	public String pigCmdDesc = "You got a Pig Skull";
-	@ConfigField(name = "pig-cmd-run-frequency", category = "passive")
-	public int pigFrequency = 0;
-	@ConfigField(name = "pig-cmd-run-frequency-base", category = "passive")
-	public int pigFrequencyBase = 100;
+	@ConfigField(name = "pig-cmd-run-chance", category = "passive")
+	public double pigCmdRunChance = 0.05;
+	@ConfigField(name = "pig-head-prize", category = "passive")
+	public String pigHeadPrize = "0";
 
 	@ConfigField(name = "rabbit", category = "passive")
 	public String rabbitPrize = "0";
 	@ConfigField(name = "rabbit-cmd", category = "passive")
-	public String rabbitCmd = "mobhunt head give {player} Rabbit";
+	public String rabbitCmd = "mobhunt head give {player} Rabbit Rabbit 1 silent";
 	@ConfigField(name = "rabbit-cmd-desc", category = "passive")
 	public String rabbitCmdDesc = "You got a Rabbit Skull";
-	@ConfigField(name = "rabbit-cmd-run-frequency", category = "passive")
-	public int rabbitFrequency = 0;
-	@ConfigField(name = "rabbit-cmd-run-frequency-base", category = "passive")
-	public int rabbitFrequencyBase = 100;
+	@ConfigField(name = "rabbit-cmd-run-chance", category = "passive")
+	public double rabbitCmdRunChance = 0.05;
+	@ConfigField(name = "rabbit-head-prize", category = "passive")
+	public String rabbitHeadPrize = "0";
 
 	@ConfigField(name = "sheep", category = "passive")
 	public String sheepPrize = "0";
 	@ConfigField(name = "sheep-cmd", category = "passive")
-	public String sheepCmd = "mobhunt head give {player} Sheep";
+	public String sheepCmd = "mobhunt head give {player} Sheep Sheep 1 silent";
 	@ConfigField(name = "sheep-cmd-desc", category = "passive")
 	public String sheepCmdDesc = "You got a Sheep Skull";
-	@ConfigField(name = "sheep-cmd-run-frequency", category = "passive")
-	public int sheepFrequency = 0;
-	@ConfigField(name = "sheep-cmd-run-frequency-base", category = "passive")
-	public int sheepFrequencyBase = 100;
+	@ConfigField(name = "sheep-cmd-run-chance", category = "passive")
+	public double sheepCmdRunChance = 0.05;
+	@ConfigField(name = "sheep-head-prize", category = "passive")
+	public String sheepHeadPrize = "0";
 
 	@ConfigField(name = "skeletonhorse", category = "passive")
 	public String skeletonhorsePrize = "-10";
 	@ConfigField(name = "skeletonhorse-cmd", category = "passive")
-	public String skeletonhorseCmd = "mobhunt head give {player} skeletonhorse";
+	public String skeletonhorseCmd = "mobhunt head give {player} skeletonhorse SkeletonHorse 1 silent";
 	@ConfigField(name = "skeletonhorse-cmd-desc", category = "passive")
 	public String skeletonhorseCmdDesc = "You got a SkeletonHorse Skull";
 	@ConfigField(name = "skeletonhorse-cmd-run-chance", category = "passive")
-	public double skeletonhorseCmdRunChance = 0.00;
+	public double skeletonhorseCmdRunChance = 0.05;
+	@ConfigField(name = "skeletonhorse-head-prize", category = "passive")
+	public String skeletonHorseHeadPrize = "0";
 
 	@ConfigField(name = "snowman", category = "passive")
 	public String snowmanPrize = "0";
 	@ConfigField(name = "snowman-cmd", category = "passive")
-	public String snowmanCmd = "mobhunt head give {player} SnowMan";
+	public String snowmanCmd = "mobhunt head give {player} SnowMan Snowman 1 silent";
 	@ConfigField(name = "snowman-cmd-desc", category = "passive")
 	public String snowmanCmdDesc = "You got a Snowman Skull";
-	@ConfigField(name = "snowman-cmd-run-frequency", category = "passive")
-	public int snowmanFrequency = 0;
-	@ConfigField(name = "snowman-cmd-run-frequency-base", category = "passive")
-	public int snowmanFrequencyBase = 100;
+	@ConfigField(name = "snowman-cmd-run-chance", category = "passive")
+	public double snowmanCmdRunChance = 0.05;
+	@ConfigField(name = "snowman-head-prize", category = "passive")
+	public String snowmanHeadPrize = "0";
 
 	@ConfigField(name = "squid", category = "passive")
 	public String squidPrize = "0";
 	@ConfigField(name = "squid-cmd", category = "passive")
-	public String squidCmd = "mobhunt head give {player} Squid";
+	public String squidCmd = "mobhunt head give {player} Squid Squid 1 silent";
 	@ConfigField(name = "squid-cmd-desc", category = "passive")
 	public String squidCmdDesc = "You got a Squid Skull";
-	@ConfigField(name = "squid-cmd-run-frequency", category = "passive")
-	public int squidFrequency = 0;
-	@ConfigField(name = "squid-cmd-run-frequency-base", category = "passive")
-	public int squidFrequencyBase = 100;
+	@ConfigField(name = "squid-cmd-run-chance", category = "passive")
+	public double squidCmdRunChance = 0.05;
+	@ConfigField(name = "squid-head-prize", category = "passive")
+	public String squidHeadPrize = "0";
 
 	@ConfigField(name = "wolf", category = "passive")
 	public String wolfPrize = "-10";
 	@ConfigField(name = "wolf-cmd", category = "passive")
-	public String wolfCmd = "mobhunt head give {player} Wolf";
+	public String wolfCmd = "mobhunt head give {player} Wolf Wolf 1 silent";
 	@ConfigField(name = "wolf-cmd-desc", category = "passive")
 	public String wolfCmdDesc = "You got a Wolf Skull";
-	@ConfigField(name = "wolf-cmd-run-frequency", category = "passive")
-	public int wolfFequency = 0;
-	@ConfigField(name = "wolf-cmd-run-frequency-base", category = "passive")
-	public int wolfFrequencyBase = 100;
+	@ConfigField(name = "wolf-cmd-run-chance", category = "passive")
+	public double wolfCmdRunChance = 0.05;
+	@ConfigField(name = "wolf-head-prize", category = "passive")
+	public String wolfHeadPrize = "0";
 
 	@ConfigField(name = "zombiehorse", category = "passive")
 	public String zombiehorsePrize = "-10";
 	@ConfigField(name = "zombiehorse-cmd", category = "passive")
-	public String zombiehorseCmd = "mobhunt head give {player} zombiehorse";
+	public String zombiehorseCmd = "mobhunt head give {player} zombiehorse ZombieHorse 1 silent";
 	@ConfigField(name = "zombiehorse-cmd-desc", category = "passive")
 	public String zombiehorseCmdDesc = "You got a ZombieHorse Skull";
 	@ConfigField(name = "zombiehorse-cmd-run-chance", category = "passive")
 	public double zombiehorseCmdRunChance = 0.25;
+	@ConfigField(name = "zombiehorse-head-prize", category = "passive")
+	public String zombiehorseHeadPrize = "0";
 
 	// #####################################################################################
 	// Fish / Fishing
@@ -880,6 +909,8 @@ public class ConfigManager extends AutoConfig {
 	public String rawFishCmdDesc = "You got a head of a Raw Fish";
 	@ConfigField(name = "rawfish-cmd-run-chance", category = "fishing")
 	public double rawFishCmdRunChance = 0.05;
+	@ConfigField(name = "rawfish-head-prize", category = "fishing")
+	public String rawFishHeadPrize = "0";
 
 	@ConfigField(name = "rawsalmon", category = "fishing")
 	public String rawSalmonPrize = "2:8";
@@ -889,6 +920,8 @@ public class ConfigManager extends AutoConfig {
 	public String rawSalmonCmdDesc = "You got a head of a Raw Salmon";
 	@ConfigField(name = "rawsalmon-cmd-run-chance", category = "fishing")
 	public double rawSalmonCmdRunChance = 0.1;
+	@ConfigField(name = "rawSalmon-head-prize", category = "fishing")
+	public String rawSalmonHeadPrize = "0";
 
 	@ConfigField(name = "clownfish", category = "fishing")
 	public String clownfishPrize = "20:40";
@@ -898,6 +931,8 @@ public class ConfigManager extends AutoConfig {
 	public String clownfishCmdDesc = "You got a head of a Clownfish";
 	@ConfigField(name = "clownfish-cmd-run-chance", category = "fishing")
 	public double clownfishCmdRunChance = 0.5;
+	@ConfigField(name = "clownfish-head-prize", category = "fishing")
+	public String clownfishHeadPrize = "0";
 
 	@ConfigField(name = "pufferfish", category = "fishing")
 	public String pufferfishPrize = "5:15";
@@ -907,6 +942,8 @@ public class ConfigManager extends AutoConfig {
 	public String pufferfishCmdDesc = "You got a head of a Pufferfish";
 	@ConfigField(name = "pufferfish-cmd-run-chance", category = "fishing")
 	public double pufferfishCmdRunChance = 0.4;
+	@ConfigField(name = "pufferfish-head-prize", category = "fishing")
+	public String pufferfishHeadPrize = "0";
 
 	// #####################################################################################
 	// Bonuses - multipliers
@@ -928,6 +965,9 @@ public class ConfigManager extends AutoConfig {
 	public double bonusFriendlyFire = 4;
 	@ConfigField(name = "bonus-mob", category = "bonus")
 	public double bonusBonusMob = 10;
+	@ConfigField(name = "bonusMob-head-prize", category = "bonus")
+	public String bonusMobHeadPrize = "100";
+
 	@ConfigField(name = "critical", category = "bonus")
 	public double bonusCritical = 2;
 	@ConfigField(name = "bonus-mob-chance", category = "bonus", comment = "This is the chance (% chance 0-100) that a bonus mob will spawn.")
@@ -1342,13 +1382,16 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize can be a number to steal x dollars from the killed player,"
 			+ "\nor it can be a cut in percent of his balance.")
-	public String pvpKillPrize = "1.5%";
+	public String pvpKillPrize = "1.0%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
-	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"}|give {player} diamond 1";
+	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"} 1 silent|give {player} diamond 1";
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
 	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
 	@ConfigField(name = "pvp-kill-cmd-run-chance", category = "pvp", comment = "This is the chance for running the command. 1 = 100% (each time the player is killed), 0.5 ~ 50% and 0.001 = 0.1% (very rare) ")
 	public double pvpKillCmdRunChance = 0.5;
+	@ConfigField(name = "pvp-head-prize", category = "pvp", comment = "The Head prize can be a number to steal x dollars from the killed player,"
+			+ "\nor it can be a cut in percent of his balance.")
+	public String pvpHeadPrize = "10";
 
 	// #####################################################################################
 	// Disguises
@@ -1465,7 +1508,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "factions_warzone_multiplier", category = "factions", comment = "This is the bonus when a player kills a mob or a player in a Factions WarZone.")
 	public double factionWarZoneBonusMultiplier = 1.1;
-	
+
 	// #####################################################################################
 	// DropMoneyOnGround settings
 	// #####################################################################################
@@ -1523,7 +1566,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
 	public String dropMoneyOnGroundSkullTextureSignature = "m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=";
-                                                            
+
 	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is allowed by default."
 			+ "\nIf you want to deny HOPPERS to collect MobHunting Money rewards "
 			+ "\nset \"deny-hoppers-to-pickup-money-on-ground\"=false")
@@ -1676,11 +1719,11 @@ public class ConfigManager extends AutoConfig {
 	public boolean broadcastFirstAchievement = true;
 
 	@ConfigField(name = "save-period", category = "general", comment = "Time between saves in ticks (20 ticks ~ 1 sec) This number must be higher that 1200 ticks = 2 minutes,"
-	+"\nbut I recommend to save every 5th minute = 6000 ticks")
+			+ "\nbut I recommend to save every 5th minute = 6000 ticks")
 	public int savePeriod = 6000;
 
 	@ConfigField(name = "leaderboard-update-period", category = "general", comment = "Time between leaderboard updates in ticks (20 ticks ~ 1 sec) This number must be higher that 1200 ticks = 2 minutes,"
-	+"\nbut I recommend to update leaderboards max every 5 min = 6000 ticks")
+			+ "\nbut I recommend to update leaderboards max every 5 min = 6000 ticks")
 	public int leaderboardUpdatePeriod = 6000;
 
 	@ConfigField(name = "kill-timeout", category = "general", comment = "Time in seconds after attacking a mob that can be counted as a kill")
@@ -1738,7 +1781,7 @@ public class ConfigManager extends AutoConfig {
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
-		Messages.setLanguage(language+".lang");
+		Messages.setLanguage(language + ".lang");
 	}
 
 	public double getPlayerKilledByMobPenalty(Player playerToBeRobbed) {
@@ -2561,8 +2604,7 @@ public class ConfigManager extends AutoConfig {
 			return 0;
 
 		} else if (MyPetCompat.isMyPet(killed)) {
-			return (double) MobHunting.getConfigManager().wolfFequency
-					/ (double) MobHunting.getConfigManager().wolfFrequencyBase;
+			return MobHunting.getConfigManager().wolfCmdRunChance;
 
 		} else {
 			if (Misc.isMC111OrNewer())
@@ -2583,11 +2625,9 @@ public class ConfigManager extends AutoConfig {
 				else if (killed instanceof ZombieHorse)
 					return MobHunting.getConfigManager().zombiehorseCmdRunChance;
 				else if (killed instanceof Stray)
-					return (double) MobHunting.getConfigManager().strayFrequency
-							/ (double) MobHunting.getConfigManager().strayFrequencyBase;
+					return MobHunting.getConfigManager().strayCmdRunChance;
 				else if (killed instanceof Husk)
-					return (double) MobHunting.getConfigManager().huskFrequency
-							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
+					return MobHunting.getConfigManager().huskCmdRunChance;
 				else if (killed instanceof ZombieVillager)
 					return MobHunting.getConfigManager().zombieVillagerCmdRunChance;
 				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NITWIT)
@@ -2595,18 +2635,14 @@ public class ConfigManager extends AutoConfig {
 
 			if (Misc.isMC110OrNewer())
 				if (killed instanceof PolarBear)
-					return (double) MobHunting.getConfigManager().polarBearFrequency
-							/ (double) MobHunting.getConfigManager().polarBearFrequencyBase;
+					return MobHunting.getConfigManager().polarBearCmdRunChance;
 				else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.STRAY)
-					return (double) MobHunting.getConfigManager().strayFrequency
-							/ (double) MobHunting.getConfigManager().strayFrequencyBase;
+					return MobHunting.getConfigManager().strayCmdRunChance;
 				else if (killed instanceof Zombie && ((Zombie) killed).getVillagerProfession() == Profession.HUSK)
-					return (double) MobHunting.getConfigManager().huskFrequency
-							/ (double) MobHunting.getConfigManager().huskFrequencyBase;
+					return MobHunting.getConfigManager().huskCmdRunChance;
 
 				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NORMAL)
-					return (double) MobHunting.getConfigManager().villagerFequency
-							/ (double) MobHunting.getConfigManager().villagerFrequencyBase;
+					return MobHunting.getConfigManager().villagerCmdRunChance;
 				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.PRIEST)
 					return MobHunting.getConfigManager().priestCmdRunChance;
 				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.BUTCHER)
@@ -2620,127 +2656,91 @@ public class ConfigManager extends AutoConfig {
 
 			if (Misc.isMC19OrNewer())
 				if (killed instanceof Shulker)
-					return (double) MobHunting.getConfigManager().shulkerFrequency
-							/ (double) MobHunting.getConfigManager().shulkerFrequencyBase;
+					return MobHunting.getConfigManager().shulkerCmdRunChance;
 
 			if (Misc.isMC18OrNewer())
 				if (killed instanceof Guardian && ((Guardian) killed).isElder())
-					return (double) MobHunting.getConfigManager().elderGuardianFrequency
-							/ (double) MobHunting.getConfigManager().elderGuardianFrequencyBase;
+					return MobHunting.getConfigManager().elderGuardianCmdRunChance;
 				else if (killed instanceof Guardian)
-					return (double) MobHunting.getConfigManager().guardianFrequency
-							/ (double) MobHunting.getConfigManager().guardianFrequencyBase;
+					return MobHunting.getConfigManager().guardianCmdRunChance;
 				else if (killed instanceof Endermite)
-					return (double) MobHunting.getConfigManager().endermiteFrequency
-							/ (double) MobHunting.getConfigManager().endermiteFrequencyBase;
+					return MobHunting.getConfigManager().endermiteCmdRunChance;
 				else if (killed instanceof Rabbit)
 					if ((((Rabbit) killed).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
-						return (double) MobHunting.getConfigManager().killerrabbitFrequency
-								/ (double) MobHunting.getConfigManager().killerrabbitFrequencyBase;
+						return MobHunting.getConfigManager().killerrabbitCmdRunChance;
 					else
-						return (double) MobHunting.getConfigManager().rabbitFrequency
-								/ (double) MobHunting.getConfigManager().rabbitFrequencyBase;
+						return MobHunting.getConfigManager().rabbitCmdRunChance;
 
 			// MC1.7 or older
 			if (killed instanceof Player) {
 				return pvpKillCmdRunChance;
 			} else if (killed instanceof Blaze)
-				return (double) MobHunting.getConfigManager().blazeFrequency
-						/ (double) MobHunting.getConfigManager().blazeFrequencyBase;
+				return MobHunting.getConfigManager().blazeCmdRunChance;
 			else if (killed instanceof Creeper)
-				return (double) MobHunting.getConfigManager().creeperFrequency
-						/ (double) MobHunting.getConfigManager().creeperFrequencyBase;
+				return MobHunting.getConfigManager().creeperCmdRunChance;
 			else if (killed instanceof Silverfish)
-				return (double) MobHunting.getConfigManager().silverfishFrequency
-						/ (double) MobHunting.getConfigManager().silverfishFrequencyBase;
+				return MobHunting.getConfigManager().silverfishCmdRunChance;
 			else if (killed instanceof Enderman)
-				return (double) MobHunting.getConfigManager().endermanFrequency
-						/ (double) MobHunting.getConfigManager().endermanFrequencyBase;
+				return MobHunting.getConfigManager().endermanCmdRunChance;
 			else if (killed instanceof Giant)
-				return (double) MobHunting.getConfigManager().giantFrequency
-						/ (double) MobHunting.getConfigManager().giantFrequencyBase;
+				return MobHunting.getConfigManager().giantCmdRunChance;
 			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.NORMAL)
-				return (double) MobHunting.getConfigManager().skeletonFrequency
-						/ (double) MobHunting.getConfigManager().skeletonFrequencyBase;
+				return MobHunting.getConfigManager().skeletonCmdRunChance;
 			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.WITHER)
-				return (double) MobHunting.getConfigManager().witherSkeletonFrequency
-						/ (double) MobHunting.getConfigManager().witherSkeletonFrequencyBase;
+				return MobHunting.getConfigManager().witherSkeletonCmdRunChance;
 			else if (killed instanceof CaveSpider)
 				// CaveSpider is a subclass of Spider
-				return (double) MobHunting.getConfigManager().caveSpiderFrequency
-						/ (double) MobHunting.getConfigManager().caveSpiderFrequencyBase;
+				return MobHunting.getConfigManager().caveSpiderRunChance;
 			else if (killed instanceof Spider)
-				return (double) MobHunting.getConfigManager().spiderFrequency
-						/ (double) MobHunting.getConfigManager().spiderFrequencyBase;
+				return MobHunting.getConfigManager().spiderCmdRunChance;
 			else if (killed instanceof Witch)
-				return (double) MobHunting.getConfigManager().witchFrequency
-						/ (double) MobHunting.getConfigManager().witchFrequencyBase;
+				return MobHunting.getConfigManager().witchCmdRunChance;
 			else if (killed instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
-				return (double) MobHunting.getConfigManager().zombiePigmanFrequency
-						/ (double) MobHunting.getConfigManager().zombiePigmanFrequencyBase;
+				return MobHunting.getConfigManager().zombiepigmanCmdRunChance;
 			else if (killed instanceof Zombie)
-				return (double) MobHunting.getConfigManager().zombieFrequency
-						/ (double) MobHunting.getConfigManager().zombieFrequencyBase;
+				return MobHunting.getConfigManager().zombieCmdRunChance;
 			else if (killed instanceof Ghast)
-				return (double) MobHunting.getConfigManager().ghastFrequency
-						/ (double) MobHunting.getConfigManager().ghastFrequencyBase;
+				return MobHunting.getConfigManager().ghastCmdRunChance;
 			else if (killed instanceof MagmaCube)
 				// MagmaCube is a subclass of Slime
-				return (double) MobHunting.getConfigManager().magmaCubeFrequency
-						/ (double) MobHunting.getConfigManager().magmaCubeFrequencyBase;
+				return MobHunting.getConfigManager().magmaCubeCmdRunChance;
 			else if (killed instanceof Slime)
-				return (double) MobHunting.getConfigManager().slimeFrequency
-						/ (double) MobHunting.getConfigManager().slimeFrequencyBase;
+				return MobHunting.getConfigManager().slimeCmdRunChance;
 			else if (killed instanceof EnderDragon)
-				return (double) MobHunting.getConfigManager().enderdragonFrequency
-						/ (double) MobHunting.getConfigManager().enderdragonFrequencyBase;
+				return MobHunting.getConfigManager().enderdragonCmdRunChance;
 			else if (killed instanceof Wither)
-				return (double) MobHunting.getConfigManager().witherFrequency
-						/ (double) MobHunting.getConfigManager().witherFrequencyBase;
+				return MobHunting.getConfigManager().witherCmdRunChance;
 			else if (killed instanceof IronGolem)
-				return (double) MobHunting.getConfigManager().ironGolemFrequency
-						/ (double) MobHunting.getConfigManager().ironGolemFrequencyBase;
+				return MobHunting.getConfigManager().ironGolemCmdRunChance;
 
 			// Passive mobs
 			else if (killed instanceof Bat)
-				return (double) MobHunting.getConfigManager().batFrequency
-						/ (double) MobHunting.getConfigManager().batFrequencyBase;
+				return MobHunting.getConfigManager().batCmdRunChance;
 			else if (killed instanceof Chicken)
-				return (double) MobHunting.getConfigManager().chickenFrequency
-						/ (double) MobHunting.getConfigManager().chickenFrequencyBase;
+				return MobHunting.getConfigManager().chickenCmdRunChance;
 			else if (killed instanceof Cow)
 				if (killed instanceof MushroomCow)
 					// MushroomCow is a subclass of Cow
-					return (double) MobHunting.getConfigManager().mushroomCowFrequency
-							/ (double) MobHunting.getConfigManager().mushroomCowFrequencyBase;
+					return MobHunting.getConfigManager().mushroomCowCmdRunChance;
 				else
-					return (double) MobHunting.getConfigManager().cowFrequency
-							/ (double) MobHunting.getConfigManager().cowFrequencyBase;
+					return MobHunting.getConfigManager().cowCmdRunChance;
 			else if (killed instanceof Horse)
-				return (double) MobHunting.getConfigManager().horseFrequency
-						/ (double) MobHunting.getConfigManager().horseFrequencyBase;
+				return MobHunting.getConfigManager().horseCmdRunChance;
 			else if (killed instanceof Ocelot)
-				return (double) MobHunting.getConfigManager().ocelotFrequency
-						/ (double) MobHunting.getConfigManager().ocelotFrequencyBase;
+				return MobHunting.getConfigManager().ocelotCmdRunChance;
 			else if (killed instanceof Pig)
-				return (double) MobHunting.getConfigManager().pigFrequency
-						/ (double) MobHunting.getConfigManager().pigFrequencyBase;
+				return MobHunting.getConfigManager().pigCmdRunChance;
 			else if (killed instanceof Sheep)
-				return (double) MobHunting.getConfigManager().sheepFrequency
-						/ (double) MobHunting.getConfigManager().sheepFrequencyBase;
+				return MobHunting.getConfigManager().sheepCmdRunChance;
 			else if (killed instanceof Snowman)
-				return (double) MobHunting.getConfigManager().snowmanFrequency
-						/ (double) MobHunting.getConfigManager().snowmanFrequencyBase;
+				return MobHunting.getConfigManager().snowmanCmdRunChance;
 			else if (killed instanceof Squid)
-				return (double) MobHunting.getConfigManager().squidFrequency
-						/ (double) MobHunting.getConfigManager().squidFrequencyBase;
+				return MobHunting.getConfigManager().squidCmdRunChance;
 			else if (killed instanceof Villager)
-				return (double) MobHunting.getConfigManager().villagerFequency
-						/ (double) MobHunting.getConfigManager().villagerFrequencyBase;
+				return MobHunting.getConfigManager().villagerCmdRunChance;
 			else if (killed instanceof Wolf)
-				return (double) MobHunting.getConfigManager().wolfFequency
-						/ (double) MobHunting.getConfigManager().wolfFrequencyBase;
+				return MobHunting.getConfigManager().wolfCmdRunChance;
 			else if (killed instanceof Item && ((Item) killed).getItemStack().getType() == Material.RAW_FISH) {
 				ItemStack is = ((Item) killed).getItemStack();
 				if (is.getData().getData() == (byte) 0) {

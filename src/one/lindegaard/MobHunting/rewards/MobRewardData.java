@@ -54,6 +54,8 @@ public class MobRewardData {
 	}
 
 	public String getMobName() {
+		if (mobName==null||mobName.equals(""))
+			return mobType;
 		return mobName;
 	}
 

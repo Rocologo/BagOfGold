@@ -165,7 +165,7 @@ public class FishingManager implements Listener {
 				if (player != null) {
 					Messages.debug("RecordFishing: %s caught a %s (%s)", player.getName(), eMob.getName(),
 							eMob.getMobPlugin().name());
-					MobHunting.getDataStoreManager().recordKill(player, eMob, player.hasMetadata("MH:hasBonus"));
+					MobHunting.getDataStoreManager().recordKill(player, eMob, player.hasMetadata("MH:hasBonus"),cash);
 				}
 
 				// Handle Muted mode

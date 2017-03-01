@@ -1277,6 +1277,9 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("%s got %s for killing %s", killer.getName(), reward, killed.getName());
 				// TODO: call bounty event, and check if canceled.
 				MobHunting.getRewardManager().depositPlayer(killer, reward);
+				//Messages.debug("RecordCash: %s killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+				//		mob.getMobPlugin().name(), cash);
+				//MobHunting.getDataStoreManager().recordCash(killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 
 			} else {
 				Messages.debug("There is no Bounty on %s", killed.getName());
@@ -1310,6 +1313,9 @@ public class MobHuntingManager implements Listener {
 					&& MobHunting.getConfigManager().robFromVictim;
 			if (robbing) {
 				MobHunting.getRewardManager().withdrawPlayer((Player) killed, cash);
+				//Messages.debug("RecordCash: %s killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+				//		mob.getMobPlugin().name(), cash);
+				//MobHunting.getDataStoreManager().recordCash(killer, mob, killed.hasMetadata("MH:hasBonus"), -cash);
 				if (!killed_muted)
 					killed.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + Messages
 							.getString("mobhunting.moneylost", "prize", MobHunting.getRewardManager().format(cash)));
@@ -1323,11 +1329,17 @@ public class MobHuntingManager implements Listener {
 						RewardManager.dropMoneyOnGround(killer, killed, killed.getLocation(), cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
+						//Messages.debug("RecordCash: %s killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+						//		mob.getMobPlugin().name(), cash);
+						//MobHunting.getDataStoreManager().recordCash(killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 						Messages.debug("%s got a reward (%s)", killer.getName(),
 								MobHunting.getRewardManager().format(cash));
 					}
 				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(killer, -cash);
+					//Messages.debug("RecordCash: %s killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+					//		mob.getMobPlugin().name(), cash);
+					//MobHunting.getDataStoreManager().recordCash(killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 					Messages.debug("%s got a penalty (%s)", killer.getName(),
 							MobHunting.getRewardManager().format(cash));
 				}
@@ -1340,6 +1352,9 @@ public class MobHuntingManager implements Listener {
 								killed.getLocation(), cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(info.assister, cash);
+						//Messages.debug("RecordCash: %s killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+						//		mob.getMobPlugin().name(), cash);
+						//MobHunting.getDataStoreManager().recordCash(killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 						onAssist(killer != null ? killer : info.assister, killer, killed, info.lastAssistTime);
 						Messages.debug("Assisted kill. %s got a ½ reward (%s)",
 								(killer != null ? killer : info.assister).getName(),
@@ -1347,6 +1362,9 @@ public class MobHuntingManager implements Listener {
 					}
 				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(killer != null ? killer : info.assister, -cash);
+					//Messages.debug("RecordCash: %s Assisted killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+					//		mob.getMobPlugin().name(), cash);
+					//MobHunting.getDataStoreManager().recordCash(killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 					onAssist(killer != null ? killer : info.assister, killer, killed, info.lastAssistTime);
 					Messages.debug("Assisted kill. %s got a ½ penalty (%s)",
 							(killer != null ? killer : info.assister).getName(),
@@ -1356,9 +1374,9 @@ public class MobHuntingManager implements Listener {
 
 			// Record the kill in the Database
 			if (killer != null) {
-				Messages.debug("RecordKill: %s killed a %s (%s)", killer.getName(), mob.getName(),
-						mob.getMobPlugin().name());
-				MobHunting.getDataStoreManager().recordKill(killer, mob, killed.hasMetadata("MH:hasBonus"));
+				Messages.debug("RecordKill: %s killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+						mob.getMobPlugin().name(), cash);
+				MobHunting.getDataStoreManager().recordKill(killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 			}
 
 			// Tell the player that he got the reward/penalty, unless muted
@@ -1517,8 +1535,11 @@ public class MobHuntingManager implements Listener {
 				Bukkit.getLogger().warning("Please report this to developer!");
 				return;
 			}
-			MobHunting.getDataStoreManager().recordAssist(player, killer, mob, killed.hasMetadata("MH:hasBonus"));
+			MobHunting.getDataStoreManager().recordAssist(player, killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 			MobHunting.getRewardManager().depositPlayer(player, cash);
+			//Messages.debug("RecordCash: %s killed a %s (%s) Cash=%s", killer.getName(), mob.getName(),
+			//		mob.getMobPlugin().name(), cash);
+			//MobHunting.getDataStoreManager().recordCash(killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
 			Messages.debug("%s got a on assist reward (%s)", player.getName(),
 					MobHunting.getRewardManager().format(cash));
 

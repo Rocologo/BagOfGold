@@ -151,26 +151,9 @@ public class Messages {
 					if (!dest.containsKey(k)) {
 						Bukkit.getLogger().info(
 								PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
-						if (key.getValue() != null && key.getValue().getName() != null
-								&& !key.getValue().getName().equals(""))
 							newEntries.put(k, key.getValue().getName());
 					}
 				}
-
-			for (MobPlugin p : MobPlugin.values()) {
-				String k = "stats." + p.name() + ".kill";
-				if (!dest.containsKey(k)) {
-					Bukkit.getLogger()
-							.info(PREFIX + " Creating missing key (" + k + ") in language file" + onDisk.getName());
-					newEntries.put(k, p.name() + " kills");
-				}
-				k = "stats." + p.name() + ".assist";
-				if (!dest.containsKey(k)) {
-					Bukkit.getLogger()
-							.info(PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
-					newEntries.put(k, p.name() + " assists");
-				}
-			}
 
 			if (!newEntries.isEmpty()) {
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
@@ -202,17 +185,23 @@ public class Messages {
 			HashMap<String, String> newEntries = new HashMap<String, String>();
 
 			for (MobPlugin p : MobPlugin.values()) {
-				String k = "stats." + p.name() + ".kill";
+				String k = "stats." + p.name() + ".kills";
 				if (!dest.containsKey(k)) {
 					Bukkit.getLogger()
 							.info(PREFIX + " Creating missing key (" + k + ") in language file" + onDisk.getName());
 					newEntries.put(k, p.name() + " kills");
 				}
-				k = "stats." + p.name() + ".assist";
+				k = "stats." + p.name() + ".assists";
 				if (!dest.containsKey(k)) {
 					Bukkit.getLogger()
 							.info(PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
 					newEntries.put(k, p.name() + " assists");
+				}
+				k = "stats." + p.name() + ".cashs";
+				if (!dest.containsKey(k)) {
+					Bukkit.getLogger()
+							.info(PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
+					newEntries.put(k, p.name() + " [$]");
 				}
 			}
 
@@ -317,7 +306,7 @@ public class Messages {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 
 		if (file.exists()) {

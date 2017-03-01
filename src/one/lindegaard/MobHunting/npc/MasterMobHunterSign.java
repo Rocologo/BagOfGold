@@ -174,6 +174,7 @@ public class MasterMobHunterSign implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void removePowerOnPiston(Block b) {
 		PistonBaseMaterial pistonData = (PistonBaseMaterial) b.getState().getData();
 		if (!pistonData.isPowered()) {
@@ -252,6 +253,7 @@ public class MasterMobHunterSign implements Listener {
 	// REMOVE
 	// ****************************************************************************'
 
+	@SuppressWarnings("deprecation")
 	public static void removePower(Block block) {
 		if (isMHPowered(block)) {
 			block.removeMetadata(MH_POWERED, MobHunting.getInstance());

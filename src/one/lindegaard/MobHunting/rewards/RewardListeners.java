@@ -108,7 +108,7 @@ public class RewardListeners implements Listener {
 					new FixedMetadataValue(MobHunting.getInstance(),
 							new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, money,
 									hiddenRewardData.getUuid(), UUID.randomUUID())));
-			Messages.debug("Item has hidden MetaData=%s", item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
+			//Messages.debug("Item has hidden MetaData=%s", item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
 		}
 	}
 
@@ -281,13 +281,13 @@ public class RewardListeners implements Listener {
 					new FixedMetadataValue(MobHunting.getInstance(), hiddenRewardData));
 			RewardManager.getLocations().put(hiddenRewardData.getUniqueId(), hiddenRewardData);
 			RewardManager.getHiddenRewardData().put(hiddenRewardData.getUniqueId(), block.getLocation());
-			Messages.debug("HiddenRewardData added=%s",
-					((HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value())
-							.getHiddenLore());
+			//Messages.debug("HiddenRewardData added=%s",
+			//		((HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value())
+			//				.getHiddenLore());
 			RewardManager.saveReward(hiddenRewardData.getUniqueId());
-		} else {
-			Messages.debug("%s has no hidden data", is.getType());
-		}
+		} //else {
+		//	Messages.debug("%s has no hidden data", is.getType());
+		//}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -307,7 +307,7 @@ public class RewardListeners implements Listener {
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
 						hiddenRewardData.getMoney(), hiddenRewardData.getUniqueId());
-				Messages.debug("Bag of gold: Lore=%s", hiddenRewardData.getHiddenLore());
+				//Messages.debug("Bag of gold: Lore=%s", hiddenRewardData.getHiddenLore());
 			} else { // (hiddenRewardData.getUuid()toString().equals(RewardManager.MH_REWARD_HEAD_UUID)){
 				// Is it an EnderDragon
 				if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getDisplayName())) {
@@ -333,7 +333,7 @@ public class RewardListeners implements Listener {
 							MinecraftMob.getTexture(hiddenRewardData.getDisplayname()),
 							MinecraftMob.getSignature(hiddenRewardData.getDisplayname()), hiddenRewardData.getMoney(),
 							hiddenRewardData.getUniqueId());
-				Messages.debug("Head: Lore=%s", hiddenRewardData.getHiddenLore());
+				//Messages.debug("Head: Lore=%s", hiddenRewardData.getHiddenLore());
 			}
 			Item item = block.getWorld().dropItemNaturally(block.getLocation(), is);
 			if (hiddenRewardData.getMoney() == 0)
@@ -388,7 +388,7 @@ public class RewardListeners implements Listener {
 			if (HiddenRewardData.hasHiddenRewardData(isCurrentSlot)) {
 				HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(isCurrentSlot);
 				if (hiddenRewardData.getUuid().toString()
-						.equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
+						.equals(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)) {
 					ItemMeta imCurrentSlot = isCurrentSlot.getItemMeta();
 					double money = new HiddenRewardData(imCurrentSlot.getLore()).getMoney() / 2;
 					if (Misc.floor(money) >= MobHunting.getConfigManager().minimumReward) {

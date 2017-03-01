@@ -1,7 +1,5 @@
 package one.lindegaard.MobHunting.storage.asynch;
 
-import java.sql.SQLException;
-
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
 

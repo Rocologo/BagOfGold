@@ -167,12 +167,14 @@ public class MySQLDataStore extends DatabaseDataStore {
 		String mobType = type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_"));
 		ArrayList<String> plugins_kill = new ArrayList<String>();
 		ArrayList<String> plugins_assist = new ArrayList<String>();
+		ArrayList<String> plugins_cash = new ArrayList<String>();
 		for (MobPlugin p : MobPlugin.values()) {
 			plugins_kill.add(p.name() + "_kill");
 			plugins_assist.add(p.name() + "_assist");
+			plugins_cash.add(p.name() + "_cash");
 			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
 				plugin = p;
-				if (type.getDBColumn().indexOf("_")!=type.getDBColumn().lastIndexOf("_"))
+				if (type.getDBColumn().indexOf("_") != type.getDBColumn().lastIndexOf("_"))
 					mobType = type.getDBColumn().substring(type.getDBColumn().indexOf("_") + 1,
 							type.getDBColumn().lastIndexOf("_"));
 			}
@@ -198,9 +200,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 		else
 			column = "sum(total_kill) amount ";
 
+		column = column + ", sum(total_cash) cash ";
+
 		String wherepart = "";
 		if (type.getDBColumn().equalsIgnoreCase("total_kill") || type.getDBColumn().equalsIgnoreCase("total_assist")
-				|| type.getDBColumn().equalsIgnoreCase("achievement_count")) {
+				|| type.getDBColumn().equalsIgnoreCase("achievement_count")
+				|| type.getDBColumn().equalsIgnoreCase("total_cash")) {
 			wherepart = (id != null ? " AND ID=" + id : "");
 		} else {
 			wherepart = (id != null
@@ -232,7 +237,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				if (offlinePlayer == null)
 					Messages.debug("getOfflinePlayer(%s) was not in cache.", results.getString("name"));
 				else
-					list.add(new StatStore(type, offlinePlayer, results.getInt("amount")));
+					list.add(new StatStore(type, offlinePlayer, results.getInt("amount"), results.getDouble("cash")));
 			}
 			results.close();
 			statement.close();
@@ -259,14 +264,16 @@ public class MySQLDataStore extends DatabaseDataStore {
 					column = "total" + stat.getType().getDBColumn().substring(
 							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
 				}
+				String column2 = "total_cash";
 				int amount = stat.getAmount();
+				double cash = stat.getCash(); 
 				int player_id = getPlayerId(stat.getPlayer());
 				statement.executeUpdate(
 						String.format(
-								"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
+								"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s, %5$s)"
 										+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
-										+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d",
-								column, mob_id, player_id, amount));
+										+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d, %5$s = %5$s + %6$f",
+								column, mob_id, player_id, amount, column2, cash));
 			}
 			statement.close();
 			mConnection.commit();
@@ -276,6 +283,42 @@ public class MySQLDataStore extends DatabaseDataStore {
 			rollback(mConnection);
 			throw new DataStoreException(e);
 		}
+	}
+
+	@Override
+	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+
+		// reference
+		// http://stackoverflow.com/questions/6115612/how-to-convert-an-entire-mysql-database-characterset-and-collation-to-utf-8
+
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		console.sendMessage(ChatColor.GREEN + "[MobHunting] Converting MobHunting Database to UTF8");
+
+		Connection connection = setupConnection();
+
+		try {
+			Statement create = connection.createStatement();
+
+			create.executeUpdate(
+					"ALTER DATABASE " + database_name + " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate(
+					"ALTER TABLE mh_Achievements CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_AllTime CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate(
+					"ALTER TABLE mh_Bounties CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Daily CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Mobs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Monthly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Players CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Weekly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Yearly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			console.sendMessage(ChatColor.GREEN + "[MobHunting] Done.");
+
+		} catch (SQLException e) {
+			console.sendMessage(ChatColor.RED + "[MobHunting] Something went wrong.");
+			e.printStackTrace();
+		}
+
 	}
 
 	// *******************************************************************************
@@ -1103,40 +1146,204 @@ public class MySQLDataStore extends DatabaseDataStore {
 		connection.commit();
 	}
 
+	// *******************************************************************************
+	// V4 DATABASE SETUP / MIGRATION
+	// *******************************************************************************
+
 	@Override
-	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
+	protected void setupV4Tables(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
 
-		// reference
-		// http://stackoverflow.com/questions/6115612/how-to-convert-an-entire-mysql-database-characterset-and-collation-to-utf-8
+		// Create new empty tables if they do not exist
+		String lm = MobHunting.getConfigManager().learningMode ? "1" : "0";
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players "//
+				+ "(UUID CHAR(40) ,"//
+				+ " NAME VARCHAR(20),"//
+				+ " PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT,"//
+				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
+				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
+				+ " PRIMARY KEY (PLAYER_ID))");
 
-		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-		console.sendMessage(ChatColor.GREEN + "[MobHunting] Converting MobHunting Database to UTF8");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Mobs "//
+				+ "(MOB_ID INTEGER NOT NULL AUTO_INCREMENT,"//
+				+ " PLUGIN_ID INTEGER NOT NULL,"//
+				+ " MOBTYPE VARCHAR(30),"//
+				+ " PRIMARY KEY(MOB_ID))");
 
-		Connection connection = setupConnection();
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Daily "//
+				+ "(ID CHAR(7) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0,"//
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"//
+				+ " KEY `MOB_ID` (`MOB_ID`)," + " KEY `mh_Daily_Player_Id` (`PLAYER_ID`),"
+				+ " CONSTRAINT mh_Daily_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " CONSTRAINT mh_Daily_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
 
-		try {
-			Statement create = connection.createStatement();
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Weekly "//
+				+ "(ID CHAR(6) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0,"//
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"//
+				+ " KEY `MOB_ID` (`MOB_ID`),"//
+				+ " KEY `mh_Weekly_Player_Id` (`PLAYER_ID`),"
+				+ " CONSTRAINT mh_Weekly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " CONSTRAINT mh_Weekly_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
 
-			create.executeUpdate(
-					"ALTER DATABASE " + database_name + " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate(
-					"ALTER TABLE mh_Achievements CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_AllTime CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate(
-					"ALTER TABLE mh_Bounties CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Daily CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Mobs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Monthly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Players CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Weekly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Yearly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			console.sendMessage(ChatColor.GREEN + "[MobHunting] Done.");
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Monthly "//
+				+ "(ID CHAR(6) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0,"//
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"//
+				+ " KEY `MOB_ID` (`MOB_ID`),"//
+				+ " KEY `mh_Monthly_Player_Id` (`PLAYER_ID`),"
+				+ " CONSTRAINT mh_Monthly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " CONSTRAINT mh_Monthly_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
 
-		} catch (SQLException e) {
-			console.sendMessage(ChatColor.RED + "[MobHunting] Something went wrong.");
-			e.printStackTrace();
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Yearly "//
+				+ "(ID CHAR(4) NOT NULL,"//
+				+ " MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0,"//
+				+ " PRIMARY KEY(ID, MOB_ID, PLAYER_ID),"//
+				+ " KEY `MOB_ID` (`MOB_ID`),"//
+				+ " KEY `mh_Yearly_Player_Id` (`PLAYER_ID`),"
+				+ " CONSTRAINT mh_Yearly_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " CONSTRAINT mh_Yearly_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_AllTime "//
+				+ "(MOB_ID INTEGER NOT NULL,"//
+				+ " PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT_COUNT INTEGER DEFAULT 0,"//
+				+ " TOTAL_KILL INTEGER DEFAULT 0,"//
+				+ " TOTAL_ASSIST INTEGER DEFAULT 0,"//
+				+ " TOTAL_CASH REAL DEFAULT 0,"//
+				+ " PRIMARY KEY(MOB_ID, PLAYER_ID),"//
+				+ " KEY `MOB_ID` (`MOB_ID`),"//
+				+ " KEY `mh_AllTime_Player_Id` (`PLAYER_ID`),"//
+				+ " CONSTRAINT mh_AllTime_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE,"
+				+ " CONSTRAINT mh_AllTime_Mob_Id FOREIGN KEY(MOB_ID) REFERENCES mh_Mobs(MOB_ID) ON DELETE CASCADE)");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Achievements "//
+				+ "(PLAYER_ID INTEGER NOT NULL,"//
+				+ " ACHIEVEMENT VARCHAR(64) NOT NULL,"//
+				+ " DATE DATETIME NOT NULL,"//
+				+ " PROGRESS INTEGER NOT NULL,"//
+				+ " PRIMARY KEY(PLAYER_ID, ACHIEVEMENT),"
+				+ " CONSTRAINT mh_Achievements_Player_Id FOREIGN KEY(PLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE)");
+
+		if (!MobHunting.getConfigManager().disablePlayerBounties) {
+			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties ("//
+					+ "BOUNTYOWNER_ID INTEGER NOT NULL, "//
+					+ "MOBTYPE CHAR(6), "//
+					+ "WANTEDPLAYER_ID INTEGER NOT NULL, "//
+					+ "NPC_ID INTEGER, "//
+					+ "MOB_ID VARCHAR(40), "//
+					+ "WORLDGROUP VARCHAR(20) NOT NULL, "//
+					+ "CREATED_DATE BIGINT NOT NULL, " + "END_DATE BIGINT NOT NULL, "//
+					+ "PRIZE FLOAT NOT NULL, "//
+					+ "MESSAGE VARCHAR(64), "//
+					+ "STATUS INTEGER NOT NULL DEFAULT 0, "//
+					+ "PRIMARY KEY(WORLDGROUP, WANTEDPLAYER_ID, BOUNTYOWNER_ID), "
+					+ "KEY `mh_Bounties_Player_Id_1` (`BOUNTYOWNER_ID`),"
+					+ "KEY `mh_Bounties_Player_Id_2` (`WANTEDPLAYER_ID`),"
+					+ "CONSTRAINT mh_Bounties_Player_Id_1 FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
+					+ "CONSTRAINT mh_Bounties_Player_Id_2 FOREIGN KEY(WANTEDPLAYER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE"
+					+ ")");
 		}
 
+		// Setup Database triggers
+		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyInsert`");
+		create.executeUpdate("DROP TRIGGER IF EXISTS `mh_DailyUpdate`");
+		create.close();
+		connection.commit();
+
+		insertMissingVanillaMobs();
+
+		Messages.debug("MobHunting V4 Database created/updated.");
+	}
+
+	@Override
+	protected void setupTriggerV4(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
+
+		// Workaround for no create trigger if not exists
+		try {
+			create.executeUpdate("create trigger mh_DailyInsert after insert on mh_Daily for each row" + " begin"
+
+					+ " insert ignore into mh_Weekly(ID, MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+					+ " values(DATE_FORMAT(NOW(), '%Y%U'), NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+					+ " insert ignore into mh_Monthly(ID, MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+					+ " values(DATE_FORMAT(NOW(), '%Y%c'), NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+					+ " insert ignore into mh_Yearly(ID, MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+					+ " values(DATE_FORMAT(NOW(), '%Y'), NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+					+ " insert ignore into mh_AllTime(MOB_ID, PLAYER_ID, ACHIEVEMENT_COUNT, TOTAL_KILL, TOTAL_ASSIST, TOTAL_CASH)"
+					+ " values(NEW.MOB_ID, NEW.PLAYER_ID, NEW.ACHIEVEMENT_COUNT, NEW.TOTAL_KILL, NEW.TOTAL_ASSIST, NEW.TOTAL_CASH);"
+
+					+ " end");
+
+			// Create the cascade update trigger. It will allow us to only
+			// modify the Daily table, and the rest will happen automatically
+			StringBuilder updateStringBuilder = new StringBuilder();
+
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
+			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
+
+			String updateString = updateStringBuilder.toString();
+
+			StringBuilder updateTrigger = new StringBuilder();
+			updateTrigger.append("create trigger mh_DailyUpdate after update on mh_Daily for each row begin ");
+
+			// Weekly
+			updateTrigger.append(" update mh_Weekly set ");
+			updateTrigger.append(updateString);
+			updateTrigger
+					.append(" where ID=DATE_FORMAT(NOW(), '%Y%U') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			// Monthly
+			updateTrigger.append(" update mh_Monthly set ");
+			updateTrigger.append(updateString);
+			updateTrigger
+					.append(" where ID=DATE_FORMAT(NOW(), '%Y%c') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			// Yearly
+			updateTrigger.append(" update mh_Yearly set ");
+			updateTrigger.append(updateString);
+			updateTrigger
+					.append(" where ID=DATE_FORMAT(NOW(), '%Y') AND MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			// AllTime
+			updateTrigger.append(" update mh_AllTime set ");
+			updateTrigger.append(updateString);
+			updateTrigger.append(" where MOB_ID=New.MOB_ID AND PLAYER_ID=New.PLAYER_ID;");
+
+			updateTrigger.append("END");
+
+			create.executeUpdate(updateTrigger.toString());
+			create.close();
+		} catch (SQLException e) {
+			// Do Nothing
+		}
+		connection.commit();
 	}
 
 }

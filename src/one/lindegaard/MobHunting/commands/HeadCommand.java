@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -50,7 +51,9 @@ public class HeadCommand implements ICommand, Listener {
 				ChatColor.GOLD + label + ChatColor.GREEN + " give" + " [toPlayername] [playername|mobname]"
 						+ ChatColor.YELLOW + " [displayname] [amount] [silent]" + ChatColor.WHITE + " - to give a head",
 				ChatColor.GOLD + label + ChatColor.GREEN + " rename [new displayname]" + ChatColor.WHITE
-						+ " - to rename the head in players name" };
+						+ " - to rename the head in players name",
+				ChatColor.GOLD + label + ChatColor.GREEN + " drop" + " [playername|mobname]" + ChatColor.YELLOW
+						+ " [toPlayername] " + ChatColor.WHITE + " - to drop a head" };
 	}
 
 	@Override
@@ -72,7 +75,7 @@ public class HeadCommand implements ICommand, Listener {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		// /mh head give [toPlayername] [mobname|playername] [displayname]
-		// [amount]
+		// [amount] [silent]
 		if (args.length >= 2 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
 			if (args.length >= 3) {
 				OfflinePlayer offlinePlayer = null, toPlayer = null;
@@ -127,7 +130,7 @@ public class HeadCommand implements ICommand, Listener {
 					if (Misc.isMC18OrNewer()) {
 						// Use GameProfile
 						((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(),
-								mob.getHead(displayName, 0));
+								mob.getHead(displayName, mob.getHeadPrize()));
 					} else {
 						String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
 								.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
@@ -171,6 +174,40 @@ public class HeadCommand implements ICommand, Listener {
 				sender.sendMessage("You can only rename heads ingame.");
 			}
 			return true;
+		} else if (args.length >= 1 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place")) {
+			// /mh head drop <head>
+			// /mh head drop <head> <player>
+			if (sender.hasPermission("mobhunting.money.drop")) {
+				// /mh head drop
+				MinecraftMob mob = MinecraftMob.getExtendedMobType(args[1]);
+				if (mob != null) {
+					if (args.length == 2) {
+						Player player = (Player) sender;
+						Location location = Misc.getTargetBlock(player, 20).getLocation();
+						Messages.debug("The head was dropped at %s", location);
+						player.getWorld().dropItem(location, mob.getHead(mob.getName(), 0));
+
+					} else if (args.length == 3 && Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
+						Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
+						Location location = Misc.getTargetBlock(player, 3).getLocation();
+						Messages.debug("The head dropped at %s", location);
+						player.getWorld().dropItem(location, mob.getHead(mob.getName(), 0));
+
+					} else {
+						sender.sendMessage(ChatColor.RED
+								+ Messages.getString("mobhunting.commands.base.playername-missing", "player", args[2]));
+					}
+				} else {
+					sender.sendMessage(
+							Messages.getString("mobhunting.commands.head.unknown_name", "playername", args[1]));
+
+				}
+
+			} else {
+				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "perm",
+						"mobhunting.head", "command", "head"));
+			}
+			return true;
 		}
 		// show help
 		return false;
@@ -179,15 +216,12 @@ public class HeadCommand implements ICommand, Listener {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		ArrayList<String> items = new ArrayList<String>();
-		if (args.length == 0) {
-			items.add(" give");
-			items.add(" rename");
-		} else if (args.length == 1) {
+		if (args.length == 1) {
 			if (items.isEmpty()) {
 				items.add("give");
+				items.add("drop");
 				items.add("rename");
 			}
-
 		} else if (args.length == 2 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
 			String partial = args[1].toLowerCase();
 			for (Player player : Bukkit.getOnlinePlayers()) {
@@ -205,7 +239,24 @@ public class HeadCommand implements ICommand, Listener {
 				if (player.getName().toLowerCase().startsWith(partial))
 					items.add(player.getName());
 			}
-		}
+		} else if (args.length == 2 && args[0].equalsIgnoreCase("drop")) {
+			String partial = args[1].toLowerCase();
+			for (MinecraftMob mob : MinecraftMob.values()) {
+				if (mob.getFriendlyName().toLowerCase().startsWith(partial)
+						|| mob.getDisplayName().toLowerCase().startsWith(partial))
+					items.add(mob.getFriendlyName().replace(" ", "_"));
+			}
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (player.getName().toLowerCase().startsWith(partial))
+					items.add(player.getName());
+			}
+		} else if (args.length == 3 && args[0].equalsIgnoreCase("drop")) {
+			String partial = args[2].toLowerCase();
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (player.getName().toLowerCase().startsWith(partial))
+					items.add(player.getName());
+			}
+		} 
 		return items;
 	}
 

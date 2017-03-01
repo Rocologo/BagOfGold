@@ -20,6 +20,7 @@ import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
@@ -49,7 +50,7 @@ public class MetricsManager {
 			mobPluginIntegrationsGraph;
 	private MobHunting instance;
 
-	private org.bStats.Metrics bStatsMetrics;
+	private org.bstats.Metrics bStatsMetrics;
 
 	public MetricsManager(MobHunting instance) {
 		this.instance = instance;
@@ -62,7 +63,7 @@ public class MetricsManager {
 			e1.printStackTrace();
 		}
 
-		bStatsMetrics = new org.bStats.Metrics(instance);
+		bStatsMetrics = new org.bstats.Metrics(instance);
 
 		databaseGraph = metrics.createGraph("Database used for MobHunting");
 		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
@@ -90,7 +91,7 @@ public class MetricsManager {
 			});
 		}
 		metrics.addGraph(databaseGraph);
-		bStatsMetrics.addCustomChart(new org.bStats.Metrics.SimplePie("Database used for MobHunting") {
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("Database used for MobHunting") {
 			@Override
 			public String getValue() {
 				return MobHunting.getConfigManager().databaseType;
@@ -198,6 +199,13 @@ public class MetricsManager {
 				} catch (ClassNotFoundException e) {
 					return 0;
 				}
+
+			}
+		});
+		integrationsGraph.addPlotter(new Metrics.Plotter("Factions") {
+			@Override
+			public int getValue() {
+				return FactionsCompat.isSupported() ? 1 : 0;
 
 			}
 		});

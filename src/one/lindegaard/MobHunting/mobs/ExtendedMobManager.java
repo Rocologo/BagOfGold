@@ -138,7 +138,7 @@ public class ExtendedMobManager {
 			if (mob != null)
 				mobtype = mob.name();
 			else {
-				Messages.debug("ERROR!!! Unsupported mob/entity: '%s'", mob);
+				//Messages.debug("ERROR!!! Unsupported mob/entity: '%s'", mob);
 				mobtype = "";
 			}
 		}

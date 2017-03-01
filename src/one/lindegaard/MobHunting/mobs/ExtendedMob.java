@@ -74,7 +74,10 @@ public class ExtendedMob {
 		switch (mobPlugin.getId()) {
 		case 1:
 			// MythicMobs
-			return MythicMobsCompat.getMobRewardData().get(mobtype).getMobName();
+			String name=MythicMobsCompat.getMobRewardData().get(mobtype).getMobName();
+			if (name==null || name.equals(""))
+				name=MythicMobsCompat.getMobRewardData().get(mobtype).getMobType();
+			return name;
 		case 2:
 			// Citizens
 			NPC npc = CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mobtype));

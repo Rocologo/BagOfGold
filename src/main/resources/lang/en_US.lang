@@ -218,11 +218,15 @@ stats.achievement_count=Achievement Count
 stats.total=Total
 stats.total_kill=Total Kills
 stats.total_assist=Total Assist
+stats.total_cash=Total Coins
 stats.assist=Assist
 stats.assists=Assists
 stats.kill=Kill
 stats.kills=Kills
 stats.both=Both
+stats.cash=Coin
+stats.cashs=Coins
+
 
 stats.day=Day
 stats.week=Week

@@ -497,6 +497,165 @@ public enum MinecraftMob {
 		}
 		return 100;
 	}
+	
+	/**
+	 * Return the reward money for a given mob
+	 * 
+	 * @param mob
+	 * @return value
+	 */
+	public double getHeadPrize() {
+		switch (this) {
+		case Bat:
+			return getPrice(MobHunting.getConfigManager().batHeadPrize);
+		case Blacksmith:
+			return getPrice(MobHunting.getConfigManager().blacksmithHeadPrize);
+		case Blaze:
+			return getPrice(MobHunting.getConfigManager().blazeHeadPrize);
+		case BonusMob:
+			return getPrice(MobHunting.getConfigManager().bonusMobHeadPrize);
+		case Butcher:
+			return getPrice(MobHunting.getConfigManager().butcherHeadPrize);
+		case Cartographer:
+			return getPrice(MobHunting.getConfigManager().cartographerHeadPrize);
+		case CaveSpider:
+			return getPrice(MobHunting.getConfigManager().caveSpiderHeadPrize);
+		case Chicken:
+			return getPrice(MobHunting.getConfigManager().chickenHeadPrize);
+		case Clownfish:
+			return getPrice(MobHunting.getConfigManager().clownfishHeadPrize);
+		case Cow:
+			return getPrice(MobHunting.getConfigManager().cowHeadPrize);
+		case Creeper:
+			return getPrice(MobHunting.getConfigManager().creeperHeadPrize);
+		case Donkey:
+			return getPrice(MobHunting.getConfigManager().donkeyHeadPrize);
+		case ElderGuardian:
+			return getPrice(MobHunting.getConfigManager().elderGuardianHeadPrize);
+		case EnderDragon:
+			return getPrice(MobHunting.getConfigManager().enderdragonHeadPrize);
+		case Enderman:
+			return getPrice(MobHunting.getConfigManager().endermanHeadPrize);
+		case Endermite:
+			return getPrice(MobHunting.getConfigManager().endermiteHeadPrize);
+		case Evoker:
+			return getPrice(MobHunting.getConfigManager().evokerHeadPrize);
+		case Farmer:
+			return getPrice(MobHunting.getConfigManager().farmerHeadPrize);
+		case Ghast:
+			return getPrice(MobHunting.getConfigManager().ghastHeadPrize);
+		case Giant:
+			return getPrice(MobHunting.getConfigManager().giantHeadPrize);
+		case Guardian:
+			return getPrice(MobHunting.getConfigManager().guardianHeadPrize);
+		case Horse:
+			return getPrice(MobHunting.getConfigManager().horseHeadPrize);
+		case Husk:
+			return getPrice(MobHunting.getConfigManager().huskHeadPrize);
+		case IronGolem:
+			return getPrice(MobHunting.getConfigManager().ironGolemHeadPrize);
+		case KillerRabbit:
+			return getPrice(MobHunting.getConfigManager().killerrabbitHeadPrize);
+		case Librarian:
+			return getPrice(MobHunting.getConfigManager().librarianHeadPrize);
+		case Llama:
+			return getPrice(MobHunting.getConfigManager().llamaHeadPrize);
+		case MagmaCube:
+			return getPrice(MobHunting.getConfigManager().magmaCubeHeadPrize);
+		case Mule:
+			return getPrice(MobHunting.getConfigManager().muleHeadPrize);
+		case MushroomCow:
+			return getPrice(MobHunting.getConfigManager().mushroomCowHeadPrize);
+		case Nitwit:
+			return getPrice(MobHunting.getConfigManager().nitwitHeadPrize);
+		case Ocelot:
+			return getPrice(MobHunting.getConfigManager().ocelotHeadPrize);
+		case PassiveRabbit:
+			return getPrice(MobHunting.getConfigManager().rabbitHeadPrize);
+		case Pig:
+			return getPrice(MobHunting.getConfigManager().pigHeadPrize);
+		case PolarBear:
+			return getPrice(MobHunting.getConfigManager().polarBearHeadPrize);
+		case Priest:
+			return getPrice(MobHunting.getConfigManager().priestHeadPrize);
+		case Pufferfish:
+			return getPrice(MobHunting.getConfigManager().pufferfishHeadPrize);
+		case PvpPlayer:
+			return getPrice(MobHunting.getConfigManager().pvpHeadPrize);
+		case RawFish:
+			return getPrice(MobHunting.getConfigManager().rawFishHeadPrize);
+		case RawSalmon:
+			return getPrice(MobHunting.getConfigManager().rawSalmonHeadPrize);
+		case Sheep:
+			return getPrice(MobHunting.getConfigManager().sheepHeadPrize);
+		case Shulker:
+			return getPrice(MobHunting.getConfigManager().shulkerHeadPrize);
+		case Silverfish:
+			return getPrice(MobHunting.getConfigManager().silverfishHeadPrize);
+		case Skeleton:
+			return getPrice(MobHunting.getConfigManager().skeletonHeadPrize);
+		case SkeletonHorse:
+			return getPrice(MobHunting.getConfigManager().skeletonHorseHeadPrize);
+		case Slime:
+			return getPrice(MobHunting.getConfigManager().slimeHeadPrize);
+		case Snowman:
+			return getPrice(MobHunting.getConfigManager().snowmanHeadPrize);
+		case Spider:
+			return getPrice(MobHunting.getConfigManager().spiderHeadPrize);
+		case Squid:
+			return getPrice(MobHunting.getConfigManager().squidHeadPrize);
+		case Stray:
+			return getPrice(MobHunting.getConfigManager().strayHeadPrize);
+		case Vex:
+			return getPrice(MobHunting.getConfigManager().vexHeadPrize);
+		case Villager:
+			return getPrice(MobHunting.getConfigManager().villagerHeadPrize);
+		case Vindicator:
+			return getPrice(MobHunting.getConfigManager().vindicatorHeadPrize);
+		case Witch:
+			return getPrice(MobHunting.getConfigManager().witchHeadPrize);
+		case Wither:
+			return getPrice(MobHunting.getConfigManager().witherHeadPrize);
+		case WitherSkeleton:
+			return getPrice(MobHunting.getConfigManager().witherSkeletonHeadPrize);
+		case Wolf:
+			return getPrice(MobHunting.getConfigManager().wolfHeadPrize);
+		case Zombie:
+			return getPrice(MobHunting.getConfigManager().zombieHeadPrize);
+		case ZombieHorse:
+			return getPrice(MobHunting.getConfigManager().zombiehorseHeadPrize);
+		case ZombiePigman:
+			return getPrice(MobHunting.getConfigManager().zombiePigmanHeadPrize);
+		case ZombieVillager:
+			return getPrice(MobHunting.getConfigManager().zombieVillagerHeadPrize);
+		}
+		return 0;
+	}
+	
+	private double getPrice(String str) {
+		if (str == null || str.equals("") || str.isEmpty()) {
+			Bukkit.getServer().getConsoleSender()
+					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET
+							+ " The prize for killing a " + mDisplayName
+							+ " is not set in config.yml. Please set the prize to 0 or a positive or negative number.");
+			return 0;
+		} else if (str.startsWith(":")) {
+			Bukkit.getServer().getConsoleSender()
+					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET
+							+ " The prize for killing a " + mDisplayName
+							+ " in config.yml has a wrong format. The prize can't start with \":\"");
+			if (str.length() > 1)
+				return getPrice(str.substring(1, str.length()));
+			else
+				return 0;
+		} else if (str.contains(":")) {
+			String[] str1 = str.split(":");
+			double prize = (MobHunting.getMobHuntingManager().mRand.nextDouble()
+					* (Double.valueOf(str1[1]) - Double.valueOf(str1[0])) + Double.valueOf(str1[0]));
+			return Misc.round(prize);
+		} else
+			return Double.valueOf(str);
+	}
 
 	public boolean matches(Entity entity) {
 		if (Misc.isMC111OrNewer())
@@ -678,22 +837,20 @@ public enum MinecraftMob {
 	public static String getTexture(String displayname) {
 		for (MinecraftMob mob : MinecraftMob.values()) {
 			if (mob.mDisplayName.equalsIgnoreCase(displayname)) {
-				Messages.debug("%s texture found", mob.getName());
 				return String.valueOf(mob.getTextureValue());
 			}
 		}
-		Messages.debug("ERROR] %s NO texture found", displayname);
+		Messages.debug("[ERROR] %s NO texture found", displayname);
 		return "";
 	}
 
 	public static String getSignature(String displayname) {
 		for (MinecraftMob mob : MinecraftMob.values()) {
 			if (mob.mDisplayName.equalsIgnoreCase(displayname)) {
-				Messages.debug("%s signature found", mob.getName());
 				return String.valueOf(mob.getTextureSignature());
 			}
 		}
-		Messages.debug("ERROR] %s NO Signature found", displayname);
+		Messages.debug("[ERROR] %s NO Signature found", displayname);
 		return "";
 
 	}

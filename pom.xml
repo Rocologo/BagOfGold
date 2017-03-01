@@ -4,8 +4,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.5.7</version>
-	<!-- <version>4.5.7-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>4.5.8</version> -->
+	<version>4.5.8-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -139,6 +139,33 @@
 				<version>2.2.1</version>
 				<inherited>false</inherited>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<artifactSet>
+						<includes>
+							<include>org.bstats:*</include>
+						</includes>
+					</artifactSet>
+					<relocations>
+						<relocation>
+							<pattern>org.bstats</pattern>
+							<!-- Replace this with your package! -->
+							<shadedPattern>one.lindegaard.MobHunting</shadedPattern>
+						</relocation>
+					</relocations>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -263,6 +290,12 @@
 		<repository>
 			<id>md5-repo</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
+		</repository>
+
+		<!-- bStats repository -->
+		<repository>
+			<id>bstats-repo</id>
+			<url>http://repo.bstats.org/content/repositories/releases/</url>
 		</repository>
 
 	</repositories>
@@ -610,6 +643,13 @@
 					<artifactId>craftbukkit</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<!-- bStats.org -->
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-bukkit</artifactId>
+			<version>1.1</version>
 		</dependency>
 
 		<!-- MassiveCore / Factions -->

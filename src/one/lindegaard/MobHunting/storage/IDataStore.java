@@ -149,5 +149,4 @@ public interface IDataStore {
 	
 	public void insertCustomMobs(String mob);
 
-	
 }

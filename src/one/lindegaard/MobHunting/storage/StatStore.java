@@ -10,12 +10,14 @@ public class StatStore {
 	private ExtendedMob mob;
 	private OfflinePlayer player;
 	private int amount;
+	private double cash;
 
-	public StatStore(StatType type, ExtendedMob mob, OfflinePlayer player, int amount) {
+	public StatStore(StatType type, ExtendedMob mob, OfflinePlayer player, int amount, double cash) {
 		this.type = type;
 		this.setMob(mob);
 		this.player = player;
 		this.amount = amount;
+		this.setCash(cash);
 	}
 
 	public StatStore(StatType type, ExtendedMob mob, OfflinePlayer player) {
@@ -23,18 +25,21 @@ public class StatStore {
 		this.setMob(mob);
 		this.player = player;
 		amount = 1; //add one kill.
+		setCash(0);
 	}
 
-	public StatStore(StatType type, OfflinePlayer player, int amount) {
+	public StatStore(StatType type, OfflinePlayer player, int amount, double cash) {
 		this.type = type;
 		this.player = player;
 		this.amount = amount;
+		this.setCash(cash);
 	}
 	
-	public StatStore(StatType type, OfflinePlayer player) {
+	public StatStore(StatType type, OfflinePlayer player, double reward) {
 		this.type = type;
 		this.player = player;
 		amount = 1; //add one achievement.
+		this.setCash(reward);
 	}
 	
 	/**
@@ -91,6 +96,22 @@ public class StatStore {
 	}
 
 	/**
+	 * Get the amount of money 
+	 * @return
+	 */
+	public double getCash() {
+		return cash;
+	}
+
+	/**
+	 * Set the amount of money
+	 * @param reward
+	 */
+	public void setCash(double reward) {
+		this.cash = reward;
+	}
+
+	/**
 	 * convert data to a readable format
 	 */
 	@Override
@@ -99,5 +120,5 @@ public class StatStore {
 				player.getName(), type.getDBColumn(), amount);
 	}
 
-	
+		
 }

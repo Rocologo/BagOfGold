@@ -271,8 +271,8 @@ public class LeaderboardCommand implements ICommand, Listener {
 		} else if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("create")) {
 				if (args.length == 2) {
-					for (StatType type : StatType.values()) 
-							items.add(type.translateName().replaceAll(" ", "_"));
+					for (StatType type : StatType.values())
+						items.add(type.translateName().replaceAll(" ", "_"));
 				} else if (args.length == 3) {
 					for (TimePeriod period : TimePeriod.values())
 						items.add(period.translateName().replaceAll(" ", "_"));

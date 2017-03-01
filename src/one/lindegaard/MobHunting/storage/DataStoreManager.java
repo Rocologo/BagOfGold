@@ -46,10 +46,11 @@ public class DataStoreManager {
 	public DataStoreManager(IDataStore store) {
 		mStore = store;
 		mTaskThread = new TaskThread();
-		int savePeriod=MobHunting.getConfigManager().savePeriod;
-		if (savePeriod<1200){
-			savePeriod=1200;
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"[MobHunting][Warning] save-period in your config.yml is too low. Please raise it to 1200 or higher");
+		int savePeriod = MobHunting.getConfigManager().savePeriod;
+		if (savePeriod < 1200) {
+			savePeriod = 1200;
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
+					+ "[MobHunting][Warning] save-period in your config.yml is too low. Please raise it to 1200 or higher");
 		}
 		mStoreThread = new StoreThread(savePeriod);
 	}
@@ -63,25 +64,37 @@ public class DataStoreManager {
 	// **************************************************************************************
 	// PlayerStats
 	// **************************************************************************************
-	public void recordKill(OfflinePlayer player, ExtendedMob mob, boolean bonusMob) {
+	public void recordKill(OfflinePlayer player, ExtendedMob mob, boolean bonusMob, double cash) {
 		synchronized (mWaiting) {
-			mWaiting.add(new StatStore(StatType.fromMobType(mob, true), mob, player));
+			mWaiting.add(new StatStore(StatType.fromMobType(mob, true), mob, player, 1, cash));
 
 			if (bonusMob)
 				mWaiting.add(new StatStore(StatType.fromMobType(
 						new ExtendedMob(MinecraftMob.BonusMob.ordinal(), MobPlugin.Minecraft, "BonusMob"), true), mob,
-						player));
+						player, 1, cash));
 		}
 	}
 
-	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, ExtendedMob mob, boolean bonusMob) {
+	public void recordAssist(OfflinePlayer player, OfflinePlayer killer, ExtendedMob mob, boolean bonusMob,
+			double cash) {
 		synchronized (mWaiting) {
-			mWaiting.add(new StatStore(StatType.fromMobType(mob, false), mob, player));
+			mWaiting.add(new StatStore(StatType.fromMobType(mob, false), mob, player, 1, cash));
 
 			if (bonusMob)
 				mWaiting.add(new StatStore(StatType.fromMobType(
 						new ExtendedMob(MinecraftMob.BonusMob.ordinal(), MobPlugin.Minecraft, "BonusMob"), false), mob,
-						player));
+						player, 1, cash));
+		}
+	}
+
+	public void recordCash(OfflinePlayer player, ExtendedMob mob, boolean bonusMob, double cash) {
+		synchronized (mWaiting) {
+			mWaiting.add(new StatStore(StatType.fromMobType(mob, true), mob, player, 0, cash));
+
+			if (bonusMob)
+				mWaiting.add(new StatStore(StatType.fromMobType(
+						new ExtendedMob(MinecraftMob.BonusMob.ordinal(), MobPlugin.Minecraft, "BonusMob"), true), mob,
+						player, 0, cash));
 		}
 	}
 

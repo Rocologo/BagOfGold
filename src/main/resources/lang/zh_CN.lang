@@ -217,11 +217,14 @@ stats.achievement_count=成就馆
 stats.total=总计
 stats.total_kill=总计 击杀
 stats.total_assist=总计 助攻
+stats.total_cash=Total Coins
 stats.assist=助攻
 stats.assists=Assists
 stats.kill=Kill
 stats.kills=击杀
 stats.both=Both
+stats.cash=Coin
+stats.cashs=Coins
 
 stats.day=Day
 stats.week=Week

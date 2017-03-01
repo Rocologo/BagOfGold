@@ -342,7 +342,8 @@ public class MoneyCommand implements ICommand {
 					double toBeSold = Misc.ceil(Double.valueOf(args[1]));
 					for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 						ItemStack is = player.getInventory().getItem(slot);
-						if (HiddenRewardData.hasHiddenRewardData(is)) {
+						if (HiddenRewardData.hasHiddenRewardData(is) && HiddenRewardData.getHiddenRewardData(is)
+								.getUuid().equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
 							HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 							double saldo = hiddenRewardData.getMoney();
 							if (saldo >= toBeSold) {
@@ -365,6 +366,8 @@ public class MoneyCommand implements ICommand {
 								sold = sold + saldo;
 								toBeSold = toBeSold - saldo;
 							}
+						} else {
+							Messages.debug("player %s tried to sell a head without holding it in his hand", player);
 						}
 					}
 					RewardManager.getEconomy().depositPlayer(player, sold);
