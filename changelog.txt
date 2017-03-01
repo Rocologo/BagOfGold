@@ -1,10 +1,13 @@
+V4.6.1
+* If player kills a mob with price=0, Killstrike will be reset to 0.
 V4.6.0
 * Debug information removed from Head/Money commands/listeners.
 * Added "/mh head drop <mobname>" & "/mh head drop <mobname> <playername>
 * Fixed bug where Bag of gold could not be halfed when kept in the player inventory.
 * Changed Database Layout from V3 to V4, Added new field (CASH) to playerstats.
 * Added new StatTypes TOTAL_CASH, MINECRAFT_CASH, .... to show how much money the player has earned.
-* Shaded bStats.org Metrics into MobHunting. See https://bstats.org/ 
+* Shaded bStats.org Metrics into MobHunting. See https://bstats.org/
+* Added the possibility to add a value/prize on the mob-/player- heads in config.yml, so they eventually can be sold later.
 V4.5.7
 * Support for Factions added. Players does not get any rewards while being in a SafeZone. Can be disabled in config.yml
 * Factions WarZoneMultiplier added. The player get 10% bonus for killing mobs/players in a WarZone. Can be changed in config.yml.
