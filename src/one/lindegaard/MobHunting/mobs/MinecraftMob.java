@@ -756,8 +756,8 @@ public enum MinecraftMob {
 		for (MinecraftMob type : values())
 			if (type.matches(entity))
 				return type;
-		Bukkit.getLogger().severe("[MobHunting] ERROR!!! - Unhandled Entity: " + entity.getName() + "("
-				+ entity.getCustomName() + ") Type:" + entity.getType().toString());
+		//Bukkit.getLogger().severe("[MobHunting] ERROR!!! - Unhandled Entity: " + entity.getName() + "("
+		//		+ entity.getCustomName() + ") Type:" + entity.getType().toString());
 		return null;
 	}
 

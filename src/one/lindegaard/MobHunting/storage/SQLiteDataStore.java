@@ -20,6 +20,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
+import one.lindegaard.MobHunting.util.Misc;
 import one.lindegaard.MobHunting.util.UUIDHelper;
 
 public class SQLiteDataStore extends DatabaseDataStore {
@@ -203,7 +204,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			String exestr = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name" + " from mh_"
 					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
 					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
-					+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count;
+					+ " GROUP BY PLAYER_ID ORDER BY "+(type.getDBColumn().equalsIgnoreCase("total_cash")?"sum(total_cash)":"AMOUNT")+" DESC LIMIT " + count;
 			//Messages.debug("Load str=%s",exestr);
 			ResultSet results = statement.executeQuery(exestr);
 			while (results.next()) {
@@ -266,7 +267,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				}
 				column2="total_cash";
 				int amount = stat.getAmount();
-				double cash = stat.getCash();
+				double cash = Misc.round(stat.getCash());
 				int player_id = getPlayerId(stat.getPlayer());
 				String str = String
 						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d, %5$s = %5$s + %6$f WHERE ID = strftime(\"%%Y%%j\",\"now\")"

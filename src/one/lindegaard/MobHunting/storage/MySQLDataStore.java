@@ -21,6 +21,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
+import one.lindegaard.MobHunting.util.Misc;
 import one.lindegaard.MobHunting.util.UUIDHelper;
 
 public class MySQLDataStore extends DatabaseDataStore {
@@ -167,11 +168,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 		String mobType = type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_"));
 		ArrayList<String> plugins_kill = new ArrayList<String>();
 		ArrayList<String> plugins_assist = new ArrayList<String>();
-		ArrayList<String> plugins_cash = new ArrayList<String>();
+		//ArrayList<String> plugins_cash = new ArrayList<String>();
 		for (MobPlugin p : MobPlugin.values()) {
 			plugins_kill.add(p.name() + "_kill");
 			plugins_assist.add(p.name() + "_assist");
-			plugins_cash.add(p.name() + "_cash");
+			//plugins_cash.add(p.name() + "_cash");
 			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
 				plugin = p;
 				if (type.getDBColumn().indexOf("_") != type.getDBColumn().lastIndexOf("_"))
@@ -218,11 +219,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 		try {
 			Connection mConnection = setupConnection();
 			Statement statement = mConnection.createStatement();
+			String str = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
+					+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
+					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
+					+ " GROUP BY PLAYER_ID ORDER BY "+(type.getDBColumn().equalsIgnoreCase("total_cash")?"sum(total_cash)":"AMOUNT")+" DESC LIMIT " + count;
 			ResultSet results = statement
-					.executeQuery("SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
-							+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
-							+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
-							+ " GROUP BY PLAYER_ID ORDER BY AMOUNT DESC LIMIT " + count);
+					.executeQuery(str);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
 				try {
@@ -266,7 +268,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				}
 				String column2 = "total_cash";
 				int amount = stat.getAmount();
-				double cash = stat.getCash(); 
+				double cash = Misc.round(stat.getCash()); 
 				int player_id = getPlayerId(stat.getPlayer());
 				statement.executeUpdate(
 						String.format(

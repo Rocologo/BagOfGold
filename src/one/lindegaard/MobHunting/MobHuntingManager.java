@@ -1157,58 +1157,65 @@ public class MobHuntingManager implements Listener {
 		Location loc = killed.getLocation();
 
 		// Grinding detection
-		Area detectedGrindingArea = MobHunting.getAreaManager().getGrindingArea(loc);
-		if (detectedGrindingArea == null)
-			detectedGrindingArea = data.getGrindingArea(loc);
-		// Slimes ang magmacubes are except from grinding due to their
-		// splitting
-		// nature
-		if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
-				&& MobHunting.getConfigManager().penaltyGrindingEnable && !killed.hasMetadata("MH:reinforcement")
-				&& !MobHunting.getAreaManager().isWhitelisted(loc)) {
-			Messages.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
-					data.getcDampnerRange());
-			Messages.debug("DampendKills=%s", data.getDampenedKills());
+		if (cash != 0 && !MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
+			Area detectedGrindingArea = MobHunting.getAreaManager().getGrindingArea(loc);
+			if (detectedGrindingArea == null)
+				detectedGrindingArea = data.getGrindingArea(loc);
+			// Slimes ang magmacubes are except from grinding due to their
+			// splitting
+			// nature
+			if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
+					&& MobHunting.getConfigManager().penaltyGrindingEnable && !killed.hasMetadata("MH:reinforcement")
+					&& !MobHunting.getAreaManager().isWhitelisted(loc)) {
+				Messages.debug("Checking if player is grinding mob in the same region within a range of %s blocks",
+						data.getcDampnerRange());
+				Messages.debug("DampendKills=%s", data.getDampenedKills());
 
-			if (detectedGrindingArea != null) {
-				data.lastKillAreaCenter = null;
-				data.setDampenedKills(detectedGrindingArea.count++);
-				if (data.getDampenedKills() == 20) {
-					MobHunting.getAreaManager().registerKnownGrindingSpot(detectedGrindingArea);
-					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
-						Messages.debug("This is a registered grinding spot. Natural drops was removed.");
-						Messages.learn(killer, "This is a registered grinding spot. Natural drops was removed.");
-						cancelNaturalDrops = true;
+				if (detectedGrindingArea != null) {
+					data.lastKillAreaCenter = null;
+					data.setDampenedKills(detectedGrindingArea.count++);
+					if (data.getDampenedKills() == 20) {
+						MobHunting.getAreaManager().registerKnownGrindingSpot(detectedGrindingArea);
+						if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
+							Messages.debug("This is a registered grinding spot. Natural drops was removed.");
+							Messages.learn(killer, "This is a registered grinding spot. Natural drops was removed.");
+							cancelNaturalDrops = true;
+						}
+						if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+							Messages.debug("Trying to remove XP drops");
+							cancelXPDrops = true;
+							event.setDroppedExp(0);
+						}
 					}
-					if (MobHunting.getConfigManager().tryToCancelXPDrops) {
-						Messages.debug("Trying to remove XP drops");
-						cancelXPDrops = true;
-						event.setDroppedExp(0);
-					}
-				}
-			} else {
-				if (data.lastKillAreaCenter != null) {
-					if (loc.getWorld().equals(data.lastKillAreaCenter.getWorld())) {
-						if (loc.distance(data.lastKillAreaCenter) < data.getcDampnerRange()) {
-							if (!MobStackerCompat.isSupported() || (MobStackerCompat.isStackedMob(killed)
-									&& !MobStackerCompat.isGrindingStackedMobsAllowed())) {
-								data.setDampenedKills(data.getDampenedKills() + 1);
-								if (data.getDampenedKills() == 10) {
-									Messages.debug("Detected grinding. Killings too close, adding 1 to DampenedKills.");
-									Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
-									Messages.playerActionBarMessage(killer,
-											ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
-									data.recordGrindingArea();
-									if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
-										Messages.debug("Grinding caused natural drops to be removed.");
-										cancelNaturalDrops = true;
-									}
-									if (MobHunting.getConfigManager().tryToCancelXPDrops) {
-										Messages.debug("Trying to remove XP drops");
-										cancelXPDrops = true;
-										event.setDroppedExp(0);
+				} else {
+					if (data.lastKillAreaCenter != null) {
+						if (loc.getWorld().equals(data.lastKillAreaCenter.getWorld())) {
+							if (loc.distance(data.lastKillAreaCenter) < data.getcDampnerRange()) {
+								if (!MobStackerCompat.isSupported() || (MobStackerCompat.isStackedMob(killed)
+										&& !MobStackerCompat.isGrindingStackedMobsAllowed())) {
+									data.setDampenedKills(data.getDampenedKills() + 1);
+									if (data.getDampenedKills() == 10) {
+										Messages.debug(
+												"Detected grinding. Killings too close, adding 1 to DampenedKills.");
+										Messages.learn(killer,
+												Messages.getString("mobhunting.learn.grindingnotallowed"));
+										Messages.playerActionBarMessage(killer,
+												ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
+										data.recordGrindingArea();
+										if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
+											Messages.debug("Grinding caused natural drops to be removed.");
+											cancelNaturalDrops = true;
+										}
+										if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+											Messages.debug("Trying to remove XP drops");
+											cancelXPDrops = true;
+											event.setDroppedExp(0);
+										}
 									}
 								}
+							} else {
+								data.lastKillAreaCenter = loc.clone();
+								data.setDampenedKills(0);
 							}
 						} else {
 							data.lastKillAreaCenter = loc.clone();
@@ -1218,17 +1225,14 @@ public class MobHuntingManager implements Listener {
 						data.lastKillAreaCenter = loc.clone();
 						data.setDampenedKills(0);
 					}
-				} else {
-					data.lastKillAreaCenter = loc.clone();
-					data.setDampenedKills(0);
 				}
-			}
 
-			if (data.getDampenedKills() > 10 + 4) {
-				if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
-					Messages.playerActionBarMessage(killer,
-							ChatColor.RED + Messages.getString("mobhunting.killstreak.lost"));
-				data.setKillStreak(0);
+				if (data.getDampenedKills() > 10 + 4) {
+					if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
+						Messages.playerActionBarMessage(killer,
+								ChatColor.RED + Messages.getString("mobhunting.killstreak.lost"));
+					data.setKillStreak(0);
+				}
 			}
 		}
 
@@ -1634,11 +1638,14 @@ public class MobHuntingManager implements Listener {
 				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
 		} else if (event.getSpawnReason() != SpawnReason.NATURAL) {
 			// used for TARDISweepingAngels / CustomMobs / MythicMobs
-			ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getEntity());
-			if (mob != null)
-				Messages.debug("%s was spawned with %s", mob.getFriendlyName(), event.getSpawnReason());
-			else
-				Messages.debug("%s was spawned with %s", event.getEntityType(), event.getSpawnReason());
+			// ExtendedMob mob =
+			// MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getEntity());
+			// if (mob != null)
+			// Messages.debug("%s was spawned with %s", mob.getFriendlyName(),
+			// event.getSpawnReason());
+			// else
+			// Messages.debug("%s was spawned with %s", event.getEntityType(),
+			// event.getSpawnReason());
 			// event.getEntity().setMetadata("MH:blocked", new
 			// FixedMetadataValue(MobHunting.getInstance(), true));
 		}
