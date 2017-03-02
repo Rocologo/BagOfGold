@@ -68,9 +68,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			throws SQLException {
 		switch (preparedConnectionType) {
 		case SAVE_PLAYER_STATS: // NOT USED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			mSavePlayerStats = connection.prepareStatement("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s)"
-					+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
-					+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %2$d");
+			mSavePlayerStats = connection.prepareStatement("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s %5$s)"
+					+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d,%6$f)"
+					+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %2$d, %5$s = %5$s + %6$f");
 			// "INSERT IGNORE INTO mh_Daily(ID, MOB_ID, PLAYER_ID)
 			// VALUES(DATE_FORMAT(NOW(), '%Y%j'),?,?);");
 			break;
@@ -271,7 +271,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				statement.executeUpdate(
 						String.format(
 								"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s, %5$s)"
-										+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d)"
+										+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d,%6$f)"
 										+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d, %5$s = %5$s + %6$f",
 								column, mob_id, player_id, amount, column2, cash));
 			}

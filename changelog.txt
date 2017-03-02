@@ -1,5 +1,6 @@
 V4.6.1
 * If player kills a mob with price=0, Killstrike will be reset to 0.
+* Fix MySQL bug (Ticket 179 - https://github.com/Rocologo/MobHunting/issues/179)
 V4.6.0
 * Debug information removed from Head/Money commands/listeners.
 * Added "/mh head drop <mobname>" & "/mh head drop <mobname> <playername>
