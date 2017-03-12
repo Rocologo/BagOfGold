@@ -1,3 +1,6 @@
+V4.6.2
+* Merged some changes made by RoboMWM (https://github.com/Rocologo/MobHunting/pull/184) 
+* Remove "bags of gold" from the rewards.yml file, if location is null. (https://github.com/Rocologo/MobHunting/issues/183), when the plugin loads.
 V4.6.1
 * If player kills a mob with price=0, Killstrike will be reset to 0.
 * Fix MySQL bug (Ticket 179 - https://github.com/Rocologo/MobHunting/issues/179)

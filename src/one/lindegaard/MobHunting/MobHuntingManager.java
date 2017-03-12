@@ -460,8 +460,11 @@ public class MobHuntingManager implements Listener {
 			else if (damager instanceof LivingEntity)
 				mob = (LivingEntity) damager;
 			else if (damager instanceof Projectile) {
-				Messages.debug("%s was killed by a %s shot by %s", killed.getName(), damager.getName(),
-						((Projectile) damager).getShooter().toString());
+				if (((Projectile) damager).getShooter() != null)
+					Messages.debug("%s was killed by a %s shot by %s", killed.getName(), damager.getName(),
+							((Projectile) damager).getShooter().toString());
+				else
+					Messages.debug("%s was killed by a %s", killed.getName(), damager.getName());
 			}
 
 			if (mob != null) {
@@ -542,14 +545,7 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = shooter.getTarget().getLocation().clone();
 					mDamageHistory.put(shooter, info);
 				}
-			} else if (event.getEntity() instanceof Player && !CitizensCompat.isNPC(event.getEntity())) {
-				// OK - Do Nothing. A player can't have a target.
-			} else if (event.getEntity().getShooter() != null) {
-				Messages.debug("WARNING: The arrow was shut from %s, this situation is not handled by MobHunting.",
-						event.getEntity().getShooter().toString());
-			} else {
-				Messages.debug("WARNING: The arrow was shut from %s", event.getEntity());
-			}
+			} 
 		}
 	}
 
@@ -587,16 +583,7 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = wither.getTarget().getLocation().clone();
 					mDamageHistory.put(wither, info);
 				}
-			} else if (event.getEntity() instanceof Player && !CitizensCompat.isNPC(event.getEntity())) {
-				// OK - Do Nothing. A player can't have a target.
-			} else if (event.getEntity().getShooter() != null) {
-				Messages.debug(
-						"WARNING: The fireball was shut from %s, this situation is not handled by MobHunting. Make a ticket for the developer.",
-						event.getEntity().getShooter().toString());
-			} else {
-				// Messages.debug("WARNING: The fireball was shut from %s",
-				// event.getEntity());
-			}
+			} 
 		}
 	}
 
