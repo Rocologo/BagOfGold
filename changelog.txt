@@ -1,3 +1,5 @@
+V4.6.3
+* Changed Creeper, Skeleton, Wither Skeleton, Zombie to be standard Minecraft heads, instead of Playerheads with a skin.
 V4.6.2
 * Merged some changes made by RoboMWM (https://github.com/Rocologo/MobHunting/pull/184) 
 * Remove "bags of gold" from the rewards.yml file, if location is null. (https://github.com/Rocologo/MobHunting/issues/183), when the plugin loads.

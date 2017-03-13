@@ -497,7 +497,7 @@ public enum MinecraftMob {
 		}
 		return 100;
 	}
-	
+
 	/**
 	 * Return the reward money for a given mob
 	 * 
@@ -631,19 +631,18 @@ public enum MinecraftMob {
 		}
 		return 0;
 	}
-	
+
 	private double getPrice(String str) {
 		if (str == null || str.equals("") || str.isEmpty()) {
 			Bukkit.getServer().getConsoleSender()
-					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET
-							+ " The prize for killing a " + mDisplayName
+					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET + " The prize for killing a "
+							+ mDisplayName
 							+ " is not set in config.yml. Please set the prize to 0 or a positive or negative number.");
 			return 0;
 		} else if (str.startsWith(":")) {
 			Bukkit.getServer().getConsoleSender()
-					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET
-							+ " The prize for killing a " + mDisplayName
-							+ " in config.yml has a wrong format. The prize can't start with \":\"");
+					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET + " The prize for killing a "
+							+ mDisplayName + " in config.yml has a wrong format. The prize can't start with \":\"");
 			if (str.length() > 1)
 				return getPrice(str.substring(1, str.length()));
 			else
@@ -756,8 +755,9 @@ public enum MinecraftMob {
 		for (MinecraftMob type : values())
 			if (type.matches(entity))
 				return type;
-		//Bukkit.getLogger().severe("[MobHunting] ERROR!!! - Unhandled Entity: " + entity.getName() + "("
-		//		+ entity.getCustomName() + ") Type:" + entity.getType().toString());
+		// Bukkit.getLogger().severe("[MobHunting] ERROR!!! - Unhandled Entity:
+		// " + entity.getName() + "("
+		// + entity.getCustomName() + ") Type:" + entity.getType().toString());
 		return null;
 	}
 
@@ -773,36 +773,58 @@ public enum MinecraftMob {
 	public ItemStack getHead(String name, double money) {
 		ItemStack skull;
 		switch (this) {
-		/**
-		 * case Skeleton: skull = new ItemStack(Material.SKULL_ITEM, 1, (short)
-		 * 0); break; case WitherSkeleton: skull = new
-		 * ItemStack(Material.SKULL_ITEM, 1, (short) 1); break; case Zombie:
-		 * skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 2); break; case
-		 * PvpPlayer: if (name != null) skull = CustomItems.getPlayerHead(name,
-		 * 0); else skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		 * break; case Creeper: skull = new ItemStack(Material.SKULL_ITEM, 1,
-		 * (short) 4); break;
-		 **/
+		case Skeleton:
+			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
+			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			break;
+
+		case WitherSkeleton:
+			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			break;
+
+		case Zombie:
+			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
+			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			break;
+
+		// case PvpPlayer:
+		// if (name != null)
+		// skull = CustomItems.getPlayerHead(name, 0);
+		// else
+		// skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		// break;
+
+		case Creeper:
+			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
+			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			break;
+
 		case EnderDragon:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
-			ItemMeta skullMeta = skull.getItemMeta();
-			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
-					"Hidden:" + String.valueOf(money), "Hidden:" + UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID),
-					"Hidden:" + UUID.randomUUID())));
-			if (money == 0)
-				skullMeta.setDisplayName(
-						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
-			else
-				skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-						+ mDisplayName + " (" + MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
-
-			skull.setItemMeta(skullMeta);
-
+			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
 			break;
+			
 		default:
 			return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID), name, mTextureValue,
 					mTextureSignature, money, UUID.randomUUID());
 		}
+		return skull;
+	}
+
+	public static ItemStack setDisplayNameAndHiddenLores(ItemStack skull, String mDisplayName, double money) {
+		ItemMeta skullMeta = skull.getItemMeta();
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
+				"Hidden:" + String.valueOf(money), "Hidden:" + UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID),
+				"Hidden:" + UUID.randomUUID())));
+		if (money == 0)
+			skullMeta.setDisplayName(
+					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
+		else
+			skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+					+ mDisplayName + " (" + MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
+
+		skull.setItemMeta(skullMeta);
 		return skull;
 	}
 

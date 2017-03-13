@@ -103,7 +103,7 @@ public class ConfigManager extends AutoConfig {
 				+ "\n\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
 				+ "\nThe player will have the cmd run in {mob-cmd-run-chance} times in average. If mob-cmd-run-chance=0 it"
 				+ "\nwill never run. If f.ex. mob-cmd-run-chance=0.50 and it will run run every second time in average."
-				+ "\nThe mobname-head-prize is only used if you want the dropped heads after killing a mob to have a value."
+				+ "\n\nThe mobname-head-prize is only used if you want the dropped heads after killing a mob to have a value."
 				+ "\nPlease also check the \"dropmoneyonground\" section in this file.");
 
 		setCategoryComment("boss",

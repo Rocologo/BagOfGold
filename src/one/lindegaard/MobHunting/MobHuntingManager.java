@@ -545,7 +545,7 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = shooter.getTarget().getLocation().clone();
 					mDamageHistory.put(shooter, info);
 				}
-			} 
+			}
 		}
 	}
 
@@ -583,7 +583,7 @@ public class MobHuntingManager implements Listener {
 					info.attackerPosition = wither.getTarget().getLocation().clone();
 					mDamageHistory.put(wither, info);
 				}
-			} 
+			}
 		}
 	}
 
@@ -746,7 +746,7 @@ public class MobHuntingManager implements Listener {
 			return;
 		}
 
-		if (killed != null && killed.getType() == EntityType.UNKNOWN) {
+		if (killed != null && (killed.getType() == EntityType.UNKNOWN || killed.getType() == EntityType.ARMOR_STAND)) {
 			return;
 		}
 
@@ -986,15 +986,6 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
-		// There is no reward and no penalty for this kill
-		if (MobHunting.getConfigManager().getBaseKillPrize(killed) == 0
-				&& MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
-			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player", mob.getName(),
-					killed.getEntityId());
-			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", mob.getName()));
-			return;
-		}
-
 		// The Mob/Player has MH:Blocked
 		if (event.getEntity().hasMetadata("MH:blocked")) {
 			if (killed != null) {
@@ -1026,6 +1017,20 @@ public class MobHuntingManager implements Listener {
 				cancelXPDrops = true;
 				event.setDroppedExp(0);
 			}
+			return;
+		}
+
+		// Calculate basic the reward
+		double cash = MobHunting.getConfigManager().getBaseKillPrize(killed);
+		double basic_prize = cash;
+		Messages.debug("Basic Prize=%s for killing a %s", MobHunting.getRewardManager().format(cash), mob.getName());
+
+		// There is no reward and no penalty for this kill
+		if (basic_prize == 0
+				&& MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
+			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player", mob.getName(),
+					killed.getEntityId());
+			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", mob.getName()));
 			return;
 		}
 
@@ -1104,11 +1109,6 @@ public class MobHuntingManager implements Listener {
 								+ Messages.getString("bonus.coverblown.message", "damaged", mob.getName()));
 				}
 			}
-
-		// Calculate basic the reward
-		double cash = MobHunting.getConfigManager().getBaseKillPrize(killed);
-		double basic_prize = cash;
-		Messages.debug("Basic Prize=%s for killing a %s", MobHunting.getRewardManager().format(cash), mob.getName());
 
 		HuntData data = new HuntData(instance);
 		if (killer != null) {
