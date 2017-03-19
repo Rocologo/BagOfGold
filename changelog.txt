@@ -1,7 +1,7 @@
 V4.6.4
 * MobHunting heads with 0 value will now be stacked. 
 * The column TOTAL_CASH will now be auto created if missing in playstat tables:mh_Daily,mh_Weekly,mh_Monthly,mh_Yearly,mh_AllTime
-* Heads protected by WorldGuard can not be broken
+* Heads protected by WorldGuard can not be broken.
 * Heads can't be placed in a protected WorldGuard region
 * Fixed bug: Breaking a MH Head and then placing any skull could recreate (and duplicate the reward) 
 * Fixed bug: Chinese language file was not exported correct if missing
