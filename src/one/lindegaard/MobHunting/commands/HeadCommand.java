@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.MobHunting.rewards.HiddenRewardData;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class HeadCommand implements ICommand, Listener {
@@ -29,6 +31,9 @@ public class HeadCommand implements ICommand, Listener {
 	// /mh head give [toPlayer] [mobname|playername] [displayname] [amount] - to
 	// give a head to a player.
 	// /mh head rename [displayname] - to rename the head holding in the hand.
+	// /mh head drop <head>
+	// /mh head drop <head> <player>
+	// /mh head drop <head> <x> <y> <z> <world>
 
 	@Override
 	public String getName() {
@@ -53,7 +58,10 @@ public class HeadCommand implements ICommand, Listener {
 				ChatColor.GOLD + label + ChatColor.GREEN + " rename [new displayname]" + ChatColor.WHITE
 						+ " - to rename the head in players name",
 				ChatColor.GOLD + label + ChatColor.GREEN + " drop" + " [playername|mobname]" + ChatColor.YELLOW
-						+ " [toPlayername] " + ChatColor.WHITE + " - to drop a head" };
+						+ " [toPlayername] " + ChatColor.WHITE + " - to drop a head",
+				ChatColor.GOLD + label + ChatColor.GREEN + " drop" + " [playername|mobname]" + ChatColor.YELLOW
+						+ " [xpoxs] [ypos] [zpos] [worldname] " + ChatColor.WHITE
+						+ " - to drop a head at the position" };
 	}
 
 	@Override
@@ -142,7 +150,8 @@ public class HeadCommand implements ICommand, Listener {
 						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 					}
 					if (toPlayer.isOnline() && !silent) {
-						((Player) toPlayer).sendMessage("You got a head of " + displayName + ".");
+						((Player) toPlayer).sendMessage(
+								Messages.getString("mobhunting.commands.head.you_got_a_head", "mobname", displayName));
 					}
 
 				}
@@ -177,30 +186,50 @@ public class HeadCommand implements ICommand, Listener {
 		} else if (args.length >= 1 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place")) {
 			// /mh head drop <head>
 			// /mh head drop <head> <player>
+			// /mh head drop <head> <x> <y> <z> <world>
 			if (sender.hasPermission("mobhunting.money.drop")) {
 				// /mh head drop
 				MinecraftMob mob = MinecraftMob.getExtendedMobType(args[1]);
 				if (mob != null) {
+					// double money = mob.getHeadPrize();
+					double money = 0;
 					if (args.length == 2) {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
 						Messages.debug("The head was dropped at %s", location);
-						player.getWorld().dropItem(location, mob.getHead(mob.getName(), 0));
+						player.getWorld().dropItem(location, mob.getHead(mob.getName(), money));
 
-					} else if (args.length == 3 && Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
-						Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
-						Location location = Misc.getTargetBlock(player, 3).getLocation();
-						Messages.debug("The head dropped at %s", location);
-						player.getWorld().dropItem(location, mob.getHead(mob.getName(), 0));
+					} else if (args.length == 3) {
+						if (Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
+							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
+							Location location = Misc.getTargetBlock(player, 3).getLocation();
+							Messages.debug("The head dropped at %s", location);
+							player.getWorld().dropItem(location, mob.getHead(mob.getName(), money));
 
-					} else {
-						sender.sendMessage(ChatColor.RED
-								+ Messages.getString("mobhunting.commands.base.playername-missing", "player", args[2]));
+						} else {
+							sender.sendMessage(ChatColor.RED + Messages
+									.getString("mobhunting.commands.base.playername-missing", "player", args[2]));
+						}
+					} else if ((args.length == 5 || args.length == 6) && args[2].matches("-?\\d+(\\d+)?")
+							&& args[3].matches("-?\\d+(\\d+)?") && args[4].matches("-?\\d+(\\d+)?")) {
+						int xpos = Integer.valueOf(args[2]);
+						int ypos = Integer.valueOf(args[3]);
+						int zpos = Integer.valueOf(args[4]);
+						World world;
+						if (args.length == 6)
+							world = Bukkit.getWorld(args[5]);
+						else if (sender instanceof Player) {
+							world = ((Player) sender).getWorld();
+						} else
+							return false;
+						Location location = new Location(world, xpos, ypos, zpos);
+						ItemStack head = mob.getHead(mob.getName(), money);
+						HiddenRewardData.setDisplayNameAndHiddenLores(head, mob.getName(), money, mob.getPlayerUUID().toString());
+						world.dropItem(location, head);
 					}
 				} else {
 					sender.sendMessage(
 							Messages.getString("mobhunting.commands.head.unknown_name", "playername", args[1]));
-
 				}
 
 			} else {
@@ -256,7 +285,7 @@ public class HeadCommand implements ICommand, Listener {
 				if (player.getName().toLowerCase().startsWith(partial))
 					items.add(player.getName());
 			}
-		} 
+		}
 		return items;
 	}
 

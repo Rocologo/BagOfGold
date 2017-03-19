@@ -1,7 +1,5 @@
 package one.lindegaard.MobHunting.rewards;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -45,6 +43,8 @@ public class RewardListeners implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPickupReward(PlayerPickupItemEvent event) {
 		// This event is NOT called when the inventory is full.
+		if (event.isCancelled())
+			return;
 		Item item = event.getItem();
 		if (item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA)) {
 			HiddenRewardData hiddenRewardData = (HiddenRewardData) item.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA)
@@ -78,11 +78,11 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDropReward(PlayerDropItemEvent event) {
+		if (event.isCancelled())
+			return;
 		Item item = event.getItemDrop();
 		ItemStack is = item.getItemStack();
 		Player player = event.getPlayer();
-		// Messages.debug("%s dropped %s on ground", player.getName(),
-		// is.getType());
 		if (HiddenRewardData.hasHiddenRewardData(is)) {
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 			double money = hiddenRewardData.getMoney();
@@ -94,7 +94,7 @@ public class RewardListeners implements Listener {
 
 			} else {
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-						+ MobHunting.getRewardManager().format(money));
+						+ hiddenRewardData.getDisplayname()+"("+MobHunting.getRewardManager().format(money)+")");
 				RewardManager.getDroppedMoney().put(item.getEntityId(), money);
 				if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency)
 					RewardManager.getEconomy().withdrawPlayer(player, money);
@@ -108,7 +108,6 @@ public class RewardListeners implements Listener {
 					new FixedMetadataValue(MobHunting.getInstance(),
 							new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, money,
 									hiddenRewardData.getUuid(), UUID.randomUUID())));
-			//Messages.debug("Item has hidden MetaData=%s", item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
 		}
 	}
 
@@ -166,6 +165,9 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onDespawnRewardEvent(ItemDespawnEvent event) {
+		if (event.isCancelled())
+			return;
+		
 		if (HiddenRewardData.hasHiddenRewardData(event.getEntity())) {
 			if (RewardManager.getDroppedMoney().containsKey(event.getEntity().getEntityId()))
 				RewardManager.getDroppedMoney().remove(event.getEntity().getEntityId());
@@ -176,6 +178,8 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryPickupRewardEvent(InventoryPickupItemEvent event) {
+		if (event.isCancelled())
+			return;
 		Item item = event.getItem();
 		if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
 			RewardManager.getDroppedMoney().remove(item.getEntityId());
@@ -192,6 +196,9 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMoveOverRewardEvent(PlayerMoveEvent event) {
+		if (event.isCancelled())
+			return;
+		
 		Player player = event.getPlayer();
 		if (player.getInventory().firstEmpty() == -1 && !player.getCanPickupItems()
 				&& !RewardManager.getDroppedMoney().isEmpty()) {
@@ -220,8 +227,6 @@ public class RewardListeners implements Listener {
 										MobHunting.getRewardManager().format(hiddenRewardDataOnGround.getMoney())));
 							} else {
 								int slot = player.getInventory().first(Material.SKULL_ITEM);
-								// Messages.debug("%s has a Bag of Gold in slot
-								// %s", player.getName(), slot);
 								if (slot != -1) {
 									ItemStack is = player.getInventory().getItem(slot);
 									if (HiddenRewardData.hasHiddenRewardData(is)) {
@@ -270,70 +275,59 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onRewardBlockPlace(BlockPlaceEvent event) {
+		if (event.isCancelled())
+			return;
+		
 		ItemStack is = event.getItemInHand();
 		Block block = event.getBlockPlaced();
-		// Messages.debug("%s placed a %s on a %s while holding %s",
-		// event.getPlayer().getName(), block.getType(),
-		// event.getBlockAgainst().getType(), is.getType());
 		if (HiddenRewardData.hasHiddenRewardData(is)) {
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+			if (hiddenRewardData.getMoney()==0)
+				hiddenRewardData.setUniqueId(UUID.randomUUID());
+			Messages.debug("Placed block-reward:%s", hiddenRewardData.toString());
 			block.setMetadata(RewardManager.MH_HIDDEN_REWARD_DATA,
 					new FixedMetadataValue(MobHunting.getInstance(), hiddenRewardData));
 			RewardManager.getLocations().put(hiddenRewardData.getUniqueId(), hiddenRewardData);
 			RewardManager.getHiddenRewardData().put(hiddenRewardData.getUniqueId(), block.getLocation());
-			//Messages.debug("HiddenRewardData added=%s",
-			//		((HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value())
-			//				.getHiddenLore());
 			RewardManager.saveReward(hiddenRewardData.getUniqueId());
-		} //else {
-		//	Messages.debug("%s has no hidden data", is.getType());
-		//}
+		} 
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onRewardBlockBreak(BlockBreakEvent event) {
-		// Messages.debug("%s broke a %s", event.getPlayer().getName(),
-		// event.getBlock().getType());
-		// Messages.debug("Block has Metadata=%s",
-		// event.getBlock().hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA));
+		if (event.isCancelled())
+			return;
+		
 		Block block = event.getBlock();
 		if (HiddenRewardData.hasHiddenRewardData(block)) {
 			event.setCancelled(true);
 			block.setType(Material.AIR);
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(block);
+			block.removeMetadata(RewardManager.MH_HIDDEN_REWARD_DATA, MobHunting.getInstance());
 			ItemStack is;
 			if (hiddenRewardData.getUuid().toString().equalsIgnoreCase(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)) {
 				is = CustomItems.getCustomtexture(hiddenRewardData.getUuid(), hiddenRewardData.getDisplayname(),
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
 						hiddenRewardData.getMoney(), hiddenRewardData.getUniqueId());
-				//Messages.debug("Bag of gold: Lore=%s", hiddenRewardData.getHiddenLore());
 			} else { // (hiddenRewardData.getUuid()toString().equals(RewardManager.MH_REWARD_HEAD_UUID)){
 				// Is it an EnderDragon
-				if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getDisplayName())) {
+				if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Skeleton.getDisplayName())) 
+					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.WitherSkeleton.getDisplayName())) 
+					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Zombie.getDisplayName())) 
+					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Creeper.getDisplayName())) 
+					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getDisplayName())) 
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
-					ItemMeta skullMeta = is.getItemMeta();
-					skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + hiddenRewardData.getDisplayname(),
-							"Hidden:" + String.valueOf(hiddenRewardData.getMoney()),
-							"Hidden:" + UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID),
-							"Hidden:" + UUID.randomUUID())));
-					if (hiddenRewardData.getMoney() == 0)
-						skullMeta.setDisplayName(
-								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-										+ hiddenRewardData.getDisplayname());
-					else
-						skullMeta.setDisplayName(
-								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-										+ hiddenRewardData.getDisplayname() + " (" + MobHunting.getRewardManager()
-												.format(Double.valueOf(hiddenRewardData.getMoney()))
-										+ " )");
-					is.setItemMeta(skullMeta);
-				} else
+				else
 					is = CustomItems.getCustomtexture(hiddenRewardData.getUuid(), hiddenRewardData.getDisplayname(),
 							MinecraftMob.getTexture(hiddenRewardData.getDisplayname()),
 							MinecraftMob.getSignature(hiddenRewardData.getDisplayname()), hiddenRewardData.getMoney(),
 							hiddenRewardData.getUniqueId());
-				//Messages.debug("Head: Lore=%s", hiddenRewardData.getHiddenLore());
+				is = HiddenRewardData.setDisplayNameAndHiddenLores(is, hiddenRewardData.getDisplayname(), hiddenRewardData.getMoney(), RewardManager.MH_REWARD_HEAD_UUID);
 			}
 			Item item = block.getWorld().dropItemNaturally(block.getLocation(), is);
 			if (hiddenRewardData.getMoney() == 0)
@@ -350,11 +344,15 @@ public class RewardListeners implements Listener {
 			if (RewardManager.getHiddenRewardData().containsKey(hiddenRewardData.getUniqueId()))
 				RewardManager.getHiddenRewardData().remove(hiddenRewardData.getUniqueId());
 		}
+
 	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryClickReward(InventoryClickEvent event) {
+		if (event.isCancelled())
+			return;
+		
 		// Inventory inv = event.getClickedInventory();
 		InventoryAction action = event.getAction();
 		// ClickType clickType = event.getClick();
@@ -387,8 +385,7 @@ public class RewardListeners implements Listener {
 				&& action == InventoryAction.PICKUP_HALF) {
 			if (HiddenRewardData.hasHiddenRewardData(isCurrentSlot)) {
 				HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(isCurrentSlot);
-				if (hiddenRewardData.getUuid().toString()
-						.equals(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)) {
+				if (hiddenRewardData.getUuid().toString().equals(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)) {
 					ItemMeta imCurrentSlot = isCurrentSlot.getItemMeta();
 					double money = new HiddenRewardData(imCurrentSlot.getLore()).getMoney() / 2;
 					if (Misc.floor(money) >= MobHunting.getConfigManager().minimumReward) {

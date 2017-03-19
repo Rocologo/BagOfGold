@@ -1,14 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<!-- <version>4.6.2</version> -->
-	<version>4.6.2-SNAPSHOT-B${build.number}</version>
+	<version>4.6.4</version>
+	<!-- <version>4.6.4-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>4.6.4-SNAPSHOT-B005</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
+	<scm>
+		<connection>scm:svn:https://github.com/Rocologo/MobHunting.git</connection>
+		<developerConnection>scm:svn:https://github.com/Rocologo/MobHunting.git</developerConnection>
+		<url>http://127.0.0.1/dummy</url>
+	</scm>
+	<organization>
+		<name>Rocologo</name>
+		<url>https://fractal.lindegaard.one</url>
+	</organization>
+
+
+	<!-- ********************************************************************** -->
+	<!-- ***************************** Properties ***************************** -->
+	<!-- ********************************************************************** -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
@@ -64,25 +80,13 @@
 		<factions.jar.version>Factions-2.10.0.jar</factions.jar.version>
 	</properties>
 
-	<organization>
-		<name>Rocologo</name>
-		<url>https://fractal.lindegaard.one</url>
-	</organization>
-
-	<scm>
-		<connection>scm:svn:https://github.com/Rocologo/MobHunting.git</connection>
-		<developerConnection>scm:svn:https://github.com/Rocologo/MobHunting.git</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://127.0.0.1/dummy</url>
-	</scm>
 
 	<!-- ********************************************************************** -->
 	<!-- ******************************** Build ******************************* -->
 	<!-- ********************************************************************** -->
 	<build>
-		<defaultGoal>clean install</defaultGoal>
-		<directory>${basedir}/target</directory>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
+		<defaultGoal>clean install</defaultGoal>
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
@@ -98,7 +102,7 @@
 				<directory>${basedir}/src/main/resources/lang</directory>
 			</resource>
 		</resources>
-
+		<directory>${basedir}/target</directory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -125,18 +129,10 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
-				<version>${mavenShadePlugin.version}</version> <configuration> <finalName>${project.name}</finalName> 
-				<minimizeJar>true</minimizeJar> <createDependencyReducedPom>false</createDependencyReducedPom> 
-				<artifactSet> <includes> <include>org.mcstats.bukkit:metrics</include> </includes> 
-				</artifactSet> <relocations> <relocation> <pattern>org.mcstats</pattern> 
-				<shadedPattern>one.lindegaard.MobHunting</shadedPattern> </relocation> </relocations> 
-				</configuration> <executions> <execution> <phase>clean package</phase> <goals> 
-				<goal>shade</goal> </goals> </execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>org.jfrog.buildinfo</groupId>
 				<artifactId>artifactory-maven-plugin</artifactId>
-				<version>2.2.1</version>
+				<version>2.6.1</version>
 				<inherited>false</inherited>
 			</plugin>
 			<plugin>
@@ -152,7 +148,6 @@
 					<relocations>
 						<relocation>
 							<pattern>org.bstats</pattern>
-							<!-- Replace this with your package! -->
 							<shadedPattern>one.lindegaard.MobHunting</shadedPattern>
 						</relocation>
 					</relocations>
@@ -166,19 +161,27 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Shade mcstats.org -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
+				<version>${mavenShadePlugin.version}</version> <configuration> <finalName>${project.name}</finalName> 
+				<minimizeJar>true</minimizeJar> <createDependencyReducedPom>false</createDependencyReducedPom> 
+				<artifactSet> <includes> <include>org.mcstats.bukkit:metrics</include> </includes> 
+				</artifactSet> <relocations> <relocation> <pattern>org.mcstats</pattern> 
+				<shadedPattern>one.lindegaard.MobHunting</shadedPattern> </relocation> </relocations> 
+				</configuration> <executions> <execution> <phase>clean package</phase> <goals> 
+				<goal>shade</goal> </goals> </execution> </executions> </plugin> -->
 		</plugins>
 	</build>
+
 
 	<!-- ********************************************************************** -->
 	<!-- **************************** Repositories **************************** -->
 	<!-- ********************************************************************** -->
 	<repositories>
+		<!-- MobHunhting repository -->
 		<repository>
 			<id>MobHunting-Repository</id>
 			<name>mobhunting-snapshots</name>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
 			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshots-local</url>
 		</repository>
 
@@ -206,12 +209,6 @@
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
 
-		<!--MD5 / mcMMO -->
-		<repository>
-			<id>md-5-public</id>
-			<url>http://repo.md-5.net/content/groups/public/</url>
-		</repository>
-
 		<!-- dmulloy2 repository / ProtocolLib -->
 		<repository>
 			<id>dmulloy2-repo</id>
@@ -221,13 +218,7 @@
 		<!-- mypet repository -->
 		<repository>
 			<id>mypet-repo1</id>
-			<url>https://nexus.keyle.de/content/groups/public/</url>
-		</repository>
-
-		<!-- LibsDisguises -->
-		<repository>
-			<id>libsdisguises-repo</id>
-			<url>http://repo.md-5.net/content/repositories/public/</url>
+			<url>http://repo.keyle.de/</url>
 		</repository>
 
 		<!-- BattleArena -->
@@ -241,12 +232,6 @@
 		<repository>
 			<id>minigameslib-repo</id>
 			<url>http://nexus.xworlds.eu/nexus/content/repositories/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
 		</repository>
 
 		<!-- BossBarAPI -->
@@ -277,16 +262,11 @@
 		<repository>
 			<id>addstar-snapshot-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
 		</repository>
 
-
 		<!-- md5 repository -->
+		<!-- mcMMO -->
+		<!-- LibsDisguises -->
 		<repository>
 			<id>md5-repo</id>
 			<url>http://repo.md-5.net/content/repositories/public/</url>
@@ -299,6 +279,7 @@
 		</repository>
 
 	</repositories>
+
 
 	<!-- ********************************************************************** -->
 	<!-- **************************** Dependencies **************************** -->
@@ -340,12 +321,14 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
 			your class path. -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- WorldEdit -->
@@ -421,6 +404,12 @@
 			<artifactId>bossbarapi</artifactId>
 			<version>${bossbarapi.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>metrics-lite</artifactId>
+					<groupId>org.mcstats.bukkit</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- BarAPI -->
@@ -670,9 +659,12 @@
 
 	</dependencies>
 
+
+	<!-- ********************************************************************** -->
+	<!-- ********************** Dependency Management ************************* -->
+	<!-- ********************************************************************** -->
 	<dependencyManagement>
 		<dependencies>
-
 			<!-- XLF4J Logging -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -689,6 +681,10 @@
 		</dependencies>
 	</dependencyManagement>
 
+
+	<!-- ********************************************************************** -->
+	<!-- ******************** Distribution Management ************************* -->
+	<!-- ********************************************************************** -->
 	<distributionManagement>
 		<repository>
 			<id>central</id>

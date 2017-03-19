@@ -1593,7 +1593,7 @@ public class MobHuntingManager implements Listener {
 			return;
 
 		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getLocation().getWorld())
-				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getEntity()) <= 0
+				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getEntity()) == 0
 						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getEntity()).equals(""))
 				|| event.getSpawnReason() != SpawnReason.NATURAL)
 			return;

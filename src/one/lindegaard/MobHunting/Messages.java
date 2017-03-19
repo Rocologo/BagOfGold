@@ -51,20 +51,11 @@ public class Messages {
 		for (String source : sources) {
 			File dest = new File(folder, source);
 			if (!dest.exists()) {
-				if (plugin.getResource(source) != null) {
-					Bukkit.getLogger().info(PREFIX + " Creating language file " + source + " from JAR.");
-					plugin.saveResource("lang/" + source, false);
-				} else {
-					Bukkit.getLogger().info(PREFIX + " Language file " + source + " does not exist in JAR.");
-					setLanguage(source);
-				}
-			}
-			if (dest.exists()) {
+				// if (plugin.getResource("lang/" + source) != null) {
+				Bukkit.getLogger().info(PREFIX + " Creating language file " + source + " from JAR.");
+				plugin.saveResource("lang/" + source, false);
+			} else {
 				if (!injectChanges(plugin.getResource("lang/" + source),
-						new File(plugin.getDataFolder(), "lang/" + source))) {
-					plugin.saveResource("lang/" + source, true);
-				}
-				if (!source.equalsIgnoreCase("en_US.lang") && !injectChanges(plugin.getResource("lang/en_US.lang"),
 						new File(plugin.getDataFolder(), "lang/" + source))) {
 					plugin.saveResource("lang/" + source, true);
 				}
@@ -151,7 +142,7 @@ public class Messages {
 					if (!dest.containsKey(k)) {
 						Bukkit.getLogger().info(
 								PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
-							newEntries.put(k, key.getValue().getName());
+						newEntries.put(k, key.getValue().getName());
 					}
 				}
 
@@ -502,8 +493,7 @@ public class Messages {
 		return sortedHashMap;
 	}
 
-	private static boolean isEmpty(String message)
-	{
+	private static boolean isEmpty(String message) {
 		message = ChatColor.stripColor(message);
 		return message.isEmpty();
 	}

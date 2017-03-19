@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -271,7 +272,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				double cash = Misc.round(stat.getCash()); 
 				int player_id = getPlayerId(stat.getPlayer());
 				statement.executeUpdate(
-						String.format(
+						String.format(Locale.US,
 								"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s, %5$s)"
 										+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d,%6$f)"
 										+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d, %5$s = %5$s + %6$f",
@@ -415,7 +416,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				if (updateStringBuilder.length() != 0)
 					updateStringBuilder.append(", ");
 
-				updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
+				updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
 			}
 
 			String updateString = updateStringBuilder.toString();
@@ -1106,9 +1107,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// modify the Daily table, and the rest will happen automatically
 			StringBuilder updateStringBuilder = new StringBuilder();
 
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
 
 			String updateString = updateStringBuilder.toString();
 
@@ -1305,10 +1306,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// modify the Daily table, and the rest will happen automatically
 			StringBuilder updateStringBuilder = new StringBuilder();
 
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
 
 			String updateString = updateStringBuilder.toString();
 

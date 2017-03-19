@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -270,7 +271,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				double cash = Misc.round(stat.getCash());
 				int player_id = getPlayerId(stat.getPlayer());
 				String str = String
-						.format("UPDATE mh_Daily SET %1$s = %1$s + %2$d, %5$s = %5$s + %6$f WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+						.format(Locale.US,"UPDATE mh_Daily SET %1$s = %1$s + %2$d, %5$s = %5$s + %6$f WHERE ID = strftime(\"%%Y%%j\",\"now\")"
 								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id, column2, cash);
 				//Messages.debug("Save Str=%s", str);
 				statement.addBatch(str);
@@ -378,7 +379,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (updateStringBuilder.length() != 0)
 				updateStringBuilder.append(", ");
 
-			updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
+			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
 		}
 
 		String updateString = updateStringBuilder.toString();
@@ -1109,9 +1110,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// the Daily table, and the rest will happen automatically
 		StringBuilder updateStringBuilder = new StringBuilder();
 
-		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
+		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
 
 		String updateString = updateStringBuilder.toString();
 
@@ -1282,10 +1283,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// the Daily table, and the rest will happen automatically
 		StringBuilder updateStringBuilder = new StringBuilder();
 
-		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
-		updateStringBuilder.append(String.format("%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
+		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
+		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
 
 		String updateString = updateStringBuilder.toString();
 

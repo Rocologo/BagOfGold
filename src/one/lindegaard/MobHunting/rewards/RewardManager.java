@@ -181,7 +181,7 @@ public class RewardManager implements Listener {
 					ConfigurationSection section = config.createSection(uuid.toString());
 					section.set("location", location);
 					hiddenRewardData.save(section);
-					Messages.debug("Saving Placed reward.");
+					Messages.debug("Saving a reward placed as a block.");
 					config.save(file);
 				}
 			}
@@ -212,7 +212,7 @@ public class RewardManager implements Listener {
 				HiddenRewardData hiddenRewardData = new HiddenRewardData();
 				hiddenRewardData.read(section);
 				Location location = (Location) section.get("location");
-				if (location!=null && location.getBlock().getType() == Material.SKULL) {
+				if (location != null && location.getBlock().getType() == Material.SKULL) {
 					location.getBlock().setMetadata(MH_HIDDEN_REWARD_DATA,
 							new FixedMetadataValue(MobHunting.getInstance(), new HiddenRewardData(hiddenRewardData)));
 					placedMoney_hiddenRewardData.put(UUID.fromString(key), hiddenRewardData);
@@ -230,14 +230,14 @@ public class RewardManager implements Listener {
 		try {
 
 			if (deleted > 0) {
-				Messages.debug("Deleted %s rewards from rewards.yml", deleted);
+				Messages.debug("Deleted %s rewards from the rewards.yml file", deleted);
 				File file_copy = new File(MobHunting.getInstance().getDataFolder(), "rewards.yml.old");
 				Files.copy(file.toPath(), file_copy.toPath(), StandardCopyOption.COPY_ATTRIBUTES,
 						StandardCopyOption.REPLACE_EXISTING);
 				config.save(file);
 			}
 			if (n > 0) {
-				Messages.debug("Loaded %s \"bags of gold\" from disk.", n);
+				Messages.debug("Loaded %s rewards from the rewards.yml file", n);
 			}
 
 		} catch (IOException e) {

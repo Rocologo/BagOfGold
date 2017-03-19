@@ -1,7 +1,5 @@
 package one.lindegaard.MobHunting.mobs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -14,11 +12,11 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.rewards.CustomItems;
+import one.lindegaard.MobHunting.rewards.HiddenRewardData;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.util.Misc;
 
@@ -775,17 +773,17 @@ public enum MinecraftMob {
 		switch (this) {
 		case Skeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
-			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
 			break;
 
 		case WitherSkeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
-			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
 			break;
 
 		case Zombie:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
-			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
 			break;
 
 		// case PvpPlayer:
@@ -797,34 +795,18 @@ public enum MinecraftMob {
 
 		case Creeper:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
 			break;
 
 		case EnderDragon:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
-			skull = setDisplayNameAndHiddenLores(skull, mDisplayName, money);
+			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
 			break;
-			
+
 		default:
 			return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID), name, mTextureValue,
 					mTextureSignature, money, UUID.randomUUID());
 		}
-		return skull;
-	}
-
-	public static ItemStack setDisplayNameAndHiddenLores(ItemStack skull, String mDisplayName, double money) {
-		ItemMeta skullMeta = skull.getItemMeta();
-		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
-				"Hidden:" + String.valueOf(money), "Hidden:" + UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID),
-				"Hidden:" + UUID.randomUUID())));
-		if (money == 0)
-			skullMeta.setDisplayName(
-					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
-		else
-			skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-					+ mDisplayName + " (" + MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
-
-		skull.setItemMeta(skullMeta);
 		return skull;
 	}
 

@@ -1374,7 +1374,7 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	// #####################################################################################
-	// PVP Propality
+	// PVP 
 	// #####################################################################################
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
 	public boolean pvpAllowed = true;
@@ -1391,8 +1391,7 @@ public class ConfigManager extends AutoConfig {
 	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
 	@ConfigField(name = "pvp-kill-cmd-run-chance", category = "pvp", comment = "This is the chance for running the command. 1 = 100% (each time the player is killed), 0.5 ~ 50% and 0.001 = 0.1% (very rare) ")
 	public double pvpKillCmdRunChance = 0.5;
-	@ConfigField(name = "pvp-head-prize", category = "pvp", comment = "The Head prize can be a number to steal x dollars from the killed player,"
-			+ "\nor it can be a cut in percent of his balance.")
+	@ConfigField(name = "pvp-head-prize", category = "pvp", comment = "The Head price if you want playerheads to have a value like the bag of gold.")
 	public String pvpHeadPrize = "10";
 
 	// #####################################################################################
@@ -2070,8 +2069,8 @@ public class ConfigManager extends AutoConfig {
 				}
 			}
 		}
-		Messages.debug("Mobhunting could not find the prize for killing this mob: %s (%s)",
-				ExtendedMobManager.getMobName(mob), mob.getType());
+		//Messages.debug("Mobhunting could not find the prize for killing this mob: %s (%s)",
+		//		ExtendedMobManager.getMobName(mob), mob.getType());
 		return 0;
 	}
 

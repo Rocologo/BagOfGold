@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting;
 
 import java.io.File;
-import java.util.UUID;
 
 import one.lindegaard.MobHunting.achievements.*;
 import one.lindegaard.MobHunting.bounty.BountyManager;

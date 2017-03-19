@@ -1,5 +1,14 @@
+V4.6.4
+* MobHunting heads with 0 value will now be stacked. 
+* The column TOTAL_CASH will now be auto created if missing in playstat tables:mh_Daily,mh_Weekly,mh_Monthly,mh_Yearly,mh_AllTime
+* Heads protected by WorldGuard can not be broken
+* Heads can't be placed in a protected WorldGuard region
+* Fixed bug: Breaking a MH Head and then placing any skull could recreate (and duplicate the reward) 
+* Fixed bug: Chinese language file was not exported correct if missing
+* Hidden Lores is now effectively removed if you use ProtocolLib 
 V4.6.3
 * Changed Creeper, Skeleton, Wither Skeleton, Zombie to be standard Minecraft heads, instead of Playerheads with a skin.
+* Fix MYSQL bug where float numbers (1.234) was interpreted as (1,234) which intruduced and SQL error because of the "," (https://www.spigotmc.org/threads/mobhunting.46937/page-114#post-2302529)
 V4.6.2
 * Merged some changes made by RoboMWM (https://github.com/Rocologo/MobHunting/pull/184) 
 * Remove "bags of gold" from the rewards.yml file, if location is null. (https://github.com/Rocologo/MobHunting/issues/183), when the plugin loads.

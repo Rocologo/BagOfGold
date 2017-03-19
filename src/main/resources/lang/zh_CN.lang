@@ -135,6 +135,7 @@ mobhunting.commands.head.description=Give a player or mob head to a player
 mobhunting.commands.head.online=${playername} is not online. You can only give heads to online players.
 mobhunting.commands.head.unknown_name=${playername} is unknown.
 mobhunting.commands.head.headmustbeinhand=You can only rename a head when you have it in your hand.
+mobhunting.commands.head.you_got_a_head=You got a head of a ${mobname}
 mobhunting.commands.leaderboard.description=Creates, edits and deletes leaderboards
 mobhunting.commands.leaderboard.list.header= &7----- ${count} &aLeaderboards: &7-----
 mobhunting.commands.leaderboard.list.format= ${leaderboard}&7: ${type} &7for ${period}

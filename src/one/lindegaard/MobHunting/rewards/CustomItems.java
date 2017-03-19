@@ -4,11 +4,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.ChatColor;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -55,6 +55,8 @@ public class CustomItems {
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;
 
+		// skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull,
+		// mDisplayName, money, mPlayerUUID.toString());
 		ItemMeta skullMeta = skull.getItemMeta();
 
 		GameProfile profile = new GameProfile(mPlayerUUID, mDisplayName);
@@ -76,8 +78,9 @@ public class CustomItems {
 			e.printStackTrace();
 		}
 
-		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
-				"Hidden:" + String.valueOf(money), "Hidden:" + mPlayerUUID, "Hidden:" + uniqueRewardUuid)));
+		skullMeta.setLore(new ArrayList<String>(
+				Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.valueOf(money),
+						"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid)));
 		if (money == 0)
 			skullMeta.setDisplayName(
 					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);

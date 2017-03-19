@@ -226,19 +226,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Bukkit.getLogger().info("[MobHunting] Database version " + MobHunting.getConfigManager().databaseVersion
 						+ " detected.");
 				setupV4Tables(mConnection);
+				migrateDatabaseLayoutFromV3ToV4(mConnection);
 				setupTriggerV4(mConnection);
 				break;
-			// default: // not needed
-			// Bukkit.getLogger().info("[MobHunting] Database version " +
-			// MobHunting.getConfigManager().databaseVersion
-			// + " detected.");
-			// setupV3Tables(mConnection);
-			// migrateDatabaseLayoutFromV2toV3(mConnection);
-			// migrate_mh_PlayersFromV2ToV3(mConnection);
-			// createRandomBountyPlayer(mConnection);
-			// setupTriggerV3(mConnection);
-			// MobHunting.getConfigManager().databaseVersion = 3;
-			// MobHunting.getConfigManager().saveConfig();
 			}
 
 			// Enable FOREIGN KEY for Sqlite database
@@ -556,14 +546,36 @@ public abstract class DatabaseDataStore implements IDataStore {
 				ResultSet rs = statement.executeQuery("SELECT TOTAL_CASH from mh_Daily LIMIT 0");
 				rs.close();
 			} catch (SQLException e) {
-				System.out.println(
-						"[MobHunting] Adding TOTAL_CASH to Player Statistics Tables in the MobHunting Database.");
 				statement.executeUpdate("alter table `mh_Daily` add column `TOTAL_CASH` REAL NOT NULL DEFAULT 0");
+				System.out.println("[MobHunting] TOTAL_CASH added to mh_Daily.");
+			}
+			try {
+				ResultSet rs = statement.executeQuery("SELECT TOTAL_CASH from mh_Weekly LIMIT 0");
+				rs.close();
+			} catch (SQLException e) {
 				statement.executeUpdate("alter table `mh_Weekly` add column `TOTAL_CASH` REAL NOT NULL DEFAULT 0");
+				System.out.println("[MobHunting] TOTAL_CASH added to mh_Weekly.");
+			}
+			try {
+				ResultSet rs = statement.executeQuery("SELECT TOTAL_CASH from mh_Monthly LIMIT 0");
+				rs.close();
+			} catch (SQLException e) {
 				statement.executeUpdate("alter table `mh_Monthly` add column `TOTAL_CASH` REAL NOT NULL DEFAULT 0");
+				System.out.println("[MobHunting] TOTAL_CASH added to mh_Monthly.");
+			}
+			try {
+				ResultSet rs = statement.executeQuery("SELECT TOTAL_CASH from mh_Yearly LIMIT 0");
+				rs.close();
+			} catch (SQLException e) {
 				statement.executeUpdate("alter table `mh_Yearly` add column `TOTAL_CASH` REAL NOT NULL DEFAULT 0");
+				System.out.println("[MobHunting] TOTAL_CASH added to mh_Yearly.");
+			}
+			try {
+				ResultSet rs = statement.executeQuery("SELECT TOTAL_CASH from mh_AllTime LIMIT 0");
+				rs.close();
+			} catch (SQLException e) {
 				statement.executeUpdate("alter table `mh_AllTime` add column `TOTAL_CASH` REAL NOT NULL DEFAULT 0");
-				System.out.println("[MobHunting] TOTAL_CASH added to the database.");
+				System.out.println("[MobHunting] TOTAL_CASH added to mh_AllTime.");
 			}
 			statement.close();
 			mConnection.commit();
