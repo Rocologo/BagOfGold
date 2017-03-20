@@ -75,6 +75,7 @@ import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
+import one.lindegaard.MobHunting.compatibility.TownyCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
@@ -798,7 +799,30 @@ public class MobHuntingManager implements Listener {
 				Player player = killer != null ? killer : MyPetCompat.getMyPetOwner(killer);
 				if (FactionsCompat.isInSafeZone(player)) {
 					Messages.debug("KillBlocked:(2) %s is hiding in Factions SafeZone", player.getName());
-					Messages.learn(killer, Messages.getString("mobhunting.learn.factions-safezone"));
+					Messages.learn(killer, Messages.getString("mobhunting.learn.factions-no-rewards-in-safezone"));
+					if (MobHunting.getConfigManager().disableNaturallyRewardsInHomeTown) {
+						Messages.debug("Trying to remove natural drops");
+						cancelNaturalDrops = true;
+						event.getDrops().clear();
+					}
+					if (MobHunting.getConfigManager().disableNaturallyRewardsInHomeTown) {
+						Messages.debug("Trying to remove XP drops");
+						cancelXPDrops = true;
+						event.setDroppedExp(0);
+					}
+					return;
+				}
+			}
+		}
+
+		// Towny Compatibility - no reward when player are in a protected town
+		if (TownyCompat.isSupported()) {
+			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
+				Player player = killer != null ? killer : MyPetCompat.getMyPetOwner(killer);
+				Messages.debug("Test if player is in a Towny safezone");
+				if (MobHunting.getConfigManager().disableRewardsInHomeTown && TownyCompat.isInHomeTome(player)) {
+					Messages.debug("KillBlocked:(2) %s is hiding in his home town", player.getName());
+					Messages.learn(killer, Messages.getString("mobhunting.learn.towny-no-rewards-in-home-town"));
 					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 						Messages.debug("Trying to remove natural drops");
 						cancelNaturalDrops = true;
@@ -1026,8 +1050,7 @@ public class MobHuntingManager implements Listener {
 		Messages.debug("Basic Prize=%s for killing a %s", MobHunting.getRewardManager().format(cash), mob.getName());
 
 		// There is no reward and no penalty for this kill
-		if (basic_prize == 0
-				&& MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
+		if (basic_prize == 0 && MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
 			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player", mob.getName(),
 					killed.getEntityId());
 			Messages.learn(killer, Messages.getString("mobhunting.learn.no-reward", "killed", mob.getName()));

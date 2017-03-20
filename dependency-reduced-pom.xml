@@ -4,7 +4,7 @@
   <groupId>one.lindegaard</groupId>
   <artifactId>MobHunting</artifactId>
   <name>MobHunting</name>
-  <version>4.6.4-SNAPSHOT-B004</version>
+  <version>4.6.5</version>
   <description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
   <url>http://dev.bukkit.org/server-mods/mobhunting/</url>
   <scm>
@@ -575,6 +575,13 @@
       <scope>system</scope>
       <systemPath>/home/christian/ownCloud/Development/WorkspaceMinecraft/MobHunting/lib/Factions-2.10.0.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>com.palmergames</groupId>
+      <artifactId>Towny</artifactId>
+      <version>0.91.4.2</version>
+      <scope>system</scope>
+      <systemPath>/home/christian/ownCloud/Development/WorkspaceMinecraft/MobHunting/lib/Towny-0.91.4.2.jar</systemPath>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
@@ -613,6 +620,7 @@
     <libsdisguises.version>9.1.1</libsdisguises.version>
     <mobarena.jar.version>MobArena0.97.1.jar</mobarena.jar.version>
     <minigameslib.version>1.14.14</minigameslib.version>
+    <towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
     <minigames.version>1.9.0-SNAPSHOT</minigames.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <PvpArena.jar.version>pvparena.jar</PvpArena.jar.version>

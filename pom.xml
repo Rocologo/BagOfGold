@@ -5,9 +5,9 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.6.4</version>
-	<!-- <version>4.6.4-SNAPSHOT-B${build.number}</version> -->
-	<!-- <version>4.6.4-SNAPSHOT-B005</version> -->
+	<version>4.6.5</version>
+	<!-- <version>4.6.5-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>4.6.5-SNAPSHOT-B007</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -78,6 +78,7 @@
 		<MysteriousHalloween.jar.version>MysteriousHalloween-1.3.2.jar</MysteriousHalloween.jar.version>
 		<massivecore.jar.version>MassiveCore-2.10.0.jar</massivecore.jar.version>
 		<factions.jar.version>Factions-2.10.0.jar</factions.jar.version>
+		<towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
 	</properties>
 
 
@@ -655,6 +656,15 @@
 			<version>2.10.0</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${factions.jar.version}</systemPath>
+		</dependency>
+
+		<!-- Towny -->
+		<dependency>
+			<groupId>com.palmergames</groupId>
+			<artifactId>Towny</artifactId>
+			<version>0.91.4.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${towny.jar.version}</systemPath>
 		</dependency>
 
 	</dependencies>

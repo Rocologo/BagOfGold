@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.rewards;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -273,7 +274,7 @@ public class RewardListeners implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onRewardBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled())
 			return;
@@ -293,16 +294,18 @@ public class RewardListeners implements Listener {
 		} 
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onRewardBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
 		
 		Block block = event.getBlock();
 		if (HiddenRewardData.hasHiddenRewardData(block)) {
-			event.setCancelled(true);
-			block.setType(Material.AIR);
+			//event.setCancelled(true);
+			//block.setType(Material.AIR);
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(block);
+			block.getDrops().clear();
+			block.setType(Material.AIR);
 			block.removeMetadata(RewardManager.MH_HIDDEN_REWARD_DATA, MobHunting.getInstance());
 			ItemStack is;
 			if (hiddenRewardData.getUuid().toString().equalsIgnoreCase(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)) {

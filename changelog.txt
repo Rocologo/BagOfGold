@@ -1,3 +1,9 @@
+V4.6.5
+* Basic support for Towny added. Rewards for killing mobs in the home town is now disabled by default. (Can be changed in config.yml) New ideasfor more features are welcome. 
+* Heads can't be placed in a protected Towny region anymore.(https://github.com/Rocologo/MobHunting/issues/191)
+* Heads protected by Towny can not be broken anymore (https://github.com/Rocologo/MobHunting/issues/191)
+* Placing and breaking heads is now registered by Loggers like LogBlock and FCoreProtect. (https://github.com/Rocologo/MobHunting/issues/188)
+* Fixed protocollib error. (https://github.com/Rocologo/MobHunting/issues/192)
 V4.6.4
 * MobHunting heads with 0 value will now be stacked. 
 * The column TOTAL_CASH will now be auto created if missing in playstat tables:mh_Daily,mh_Weekly,mh_Monthly,mh_Yearly,mh_AllTime

@@ -242,6 +242,12 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere you can change the behavior of the Factions integration, or you can disable"
 						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/factions.1900/");
 
+		setCategoryComment("towny",
+				"########################################################################" + "\nTowny settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of the Towny integration, or you can disable"
+						+ "\nintegration completely." + "\nhttp://towny.palmergames.com/");
+
 		setCategoryComment("grinding",
 				"########################################################################"
 						+ "\nGrinding detection settings"
@@ -1374,7 +1380,7 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	// #####################################################################################
-	// PVP 
+	// PVP
 	// #####################################################################################
 	@ConfigField(name = "pvp-allowed", category = "pvp", comment = "Set pvpAllowed=false to disable rewards on killing other players.")
 	public boolean pvpAllowed = true;
@@ -1509,6 +1515,20 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "factions_warzone_multiplier", category = "factions", comment = "This is the bonus when a player kills a mob or a player in a Factions WarZone.")
 	public double factionWarZoneBonusMultiplier = 1.1;
+
+	// #####################################################################################
+	// Towny Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-towny", category = "towny", comment = "Disable integration with Towny."
+			+ "\nhttp://towny.palmergames.com/")
+	public boolean disableIntegrationTowny = false;
+
+	@ConfigField(name = "disable-rewards-in-home-town", category = "towny", comment = "Disable rewards when the player is in his hometown."
+			+ "\nhttp://towny.palmergames.com/")
+	public boolean disableRewardsInHomeTown = true;
+	
+	@ConfigField(name = "disable-naturally-drops-and-xp-in-home-town", category = "towny", comment = "Disable naturally drops and xp drops when th eplayer kill mobs in his home town.")
+	public boolean disableNaturallyRewardsInHomeTown = false;
 
 	// #####################################################################################
 	// DropMoneyOnGround settings
@@ -2006,9 +2026,10 @@ public class ConfigManager extends AutoConfig {
 			else if (mob instanceof PigZombie)
 				// PigZombie is a subclass of Zombie.
 				if (((PigZombie) mob).isBaby())
-				return Misc.round(getPrice(mob, MobHunting.getConfigManager().zombiePigmanPrize) * MobHunting.getConfigManager().babyMultiplier);
+					return Misc.round(getPrice(mob, MobHunting.getConfigManager().zombiePigmanPrize)
+							* MobHunting.getConfigManager().babyMultiplier);
 				else
-				return getPrice(mob, MobHunting.getConfigManager().zombiePigmanPrize);
+					return getPrice(mob, MobHunting.getConfigManager().zombiePigmanPrize);
 			else if (mob instanceof Zombie)
 				if (((Zombie) mob).isBaby())
 					return Misc.round(getPrice(mob, MobHunting.getConfigManager().zombiePrize)
@@ -2069,8 +2090,9 @@ public class ConfigManager extends AutoConfig {
 				}
 			}
 		}
-		//Messages.debug("Mobhunting could not find the prize for killing this mob: %s (%s)",
-		//		ExtendedMobManager.getMobName(mob), mob.getType());
+		// Messages.debug("Mobhunting could not find the prize for killing this
+		// mob: %s (%s)",
+		// ExtendedMobManager.getMobName(mob), mob.getType());
 		return 0;
 	}
 

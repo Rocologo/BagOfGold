@@ -357,5 +357,6 @@ mobhunting.learn.huntdisabled=Admin has disabled MobHunting.
 mobhunting.learn.suiside=Suicide is not rewarded
 mobhunting.learn.nopvp=PVP is not allowed.
 mobhunting.learn.grindingnotallowed=Grinding was detected and is not allowed on this server.
-mobhunting.learn.factions-safezone=No rewards when you are in a Factions SafeZone
+mobhunting.learn.factions-no-rewards-in-safezone=No rewards when you are in a Factions SafeZone
+mobhunting.learn.towny-no-rewards-in-home-town=No rewards when you are in your home town.
 

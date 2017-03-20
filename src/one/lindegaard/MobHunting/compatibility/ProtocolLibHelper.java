@@ -34,30 +34,8 @@ public class ProtocolLibHelper {
 				if (event.getPacketType() == PacketType.Play.Server.SET_SLOT) {
 					PacketContainer packet = event.getPacket().deepClone();
 					StructureModifier<ItemStack> sm = packet.getItemModifier();
-					ItemStack is = sm.getValues().get(0);
-					if (is.hasItemMeta()) {
-						ItemMeta itemMeta = is.getItemMeta();
-						if (itemMeta.hasLore()) {
-							List<String> lore = itemMeta.getLore();
-							Iterator<String> itr = lore.iterator();
-							while (itr.hasNext()) {
-								String str = itr.next();
-								if (str.startsWith("Hidden:"))
-									itr.remove();
-							}
-							itemMeta.setLore(lore);
-							is.setItemMeta(itemMeta);
-						}
-					}
-					event.setPacket(packet);
-				}
-
-				else if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
-					PacketContainer packet = event.getPacket().deepClone();
-					StructureModifier<List<ItemStack>> modifiers = packet.getItemListModifier();
-					List<ItemStack> itemStackList = modifiers.getValues().get(0);
-					for (int i = 0; i < itemStackList.size(); i++) {
-						ItemStack is = itemStackList.get(i);
+					for (int i = 0; i < sm.size(); i++) {
+						ItemStack is = sm.getValues().get(i);
 						if (is.hasItemMeta()) {
 							ItemMeta itemMeta = is.getItemMeta();
 							if (itemMeta.hasLore()) {
@@ -70,6 +48,32 @@ public class ProtocolLibHelper {
 								}
 								itemMeta.setLore(lore);
 								is.setItemMeta(itemMeta);
+							}
+						}
+					}
+					event.setPacket(packet);
+				}
+
+				else if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
+					PacketContainer packet = event.getPacket().deepClone();
+					StructureModifier<List<ItemStack>> modifiers = packet.getItemListModifier();
+					for (int j = 0; j < modifiers.size(); j++) {
+						List<ItemStack> itemStackList = modifiers.getValues().get(j);
+						for (int i = 0; i < itemStackList.size(); i++) {
+							ItemStack is = itemStackList.get(i);
+							if (is.hasItemMeta()) {
+								ItemMeta itemMeta = is.getItemMeta();
+								if (itemMeta.hasLore()) {
+									List<String> lore = itemMeta.getLore();
+									Iterator<String> itr = lore.iterator();
+									while (itr.hasNext()) {
+										String str = itr.next();
+										if (str.startsWith("Hidden:"))
+											itr.remove();
+									}
+									itemMeta.setLore(lore);
+									is.setItemMeta(itemMeta);
+								}
 							}
 						}
 					}
