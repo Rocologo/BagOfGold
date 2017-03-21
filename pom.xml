@@ -69,6 +69,7 @@
 		<iDisguise.jar.version>iDisguise-5.5.5.jar</iDisguise.jar.version>
 		<disguisecraft.jar.version>DisguiseCraft-5.1.jar</disguisecraft.jar.version>
 		<PvpArena.jar.version>pvparena.jar</PvpArena.jar.version>
+		<BattleArena.jar.version>BattleArena-3.9.10.8.jar</BattleArena.jar.version>
 		<TitleAPI.jar.version>TitleAPI-1.7.3.jar</TitleAPI.jar.version>
 		<VanishNoPacket.jar.version>VanishNoPacket3.20.jar</VanishNoPacket.jar.version>
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
@@ -222,13 +223,13 @@
 			<url>http://repo.keyle.de/</url>
 		</repository>
 
-		<!-- BattleArena -->
+		<!-- BattleArena 
 		<repository>
 			<id>battleplugins-net</id>
 			<name>BattlePlugins</name>
 			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
-		</repository>
-
+		</repository> -->
+		
 		<!-- MiniGamesLib / MinigamesAPI repo -->
 		<repository>
 			<id>minigameslib-repo</id>
@@ -491,6 +492,16 @@
 			<scope>system</scope>
 			<type>jar</type>
 			<systemPath>${project.basedir}/lib/${PvpArena.jar.version}</systemPath>
+		</dependency>
+
+		<!-- BattleArena -->
+		<dependency>
+			<groupId>mc.alk.arena.BattleArena</groupId>
+			<artifactId>BattleArena</artifactId>
+			<version>${BattleArena.jar.version}</version>
+			<scope>system</scope>
+			<type>jar</type>
+			<systemPath>${project.basedir}/lib/${BattleArena.jar.version}</systemPath>
 		</dependency>
 
 		<!-- MinigamesLib -->

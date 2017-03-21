@@ -89,7 +89,7 @@ public class Updater {
 											bukkitUpdate = null;
 										}
 									} else {
-										Messages.debug("Homepage %s seems tobe down", url.toString());
+										Messages.debug("Homepage %s seems to be down", url.toString());
 									}
 								} catch (MalformedURLException e) {
 									e.printStackTrace();

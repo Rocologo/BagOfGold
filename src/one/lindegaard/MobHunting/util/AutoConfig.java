@@ -1,9 +1,13 @@
 package one.lindegaard.MobHunting.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +18,7 @@ import java.util.Map.Entry;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class AutoConfig {
@@ -84,9 +89,11 @@ public abstract class AutoConfig {
 				mFile.getParentFile().mkdirs();
 				mFile.createNewFile();
 			}
+			
+			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(mFile), StandardCharsets.UTF_8);
 
 			// Parse the config
-			yml.load(mFile);
+			yml.load(inputStreamReader);
 			for (Field field : getClass().getDeclaredFields()) {
 				ConfigField configField = field.getAnnotation(ConfigField.class);
 				if (configField == null)
@@ -363,9 +370,14 @@ public abstract class AutoConfig {
 			for (String line : lines)
 				output += line + "\n";
 
-			FileWriter writer = new FileWriter(mFile);
+			//FileWriter writer = new FileWriter(mFile);
+			//writer.write(output);
+			//writer.close();
+			
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(mFile), StandardCharsets.UTF_8);
 			writer.write(output);
 			writer.close();
+			
 			return true;
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

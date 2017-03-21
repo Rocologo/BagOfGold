@@ -83,6 +83,15 @@ public class ConfigManager extends AutoConfig {
 	public ConfigManager(File file) {
 		super(file);
 
+		setCategoryComment("configtest",
+				"########################################################################" + "\n Config test"
+						+ "\n########################################################################"
+						+ "\nThese settings is only for testing purpose");
+		setCategoryComment("configtest.test1",
+				"########################################################################" + "\n Config test"
+						+ "\n########################################################################"
+						+ "\nThese settings is only for testing purpose.test1");
+
 		setCategoryComment("mobs", "########################################################################"
 				+ "\nRewards for killing mobs."
 				+ "\n########################################################################"
@@ -275,6 +284,21 @@ public class ConfigManager extends AutoConfig {
 
 	}
 
+	// #####################################################################################
+	// Mobs
+	// #####################################################################################
+	@ConfigField(name = "test1.test2.field1", category = "configtest", comment="Comment on field1")
+	public String field1 = "1.0";
+
+	@ConfigField(name = "test1.test2.field2", category = "configtest", comment="Comment on field2")
+	public String field2 = "2.0";
+	
+	@ConfigField(name = "test1.test2-2.field3", category = "configtest", comment="Comment on field3")
+	public String field3 = "3.0";
+	
+	@ConfigField(name = "test1.test2-3.field4", category = "configtest", comment="Comment on field4")
+	public String field4 = "4.0";
+	
 	// #####################################################################################
 	// Mobs
 	// #####################################################################################
@@ -1526,7 +1550,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-rewards-in-home-town", category = "towny", comment = "Disable rewards when the player is in his hometown."
 			+ "\nhttp://towny.palmergames.com/")
 	public boolean disableRewardsInHomeTown = true;
-	
+
 	@ConfigField(name = "disable-naturally-drops-and-xp-in-home-town", category = "towny", comment = "Disable naturally drops and xp drops when th eplayer kill mobs in his home town.")
 	public boolean disableNaturallyRewardsInHomeTown = false;
 

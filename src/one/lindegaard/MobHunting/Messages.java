@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -80,7 +81,7 @@ public class Messages {
 			}
 
 			if (!newEntries.isEmpty()) {
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
 				for (Entry<String, String> entry : newEntries.entrySet())
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				writer.close();
@@ -98,7 +99,7 @@ public class Messages {
 		try {
 			Map<String, String> source = loadLang(onDisk);
 			source = sortByKeys(source);
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, false)));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, false), StandardCharsets.UTF_8));
 			for (Entry<String, String> entry : source.entrySet()) {
 				writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 			}
@@ -147,7 +148,7 @@ public class Messages {
 				}
 
 			if (!newEntries.isEmpty()) {
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
 				for (Entry<String, String> entry : newEntries.entrySet()) {
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				}
@@ -197,7 +198,7 @@ public class Messages {
 			}
 
 			if (!newEntries.isEmpty()) {
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true)));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
 				for (Entry<String, String> entry : newEntries.entrySet()) {
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				}
