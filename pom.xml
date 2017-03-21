@@ -6,8 +6,8 @@
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
 	<!-- <version>4.6.7</version> -->
-	<version>4.6.7-SNAPSHOT-B${build.number}</version>
-	<!-- <version>4.6.7-SNAPSHOT-B007</version> -->
+	<!-- <version>4.6.7-SNAPSHOT-B${build.number}</version> -->
+	<version>4.6.7-SNAPSHOT-B008</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -48,7 +48,7 @@
 		<citizensapi.version>2.0.21-SNAPSHOT</citizensapi.version>
 		<libsdisguises.version>9.1.1</libsdisguises.version>
 		<protocollib.version>4.2.0-SNAPSHOT</protocollib.version>
-		<battleArena.version>3.9.10.6.2</battleArena.version>
+		<!-- <battleArena.version>3.9.10.6.2</battleArena.version>  -->
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>2.0.0</titlemanager.version>
@@ -393,12 +393,12 @@
 		</dependency>
 
 		<!-- BattleArena -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>mc.alk</groupId>
 			<artifactId>BattleArena</artifactId>
 			<version>${battleArena.version}</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 
 		<!-- BossBarAPI -->
 		<dependency>
