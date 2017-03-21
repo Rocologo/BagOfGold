@@ -5,7 +5,7 @@ description: A Mobhunting plugin
 dev-url: http://dev.bukkit.org/server-mods/mobhunting/
 author: Rocologo
 depend: [Vault]
-softdepend: [Essentials, WorldEdit, WorldGuard, Factions, ProtocolLib, mcMMO, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, Sentinel, Minigames, MinigamesLib, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, MobStacker, Gringotts, ActionBarAPI, ActionAnnouncer, CustomMobs, ConquestiaMobs, StackMob, MysteriousHalloween]
+softdepend: [Essentials, WorldEdit, WorldGuard, Factions, Towny, ProtocolLib, mcMMO, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, Sentinel, Minigames, MinigamesLib, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, MobStacker, Gringotts, ActionBarAPI, ActionAnnouncer, CustomMobs, ConquestiaMobs, StackMob, MysteriousHalloween]
 
 commands:
   mobhunt:
@@ -144,6 +144,36 @@ permissions:
     default: op
     children:
       mobhunting.mute: true
+  mobhunting.money.give:
+    description: Allows you to give a player bag of gold
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.money.take:
+    description: Allows you to take bag of gold from a player
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.money.drop:
+    description: Allows you to drop bag of gold on the ground
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.money.sell:
+    description: Allows you to sell your bag of gold and get money
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.money.buy:
+    description: Allows you to buy bag of gold.
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.happyhour:
+    description: Allows you to start a happyhour for some time
+    default: op
+    children:
+      mobhunting.cmd: true
 
 
 

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.MalformedInputException;
 
@@ -13,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import one.lindegaard.MobHunting.HttpTools;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
@@ -50,9 +52,10 @@ public class Updater {
 
 	public static void hourlyUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
 		long seconds = MobHunting.getConfigManager().checkEvery;
-		if (seconds<900){
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"[MobHunting][Warning] check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
-			seconds=900;
+		if (seconds < 900) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
+					+ "[MobHunting][Warning] check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
+			seconds = 900;
 		}
 		if (updateCheck) {
 			new BukkitRunnable() {
@@ -60,7 +63,7 @@ public class Updater {
 				public void run() {
 					pluginUpdateCheck(sender, true, false);
 				}
-			}.runTaskTimer(MobHunting.getInstance(), 0L,  seconds * 20L);
+			}.runTaskTimer(MobHunting.getInstance(), 0L, seconds * 20L);
 			// Check for update timer
 		}
 	}
@@ -77,9 +80,19 @@ public class Updater {
 						new Runnable() {
 							@Override
 							public void run() {
-								bukkitUpdate = new BukkitUpdate(63718); // MobHunting
-								if (!bukkitUpdate.isSuccess()) {
-									bukkitUpdate = null;
+								URL url;
+								try {
+									url = new URL("https://api.curseforge.com");
+									if (HttpTools.isHomePageReachable(url)) {
+										bukkitUpdate = new BukkitUpdate(63718); // MobHunting
+										if (!bukkitUpdate.isSuccess()) {
+											bukkitUpdate = null;
+										}
+									} else {
+										Messages.debug("Homepage %s seems tobe down", url.toString());
+									}
+								} catch (MalformedURLException e) {
+									e.printStackTrace();
 								}
 							}
 						});
@@ -140,8 +153,7 @@ public class Updater {
 			try {
 				succes = downloadFile(getBukkitUpdate().getVersionLink(), "plugins/update/");
 				if (succes) {
-					File downloadedJar = new File(
-							"plugins/update/" + Updater.getBukkitUpdate().getVersionFileName());
+					File downloadedJar = new File("plugins/update/" + Updater.getBukkitUpdate().getVersionFileName());
 					File newJar = new File("plugins/update/MobHunting.jar");
 					if (newJar.exists())
 						newJar.delete();
@@ -221,8 +233,8 @@ public class Updater {
 					MobHunting.getInstance().getLogger().warning("Could not determine update's version # ");
 					MobHunting.getInstance().getLogger().warning(
 							"Installed plugin version: " + MobHunting.getInstance().getDescription().getVersion());
-					MobHunting.getInstance().getLogger().warning(
-							"Newest version on Bukkit.org: " + Updater.getBukkitUpdate().getVersionName());
+					MobHunting.getInstance().getLogger()
+							.warning("Newest version on Bukkit.org: " + Updater.getBukkitUpdate().getVersionName());
 					return UpdateStatus.UNKNOWN;
 				}
 			}

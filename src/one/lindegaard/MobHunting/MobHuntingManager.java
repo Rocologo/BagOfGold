@@ -819,7 +819,6 @@ public class MobHuntingManager implements Listener {
 		if (TownyCompat.isSupported()) {
 			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
 				Player player = killer != null ? killer : MyPetCompat.getMyPetOwner(killer);
-				Messages.debug("Test if player is in a Towny safezone");
 				if (MobHunting.getConfigManager().disableRewardsInHomeTown && TownyCompat.isInHomeTome(player)) {
 					Messages.debug("KillBlocked:(2) %s is hiding in his home town", player.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.towny-no-rewards-in-home-town"));

@@ -1,9 +1,7 @@
 package one.lindegaard.MobHunting;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 import org.bukkit.Bukkit;
 import org.mcstats_mh.Metrics;
@@ -91,7 +89,7 @@ public class MetricsManager {
 			});
 		}
 		metrics.addGraph(databaseGraph);
-		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("Database used for MobHunting") {
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("database_used_for_mobhunting") {
 			@Override
 			public String getValue() {
 				return MobHunting.getConfigManager().databaseType;
@@ -363,7 +361,9 @@ public class MetricsManager {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(MobHunting.getInstance(), new Runnable() {
 			public void run() {
 				try {
-					if (isMCStatsReachable()) {
+					// make a URL to MCStats.org
+					URL url = new URL("http://mcstats.org");
+					if (HttpTools.isHomePageReachable(url)) {
 						metrics.enable();
 					} else {
 						metrics.disable();
@@ -376,29 +376,5 @@ public class MetricsManager {
 			}
 		}, 100, 36000);
 
-	}
-
-	public static boolean isMCStatsReachable() {
-		try {
-			// make a URL to MCStats.org
-			URL url = new URL("http://mcstats.org");
-
-			// open a connection to that source
-			HttpURLConnection urlConnect = (HttpURLConnection) url.openConnection();
-
-			// trying to retrieve data from the source. If there
-			// is no connection, this line will fail
-			urlConnect.setConnectTimeout(5000);
-			@SuppressWarnings("unused")
-			Object objData = urlConnect.getContent();
-
-		} catch (UnknownHostException e) {
-			// e.printStackTrace();
-			return false;
-		} catch (IOException e) {
-			// e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 }
