@@ -270,7 +270,7 @@ public class DataStoreManager {
 			mTaskThread.addTask(new StoreTask(mWaiting), null);
 		}
 	}
-
+	
 	/**
 	 * Shutdown the DataStoreManager
 	 */

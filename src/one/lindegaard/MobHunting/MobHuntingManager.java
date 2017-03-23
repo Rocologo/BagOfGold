@@ -800,12 +800,12 @@ public class MobHuntingManager implements Listener {
 				if (FactionsCompat.isInSafeZone(player)) {
 					Messages.debug("KillBlocked:(2) %s is hiding in Factions SafeZone", player.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.factions-no-rewards-in-safezone"));
-					if (MobHunting.getConfigManager().disableNaturallyRewardsInHomeTown) {
+					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 						Messages.debug("Trying to remove natural drops");
 						cancelNaturalDrops = true;
 						event.getDrops().clear();
 					}
-					if (MobHunting.getConfigManager().disableNaturallyRewardsInHomeTown) {
+					if (MobHunting.getConfigManager().tryToCancelXPDrops) {
 						Messages.debug("Trying to remove XP drops");
 						cancelXPDrops = true;
 						event.setDroppedExp(0);
@@ -817,17 +817,18 @@ public class MobHuntingManager implements Listener {
 
 		// Towny Compatibility - no reward when player are in a protected town
 		if (TownyCompat.isSupported()) {
-			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
+			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)
+					&& !(killed instanceof Player)) {
 				Player player = killer != null ? killer : MyPetCompat.getMyPetOwner(killer);
 				if (MobHunting.getConfigManager().disableRewardsInHomeTown && TownyCompat.isInHomeTome(player)) {
 					Messages.debug("KillBlocked:(2) %s is hiding in his home town", player.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.towny-no-rewards-in-home-town"));
-					if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
+					if (MobHunting.getConfigManager().disableNaturallyRewardsInHomeTown) {
 						Messages.debug("Trying to remove natural drops");
 						cancelNaturalDrops = true;
 						event.getDrops().clear();
 					}
-					if (MobHunting.getConfigManager().tryToCancelXPDrops) {
+					if (MobHunting.getConfigManager().disableNaturallyRewardsInHomeTown) {
 						Messages.debug("Trying to remove XP drops");
 						cancelXPDrops = true;
 						event.setDroppedExp(0);
@@ -1010,11 +1011,24 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// The Mob/Player has MH:Blocked
-		if (event.getEntity().hasMetadata("MH:blocked")) {
+		if (event.getEntity().hasMetadata("MH:blocked")
+				&& !MobHunting.getAreaManager().isWhitelisted(event.getEntity().getLocation())) {
 			if (killed != null) {
-				Messages.debug("KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner)",
+				Messages.debug(
+						"KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner, an egg or a egg-dispenser )",
 						event.getEntity().getType(), killed.getEntityId());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", mob.getName()));
+				if (MobHunting.getConfigManager().tryToCancelNaturalDropsWhenInCreative) {
+					Messages.debug("Trying to remove natural drops");
+					cancelNaturalDrops = true;
+					event.getDrops().clear();
+				}
+				if (MobHunting.getConfigManager().tryToCancelXPDropsWhenInCreative) {
+					Messages.debug("Trying to remove XP drops");
+					cancelXPDrops = true;
+					event.setDroppedExp(0);
+				}
+				return;
 			}
 			return;
 		}
@@ -1642,8 +1656,9 @@ public class MobHuntingManager implements Listener {
 						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getEntity()).equals(""))
 			return;
 
-		if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
-			if (!MobHunting.getConfigManager().allowMobSpawnersAndEggs)
+		if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
+				|| event.getSpawnReason() == SpawnReason.DISPENSE_EGG) {
+			if (!MobHunting.getConfigManager().allowMobSpawnersEggsAndDispensers)
 				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
 		} else if (event.getSpawnReason() != SpawnReason.NATURAL) {
 			// used for TARDISweepingAngels / CustomMobs / MythicMobs

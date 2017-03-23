@@ -5,9 +5,9 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<!-- <version>4.6.7</version> -->
-	<version>4.6.7-SNAPSHOT-B${build.number}</version>
-	<!-- <version>4.6.7-SNAPSHOT-B007</version> -->
+	<!-- <version>4.6.8</version> -->
+	<!-- <version>4.6.8-SNAPSHOT-B${build.number}</version> -->
+	<version>4.6.8-SNAPSHOT-B010</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -69,6 +69,7 @@
 		<iDisguise.jar.version>iDisguise-5.5.5.jar</iDisguise.jar.version>
 		<disguisecraft.jar.version>DisguiseCraft-5.1.jar</disguisecraft.jar.version>
 		<PvpArena.jar.version>pvparena.jar</PvpArena.jar.version>
+		<BattleArena.jar.version>BattleArena-3.9.10.5.jar</BattleArena.jar.version>
 		<TitleAPI.jar.version>TitleAPI-1.7.3.jar</TitleAPI.jar.version>
 		<VanishNoPacket.jar.version>VanishNoPacket3.20.jar</VanishNoPacket.jar.version>
 		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
@@ -349,6 +350,7 @@
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib-API</artifactId>
 			<version>${protocollib.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- McMMO -->
@@ -356,6 +358,7 @@
 			<groupId>com.gmail.nossr50.mcMMO</groupId>
 			<artifactId>mcMMO</artifactId>
 			<version>1.5.01-SNAPSHOT</version>
+			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 
@@ -398,6 +401,15 @@
 			<version>${battleArena.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- <dependency>
+			<groupId>mc.alk</groupId>
+			<artifactId>BattleArena</artifactId>
+			<version>${BattleArena.jar.version}</version>
+			<scope>system</scope>
+			<type>jar</type>
+			<systemPath>${project.basedir}/lib/${BattleArena.jar.version}</systemPath>
+		</dependency> -->
+		
 
 		<!-- BossBarAPI -->
 		<dependency>
@@ -623,6 +635,7 @@
 			<groupId>au.com.mineauz</groupId>
 			<artifactId>Minigames</artifactId>
 			<version>${minigames.version}</version>
+			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>org.bukkit</groupId>
@@ -640,6 +653,7 @@
 			<groupId>org.bstats</groupId>
 			<artifactId>bstats-bukkit</artifactId>
 			<version>1.1</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- MassiveCore / Factions -->

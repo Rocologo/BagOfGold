@@ -1,5 +1,7 @@
 package one.lindegaard.MobHunting.compatibility;
 
+import java.util.List;
+
 import org.bukkit.entity.Player;
 
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
@@ -48,7 +50,8 @@ public class TownyHelper {
 
 			try {
 				// Check if the town is the residents town.
-				if (tb.getTown().equals(homeTown)) {
+				List<Resident> residents = tb.getTown().getResidents();
+				if (residents.contains(resident) || tb.getTown().equals(homeTown)) {
 					// check if town is protected against mob damage
 					TownyPermission p1 = homeTown.getPermissions();
 					Boolean protected_mob = p1.mobs;

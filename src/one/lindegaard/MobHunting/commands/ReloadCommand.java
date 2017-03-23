@@ -27,7 +27,7 @@ public class ReloadCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to reload MobHunting configuration."};
+		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to reload MobHunting configuration." };
 	}
 
 	@Override
@@ -47,6 +47,17 @@ public class ReloadCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
+		MobHunting.getDataStoreManager().flush();
+
+		long starttime = System.currentTimeMillis();
+		int i = 1;
+		while (MobHunting.getDataStoreManager().isRunning() && (starttime + 10000 > System.currentTimeMillis())) {
+			if (((int) (System.currentTimeMillis() - starttime)) / 1000 == i) {
+				Messages.debug("saving data");
+				i++;
+			}
+		}
+
 		if (MobHunting.getConfigManager().loadConfig()) {
 			int n = MobHunting.getMobHuntingManager().getOnlinePlayersAmount();
 			if (n > 0) {

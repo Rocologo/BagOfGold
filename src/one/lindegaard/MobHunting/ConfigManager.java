@@ -287,18 +287,18 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Mobs
 	// #####################################################################################
-	@ConfigField(name = "test1.test2.field1", category = "configtest", comment="Comment on field1")
+	@ConfigField(name = "test1.test2.field1", category = "configtest", comment = "Comment on field1")
 	public String field1 = "1.0";
 
-	@ConfigField(name = "test1.test2.field2", category = "configtest", comment="Comment on field2")
+	@ConfigField(name = "test1.test2.field2", category = "configtest", comment = "Comment on field2")
 	public String field2 = "2.0";
-	
-	@ConfigField(name = "test1.test2-2.field3", category = "configtest", comment="Comment on field3")
+
+	@ConfigField(name = "test1.test2-2.field3", category = "configtest", comment = "Comment on field3")
 	public String field3 = "3.0";
-	
-	@ConfigField(name = "test1.test2-3.field4", category = "configtest", comment="Comment on field4")
+
+	@ConfigField(name = "test1.test2-3.field4", category = "configtest", comment = "Comment on field4")
 	public String field4 = "4.0";
-	
+
 	// #####################################################################################
 	// Mobs
 	// #####################################################################################
@@ -1751,8 +1751,8 @@ public class ConfigManager extends AutoConfig {
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
 
-	@ConfigField(name = "allow_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners and eggs?")
-	public boolean allowMobSpawnersAndEggs = false;
+	@ConfigField(name = "allow_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
+	public boolean allowMobSpawnersEggsAndDispensers = false;
 
 	@ConfigField(name = "use-actionbar-for-broadcasts", category = "general", comment = "Broadcast messages will be send in the ActionBar if MobHunting finds a supported ActionBar plugin.")
 	public boolean useActionBarforBroadcasts = true;
