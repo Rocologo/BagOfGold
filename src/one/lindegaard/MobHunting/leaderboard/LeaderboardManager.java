@@ -80,7 +80,7 @@ public class LeaderboardManager implements Listener {
 
 			for (WorldLeaderboard board : mLeaderboards.values())
 				board.update();
-			Messages.debug("Refeshed %s leaderboards.", mLegacyLeaderboards.size() + mLeaderboards.size());
+			Messages.debug("Refreshed %s leaderboards.", mLegacyLeaderboards.size() + mLeaderboards.size());
 		}
 	}
 

@@ -10,7 +10,7 @@ import one.lindegaard.MobHunting.storage.IDataStore;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 import one.lindegaard.MobHunting.storage.StatStore;
 
-public class StoreTask implements DataStoreTask<Void> {
+public class StoreTask implements IDataStoreTask<Void> {
 	private HashSet<StatStore> mWaitingPlayerStats = new HashSet<StatStore>();
 	private HashSet<AchievementStore> mWaitingAchievements = new HashSet<AchievementStore>();
 	private HashSet<PlayerSettings> mWaitingPlayerSettings = new HashSet<PlayerSettings>();

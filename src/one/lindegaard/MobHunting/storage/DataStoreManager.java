@@ -22,7 +22,7 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask;
-import one.lindegaard.MobHunting.storage.asynch.DataStoreTask;
+import one.lindegaard.MobHunting.storage.asynch.IDataStoreTask;
 import one.lindegaard.MobHunting.storage.asynch.PlayerSettingsRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.StatRetrieverTask;
 import one.lindegaard.MobHunting.storage.asynch.StoreTask;
@@ -191,7 +191,7 @@ public class DataStoreManager {
 	 *         Database, a new record will be created.
 	 * @throws SQLException
 	 */
-	public PlayerSettings getPlayerSettings(OfflinePlayer player) {
+	public PlayerSettings getPlayerSettings2(OfflinePlayer player) {
 		try {
 			return mStore.loadPlayerSettings(player);
 		} catch (UserNotFoundException e) {
@@ -352,12 +352,12 @@ public class DataStoreManager {
 	}
 
 	private static class Task {
-		public Task(DataStoreTask<?> task, IDataCallback<?> callback) {
+		public Task(IDataStoreTask<?> task, IDataCallback<?> callback) {
 			this.task = task;
 			this.callback = callback;
 		}
 
-		public DataStoreTask<?> task;
+		public IDataStoreTask<?> task;
 
 		public IDataCallback<?> callback;
 	}
@@ -413,7 +413,7 @@ public class DataStoreManager {
 			mWritesOnly = writes;
 		}
 
-		public <T> void addTask(DataStoreTask<T> storeTask, IDataCallback<T> callback) {
+		public <T> void addTask(IDataStoreTask<T> storeTask, IDataCallback<T> callback) {
 			try {
 				mQueue.put(new Task(storeTask, callback));
 			} catch (InterruptedException e) {

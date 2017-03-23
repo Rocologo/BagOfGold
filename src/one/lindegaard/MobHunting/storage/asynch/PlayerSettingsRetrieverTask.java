@@ -12,7 +12,7 @@ import one.lindegaard.MobHunting.storage.IDataStore;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
 
-public class PlayerSettingsRetrieverTask implements DataStoreTask<PlayerSettings> {
+public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSettings> {
 
 	private OfflinePlayer mPlayer;
 	private HashSet<Object> mWaiting;

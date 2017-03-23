@@ -12,7 +12,7 @@ import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
 
-public class BountyRetrieverTask implements DataStoreTask<Set<Bounty>> {
+public class BountyRetrieverTask implements IDataStoreTask<Set<Bounty>> {
 	private BountyStatus mMode;
 	private OfflinePlayer mPlayer;
 	private HashSet<Object> mWaiting;

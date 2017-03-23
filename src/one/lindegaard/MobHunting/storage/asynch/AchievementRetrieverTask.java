@@ -10,7 +10,7 @@ import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
 
-public class AchievementRetrieverTask implements DataStoreTask<Set<AchievementStore>> {
+public class AchievementRetrieverTask implements IDataStoreTask<Set<AchievementStore>> {
 	public enum Mode {
 		All, Completed, InProgress
 	}

@@ -10,7 +10,7 @@ import one.lindegaard.MobHunting.storage.IDataStore;
 import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;
 
-public class StatRetrieverTask implements DataStoreTask<List<StatStore>> {
+public class StatRetrieverTask implements IDataStoreTask<List<StatStore>> {
 	private StatType mType;
 	private TimePeriod mPeriod;
 	private int mCount;

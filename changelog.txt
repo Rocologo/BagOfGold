@@ -1,6 +1,6 @@
 V4.6.8
-* Fixed /mh reload bug causing a server crash. Data waiting to be saved is now saved before reloading configuration.
-* Towny residents will not get a reward when they kil a mob, while the are in their home town.
+* Towny residents will not get a reward when they kill a mob, while the are in their home town.
+* Fixed /mh reload, which very often caused a server crash.
 V4.6.7
 * Fixed Towny related bug (https://github.com/Rocologo/MobHunting/issues/194)
 * Added nice error description in the server log, when https://api.curseforge.com is down.

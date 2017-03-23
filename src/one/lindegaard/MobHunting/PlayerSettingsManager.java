@@ -72,7 +72,7 @@ public class PlayerSettingsManager implements Listener {
 			Messages.debug("Using cached player settings");
 		else
 			// load(player);
-			load_ny(player);
+			load(player);
 	}
 
 	/**
@@ -92,11 +92,11 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param player
 	 */
-	public void load(final OfflinePlayer player) {
+	public void load_old_unused(final OfflinePlayer player) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				PlayerSettings ps = MobHunting.getDataStoreManager().getPlayerSettings(player);
+				PlayerSettings ps = MobHunting.getDataStoreManager().getPlayerSettings2(player);
 				if (ps.isMuted())
 					Messages.debug("%s isMuted()", player.getName());
 				if (ps.isLearningMode())
@@ -106,7 +106,7 @@ public class PlayerSettingsManager implements Listener {
 		}.runTaskAsynchronously(MobHunting.getInstance());
 	}
 
-	public void load_ny(final OfflinePlayer player) {
+	public void load(final OfflinePlayer player) {
 		MobHunting.getDataStoreManager().requestPlayerSettings(player, new IDataCallback<PlayerSettings>() {
 
 			@Override
@@ -122,6 +122,7 @@ public class PlayerSettingsManager implements Listener {
 			public void onError(Throwable error) {
 				Bukkit.getConsoleSender().sendMessage(
 						ChatColor.RED + "[MobHunting][ERROR] Could not load playerSettings for " + player.getName());
+				mPlayerSettings.put(player.getUniqueId(),new PlayerSettings(player));
 			}
 		});
 	}
