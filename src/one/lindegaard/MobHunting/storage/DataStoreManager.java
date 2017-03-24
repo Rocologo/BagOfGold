@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.storage;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -183,33 +182,6 @@ public class DataStoreManager {
 	// *****************************************************************************
 	public void requestPlayerSettings(OfflinePlayer player, IDataCallback<PlayerSettings> callback) {
 		mTaskThread.addTask(new PlayerSettingsRetrieverTask(player, mWaiting), callback);
-	}
-
-	/**
-	 * @param player
-	 * @return Get PlayerSettings for player. If player does not exist in
-	 *         Database, a new record will be created.
-	 * @throws SQLException
-	 */
-	public PlayerSettings getPlayerSettings2(OfflinePlayer player) {
-		try {
-			return mStore.loadPlayerSettings(player);
-		} catch (UserNotFoundException e) {
-			Messages.debug("Saving new PlayerSettings for %s to database.", player.getName());
-			PlayerSettings ps = new PlayerSettings(player, MobHunting.getConfigManager().learningMode, false);
-			try {
-				mStore.insertPlayerSettings(ps);
-			} catch (DataStoreException e1) {
-				e1.printStackTrace();
-			}
-			return ps;
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-			return null;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 	/**

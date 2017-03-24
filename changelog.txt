@@ -1,6 +1,8 @@
 V4.6.8
+* Added custom graphs to bStats.org to show anonymous plugin usage. (https://bstats.org/plugin/bukkit/MobHunting)
 * Towny residents will not get a reward when they kill a mob, while the are in their home town.
 * Fixed /mh reload, which very often caused a server crash.
+* Fixed bug in the config.yml file (pvp_kill_cmd was missing "mobhunt head" in a new/recreated file
 V4.6.7
 * Fixed Towny related bug (https://github.com/Rocologo/MobHunting/issues/194)
 * Added nice error description in the server log, when https://api.curseforge.com is down.

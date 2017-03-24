@@ -251,6 +251,7 @@ public class MobHunting extends JavaPlugin {
 			mMetricsManager = new MetricsManager(this);
 			mMetricsManager.startMetrics();
 		}
+		mMetricsManager.startBStatsMetrics();
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {

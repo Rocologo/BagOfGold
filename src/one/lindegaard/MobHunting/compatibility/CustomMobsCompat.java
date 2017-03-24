@@ -82,8 +82,6 @@ public class CustomMobsCompat implements Listener {
 
 					mMobRewardData.put(key, mob);
 					MobHunting.getStoreManager().insertCustomMobs(key);
-				} else {
-					Messages.debug("The mob=%s can't be found in CustomMobs configuration file", key);
 				}
 			}
 			Messages.debug("Loaded %s CustomMobs", mMobRewardData.size());

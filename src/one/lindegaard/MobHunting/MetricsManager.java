@@ -2,6 +2,7 @@ package one.lindegaard.MobHunting;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.mcstats_mh.Metrics;
@@ -35,6 +36,7 @@ import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
 import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
+import one.lindegaard.MobHunting.compatibility.TownyCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
@@ -54,14 +56,108 @@ public class MetricsManager {
 		this.instance = instance;
 	}
 
+	public void startBStatsMetrics() {
+		bStatsMetrics = new org.bstats.Metrics(instance);
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("database_used_for_mobhunting") {
+			@Override
+			public String getValue() {
+				return MobHunting.getConfigManager().databaseType;
+			}
+		});
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("protection_plugin_integrations") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				valueMap.put("WorldGuard", WorldGuardCompat.isSupported() ? 1 : 0);
+				valueMap.put("Factions", FactionsCompat.isSupported() ? 1 : 0);
+				valueMap.put("Towny", TownyCompat.isSupported() ? 1 : 0);
+				return valueMap;
+			}
+		});
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("minigame_integrations") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				valueMap.put("MobArena", MobArenaCompat.isSupported() ? 1 : 0);
+				valueMap.put("Minigames", MinigamesCompat.isSupported() ? 1 : 0);
+				valueMap.put("MinigamesLib", MinigamesLibCompat.isSupported() ? 1 : 0);
+				valueMap.put("PVPArena", PVPArenaCompat.isSupported() ? 1 : 0);
+				valueMap.put("BattleArena", BattleArenaCompat.isSupported() ? 1 : 0);
+				return valueMap;
+			}
+		});
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("disguise_plugin_integrations") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				valueMap.put("DisguiseCraft", DisguiseCraftCompat.isSupported() ? 1 : 0);
+				valueMap.put("iDisguise", IDisguiseCompat.isSupported() ? 1 : 0);
+				valueMap.put("LibsDisguises", LibsDisguisesCompat.isSupported() ? 1 : 0);
+				valueMap.put("VanishNoPacket", VanishNoPacketCompat.isSupported() ? 1 : 0);
+				valueMap.put("Essentials", EssentialsCompat.isSupported() ? 1 : 0);
+				return valueMap;
+			}
+		});
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("other_integrations") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				valueMap.put("Citizens", CitizensCompat.isSupported() ? 1 : 0);
+				valueMap.put("Gringotts", GringottsCompat.isSupported() ? 1 : 0);
+				valueMap.put("MyPet", MyPetCompat.isSupported() ? 1 : 0);
+				valueMap.put("WorldEdit", WorldEditCompat.isSupported() ? 1 : 0);
+				valueMap.put("ProtocolLib", ProtocolLibCompat.isSupported() ? 1 : 0);
+				return valueMap;
+			}
+		});
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("special_mobs") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				valueMap.put("MythicMobs", MythicMobsCompat.isSupported() ? 1 : 0);
+				valueMap.put("TARDISWeepingAngels", TARDISWeepingAngelsCompat.isSupported() ? 1 : 0);
+				valueMap.put("MobStacker", MobStackerCompat.isSupported() ? 1 : 0);
+				valueMap.put("CustomMobs", CustomMobsCompat.isSupported() ? 1 : 0);
+				valueMap.put("ConquestiaMobs", ConquestiaMobsCompat.isSupported() ? 1 : 0);
+				valueMap.put("StackMob", StackMobCompat.isSupported() ? 1 : 0);
+				valueMap.put("MysteriousHalloween", MysteriousHalloweenCompat.isSupported() ? 1 : 0);
+				return valueMap;
+			}
+		});
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("titlemanagers") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				valueMap.put("BossBarAPI", BossBarAPICompat.isSupported() ? 1 : 0);
+				valueMap.put("TitleAPI", TitleAPICompat.isSupported() ? 1 : 0);
+				valueMap.put("BarAPI", BarAPICompat.isSupported() ? 1 : 0);
+				valueMap.put("TitleManager", TitleManagerCompat.isSupported() ? 1 : 0);
+				valueMap.put("ActionBar", ActionbarCompat.isSupported() ? 1 : 0);
+				valueMap.put("ActionBarAPI", ActionBarAPICompat.isSupported() ? 1 : 0);
+				valueMap.put("ActionAnnouncer", ActionAnnouncerCompat.isSupported() ? 1 : 0);
+				return valueMap;
+			}
+		});
+
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("mobhunting_usage") {
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				valueMap.put("Leaderboards", MobHunting.getLeaderboardManager().getWorldLeaderBoards().size());
+				valueMap.put("MasterMobHunters", MasterMobHunterManager.getMasterMobHunterManager().size());
+				valueMap.put("PlayerBounties", MobHunting.getConfigManager().disablePlayerBounties ? 0
+						: MobHunting.getBountyManager().getAllBounties().size());
+				return valueMap;
+			}
+		});
+	}
+
 	public void startMetrics() {
 		try {
 			metrics = new Metrics(instance);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
-		bStatsMetrics = new org.bstats.Metrics(instance);
 
 		databaseGraph = metrics.createGraph("Database used for MobHunting");
 		if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
@@ -71,16 +167,15 @@ public class MetricsManager {
 					return 1;
 				}
 			});
-			
-		} else if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("SQLite")){
+
+		} else if (MobHunting.getConfigManager().databaseType.equalsIgnoreCase("SQLite")) {
 			databaseGraph.addPlotter(new Metrics.Plotter("SQLite") {
 				@Override
 				public int getValue() {
 					return 1;
 				}
 			});
-		}
-		else {
+		} else {
 			databaseGraph.addPlotter(new Metrics.Plotter(MobHunting.getConfigManager().databaseType) {
 				@Override
 				public int getValue() {
@@ -89,15 +184,9 @@ public class MetricsManager {
 			});
 		}
 		metrics.addGraph(databaseGraph);
-		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("database_used_for_mobhunting") {
-			@Override
-			public String getValue() {
-				return MobHunting.getConfigManager().databaseType;
-			}
-		});
-
 		integrationsGraph = metrics.createGraph("MobHunting integrations");
 		integrationsGraph.addPlotter(new Metrics.Plotter("Citizens") {
+
 			@Override
 			public int getValue() {
 				return CitizensCompat.isSupported() ? 1 : 0;
@@ -207,6 +296,13 @@ public class MetricsManager {
 
 			}
 		});
+		integrationsGraph.addPlotter(new Metrics.Plotter("Towny") {
+			@Override
+			public int getValue() {
+				return TownyCompat.isSupported() ? 1 : 0;
+
+			}
+		});
 		integrationsGraph.addPlotter(new Metrics.Plotter("WorldEdit") {
 			@Override
 			public int getValue() {
@@ -233,7 +329,6 @@ public class MetricsManager {
 			}
 		});
 		metrics.addGraph(integrationsGraph);
-
 		mobPluginIntegrationsGraph = metrics.createGraph("Special Mobs");
 		mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("MythicMobs") {
 			@Override

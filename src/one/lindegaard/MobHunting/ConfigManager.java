@@ -1416,7 +1416,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nor it can be a cut in percent of his balance.")
 	public String pvpKillPrize = "1.0%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
-	public String pvpKillCmd = "give {player} 397 1 3 {SkullOwner:\"{killed_player}\"} 1 silent|give {player} diamond 1";
+	public String pvpKillCmd = "mobhunt head give {player} 397 1 3 {SkullOwner:\"{killed_player}\"} 1 silent|give {player} diamond 1";
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
 	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
 	@ConfigField(name = "pvp-kill-cmd-run-chance", category = "pvp", comment = "This is the chance for running the command. 1 = 100% (each time the player is killed), 0.5 ~ 50% and 0.001 = 0.1% (very rare) ")

@@ -12,7 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
@@ -71,7 +70,6 @@ public class PlayerSettingsManager implements Listener {
 		if (containsKey(player))
 			Messages.debug("Using cached player settings");
 		else
-			// load(player);
 			load(player);
 	}
 
@@ -92,20 +90,6 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param player
 	 */
-	public void load_old_unused(final OfflinePlayer player) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				PlayerSettings ps = MobHunting.getDataStoreManager().getPlayerSettings2(player);
-				if (ps.isMuted())
-					Messages.debug("%s isMuted()", player.getName());
-				if (ps.isLearningMode())
-					Messages.debug("%s is in LearningMode()", player.getName());
-				mPlayerSettings.put(player.getUniqueId(), ps);
-			}
-		}.runTaskAsynchronously(MobHunting.getInstance());
-	}
-
 	public void load(final OfflinePlayer player) {
 		MobHunting.getDataStoreManager().requestPlayerSettings(player, new IDataCallback<PlayerSettings>() {
 
