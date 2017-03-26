@@ -1,6 +1,8 @@
 package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -25,10 +27,22 @@ public class FactionsCompat {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with Factions in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("Factions");
-
-			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with Factions ("
-					+ mPlugin.getDescription().getVersion() + ").");
-			supported = true;
+			if (mPlugin.getDescription().getVersion().compareTo("1.6.9.6") < 0) {
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of Factions ("
+						+ mPlugin.getDescription().getVersion() + ") is not supported by MobHunting, please upgrade.");
+			} else {
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("com.massivecraft.factions.entity.BoardColl");
+					Bukkit.getLogger().info("[MobHunting] Enabling compatibility with Factions ("
+							+ mPlugin.getDescription().getVersion() + ").");
+					supported = true;
+				} catch (ClassNotFoundException e) {
+					Bukkit.getLogger().info(
+							"[MobHunting] Your version of Factions is not compatible with this version of MobHunting. ");
+				}
+			}
 		}
 	}
 

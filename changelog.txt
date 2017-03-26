@@ -1,3 +1,5 @@
+V4.6.9
+* Fixed bug: Added test if Class com/massivecraft/factions/entity/BoardColl exists.
 V4.6.8
 * Added custom graphs to bStats.org to show anonymous plugin usage. (https://bstats.org/plugin/bukkit/MobHunting)
 * Towny residents will not get a reward when they kill a mob, while the are in their home town.
