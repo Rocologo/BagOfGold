@@ -75,8 +75,7 @@ public class CitizensCompat implements Listener {
 					saveCitizensData();
 
 					masterMobHunterManager.initialize();
-					findMissingSentry();
-					// loadBountyDataForSentryOrSentinel();
+					findMissingNPCs();
 					MobHunting.getExtendedMobManager().updateExtendedMobs();
 				}
 			}, 20 * 5); // 20ticks/sec * 3 sec.
@@ -240,7 +239,7 @@ public class CitizensCompat implements Listener {
 		return !MobHunting.getConfigManager().disableIntegrationCitizens;
 	}
 
-	public void findMissingSentry() {
+	private void findMissingNPCs() {
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
 			NPC npc = npcList.next();
@@ -254,16 +253,6 @@ public class CitizensCompat implements Listener {
 			}
 		}
 	}
-
-	// private void loadBountyDataForSentryOrSentinel() {
-	// NPCRegistry n = CitizensAPI.getNPCRegistry();
-	// for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
-	// NPC npc = npcList.next();
-	// if (isSentryOrSentinel(npc.getEntity())) {
-	// MobHunting.getBountyManager().loadBounties(npc);
-	// }
-	// }
-	// }
 
 	// **************************************************************************
 	// EVENTS
