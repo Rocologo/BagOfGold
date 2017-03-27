@@ -205,22 +205,26 @@ public class CitizensCompat implements Listener {
 		return CitizensAPI.getNPCRegistry().getNPC(entity);
 	}
 
-	public static boolean isSentryOrSentinel(String mobtype) {
+	public static boolean isSentryOrSentinelOrSentries(String mobtype) {
 		if (isNPC(Integer.valueOf(mobtype)))
 			return CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
 					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
 					|| CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
-							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"))
+					|| CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentries"));
 		else
 			return false;
 	}
 
-	public static boolean isSentryOrSentinel(Entity entity) {
+	public static boolean isSentryOrSentinelOrSentries(Entity entity) {
 		if (isNPC(entity))
 			return CitizensAPI.getNPCRegistry().getNPC(entity)
 					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
 					|| CitizensAPI.getNPCRegistry().getNPC(entity)
-							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"))
+					|| CitizensAPI.getNPCRegistry().getNPC(entity)
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentries"));
 		return false;
 	}
 
@@ -240,7 +244,7 @@ public class CitizensCompat implements Listener {
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
 			NPC npc = npcList.next();
-			if (isSentryOrSentinel(npc.getEntity())) {
+			if (isSentryOrSentinelOrSentries(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()), new MobRewardData(MobPlugin.Citizens, "npc",
@@ -294,7 +298,7 @@ public class CitizensCompat implements Listener {
 		NPC npc = event.getNPC();
 		if (npc.getId() == event.getNPC().getId()) {
 			Messages.debug("NPCSpawnEvent: %s spawned", npc.getName());
-			if (isSentryOrSentinel(npc.getEntity())) {
+			if (isSentryOrSentinelOrSentries(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					// Update Reward data in memory

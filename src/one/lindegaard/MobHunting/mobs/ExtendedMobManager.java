@@ -69,7 +69,7 @@ public class ExtendedMobManager {
 				break;
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig()
-						|| !CitizensCompat.isSentryOrSentinel(mob.getMobtype()))
+						|| !CitizensCompat.isSentryOrSentinelOrSentries(mob.getMobtype()))
 					continue;
 				break;
 			case MysteriousHalloween:

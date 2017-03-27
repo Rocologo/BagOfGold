@@ -252,7 +252,7 @@ public class MasterMobHunterManager implements Listener {
 
 	private Trait getSentinelOrSentryTrait(NPC npc) {
 		Trait trait = null;
-		if (CitizensCompat.isSentryOrSentinel(npc.getEntity())) {
+		if (CitizensCompat.isSentryOrSentinelOrSentries(npc.getEntity())) {
 			if (npc.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel")))
 				trait = npc.getTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"));
 			else if (npc.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry")))

@@ -389,7 +389,7 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("Permission mobhunting.mobs." + permission_postfix + " not set, defaulting to True.");
 				return true;
 			}
-		} else if (CitizensCompat.isSentryOrSentinel(mob)) {
+		} else if (CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			permission_postfix = "npc-" + CitizensCompat.getNPCId(mob);
 			if (player.isPermissionSet("mobhunting.mobs." + permission_postfix))
 				return player.hasPermission("mobhunting.mobs." + permission_postfix);
@@ -599,10 +599,10 @@ public class MobHuntingManager implements Listener {
 
 		// check if damager or damaged is Sentry / Sentinel. Only Sentry gives a
 		// reward.
-		if (CitizensCompat.isNPC(damager) && !CitizensCompat.isSentryOrSentinel(damager))
+		if (CitizensCompat.isNPC(damager) && !CitizensCompat.isSentryOrSentinelOrSentries(damager))
 			return;
 
-		if (CitizensCompat.isNPC(damaged) && !CitizensCompat.isSentryOrSentinel(damaged))
+		if (CitizensCompat.isNPC(damaged) && !CitizensCompat.isSentryOrSentinelOrSentries(damaged))
 			return;
 
 		if (WorldGuardCompat.isSupported()
@@ -954,7 +954,7 @@ public class MobHuntingManager implements Listener {
 		} else
 
 		// Player killed a Citizens2 NPC
-		if (killer != null && CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinel(killed)) {
+		if (killer != null && CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
 			Messages.debug("%s killed Sentinel or a Sentry npc-%s (name=%s)", killer.getName(),
 					CitizensCompat.getNPCId(killed), mob.getName());
 			if (MasterMobHunterManager.isMasterMobHunter(CitizensCompat.getNPC(killed))) {
@@ -1684,7 +1684,7 @@ public class MobHuntingManager implements Listener {
 
 		LivingEntity mob = event.getEntity();
 
-		if (CitizensCompat.isNPC(mob) && !CitizensCompat.isSentryOrSentinel(mob))
+		if (CitizensCompat.isNPC(mob) && !CitizensCompat.isSentryOrSentinelOrSentries(mob))
 			return;
 
 		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getLocation().getWorld())

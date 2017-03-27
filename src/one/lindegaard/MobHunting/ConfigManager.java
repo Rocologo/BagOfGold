@@ -1903,7 +1903,7 @@ public class ConfigManager extends AutoConfig {
 			Messages.debug("MythicMob %s has no reward data", MythicMobsCompat.getMythicMobType(mob));
 			return 0;
 
-		} else if (CitizensCompat.isSentryOrSentinel(mob)) {
+		} else if (CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
 			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
@@ -2177,7 +2177,7 @@ public class ConfigManager extends AutoConfig {
 			return "";
 
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
-				&& CitizensCompat.isSentryOrSentinel(mob)) {
+				&& CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
 			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
@@ -2399,7 +2399,7 @@ public class ConfigManager extends AutoConfig {
 			return "";
 
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
-				&& CitizensCompat.isSentryOrSentinel(mob)) {
+				&& CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
 			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
@@ -2614,7 +2614,7 @@ public class ConfigManager extends AutoConfig {
 			return 0;
 
 		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(killed)
-				&& CitizensCompat.isSentryOrSentinel(killed)) {
+				&& CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(killed);
 			String key = String.valueOf(npc.getId());
