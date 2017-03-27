@@ -1018,12 +1018,12 @@ public class MobHuntingManager implements Listener {
 						"KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner, an egg or a egg-dispenser )",
 						event.getEntity().getType(), killed.getEntityId());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", mob.getName()));
-				if (MobHunting.getConfigManager().tryToCancelNaturalDropsWhenInCreative) {
+				if (MobHunting.getConfigManager().tryToCancelNaturalDrops) {
 					Messages.debug("Trying to remove natural drops");
 					cancelNaturalDrops = true;
 					event.getDrops().clear();
 				}
-				if (MobHunting.getConfigManager().tryToCancelXPDropsWhenInCreative) {
+				if (MobHunting.getConfigManager().tryToCancelXPDrops) {
 					Messages.debug("Trying to remove XP drops");
 					cancelXPDrops = true;
 					event.setDroppedExp(0);
