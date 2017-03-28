@@ -864,6 +864,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			try {
 				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
 				for (Bounty bounty : bountyDataSet) {
+					if (bounty.getBountyOwner() == null)
+						Messages.debug("RandomBounty to be inserted: %s", bounty.toString());
 					int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
 					int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
 					mInsertBounty.setString(1, bounty.getMobtype());

@@ -27,7 +27,7 @@ public class BountyRetrieverTask implements IDataStoreTask<Set<Bounty>> {
 		for (Object obj : mWaiting) {
 			if (obj instanceof Bounty) {
 				Bounty cached = (Bounty) obj;
-				if (MobHunting.getBountyManager().hasBounty(cached)) {
+				if (MobHunting.getBountyManager().exists(cached)) {
 					continue;
 				}
 

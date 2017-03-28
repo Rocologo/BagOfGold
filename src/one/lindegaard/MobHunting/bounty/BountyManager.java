@@ -21,7 +21,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -82,7 +81,7 @@ public class BountyManager implements Listener {
 	 * @param bounty
 	 */
 	public void addBounty(Bounty bounty) {
-		if (!hasBounty(bounty)) {
+		if (!exists(bounty)) {
 			Messages.debug("Insert bounty=%s", bounty.toString());
 			mOpenBounties.add(bounty);
 			MobHunting.getDataStoreManager().insertBounty(bounty);
@@ -216,7 +215,7 @@ public class BountyManager implements Listener {
 		return false;
 	}
 
-	public boolean hasBounty(Bounty bounty) {
+	public boolean exists(Bounty bounty) {
 		for (Bounty b : mOpenBounties) {
 			if (b.equals(bounty))
 				return true;
@@ -254,7 +253,7 @@ public class BountyManager implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		Bukkit.getScheduler().runTaskLater(instance, new Runnable() {
-			
+
 			@Override
 			public void run() {
 				Player player = e.getPlayer();
@@ -262,15 +261,10 @@ public class BountyManager implements Listener {
 					String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(player);
 					addMarkOnWantedPlayer(player);
 					loadOpenBounties(player);
-					if (hasBounties(worldGroupName, player)) {
-						Messages.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
-						Messages.broadcast(
-								Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()), player);
-					}
 				}
 			}
-		},(long)5);
-		
+		}, (long) 5);
+
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
@@ -311,7 +305,6 @@ public class BountyManager implements Listener {
 									mOpenBounties.add(bounty);
 									n++;
 								} else {
-									//
 									Messages.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
 									bounty.setStatus(BountyStatus.expired);
 									MobHunting.getDataStoreManager().updateBounty(bounty);
@@ -323,6 +316,12 @@ public class BountyManager implements Listener {
 						if (sort)
 							sort();
 						Messages.debug("%s bounties for %s was loaded.", n, offlinePlayer.getName());
+						if (n > 0) {
+							Messages.playerActionBarMessage((Player) offlinePlayer,
+									Messages.getString("mobhunting.bounty.youarewanted"));
+							Messages.broadcast(Messages.getString("mobhunting.bounty.playeriswanted", "playername",
+									offlinePlayer.getName()), (Player) offlinePlayer);
+						}
 					}
 
 					@Override
