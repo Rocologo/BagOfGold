@@ -41,6 +41,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -82,6 +83,7 @@ import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.modifier.BonusMobBonus;
 import one.lindegaard.MobHunting.modifier.BrawlerBonus;
 import one.lindegaard.MobHunting.modifier.ConquestiaBonus;
@@ -754,6 +756,14 @@ public class MobHuntingManager implements Listener {
 		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
 		if (mob.getMob_id() == 0) {
 			return;
+		}
+
+		if (MinecraftMob.getExtendedMobType(mob.getMobtype()) == MinecraftMob.ZombiePigman) {
+			if (killed.getLastDamageCause().getCause() == DamageCause.FALL) {
+				//Messages.debug("A PigZombie was killed by %s, caused by %s", killer.getName(),
+				//		killed.getLastDamageCause().getCause().toString());
+				return;
+			}
 		}
 
 		// WorldGuard Compatibility

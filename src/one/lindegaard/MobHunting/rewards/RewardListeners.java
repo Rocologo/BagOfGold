@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.rewards;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -95,7 +94,7 @@ public class RewardListeners implements Listener {
 
 			} else {
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-						+ hiddenRewardData.getDisplayname()+"("+MobHunting.getRewardManager().format(money)+")");
+						+ hiddenRewardData.getDisplayname() + "(" + MobHunting.getRewardManager().format(money) + ")");
 				RewardManager.getDroppedMoney().put(item.getEntityId(), money);
 				if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency)
 					RewardManager.getEconomy().withdrawPlayer(player, money);
@@ -168,7 +167,7 @@ public class RewardListeners implements Listener {
 	public void onDespawnRewardEvent(ItemDespawnEvent event) {
 		if (event.isCancelled())
 			return;
-		
+
 		if (HiddenRewardData.hasHiddenRewardData(event.getEntity())) {
 			if (RewardManager.getDroppedMoney().containsKey(event.getEntity().getEntityId()))
 				RewardManager.getDroppedMoney().remove(event.getEntity().getEntityId());
@@ -181,17 +180,20 @@ public class RewardListeners implements Listener {
 	public void onInventoryPickupRewardEvent(InventoryPickupItemEvent event) {
 		if (event.isCancelled())
 			return;
+
 		Item item = event.getItem();
-		if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
-			RewardManager.getDroppedMoney().remove(item.getEntityId());
+		if (!item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA))
+			return;
+
 		if (MobHunting.getConfigManager().denyHoppersToPickUpMoney
-				&& (item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA))
 				&& event.getInventory().getType() == InventoryType.HOPPER) {
 			Messages.debug("A %s tried to pick up the the reward, but this is disabled in config.yml",
 					event.getInventory().getType());
 			event.setCancelled(true);
 		} else {
 			Messages.debug("The reward was picked up by %s", event.getInventory().getType());
+			if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
+				RewardManager.getDroppedMoney().remove(item.getEntityId());
 		}
 	}
 
@@ -199,7 +201,7 @@ public class RewardListeners implements Listener {
 	public void onPlayerMoveOverRewardEvent(PlayerMoveEvent event) {
 		if (event.isCancelled())
 			return;
-		
+
 		Player player = event.getPlayer();
 		if (player.getInventory().firstEmpty() == -1 && !player.getCanPickupItems()
 				&& !RewardManager.getDroppedMoney().isEmpty()) {
@@ -278,12 +280,12 @@ public class RewardListeners implements Listener {
 	public void onRewardBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled())
 			return;
-		
+
 		ItemStack is = event.getItemInHand();
 		Block block = event.getBlockPlaced();
 		if (HiddenRewardData.hasHiddenRewardData(is)) {
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
-			if (hiddenRewardData.getMoney()==0)
+			if (hiddenRewardData.getMoney() == 0)
 				hiddenRewardData.setUniqueId(UUID.randomUUID());
 			Messages.debug("Placed block-reward:%s", hiddenRewardData.toString());
 			block.setMetadata(RewardManager.MH_HIDDEN_REWARD_DATA,
@@ -291,18 +293,18 @@ public class RewardListeners implements Listener {
 			RewardManager.getLocations().put(hiddenRewardData.getUniqueId(), hiddenRewardData);
 			RewardManager.getHiddenRewardData().put(hiddenRewardData.getUniqueId(), block.getLocation());
 			RewardManager.saveReward(hiddenRewardData.getUniqueId());
-		} 
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onRewardBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
-		
+
 		Block block = event.getBlock();
 		if (HiddenRewardData.hasHiddenRewardData(block)) {
-			//event.setCancelled(true);
-			//block.setType(Material.AIR);
+			// event.setCancelled(true);
+			// block.setType(Material.AIR);
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(block);
 			block.getDrops().clear();
 			block.setType(Material.AIR);
@@ -315,22 +317,24 @@ public class RewardListeners implements Listener {
 						hiddenRewardData.getMoney(), hiddenRewardData.getUniqueId());
 			} else { // (hiddenRewardData.getUuid()toString().equals(RewardManager.MH_REWARD_HEAD_UUID)){
 				// Is it an EnderDragon
-				if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Skeleton.getDisplayName())) 
+				if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Skeleton.getDisplayName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
-				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.WitherSkeleton.getDisplayName())) 
+				else if (hiddenRewardData.getDisplayname()
+						.equalsIgnoreCase(MinecraftMob.WitherSkeleton.getDisplayName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
-				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Zombie.getDisplayName())) 
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Zombie.getDisplayName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
-				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Creeper.getDisplayName())) 
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Creeper.getDisplayName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getDisplayName())) 
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getDisplayName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 				else
 					is = CustomItems.getCustomtexture(hiddenRewardData.getUuid(), hiddenRewardData.getDisplayname(),
 							MinecraftMob.getTexture(hiddenRewardData.getDisplayname()),
 							MinecraftMob.getSignature(hiddenRewardData.getDisplayname()), hiddenRewardData.getMoney(),
 							hiddenRewardData.getUniqueId());
-				is = HiddenRewardData.setDisplayNameAndHiddenLores(is, hiddenRewardData.getDisplayname(), hiddenRewardData.getMoney(), RewardManager.MH_REWARD_HEAD_UUID);
+				is = HiddenRewardData.setDisplayNameAndHiddenLores(is, hiddenRewardData.getDisplayname(),
+						hiddenRewardData.getMoney(), RewardManager.MH_REWARD_HEAD_UUID);
 			}
 			Item item = block.getWorld().dropItemNaturally(block.getLocation(), is);
 			if (hiddenRewardData.getMoney() == 0)
@@ -355,7 +359,7 @@ public class RewardListeners implements Listener {
 	public void onInventoryClickReward(InventoryClickEvent event) {
 		if (event.isCancelled())
 			return;
-		
+
 		// Inventory inv = event.getClickedInventory();
 		InventoryAction action = event.getAction();
 		// ClickType clickType = event.getClick();
