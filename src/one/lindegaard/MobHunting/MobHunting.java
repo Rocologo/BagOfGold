@@ -60,6 +60,7 @@ import one.lindegaard.MobHunting.compatibility.TownyCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
+import one.lindegaard.MobHunting.grinding.GrindingManager;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.rewards.RewardManager;
@@ -84,7 +85,7 @@ public class MobHunting extends JavaPlugin {
 	private static RewardManager mRewardManager;
 	private static MobHuntingManager mMobHuntingManager;
 	private static FishingManager mFishingManager;
-	private static AreaManager mAreaManager;
+	private static GrindingManager mAreaManager;
 	private static LeaderboardManager mLeaderboardManager;
 	private static AchievementManager mAchievementManager;
 	private static BountyManager mBountyManager;
@@ -126,7 +127,7 @@ public class MobHunting extends JavaPlugin {
 		if (RewardManager.getEconomy() == null)
 			return;
 
-		mAreaManager = new AreaManager(this);
+		mAreaManager = new GrindingManager(this);
 
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
 			mStore = new MySQLDataStore();
@@ -301,7 +302,7 @@ public class MobHunting extends JavaPlugin {
 		Messages.debug("Shutdown LeaderBoardManager");
 		mLeaderboardManager.shutdown();
 		Messages.debug("Shutdown AreaManager");
-		mAreaManager.shutdown();
+		mAreaManager.saveData();
 		if (!mConfig.disablePlayerBounties) {
 			Messages.debug("Shutdown BountyManager");
 			mBountyManager.shutdown();
@@ -395,7 +396,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static AreaManager getAreaManager() {
+	public static GrindingManager getGrindingManager() {
 		return mAreaManager;
 	}
 

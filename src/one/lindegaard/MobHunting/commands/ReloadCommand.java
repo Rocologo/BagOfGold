@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.storage.DataStoreException;
 
 public class ReloadCommand implements ICommand {
 	@Override
@@ -55,7 +54,9 @@ public class ReloadCommand implements ICommand {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}**/
-
+		
+		MobHunting.getGrindingManager().saveData();
+		
 		long starttime = System.currentTimeMillis();
 		int i = 1;
 		while (MobHunting.getDataStoreManager().isRunning() && (starttime + 10000 > System.currentTimeMillis())) {

@@ -6,14 +6,16 @@ import java.util.Iterator;
 
 import org.bukkit.Location;
 
+import one.lindegaard.MobHunting.grinding.Area;
+
 public class HuntData {
 
 	MobHunting instance;
 	private int killStreak = 0;
 	private int dampenedKills = 0;
 	private static double cDampnerRange = MobHunting.getConfigManager().grindingRangeDetection;
-	public Location lastKillAreaCenter;
-	public ArrayList<Area> lastGridingAreas = new ArrayList<Area>();
+	private Location lastKillAreaCenter;
+	private ArrayList<Area> lastGridingAreas = new ArrayList<Area>();
 	private double reward = 0;
 	private HashMap<String, Double> modifiers = new HashMap<String, Double>();
 
@@ -66,11 +68,22 @@ public class HuntData {
 			}
 		}
 
-		Area area = new Area();
-		area.center = lastKillAreaCenter;
-		area.range = cDampnerRange;
-		area.count = dampenedKills;
+		Area area = new Area(lastKillAreaCenter, cDampnerRange, dampenedKills);
 		lastGridingAreas.add(area);
+	}
+
+	/**
+	 * @return the lastKillAreaCenter
+	 */
+	public Location getLastKillAreaCenter() {
+		return lastKillAreaCenter;
+	}
+
+	/**
+	 * @param lastKillAreaCenter the lastKillAreaCenter to set
+	 */
+	public void setLastKillAreaCenter(Location lastKillAreaCenter) {
+		this.lastKillAreaCenter = lastKillAreaCenter;
 	}
 
 	/**

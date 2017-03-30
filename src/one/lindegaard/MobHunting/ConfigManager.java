@@ -83,15 +83,6 @@ public class ConfigManager extends AutoConfig {
 	public ConfigManager(File file) {
 		super(file);
 
-		setCategoryComment("configtest",
-				"########################################################################" + "\n Config test"
-						+ "\n########################################################################"
-						+ "\nThese settings is only for testing purpose");
-		setCategoryComment("configtest.test1",
-				"########################################################################" + "\n Config test"
-						+ "\n########################################################################"
-						+ "\nThese settings is only for testing purpose.test1");
-
 		setCategoryComment("mobs", "########################################################################"
 				+ "\nRewards for killing mobs."
 				+ "\n########################################################################"
@@ -283,21 +274,6 @@ public class ConfigManager extends AutoConfig {
 				+ "\nGeneral Setting." + "\n########################################################################");
 
 	}
-
-	// #####################################################################################
-	// Mobs
-	// #####################################################################################
-	@ConfigField(name = "test1.test2.field1", category = "configtest", comment = "Comment on field1")
-	public String field1 = "1.0";
-
-	@ConfigField(name = "test1.test2.field2", category = "configtest", comment = "Comment on field2")
-	public String field2 = "2.0";
-
-	@ConfigField(name = "test1.test2-2.field3", category = "configtest", comment = "Comment on field3")
-	public String field3 = "3.0";
-
-	@ConfigField(name = "test1.test2-3.field4", category = "configtest", comment = "Comment on field4")
-	public String field4 = "4.0";
 
 	// #####################################################################################
 	// Mobs
@@ -547,7 +523,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "zombie-pigman", category = "mobs")
 	public String zombiePigmanPrize = "4:8";
 	@ConfigField(name = "zombie-pigman-cmd", category = "mobs")
-	public String zombiePigmanCmd = "mobhunt head give {player} Pig_Zombie Pig_Zombie 1 silent|give {player} iron_ingot 1";
+	public String zombiePigmanCmd = "mobhunt head give {player} Zombie_Pigman Zombie_Pigman 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "zombie-pigman-cmd-desc", category = "mobs")
 	public String zombiePigmanCmdDesc = "You got a Zombie Pigman skull and an Iron ingot.";
 	@ConfigField(name = "zombie-pigman-cmd-run-chance", category = "mobs")
@@ -1345,7 +1321,36 @@ public class ConfigManager extends AutoConfig {
 			+ "\nis by nature detected as grinding and by default allowed. If you want to the the grinding detection to detect"
 			+ "\nkillings of stacked to be detected as gring, you must set grinding-stacked-mobs-allowed to false.")
 	public boolean isGrindingStackedMobsAllowed = true;
-
+	
+	//NetherGoldXPFarm
+	@ConfigField(name = "detect-nether-gold-farms", category = "grinding", comment = "Nether Gold Farm detection."
+			+ "\nWhen this is true, the plugin will try to detect if the players has build a Nether Gold Farm."
+			+ "\nThere is no guarantie that the plugin can detect all types of Nether Gold farms, but it has"
+			+ "\nbeen testet on this one: https://www.youtube.com/watch?v=jQWG9Q7HoUA"
+			+ "\n")
+	public boolean detectNetherGoldFarms = true;
+	@ConfigField(name = "disable-natural-item-drops-on-nether-gold-farms", category = "grinding", comment = "Nether Gold Farm detection."
+			+ "\nDisable natural drops when a Nether Gold Farm has been detected.")
+	public boolean disableNaturalItemDropsOnNetherGoldFarms = true;
+	@ConfigField(name = "disable-natural-xp-drops-on-nether-gold-farms", category = "grinding", comment = "Nether Gold Farm detection."
+			+ "\nDisable natural drops when a Nether Gold Farm has been detected.")
+	public boolean disableNaturalXPDropsOnNetherGoldFarms = true;
+	@ConfigField(name = "seconds-to-search-for-grinding", category = "grinding", comment = "Nether Gold Farm detection."
+			+ "\nWhen searching for grinding the plugin measureshow many mobs dies per timeframe"
+			+ "\nHere you can set how long the timeframe should be. Be careful if you change this number"
+			+ "\nthere is a risk for false positives.")
+	public int secondsToSearchForGrinding = 30;
+	@ConfigField(name = "range-to-search-for-grinding", category = "grinding", comment = "Nether Gold Farm detection."
+			+ "\nWhen searching for grinding the plugin measureshow many mobs dies per timeframe within an area"
+			+ "\nHere you can set the range from the killed mobs location the plugin should look.")
+	public double rangeToSearchForGrinding = 4;
+	@ConfigField(name = "number-of-deaths-when-searching-for-grinding", category = "grinding", comment = "Nether Gold Farm detection."
+			+ "\nWhen searching for grinding the plugin measureshow many mobs dies per timeframe within an area"
+			+ "\nHere you can set the number of mobs to be killed in the range in the given timeframe.")
+	public int numberOfDeathsWhenSearchingForGringding = 5;
+	
+	
+	
 	// #####################################################################################
 	// Penalties
 	// #####################################################################################
@@ -1753,6 +1758,11 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "allow_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
 	public boolean allowMobSpawnersEggsAndDispensers = false;
+	@ConfigField(name = "allow_naturally_dropped_items_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped items from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
+	public boolean allowNaturallyDroppedItemsFromMobSpawnersEggsAndDispensers = true;
+	@ConfigField(name = "allow_naturally_dropped_xp_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped XP from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
+	public boolean allowNaturallyDroppedXPFromMobSpawnersEggsAndDispensers = true;
+
 
 	@ConfigField(name = "use-actionbar-for-broadcasts", category = "general", comment = "Broadcast messages will be send in the ActionBar if MobHunting finds a supported ActionBar plugin.")
 	public boolean useActionBarforBroadcasts = true;
@@ -2807,7 +2817,7 @@ public class ConfigManager extends AutoConfig {
 	public boolean isCmdGointToBeExcuted(Entity killed) {
 		double randomDouble = MobHunting.getMobHuntingManager().mRand.nextDouble();
 		double runChanceDouble = getCmdRunChance(killed);
-		Messages.debug("random double=%s < chance=%s", randomDouble, runChanceDouble);
+		Messages.debug("Command will be run if chance: %s > %s (random number)", runChanceDouble, randomDouble);
 		if (killed instanceof Player)
 			return randomDouble < pvpKillCmdRunChance;
 		else

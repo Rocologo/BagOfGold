@@ -7,9 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import one.lindegaard.MobHunting.Area;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.grinding.Area;
 
 public class WhitelistAreaCommand implements ICommand {
 
@@ -54,7 +54,7 @@ public class WhitelistAreaCommand implements ICommand {
 		Location loc = ((Player) sender).getLocation();
 
 		if (args.length == 0) {
-			if (MobHunting.getAreaManager().isWhitelisted(loc))
+			if (MobHunting.getGrindingManager().isWhitelisted(loc))
 				sender.sendMessage(
 						ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.iswhitelisted"));
 			else
@@ -62,15 +62,12 @@ public class WhitelistAreaCommand implements ICommand {
 						ChatColor.RED + Messages.getString("mobhunting.commands.whitelistarea.notwhitelisted"));
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("remove")) {
-				MobHunting.getAreaManager().unWhitelistArea(loc);
+				MobHunting.getGrindingManager().unWhitelistArea(loc);
 				sender.sendMessage(
 						ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.remove.done"));
 			} else if (args[0].equalsIgnoreCase("add")) {
-				Area area = new Area();
-				area.center = loc;
-				area.range = 15;
-				MobHunting.getAreaManager().whitelistArea(area);
-
+				Area area = new Area(loc, MobHunting.getConfigManager().grindingRangeDetection, 0);
+				MobHunting.getGrindingManager().whitelistArea(area);
 				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.done"));
 			} else
 				return false;

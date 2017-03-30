@@ -242,7 +242,7 @@ public class DataStoreManager {
 			mTaskThread.addTask(new StoreTask(mWaiting), null);
 		}
 	}
-	
+
 	/**
 	 * Shutdown the DataStoreManager
 	 */
@@ -315,6 +315,14 @@ public class DataStoreManager {
 						}
 					}
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
+
+					Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
+						@Override
+						public void run() {
+							MobHunting.getGrindingManager().saveData();
+						}
+					});
+
 					Thread.sleep(mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {

@@ -28,4 +28,8 @@ public enum MobPlugin {
 		return MobPlugin.values()[id];
 	}
 
+	public String getName() {
+		return name;
+	}
+
 }

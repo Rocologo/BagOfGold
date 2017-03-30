@@ -169,10 +169,11 @@ public class RewardListeners implements Listener {
 			return;
 
 		if (HiddenRewardData.hasHiddenRewardData(event.getEntity())) {
-			if (RewardManager.getDroppedMoney().containsKey(event.getEntity().getEntityId()))
+			if (RewardManager.getDroppedMoney().containsKey(event.getEntity().getEntityId())) {
 				RewardManager.getDroppedMoney().remove(event.getEntity().getEntityId());
-			Messages.debug("The reward was lost - despawned (# of rewards left=%s)",
-					RewardManager.getDroppedMoney().size());
+				Messages.debug("The reward was lost - despawned (# of rewards left=%s)",
+						RewardManager.getDroppedMoney().size());
+			}
 		}
 	}
 
@@ -187,11 +188,13 @@ public class RewardListeners implements Listener {
 
 		if (MobHunting.getConfigManager().denyHoppersToPickUpMoney
 				&& event.getInventory().getType() == InventoryType.HOPPER) {
-			Messages.debug("A %s tried to pick up the the reward, but this is disabled in config.yml",
-					event.getInventory().getType());
+			// Messages.debug("A %s tried to pick up the the reward, but this is
+			// disabled in config.yml",
+			// event.getInventory().getType());
 			event.setCancelled(true);
 		} else {
-			Messages.debug("The reward was picked up by %s", event.getInventory().getType());
+			// Messages.debug("The reward was picked up by %s",
+			// event.getInventory().getType());
 			if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
 				RewardManager.getDroppedMoney().remove(item.getEntityId());
 		}

@@ -9,10 +9,10 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import one.lindegaard.MobHunting.Area;
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.grinding.Area;
 
 public class CheckGrindingCommand implements ICommand {
 
@@ -57,7 +57,7 @@ public class CheckGrindingCommand implements ICommand {
 			return false;
 
 		Location loc = ((Player) sender).getLocation();
-		Area area = MobHunting.getAreaManager().getGrindingArea(loc);
+		Area area = MobHunting.getGrindingManager().getGrindingArea(loc);
 
 		if (area != null)
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.server-wide"));

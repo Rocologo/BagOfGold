@@ -55,7 +55,7 @@ public class ClearGrindingCommand implements ICommand {
 			return false;
 
 		Location loc = ((Player) sender).getLocation();
-		MobHunting.getAreaManager().clearGrindingArea(loc);
+		MobHunting.getGrindingManager().clearGrindingArea(loc);
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
