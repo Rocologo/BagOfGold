@@ -66,7 +66,7 @@ public class WhitelistAreaCommand implements ICommand {
 				sender.sendMessage(
 						ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.remove.done"));
 			} else if (args[0].equalsIgnoreCase("add")) {
-				Area area = new Area(loc, MobHunting.getConfigManager().grindingRangeDetection, 0);
+				Area area = new Area(loc, MobHunting.getConfigManager().grindingDetectionRange, 0);
 				MobHunting.getGrindingManager().whitelistArea(area);
 				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.done"));
 			} else

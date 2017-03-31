@@ -856,99 +856,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	};
 
-	@Override
-	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
-		Connection mConnection;
-		try {
-			mConnection = setupConnection();
-			try {
-				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
-				for (Bounty bounty : bountyDataSet) {
-					if (bounty.getBountyOwner() == null)
-						Messages.debug("RandomBounty to be inserted: %s", bounty.toString());
-					int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
-					int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
-					mInsertBounty.setString(1, bounty.getMobtype());
-					mInsertBounty.setInt(2, bountyOwnerId);
-					mInsertBounty.setInt(3, wantedPlayerId);
-					mInsertBounty.setInt(4, bounty.getNpcId());
-					mInsertBounty.setString(5, bounty.getMobId());
-					mInsertBounty.setString(6, bounty.getWorldGroup());
-					mInsertBounty.setLong(7, bounty.getCreatedDate());
-					mInsertBounty.setLong(8, bounty.getEndDate());
-					mInsertBounty.setDouble(9, bounty.getPrize());
-					mInsertBounty.setString(10, bounty.getMessage());
-					mInsertBounty.setInt(11, bounty.getStatus().getValue());
-					mInsertBounty.addBatch();
-				}
-				mInsertBounty.executeBatch();
-				mInsertBounty.close();
-				mConnection.commit();
-				mConnection.close();
-			} catch (SQLException e) {
-				rollback(mConnection);
-				mConnection.close();
-				throw new DataStoreException(e);
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-			throw new DataStoreException(e1);
-		}
-
-	};
-
-	@Override
-	public void updateBounty(Set<Bounty> bountyDataSet) throws DataStoreException {
-		Connection mConnection;
-		try {
-			mConnection = setupConnection();
-			try {
-
-				openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_BOUNTY);
-				for (Bounty bounty : bountyDataSet) {
-					mUpdateBounty.setDouble(1, bounty.getPrize());
-					mUpdateBounty.setString(2, bounty.getMessage());
-					mUpdateBounty.setLong(3, bounty.getEndDate());
-					mUpdateBounty.setInt(4, bounty.getStatus().getValue());
-					mUpdateBounty.setInt(5, getPlayerId(bounty.getWantedPlayer()));
-					mUpdateBounty.setInt(6, getPlayerId(bounty.getBountyOwner()));
-					mUpdateBounty.setString(7, bounty.getWorldGroup());
-					mUpdateBounty.addBatch();
-				}
-				mUpdateBounty.executeBatch();
-				mUpdateBounty.close();
-				mConnection.commit();
-			} catch (SQLException e) {
-				rollback(mConnection);
-				mConnection.close();
-				throw new DataStoreException(e);
-			}
-			mConnection.close();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	};
-
-	@Override
-	public void deleteBounty(Set<Bounty> bounties) throws DataStoreException {
-		Iterator<Bounty> itr = bounties.iterator();
-		while (itr.hasNext()) {
-			Bounty b = itr.next();
-			b.setStatus(BountyStatus.deleted);
-		}
-		insertBounty(bounties);
-	}
-
-	@Override
-	public void cancelBounty(Set<Bounty> bounties) throws DataStoreException {
-		Iterator<Bounty> itr = bounties.iterator();
-		while (itr.hasNext()) {
-			Bounty b = itr.next();
-			b.setStatus(BountyStatus.canceled);
-		}
-		insertBounty(bounties);
-	}
-
 	/**
 	 * create a RandomBountyPlayer if not exist in mh_Players
 	 * 
@@ -1040,7 +947,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	@Override
-	public void updatePlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
+	public void savePlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();

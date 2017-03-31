@@ -41,7 +41,7 @@ public class StoreTask implements IDataStoreTask<Void> {
 	@Override
 	public Void run(IDataStore store) throws DataStoreException {
 		if (!mWaitingPlayerSettings.isEmpty())
-			store.updatePlayerSettings(mWaitingPlayerSettings);
+			store.savePlayerSettings(mWaitingPlayerSettings);
 
 		if (!mWaitingPlayerStats.isEmpty())
 			store.savePlayerStats(mWaitingPlayerStats);
@@ -50,7 +50,7 @@ public class StoreTask implements IDataStoreTask<Void> {
 			store.saveAchievements(mWaitingAchievements);
 
 		if (!mWaitingBounties.isEmpty())
-			store.updateBounty(mWaitingBounties);
+			store.saveBounties(mWaitingBounties);
 
 		return null;
 	}

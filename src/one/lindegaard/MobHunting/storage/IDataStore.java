@@ -87,7 +87,7 @@ public interface IDataStore {
 	 * @param playerDataSet
 	 * @throws DataStoreException
 	 */
-	public void updatePlayerSettings(Set<PlayerSettings> ps) throws DataStoreException;
+	public void savePlayerSettings(Set<PlayerSettings> ps) throws DataStoreException;
 
 	/**
 	 * Insert all PlayerData for one player into the Database
@@ -98,6 +98,21 @@ public interface IDataStore {
 	public void insertPlayerSettings(PlayerSettings ps) throws DataStoreException;
 
 	/**
+	 * Load all bounties for the given player directly from the Sql Database
+	 * @param mPlayer
+	 * @return Set<Bounty>
+	 * @throws DataStoreException
+	 */
+	public Set<Bounty> loadBounties(OfflinePlayer mPlayer) throws DataStoreException;
+
+	/**
+	 * Save the Bounty Sets direktly to the Database
+	 * @param bountyDataSet
+	 * @throws DataStoreException
+	 */
+	public void saveBounties(Set<Bounty> bountyDataSet) throws DataStoreException;
+
+	/**
 	 * Fixes error in the database
 	 * 
 	 * @throws SQLException
@@ -105,22 +120,25 @@ public interface IDataStore {
 	 */
 	public void databaseFixLeaderboard() throws DataStoreException;
 	
+	/**
+	 * Convert all tables to use UTF-8 character set.
+	 * @param database_name
+	 * @throws DataStoreException
+	 */
 	public void databaseConvertToUtf8(String database_name) throws DataStoreException;
-
-	public void insertBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
-
-	public void updateBounty(Set<Bounty> bountyDataSet) throws DataStoreException;
 
 	public OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException;
 
-	public void deleteBounty(Set<Bounty> bounties) throws DataStoreException;
-
-	public void cancelBounty(Set<Bounty> bounties) throws DataStoreException;
-
-	public Set<Bounty> loadBounties(OfflinePlayer mPlayer) throws DataStoreException;
-
+	/**
+	 * Get the player ID directly from the database
+	 * @param player
+	 * @return
+	 * @throws DataStoreException
+	 * @throws UserNotFoundException
+	 */
 	public int getPlayerId(OfflinePlayer player) throws DataStoreException, UserNotFoundException;
 
+	
 	public Set<ExtendedMob> loadMobs() throws DataStoreException;
 
 	public void insertMissingVanillaMobs();

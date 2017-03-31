@@ -1307,49 +1307,64 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Grinding detection
 	// #####################################################################################
-	@ConfigField(name = "enable-grinding-penalty", category = "grinding", comment = "Grinding detection."
+	@ConfigField(name = "enable-grinding-detection", category = "grinding", comment = "Grinding detection."
 			+ "\nEnabling this prevents a player from earning too much money from using a mob grinder."
-			+ "\nSet 'enable-grinding-penalty: false' to disable the grinding detection."
+			+ "\nSet 'enable-grinding-detection: false' to disable the grinding detection."
 			+ "\nOBS: You can whitelist an area to allow grinding using '/mobhunt whitelistarea <add|remove>'"
-			+ "\nif the area is detected as a grinding area. See also '/mobhunt checkgrinding'")
-	public boolean penaltyGrindingEnable = true;
-	@ConfigField(name = "grinding-range-detection", category = "grinding", comment = "For each kill MobHunting check number of kills within this number of blocks."
-			+ "\nIf number of kills exceeds 10, the reward will decrese with 10% until 20 kills with"
-			+ "\nthe range, whereafter the reward will be zero.")
-	public int grindingRangeDetection = 15;
+			+ "\nif the area is detected as a grinding area. See also '/mobhunt checkgrinding'"
+			+ "\nFor each kill MobHunting check the number of kills within the range"
+			+ "\nIf number of kills exceeds 10, the reward will decrese with 10% until the 'number of deaths'"
+			+ "\nis reached, whereafter the reward will be zero.")
+	public boolean grindingDetectionEnabled = true;
+	@ConfigField(name = "grinding-detection-range", category = "grinding")
+	public int grindingDetectionRange = 15;
+	@ConfigField(name = "grinding-detection-number-of-death", category = "grinding")
+	public int grindingDetectionNumberOfDeath = 20;
 	@ConfigField(name = "grinding-stacked-mobs-allowed", category = "grinding", comment = "Killing stacked mobs (created by a mob stacking plugin) "
 			+ "\nis by nature detected as grinding and by default allowed. If you want to the the grinding detection to detect"
 			+ "\nkillings of stacked to be detected as gring, you must set grinding-stacked-mobs-allowed to false.")
 	public boolean isGrindingStackedMobsAllowed = true;
-	
-	//NetherGoldXPFarm
+
+	// Farm detection
+	@ConfigField(name = "detect-farms", category = "grinding", comment = "Detect Grinding Farms."
+			+ "\nWhen this is true, the plugin will try to detect if the players has build a Mob Grinding Farm."
+			+ "\nFarm detection can be completly disabled or you can whitelist an area using the whitelist"
+			+ "\ncommand if you want the players to harvest mobs from a farm.")
+	public boolean detectFarms = true;
+	// NetherGoldXPFarm
 	@ConfigField(name = "detect-nether-gold-farms", category = "grinding", comment = "Nether Gold Farm detection."
 			+ "\nWhen this is true, the plugin will try to detect if the players has build a Nether Gold Farm."
 			+ "\nThere is no guarantie that the plugin can detect all types of Nether Gold farms, but it has"
 			+ "\nbeen testet on this one: https://www.youtube.com/watch?v=jQWG9Q7HoUA"
-			+ "\n")
+			+ "\nWhen searching for grinding the plugin measures how many mobs dies per timeframe within a range."
+			+ "\nBe careful if you change this number there is a risk for false positives."	)
 	public boolean detectNetherGoldFarms = true;
-	@ConfigField(name = "disable-natural-item-drops-on-nether-gold-farms", category = "grinding", comment = "Nether Gold Farm detection."
-			+ "\nDisable natural drops when a Nether Gold Farm has been detected.")
-	public boolean disableNaturalItemDropsOnNetherGoldFarms = true;
-	@ConfigField(name = "disable-natural-xp-drops-on-nether-gold-farms", category = "grinding", comment = "Nether Gold Farm detection."
-			+ "\nDisable natural drops when a Nether Gold Farm has been detected.")
-	public boolean disableNaturalXPDropsOnNetherGoldFarms = true;
-	@ConfigField(name = "seconds-to-search-for-grinding", category = "grinding", comment = "Nether Gold Farm detection."
-			+ "\nWhen searching for grinding the plugin measureshow many mobs dies per timeframe"
-			+ "\nHere you can set how long the timeframe should be. Be careful if you change this number"
-			+ "\nthere is a risk for false positives.")
+	@ConfigField(name = "seconds-to-search-for-grinding-on-nether-gold-farms", category = "grinding")
 	public int secondsToSearchForGrinding = 30;
-	@ConfigField(name = "range-to-search-for-grinding", category = "grinding", comment = "Nether Gold Farm detection."
-			+ "\nWhen searching for grinding the plugin measureshow many mobs dies per timeframe within an area"
-			+ "\nHere you can set the range from the killed mobs location the plugin should look.")
+	@ConfigField(name = "range-to-search-for-grinding-on-nether-gold-farms", category = "grinding")
 	public double rangeToSearchForGrinding = 4;
-	@ConfigField(name = "number-of-deaths-when-searching-for-grinding", category = "grinding", comment = "Nether Gold Farm detection."
-			+ "\nWhen searching for grinding the plugin measureshow many mobs dies per timeframe within an area"
-			+ "\nHere you can set the number of mobs to be killed in the range in the given timeframe.")
+	@ConfigField(name = "number-of-deaths-when-searching-for-grinding-on-nether-gold-farms", category = "grinding")
 	public int numberOfDeathsWhenSearchingForGringding = 5;
+	@ConfigField(name = "disable-natural-item-drops-on-nether-gold-farms", category = "grinding")
+	public boolean disableNaturalItemDropsOnNetherGoldFarms = true;
+	@ConfigField(name = "disable-natural-xp-drops-on-nether-gold-farms", category = "grinding")
+	public boolean disableNaturalXPDropsOnNetherGoldFarms = true;
 	
-	
+	@ConfigField(name = "detect-other-farms", category = "grinding", comment = "Other Farm detection."
+			+ "\nWhen this is true, the plugin will try to detect if the players has build other Farms"
+			+ "\nwhere different mobs is falling into death. The plugin is still counting mobs which"
+			+ "\ndies from falling, with in a range and a time frame.")
+	public boolean detectOtherFarms = true;
+	@ConfigField(name = "seconds-to-search-for-grinding-on-other-farms", category = "grinding")
+	public int secondsToSearchForGrindingOnOtherFarms = 30;
+	@ConfigField(name = "range-to-search-for-grinding-on-other-farms", category = "grinding")
+	public double rangeToSearchForGrindingOnOtherFarms = 4;
+	@ConfigField(name = "number-of-deaths-when-searching-for-grinding-on-other-farms", category = "grinding")
+	public int numberOfDeathsWhenSearchingForGringdingOnOtherFarms = 10;
+	@ConfigField(name = "disable-natural-item-drops-on-other-farms", category = "grinding")
+	public boolean disableNaturalItemDropsOnOtherFarms = true;
+	@ConfigField(name = "disable-natural-xp-drops-on-other-farms", category = "grinding")
+	public boolean disableNaturalXPDropsOnOtherFarms = true;
 	
 	// #####################################################################################
 	// Penalties
@@ -1762,7 +1777,6 @@ public class ConfigManager extends AutoConfig {
 	public boolean allowNaturallyDroppedItemsFromMobSpawnersEggsAndDispensers = true;
 	@ConfigField(name = "allow_naturally_dropped_xp_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped XP from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
 	public boolean allowNaturallyDroppedXPFromMobSpawnersEggsAndDispensers = true;
-
 
 	@ConfigField(name = "use-actionbar-for-broadcasts", category = "general", comment = "Broadcast messages will be send in the ActionBar if MobHunting finds a supported ActionBar plugin.")
 	public boolean useActionBarforBroadcasts = true;

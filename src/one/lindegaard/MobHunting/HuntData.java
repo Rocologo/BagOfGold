@@ -13,7 +13,7 @@ public class HuntData {
 	MobHunting instance;
 	private int killStreak = 0;
 	private int dampenedKills = 0;
-	private static double cDampnerRange = MobHunting.getConfigManager().grindingRangeDetection;
+	private static double cDampnerRange = MobHunting.getConfigManager().grindingDetectionRange;
 	private Location lastKillAreaCenter;
 	private ArrayList<Area> lastGridingAreas = new ArrayList<Area>();
 	private double reward = 0;
@@ -27,7 +27,9 @@ public class HuntData {
 		for (Area area : lastGridingAreas) {
 			if (area.center.getWorld().equals(location.getWorld())) {
 				if (area.center.distance(location) < area.range) {
-					Messages.debug("HuntData has a grinding area = %s", area.center);
+					Messages.debug("Players HuntData contain a Grinding Area: (%s,%s,%s,%s)",
+							area.center.getWorld().getName(), area.center.getBlockX(), area.center.getBlockY(),
+							area.center.getBlockZ());
 					return area;
 				}
 			}
@@ -80,7 +82,8 @@ public class HuntData {
 	}
 
 	/**
-	 * @param lastKillAreaCenter the lastKillAreaCenter to set
+	 * @param lastKillAreaCenter
+	 *            the lastKillAreaCenter to set
 	 */
 	public void setLastKillAreaCenter(Location lastKillAreaCenter) {
 		this.lastKillAreaCenter = lastKillAreaCenter;

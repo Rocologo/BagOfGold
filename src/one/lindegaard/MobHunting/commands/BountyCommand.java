@@ -143,7 +143,7 @@ public class BountyCommand implements ICommand {
 				if (MobHunting.getBountyManager().hasBounty(worldGroupName, wantedPlayer, bountyOwner)) {
 					Bounty bounty = MobHunting.getBountyManager().getBounty(worldGroupName, wantedPlayer, bountyOwner);
 					bounty.setStatus(BountyStatus.canceled);
-					MobHunting.getBountyManager().cancelBounty(bounty);
+					MobHunting.getBountyManager().cancel(bounty);
 					int pct = MobHunting.getConfigManager().bountyReturnPct;
 					MobHunting.getRewardManager().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounty-removed", "wantedplayer",
@@ -213,7 +213,7 @@ public class BountyCommand implements ICommand {
 							"wantedplayer", wantedPlayer.getName()));
 				}
 
-				MobHunting.getBountyManager().addBounty(bounty);
+				MobHunting.getBountyManager().save(bounty);
 				MobHunting.getRewardManager().withdrawPlayer(bountyOwner, prize);
 				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.money-withdrawn", "money", prize));
 

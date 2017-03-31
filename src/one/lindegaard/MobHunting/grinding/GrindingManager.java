@@ -18,8 +18,11 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
@@ -55,7 +58,7 @@ public class GrindingManager implements Listener {
 	 * 
 	 * @param killed
 	 */
-	public void registerKill(LivingEntity killed) {
+	public void registerDeath(LivingEntity killed) {
 		GrindingInformation grindingInformation = new GrindingInformation(killed);
 		if (!isGrindingArea(killed.getLocation()) && !isWhitelisted(killed.getLocation())) {
 			killed_mobs.put(killed.getEntityId(), grindingInformation);
@@ -121,6 +124,61 @@ public class GrindingManager implements Listener {
 			}
 		}
 		Messages.debug("Farm detection: This was not a Nether Gold XP Farm (%s of %s mobs with last %s sec.)", n,
+				numberOfDeaths, seconds);
+		return false;
+	}
+
+	public boolean isOtherFarm(LivingEntity killed) {
+		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
+		int n = 0;
+		long now = System.currentTimeMillis();
+		final long seconds = MobHunting.getConfigManager().secondsToSearchForGrinding;
+		final double killRadius = MobHunting.getConfigManager().rangeToSearchForGrinding;
+		final int numberOfDeaths = MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding;
+		if (MinecraftMob.getExtendedMobType(mob.getMobtype()) == MinecraftMob.ZombiePigman) {
+			if (killed.getLastDamageCause().getCause() == DamageCause.FALL) {
+				Area detectedGrindingArea = getGrindingArea(killed.getLocation());
+				if (detectedGrindingArea == null) {
+					Iterator<Entry<Integer, GrindingInformation>> itr = killed_mobs.entrySet().iterator();
+					while (itr.hasNext()) {
+						GrindingInformation gi = itr.next().getValue();
+						if (gi.getKilled().getEntityId() != killed.getEntityId()) {
+							if (n < numberOfDeaths) {
+								if (now < gi.getTimeOfDeath() + seconds * 1000L) {
+									if (killed.getLocation().distance(gi.getKilled().getLocation()) < killRadius) {
+										n++;
+										// Messages.debug("This was not a Nether
+										// Gold XP Farm (%s sec.)",
+										// new Date(now -
+										// gi.getTimeOfDeath()).getSeconds());
+									}
+								} else {
+									// Messages.debug("Removing old kill.
+									// (Killed %s seconds ago).",
+									// Math.round((now - gi.getTimeOfDeath()) /
+									// 1000L));
+									itr.remove();
+								}
+							} else {
+								Area area = new Area(killed.getLocation(), killRadius, numberOfDeaths);
+								Messages.debug("Other Farm detected at (%s,%s,%s,%s)",
+										area.getCenter().getWorld().getName(), area.getCenter().getBlockX(),
+										area.getCenter().getBlockY(), area.getCenter().getBlockZ());
+								registerKnownGrindingSpot(area);
+								return true;
+							}
+						}
+					}
+				} else {
+					Messages.debug("This is a known grinding area: (%s,%s,%s,%s)",
+							detectedGrindingArea.getCenter().getWorld().getName(),
+							detectedGrindingArea.getCenter().getBlockX(), detectedGrindingArea.getCenter().getBlockY(),
+							detectedGrindingArea.getCenter().getBlockZ());
+					return true;
+				}
+			}
+		}
+		Messages.debug("Farm detection: This was not a Farm (%s of %s mobs with last %s sec.)", n,
 				numberOfDeaths, seconds);
 		return false;
 	}

@@ -47,13 +47,6 @@ public class ReloadCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-		/**MobHunting.getDataStoreManager().shutdown();
-		try {
-			MobHunting.getStoreManager().initialize();
-		} catch (DataStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}**/
 		
 		MobHunting.getGrindingManager().saveData();
 		
@@ -76,7 +69,7 @@ public class ReloadCommand implements ICommand {
 				// reload bounties
 				if (!MobHunting.getConfigManager().disablePlayerBounties)
 					for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers())
-						MobHunting.getBountyManager().loadOpenBounties(player);
+						MobHunting.getBountyManager().load(player);
 				// reload achievements
 				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers())
 					MobHunting.getAchievementManager().load(player);

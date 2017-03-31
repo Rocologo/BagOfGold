@@ -21,6 +21,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.util.Misc;
 import one.lindegaard.MobHunting.util.UUIDHelper;
@@ -73,8 +74,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 			mSavePlayerStats = connection.prepareStatement("INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s %5$s)"
 					+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d,%6$f)"
 					+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %2$d, %5$s = %5$s + %6$f");
-			// "INSERT IGNORE INTO mh_Daily(ID, MOB_ID, PLAYER_ID)
-			// VALUES(DATE_FORMAT(NOW(), '%Y%j'),?,?);");
 			break;
 		case LOAD_ARCHIEVEMENTS:
 			mLoadAchievements = connection
@@ -105,9 +104,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 					"SELECT * FROM mh_Bounties where STATUS=0 AND (BOUNTYOWNER_ID=? OR WANTEDPLAYER_ID=? OR NOT NPC_ID=0);");
 			break;
 		case INSERT_BOUNTY:
-			mInsertBounty = connection.prepareStatement("REPLACE INTO mh_Bounties "
+			mInsertBounty = connection.prepareStatement("INSERT INTO mh_Bounties "
 					+ "(MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
-					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE, STATUS) " + " VALUES (?,?,?,?,?,?,?,?,?,?,?);");
+					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE, STATUS) " 
+					+ " VALUES (?,?,?,?,?,?,?,?,?,?,?);"
+					+ " ON DUPLICATE KEY UPDATE SET CREATED_DATE=?, END_DATE=?, PRIZE=?, MESSAGE=?, STATUS=?");
 			break;
 		case UPDATE_BOUNTY:
 			mUpdateBounty = connection.prepareStatement("UPDATE mh_Bounties SET PRIZE=?,MESSAGE=?,END_DATE=?,STATUS=?"
@@ -169,11 +170,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 		String mobType = type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_"));
 		ArrayList<String> plugins_kill = new ArrayList<String>();
 		ArrayList<String> plugins_assist = new ArrayList<String>();
-		//ArrayList<String> plugins_cash = new ArrayList<String>();
+		// ArrayList<String> plugins_cash = new ArrayList<String>();
 		for (MobPlugin p : MobPlugin.values()) {
 			plugins_kill.add(p.name() + "_kill");
 			plugins_assist.add(p.name() + "_assist");
-			//plugins_cash.add(p.name() + "_cash");
+			// plugins_cash.add(p.name() + "_cash");
 			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
 				plugin = p;
 				if (type.getDBColumn().indexOf("_") != type.getDBColumn().lastIndexOf("_"))
@@ -220,12 +221,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 		try {
 			Connection mConnection = setupConnection();
 			Statement statement = mConnection.createStatement();
-			String str = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name"
-					+ " from mh_" + period.getTable() + " inner join mh_Players using (PLAYER_ID)"
+			String str = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name" + " from mh_"
+					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
 					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
-					+ " GROUP BY PLAYER_ID ORDER BY "+(type.getDBColumn().equalsIgnoreCase("total_cash")?"sum(total_cash)":"AMOUNT")+" DESC LIMIT " + count;
-			ResultSet results = statement
-					.executeQuery(str);
+					+ " GROUP BY PLAYER_ID ORDER BY "
+					+ (type.getDBColumn().equalsIgnoreCase("total_cash") ? "sum(total_cash)" : "AMOUNT")
+					+ " DESC LIMIT " + count;
+			ResultSet results = statement.executeQuery(str);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
 				try {
@@ -269,14 +271,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 				}
 				String column2 = "total_cash";
 				int amount = stat.getAmount();
-				double cash = Misc.round(stat.getCash()); 
+				double cash = Misc.round(stat.getCash());
 				int player_id = getPlayerId(stat.getPlayer());
-				statement.executeUpdate(
-						String.format(Locale.US,
-								"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s, %5$s)"
-										+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d,%6$f)"
-										+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d, %5$s = %5$s + %6$f",
-								column, mob_id, player_id, amount, column2, cash));
+				statement.executeUpdate(String.format(Locale.US,
+						"INSERT INTO mh_Daily(ID, MOB_ID, PLAYER_ID, %1$s, %5$s)"
+								+ " VALUES(DATE_FORMAT(NOW(), '%%Y%%j'),%2$d,%3$d,%4$d,%6$f)"
+								+ " ON DUPLICATE KEY UPDATE %1$s = %1$s + %4$d, %5$s = %5$s + %6$f",
+						column, mob_id, player_id, amount, column2, cash));
 			}
 			statement.close();
 			mConnection.commit();
@@ -287,6 +288,54 @@ public class MySQLDataStore extends DatabaseDataStore {
 			throw new DataStoreException(e);
 		}
 	}
+	
+	@Override
+	public void saveBounties(Set<Bounty> bountyDataSet) throws DataStoreException {
+		Connection mConnection;
+		try {
+			mConnection = setupConnection();
+			try {
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
+				for (Bounty bounty : bountyDataSet) {
+					if (bounty.getBountyOwner() == null)
+						Messages.debug("RandomBounty to be inserted: %s", bounty.toString());
+					int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
+					int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
+					mInsertBounty.setString(1, bounty.getMobtype());
+					mInsertBounty.setInt(2, bountyOwnerId);
+					mInsertBounty.setInt(3, wantedPlayerId);
+					mInsertBounty.setInt(4, bounty.getNpcId());
+					mInsertBounty.setString(5, bounty.getMobId());
+					mInsertBounty.setString(6, bounty.getWorldGroup());
+					mInsertBounty.setLong(7, bounty.getCreatedDate());
+					mInsertBounty.setLong(8, bounty.getEndDate());
+					mInsertBounty.setDouble(9, bounty.getPrize());
+					mInsertBounty.setString(10, bounty.getMessage());
+					mInsertBounty.setInt(11, bounty.getStatus().getValue());
+					// ON DUPLCATE KEY
+					mInsertBounty.setLong(12, bounty.getCreatedDate());
+					mInsertBounty.setLong(13, bounty.getEndDate());
+					mInsertBounty.setDouble(14, bounty.getPrize());
+					mInsertBounty.setString(15, bounty.getMessage());
+					mInsertBounty.setInt(16, bounty.getStatus().getValue());
+
+					mInsertBounty.addBatch();
+				}
+				mInsertBounty.executeBatch();
+				mInsertBounty.close();
+				mConnection.commit();
+				mConnection.close();
+			} catch (SQLException e) {
+				rollback(mConnection);
+				mConnection.close();
+				throw new DataStoreException(e);
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			throw new DataStoreException(e1);
+		}
+
+	};
 
 	@Override
 	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
@@ -380,10 +429,17 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ "ACHIEVEMENT VARCHAR(64) NOT NULL, DATE DATETIME NOT NULL, "
 				+ "PROGRESS INTEGER NOT NULL, PRIMARY KEY(PLAYER_ID, ACHIEVEMENT))");
 		if (!MobHunting.getConfigManager().disablePlayerBounties)
-			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties (" + "BOUNTYOWNER_ID INTEGER NOT NULL, "
-					+ "MOBTYPE CHAR(6), " + "WANTEDPLAYER_ID INTEGER NOT NULL, " + "NPC_ID INTEGER, "
-					+ "MOB_ID CHAR(40), " + "WORLDGROUP CHAR(20) NOT NULL, " + "CREATED_DATE BIGINT NOT NULL, "
-					+ "END_DATE BIGINT NOT NULL, " + "PRIZE FLOAT NOT NULL, " + "MESSAGE CHAR(64), "
+			create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Bounties (" //
+					+ "BOUNTYOWNER_ID INTEGER NOT NULL, "//
+					+ "MOBTYPE CHAR(6), "//
+					+ "WANTEDPLAYER_ID INTEGER NOT NULL, "//
+					+ "NPC_ID INTEGER, "//
+					+ "MOB_ID CHAR(40), "//
+					+ "WORLDGROUP CHAR(20) NOT NULL, "//
+					+ "CREATED_DATE BIGINT NOT NULL, "//
+					+ "END_DATE BIGINT NOT NULL, "//
+					+ "PRIZE FLOAT NOT NULL, "//
+					+ "MESSAGE CHAR(64), "//
 					+ "STATUS INTEGER NOT NULL DEFAULT 0, "
 					+ "PRIMARY KEY(WORLDGROUP, WANTEDPLAYER_ID, BOUNTYOWNER_ID), "
 					+ "FOREIGN KEY(BOUNTYOWNER_ID) REFERENCES mh_Players(PLAYER_ID) ON DELETE CASCADE, "
@@ -416,7 +472,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 				if (updateStringBuilder.length() != 0)
 					updateStringBuilder.append(", ");
 
-				updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
+				updateStringBuilder
+						.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
 			}
 
 			String updateString = updateStringBuilder.toString();
@@ -1107,9 +1164,11 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// modify the Daily table, and the rest will happen automatically
 			StringBuilder updateStringBuilder = new StringBuilder();
 
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
+			updateStringBuilder
+					.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+			updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+			updateStringBuilder
+					.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
 
 			String updateString = updateStringBuilder.toString();
 
@@ -1306,10 +1365,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 			// modify the Daily table, and the rest will happen automatically
 			StringBuilder updateStringBuilder = new StringBuilder();
 
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
+			updateStringBuilder
+					.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+			updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+			updateStringBuilder
+					.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
+			updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
 
 			String updateString = updateStringBuilder.toString();
 

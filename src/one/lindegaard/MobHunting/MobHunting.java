@@ -268,7 +268,7 @@ public class MobHunting extends JavaPlugin {
 				mPlayerSettingsManager.load(player);
 				mAchievementManager.load(player);
 				if (!mConfig.disablePlayerBounties)
-					mBountyManager.loadOpenBounties(player);
+					mBountyManager.load(player);
 				mMobHuntingManager.setHuntEnabled(player, true);
 			}
 		}
@@ -303,10 +303,6 @@ public class MobHunting extends JavaPlugin {
 		mLeaderboardManager.shutdown();
 		Messages.debug("Shutdown AreaManager");
 		mAreaManager.saveData();
-		if (!mConfig.disablePlayerBounties) {
-			Messages.debug("Shutdown BountyManager");
-			mBountyManager.shutdown();
-		}
 		getMobHuntingManager().getHuntingModifiers().clear();
 		if (!mConfig.disableFishingRewards)
 			getFishingManager().getFishingModifiers().clear();

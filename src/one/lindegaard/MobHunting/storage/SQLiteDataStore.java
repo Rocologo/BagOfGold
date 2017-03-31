@@ -20,6 +20,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.util.Misc;
 import one.lindegaard.MobHunting.util.UUIDHelper;
@@ -286,6 +287,48 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			throw new DataStoreException(e);
 		}
 	}
+	
+	@Override
+	public void saveBounties(Set<Bounty> bountyDataSet) throws DataStoreException {
+		Connection mConnection;
+		try {
+			mConnection = setupConnection();
+			try {
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
+				for (Bounty bounty : bountyDataSet) {
+					if (bounty.getBountyOwner() == null)
+						Messages.debug("RandomBounty to be inserted: %s", bounty.toString());
+					int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
+					int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
+					mInsertBounty.setString(1, bounty.getMobtype());
+					mInsertBounty.setInt(2, bountyOwnerId);
+					mInsertBounty.setInt(3, wantedPlayerId);
+					mInsertBounty.setInt(4, bounty.getNpcId());
+					mInsertBounty.setString(5, bounty.getMobId());
+					mInsertBounty.setString(6, bounty.getWorldGroup());
+					mInsertBounty.setLong(7, bounty.getCreatedDate());
+					mInsertBounty.setLong(8, bounty.getEndDate());
+					mInsertBounty.setDouble(9, bounty.getPrize());
+					mInsertBounty.setString(10, bounty.getMessage());
+					mInsertBounty.setInt(11, bounty.getStatus().getValue());
+					
+					mInsertBounty.addBatch();
+				}
+				mInsertBounty.executeBatch();
+				mInsertBounty.close();
+				mConnection.commit();
+				mConnection.close();
+			} catch (SQLException e) {
+				rollback(mConnection);
+				mConnection.close();
+				throw new DataStoreException(e);
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			throw new DataStoreException(e1);
+		}
+
+	};
 
 	@Override
 	public void databaseConvertToUtf8(String database_name) throws DataStoreException {

@@ -131,46 +131,10 @@ public class DataStoreManager {
 	// *****************************************************************************
 	// Bounties
 	// *****************************************************************************
-	public void insertBounty(Bounty bounty) {
-		HashSet<Bounty> bounties = new HashSet<Bounty>();
-		bounties.add(bounty);
-		try {
-			mStore.insertBounty(bounties);
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void deleteBounty(Bounty bounty) {
-		HashSet<Bounty> bounties = new HashSet<Bounty>();
-		bounties.add(bounty);
-		try {
-			mStore.deleteBounty(bounties);
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void cancelBounty(Bounty bounty) {
-		bounty.setStatus(BountyStatus.canceled);
-		HashSet<Bounty> bounties = new HashSet<Bounty>();
-		bounties.add(bounty);
-		try {
-			mStore.cancelBounty(bounties);
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void updateBounty(Bounty bounty) {
-		HashSet<Bounty> bounties = new HashSet<Bounty>();
-		bounties.add(bounty);
-		try {
-			mStore.updateBounty(bounties);
-		} catch (DataStoreException e) {
-			e.printStackTrace();
+		synchronized (mWaiting) {
+			mWaiting.add(new Bounty(bounty));
 		}
-
 	}
 
 	public void requestBounties(BountyStatus mode, OfflinePlayer player, IDataCallback<Set<Bounty>> callback) {

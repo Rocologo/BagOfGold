@@ -3,8 +3,10 @@ V4.6.9
 * Added debug information for RandomBounties.
 * Fixed bug: Added test if Class com/massivecraft/factions/entity/BoardColl exists.
 * New feature: Added support for Sentries. (https://www.spigotmc.org/resources/sentries.32819/)
-* Added detection of the NetherGoldXPFarm (https://www.youtube.com/watch?v=jQWG9Q7HoUA)
+* Added detection of the NetherGoldXPFarm (https://www.youtube.com/watch?v=jQWG9Q7HoUA). See config.yml
+* Added detection of "Other farms" where the mods is caught in trap and fall down and dies. See config.yml
 * Saving/loading KnownGrindingAreas to/from disk (blacklist.yml) 
+* Saving/loading Bounties is now done via the queue system.
 V4.6.8
 * Added custom graphs to bStats.org to show anonymous plugin usage. (https://bstats.org/plugin/bukkit/MobHunting)
 * Towny residents will not get a reward when they kill a mob, while the are in their home town.

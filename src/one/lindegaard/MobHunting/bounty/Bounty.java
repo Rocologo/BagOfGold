@@ -131,11 +131,11 @@ public class Bounty {
 		if (bountyOwner != null)
 			return String.format(
 					"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
-					worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, prize, status);
+					worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, MobHunting.getRewardManager().format(prize), status);
 		else
 			return String.format(
 					"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
-					worldGroup, wantedPlayer.getName(), "Random Bounty", npcId, mobId, prize, status);
+					worldGroup, wantedPlayer.getName(), "Random Bounty", npcId, mobId, MobHunting.getRewardManager().format(prize), status);
 	}
 
 	/**
