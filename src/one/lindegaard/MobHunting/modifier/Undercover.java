@@ -18,21 +18,15 @@ public class Undercover implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(Entity deadEntity, Player killer,
-			HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		return MobHunting.getConfigManager().undercoverMultiplier;
 	}
 
 	@Override
-	public boolean doesApply(Entity deadEntity, Player killer,
-			HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (extraInfo.playerUndercover) {
-			return true;
-		} else {
-			return false;
-		}
+		return extraInfo.isPlayerUndercover();
 	}
 
 }

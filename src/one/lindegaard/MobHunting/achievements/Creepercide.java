@@ -43,7 +43,7 @@ public class Creepercide implements Achievement, Listener {
 		if (!(event.getKilledEntity() instanceof Creeper)
 				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld()))
 			return;
-		
+
 		if (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0)
 			return;
 
@@ -65,10 +65,10 @@ public class Creepercide implements Achievement, Listener {
 				b = MobHunting.getMobHuntingManager().getDamageInformation((Creeper) damage.getDamager());
 
 				if (a != null)
-					initiator = a.attacker;
+					initiator = a.getAttacker();
 
 				if (b != null && initiator == null)
-					initiator = b.attacker;
+					initiator = b.getAttacker();
 			}
 
 			if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator)) {

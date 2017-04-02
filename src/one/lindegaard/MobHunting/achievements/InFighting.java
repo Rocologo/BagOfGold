@@ -61,10 +61,10 @@ public class InFighting implements Achievement, Listener {
 
 				Player initiator = null;
 				if (a != null)
-					initiator = a.attacker;
+					initiator = a.getAttacker();
 
 				if (b != null && initiator == null)
-					initiator = b.attacker;
+					initiator = b.getAttacker();
 
 				if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator))
 					MobHunting.getAchievementManager().awardAchievement(this, initiator);

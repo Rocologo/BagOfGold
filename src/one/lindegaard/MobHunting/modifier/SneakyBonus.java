@@ -16,7 +16,7 @@ public class SneakyBonus implements IModifier {
 
 	@Override
 	public String getName() {
-		return ChatColor.BLUE + Messages.getString("bonus.sneaky.name"); //$NON-NLS-1$
+		return ChatColor.BLUE + Messages.getString("bonus.sneaky.name");
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class SneakyBonus implements IModifier {
 		if (!(deadEntity instanceof Creature))
 			return false;
 
-		if (extraInfo.mele || extraInfo.weapon.getType() == Material.POTION)
+		if (extraInfo.isMeleWeapenUsed() || extraInfo.getWeapon().getType() == Material.POTION)
 			return ((Creature) deadEntity).getTarget() == null;
 
 		return false;

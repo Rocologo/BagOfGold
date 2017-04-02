@@ -33,8 +33,8 @@ public class FancyPants implements Achievement, Listener {
 
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
-		if (event.getDamageInfo().weapon.getType() == Material.DIAMOND_SWORD
-				&& !event.getDamageInfo().weapon.getEnchantments().isEmpty()
+		if (event.getDamageInfo().getWeapon().getType() == Material.DIAMOND_SWORD
+				&& !event.getDamageInfo().getWeapon().getEnchantments().isEmpty()
 				&& event.getPlayer().getInventory().getHelmet() != null
 				&& event.getPlayer().getInventory().getHelmet().getType() == Material.DIAMOND_HELMET
 				&& !event.getPlayer().getInventory().getHelmet().getEnchantments().isEmpty()

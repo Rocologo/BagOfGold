@@ -26,7 +26,7 @@ public class FlyingPenalty implements IModifier {
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return extraInfo.wasFlying;
+		return extraInfo.wasFlying();
 	}
 
 }

@@ -13,7 +13,8 @@ V4.6.9
 * Removed KillStreak when the player is Grinding
 * Added setting in config.yml to blacklist Player Grinding Area as Server-worldwide Grinding areas. 
 * XP and Item drops will be disabled when the player is in god mode. (Check disable-natural-item-drops and disable-natural-xp-drops)
-* New settings to disable money, normal item drops and normal xp drops from mob spawners (disabled_money-rewards_from_mobspawners_and_eggs, disable_naturally_dropped_items_from_mobspawners_and_eggs, disable_naturally_dropped_xp_from_mobspawners_and_egg)  
+* New settings to disable money, normal item drops and normal xp drops from mob spawners (disabled_money-rewards_from_mobspawners_and_eggs, disable_naturally_dropped_items_from_mobspawners_and_eggs, disable_naturally_dropped_xp_from_mobspawners_and_egg)
+* Added version check for ProtocolLib. If your minecraft server is 1.8 or newer the ProtocolLib must be 4.1.0 or higher.   
 V4.6.8
 * Added custom graphs to bStats.org to show anonymous plugin usage. (https://bstats.org/plugin/bukkit/MobHunting)
 * Towny residents will not get a reward when they kill a mob, while the are in their home town.

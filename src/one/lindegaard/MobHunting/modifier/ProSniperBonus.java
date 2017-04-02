@@ -27,8 +27,8 @@ public class ProSniperBonus implements IModifier {
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (extraInfo.weapon.getType() == Material.BOW && !extraInfo.mele) {
-			double dist = extraInfo.attackerPosition.distance(deadEntity.getLocation());
+		if (extraInfo.getWeapon().getType() == Material.BOW && !extraInfo.isMeleWeapenUsed()) {
+			double dist = extraInfo.getAttackerPosition().distance(deadEntity.getLocation());
 			if (dist >= 50)
 				return true;
 		}

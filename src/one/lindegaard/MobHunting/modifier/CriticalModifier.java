@@ -45,7 +45,7 @@ public class CriticalModifier implements IModifier {
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return (canCriticalHit(killer) && extraInfo.mele);
+		return (canCriticalHit(killer) && extraInfo.isMeleWeapenUsed());
 	}
 
 }

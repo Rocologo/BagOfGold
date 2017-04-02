@@ -1343,7 +1343,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nThere is no guarantie that the plugin can detect all types of Nether Gold farms, but it has"
 			+ "\nbeen testet on this one: https://www.youtube.com/watch?v=jQWG9Q7HoUA"
 			+ "\nWhen searching for grinding the plugin measures how many mobs dies per timeframe within a range."
-			+ "\nBe careful if you change this number there is a risk for false positives."	)
+			+ "\nBe careful if you change this number there is a risk for false positives.")
 	public boolean detectNetherGoldFarms = true;
 	@ConfigField(name = "seconds-to-search-for-grinding-on-nether-gold-farms", category = "grinding")
 	public int secondsToSearchForGrinding = 30;
@@ -1355,7 +1355,7 @@ public class ConfigManager extends AutoConfig {
 	public boolean disableNaturalItemDropsOnNetherGoldFarms = false;
 	@ConfigField(name = "disable-natural-xp-drops-on-nether-gold-farms", category = "grinding")
 	public boolean disableNaturalXPDropsOnNetherGoldFarms = false;
-	
+
 	@ConfigField(name = "detect-other-farms", category = "grinding", comment = "Other Farm detection."
 			+ "\nWhen this is true, the plugin will try to detect if the players has build other Farms"
 			+ "\nwhere different mobs is falling into death. The plugin is still counting mobs which"
@@ -1371,7 +1371,7 @@ public class ConfigManager extends AutoConfig {
 	public boolean disableNaturalItemDropsOnOtherFarms = false;
 	@ConfigField(name = "disable-natural-xp-drops-on-other-farms", category = "grinding")
 	public boolean disableNaturalXPDropsOnOtherFarms = false;
-	
+
 	// #####################################################################################
 	// Penalties
 	// #####################################################################################
@@ -1437,9 +1437,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "rob-from-victim", category = "pvp", comment = "Set rob-from-victim=true to steal from the victim or "
 			+ "\nrob-from-victim=false to get the reward money from the server.")
 	public boolean robFromVictim = true;
-
 	@ConfigField(name = "pvp-kill-prize", category = "pvp", comment = "The kill prize can be a number to steal x dollars from the killed player,"
-			+ "\nor it can be a cut in percent of his balance.")
+			+ "\nor it can be a cut in percent of his balance. Rob from victiom is about where the money comes from."
+			+ "\nIf FALSE the money comes from from the server, if TRUE the money comes from the dead player."
+			+ "\nIf you dont want the player to get any money for PVP kills, you MUST set pvp-kill-prize: 0")
 	public String pvpKillPrize = "1.0%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
 	public String pvpKillCmd = "mobhunt head give {player} 397 1 3 {SkullOwner:\"{killed_player}\"} 1 silent|give {player} diamond 1";

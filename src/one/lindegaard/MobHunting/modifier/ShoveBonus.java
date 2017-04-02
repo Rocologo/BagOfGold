@@ -27,7 +27,7 @@ public class ShoveBonus implements IModifier {
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		if (extraInfo.attacker != killer)
+		if (extraInfo.getAttacker() != killer)
 			return false;
 
 		if (deadEntity.getLastDamageCause() != null)

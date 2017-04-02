@@ -34,10 +34,11 @@ public class MasterSniper implements Achievement, Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onKillCompleted(MobHuntKillEvent event) {
-		if (event.getPlayer().isInsideVehicle() && event.getDamageInfo().weapon.getType() == Material.BOW
-				&& !event.getDamageInfo().mele && event.getPlayer().getVehicle().getVelocity().length() > 0.2
+		if (event.getPlayer().isInsideVehicle() && event.getDamageInfo().getWeapon().getType() == Material.BOW
+				&& !event.getDamageInfo().isMeleWeapenUsed()
+				&& event.getPlayer().getVehicle().getVelocity().length() > 0.2
 				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0) {
-			double dist = event.getDamageInfo().attackerPosition.distance(event.getKilledEntity().getLocation());
+			double dist = event.getDamageInfo().getAttackerPosition().distance(event.getKilledEntity().getLocation());
 			if (dist >= 40) {
 				MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
 			}
