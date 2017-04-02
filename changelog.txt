@@ -1,3 +1,5 @@
+V4.7.0
+*
 V4.6.9
 * Disabled rewards from Zombie Pigs which dies from a fall. To protect the server economy against NetherGoldFarms
 * Added debug information for RandomBounties.
