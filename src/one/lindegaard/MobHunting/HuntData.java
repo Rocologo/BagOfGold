@@ -23,11 +23,11 @@ public class HuntData {
 		this.instance = instance;
 	}
 
-	public Area getGrindingArea(Location location) {
+	public Area getPlayerSpecificGrindingArea(Location location) {
 		for (Area area : lastGridingAreas) {
 			if (area.center.getWorld().equals(location.getWorld())) {
 				if (area.center.distance(location) < area.range) {
-					Messages.debug("Players HuntData contain a Grinding Area: (%s,%s,%s,%s)",
+					Messages.debug("Found a blacklisted player specific grinding Area: (%s,%s,%s,%s)",
 							area.center.getWorld().getName(), area.center.getBlockX(), area.center.getBlockY(),
 							area.center.getBlockZ());
 					return area;

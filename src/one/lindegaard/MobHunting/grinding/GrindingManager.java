@@ -308,7 +308,7 @@ public class GrindingManager implements Listener {
 		for (Area area : areas) {
 			if (area.center.getWorld().equals(location.getWorld())) {
 				if (area.center.distance(location) < area.range) {
-					Messages.debug("Found a grinding area = %s, range=%s", area.center, area.range);
+					Messages.debug("Found a blacklisted grinding area = %s, range=%s", area.center, area.range);
 					return area;
 				}
 			}

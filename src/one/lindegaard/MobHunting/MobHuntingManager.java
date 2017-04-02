@@ -1182,7 +1182,17 @@ public class MobHuntingManager implements Listener {
 			Area detectedGrindingArea = MobHunting.getGrindingManager().getGrindingArea(loc);
 			if (detectedGrindingArea == null)
 				// Check if Players HuntData contains this Grinding Area.
-				detectedGrindingArea = data.getGrindingArea(loc);
+				detectedGrindingArea = data.getPlayerSpecificGrindingArea(loc);
+			else {
+				if (MobHunting.getGrindingManager().isGrindingArea(detectedGrindingArea.getCenter()))
+					if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+							|| killer.hasPermission("mobhunting.blacklist")
+							|| killer.hasPermission("mobhunting.blacklist.show"))
+						ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
+				Messages.debug("======================= kill ended =========================");
+				return;
+			}
 			// Slimes ang magmacubes are except from grinding due to their
 			// splitting nature
 			if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
@@ -1193,7 +1203,8 @@ public class MobHuntingManager implements Listener {
 					data.setLastKillAreaCenter(null);
 					data.setDampenedKills(data.getDampenedKills() + 1);
 					if (data.getDampenedKills() >= MobHunting.getConfigManager().grindingDetectionNumberOfDeath) {
-						MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
+						if (MobHunting.getConfigManager().blacklistPlayerGrindingSpotsServerWorldWide)
+							MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
 						cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDropsOnPlayerGrinding,
 								MobHunting.getConfigManager().tryToCancelXPDrops);
 						Messages.debug("DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",

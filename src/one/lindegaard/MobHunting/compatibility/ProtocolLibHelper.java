@@ -22,7 +22,6 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.EnumWrappers.Particle;
 
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class ProtocolLibHelper {
@@ -132,10 +131,10 @@ public class ProtocolLibHelper {
 								+ Math.sin(n) * MobHunting.getConfigManager().grindingDetectionRange));
 						wpwp.sendPacket(player);
 					}
-					if (System.currentTimeMillis() > now + (60000L))
+					if (System.currentTimeMillis() > now + (20000L))
 						this.cancel();
 				}
-			}.runTaskTimer(MobHunting.getInstance(), 0L, 2L);
+			}.runTaskTimer(MobHunting.getInstance(), 0L, 5L);
 		}
 	}
 }

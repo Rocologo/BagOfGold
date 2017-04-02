@@ -11,6 +11,7 @@ V4.6.9
 * Added support for Adventure Gamemode. 
 * Added specific setting to allow Natually Item and XP drops when the player is grinding
 * Removed KillStreak when the player is Grinding
+* Added setting in config.yml to blacklist Player Grinding Area as Server-worldwide Grinding areas. 
 V4.6.8
 * Added custom graphs to bStats.org to show anonymous plugin usage. (https://bstats.org/plugin/bukkit/MobHunting)
 * Towny residents will not get a reward when they kill a mob, while the are in their home town.
