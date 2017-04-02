@@ -560,7 +560,7 @@ public class MobHuntingManager implements Listener {
 				Blaze blaze = (Blaze) event.getEntity().getShooter();
 				if (blaze.getTarget() instanceof Player
 						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) blaze.getTarget())
-						&& ((Player) blaze.getTarget()).getGameMode() == GameMode.SURVIVAL) {
+						&& ((Player) blaze.getTarget()).getGameMode() != GameMode.CREATIVE) {
 					DamageInformation info = null;
 					info = mDamageHistory.get(blaze);
 					if (info == null)
@@ -574,7 +574,7 @@ public class MobHuntingManager implements Listener {
 				Wither wither = (Wither) event.getEntity().getShooter();
 				if (wither.getTarget() instanceof Player
 						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) wither.getTarget())
-						&& ((Player) wither.getTarget()).getGameMode() == GameMode.SURVIVAL) {
+						&& ((Player) wither.getTarget()).getGameMode() != GameMode.CREATIVE) {
 					DamageInformation info = null;
 					info = mDamageHistory.get(wither);
 					if (info == null)
@@ -731,7 +731,7 @@ public class MobHuntingManager implements Listener {
 		Player killer = event.getEntity().getKiller();
 
 		// Grinding Farm detections
-		if ((MobHunting.getConfigManager().detectNetherGoldFarms || MobHunting.getConfigManager().detectOtherFarms)
+		if (MobHunting.getConfigManager().detectFarms
 				&& killed.getLastDamageCause().getCause() == DamageCause.FALL
 				&& !MobHunting.getGrindingManager().isWhitelisted(killed.getLocation())) {
 			Messages.debug("===================== Farm detection =======================");

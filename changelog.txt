@@ -7,7 +7,8 @@ V4.6.9
 * Added detection of "Other farms" where the mods is caught in trap and fall down and dies. See config.yml
 * Saving/loading KnownGrindingAreas to/from disk (blacklist.yml) 
 * Saving/loading Bounties is now done via the queue system.
-* New Command /mh blacklist (Permission 'mobhunting.grinding' needed). To add/remove server-wide know blacklisted areas where the player down get rewards. This can be used against XP/Item farms, which is not caught by the Farm Grinding detection. 
+* New Command /mh blacklist (Permission 'mobhunting.grinding' needed). To add/remove server-wide know blacklisted areas where the player down get rewards. This can be used against XP/Item farms, which is not caught by the Farm Grinding detection.
+* Added support for Adventure Gamemode. 
 V4.6.8
 * Added custom graphs to bStats.org to show anonymous plugin usage. (https://bstats.org/plugin/bukkit/MobHunting)
 * Towny residents will not get a reward when they kill a mob, while the are in their home town.

@@ -1346,9 +1346,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "number-of-deaths-when-searching-for-grinding-on-nether-gold-farms", category = "grinding")
 	public int numberOfDeathsWhenSearchingForGringding = 5;
 	@ConfigField(name = "disable-natural-item-drops-on-nether-gold-farms", category = "grinding")
-	public boolean disableNaturalItemDropsOnNetherGoldFarms = true;
+	public boolean disableNaturalItemDropsOnNetherGoldFarms = false;
 	@ConfigField(name = "disable-natural-xp-drops-on-nether-gold-farms", category = "grinding")
-	public boolean disableNaturalXPDropsOnNetherGoldFarms = true;
+	public boolean disableNaturalXPDropsOnNetherGoldFarms = false;
 	
 	@ConfigField(name = "detect-other-farms", category = "grinding", comment = "Other Farm detection."
 			+ "\nWhen this is true, the plugin will try to detect if the players has build other Farms"
@@ -1362,9 +1362,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "number-of-deaths-when-searching-for-grinding-on-other-farms", category = "grinding")
 	public int numberOfDeathsWhenSearchingForGringdingOnOtherFarms = 10;
 	@ConfigField(name = "disable-natural-item-drops-on-other-farms", category = "grinding")
-	public boolean disableNaturalItemDropsOnOtherFarms = true;
+	public boolean disableNaturalItemDropsOnOtherFarms = false;
 	@ConfigField(name = "disable-natural-xp-drops-on-other-farms", category = "grinding")
-	public boolean disableNaturalXPDropsOnOtherFarms = true;
+	public boolean disableNaturalXPDropsOnOtherFarms = false;
 	
 	// #####################################################################################
 	// Penalties
