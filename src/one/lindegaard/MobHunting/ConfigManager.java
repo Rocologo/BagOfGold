@@ -1777,12 +1777,12 @@ public class ConfigManager extends AutoConfig {
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
 
-	@ConfigField(name = "allow_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
-	public boolean allowMobSpawnersEggsAndDispensers = false;
-	@ConfigField(name = "allow_naturally_dropped_items_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped items from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
-	public boolean allowNaturallyDroppedItemsFromMobSpawnersEggsAndDispensers = true;
-	@ConfigField(name = "allow_naturally_dropped_xp_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped XP from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
-	public boolean allowNaturallyDroppedXPFromMobSpawnersEggsAndDispensers = true;
+	@ConfigField(name = "disabled_money-rewards_from_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
+	public boolean disableMoneyRewardsFromMobSpawnersEggsAndDispensers = true;
+	@ConfigField(name = "disable_naturally_dropped_items_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped items from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
+	public boolean disableNaturallyDroppedItemsFromMobSpawnersEggsAndDispensers = false;
+	@ConfigField(name = "disable_naturally_dropped_xp_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped XP from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
+	public boolean disableNaturallyDroppedXPFromMobSpawnersEggsAndDispensers = false;
 
 	@ConfigField(name = "use-actionbar-for-broadcasts", category = "general", comment = "Broadcast messages will be send in the ActionBar if MobHunting finds a supported ActionBar plugin.")
 	public boolean useActionBarforBroadcasts = true;
@@ -1835,15 +1835,15 @@ public class ConfigManager extends AutoConfig {
 			+ "\nbe showed in a Inventory GUI.")
 	public boolean useGuiForBounties = true;
 
-	@ConfigField(name = "try-to-cancel-natural-drops", category = "general", comment = "Try to cancel natural drops when a mob is killed while the MobHunting reward is cancelled "
-			+ "\n(because player is grinding or protected by Worldguard)"
-			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"try-to-cancel-natural-drops\"=false")
-	public boolean tryToCancelNaturalDrops = true;
+	@ConfigField(name = "disable-natural-item-drops", category = "general", comment = "Disable natural drops when a mob is killed "
+			+ "\n(because player is grinding or protected by Worldguard or in God mode or similar)"
+			+ "\nIf you want the mobs to drops normal rewards set " + "\n\"disable-natural-item-drops\"=false")
+	public boolean disableNaturalItemDrops = true;
 
-	@ConfigField(name = "try-to-cancel-xp-drops", category = "general", comment = "Try to cancel XP drops when a mob is killed while the MobHunting reward is cancelled "
-			+ "\n(because player is grinding or protected by Worldguard)"
-			+ "\nIf you want the mobs to drop normal XP set " + "\n\"try-to-cancel-xp-drops\"=false")
-	public boolean tryToCancelXPDrops = true;
+	@ConfigField(name = "disable-natural-xp-drops", category = "general", comment = "Disable natural xp drops when a mob is killed"
+			+ "\n(because player is grinding or protected by Worldguard or in God mode or similar)"
+			+ "\nIf you want the mobs to drop normal XP set " + "\n\"disable-natural-xp-drops\"=false")
+	public boolean disableNatualXPDrops = true;
 
 	@ConfigField(name = "try-to-cancel-natural-drops-when-in-creative", category = "general", comment = "Try to cancel natural drops when a mob is killed the player is in creative mode."
 			+ "\nIf you want the mobs to drops normal rewards set "

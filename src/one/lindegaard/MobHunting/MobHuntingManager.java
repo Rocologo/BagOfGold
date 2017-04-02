@@ -825,16 +825,16 @@ public class MobHuntingManager implements Listener {
 				if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, DefaultFlag.MOB_DAMAGE, true)) {
 					Messages.debug("KillBlocked: %s is hiding in WG region with mob-damage=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mob-damage-flag"));
-					cancelDrops(event, MobHunting.getConfigManager().tryToCancelNaturalDrops,
-							MobHunting.getConfigManager().tryToCancelXPDrops);
+					cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+							MobHunting.getConfigManager().disableNatualXPDrops);
 					Messages.debug("======================= kill ended =========================");
 					return;
 				} else if (!WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
 						true)) {
 					Messages.debug("KillBlocked: %s is in a protected region mobhunting=DENY", killer.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.mobhunting-deny"));
-					cancelDrops(event, MobHunting.getConfigManager().tryToCancelNaturalDrops,
-							MobHunting.getConfigManager().tryToCancelXPDrops);
+					cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+							MobHunting.getConfigManager().disableNatualXPDrops);
 					Messages.debug("======================= kill ended =========================");
 					return;
 				}
@@ -848,8 +848,8 @@ public class MobHuntingManager implements Listener {
 				if (FactionsCompat.isInSafeZone(player)) {
 					Messages.debug("KillBlocked: %s is hiding in Factions SafeZone", player.getName());
 					Messages.learn(killer, Messages.getString("mobhunting.learn.factions-no-rewards-in-safezone"));
-					cancelDrops(event, MobHunting.getConfigManager().tryToCancelNaturalDrops,
-							MobHunting.getConfigManager().tryToCancelXPDrops);
+					cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+							MobHunting.getConfigManager().disableNatualXPDrops);
 					Messages.debug("======================= kill ended =========================");
 					return;
 				}
@@ -989,6 +989,8 @@ public class MobHuntingManager implements Listener {
 			} else if (EssentialsCompat.isGodModeEnabled(killer)) {
 				Messages.debug("KillBlocked: %s is in God mode", killer.getName());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.godmode"));
+				cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+						MobHunting.getConfigManager().disableNatualXPDrops);
 				Messages.debug("======================= kill ended =========================");
 				return;
 			} else if (EssentialsCompat.isVanishedModeEnabled(killer)) {
@@ -1013,19 +1015,22 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// The Mob/Player has MH:Blocked
-		if (event.getEntity().hasMetadata("MH:blocked")
-				&& !MobHunting.getGrindingManager().isWhitelisted(event.getEntity().getLocation())) {
-			if (killed != null) {
-				Messages.debug(
-						"KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner, an egg or a egg-dispenser )",
-						event.getEntity().getType(), killed.getEntityId());
-				Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", mob.getName()));
-				cancelDrops(event,
-						MobHunting.getConfigManager().allowNaturallyDroppedItemsFromMobSpawnersEggsAndDispensers,
-						MobHunting.getConfigManager().allowNaturallyDroppedXPFromMobSpawnersEggsAndDispensers);
+		if (event.getEntity().hasMetadata("MH:blocked")) {
+			if (!MobHunting.getGrindingManager().isWhitelisted(event.getEntity().getLocation())) {
+				if (killed != null) {
+					Messages.debug(
+							"KillBlocked %s(%d): Mob has MH:blocked meta (probably spawned from a mob spawner, an egg or a egg-dispenser )",
+							event.getEntity().getType(), killed.getEntityId());
+					Messages.learn(killer, Messages.getString("mobhunting.learn.mobspawner", "killed", mob.getName()));
+					cancelDrops(event,
+							MobHunting.getConfigManager().disableNaturallyDroppedItemsFromMobSpawnersEggsAndDispensers,
+							MobHunting.getConfigManager().disableNaturallyDroppedXPFromMobSpawnersEggsAndDispensers);
+				}
+				Messages.debug("======================= kill ended =========================");
+				return;
+			} else {
+				Messages.debug("The Grinding Area is whitelisted");
 			}
-			Messages.debug("======================= kill ended =========================");
-			return;
 		}
 
 		// MobHunting is disabled for the player
@@ -1206,7 +1211,7 @@ public class MobHuntingManager implements Listener {
 						if (MobHunting.getConfigManager().blacklistPlayerGrindingSpotsServerWorldWide)
 							MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
 						cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDropsOnPlayerGrinding,
-								MobHunting.getConfigManager().tryToCancelXPDrops);
+								MobHunting.getConfigManager().disableNatualXPDrops);
 						Messages.debug("DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",
 								MobHunting.getConfigManager().disableNaturalXPDropsOnPlayerGrinding);
 						if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
@@ -1236,8 +1241,8 @@ public class MobHuntingManager implements Listener {
 										Messages.playerActionBarMessage(killer,
 												ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
 										data.recordGrindingArea();
-										cancelDrops(event, MobHunting.getConfigManager().tryToCancelNaturalDrops,
-												MobHunting.getConfigManager().tryToCancelXPDrops);
+										cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+												MobHunting.getConfigManager().disableNatualXPDrops);
 									}
 								}
 							} else {
