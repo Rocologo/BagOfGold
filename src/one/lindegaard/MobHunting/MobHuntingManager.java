@@ -1678,7 +1678,7 @@ public class MobHuntingManager implements Listener {
 
 		if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
 				|| event.getSpawnReason() == SpawnReason.DISPENSE_EGG) {
-			if (!MobHunting.getConfigManager().allowMobSpawnersEggsAndDispensers)
+			if (!MobHunting.getConfigManager().disableMoneyRewardsFromMobSpawnersEggsAndDispensers)
 				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
 		}
 	}
