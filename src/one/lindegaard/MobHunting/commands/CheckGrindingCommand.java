@@ -23,7 +23,7 @@ public class CheckGrindingCommand implements ICommand {
 
 	@Override
 	public String[] getAliases() {
-		return new String[] { "isgrinding", "grinding" };
+		return new String[] { "isgrinding", "grinding", "checkarea" };
 	}
 
 	@Override
@@ -57,11 +57,13 @@ public class CheckGrindingCommand implements ICommand {
 			return false;
 
 		Location loc = ((Player) sender).getLocation();
-		Area area = MobHunting.getGrindingManager().getGrindingArea(loc);
-
-		if (area != null)
+		
+		if (MobHunting.getGrindingManager().isWhitelisted(loc))
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.whitelisted"));
+		else if (MobHunting.getGrindingManager().isGrindingArea(loc))
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.server-wide"));
 		else {
+			Area area;
 			ArrayList<Player> players = new ArrayList<Player>();
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
@@ -73,11 +75,11 @@ public class CheckGrindingCommand implements ICommand {
 			if (players.isEmpty())
 				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.grinding.not-grinding")); //$NON-NLS-1$
 			else {
-				String playerList = ""; //$NON-NLS-1$
+				String playerList = "";
 
 				for (Player player : players) {
 					if (!playerList.isEmpty())
-						playerList += ", "; //$NON-NLS-1$
+						playerList += ", "; 
 
 					playerList += player.getName();
 				}

@@ -1,4 +1,3 @@
-
 /**
  * PacketWrapper - ProtocolLib wrappers for Minecraft packets
  * Copyright (C) dmulloy2 <http://dmulloy2.net>
@@ -71,5 +70,3 @@ public class WrapperPlayServerCollect extends AbstractPacket {
 	}
 
 }
-
-  

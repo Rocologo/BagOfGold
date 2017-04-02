@@ -18,11 +18,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
@@ -53,7 +50,7 @@ public class GrindingManager implements Listener {
 	}
 
 	/**
-	 * Register a kill for later inspection. Farming can be cought because most
+	 * Register a kill for later inspection. Farming can be caught because most
 	 * farms kills the mobs by letting them fall down from a high place.
 	 * 
 	 * @param killed
@@ -178,8 +175,8 @@ public class GrindingManager implements Listener {
 				}
 			}
 		}
-		Messages.debug("Farm detection: This was not a Farm (%s of %s mobs with last %s sec.)", n,
-				numberOfDeaths, seconds);
+		Messages.debug("Farm detection: This was not a Farm (%s of %s mobs with last %s sec.)", n, numberOfDeaths,
+				seconds);
 		return false;
 	}
 
@@ -311,8 +308,7 @@ public class GrindingManager implements Listener {
 		for (Area area : areas) {
 			if (area.center.getWorld().equals(location.getWorld())) {
 				if (area.center.distance(location) < area.range) {
-					// Messages.debug("Found a grinding area = %s",
-					// area.center);
+					Messages.debug("Found a grinding area = %s, range=%s", area.center, area.range);
 					return area;
 				}
 			}
@@ -343,6 +339,55 @@ public class GrindingManager implements Listener {
 					it.remove();
 			}
 		}
+	}
+
+	public void blacklistArea(Area newArea) {
+		LinkedList<Area> areas = mWhitelistedAreas.get(newArea.center.getWorld().getUID());
+		if (areas == null) {
+			areas = new LinkedList<Area>();
+			mKnownGrindingAreas.put(newArea.center.getWorld().getUID(), areas);
+		}
+
+		for (Area area : areas) {
+			if (newArea.center.getWorld().equals(area.center.getWorld())) {
+				double dist = newArea.center.distance(area.center);
+
+				double remaining = dist;
+				remaining -= area.range;
+				remaining -= newArea.range;
+
+				if (remaining < 0) {
+					if (dist > area.range)
+						area.range = dist;
+
+					area.count += newArea.count;
+
+					return;
+				}
+			}
+		}
+		areas.add(newArea);
+		saveBlacklist();
+	}
+
+	public void unBlacklistArea(Location location) {
+		LinkedList<Area> areas = mWhitelistedAreas.get(location.getWorld().getUID());
+
+		if (areas == null)
+			return;
+
+		Iterator<Area> it = areas.iterator();
+		while (it.hasNext()) {
+			Area area = it.next();
+
+			if (area.center.getWorld().equals(location.getWorld())) {
+				if (area.center.distance(location) < area.range)
+					it.remove();
+			}
+		}
+		if (areas.isEmpty())
+			mKnownGrindingAreas.remove(location.getWorld().getUID());
+		saveBlacklist();
 	}
 
 	// ****************************************************************

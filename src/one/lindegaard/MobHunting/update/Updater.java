@@ -64,7 +64,6 @@ public class Updater {
 					pluginUpdateCheck(sender, true, false);
 				}
 			}.runTaskTimer(MobHunting.getInstance(), 0L, seconds * 20L);
-			// Check for update timer
 		}
 	}
 

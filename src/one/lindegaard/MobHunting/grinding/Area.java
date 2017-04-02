@@ -51,7 +51,7 @@ public class Area {
 	/**
 	 * @param count the count to set
 	 */
-	public void setCount(int count) {
+	public void setCounter(int count) {
 		this.count = count;
 	}
 }	

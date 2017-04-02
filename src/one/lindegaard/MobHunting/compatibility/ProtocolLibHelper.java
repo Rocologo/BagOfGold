@@ -3,12 +3,15 @@ package one.lindegaard.MobHunting.compatibility;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.comphenix.packetwrapper.WrapperPlayServerCollect;
+import com.comphenix.packetwrapper.WrapperPlayServerWorldParticles;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -17,7 +20,9 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.wrappers.EnumWrappers.Particle;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class ProtocolLibHelper {
@@ -92,5 +97,42 @@ public class ProtocolLibHelper {
 		wpsc.setCollectedEntityId(ent.getEntityId());
 		wpsc.setCollectorEntityId(player.getEntityId());
 		wpsc.sendPacket(player);
+	}
+
+	public static void showGrindingArea(final Player player, final Location location) {
+		final Location center = MobHunting.getGrindingManager().getGrindingArea(location).getCenter();
+		final WrapperPlayServerWorldParticles wpwp = new WrapperPlayServerWorldParticles();
+		final long now = System.currentTimeMillis();
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				// Killed mob location
+				wpwp.setParticleType(Particle.CLOUD);
+				wpwp.setNumberOfParticles(1);
+				wpwp.setOffsetX(0);
+				wpwp.setOffsetY(0);
+				wpwp.setOffsetZ(0);
+				wpwp.setX((float) (location.getBlockX() + 0.5));
+				wpwp.setZ((float) (location.getBlockZ() + 0.5));
+				for (int n = 0; n < 10; n++) {
+					wpwp.setY((float) (location.getBlockY() + 0.2 + 0.2 * n));
+					wpwp.sendPacket(player);
+				}
+
+				// Circle around the grinding area
+				wpwp.setParticleType(Particle.FLAME);
+				wpwp.setY((float) (location.getBlockY() + 0.2));
+				wpwp.setOffsetY(0);
+				for (int n = 0; n < 360; n = n + (int) (45 / MobHunting.getConfigManager().grindingDetectionRange)) {
+					wpwp.setX((float) (center.getBlockX() + 0.5
+							+ Math.cos(n) * MobHunting.getConfigManager().grindingDetectionRange));
+					wpwp.setZ((float) (center.getBlockZ() + 0.5
+							+ Math.sin(n) * MobHunting.getConfigManager().grindingDetectionRange));
+					wpwp.sendPacket(player);
+				}
+				if (System.currentTimeMillis() > now + (60000L))
+					this.cancel();
+			}
+		}.runTaskTimer(MobHunting.getInstance(), 0L, 2L);
 	}
 }

@@ -74,6 +74,8 @@ import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TownyCompat;
@@ -739,6 +741,11 @@ public class MobHuntingManager implements Listener {
 				MobHunting.getMobHuntingManager().cancelDrops(event,
 						MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
 						MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
+				if (ProtocolLibCompat.isSupported()
+						&& (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+								|| killer.hasPermission("mobhunting.blacklist")))
+					ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
 				Messages.debug("================== Farm detection Ended ====================");
 				return;
 			}
@@ -747,6 +754,11 @@ public class MobHuntingManager implements Listener {
 						MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
 						MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
 				Messages.debug("================== Farm detection Ended ====================");
+				if (ProtocolLibCompat.isSupported()
+						&& (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+								|| killer.hasPermission("mobhunting.blacklist")))
+					ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
 				return;
 			}
 			Messages.debug("================== Farm detection Ended ====================");
@@ -1176,15 +1188,22 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("Checking if player is grinding within a range of %s blocks", data.getcDampnerRange());
 				if (detectedGrindingArea != null) {
 					data.setLastKillAreaCenter(null);
-					data.setDampenedKills(detectedGrindingArea.count++);
-					if (data.getDampenedKills() == MobHunting.getConfigManager().grindingDetectionNumberOfDeath) {
+					data.setDampenedKills(data.getDampenedKills() + 1);
+					if (data.getDampenedKills() >= MobHunting.getConfigManager().grindingDetectionNumberOfDeath) {
 						MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
 						cancelDrops(event, MobHunting.getConfigManager().tryToCancelNaturalDrops,
 								MobHunting.getConfigManager().tryToCancelXPDrops);
 						Messages.debug("DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",
 								MobHunting.getConfigManager().grindingDetectionNumberOfDeath);
+						if (ProtocolLibCompat.isSupported()
+								&& (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+										|| killer.hasPermission("mobhunting.blacklist")))
+							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
 						Messages.debug("======================= kill ended =========================");
 						return;
+					} else {
+						Messages.debug("DampendKills=%s", data.getDampenedKills());
 					}
 				} else {
 					if (data.getLastKillAreaCenter() != null) {

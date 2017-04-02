@@ -275,10 +275,6 @@ public class MobHunting extends JavaPlugin {
 
 		mInitialized = true;
 
-		//for (int i = 0; i < 5; i++) {
-		//	Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting]" + UUID.randomUUID());
-		//}
-
 	}
 
 	private void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
