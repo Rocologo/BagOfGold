@@ -82,6 +82,7 @@ import one.lindegaard.MobHunting.compatibility.TownyCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
+import one.lindegaard.MobHunting.events.BountyKillEvent;
 import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.grinding.Area;
@@ -1319,6 +1320,15 @@ public class MobHuntingManager implements Listener {
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
 			if (BountyManager.hasBounties(worldGroupName, wantedPlayer)) {
+				BountyKillEvent bountyEvent = new BountyKillEvent(worldGroupName, killer, wantedPlayer,
+						MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer));
+				Bukkit.getPluginManager().callEvent(bountyEvent);
+				if (bountyEvent.isCancelled()) {
+					Messages.debug("KillBlocked %s: BountyKillEvent was cancelled",
+							(killer != null ? killer : info.getAssister()).getName());
+					Messages.debug("======================= kill ended =========================");
+					return;
+				}
 				Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer);
 				for (Bounty b : bounties) {
 					reward += b.getPrize();
@@ -1335,7 +1345,6 @@ public class MobHuntingManager implements Listener {
 				Messages.playerActionBarMessage(killer, Messages.getString("mobhunting.moneygain-for-killing", "money",
 						MobHunting.getRewardManager().format(reward), "killed", killed.getName()));
 				Messages.debug("%s got %s for killing %s", killer.getName(), reward, killed.getName());
-				// TODO: call bounty event, and check if canceled.
 				MobHunting.getRewardManager().depositPlayer(killer, reward);
 				// Messages.debug("RecordCash: %s killed a %s (%s) Cash=%s",
 				// killer.getName(), mob.getName(),

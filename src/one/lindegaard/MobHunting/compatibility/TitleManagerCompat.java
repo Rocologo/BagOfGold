@@ -58,7 +58,6 @@ public class TitleManagerCompat {
 		return !MobHunting.getConfigManager().disableIntegrationTitleManager;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void setActionBar(Player player, String message) {
 		if (supported) {
 
@@ -71,7 +70,6 @@ public class TitleManagerCompat {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void sendTitles(Player player, String title, String subtitle, int fadein, int stay, int fadeout) {
 		if (supported) {
 
