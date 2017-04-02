@@ -1320,6 +1320,10 @@ public class ConfigManager extends AutoConfig {
 	public int grindingDetectionRange = 15;
 	@ConfigField(name = "grinding-detection-number-of-death", category = "grinding")
 	public int grindingDetectionNumberOfDeath = 20;
+	@ConfigField(name = "disable-natural-item-drops-on-player-grinding", category = "grinding")
+	public boolean disableNaturalItemDropsOnPlayerGrinding = false;
+	@ConfigField(name = "disable-natural-xp-drops-on-player-grinding", category = "grinding")
+	public boolean disableNaturalXPDropsOnPlayerGrinding = false;
 	@ConfigField(name = "grinding-stacked-mobs-allowed", category = "grinding", comment = "Killing stacked mobs (created by a mob stacking plugin) "
 			+ "\nis by nature detected as grinding and by default allowed. If you want to the the grinding detection to detect"
 			+ "\nkillings of stacked to be detected as gring, you must set grinding-stacked-mobs-allowed to false.")

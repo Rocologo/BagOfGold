@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
 import one.lindegaard.MobHunting.grinding.Area;
 
 public class WhitelistAreaCommand implements ICommand {
@@ -54,10 +55,11 @@ public class WhitelistAreaCommand implements ICommand {
 		Location loc = ((Player) sender).getLocation();
 
 		if (args.length == 0) {
-			if (MobHunting.getGrindingManager().isWhitelisted(loc))
+			if (MobHunting.getGrindingManager().isWhitelisted(loc)) {
 				sender.sendMessage(
 						ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.iswhitelisted"));
-			else
+				ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+			} else
 				sender.sendMessage(
 						ChatColor.RED + Messages.getString("mobhunting.commands.whitelistarea.notwhitelisted"));
 		} else if (args.length == 1) {
@@ -69,6 +71,7 @@ public class WhitelistAreaCommand implements ICommand {
 				Area area = new Area(loc, MobHunting.getConfigManager().grindingDetectionRange, 0);
 				MobHunting.getGrindingManager().whitelistArea(area);
 				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.whitelistarea.done"));
+				ProtocolLibHelper.showGrindingArea((Player) sender, loc);
 			} else
 				return false;
 		} else

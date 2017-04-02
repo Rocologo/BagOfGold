@@ -731,8 +731,7 @@ public class MobHuntingManager implements Listener {
 		Player killer = event.getEntity().getKiller();
 
 		// Grinding Farm detections
-		if (MobHunting.getConfigManager().detectFarms
-				&& killed.getLastDamageCause().getCause() == DamageCause.FALL
+		if (MobHunting.getConfigManager().detectFarms && killed.getLastDamageCause().getCause() == DamageCause.FALL
 				&& !MobHunting.getGrindingManager().isWhitelisted(killed.getLocation())) {
 			Messages.debug("===================== Farm detection =======================");
 			MobHunting.getGrindingManager().registerDeath(killed);
@@ -741,9 +740,9 @@ public class MobHuntingManager implements Listener {
 				MobHunting.getMobHuntingManager().cancelDrops(event,
 						MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
 						MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
-				if (ProtocolLibCompat.isSupported()
-						&& (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-								|| killer.hasPermission("mobhunting.blacklist")))
+				if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+						|| killer.hasPermission("mobhunting.blacklist")
+						|| killer.hasPermission("mobhunting.blacklist.show"))
 					ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
 				Messages.debug("================== Farm detection Ended ====================");
@@ -754,9 +753,9 @@ public class MobHuntingManager implements Listener {
 						MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
 						MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
 				Messages.debug("================== Farm detection Ended ====================");
-				if (ProtocolLibCompat.isSupported()
-						&& (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-								|| killer.hasPermission("mobhunting.blacklist")))
+				if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+						|| killer.hasPermission("mobhunting.blacklist.show")
+						|| killer.hasPermission("mobhunting.blacklist"))
 					ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
 				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
 				return;
@@ -1141,7 +1140,8 @@ public class MobHuntingManager implements Listener {
 		HuntData data = new HuntData(instance);
 		if (killer != null) {
 			data = getHuntData(killer);
-			if (cash != 0)
+			if (cash != 0 && (!MobHunting.getGrindingManager().isGrindingArea(killer.getLocation())
+					|| MobHunting.getGrindingManager().isWhitelisted(killer.getLocation())))
 				// Killstreak
 				handleKillstreak(killer);
 			else {
@@ -1154,7 +1154,10 @@ public class MobHuntingManager implements Listener {
 			}
 		} else if (MyPetCompat.isKilledByMyPet(killed)) {
 			data = getHuntData(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
-			if (cash != 0)
+			if (cash != 0 && (!MobHunting.getGrindingManager()
+					.isGrindingArea(MyPetCompat.getMyPet(killed).getOwner().getPlayer().getLocation())
+					|| MobHunting.getGrindingManager()
+							.isWhitelisted(MyPetCompat.getMyPet(killed).getOwner().getPlayer().getLocation())))
 				// Killstreak
 				handleKillstreak(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
 			else {
@@ -1191,13 +1194,13 @@ public class MobHuntingManager implements Listener {
 					data.setDampenedKills(data.getDampenedKills() + 1);
 					if (data.getDampenedKills() >= MobHunting.getConfigManager().grindingDetectionNumberOfDeath) {
 						MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
-						cancelDrops(event, MobHunting.getConfigManager().tryToCancelNaturalDrops,
+						cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDropsOnPlayerGrinding,
 								MobHunting.getConfigManager().tryToCancelXPDrops);
 						Messages.debug("DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",
-								MobHunting.getConfigManager().grindingDetectionNumberOfDeath);
-						if (ProtocolLibCompat.isSupported()
-								&& (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-										|| killer.hasPermission("mobhunting.blacklist")))
+								MobHunting.getConfigManager().disableNaturalXPDropsOnPlayerGrinding);
+						if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+								|| killer.hasPermission("mobhunting.blacklist")
+								|| killer.hasPermission("mobhunting.blacklist.show"))
 							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
 						Messages.debug("======================= kill ended =========================");

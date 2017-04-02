@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
+import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
 import one.lindegaard.MobHunting.grinding.Area;
 
 public class CheckGrindingCommand implements ICommand {
@@ -57,12 +59,14 @@ public class CheckGrindingCommand implements ICommand {
 			return false;
 
 		Location loc = ((Player) sender).getLocation();
-		
-		if (MobHunting.getGrindingManager().isWhitelisted(loc))
+
+		if (MobHunting.getGrindingManager().isWhitelisted(loc)) {
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.whitelisted"));
-		else if (MobHunting.getGrindingManager().isGrindingArea(loc))
+			ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+		} else if (MobHunting.getGrindingManager().isGrindingArea(loc)) {
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.server-wide"));
-		else {
+			ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+		} else {
 			Area area;
 			ArrayList<Player> players = new ArrayList<Player>();
 			for (Player player : Bukkit.getOnlinePlayers()) {
@@ -73,19 +77,20 @@ public class CheckGrindingCommand implements ICommand {
 			}
 
 			if (players.isEmpty())
-				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.grinding.not-grinding")); //$NON-NLS-1$
+				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.grinding.not-grinding"));
 			else {
 				String playerList = "";
 
 				for (Player player : players) {
 					if (!playerList.isEmpty())
-						playerList += ", "; 
+						playerList += ", ";
 
 					playerList += player.getName();
 				}
 
 				sender.sendMessage(ChatColor.RED
-						+ Messages.getString("mobhunting.commands.grinding.player-grinding", "players", playerList)); //$NON-NLS-1$ //$NON-NLS-2$
+						+ Messages.getString("mobhunting.commands.grinding.player-grinding", "players", playerList));
+				ProtocolLibHelper.showGrindingArea((Player) sender, loc);
 			}
 		}
 
