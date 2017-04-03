@@ -1,3 +1,5 @@
+V4.7.2
+* Extremly small release. Fix a NPE bug reported by Mr_Killer01(https://www.spigotmc.org/threads/mobhunting.46937/page-118#post-2335978)
 V4.7.1
 * As of V4.7.1 a delay has been introduced if the server owner has disabled bStats.
 * Fixed minor NPE, which only happened when the server got a stop command before it finished loading.

@@ -772,7 +772,7 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("================== Farm detection Ended ====================");
 				}
 			} else {
-				Messages.debug("The %s (%) died without a damageCause.", mob.getName(), mob.getMobPlugin().getName());
+				Messages.debug("The %s (%s) died without a damageCause.", mob.getName(), mob.getMobPlugin().getName());
 				Messages.debug("================== Farm detection Ended ====================");
 				return;
 			}
