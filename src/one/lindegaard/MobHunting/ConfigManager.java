@@ -1778,7 +1778,9 @@ public class ConfigManager extends AutoConfig {
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
 
-	@ConfigField(name = "disable_money_rewards_from_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
+	@ConfigField(name = "disable_money_rewards_from_mobspawners_and_eggs", category = "general", comment = "Can the players earn money on mobs spawned from mobspawners, eggs and from eggs from Dispensers?"
+			+ "\nIf you disable this you are still able to get rewards from specific Spawners, if you white list the area "
+			+ "\nusing '/mh whitelistarea'.")
 	public boolean disableMoneyRewardsFromMobSpawnersEggsAndDispensers = true;
 	@ConfigField(name = "disable_naturally_dropped_items_from_mobspawners_and_eggs", category = "general", comment = "Let the players get the naturally dropped items from mobs spawned from mobspawners, eggs and from eggs from Dispensers ?")
 	public boolean disableNaturallyDroppedItemsFromMobSpawnersEggsAndDispensers = false;

@@ -121,7 +121,8 @@ public class MasterMobHunterManager implements Listener {
 	}
 
 	public void shutdown() {
-		mUpdater.cancel();
+		if (mUpdater != null)
+			mUpdater.cancel();
 	}
 
 	public boolean isMasterMobHunter(Entity entity) {

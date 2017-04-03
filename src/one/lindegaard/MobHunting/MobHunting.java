@@ -72,6 +72,7 @@ import one.lindegaard.MobHunting.storage.SQLiteDataStore;
 import one.lindegaard.MobHunting.update.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -119,6 +120,27 @@ public class MobHunting extends JavaPlugin {
 			mConfig.saveConfig();
 		} else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
+
+		if (isbStatsEnabled())
+			Messages.debug("bStat is enabled");
+		else {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "=====================WARNING=====================");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "WARNING. The statistics collection is disabled.");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "As developer I need the statistics from");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "bStats.org. The statistics is 100% anonymous.");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "https://bstats.org/plugin/bukkit/MobHunting");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Please enable this in /plugins/bStats/config.yml");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "and get rid of this message. Loading will");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "continue in 15 sec.");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "=================================================");
+			long now = System.currentTimeMillis();
+			while (System.currentTimeMillis() < now + 15000L) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
 
 		mWorldGroupManager = new WorldGroup();
 		mWorldGroupManager.load();
@@ -316,6 +338,13 @@ public class MobHunting extends JavaPlugin {
 		Messages.debug("Shutdown WorldGroupManager");
 		mWorldGroupManager.save();
 		Messages.debug("MobHunting disabled.");
+	}
+
+	private boolean isbStatsEnabled() {
+		File bStatsFolder = new File(instance.getDataFolder().getParentFile(), "bStats");
+		File configFile = new File(bStatsFolder, "config.yml");
+		YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+		return config.getBoolean("enabled", true);
 	}
 
 	// ************************************************************************************

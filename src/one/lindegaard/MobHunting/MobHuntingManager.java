@@ -116,6 +116,8 @@ public class MobHuntingManager implements Listener {
 	private MobHunting instance;
 	public Random mRand = new Random();
 	private final String HUNTDATA = "MH:HuntData";
+	private final String SPAWNER_BLOCKED = "MH:SpawnerBlocked";
+	private final String SPAWNER_ALLOWED = "MH:SpawnerAllowed";
 
 	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
 	private Set<IModifier> mHuntingModifiers = new HashSet<IModifier>();
@@ -729,38 +731,51 @@ public class MobHuntingManager implements Listener {
 		LivingEntity killed = event.getEntity();
 
 		Player killer = event.getEntity().getKiller();
+		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
+		if (mob.getMob_id() == 0) {
+			return;
+		}
 
 		// Grinding Farm detections
-		if (MobHunting.getConfigManager().detectFarms && killed.getLastDamageCause().getCause() == DamageCause.FALL
-				&& !MobHunting.getGrindingManager().isWhitelisted(killed.getLocation())) {
-			Messages.debug("===================== Farm detection =======================");
-			MobHunting.getGrindingManager().registerDeath(killed);
-			if (MobHunting.getConfigManager().detectNetherGoldFarms
-					&& MobHunting.getGrindingManager().isNetherGoldXPFarm(killed)) {
-				MobHunting.getMobHuntingManager().cancelDrops(event,
-						MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
-						MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
-				if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-						|| killer.hasPermission("mobhunting.blacklist")
-						|| killer.hasPermission("mobhunting.blacklist.show"))
-					ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
-				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
+		if (MobHunting.getConfigManager().detectFarms) {
+			if (killed.getLastDamageCause() != null) {
+				Messages.debug("===================== Farm detection =======================");
+				if (killed.getLastDamageCause().getCause() == DamageCause.FALL
+						&& !MobHunting.getGrindingManager().isWhitelisted(killed.getLocation())) {
+					MobHunting.getGrindingManager().registerDeath(killed);
+					if (MobHunting.getConfigManager().detectNetherGoldFarms
+							&& MobHunting.getGrindingManager().isNetherGoldXPFarm(killed)) {
+						MobHunting.getMobHuntingManager().cancelDrops(event,
+								MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
+								MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
+						if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+								|| killer.hasPermission("mobhunting.blacklist")
+								|| killer.hasPermission("mobhunting.blacklist.show"))
+							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
+						Messages.debug("================== Farm detection Ended ====================");
+						return;
+					}
+					if (MobHunting.getConfigManager().detectOtherFarms
+							&& MobHunting.getGrindingManager().isOtherFarm(killed)) {
+						MobHunting.getMobHuntingManager().cancelDrops(event,
+								MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
+								MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
+						Messages.debug("================== Farm detection Ended ====================");
+						if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+								|| killer.hasPermission("mobhunting.blacklist.show")
+								|| killer.hasPermission("mobhunting.blacklist"))
+							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
+						return;
+					}
+					Messages.debug("================== Farm detection Ended ====================");
+				}
+			} else {
+				Messages.debug("The %s (%) died without a damageCause.", mob.getName(), mob.getMobPlugin().getName());
 				Messages.debug("================== Farm detection Ended ====================");
 				return;
 			}
-			if (MobHunting.getConfigManager().detectOtherFarms && MobHunting.getGrindingManager().isOtherFarm(killed)) {
-				MobHunting.getMobHuntingManager().cancelDrops(event,
-						MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
-						MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
-				Messages.debug("================== Farm detection Ended ====================");
-				if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-						|| killer.hasPermission("mobhunting.blacklist.show")
-						|| killer.hasPermission("mobhunting.blacklist"))
-					ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
-				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
-				return;
-			}
-			Messages.debug("================== Farm detection Ended ====================");
 		}
 
 		// Killer is not a player and not a MyPet.
@@ -769,11 +784,6 @@ public class MobHuntingManager implements Listener {
 		}
 
 		if (killed != null && (killed.getType() == EntityType.UNKNOWN || killed.getType() == EntityType.ARMOR_STAND)) {
-			return;
-		}
-
-		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killed);
-		if (mob.getMob_id() == 0) {
 			return;
 		}
 
@@ -1015,8 +1025,8 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
-		// The Mob/Player has MH:Blocked
-		if (event.getEntity().hasMetadata("MH:blocked")) {
+		// Mob Spawner / Egg / Egg Dispenser detection
+		if (event.getEntity().hasMetadata(SPAWNER_BLOCKED)) {
 			if (!MobHunting.getGrindingManager().isWhitelisted(event.getEntity().getLocation())) {
 				if (killed != null) {
 					Messages.debug(
@@ -1693,7 +1703,12 @@ public class MobHuntingManager implements Listener {
 		if (event.getSpawnReason() == SpawnReason.SPAWNER || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
 				|| event.getSpawnReason() == SpawnReason.DISPENSE_EGG) {
 			if (MobHunting.getConfigManager().disableMoneyRewardsFromMobSpawnersEggsAndDispensers)
-				event.getEntity().setMetadata("MH:blocked", new FixedMetadataValue(MobHunting.getInstance(), true));
+				if (MobHunting.getGrindingManager().isWhitelisted(event.getEntity().getLocation()))
+					event.getEntity().setMetadata(SPAWNER_BLOCKED,
+							new FixedMetadataValue(MobHunting.getInstance(), true));
+				else
+					event.getEntity().setMetadata(SPAWNER_ALLOWED,
+							new FixedMetadataValue(MobHunting.getInstance(), true));
 		}
 	}
 

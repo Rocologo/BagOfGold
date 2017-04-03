@@ -91,9 +91,24 @@ public class MetricsManager {
 		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("disguise_plugin_integrations") {
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-				valueMap.put("DisguiseCraft", DisguiseCraftCompat.isSupported() ? 1 : 0);
-				valueMap.put("iDisguise", IDisguiseCompat.isSupported() ? 1 : 0);
-				valueMap.put("LibsDisguises", LibsDisguisesCompat.isSupported() ? 1 : 0);
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
+					valueMap.put("DisguiseCraft", DisguiseCraftCompat.isSupported() ? 1 : 0);
+				} catch (ClassNotFoundException e) {
+				}
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("de.robingrether.idisguise.disguise.DisguiseType");
+					valueMap.put("iDisguise", IDisguiseCompat.isSupported() ? 1 : 0);
+				} catch (ClassNotFoundException e) {
+				}
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("me.libraryaddict.disguise.disguisetypes.DisguiseType");
+					valueMap.put("LibsDisguises", LibsDisguisesCompat.isSupported() ? 1 : 0);
+				} catch (ClassNotFoundException e) {
+				}
 				valueMap.put("VanishNoPacket", VanishNoPacketCompat.isSupported() ? 1 : 0);
 				valueMap.put("Essentials", EssentialsCompat.isSupported() ? 1 : 0);
 				return valueMap;
@@ -469,7 +484,7 @@ public class MetricsManager {
 				}
 
 			}
-		}, 100, 36000);
+		}, 100, 72000);
 
 	}
 }
