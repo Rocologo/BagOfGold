@@ -748,7 +748,8 @@ public class MobHuntingManager implements Listener {
 						MobHunting.getMobHuntingManager().cancelDrops(event,
 								MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
 								MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
-						if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+						if (killer != null
+								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
 								|| killer.hasPermission("mobhunting.blacklist")
 								|| killer.hasPermission("mobhunting.blacklist.show"))
 							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
@@ -762,7 +763,8 @@ public class MobHuntingManager implements Listener {
 								MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
 								MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
 						Messages.debug("================== Farm detection Ended ====================");
-						if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+						if (killer != null
+								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
 								|| killer.hasPermission("mobhunting.blacklist.show")
 								|| killer.hasPermission("mobhunting.blacklist"))
 							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
