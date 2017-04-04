@@ -1292,8 +1292,8 @@ public class MobHuntingManager implements Listener {
 		ArrayList<String> modifiers = new ArrayList<String>();
 		// only add modifiers if the killer is the player.
 		for (IModifier mod : mHuntingModifiers) {
-			if (mod.doesApply(killed, killer != null ? killer : info.getAssister(), data, info, lastDamageCause)) {
-				double amt = mod.getMultiplier(killed, killer != null ? killer : info.getAssister(), data, info,
+			if (mod.doesApply(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed), data, info, lastDamageCause)) {
+				double amt = mod.getMultiplier(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed), data, info,
 						lastDamageCause);
 				if (amt != 1.0) {
 					modifiers.add(mod.getName());
