@@ -188,7 +188,7 @@ public class GrindingManager implements Listener {
 		List<Area> areas = getWhitelistedAreas(event.getWorld());
 		if (areas != null) {
 			for (Area area : areas)
-				area.center.setWorld(event.getWorld());
+				area.getCenter().setWorld(event.getWorld());
 		}
 	}
 
@@ -197,7 +197,7 @@ public class GrindingManager implements Listener {
 		List<Area> areas = getWhitelistedAreas(event.getWorld());
 		if (areas != null) {
 			for (Area area : areas)
-				area.center.setWorld(null);
+				area.getCenter().setWorld(null);
 		}
 	}
 
@@ -225,9 +225,9 @@ public class GrindingManager implements Listener {
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 			for (Area area : entry.getValue()) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("Center", Misc.toMap(area.center));
-				map.put("Radius", area.range);
-				map.put("Counter", area.count);
+				map.put("Center", Misc.toMap(area.getCenter()));
+				map.put("Radius", area.getRange());
+				map.put("Counter", area.getCounter());
 				list.add(map);
 			}
 			blacklist.set(entry.getKey().toString(), list);
@@ -282,18 +282,18 @@ public class GrindingManager implements Listener {
 
 	public void registerKnownGrindingSpot(Area newArea) {
 		for (Area area : getKnownGrindingSpots(newArea.getCenter())) {
-			if (newArea.center.getWorld().equals(area.center.getWorld())) {
-				double dist = newArea.center.distance(area.center);
+			if (newArea.getCenter().getWorld().equals(area.getCenter().getWorld())) {
+				double dist = newArea.getCenter().distance(area.getCenter());
 
 				double remaining = dist;
-				remaining -= area.range;
-				remaining -= newArea.range;
+				remaining -= area.getRange();
+				remaining -= newArea.getRange();
 
 				if (remaining < 0) {
-					if (dist > area.range)
-						area.range = dist;
+					if (dist > area.getRange())
+						area.setRange(dist);
 
-					area.count += newArea.count;
+					area.setCounter(newArea.getCounter() + 1);
 
 					return;
 				}
@@ -306,9 +306,10 @@ public class GrindingManager implements Listener {
 	public Area getGrindingArea(Location location) {
 		LinkedList<Area> areas = getKnownGrindingSpots(location);
 		for (Area area : areas) {
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range) {
-					Messages.debug("Found a blacklisted grinding area = %s, range=%s", area.center, area.range);
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange()) {
+					Messages.debug("Found a blacklisted grinding area = %s, range=%s", area.getCenter(),
+							area.getRange());
 					return area;
 				}
 			}
@@ -320,8 +321,8 @@ public class GrindingManager implements Listener {
 	public boolean isGrindingArea(Location location) {
 		LinkedList<Area> areas = getKnownGrindingSpots(location);
 		for (Area area : areas) {
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range) {
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange()) {
 					return true;
 				}
 			}
@@ -334,44 +335,45 @@ public class GrindingManager implements Listener {
 		while (it.hasNext()) {
 			Area area = it.next();
 
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange())
 					it.remove();
 			}
 		}
 	}
 
 	public void blacklistArea(Area newArea) {
-		LinkedList<Area> areas = mWhitelistedAreas.get(newArea.center.getWorld().getUID());
+		LinkedList<Area> areas = mKnownGrindingAreas.get(newArea.getCenter().getWorld().getUID());
 		if (areas == null) {
 			areas = new LinkedList<Area>();
-			mKnownGrindingAreas.put(newArea.center.getWorld().getUID(), areas);
+			mKnownGrindingAreas.put(newArea.getCenter().getWorld().getUID(), areas);
 		}
 
 		for (Area area : areas) {
-			if (newArea.center.getWorld().equals(area.center.getWorld())) {
-				double dist = newArea.center.distance(area.center);
+			if (newArea.getCenter().getWorld().equals(area.getCenter().getWorld())) {
+				double dist = newArea.getCenter().distance(area.getCenter());
 
 				double remaining = dist;
-				remaining -= area.range;
-				remaining -= newArea.range;
+				remaining -= area.getRange();
+				remaining -= newArea.getRange();
 
 				if (remaining < 0) {
-					if (dist > area.range)
-						area.range = dist;
+					if (dist > area.getRange())
+						area.setRange(dist);
 
-					area.count += newArea.count;
+					area.setCounter(newArea.getCounter() + 1);
 
 					return;
 				}
 			}
 		}
 		areas.add(newArea);
+		mKnownGrindingAreas.put(newArea.getCenter().getWorld().getUID(), areas);
 		saveBlacklist();
 	}
 
 	public void unBlacklistArea(Location location) {
-		LinkedList<Area> areas = mWhitelistedAreas.get(location.getWorld().getUID());
+		LinkedList<Area> areas = mKnownGrindingAreas.get(location.getWorld().getUID());
 
 		if (areas == null)
 			return;
@@ -380,13 +382,15 @@ public class GrindingManager implements Listener {
 		while (it.hasNext()) {
 			Area area = it.next();
 
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange())
 					it.remove();
 			}
 		}
 		if (areas.isEmpty())
 			mKnownGrindingAreas.remove(location.getWorld().getUID());
+		else
+			mKnownGrindingAreas.put(location.getWorld().getUID(), areas);
 		saveBlacklist();
 	}
 
@@ -395,7 +399,10 @@ public class GrindingManager implements Listener {
 	// ****************************************************************
 
 	public LinkedList<Area> getWhitelistedAreas(World world) {
-		return mWhitelistedAreas.get(world.getUID());
+		if (mWhitelistedAreas.containsKey(world.getUID()))
+			return mWhitelistedAreas.get(world.getUID());
+		else
+			return new LinkedList<Area>();
 	}
 
 	private boolean saveWhitelist() {
@@ -406,9 +413,9 @@ public class GrindingManager implements Listener {
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 			for (Area area : entry.getValue()) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("Center", Misc.toMap(area.center));
-				map.put("Radius", area.range);
-				map.put("Counter", area.count);
+				map.put("Center", Misc.toMap(area.getCenter()));
+				map.put("Radius", area.getRange());
+				map.put("Counter", area.getCounter());
 				list.add(map);
 			}
 			whitelist.set(entry.getKey().toString(), list);
@@ -468,7 +475,7 @@ public class GrindingManager implements Listener {
 		if (areas == null)
 			return false;
 		for (Area area : areas) {
-			if (area.center.distance(location) < area.range) {
+			if (area.getCenter().distance(location) < area.getRange()) {
 				Messages.debug("The Area is whitelisted");
 				return true;
 			}
@@ -476,32 +483,46 @@ public class GrindingManager implements Listener {
 		return false;
 	}
 
+	public Area getWhitelistArea(Location location) {
+		LinkedList<Area> areas = getWhitelistedAreas(location.getWorld());
+		for (Area area : areas) {
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange()) {
+					Messages.debug("Found a whitelisted area = %s, range=%s", area.getCenter(), area.getRange());
+					return area;
+				}
+			}
+		}
+		return null;
+	}
+
 	public void whitelistArea(Area newArea) {
-		LinkedList<Area> areas = mWhitelistedAreas.get(newArea.center.getWorld().getUID());
+		LinkedList<Area> areas = mWhitelistedAreas.get(newArea.getCenter().getWorld().getUID());
 		if (areas == null) {
 			areas = new LinkedList<Area>();
-			mWhitelistedAreas.put(newArea.center.getWorld().getUID(), areas);
+			mWhitelistedAreas.put(newArea.getCenter().getWorld().getUID(), areas);
 		}
 
 		for (Area area : areas) {
-			if (newArea.center.getWorld().equals(area.center.getWorld())) {
-				double dist = newArea.center.distance(area.center);
+			if (newArea.getCenter().getWorld().equals(area.getCenter().getWorld())) {
+				double dist = newArea.getCenter().distance(area.getCenter());
 
 				double remaining = dist;
-				remaining -= area.range;
-				remaining -= newArea.range;
+				remaining -= area.getRange();
+				remaining -= newArea.getRange();
 
 				if (remaining < 0) {
-					if (dist > area.range)
-						area.range = dist;
+					if (dist > area.getRange())
+						area.setRange(dist);
 
-					area.count += newArea.count;
+					area.setCounter(newArea.getCounter() + 1);
 
 					return;
 				}
 			}
 		}
 		areas.add(newArea);
+		mWhitelistedAreas.put(newArea.getCenter().getWorld().getUID(), areas);
 		saveWhitelist();
 	}
 
@@ -515,13 +536,15 @@ public class GrindingManager implements Listener {
 		while (it.hasNext()) {
 			Area area = it.next();
 
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange())
 					it.remove();
 			}
 		}
 		if (areas.isEmpty())
 			mWhitelistedAreas.remove(location.getWorld().getUID());
+		else
+			mWhitelistedAreas.put(location.getWorld().getUID(), areas);
 		saveWhitelist();
 	}
 

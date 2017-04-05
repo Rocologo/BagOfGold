@@ -61,12 +61,14 @@ public class CheckGrindingCommand implements ICommand {
 
 		if (MobHunting.getGrindingManager().isWhitelisted(loc)) {
 			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.whitelisted"));
-			ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+			Area area = MobHunting.getGrindingManager().getWhitelistArea(loc);
+			ProtocolLibHelper.showGrindingArea((Player) sender, area, loc);
 		} else if (MobHunting.getGrindingManager().isGrindingArea(loc)) {
-			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.server-wide"));
-			ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.grinding.blacklisted"));
+			Area area = MobHunting.getGrindingManager().getGrindingArea(loc);
+			ProtocolLibHelper.showGrindingArea((Player) sender, area, loc);
 		} else {
-			Area area;
+			Area area = null;
 			ArrayList<Player> players = new ArrayList<Player>();
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
@@ -89,7 +91,7 @@ public class CheckGrindingCommand implements ICommand {
 
 				sender.sendMessage(ChatColor.RED
 						+ Messages.getString("mobhunting.commands.grinding.player-grinding", "players", playerList));
-				ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+				ProtocolLibHelper.showGrindingArea((Player) sender, area, loc);
 			}
 		}
 
@@ -98,7 +100,6 @@ public class CheckGrindingCommand implements ICommand {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

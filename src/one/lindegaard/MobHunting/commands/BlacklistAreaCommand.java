@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -58,7 +59,8 @@ public class BlacklistAreaCommand implements ICommand {
 			if (MobHunting.getGrindingManager().isGrindingArea(loc)) {
 				sender.sendMessage(
 						ChatColor.GREEN + Messages.getString("mobhunting.commands.blacklistarea.isblacklisted"));
-				ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+				Area area = MobHunting.getGrindingManager().getGrindingArea(loc);
+				ProtocolLibHelper.showGrindingArea((Player) sender, area, loc);
 			} else
 				sender.sendMessage(
 						ChatColor.RED + Messages.getString("mobhunting.commands.blacklistarea.notblacklisted"));
@@ -71,7 +73,7 @@ public class BlacklistAreaCommand implements ICommand {
 				Area area = new Area(loc, MobHunting.getConfigManager().grindingDetectionRange, 0);
 				MobHunting.getGrindingManager().blacklistArea(area);
 				sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.blacklistarea.done"));
-				ProtocolLibHelper.showGrindingArea((Player) sender, loc);
+				ProtocolLibHelper.showGrindingArea((Player) sender, area, loc);
 			} else
 				return false;
 		} else
@@ -82,7 +84,15 @@ public class BlacklistAreaCommand implements ICommand {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
-		return null;
+		ArrayList<String> items = new ArrayList<String>();
+		if (args.length == 1) {
+			if (items.isEmpty()) {
+				items.add("add");
+				items.add("remove");
+				items.add("");
+			}
+		} 
+		return items;
 	}
 
 }

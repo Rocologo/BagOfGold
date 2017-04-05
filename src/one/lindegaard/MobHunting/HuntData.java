@@ -25,11 +25,11 @@ public class HuntData {
 
 	public Area getPlayerSpecificGrindingArea(Location location) {
 		for (Area area : lastGridingAreas) {
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range) {
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange()) {
 					Messages.debug("Found a blacklisted player specific grinding Area: (%s,%s,%s,%s)",
-							area.center.getWorld().getName(), area.center.getBlockX(), area.center.getBlockY(),
-							area.center.getBlockZ());
+							area.getCenter().getWorld().getName(), area.getCenter().getBlockX(),
+							area.getCenter().getBlockY(), area.getCenter().getBlockZ());
 					return area;
 				}
 			}
@@ -43,8 +43,8 @@ public class HuntData {
 		while (it.hasNext()) {
 			Area area = it.next();
 
-			if (area.center.getWorld().equals(location.getWorld())) {
-				if (area.center.distance(location) < area.range)
+			if (area.getCenter().getWorld().equals(location.getWorld())) {
+				if (area.getCenter().distance(location) < area.getRange())
 					it.remove();
 			}
 		}
@@ -52,18 +52,18 @@ public class HuntData {
 
 	public void recordGrindingArea() {
 		for (Area area : lastGridingAreas) {
-			if (lastKillAreaCenter.getWorld().equals(area.center.getWorld())) {
-				double dist = lastKillAreaCenter.distance(area.center);
+			if (lastKillAreaCenter.getWorld().equals(area.getCenter().getWorld())) {
+				double dist = lastKillAreaCenter.distance(area.getCenter());
 
 				double remaining = dist;
-				remaining -= area.range;
+				remaining -= area.getRange();
 				remaining -= cDampnerRange;
 
 				if (remaining < 0) {
-					if (dist > area.range)
-						area.range = dist;
+					if (dist > area.getRange())
+						area.setRange(dist);
 
-					area.count += dampenedKills;
+					area.setCounter(dampenedKills + 1);
 
 					return;
 				}

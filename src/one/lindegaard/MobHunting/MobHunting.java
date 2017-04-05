@@ -17,6 +17,7 @@ import one.lindegaard.MobHunting.commands.LeaderboardCommand;
 import one.lindegaard.MobHunting.commands.LearnCommand;
 import one.lindegaard.MobHunting.commands.MoneyCommand;
 import one.lindegaard.MobHunting.commands.AchievementsCommand;
+import one.lindegaard.MobHunting.commands.BlacklistAreaCommand;
 import one.lindegaard.MobHunting.commands.MuteCommand;
 import one.lindegaard.MobHunting.commands.NpcCommand;
 import one.lindegaard.MobHunting.commands.RegionCommand;
@@ -51,6 +52,7 @@ import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
@@ -211,6 +213,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(ActionbarCompat.class, "Actionbar");
 		registerPlugin(ActionBarAPICompat.class, "ActionBarAPI");
 		registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
+		registerPlugin(PlaceholderAPICompat.class, "PlaceholderAPI");
 
 		// Plugins where the reward is a multiplier
 		registerPlugin(StackMobCompat.class, "StackMob");
@@ -231,6 +234,7 @@ public class MobHunting extends JavaPlugin {
 		getCommand("mobhunt").setExecutor(cmd);
 		getCommand("mobhunt").setTabCompleter(cmd);
 		cmd.registerCommand(new AchievementsCommand());
+		cmd.registerCommand(new BlacklistAreaCommand());
 		cmd.registerCommand(new CheckGrindingCommand());
 		cmd.registerCommand(new ClearGrindingCommand());
 		cmd.registerCommand(new DatabaseCommand());

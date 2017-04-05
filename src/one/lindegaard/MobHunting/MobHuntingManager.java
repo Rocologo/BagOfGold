@@ -739,9 +739,9 @@ public class MobHuntingManager implements Listener {
 		// Grinding Farm detections
 		if (MobHunting.getConfigManager().detectFarms) {
 			if (killed.getLastDamageCause() != null) {
-				Messages.debug("===================== Farm detection =======================");
 				if (killed.getLastDamageCause().getCause() == DamageCause.FALL
 						&& !MobHunting.getGrindingManager().isWhitelisted(killed.getLocation())) {
+					Messages.debug("===================== Farm detection =======================");
 					MobHunting.getGrindingManager().registerDeath(killed);
 					if (MobHunting.getConfigManager().detectNetherGoldFarms
 							&& MobHunting.getGrindingManager().isNetherGoldXPFarm(killed)) {
@@ -752,7 +752,11 @@ public class MobHuntingManager implements Listener {
 								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
 								|| killer.hasPermission("mobhunting.blacklist")
 								|| killer.hasPermission("mobhunting.blacklist.show"))
-							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+							ProtocolLibHelper.showGrindingArea(killer,
+									new Area(killed.getLocation(),
+											MobHunting.getConfigManager().rangeToSearchForGrinding,
+											MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
+									killed.getLocation());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
 						Messages.debug("================== Farm detection Ended ====================");
 						return;
@@ -767,7 +771,11 @@ public class MobHuntingManager implements Listener {
 								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
 								|| killer.hasPermission("mobhunting.blacklist.show")
 								|| killer.hasPermission("mobhunting.blacklist"))
-							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
+							ProtocolLibHelper.showGrindingArea(killer,
+									new Area(killed.getLocation(),
+											MobHunting.getConfigManager().rangeToSearchForGrinding,
+											MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
+									killed.getLocation());
 						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
 						return;
 					}
@@ -775,7 +783,6 @@ public class MobHuntingManager implements Listener {
 				}
 			} else {
 				Messages.debug("The %s (%s) died without a damageCause.", mob.getName(), mob.getMobPlugin().getName());
-				Messages.debug("================== Farm detection Ended ====================");
 				return;
 			}
 		}
@@ -1188,7 +1195,7 @@ public class MobHuntingManager implements Listener {
 				data.setKillStreak(0);
 			}
 		} else {
-			Messages.debug("======================= kill ended =========================");
+			Messages.debug("1======================= kill ended =========================");
 			return;
 		}
 
@@ -1196,88 +1203,100 @@ public class MobHuntingManager implements Listener {
 		Location loc = killed.getLocation();
 
 		// Grinding detection
-		if (cash != 0 && !MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
-			// Check if the location is marked as a Grinding Area.
+		if (cash != 0 && !MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")
+				&& MobHunting.getConfigManager().grindingDetectionEnabled) {
+			// Check if the location is marked as a Grinding Area. Whitelist
+			// overrules blacklist.
+
 			Area detectedGrindingArea = MobHunting.getGrindingManager().getGrindingArea(loc);
 			if (detectedGrindingArea == null)
 				// Check if Players HuntData contains this Grinding Area.
 				detectedGrindingArea = data.getPlayerSpecificGrindingArea(loc);
 			else {
-				if (MobHunting.getGrindingManager().isGrindingArea(detectedGrindingArea.getCenter()))
-					if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-							|| killer.hasPermission("mobhunting.blacklist")
-							|| killer.hasPermission("mobhunting.blacklist.show"))
-						ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
-				Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
-				Messages.debug("======================= kill ended =========================");
-				return;
-			}
-			// Slimes ang magmacubes are except from grinding due to their
-			// splitting nature
-			if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
-					&& MobHunting.getConfigManager().grindingDetectionEnabled && !killed.hasMetadata("MH:reinforcement")
-					&& !MobHunting.getGrindingManager().isWhitelisted(loc)) {
-				Messages.debug("Checking if player is grinding within a range of %s blocks", data.getcDampnerRange());
-				if (detectedGrindingArea != null) {
-					data.setLastKillAreaCenter(null);
-					data.setDampenedKills(data.getDampenedKills() + 1);
-					if (data.getDampenedKills() >= MobHunting.getConfigManager().grindingDetectionNumberOfDeath) {
-						if (MobHunting.getConfigManager().blacklistPlayerGrindingSpotsServerWorldWide)
-							MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
-						cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDropsOnPlayerGrinding,
-								MobHunting.getConfigManager().disableNatualXPDrops);
-						Messages.debug("DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",
-								MobHunting.getConfigManager().disableNaturalXPDropsOnPlayerGrinding);
+				if (!MobHunting.getGrindingManager().isWhitelisted(detectedGrindingArea.getCenter())) {
+					if (MobHunting.getGrindingManager().isGrindingArea(detectedGrindingArea.getCenter()))
 						if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
 								|| killer.hasPermission("mobhunting.blacklist")
 								|| killer.hasPermission("mobhunting.blacklist.show"))
-							ProtocolLibHelper.showGrindingArea(killer, killed.getLocation());
-						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
-						Messages.debug("======================= kill ended =========================");
-						return;
+							ProtocolLibHelper.showGrindingArea(killer, detectedGrindingArea, killed.getLocation());
+					Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
+					Messages.debug("2======================= kill ended =========================");
+					return;
+				}
+			}
+
+			if (!MobHunting.getGrindingManager().isWhitelisted(loc)) {
+				// Slimes ang magmacubes are except from grinding due to their
+				// splitting nature
+				if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
+						&& !killed.hasMetadata("MH:reinforcement")) {
+					Messages.debug("Checking if player is grinding within a range of %s blocks",
+							data.getcDampnerRange());
+
+					if (detectedGrindingArea != null) {
+						data.setLastKillAreaCenter(null);
+						data.setDampenedKills(data.getDampenedKills() + 1);
+						if (data.getDampenedKills() >= MobHunting.getConfigManager().grindingDetectionNumberOfDeath) {
+							if (MobHunting.getConfigManager().blacklistPlayerGrindingSpotsServerWorldWide)
+								MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
+							cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDropsOnPlayerGrinding,
+									MobHunting.getConfigManager().disableNatualXPDrops);
+							Messages.debug(
+									"DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",
+									MobHunting.getConfigManager().disableNaturalXPDropsOnPlayerGrinding);
+							if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
+									|| killer.hasPermission("mobhunting.blacklist")
+									|| killer.hasPermission("mobhunting.blacklist.show"))
+								ProtocolLibHelper.showGrindingArea(killer, detectedGrindingArea, loc);
+							Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
+							Messages.debug("3======================= kill ended =========================");
+							return;
+						} else {
+							Messages.debug("DampendKills=%s", data.getDampenedKills());
+						}
 					} else {
-						Messages.debug("DampendKills=%s", data.getDampenedKills());
-					}
-				} else {
-					if (data.getLastKillAreaCenter() != null) {
-						if (loc.getWorld().equals(data.getLastKillAreaCenter().getWorld())) {
-							if (loc.distance(data.getLastKillAreaCenter()) < data.getcDampnerRange()) {
-								if (!MobStackerCompat.isSupported() || (MobStackerCompat.isStackedMob(killed)
-										&& !MobStackerCompat.isGrindingStackedMobsAllowed())) {
-									data.setDampenedKills(data.getDampenedKills() + 1);
-									Messages.debug("DampendKills=%s", data.getDampenedKills());
-									if (data.getDampenedKills() >= MobHunting
-											.getConfigManager().grindingDetectionNumberOfDeath / 2) {
-										Messages.debug(
-												"Warning: Grinding detected. Killings too close, adding 1 to DampenedKills.");
-										Messages.learn(killer,
-												Messages.getString("mobhunting.learn.grindingnotallowed"));
-										Messages.playerActionBarMessage(killer,
-												ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
-										data.recordGrindingArea();
-										cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
-												MobHunting.getConfigManager().disableNatualXPDrops);
+						if (data.getLastKillAreaCenter() != null) {
+							if (loc.getWorld().equals(data.getLastKillAreaCenter().getWorld())) {
+								if (loc.distance(data.getLastKillAreaCenter()) < data.getcDampnerRange()
+										&& !MobHunting.getGrindingManager().isWhitelisted(loc)) {
+									if (!MobStackerCompat.isSupported() || (MobStackerCompat.isStackedMob(killed)
+											&& !MobStackerCompat.isGrindingStackedMobsAllowed())) {
+										data.setDampenedKills(data.getDampenedKills() + 1);
+										Messages.debug("DampendKills=%s", data.getDampenedKills());
+										if (data.getDampenedKills() >= MobHunting
+												.getConfigManager().grindingDetectionNumberOfDeath / 2) {
+											Messages.debug(
+													"Warning: Grinding detected. Killings too close, adding 1 to DampenedKills.");
+											Messages.learn(killer,
+													Messages.getString("mobhunting.learn.grindingnotallowed"));
+											Messages.playerActionBarMessage(killer,
+													ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
+											data.recordGrindingArea();
+											cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+													MobHunting.getConfigManager().disableNatualXPDrops);
+										}
 									}
+								} else {
+									data.setLastKillAreaCenter(loc.clone());
+									Messages.debug(
+											"Kill not within %s blocks from previous kill. DampendKills reset to 0",
+											data.getcDampnerRange());
+									data.setDampenedKills(0);
 								}
 							} else {
 								data.setLastKillAreaCenter(loc.clone());
-								Messages.debug("Kill not within %s blocks from previous kill. DampendKills reset to 0",
-										data.getcDampnerRange());
+								Messages.debug("Kill in new world. DampendKills reset to 0");
 								data.setDampenedKills(0);
 							}
 						} else {
 							data.setLastKillAreaCenter(loc.clone());
-							Messages.debug("Kill in new world. DampendKills reset to 0");
+							Messages.debug("Last Kill Area Center was null. DampendKills reset to 0");
 							data.setDampenedKills(0);
 						}
-					} else {
-						data.setLastKillAreaCenter(loc.clone());
-						Messages.debug("Last Kill Area Center was null. DampendKills reset to 0");
-						data.setDampenedKills(0);
 					}
 				}
 
-				if (data.getDampenedKills() > 10 + 4) {
+				if (data.getDampenedKills() > 10 + 4 && !MobHunting.getGrindingManager().isWhitelisted(loc)) {
 					if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 						Messages.playerActionBarMessage(killer,
 								ChatColor.RED + Messages.getString("mobhunting.killstreak.lost"));
@@ -1292,9 +1311,10 @@ public class MobHuntingManager implements Listener {
 		ArrayList<String> modifiers = new ArrayList<String>();
 		// only add modifiers if the killer is the player.
 		for (IModifier mod : mHuntingModifiers) {
-			if (mod.doesApply(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed), data, info, lastDamageCause)) {
-				double amt = mod.getMultiplier(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed), data, info,
-						lastDamageCause);
+			if (mod.doesApply(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed), data, info,
+					lastDamageCause)) {
+				double amt = mod.getMultiplier(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed),
+						data, info, lastDamageCause);
 				if (amt != 1.0) {
 					modifiers.add(mod.getName());
 					multipliers *= amt;

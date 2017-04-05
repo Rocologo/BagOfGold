@@ -76,6 +76,7 @@ public class MythicMobsV400Compat implements Listener {
 				MythicMobsCompat.getMobRewardData().get(event.getMobType().getInternalName())));
 	}
 	
+	@SuppressWarnings("unused")
 	private void onMythicMobV400DeathEvent(MythicMobDeathEvent event) {
 
 	}

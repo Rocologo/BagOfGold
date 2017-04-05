@@ -1730,6 +1730,10 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/mcmmo.2445/")
 	public boolean disableIntegrationMcMMO = false;
 
+	@ConfigField(name = "disable-integration-placeholderapi", category = "plugins", comment = "Disable integration with PlaceholderAPI."
+			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")
+	public boolean disableIntegrationPlaceholderAPI = false;
+
 	// #####################################################################################
 	// Database
 	// #####################################################################################

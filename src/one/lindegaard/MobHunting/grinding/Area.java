@@ -3,13 +3,13 @@ package one.lindegaard.MobHunting.grinding;
 import org.bukkit.Location;
 
 public class Area {
-	public Location center;
-	public double range;
-	public int count;
-	
-	public Area (Location location, double range, int count){
-		center=location;
-		this.range=range;
+	private Location center;
+	private double range;
+	private int count;
+
+	public Area(Location location, double range, int count) {
+		center = location;
+		this.range = range;
 		this.count = count;
 	}
 
@@ -21,7 +21,8 @@ public class Area {
 	}
 
 	/**
-	 * @param location of the center of the Area
+	 * @param location
+	 *            of the center of the Area
 	 */
 	public void setCenter(Location location) {
 		this.center = location;
@@ -35,7 +36,8 @@ public class Area {
 	}
 
 	/**
-	 * @param range the range to set
+	 * @param range
+	 *            the range to set
 	 */
 	public void setRange(double range) {
 		this.range = range;
@@ -49,9 +51,10 @@ public class Area {
 	}
 
 	/**
-	 * @param count the count to set
+	 * @param count
+	 *            the count to set
 	 */
 	public void setCounter(int count) {
 		this.count = count;
 	}
-}	
+}

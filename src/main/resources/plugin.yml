@@ -5,7 +5,7 @@ description: A Mobhunting plugin
 dev-url: http://dev.bukkit.org/server-mods/mobhunting/
 author: Rocologo
 depend: [Vault]
-softdepend: [Essentials, WorldEdit, WorldGuard, Factions, Towny, ProtocolLib, mcMMO, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, Sentinel, Minigames, MinigamesLib, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, MobStacker, Gringotts, ActionBarAPI, ActionAnnouncer, CustomMobs, ConquestiaMobs, StackMob, MysteriousHalloween]
+softdepend: [Essentials, WorldEdit, WorldGuard, Factions, Towny, ProtocolLib, mcMMO, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, Sentinel, Minigames, MinigamesLib, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, PlaceholderAPI, MobStacker, Gringotts, ActionBarAPI, ActionAnnouncer, CustomMobs, ConquestiaMobs, StackMob, MysteriousHalloween]
 
 commands:
   mobhunt:
@@ -61,6 +61,11 @@ permissions:
       mobhunting.cmd: true
   mobhunting.whitelistarea:
     description: Allows a player to whitelist an grinding area.
+    default: op
+    children:
+      mobhunting.cmd: true
+  mobhunting.blacklistlistarea:
+    description: Allows a player to blacklist an grinding area.
     default: op
     children:
       mobhunting.cmd: true
