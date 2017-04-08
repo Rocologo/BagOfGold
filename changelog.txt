@@ -1,5 +1,7 @@
+V4.7.7
+* Fixed Ticket 212 (https://github.com/Rocologo/MobHunting/issues/212)
 V4.7.6
-*
+* changed pom.xml
 V4.7.5
 * /mh blacklist & /mh whitelist has been reviewed and bugs fixed.
 * Trying to fix servercrash (Ticket 207) on PaperSpigot when ProtocolLib was used for show a Blacklisted Area. (https://github.com/Rocologo/MobHunting/issues/207) 

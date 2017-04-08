@@ -50,13 +50,15 @@ public class BountyCommand implements ICommand {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] {
-				ChatColor.GOLD + label + ChatColor.YELLOW + " [gui|nogui]" + ChatColor.WHITE + " - to show open bounties on your head.",
+				ChatColor.GOLD + label + ChatColor.YELLOW + " [gui|nogui]" + ChatColor.WHITE
+						+ " - to show open bounties on your head.",
 				ChatColor.GOLD + label + ChatColor.YELLOW + " <player> [gui|nogui]" + ChatColor.GREEN
 						+ " - to check if there is a bounty on <player>",
-						ChatColor.GOLD + label + ChatColor.GREEN + " <player> <prize>" + ChatColor.YELLOW + " <message>" + ChatColor.WHITE
-						+ " - put a bounty on <player> and deliver the message when killed.",
-						ChatColor.GOLD + label + ChatColor.GREEN + " remove <player> " + ChatColor.WHITE + " - to remove bounty on <player> with a "
-						+ MobHunting.getConfigManager().bountyReturnPct + "% reduction" };
+				ChatColor.GOLD + label + ChatColor.GREEN + " <player> <prize>" + ChatColor.YELLOW + " <message>"
+						+ ChatColor.WHITE + " - put a bounty on <player> and deliver the message when killed.",
+				ChatColor.GOLD + label + ChatColor.GREEN + " remove <player> " + ChatColor.WHITE
+						+ " - to remove bounty on <player> with a " + MobHunting.getConfigManager().bountyReturnPct
+						+ "% reduction" };
 	}
 
 	@Override
@@ -134,15 +136,16 @@ public class BountyCommand implements ICommand {
 				return true;
 			}
 
-		} else if (args.length == 2 && (args[0].equalsIgnoreCase("remove")||args[0].equalsIgnoreCase("drop"))) {
+		} else if (args.length == 2 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("drop"))) {
 			// /mh bounty drop <player> - to drop the bounty on the player
 			// Remove a bounty on player <player>
 			@SuppressWarnings("deprecation")
 			OfflinePlayer wantedPlayer = Bukkit.getOfflinePlayer(args[1]);
 			if (wantedPlayer != null) {
-				if (MobHunting.getBountyManager().hasBounty(worldGroupName, wantedPlayer, bountyOwner)) {
-					Bounty bounty = MobHunting.getBountyManager().getBounty(worldGroupName, wantedPlayer, bountyOwner);
-					bounty.setStatus(BountyStatus.canceled);
+				if (MobHunting.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
+					Bounty bounty = MobHunting.getBountyManager().getOpenBounty(worldGroupName, wantedPlayer,
+							bountyOwner);
+					//bounty.setStatus(BountyStatus.canceled);
 					MobHunting.getBountyManager().cancel(bounty);
 					int pct = MobHunting.getConfigManager().bountyReturnPct;
 					MobHunting.getRewardManager().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
@@ -186,10 +189,11 @@ public class BountyCommand implements ICommand {
 				return true;
 			}
 			if (wantedPlayer != null && playerId != 0) {
-				if (bountyOwner.equals(wantedPlayer)) {
-					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounty-on-yourself"));
-					return true;
-				}
+				// TODO: allow this agin
+				// if (bountyOwner.equals(wantedPlayer)) {
+				// sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounty-on-yourself"));
+				// return true;
+				// }
 				double prize = Double.valueOf(args[1]);
 				if (!MobHunting.getRewardManager().has(bountyOwner, prize)) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-money", "money", prize));
@@ -205,7 +209,7 @@ public class BountyCommand implements ICommand {
 				// args[0], args[1], message);
 				Bounty bounty;
 				bounty = new Bounty(worldGroupName, bountyOwner, wantedPlayer, prize, message);
-				if (MobHunting.getBountyManager().hasBounty(worldGroupName, wantedPlayer, bountyOwner)) {
+				if (MobHunting.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounty-added", "wantedplayer",
 							wantedPlayer.getName()));
 				} else {

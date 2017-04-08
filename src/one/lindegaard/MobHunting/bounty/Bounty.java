@@ -106,16 +106,21 @@ public class Bounty {
 	@Override
 	public int hashCode() {
 		if (bountyOwner == null)
-			return wantedPlayer.hashCode() | worldGroup.hashCode();
+			return wantedPlayer.hashCode() | worldGroup.hashCode() | status.hashCode();
 		else
-			return wantedPlayer.hashCode() | bountyOwner.hashCode() | worldGroup.hashCode();
+			return wantedPlayer.hashCode() | bountyOwner.hashCode() | worldGroup.hashCode() | status.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Bounty))
 			return false;
+
 		Bounty other = (Bounty) obj;
+
+		if (status != other.getStatus())
+			return false;
+
 		if (bountyOwner == null)
 			if (other.bountyOwner == null)
 				return wantedPlayer.equals(other.wantedPlayer) && worldGroup.equalsIgnoreCase(other.worldGroup);
@@ -128,14 +133,10 @@ public class Bounty {
 
 	@Override
 	public String toString() {
-		if (bountyOwner != null)
-			return String.format(
-					"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
-					worldGroup, wantedPlayer.getName(), bountyOwner.getName(), npcId, mobId, MobHunting.getRewardManager().format(prize), status);
-		else
-			return String.format(
-					"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Completed:%s}",
-					worldGroup, wantedPlayer.getName(), "Random Bounty", npcId, mobId, MobHunting.getRewardManager().format(prize), status);
+		return String.format(
+				"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Status:%s}",
+				worldGroup, wantedPlayer.getName(), bountyOwner != null ? bountyOwner.getName() : "Random Bounty",
+				npcId, mobId, MobHunting.getRewardManager().format(prize), status);
 	}
 
 	/**
@@ -339,6 +340,10 @@ public class Bounty {
 
 	public boolean isOpen() {
 		return status.equals(BountyStatus.open);
+	}
+
+	public boolean isOpenRandomBounty() {
+		return status == BountyStatus.open && bountyOwner == null;
 	}
 
 }

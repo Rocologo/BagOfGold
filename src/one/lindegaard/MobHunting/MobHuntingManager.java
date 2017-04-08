@@ -1350,9 +1350,9 @@ public class MobHuntingManager implements Listener {
 					MobHunting.getBountyManager().getAllBounties().size());
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(killer);
-			if (BountyManager.hasBounties(worldGroupName, wantedPlayer)) {
+			if (BountyManager.hasOpenBounties(worldGroupName, wantedPlayer)) {
 				BountyKillEvent bountyEvent = new BountyKillEvent(worldGroupName, killer, wantedPlayer,
-						MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer));
+						MobHunting.getBountyManager().getOpenBounties(worldGroupName, wantedPlayer));
 				Bukkit.getPluginManager().callEvent(bountyEvent);
 				if (bountyEvent.isCancelled()) {
 					Messages.debug("KillBlocked %s: BountyKillEvent was cancelled",
@@ -1360,7 +1360,7 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("======================= kill ended =========================");
 					return;
 				}
-				Set<Bounty> bounties = MobHunting.getBountyManager().getBounties(worldGroupName, wantedPlayer);
+				Set<Bounty> bounties = MobHunting.getBountyManager().getOpenBounties(worldGroupName, wantedPlayer);
 				for (Bounty b : bounties) {
 					reward += b.getPrize();
 					OfflinePlayer bountyOwner = b.getBountyOwner();

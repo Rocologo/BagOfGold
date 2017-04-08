@@ -206,8 +206,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			String exestr = "SELECT " + column + ", PLAYER_ID, mh_Players.UUID uuid, mh_Players.NAME name" + " from mh_"
 					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
 					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
-					+ " GROUP BY PLAYER_ID ORDER BY "+(type.getDBColumn().equalsIgnoreCase("total_cash")?"sum(total_cash)":"AMOUNT")+" DESC LIMIT " + count;
-			//Messages.debug("Load str=%s",exestr);
+					+ " GROUP BY PLAYER_ID ORDER BY "
+					+ (type.getDBColumn().equalsIgnoreCase("total_cash") ? "sum(total_cash)" : "AMOUNT")
+					+ " DESC LIMIT " + count;
+			// Messages.debug("Load str=%s",exestr);
 			ResultSet results = statement.executeQuery(exestr);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;
@@ -267,14 +269,15 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					column = "total" + stat.getType().getDBColumn().substring(
 							stat.getType().getDBColumn().lastIndexOf("_"), stat.getType().getDBColumn().length());
 				}
-				column2="total_cash";
+				column2 = "total_cash";
 				int amount = stat.getAmount();
 				double cash = Misc.round(stat.getCash());
 				int player_id = getPlayerId(stat.getPlayer());
-				String str = String
-						.format(Locale.US,"UPDATE mh_Daily SET %1$s = %1$s + %2$d, %5$s = %5$s + %6$f WHERE ID = strftime(\"%%Y%%j\",\"now\")"
-								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;", column, amount, mob_id, player_id, column2, cash);
-				//Messages.debug("Save Str=%s", str);
+				String str = String.format(Locale.US,
+						"UPDATE mh_Daily SET %1$s = %1$s + %2$d, %5$s = %5$s + %6$f WHERE ID = strftime(\"%%Y%%j\",\"now\")"
+								+ " AND MOB_ID=%3$d AND PLAYER_ID = %4$d;",
+						column, amount, mob_id, player_id, column2, cash);
+				// Messages.debug("Save Str=%s", str);
 				statement.addBatch(str);
 			}
 			statement.executeBatch();
@@ -287,7 +290,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			throw new DataStoreException(e);
 		}
 	}
-	
+
 	@Override
 	public void saveBounties(Set<Bounty> bountyDataSet) throws DataStoreException {
 		Connection mConnection;
@@ -311,11 +314,28 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					mInsertBounty.setDouble(9, bounty.getPrize());
 					mInsertBounty.setString(10, bounty.getMessage());
 					mInsertBounty.setInt(11, bounty.getStatus().getValue());
-					
+
 					mInsertBounty.addBatch();
 				}
 				mInsertBounty.executeBatch();
 				mInsertBounty.close();
+
+				// "DELETE FROM mh_Bounties WHERE WANTEDPLAYER_ID=? AND
+				// BOUNTYOWNER_ID=? AND WORLDGROUP=?;");
+				//openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
+				//for (Bounty bounty : bountyDataSet) {
+				//	if (bounty.getStatus() != BountyStatus.open) {
+				//		int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
+				//		int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
+				//		mDeleteBounty.setInt(1, wantedPlayerId);
+				//		mDeleteBounty.setInt(2, bountyOwnerId);
+				//		mDeleteBounty.setString(3, bounty.getWorldGroup());
+				//		mDeleteBounty.addBatch();
+				//	}
+				//}
+				//mDeleteBounty.executeBatch();
+				//mDeleteBounty.close();
+
 				mConnection.commit();
 				mConnection.close();
 			} catch (SQLException e) {
@@ -422,7 +442,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			if (updateStringBuilder.length() != 0)
 				updateStringBuilder.append(", ");
 
-			updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
+			updateStringBuilder
+					.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", type.getDBColumn()));
 		}
 
 		String updateString = updateStringBuilder.toString();
@@ -1153,9 +1174,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// the Daily table, and the rest will happen automatically
 		StringBuilder updateStringBuilder = new StringBuilder();
 
-		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
+		updateStringBuilder
+				.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+		updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+		updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_ASSIST"));
 
 		String updateString = updateStringBuilder.toString();
 
@@ -1326,10 +1348,11 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// the Daily table, and the rest will happen automatically
 		StringBuilder updateStringBuilder = new StringBuilder();
 
-		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
-		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
-		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
-		updateStringBuilder.append(String.format(Locale.US,"%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
+		updateStringBuilder
+				.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "ACHIEVEMENT_COUNT"));
+		updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_KILL"));
+		updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)), ", "TOTAL_ASSIST"));
+		updateStringBuilder.append(String.format(Locale.US, "%s = (%1$s + (NEW.%1$s - OLD.%1$s)) ", "TOTAL_CASH"));
 
 		String updateString = updateStringBuilder.toString();
 

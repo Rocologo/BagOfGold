@@ -844,7 +844,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 				b.setPrize(set.getDouble(9));
 				b.setMessage(set.getString(10));
 				b.setStatus(BountyStatus.valueOf(set.getInt(11)));
-				bounties.add(b);
+				if (b.isOpen())
+					bounties.add(b);
 			}
 			set.close();
 			mGetBounties.close();
