@@ -748,16 +748,17 @@ public class MobHuntingManager implements Listener {
 						MobHunting.getMobHuntingManager().cancelDrops(event,
 								MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
 								MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
-						if (killer != null
-								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-								|| killer.hasPermission("mobhunting.blacklist")
-								|| killer.hasPermission("mobhunting.blacklist.show"))
+						if (getPlayer(killer, killed) != null
+								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(getPlayer(killer, killed))
+										.isLearningMode()
+								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist")
+								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show"))
 							ProtocolLibHelper.showGrindingArea(killer,
 									new Area(killed.getLocation(),
 											MobHunting.getConfigManager().rangeToSearchForGrinding,
 											MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
 									killed.getLocation());
-						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
+						Messages.learn(getPlayer(killer, killed), Messages.getString("mobhunting.learn.grindingfarm"));
 						Messages.debug("================== Farm detection Ended ====================");
 						return;
 					}
@@ -767,22 +768,24 @@ public class MobHuntingManager implements Listener {
 								MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
 								MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
 						Messages.debug("================== Farm detection Ended ====================");
-						if (killer != null
-								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-								|| killer.hasPermission("mobhunting.blacklist.show")
-								|| killer.hasPermission("mobhunting.blacklist"))
-							ProtocolLibHelper.showGrindingArea(killer,
+						if (getPlayer(killer, killed) != null
+								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(getPlayer(killer, killed))
+										.isLearningMode()
+								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show")
+								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist"))
+							ProtocolLibHelper.showGrindingArea(getPlayer(killer, killed),
 									new Area(killed.getLocation(),
 											MobHunting.getConfigManager().rangeToSearchForGrinding,
 											MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
 									killed.getLocation());
-						Messages.learn(killer, Messages.getString("mobhunting.learn.grindingfarm"));
+						Messages.learn(getPlayer(killer, killed), Messages.getString("mobhunting.learn.grindingfarm"));
 						return;
 					}
 					Messages.debug("================== Farm detection Ended ====================");
 				}
 			} else {
-				Messages.debug("The %s (%s) died without a damageCause.", mob.getName(), mob.getMobPlugin().getName());
+				// Messages.debug("The %s (%s) died without a damageCause.",
+				// mob.getName(), mob.getMobPlugin().getName());
 				return;
 			}
 		}
@@ -1226,7 +1229,7 @@ public class MobHuntingManager implements Listener {
 			}
 
 			if (!MobHunting.getGrindingManager().isWhitelisted(loc)) {
-				// Slimes ang magmacubes are except from grinding due to their
+				// Slimes ang Magmacubes are except from grinding due to their
 				// splitting nature
 				if (!(event.getEntity() instanceof Slime || event.getEntity() instanceof MagmaCube)
 						&& !killed.hasMetadata("MH:reinforcement")) {
@@ -1244,11 +1247,13 @@ public class MobHuntingManager implements Listener {
 							Messages.debug(
 									"DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",
 									MobHunting.getConfigManager().disableNaturalXPDropsOnPlayerGrinding);
-							if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(killer).isLearningMode()
-									|| killer.hasPermission("mobhunting.blacklist")
-									|| killer.hasPermission("mobhunting.blacklist.show"))
-								ProtocolLibHelper.showGrindingArea(killer, detectedGrindingArea, loc);
-							Messages.learn(killer, Messages.getString("mobhunting.learn.grindingnotallowed"));
+							if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(getPlayer(killer, killed))
+									.isLearningMode() || getPlayer(killer, killed).hasPermission("mobhunting.blacklist")
+									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show"))
+								ProtocolLibHelper.showGrindingArea(getPlayer(killer, killed), detectedGrindingArea,
+										loc);
+							Messages.learn(getPlayer(killer, killed),
+									Messages.getString("mobhunting.learn.grindingnotallowed"));
 							Messages.debug("3======================= kill ended =========================");
 							return;
 						} else {
@@ -1267,9 +1272,9 @@ public class MobHuntingManager implements Listener {
 												.getConfigManager().grindingDetectionNumberOfDeath / 2) {
 											Messages.debug(
 													"Warning: Grinding detected. Killings too close, adding 1 to DampenedKills.");
-											Messages.learn(killer,
+											Messages.learn(getPlayer(killer, killed),
 													Messages.getString("mobhunting.learn.grindingnotallowed"));
-											Messages.playerActionBarMessage(killer,
+											Messages.playerActionBarMessage(getPlayer(killer, killed),
 													ChatColor.RED + Messages.getString("mobhunting.grinding.detected"));
 											data.recordGrindingArea();
 											cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
@@ -1311,10 +1316,8 @@ public class MobHuntingManager implements Listener {
 		ArrayList<String> modifiers = new ArrayList<String>();
 		// only add modifiers if the killer is the player.
 		for (IModifier mod : mHuntingModifiers) {
-			if (mod.doesApply(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed), data, info,
-					lastDamageCause)) {
-				double amt = mod.getMultiplier(killed, killer != null ? killer : MyPetCompat.getMyPetOwner(killed),
-						data, info, lastDamageCause);
+			if (mod.doesApply(killed, getPlayer(killer, killed), data, info, lastDamageCause)) {
+				double amt = mod.getMultiplier(killed, getPlayer(killer, killed), data, info, lastDamageCause);
 				if (amt != 1.0) {
 					modifiers.add(mod.getName());
 					multipliers *= amt;
@@ -1393,12 +1396,11 @@ public class MobHuntingManager implements Listener {
 				|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
 
 			// Handle MobHuntKillEvent
-			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed,
-					killer != null ? killer : info.getAssister());
+			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, getPlayer(killer, info.getAssister()));
 			Bukkit.getPluginManager().callEvent(event2);
 			if (event2.isCancelled()) {
 				Messages.debug("KillBlocked %s: MobHuntKillEvent was cancelled",
-						(killer != null ? killer : info.getAssister()).getName());
+						(getPlayer(killer, info.getAssister())).getName());
 				Messages.debug("======================= kill ended =========================");
 				return;
 			}
@@ -1450,7 +1452,7 @@ public class MobHuntingManager implements Listener {
 					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
 						Messages.debug("%s was assisted by %s. Reward/Penalty is only ½ (%s)", killer.getName(),
 								info.getAssister().getName(), MobHunting.getRewardManager().format(cash));
-						RewardManager.dropMoneyOnGround(killer != null ? killer : info.getAssister(), killed,
+						RewardManager.dropMoneyOnGround(getPlayer(killer, info.getAssister()), killed,
 								killed.getLocation(), cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(info.getAssister(), cash);
@@ -1459,19 +1461,18 @@ public class MobHuntingManager implements Listener {
 						// mob.getMobPlugin().name(), cash);
 						// MobHunting.getDataStoreManager().recordCash(killer,
 						// mob, killed.hasMetadata("MH:hasBonus"), cash);
-						onAssist(killer != null ? killer : info.getAssister(), killer, killed,
-								info.getLastAssistTime());
+						onAssist(getPlayer(killer, info.getAssister()), killer, killed, info.getLastAssistTime());
 						Messages.debug("%s was assisted by %s. Reward/Penalty is only ½ (%s)", killer.getName(),
 								info.getAssister().getName(), MobHunting.getRewardManager().format(cash));
 					}
 				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-					MobHunting.getRewardManager().withdrawPlayer(killer != null ? killer : info.getAssister(), -cash);
+					MobHunting.getRewardManager().withdrawPlayer(getPlayer(killer, info.getAssister()), -cash);
 					// Messages.debug("RecordCash: %s Assisted killed a %s (%s)
 					// Cash=%s", killer.getName(), mob.getName(),
 					// mob.getMobPlugin().name(), cash);
 					// MobHunting.getDataStoreManager().recordCash(killer, mob,
 					// killed.hasMetadata("MH:hasBonus"), cash);
-					onAssist(killer != null ? killer : info.getAssister(), killer, killed, info.getLastAssistTime());
+					onAssist(getPlayer(killer, info.getAssister()), killer, killed, info.getLastAssistTime());
 					Messages.debug("%s was assisted by %s. Reward/Penalty is only ½ (%s)", killer.getName(),
 							info.getAssister().getName(), MobHunting.getRewardManager().format(cash));
 				}
@@ -1490,19 +1491,19 @@ public class MobHuntingManager implements Listener {
 				if (extraString.trim().isEmpty()) {
 					if (cash >= MobHunting.getConfigManager().minimumReward) {
 						if (!MobHunting.getConfigManager().dropMoneyOnGroup)
-							Messages.playerActionBarMessage(killer != null ? killer : info.getAssister(),
+							Messages.playerActionBarMessage(getPlayer(killer, info.getAssister()),
 									ChatColor.GREEN + "" + ChatColor.ITALIC
 											+ Messages.getString("mobhunting.moneygain", "prize",
 													MobHunting.getRewardManager().format(cash), "killed",
 													mob.getFriendlyName()));
 						else
-							Messages.playerActionBarMessage(killer != null ? killer : info.getAssister(),
+							Messages.playerActionBarMessage(getPlayer(killer, info.getAssister()),
 									ChatColor.GREEN + "" + ChatColor.ITALIC
 											+ Messages.getString("mobhunting.moneygain.drop", "prize",
 													MobHunting.getRewardManager().format(cash), "killed",
 													mob.getFriendlyName()));
 					} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-						Messages.playerActionBarMessage(killer != null ? killer : info.getAssister(),
+						Messages.playerActionBarMessage(getPlayer(killer, info.getAssister()),
 								ChatColor.RED + "" + ChatColor.ITALIC
 										+ Messages.getString("mobhunting.moneylost", "prize",
 												MobHunting.getRewardManager().format(cash), "killed",
@@ -1512,25 +1513,23 @@ public class MobHuntingManager implements Listener {
 				} else {
 					if (cash >= MobHunting.getConfigManager().minimumReward) {
 						if (!MobHunting.getConfigManager().dropMoneyOnGroup)
-							Messages.playerActionBarMessage(killer != null ? killer : info.getAssister(),
-									ChatColor.GREEN + "" + ChatColor.ITALIC
-											+ Messages.getString("mobhunting.moneygain.bonuses", "basic_prize",
-													MobHunting.getRewardManager().format(basic_prize), "prize",
-													MobHunting.getRewardManager().format(cash), "bonuses",
-													extraString.trim(), "multipliers",
-													MobHunting.getRewardManager().format(multipliers), "killed",
-													mob.getFriendlyName()));
+							Messages.playerActionBarMessage(getPlayer(killer, info.getAssister()), ChatColor.GREEN + ""
+									+ ChatColor.ITALIC
+									+ Messages.getString("mobhunting.moneygain.bonuses", "basic_prize",
+											MobHunting.getRewardManager().format(basic_prize), "prize",
+											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+											"multipliers", MobHunting.getRewardManager().format(multipliers), "killed",
+											mob.getFriendlyName()));
 						else
-							Messages.playerActionBarMessage(killer != null ? killer : info.getAssister(),
-									ChatColor.GREEN + "" + ChatColor.ITALIC
-											+ Messages.getString("mobhunting.moneygain.bonuses.drop", "basic_prize",
-													MobHunting.getRewardManager().format(basic_prize), "prize",
-													MobHunting.getRewardManager().format(cash), "bonuses",
-													extraString.trim(), "multipliers",
-													MobHunting.getRewardManager().format(multipliers), "killed",
-													mob.getFriendlyName()));
+							Messages.playerActionBarMessage(getPlayer(killer, info.getAssister()), ChatColor.GREEN + ""
+									+ ChatColor.ITALIC
+									+ Messages.getString("mobhunting.moneygain.bonuses.drop", "basic_prize",
+											MobHunting.getRewardManager().format(basic_prize), "prize",
+											MobHunting.getRewardManager().format(cash), "bonuses", extraString.trim(),
+											"multipliers", MobHunting.getRewardManager().format(multipliers), "killed",
+											mob.getFriendlyName()));
 					} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-						Messages.playerActionBarMessage(killer != null ? killer : info.getAssister(), ChatColor.RED + ""
+						Messages.playerActionBarMessage(getPlayer(killer, info.getAssister()), ChatColor.RED + ""
 								+ ChatColor.ITALIC
 								+ Messages.getString("mobhunting.moneylost.bonuses", "basic_prize",
 										MobHunting.getRewardManager().format(basic_prize), "prize",
@@ -1540,21 +1539,21 @@ public class MobHuntingManager implements Listener {
 				}
 		} else
 			Messages.debug("KillBlocked %s: Reward was less than %s  (Bonuses=%s)",
-					(killer != null ? killer : info.getAssister()).getName(),
-					MobHunting.getConfigManager().minimumReward, extraString);
+					getPlayer(killer, info.getAssister()).getName(), MobHunting.getConfigManager().minimumReward,
+					extraString);
 
 		// Run console commands as a reward
 		if (data.getDampenedKills() < 10) {
 			if (MobHunting.getConfigManager().isCmdGointToBeExcuted(killed)) {
-				String worldname = (killer != null ? killer : info.getAssister()).getWorld().getName();
-				String killerpos = (killer != null ? killer : info.getAssister()).getLocation().getBlockX() + " "
-						+ (killer != null ? killer : info.getAssister()).getLocation().getBlockY() + " "
-						+ (killer != null ? killer : info.getAssister()).getLocation().getBlockZ();
+				String worldname = getPlayer(killer, info.getAssister()).getWorld().getName();
+				String killerpos = getPlayer(killer, info.getAssister()).getLocation().getBlockX() + " "
+						+ getPlayer(killer, info.getAssister()).getLocation().getBlockY() + " "
+						+ getPlayer(killer, info.getAssister()).getLocation().getBlockZ();
 				String killedpos = killed.getLocation().getBlockX() + " " + killed.getLocation().getBlockY() + " "
 						+ killed.getLocation().getBlockZ();
 				String prizeCommand = MobHunting.getConfigManager().getKillConsoleCmd(killed)
 						.replaceAll("\\{player\\}", killer.getName())
-						.replaceAll("\\{killer\\}", (killer != null ? killer : info.getAssister()).getName())
+						.replaceAll("\\{killer\\}", getPlayer(killer, info.getAssister()).getName())
 						.replaceAll("\\{world\\}", worldname)
 						.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
 						.replaceAll("\\{killerpos\\}", killerpos).replaceAll("\\{killedpos\\}", killedpos);
@@ -1578,8 +1577,7 @@ public class MobHuntingManager implements Listener {
 								Bukkit.getConsoleSender()
 										.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
 												+ str.substring(0, n) + "\" when Mob:" + mob.getName()
-												+ " was killed by "
-												+ (killer != null ? killer : info.getAssister()).getName());
+												+ " was killed by " + getPlayer(killer, info.getAssister()).getName());
 								// e.printStackTrace();
 							}
 							str = str.substring(n + 1, str.length()).toString();
@@ -1591,19 +1589,19 @@ public class MobHuntingManager implements Listener {
 						Bukkit.getConsoleSender()
 								.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\"" + str
 										+ "\" when Mob:" + mob.getName() + " was killed by "
-										+ (killer != null ? killer : info.getAssister()).getName());
+										+ getPlayer(killer, info.getAssister()).getName());
 						// e.printStackTrace();
 					}
 				}
 				// send a message to the player
 				if (!MobHunting.getConfigManager().getKillRewardDescription(killed).equals("") && !killer_muted) {
-					String message = ChatColor.GREEN + "" + ChatColor.ITALIC + MobHunting.getConfigManager()
-							.getKillRewardDescription(killed)
-							.replaceAll("\\{player\\}", (killer != null ? killer : info.getAssister()).getName())
-							.replaceAll("\\{killer\\}", (killer != null ? killer : info.getAssister()).getName())
-							.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
-							.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
-							.replaceAll("\\{killedpos\\}", killedpos);
+					String message = ChatColor.GREEN + "" + ChatColor.ITALIC
+							+ MobHunting.getConfigManager().getKillRewardDescription(killed)
+									.replaceAll("\\{player\\}", getPlayer(killer, info.getAssister()).getName())
+									.replaceAll("\\{killer\\}", getPlayer(killer, info.getAssister()).getName())
+									.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
+									.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
+									.replaceAll("\\{killedpos\\}", killedpos);
 					if (killed instanceof Player)
 						message = message.replaceAll("\\{killed_player\\}", killed.getName()).replaceAll("\\{killed\\}",
 								killed.getName());
@@ -1611,11 +1609,22 @@ public class MobHuntingManager implements Listener {
 						message = message.replaceAll("\\{killed_player\\}", mob.getName()).replaceAll("\\{killed\\}",
 								mob.getName());
 					Messages.debug("Description to be send:" + message);
-					killer.sendMessage(message);
+					getPlayer(killer, info.getAssister()).sendMessage(message);
 				}
 			}
 		}
 		Messages.debug("======================= kill ended =========================");
+	}
+
+	/**
+	 * Get the Player or the MyPet owner (Player)
+	 * 
+	 * @param killer - the player who killed the mob
+	 * @param killed - the mob which died
+	 * @return the Player or return null when killer is not a player and killed not killed by a MyPet. 
+	 */
+	private Player getPlayer(Player killer, Entity killed) {
+		return killer != null ? killer : MyPetCompat.getMyPetOwner(killed);
 	}
 
 	public void cancelDrops(EntityDeathEvent event, boolean items, boolean xp) {
