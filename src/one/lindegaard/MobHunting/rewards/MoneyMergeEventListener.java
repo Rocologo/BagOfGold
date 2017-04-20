@@ -1,7 +1,6 @@
 package one.lindegaard.MobHunting.rewards;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,16 +24,13 @@ public class MoneyMergeEventListener implements Listener {
 
 		Item item1 = event.getEntity();
 		Item item2 = event.getTarget();
-		ItemStack is1 = item1.getItemStack();
+		//ItemStack is1 = item1.getItemStack();
 		ItemStack is2 = item2.getItemStack();
-		if ((MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-				&& is1.getType() == Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem)
-				&& is2.getType() == Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem))
-				|| (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")
-						&& is1.getType() == Material.SKULL_ITEM && is2.getType() == Material.SKULL_ITEM)) {
-			if (HiddenRewardData.hasHiddenRewardData(item1) && HiddenRewardData.hasHiddenRewardData(item2)) {
-				HiddenRewardData hiddenRewardData1 = HiddenRewardData.getHiddenRewardData(item1);
-				HiddenRewardData hiddenRewardData2 = HiddenRewardData.getHiddenRewardData(item2);
+		if (HiddenRewardData.hasHiddenRewardData(item1) && HiddenRewardData.hasHiddenRewardData(item2)) {
+			HiddenRewardData hiddenRewardData1 = HiddenRewardData.getHiddenRewardData(item1);
+			HiddenRewardData hiddenRewardData2 = HiddenRewardData.getHiddenRewardData(item2);
+			if (hiddenRewardData1.getRewardUUID().equals(hiddenRewardData2.getRewardUUID())
+					&& (hiddenRewardData1.isBagOfGoldReward() || hiddenRewardData1.isItemReward())) {
 				if (hiddenRewardData1.getMoney() + hiddenRewardData2.getMoney() != 0) {
 					hiddenRewardData2.setMoney(hiddenRewardData1.getMoney() + hiddenRewardData2.getMoney());
 					ItemMeta im = is2.getItemMeta();
@@ -55,9 +51,8 @@ public class MoneyMergeEventListener implements Listener {
 				}
 				if (RewardManager.getDroppedMoney().containsKey(item1.getEntityId()))
 					RewardManager.getDroppedMoney().remove(item1.getEntityId());
-			} else {
-				Messages.debug("No hiddenData");
 			}
 		}
+
 	}
 }
