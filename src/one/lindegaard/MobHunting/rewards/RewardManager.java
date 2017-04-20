@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +23,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.gestern.gringotts.Configuration;
@@ -38,13 +41,14 @@ public class RewardManager implements Listener {
 
 	// public static final String MH_MONEY = "MH:Money";
 	public static final String MH_HIDDEN_REWARD_DATA = "MH:HiddenRewardData";
-	// Unique randomgenerated UUID for "Bag of gold" rewards
+	// Unique random generated UUID for "Bag of gold" rewards
 	public static final String MH_REWARD_BAG_OF_GOLD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f";
-	// Unique randomgenerated UUID for MobHead/Playerhead rewards
-	public static final String MH_REWARD_HEAD_UUID = "2351844f-f400-4fa4-9642-35169c5b048a";
-
-	// public static final String MH_REWARD_UUID =
-	// "3eb9e46c-72ca-374d-8314-058a96cd0e8d"; //UUID from mineskin
+	// Unique random generated UUID for MobHead/Playerhead rewards
+	public static final String MH_REWARD_KILLED_UUID = "2351844f-f400-4fa4-9642-35169c5b048a";
+	// Unique random generated UUID for ITEM rewards
+	public static final String MH_REWARD_ITEM_UUID = "3ffe9c3b-0445-4c35-a952-c2aaf5aeac76";
+	// Unique random generated UUID for KILLER head rewards
+	public static final String MH_REWARD_KILLER_UUID = "d81f1076-c91c-44c0-98c3-02a2ee88aa97";
 
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
@@ -115,7 +119,7 @@ public class RewardManager implements Listener {
 
 	public static void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
-		money = Misc.round(money);
+		money = Misc.ceil(money);
 		if (GringottsCompat.isSupported()) {
 			List<Denomination> denoms = Configuration.CONF.currency.denominations();
 			int unit = Configuration.CONF.currency.unit;
@@ -127,38 +131,44 @@ public class RewardManager implements Listener {
 					item.setMetadata(MH_HIDDEN_REWARD_DATA,
 							new FixedMetadataValue(MobHunting.getInstance(),
 									new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-											money, UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID), UUID.randomUUID())));
+											money, UUID.fromString(MH_REWARD_ITEM_UUID), UUID.randomUUID())));
 					rest = rest - (d.value / unit);
 				}
 			}
 		} else {
 			ItemStack is;
+			UUID uuid = null;
 			if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED")) {
 				MinecraftMob mob = MinecraftMob.getExtendedMobType(killedEntity);
+				uuid = UUID.fromString(MH_REWARD_KILLED_UUID);
 				if (mob != null)
 					is = mob.getCustomProfileHead(money);
 				else // https://mineskin.org/6875
-					is = CustomItems.getCustomtexture(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID),
+					is = CustomItems.getCustomtexture(uuid,
 							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 							"eyJ0aW1lc3RhbXAiOjE0ODU5MTIwNjk3OTgsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM5NmNlMTNmZjYxNTVmZGYzMjM1ZDhkMjIxNzRjNWRlNGJmNTUxMmYxYWRlZGExYWZhM2ZjMjgxODBmM2Y3In19fQ==",
 							"m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=",
 							money, UUID.randomUUID());
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
-				is = CustomItems.getCustomtexture(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID),
+				uuid = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
+				is = CustomItems.getCustomtexture(uuid,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money, UUID.randomUUID());
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLER")) {
+				uuid = UUID.fromString(MH_REWARD_KILLER_UUID);
 				is = CustomItems.getPlayerHead(player.getName(), money);
 			} else { // ITEM
+				uuid = UUID.fromString(MH_REWARD_ITEM_UUID);
 				is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
 			}
 			item = location.getWorld().dropItem(location, is);
 			RewardManager.getDroppedMoney().put(item.getEntityId(), money);
 			item.setMetadata(MH_HIDDEN_REWARD_DATA,
-					new FixedMetadataValue(MobHunting.getInstance(),
-							new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, money,
-									UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID), UUID.randomUUID())));
+					new FixedMetadataValue(MobHunting.getInstance(), new HiddenRewardData(
+							MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
+									: MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+							money, uuid, UUID.randomUUID())));
 			if (Misc.isMC18OrNewer()) {
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 						+ MobHunting.getRewardManager().format(money));
@@ -243,6 +253,24 @@ public class RewardManager implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static ItemStack setDisplayNameAndHiddenLores(ItemStack skull, String mDisplayName, double money,
+			UUID uuid) {
+		ItemMeta skullMeta = skull.getItemMeta();
+		skullMeta.setLore(new ArrayList<String>(
+				Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + money,
+						"Hidden:" + uuid, money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID())));
+		if (money == 0)
+			skullMeta.setDisplayName(
+					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
+		else
+			skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+					+ (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+							? MobHunting.getRewardManager().format(money)
+							: mDisplayName + " (" + MobHunting.getRewardManager().format(money) + ")"));
+		skull.setItemMeta(skullMeta);
+		return skull;
 	}
 
 }

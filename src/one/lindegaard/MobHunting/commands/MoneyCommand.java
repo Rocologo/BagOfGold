@@ -343,7 +343,7 @@ public class MoneyCommand implements ICommand {
 					for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 						ItemStack is = player.getInventory().getItem(slot);
 						if (HiddenRewardData.hasHiddenRewardData(is) && HiddenRewardData.getHiddenRewardData(is)
-								.getUuid().equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
+								.getRewardUUID().equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
 							HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
 							double saldo = hiddenRewardData.getMoney();
 							if (saldo >= toBeSold) {

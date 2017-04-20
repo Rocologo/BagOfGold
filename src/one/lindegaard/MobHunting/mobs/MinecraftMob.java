@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.rewards.CustomItems;
-import one.lindegaard.MobHunting.rewards.HiddenRewardData;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.util.Misc;
 
@@ -773,39 +772,37 @@ public enum MinecraftMob {
 		switch (this) {
 		case Skeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
-			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case WitherSkeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
-			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case Zombie:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
-			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
-
-		// case PvpPlayer:
-		// if (name != null)
-		// skull = CustomItems.getPlayerHead(name, 0);
-		// else
-		// skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		// break;
 
 		case Creeper:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case EnderDragon:
 			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
-			skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull, mDisplayName, money, RewardManager.MH_REWARD_HEAD_UUID);
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		default:
-			return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID), name, mTextureValue,
-					mTextureSignature, money, UUID.randomUUID());
+			return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), name,
+					mTextureValue, mTextureSignature, money, UUID.randomUUID());
 		}
 		return skull;
 	}
@@ -817,7 +814,7 @@ public enum MinecraftMob {
 	 * @return ItemStack with custom texture.
 	 */
 	public ItemStack getCustomProfileHead(double money) {
-		return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_HEAD_UUID), mDisplayName,
+		return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), mDisplayName,
 				mTextureValue, mTextureSignature, money, UUID.fromString(mPlayerUUID));
 	}
 

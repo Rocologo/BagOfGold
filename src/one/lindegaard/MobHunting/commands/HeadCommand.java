@@ -2,6 +2,8 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
-import one.lindegaard.MobHunting.rewards.HiddenRewardData;
+import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class HeadCommand implements ICommand, Listener {
@@ -224,7 +226,8 @@ public class HeadCommand implements ICommand, Listener {
 							return false;
 						Location location = new Location(world, xpos, ypos, zpos);
 						ItemStack head = mob.getHead(mob.getName(), money);
-						HiddenRewardData.setDisplayNameAndHiddenLores(head, mob.getName(), money, mob.getPlayerUUID().toString());
+						RewardManager.setDisplayNameAndHiddenLores(head, mob.getName(), money,
+								UUID.fromString(mob.getPlayerUUID().toString()));
 						world.dropItem(location, head);
 					}
 				} else {

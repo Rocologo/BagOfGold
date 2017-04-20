@@ -298,6 +298,8 @@ public class MobHunting extends JavaPlugin {
 				mMobHuntingManager.setHuntEnabled(player, true);
 			}
 		}
+		
+		//Messages.debug("Random uuid = %s", UUID.randomUUID());
 
 		mInitialized = true;
 

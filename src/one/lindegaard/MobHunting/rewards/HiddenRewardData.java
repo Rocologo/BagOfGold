@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,9 +12,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import one.lindegaard.MobHunting.MobHunting;
 
 public class HiddenRewardData {
 
@@ -35,8 +31,8 @@ public class HiddenRewardData {
 	HiddenRewardData(HiddenRewardData hiddenRewardData) {
 		this.description = hiddenRewardData.getDisplayname();
 		this.money = hiddenRewardData.getMoney();
-		this.uuid = hiddenRewardData.getUuid();
-		this.uniqueId = hiddenRewardData.uniqueId;
+		this.uuid = hiddenRewardData.getRewardUUID();
+		this.uniqueId = hiddenRewardData.getUniqueUUID();
 	}
 
 	HiddenRewardData(String displayName, double money, UUID uuid, UUID uniqueId) {
@@ -78,9 +74,8 @@ public class HiddenRewardData {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		return new ArrayList<String>(
-				Arrays.asList("Hidden:" + description, "Hidden:" + String.valueOf(money),
-						"Hidden:" + uuid.toString(), money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString()));
+		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + String.valueOf(money),
+				"Hidden:" + uuid.toString(), money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString()));
 	}
 
 	/**
@@ -100,14 +95,14 @@ public class HiddenRewardData {
 	/**
 	 * @return the uuid
 	 */
-	public UUID getUuid() {
+	public UUID getRewardUUID() {
 		return uuid;
 	}
 
 	/**
 	 * @return the Unique
 	 */
-	public UUID getUniqueId() {
+	public UUID getUniqueUUID() {
 		return uniqueId;
 	}
 
@@ -162,8 +157,31 @@ public class HiddenRewardData {
 		uniqueId = UUID.fromString(section.getString("uniqueid"));
 	}
 
+	public boolean isBagOfGoldReward() {
+		return uuid.toString().equalsIgnoreCase(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID);
+	}
+
+	public boolean isKilledHeadReward() {
+		return uuid.toString().equalsIgnoreCase(RewardManager.MH_REWARD_KILLED_UUID);
+	}
+
+	public boolean isKillerHeadReward() {
+		return uuid.toString().equalsIgnoreCase(RewardManager.MH_REWARD_KILLER_UUID);
+	}
+
+	public boolean isItemReward() {
+		return uuid.toString().equalsIgnoreCase(RewardManager.MH_REWARD_ITEM_UUID);
+	}
+
 	public static boolean hasHiddenRewardData(Item item) {
-		return hasHiddenRewardData(item.getItemStack());
+		return item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA) || hasHiddenRewardData(item.getItemStack());
+	}
+
+	public static HiddenRewardData getHiddenRewardData(Item item) {
+		if (item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA))
+			return (HiddenRewardData) item.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
+		else
+			return getHiddenRewardData(item.getItemStack());
 	}
 
 	public static boolean hasHiddenRewardData(ItemStack itemStack) {
@@ -172,7 +190,11 @@ public class HiddenRewardData {
 				&& (itemStack.getItemMeta().getLore().get(2)
 						.equals("Hidden:" + RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)
 						|| itemStack.getItemMeta().getLore().get(2)
-								.equals("Hidden:" + RewardManager.MH_REWARD_HEAD_UUID));
+								.equals("Hidden:" + RewardManager.MH_REWARD_KILLED_UUID)
+						|| itemStack.getItemMeta().getLore().get(2)
+								.equals("Hidden:" + RewardManager.MH_REWARD_KILLER_UUID)
+						|| itemStack.getItemMeta().getLore().get(2)
+								.equals("Hidden:" + RewardManager.MH_REWARD_ITEM_UUID));
 	}
 
 	public static HiddenRewardData getHiddenRewardData(ItemStack itemStack) {
@@ -193,22 +215,6 @@ public class HiddenRewardData {
 
 	public static HiddenRewardData getHiddenRewardData(Entity entity) {
 		return (HiddenRewardData) entity.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
-	}
-
-	public static ItemStack setDisplayNameAndHiddenLores(ItemStack skull, String mDisplayName, double money,
-			String uuid) {
-		ItemMeta skullMeta = skull.getItemMeta();
-		skullMeta.setLore(new ArrayList<String>(
-				Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.valueOf(money),
-						"Hidden:" + uuid, money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID())));
-		if (money == 0)
-			skullMeta.setDisplayName(
-					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
-		else
-			skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-					+ mDisplayName + " (" + MobHunting.getRewardManager().format(Double.valueOf(money)) + " )");
-		skull.setItemMeta(skullMeta);
-		return skull;
 	}
 
 }
