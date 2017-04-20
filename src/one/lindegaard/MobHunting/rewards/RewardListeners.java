@@ -86,8 +86,8 @@ public class RewardListeners implements Listener {
 								if (ProtocolLibCompat.isSupported())
 									ProtocolLibHelper.pickupMoney(player, item);
 								item.remove();
-								Messages.debug("ItemStack in slot %s added value %s, new value %s", slot,
-										MobHunting.getRewardManager().format(hiddenRewardData.getMoney()),
+								Messages.debug("Added %s to item in slot %s, new value is %s",
+										MobHunting.getRewardManager().format(hiddenRewardData.getMoney()), slot,
 										MobHunting.getRewardManager().format(newHiddenRewardData.getMoney()));
 								found = true;
 								break;
@@ -153,7 +153,7 @@ public class RewardListeners implements Listener {
 			item.setCustomNameVisible(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onDespawnRewardEvent(ItemDespawnEvent event) {
 		if (event.isCancelled())
