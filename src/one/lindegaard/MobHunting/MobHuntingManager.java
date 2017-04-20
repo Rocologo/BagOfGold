@@ -1243,10 +1243,10 @@ public class MobHuntingManager implements Listener {
 							if (MobHunting.getConfigManager().blacklistPlayerGrindingSpotsServerWorldWide)
 								MobHunting.getGrindingManager().registerKnownGrindingSpot(detectedGrindingArea);
 							cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDropsOnPlayerGrinding,
-									MobHunting.getConfigManager().disableNatualXPDrops);
+									MobHunting.getConfigManager().disableNaturalXPDropsOnPlayerGrinding);
 							Messages.debug(
 									"DampenedKills reached the limit %s, no rewards paid. Grinding Spot registered.",
-									MobHunting.getConfigManager().disableNaturalXPDropsOnPlayerGrinding);
+									MobHunting.getConfigManager().grindingDetectionNumberOfDeath);
 							if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(getPlayer(killer, killed))
 									.isLearningMode() || getPlayer(killer, killed).hasPermission("mobhunting.blacklist")
 									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show"))

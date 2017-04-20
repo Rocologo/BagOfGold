@@ -1,6 +1,7 @@
 V4.7.8
 * Money rewards will now be merged when picked up. (Bag of gold and Items - with a value)
 * Fixed Ticket 210 (https://github.com/Rocologo/MobHunting/issues/210)
+* Fixed Ticket 211 (https://github.com/Rocologo/MobHunting/issues/211)
 V4.7.7
 * Fixed Ticket 212 (https://github.com/Rocologo/MobHunting/issues/212)
 V4.7.6
