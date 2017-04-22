@@ -368,4 +368,4 @@ mobhunting.learn.grindingfarm=Mob Farm grinding is not allowed on this server.
 mobhunting.learn.factions-no-rewards-in-safezone=No rewards when you are in a Factions SafeZone
 mobhunting.learn.towny-no-rewards-in-home-town=No rewards when you are in your home town.
 mobhunting.learn.assisted-kill-is-disabled=Assisted kill is disabled by Admin.
-
+mobhunting.learn.residence-no-rewards-in-protected-area=No reward: You are in a Residence with flag damage=false

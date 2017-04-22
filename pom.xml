@@ -5,8 +5,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.7.8</version>
-	<!-- <version>4.7.8-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>4.7.9</version> -->
+	<version>4.7.9-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -80,6 +80,7 @@
 		<massivecore.jar.version>MassiveCore-2.10.0.jar</massivecore.jar.version>
 		<factions.jar.version>Factions-2.10.0.jar</factions.jar.version>
 		<towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
+		<residence.jar.version>Residence4.6.1.4.jar</residence.jar.version>
 	</properties>
 
 
@@ -682,6 +683,15 @@
 			<version>0.91.4.2</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${towny.jar.version}</systemPath>
+		</dependency>
+
+		<!-- Residence -->
+		<dependency>
+			<groupId>com.bekvon.bukkit.residence</groupId>
+			<artifactId>Residence</artifactId>
+			<version>4.6.1.4</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${residence.jar.version}</systemPath>
 		</dependency>
 
 		<!-- PlacholdeAPI -->

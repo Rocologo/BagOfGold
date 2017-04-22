@@ -248,6 +248,12 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere you can change the behavior of the Towny integration, or you can disable"
 						+ "\nintegration completely." + "\nhttp://towny.palmergames.com/");
 
+		setCategoryComment("residence",
+				"########################################################################" + "\nTowny settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of the Residence integration, or you can disable"
+						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/residence-1-7-10-up-to-1-11.11480/");
+
 		setCategoryComment("grinding",
 				"########################################################################"
 						+ "\nGrinding detection settings"
@@ -1578,8 +1584,22 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttp://towny.palmergames.com/")
 	public boolean disableRewardsInHomeTown = true;
 
-	@ConfigField(name = "disable-naturally-drops-and-xp-in-home-town", category = "towny", comment = "Disable naturally drops and xp drops when th eplayer kill mobs in his home town.")
+	@ConfigField(name = "disable-naturally-drops-and-xp-in-home-town", category = "towny", comment = "Disable naturally drops and xp drops when the player kill mobs in his home town.")
 	public boolean disableNaturallyRewardsInHomeTown = false;
+
+	// #####################################################################################
+	// Residence Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-residence", category = "residence", comment = "Disable integration with Residence."
+			+ "\nhttp://towny.palmergames.com/")
+	public boolean disableIntegrationResidence = false;
+
+	@ConfigField(name = "disable-rewards-in-home-town", category = "residence", comment = "Disable rewards when the player is protected against damage."
+			+ "\nhttp://towny.palmergames.com/")
+	public boolean disableRewardsInHomeResidence = true;
+
+	@ConfigField(name = "disable-naturally-drops-and-xp-in-protected-residence", category = "residence", comment = "Disable naturally drops and xp drops when the player kill mobs in his home town.")
+	public boolean disableNaturallyRewardsInProtectedResidence = false;
 
 	// #####################################################################################
 	// DropMoneyOnGround settings

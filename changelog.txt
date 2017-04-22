@@ -1,3 +1,6 @@
+V4.7.9
+* Support for Residence added (https://www.spigotmc.org/resources/residence-1-7-10-up-to-1-11.11480/)
+* Bug in Grinder detection fixed. Ticket 219 (https://github.com/Rocologo/MobHunting/issues/219)
 V4.7.8
 * Money rewards will now be merged when picked up. (Bag of gold and Items - with a value)
 * Fixed Ticket 210 (https://github.com/Rocologo/MobHunting/issues/210)
@@ -38,7 +41,7 @@ V4.6.9
 * Added support for Adventure Gamemode. 
 * Added specific setting to allow Naturally Item and XP drops when the player is grinding
 * Removed KillStreak when the player is Grinding
-* Added setting in config.yml to blacklist Player Grinding Area as Server-worldwide Grinding areas. 
+* Added setting in config.yml to blacklist Player) Grinding Area as Server-worldwide Grinding areas. 
 * XP and Item drops will be disabled when the player is in god mode. (Check disable-natural-item-drops and disable-natural-xp-drops)
 * New settings to disable money, normal item drops and normal xp drops from mob spawners (disabled_money-rewards_from_mobspawners_and_eggs, disable_naturally_dropped_items_from_mobspawners_and_eggs, disable_naturally_dropped_xp_from_mobspawners_and_egg)
 * Added version check for ProtocolLib. If your Minecraft server is 1.8 or newer the ProtocolLib must be 4.1.0 or higher.

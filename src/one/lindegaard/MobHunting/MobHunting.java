@@ -54,6 +54,7 @@ import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
+import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
@@ -186,6 +187,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(WorldGuardCompat.class, "WorldGuard");
 		registerPlugin(FactionsCompat.class, "Factions");
 		registerPlugin(TownyCompat.class, "Towny");
+		registerPlugin(ResidenceCompat.class, "Residence");
 		registerPlugin(McMMOCompat.class, "mcMMO");
 		registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
 
