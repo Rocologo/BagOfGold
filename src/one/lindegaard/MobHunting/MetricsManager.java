@@ -32,6 +32,7 @@ import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
+import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
@@ -47,7 +48,7 @@ public class MetricsManager {
 	// Metrics
 	private Metrics metrics;
 	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph, usageGraph,
-			mobPluginIntegrationsGraph;
+			mobPluginIntegrationsGraph, protectionPluginsGraph, minigamesGraph, disguiseGraph;
 	private MobHunting instance;
 
 	private org.bstats.Metrics bStatsMetrics;
@@ -72,6 +73,7 @@ public class MetricsManager {
 				valueMap.put("WorldGuard", WorldGuardCompat.isSupported() ? 1 : 0);
 				valueMap.put("Factions", FactionsCompat.isSupported() ? 1 : 0);
 				valueMap.put("Towny", TownyCompat.isSupported() ? 1 : 0);
+				valueMap.put("Residence", ResidenceCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -201,7 +203,6 @@ public class MetricsManager {
 		metrics.addGraph(databaseGraph);
 		integrationsGraph = metrics.createGraph("MobHunting integrations");
 		integrationsGraph.addPlotter(new Metrics.Plotter("Citizens") {
-
 			@Override
 			public int getValue() {
 				return CitizensCompat.isSupported() ? 1 : 0;
@@ -223,99 +224,6 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return MyPetCompat.isSupported() ? 1 : 0;
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("DisguisesCraft") {
-			@Override
-			public int getValue() {
-				try {
-					@SuppressWarnings({ "rawtypes", "unused" })
-					Class cls = Class.forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
-					return DisguiseCraftCompat.isSupported() ? 1 : 0;
-				} catch (ClassNotFoundException e) {
-					return 0;
-				}
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("iDisguises") {
-			@Override
-			public int getValue() {
-				try {
-					@SuppressWarnings({ "rawtypes", "unused" })
-					Class cls = Class.forName("de.robingrether.idisguise.disguise.DisguiseType");
-					return IDisguiseCompat.isSupported() ? 1 : 0;
-				} catch (ClassNotFoundException e) {
-					return 0;
-				}
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("LibsDisguises") {
-			@Override
-			public int getValue() {
-				try {
-					@SuppressWarnings({ "rawtypes", "unused" })
-					Class cls = Class.forName("me.libraryaddict.disguise.disguisetypes.DisguiseType");
-					return LibsDisguisesCompat.isSupported() ? 1 : 0;
-				} catch (ClassNotFoundException e) {
-					return 0;
-				}
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("MobArena") {
-			@Override
-			public int getValue() {
-				return MobArenaCompat.isSupported() ? 1 : 0;
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("Minigames") {
-			@Override
-			public int getValue() {
-				return MinigamesCompat.isSupported() ? 1 : 0;
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("MinigamesLib") {
-			@Override
-			public int getValue() {
-				return MinigamesLibCompat.isSupported() ? 1 : 0;
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("PvpArena") {
-			@Override
-			public int getValue() {
-				return PVPArenaCompat.isSupported() ? 1 : 0;
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("BattleArena") {
-			@Override
-			public int getValue() {
-				return BattleArenaCompat.isSupported() ? 1 : 0;
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("WorldGuard") {
-			@Override
-			public int getValue() {
-				try {
-					@SuppressWarnings({ "rawtypes", "unused" })
-					Class cls = Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
-					return WorldGuardCompat.isSupported() ? 1 : 0;
-				} catch (ClassNotFoundException e) {
-					return 0;
-				}
-
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("Factions") {
-			@Override
-			public int getValue() {
-				return FactionsCompat.isSupported() ? 1 : 0;
-
-			}
-		});
-		integrationsGraph.addPlotter(new Metrics.Plotter("Towny") {
-			@Override
-			public int getValue() {
-				return TownyCompat.isSupported() ? 1 : 0;
-
 			}
 		});
 		integrationsGraph.addPlotter(new Metrics.Plotter("WorldEdit") {
@@ -344,6 +252,77 @@ public class MetricsManager {
 			}
 		});
 		metrics.addGraph(integrationsGraph);
+
+		protectionPluginsGraph = metrics.createGraph("Protection plugins");
+		protectionPluginsGraph.addPlotter(new Metrics.Plotter("WorldGuard") {
+			@Override
+			public int getValue() {
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
+					return WorldGuardCompat.isSupported() ? 1 : 0;
+				} catch (ClassNotFoundException e) {
+					return 0;
+				}
+
+			}
+		});
+		protectionPluginsGraph.addPlotter(new Metrics.Plotter("Factions") {
+			@Override
+			public int getValue() {
+				return FactionsCompat.isSupported() ? 1 : 0;
+
+			}
+		});
+		protectionPluginsGraph.addPlotter(new Metrics.Plotter("Towny") {
+			@Override
+			public int getValue() {
+				return TownyCompat.isSupported() ? 1 : 0;
+
+			}
+		});
+		protectionPluginsGraph.addPlotter(new Metrics.Plotter("Residence") {
+			@Override
+			public int getValue() {
+				return ResidenceCompat.isSupported() ? 1 : 0;
+
+			}
+		});
+		metrics.addGraph(protectionPluginsGraph);
+		
+		minigamesGraph = metrics.createGraph("Minigames");
+		minigamesGraph.addPlotter(new Metrics.Plotter("MobArena") {
+			@Override
+			public int getValue() {
+				return MobArenaCompat.isSupported() ? 1 : 0;
+			}
+		});
+		minigamesGraph.addPlotter(new Metrics.Plotter("Minigames") {
+			@Override
+			public int getValue() {
+				return MinigamesCompat.isSupported() ? 1 : 0;
+			}
+		});
+		minigamesGraph.addPlotter(new Metrics.Plotter("MinigamesLib") {
+			@Override
+			public int getValue() {
+				return MinigamesLibCompat.isSupported() ? 1 : 0;
+			}
+		});
+		minigamesGraph.addPlotter(new Metrics.Plotter("PvpArena") {
+			@Override
+			public int getValue() {
+				return PVPArenaCompat.isSupported() ? 1 : 0;
+			}
+		});
+		minigamesGraph.addPlotter(new Metrics.Plotter("BattleArena") {
+			@Override
+			public int getValue() {
+				return BattleArenaCompat.isSupported() ? 1 : 0;
+			}
+		});
+		metrics.addGraph(minigamesGraph);
+
 		mobPluginIntegrationsGraph = metrics.createGraph("Special Mobs");
 		mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("MythicMobs") {
 			@Override
@@ -388,6 +367,46 @@ public class MetricsManager {
 			}
 		});
 		metrics.addGraph(mobPluginIntegrationsGraph);
+
+		disguiseGraph = metrics.createGraph("Disguise plugins");
+		disguiseGraph.addPlotter(new Metrics.Plotter("DisguisesCraft") {
+			@Override
+			public int getValue() {
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("pgDev.bukkit.DisguiseCraft.disguise.DisguiseType");
+					return DisguiseCraftCompat.isSupported() ? 1 : 0;
+				} catch (ClassNotFoundException e) {
+					return 0;
+				}
+			}
+		});
+		disguiseGraph.addPlotter(new Metrics.Plotter("iDisguises") {
+			@Override
+			public int getValue() {
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("de.robingrether.idisguise.disguise.DisguiseType");
+					return IDisguiseCompat.isSupported() ? 1 : 0;
+				} catch (ClassNotFoundException e) {
+					return 0;
+				}
+			}
+		});
+		disguiseGraph.addPlotter(new Metrics.Plotter("LibsDisguises") {
+			@Override
+			public int getValue() {
+				try {
+					@SuppressWarnings({ "rawtypes", "unused" })
+					Class cls = Class.forName("me.libraryaddict.disguise.disguisetypes.DisguiseType");
+					return LibsDisguisesCompat.isSupported() ? 1 : 0;
+				} catch (ClassNotFoundException e) {
+					return 0;
+				}
+			}
+		});
+		
+		metrics.addGraph(disguiseGraph);
 
 		titleManagerGraph = metrics.createGraph("TitleManagers");
 		titleManagerGraph.addPlotter(new Metrics.Plotter("BossBarAPI") {

@@ -476,7 +476,6 @@ public class GrindingManager implements Listener {
 			return false;
 		for (Area area : areas) {
 			if (area.getCenter().distance(location) < area.getRange()) {
-				Messages.debug("The Area is whitelisted");
 				return true;
 			}
 		}
