@@ -83,20 +83,18 @@ public class BountyManager implements Listener {
 			if (bounty.getBountyOwner() == null) {
 				if (bountyOwner == null) {
 					if (bounty.getWantedPlayer().equals(wantedPlayer) && bounty.getWorldGroup().equals(worldGroup)) {
-						//Messages.debug("BountyManager: Found bounty: %s", bounty.toString());
 						return bounty;
 					}
 				}
 			} else {
 				if (bounty.getBountyOwner().equals(bountyOwner) && bounty.getWantedPlayer().equals(wantedPlayer)
 						&& bounty.getWorldGroup().equals(worldGroup)) {
-					//Messages.debug("BountyManager: Found bounty: %s", bounty.toString());
 					return bounty;
 				}
 			}
 
 		}
-		//Messages.debug("BountyManager: No open bounty found.");
+		// Messages.debug("BountyManager: No open bounty found.");
 		return null;
 	}
 
@@ -106,20 +104,17 @@ public class BountyManager implements Listener {
 			if (bounty.getBountyOwner() == null) {
 				if (bountyOwner == null) {
 					if (bounty.getWantedPlayer().equals(wantedPlayer) && bounty.getWorldGroup().equals(worldGroup)) {
-						//Messages.debug("BountyManager: Found bounty: %s", bounty.toString());
 						return bounty;
 					}
 				}
 			} else {
 				if (bounty.getBountyOwner().equals(bountyOwner) && bounty.getWantedPlayer().equals(wantedPlayer)
 						&& bounty.getWorldGroup().equals(worldGroup)) {
-					//Messages.debug("BountyManager: Found bounty: %s", bounty.toString());
 					return bounty;
 				}
 			}
 
 		}
-		//Messages.debug("BountyManager: No bounty found.");
 		return null;
 	}
 
@@ -167,22 +162,16 @@ public class BountyManager implements Listener {
 
 	// Tests
 	public boolean hasOpenBounty(String worldGroup, OfflinePlayer wantedPlayer, OfflinePlayer bountyOwner) {
-		int n = 0;
 		for (Bounty bounty : mOpenBounties) {
-			//Messages.debug("hasOpenBounty n=%s, testing: %s", n++, bounty.toString());
-
 			if (!bounty.isOpen() || !bounty.getWorldGroup().equals(worldGroup)
 					|| !bounty.getWantedPlayer().equals(wantedPlayer)) {
-				//Messages.debug("hasOpenBounty (continue): %s", bounty.toString());
 				continue;
 			}
 
 			if (bounty.getBountyOwner() == null)
 				if (bountyOwner == null) {
-					//Messages.debug("hasOpenBounty (true - both is null): %s", bounty.toString());
 					return true;
 				} else {
-					//Messages.debug("hasOpenBounty (continue2): %s", bounty.toString());
 					continue;
 				}
 			else {
@@ -190,7 +179,6 @@ public class BountyManager implements Listener {
 					return true;
 			}
 		}
-		//Messages.debug("hasOpenBounty (no bounty found)");
 		return false;
 
 	}
@@ -311,7 +299,6 @@ public class BountyManager implements Listener {
 	 * @param bounty
 	 */
 	public void save(Bounty bounty) {
-		//Messages.debug("Save bounty=%s", bounty.toString());
 		if (hasOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())) {
 			getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).setPrize(
 					getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()).getPrize()
@@ -327,10 +314,9 @@ public class BountyManager implements Listener {
 	}
 
 	public void cancel(Bounty bounty) {
-		getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())
-				.setStatus(BountyStatus.canceled);
-		MobHunting.getDataStoreManager()
-				.updateBounty(getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()));
+		Bounty b1 = getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner());
+		b1.setStatus(BountyStatus.canceled);
+		MobHunting.getDataStoreManager().updateBounty(b1);
 
 		Iterator<Bounty> it = mOpenBounties.iterator();
 		while (it.hasNext()) {
@@ -341,10 +327,9 @@ public class BountyManager implements Listener {
 	}
 
 	public void delete(Bounty bounty) {
-		getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())
-				.setStatus(BountyStatus.deleted);
-		MobHunting.getDataStoreManager()
-				.updateBounty(getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner()));
+		Bounty b1 = getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner());
+		b1.setStatus(BountyStatus.deleted);
+		MobHunting.getDataStoreManager().updateBounty(b1);
 
 		Iterator<Bounty> it = mOpenBounties.iterator();
 		while (it.hasNext()) {
@@ -364,7 +349,6 @@ public class BountyManager implements Listener {
 	public static void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
 			boolean useGui) {
 		if (sender instanceof Player) {
-			// Player player = (Player) sender;
 
 			if (hasOpenBounties(worldGroupName, wantedPlayer)) {
 				Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getOpenBounties(worldGroupName,
