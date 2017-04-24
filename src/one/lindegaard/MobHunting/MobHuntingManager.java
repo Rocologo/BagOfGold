@@ -792,8 +792,8 @@ public class MobHuntingManager implements Listener {
 
 		// Killer is not a player and not a MyPet.
 		if (killer == null
-				&& !(MyPetCompat.isKilledByMyPet(killed) && MobHunting.getConfigManager().enableAssists == true)) {
-			if (MobHunting.getConfigManager().enableAssists != true) {
+				&& (!MyPetCompat.isKilledByMyPet(killed) || MobHunting.getConfigManager().enableAssists == false)) {
+			if (MobHunting.getConfigManager().enableAssists == false) {
 				Messages.debug("KillBlocked: Assisted kill is disabled");
 				Messages.learn(getPlayer(killer, killed),
 						Messages.getString("mobhunting.learn.assisted-kill-is-disabled"));
@@ -1780,22 +1780,28 @@ public class MobHuntingManager implements Listener {
 				if (!MobHunting.getGrindingManager().isWhitelisted(event.getEntity().getLocation()))
 					event.getEntity().setMetadata(SPAWNER_BLOCKED,
 							new FixedMetadataValue(MobHunting.getInstance(), true));
-		} //else {
-		//	Messages.debug("SpawnReason=%s, loc=%s,%s,%s", event.getSpawnReason().toString(),
-		//			event.getLocation().getBlockX(), event.getLocation().getBlockY(), event.getLocation().getBlockZ());
-		//	
-		//	for (int x=event.getLocation().getBlockX()-4; x<event.getLocation().getBlockX()+4;x++){
-		//		for (int y=event.getLocation().getBlockY()-4; y<event.getLocation().getBlockY()+4;y++){
-		//			for (int z=event.getLocation().getBlockZ()-4; z<event.getLocation().getBlockZ()+4;z++){
-		//				if ( new Location(event.getLocation().getWorld(), x, y, z).getBlock().getType()==
-		//						Material.MOB_SPAWNER){
-		//					Messages.debug("ERROR: Mob spawned close to Spawner????");
-		//				}
-		//				
-		//			}
-		//		}
-		//	}
-		//}
+		} // else {
+			// Messages.debug("SpawnReason=%s, loc=%s,%s,%s",
+			// event.getSpawnReason().toString(),
+			// event.getLocation().getBlockX(), event.getLocation().getBlockY(),
+			// event.getLocation().getBlockZ());
+			//
+			// for (int x=event.getLocation().getBlockX()-4;
+			// x<event.getLocation().getBlockX()+4;x++){
+			// for (int y=event.getLocation().getBlockY()-4;
+			// y<event.getLocation().getBlockY()+4;y++){
+			// for (int z=event.getLocation().getBlockZ()-4;
+			// z<event.getLocation().getBlockZ()+4;z++){
+			// if ( new Location(event.getLocation().getWorld(), x, y,
+			// z).getBlock().getType()==
+			// Material.MOB_SPAWNER){
+			// Messages.debug("ERROR: Mob spawned close to Spawner????");
+			// }
+			//
+			// }
+			// }
+			// }
+			// }
 
 	}
 

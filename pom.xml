@@ -81,6 +81,7 @@
 		<factions.jar.version>Factions-2.10.0.jar</factions.jar.version>
 		<towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
 		<residence.jar.version>Residence4.6.1.4.jar</residence.jar.version>
+		<bossshop.jar.version>BossShop-2.7.3.jar</bossshop.jar.version>
 	</properties>
 
 
@@ -287,6 +288,12 @@
 			<id>placeholderapi</id>
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
+
+		<!-- BossShop 
+		<repository>
+			<id>confuser-repo</id>
+			<url>http://ci.frostcast.net/plugin/repository/everything/</url>
+		</repository>-->
 
 	</repositories>
 
@@ -700,6 +707,15 @@
 			<artifactId>placeholderapi</artifactId>
 			<version>2.0.8</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- BossShop -->
+		<dependency>
+			<groupId>org.black_ixx</groupId>
+			<artifactId>BossShop</artifactId>
+			<version>${bossshop.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${bossshop.jar.version}</systemPath>
 		</dependency>
 
 	</dependencies>
