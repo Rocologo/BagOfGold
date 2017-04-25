@@ -448,9 +448,9 @@ public class MobHuntingManager implements Listener {
 		if (CitizensCompat.isNPC(killed))
 			return;
 
-		EntityDamageEvent cause = killed.getLastDamageCause();
-		if (cause instanceof EntityDamageByEntityEvent) {
-			Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
+		EntityDamageEvent lastDamageCause = killed.getLastDamageCause();
+		if (lastDamageCause instanceof EntityDamageByEntityEvent) {
+			Entity damager = ((EntityDamageByEntityEvent) lastDamageCause).getDamager();
 			Entity killer = null;
 			LivingEntity mob = null;
 
@@ -543,7 +543,7 @@ public class MobHuntingManager implements Listener {
 					info = mDamageHistory.get(shooter);
 					if (info == null)
 						info = new DamageInformation();
-					info.time = System.currentTimeMillis();
+					info.setTime(System.currentTimeMillis());
 					info.setAttacker((Player) shooter.getTarget());
 					info.setAttackerPosition(shooter.getTarget().getLocation().clone());
 					mDamageHistory.put(shooter, info);
@@ -567,7 +567,7 @@ public class MobHuntingManager implements Listener {
 					info = mDamageHistory.get(blaze);
 					if (info == null)
 						info = new DamageInformation();
-					info.time = System.currentTimeMillis();
+					info.setTime(System.currentTimeMillis());
 					info.setAttacker((Player) blaze.getTarget());
 					info.setAttackerPosition(blaze.getTarget().getLocation().clone());
 					mDamageHistory.put(blaze, info);
@@ -581,7 +581,7 @@ public class MobHuntingManager implements Listener {
 					info = mDamageHistory.get(wither);
 					if (info == null)
 						info = new DamageInformation();
-					info.time = System.currentTimeMillis();
+					info.setTime(System.currentTimeMillis());
 					info.setAttacker((Player) wither.getTarget());
 					info.setAttackerPosition(wither.getTarget().getLocation().clone());
 					mDamageHistory.put(wither, info);
@@ -617,7 +617,7 @@ public class MobHuntingManager implements Listener {
 		if (info == null)
 			info = new DamageInformation();
 
-		info.time = System.currentTimeMillis();
+		info.setTime(System.currentTimeMillis());
 
 		Player cause = null;
 		ItemStack weapon = null;
@@ -759,7 +759,7 @@ public class MobHuntingManager implements Listener {
 											MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
 									killed.getLocation());
 						Messages.learn(getPlayer(killer, killed), Messages.getString("mobhunting.learn.grindingfarm"));
-						Messages.debug("================== Farm detection Ended ====================");
+						Messages.debug("================== Farm detection Ended (1)=================");
 						return;
 					}
 					if (MobHunting.getConfigManager().detectOtherFarms
@@ -767,7 +767,7 @@ public class MobHuntingManager implements Listener {
 						MobHunting.getMobHuntingManager().cancelDrops(event,
 								MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
 								MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
-						Messages.debug("================== Farm detection Ended ====================");
+						Messages.debug("================== Farm detection Ended (2)=================");
 						if (getPlayer(killer, killed) != null
 								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(getPlayer(killer, killed))
 										.isLearningMode()
@@ -781,7 +781,7 @@ public class MobHuntingManager implements Listener {
 						Messages.learn(getPlayer(killer, killed), Messages.getString("mobhunting.learn.grindingfarm"));
 						return;
 					}
-					Messages.debug("================== Farm detection Ended ====================");
+					Messages.debug("================== Farm detection Ended (3)=================");
 				}
 			} else {
 				// Messages.debug("The %s (%s) died without a damageCause.",
@@ -1129,18 +1129,15 @@ public class MobHuntingManager implements Listener {
 		if (killed instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity) killed)) {
 			info = mDamageHistory.get(killed);
 
-			if (System.currentTimeMillis() - info.time > MobHunting.getConfigManager().assistTimeout * 1000)
+			if (System.currentTimeMillis() - info.getTime() > MobHunting.getConfigManager().assistTimeout * 1000)
 				info = null;
 			else if (killer == null)
 				killer = info.getAttacker();
 		}
-		EntityDamageByEntityEvent lastDamageCause = null;
-		if (killed.getLastDamageCause() instanceof EntityDamageByEntityEvent)
-			lastDamageCause = (EntityDamageByEntityEvent) killed.getLastDamageCause();
 		if (info == null) {
 			info = new DamageInformation();
-			info.time = System.currentTimeMillis();
-			info.setLastAttackTime(info.time);
+			info.setTime(System.currentTimeMillis());
+			info.setLastAttackTime(info.getTime());
 			if (killer != null) {
 				info.setAttacker(killer);
 				info.setAttackerPosition(killer.getLocation());
@@ -1352,6 +1349,9 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Apply the modifiers to Basic reward
+		EntityDamageByEntityEvent lastDamageCause = null;
+		if (killed.getLastDamageCause() instanceof EntityDamageByEntityEvent)
+			lastDamageCause = (EntityDamageByEntityEvent) killed.getLastDamageCause();
 		double multipliers = 1.0;
 		ArrayList<String> modifiers = new ArrayList<String>();
 		// only add modifiers if the killer is the player.

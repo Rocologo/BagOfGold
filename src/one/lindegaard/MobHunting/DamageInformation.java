@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class DamageInformation {
-	public long time;
+	private long time;
 
 	private ItemStack weapon;
 	private boolean usedWeapon;
@@ -23,6 +23,22 @@ public class DamageInformation {
 	private boolean mobCoverBlown; // Player attacked a disguised Mob/Player
 
 	/**
+	 * The time where the attack happened.
+	 * @return time as a long
+	 */
+	public long getTime() {
+		return time;
+	}
+
+	/**
+	 * Set the time where the attack happened
+	 * @param time
+	 */
+	public void setTime(long time) {
+		this.time = time;
+	}
+
+	/**
 	 * @return the weapon
 	 */
 	public ItemStack getWeapon() {
@@ -31,7 +47,7 @@ public class DamageInformation {
 
 	/**
 	 * @param weapon
-	 *            Set the weapon whichj was used for killing a mob
+	 *            Set the weapon which was used for killing a mob
 	 */
 	public void setWeapon(ItemStack weapon) {
 		this.weapon = weapon;
