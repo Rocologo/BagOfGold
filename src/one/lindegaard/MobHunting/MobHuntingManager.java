@@ -791,8 +791,7 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Killer is not a player and not a MyPet.
-		if (getPlayer(killer, killed) == null
-				|| (killer == null && MobHunting.getConfigManager().enableAssists == false)) {
+		if (killer==null && (!MyPetCompat.isKilledByMyPet(killed) || MobHunting.getConfigManager().enableAssists == false)) {
 			if (MobHunting.getConfigManager().enableAssists == false) {
 				Messages.debug("KillBlocked: Assisted kill is disabled");
 				Messages.learn(getPlayer(killer, killed),

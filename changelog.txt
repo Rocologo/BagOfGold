@@ -1,3 +1,5 @@
+V4.8.1
+* Fixed bug when MyPet is not installed. (https://github.com/Rocologo/MobHunting/issues/220)
 V4.8.0 
 * Fixed Bounty error (https://www.spigotmc.org/threads/mobhunting.46937/page-121#post-2376183)
 * Fixed MyPet bug (https://github.com/Rocologo/MobHunting/issues/210)
