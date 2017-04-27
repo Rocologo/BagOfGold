@@ -185,7 +185,7 @@ public class HeadCommand implements ICommand, Listener {
 				sender.sendMessage("You can only rename heads ingame.");
 			}
 			return true;
-		} else if (args.length >= 1 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place")) {
+		} else if (args.length >= 1 && (args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place"))) {
 			// /mh head drop <head>
 			// /mh head drop <head> <player>
 			// /mh head drop <head> <x> <y> <z> <world>

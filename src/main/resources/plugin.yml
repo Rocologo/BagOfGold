@@ -5,7 +5,7 @@ description: A Mobhunting plugin
 dev-url: http://dev.bukkit.org/server-mods/mobhunting/
 author: Rocologo
 depend: [Vault]
-softdepend: [Essentials, WorldEdit, WorldGuard, Factions, Towny, ProtocolLib, mcMMO, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, Sentinel, Minigames, MinigamesLib, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, PlaceholderAPI, MobStacker, Gringotts, ActionBarAPI, ActionAnnouncer, CustomMobs, ConquestiaMobs, StackMob, MysteriousHalloween]
+softdepend: [Essentials, WorldEdit, WorldGuard, Factions, Towny, Rdesidence, ProtocolLib, mcMMO, BossShop, MythicMobs, TARDISWeepingAngels, Citizens, Sentry, Sentinel, Minigames, MinigamesLib, MyPet, MobArena, PVPArena, BattleArena, LibsDisguises, DisguiseCraft, iDisguise, VanishNoPacket, BossBarAPI, BarAPI, ActionBar, TitleAPI, TitleManager, PlaceholderAPI, MobStacker, Gringotts, ActionBarAPI, ActionAnnouncer, CustomMobs, ConquestiaMobs, StackMob, MysteriousHalloween]
 
 commands:
   mobhunt:
@@ -171,6 +171,11 @@ permissions:
       mobhunting.cmd: true
   mobhunting.money.buy:
     description: Allows you to buy bag of gold.
+    default: true
+    children:
+      mobhunting.cmd: true
+  mobhunting.money.shop:
+    description: Allows you to open the MobHunting BossShop.
     default: true
     children:
       mobhunting.cmd: true

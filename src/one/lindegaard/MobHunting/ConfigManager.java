@@ -252,7 +252,8 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nTowny settings"
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of the Residence integration, or you can disable"
-						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/residence-1-7-10-up-to-1-11.11480/");
+						+ "\nintegration completely."
+						+ "\nhttps://www.spigotmc.org/resources/residence-1-7-10-up-to-1-11.11480/");
 
 		setCategoryComment("grinding",
 				"########################################################################"
@@ -1753,6 +1754,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-placeholderapi", category = "plugins", comment = "Disable integration with PlaceholderAPI."
 			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")
 	public boolean disableIntegrationPlaceholderAPI = false;
+
+	@ConfigField(name = "disable-integration-bossshop", category = "plugins", comment = "Disable integration with BossShop."
+			+ "\nhttps://www.spigotmc.org/resources/bossshop-powerful-and-playerfriendly-chest-gui-shop-menu-plugin.222/")
+	public boolean disableIntegrationBossShop = false;
 
 	// #####################################################################################
 	// Database

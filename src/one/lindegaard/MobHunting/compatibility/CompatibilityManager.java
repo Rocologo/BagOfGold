@@ -25,21 +25,22 @@ public class CompatibilityManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * detect if the compatibility class is loaded.
 	 * 
-	 * @param class1 - The Compatibility class ex. "WorldGuardCompat.class"
+	 * @param class1
+	 *            - The Compatibility class ex. "WorldGuardCompat.class"
 	 * @return true if loaded.
 	 */
-	public static boolean isPluginLoaded(Class<?> class1){
+	public static boolean isPluginLoaded(Class<?> class1) {
 		Iterator<Object> i = mCompatClasses.iterator();
-		while(i.hasNext()) {
-	         Class<?> c=i.next().getClass();
-	         if (c.getName().equalsIgnoreCase(class1.getName()))
-	        	 return true;
-			}
+		while (i.hasNext()) {
+			Class<?> c = i.next().getClass();
+			if (c.getName().equalsIgnoreCase(class1.getName()))
+				return true;
+		}
 		return false;
 	}
-	
+
 }

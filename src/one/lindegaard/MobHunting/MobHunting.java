@@ -33,6 +33,7 @@ import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
 import one.lindegaard.MobHunting.compatibility.BarAPICompat;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
+import one.lindegaard.MobHunting.compatibility.BossShopCompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
 import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
@@ -183,15 +184,18 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(EssentialsCompat.class, "Essentials");
 		registerPlugin(GringottsCompat.class, "Gringotts");
 
+		// Protection plugins
 		registerPlugin(WorldEditCompat.class, "WorldEdit");
 		registerPlugin(WorldGuardCompat.class, "WorldGuard");
 		registerPlugin(FactionsCompat.class, "Factions");
 		registerPlugin(TownyCompat.class, "Towny");
 		registerPlugin(ResidenceCompat.class, "Residence");
+
+		// Other plugins
 		registerPlugin(McMMOCompat.class, "mcMMO");
 		registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
-
 		registerPlugin(MyPetCompat.class, "MyPet");
+		registerPlugin(BossShopCompat.class, "BossShop");
 
 		// Minigame plugins
 		registerPlugin(MinigamesCompat.class, "Minigames");
@@ -307,7 +311,7 @@ public class MobHunting extends JavaPlugin {
 
 	}
 
-	private void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
+	public static void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
 		try {
 			CompatibilityManager.register(c, pluginName);
 		} catch (Exception e) {

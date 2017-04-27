@@ -16,7 +16,7 @@ public class ActionAnnouncerCompat {
 
 	public ActionAnnouncerCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("[MobHunting] Compatibility with ActionAnnouncer in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with ActionAnnouncer is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("ActionAnnouncer");
 

@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatibility.BossShopCompat;
+import one.lindegaard.MobHunting.compatibility.BossShopHelper;
 import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.rewards.HiddenRewardData;
 import one.lindegaard.MobHunting.rewards.RewardManager;
@@ -52,7 +54,7 @@ public class MoneyCommand implements ICommand {
 
 	@Override
 	public String getPermission() {
-		return "mobhunting.money";
+		return null; // "mobhunting.money";
 	}
 
 	@Override
@@ -83,7 +85,9 @@ public class MoneyCommand implements ICommand {
 				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " buy" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
 						+ " - to buy some more gold with your money and put it into your "
-						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + "." };
+						+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + ".",
+				ChatColor.GOLD + MobHunting.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " shop" + ChatColor.WHITE + " - to open the MobHunting BossShop." };
 	}
 
 	@Override
@@ -118,7 +122,7 @@ public class MoneyCommand implements ICommand {
 			// mh money <player>
 			// show the total amount of "bag of gold" in the players inventory.
 
-			if (sender.hasPermission("mobhunting.money.balance")) {
+			if (sender.hasPermission("mobhunting.money.balance") || sender.hasPermission("mobhunting.money.*")) {
 				Player player = null;
 				if (args.length == 0) {
 					if (!(sender instanceof Player)) {
@@ -128,7 +132,8 @@ public class MoneyCommand implements ICommand {
 					} else
 						player = (Player) sender;
 				} else {
-					if (sender.hasPermission("mobhunting.money.balance.other"))
+					if (sender.hasPermission("mobhunting.money.balance.other")
+							|| sender.hasPermission("mobhunting.money.*"))
 						player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
 					else {
 						sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission",
@@ -156,10 +161,41 @@ public class MoneyCommand implements ICommand {
 
 		}
 
-		else if (args.length >= 2 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place")) {
+		else if (args.length == 1 && args[0].equalsIgnoreCase("shop")) {
+			// /mh money shop - to open a shop, where the player can buy or sell
+			// "Bag of gold"
+
+			//MobHunting.registerPlugin(BossShopCompat.class, "BossShop");
+
+			if (sender instanceof Player) {
+				Player player = (Player) sender;
+				if (BossShopCompat.isSupported()) {
+					if (player.hasPermission("mobhunting.money.shop") || sender.hasPermission("mobhunting.money.*")) {
+						BossShopHelper.openShop(player, "Menu");
+						return true;
+					} else {
+						sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission",
+								"perm", "mobhunting.money.shop", "command", "shop"));
+						return true;
+					}
+				} else {
+					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.money.no-bossshop"));
+					return true;
+				}
+			} else {
+				// not allowed in console
+				sender.sendMessage(ChatColor.RED
+						+ Messages.getString("mobhunting.commands.base.noconsole", "command", "'money shop'"));
+				return true;
+			}
+		}
+
+		else if (args.length >= 2 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place"))
+
+		{
 			// /mh money drop <amount>
 			// /mh money drop <player> <amount>
-			if (sender.hasPermission("mobhunting.money.drop")) {
+			if (sender.hasPermission("mobhunting.money.drop") || sender.hasPermission("mobhunting.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					sender.sendMessage(
 							ChatColor.RED + Messages.getString("mobhunting.commands.base.playername-missing"));
@@ -204,7 +240,7 @@ public class MoneyCommand implements ICommand {
 
 		} else if (args.length >= 2 && args[0].equalsIgnoreCase("give")) {
 			// /mh money give <player> <amount>
-			if (sender.hasPermission("mobhunting.money.give")) {
+			if (sender.hasPermission("mobhunting.money.give") || sender.hasPermission("mobhunting.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					sender.sendMessage(
 							ChatColor.RED + Messages.getString("mobhunting.commands.base.playername-missing"));
@@ -250,7 +286,7 @@ public class MoneyCommand implements ICommand {
 
 		else if (args.length >= 2 && args[0].equalsIgnoreCase("take")) {
 			// /mh money take <player> <amount>
-			if (sender.hasPermission("mobhunting.money.take")) {
+			if (sender.hasPermission("mobhunting.money.take") || sender.hasPermission("mobhunting.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					sender.sendMessage(
 							ChatColor.RED + Messages.getString("mobhunting.commands.base.playername-missing"));
@@ -315,7 +351,7 @@ public class MoneyCommand implements ICommand {
 				|| (args.length == 2 && args[0].equalsIgnoreCase("sell") && (args[1].matches("\\d+(\\.\\d+)?")))) {
 			// /mh money sell
 			// /mh money sell <amount>
-			if (sender.hasPermission("mobhunting.money.sell")) {
+			if (sender.hasPermission("mobhunting.money.sell") || sender.hasPermission("mobhunting.money.*")) {
 				if (!(sender instanceof Player)) {
 					sender.sendMessage(ChatColor.RED
 							+ Messages.getString("mobhunting.commands.base.noconsole", "command", "'money sell'"));
@@ -385,7 +421,7 @@ public class MoneyCommand implements ICommand {
 
 		else if (args.length >= 2 && args[0].equalsIgnoreCase("buy")) {
 			// /mh money buy <amount>
-			if (sender.hasPermission("mobhunting.money.buy")) {
+			if (sender.hasPermission("mobhunting.money.buy") || sender.hasPermission("mobhunting.money.*")) {
 				if (args.length == 2 && args[1].matches("\\d+(\\.\\d+)?")) {
 					Player player = (Player) sender;
 					if (player.getInventory().firstEmpty() == -1)
@@ -429,6 +465,7 @@ public class MoneyCommand implements ICommand {
 			items.add("take");
 			items.add("sell");
 			items.add("buy");
+			items.add("shop");
 		} else if (args.length == 2) {
 			String partial = args[1].toLowerCase();
 			for (Player player : Bukkit.getOnlinePlayers()) {
