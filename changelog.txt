@@ -1,3 +1,5 @@
+V4.8.3
+* Minor change: fixed bug when assisted kill or integration to MyPet was disabled
 V4.8.2
 * BETA: New feature. Basic Support for BossShop added. (https://www.spigotmc.org/resources/bossshop-powerful-and-playerfriendly-chest-gui-shop-menu-plugin.222/) You can now use the command /mh money shop - to buy and sell bag of gold if you have BossShop installed.
 * Residence & BossShop added to plugin.yml
