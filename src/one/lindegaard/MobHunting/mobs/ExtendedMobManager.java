@@ -159,5 +159,9 @@ public class ExtendedMobManager {
 		else
 			return mob.getType().toString();
 	}
+	
+	public String getTranslatedName(){
+		return "";
+	};
 
 }

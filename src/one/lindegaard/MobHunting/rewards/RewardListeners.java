@@ -356,16 +356,16 @@ public class RewardListeners implements Listener {
 						hiddenRewardData.getMoney(), hiddenRewardData.getUniqueUUID());
 			} else { // (hiddenRewardData.getUuid()toString().equals(RewardManager.MH_REWARD_HEAD_UUID)){
 				// Is it an EnderDragon
-				if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Skeleton.getDisplayName()))
+				if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Skeleton.getFriendlyName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
 				else if (hiddenRewardData.getDisplayname()
-						.equalsIgnoreCase(MinecraftMob.WitherSkeleton.getDisplayName()))
+						.equalsIgnoreCase(MinecraftMob.WitherSkeleton.getFriendlyName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
-				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Zombie.getDisplayName()))
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Zombie.getFriendlyName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
-				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Creeper.getDisplayName()))
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.Creeper.getFriendlyName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getDisplayName()))
+				else if (hiddenRewardData.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getFriendlyName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 				else
 					is = CustomItems.getCustomtexture(hiddenRewardData.getRewardUUID(),

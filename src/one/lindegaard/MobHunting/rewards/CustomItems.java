@@ -55,8 +55,6 @@ public class CustomItems {
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;
 
-		// skull = HiddenRewardData.setDisplayNameAndHiddenLores(skull,
-		// mDisplayName, money, mPlayerUUID.toString());
 		ItemMeta skullMeta = skull.getItemMeta();
 
 		GameProfile profile = new GameProfile(mPlayerUUID, mDisplayName);

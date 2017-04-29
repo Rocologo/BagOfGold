@@ -287,10 +287,10 @@ public class LeaderboardCommand implements ICommand, Listener {
 				} else if (args.length == 3) {
 					if (args[1].equalsIgnoreCase("type") || args[1].equalsIgnoreCase("addtype")) {
 						for (StatType type : StatType.values())
-							items.add(type.translateName().replaceAll(" ", "_"));
+							items.add(ChatColor.stripColor(type.translateName().replaceAll(" ", "_")));
 					} else if (args[1].equalsIgnoreCase("period") || args[1].equalsIgnoreCase("addperiod")) {
 						for (TimePeriod period : TimePeriod.values())
-							items.add(period.translateName().replaceAll(" ", "_"));
+							items.add(ChatColor.stripColor(period.translateName().replaceAll(" ", "_")));
 					} else if (args[1].equalsIgnoreCase("horizontal")) {
 						items.add("true");
 						items.add("false");

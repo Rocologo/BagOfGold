@@ -116,7 +116,7 @@ public class HeadCommand implements ICommand, Listener {
 					displayName = args[3].replace("_", " ");
 				} else {
 					if (mob != MinecraftMob.PvpPlayer)
-						displayName = mob.getDisplayName().replace("_", " ");
+						displayName = mob.getFriendlyName().replace("_", " ");
 					else
 						displayName = offlinePlayer.getName();
 				}
@@ -148,7 +148,7 @@ public class HeadCommand implements ICommand, Listener {
 								.replace("{texturevalue}", mob.getTextureValue())
 								.replace("{amount}", String.valueOf(amount)).replace("{playername}",
 										offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
-						Messages.debug("%s Cmd=%s", mob.getDisplayName(), cmdString);
+						Messages.debug("%s Cmd=%s", mob.getFriendlyName(), cmdString);
 						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 					}
 					if (toPlayer.isOnline() && !silent) {
@@ -199,14 +199,14 @@ public class HeadCommand implements ICommand, Listener {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
 						Messages.debug("The head was dropped at %s", location);
-						player.getWorld().dropItem(location, mob.getHead(mob.getName(), money));
+						player.getWorld().dropItem(location, mob.getHead(mob.getFriendlyName(), money));
 
 					} else if (args.length == 3) {
 						if (Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
 							Location location = Misc.getTargetBlock(player, 3).getLocation();
 							Messages.debug("The head dropped at %s", location);
-							player.getWorld().dropItem(location, mob.getHead(mob.getName(), money));
+							player.getWorld().dropItem(location, mob.getHead(mob.getFriendlyName(), money));
 
 						} else {
 							sender.sendMessage(ChatColor.RED + Messages
@@ -225,8 +225,8 @@ public class HeadCommand implements ICommand, Listener {
 						} else
 							return false;
 						Location location = new Location(world, xpos, ypos, zpos);
-						ItemStack head = mob.getHead(mob.getName(), money);
-						RewardManager.setDisplayNameAndHiddenLores(head, mob.getName(), money,
+						ItemStack head = mob.getHead(mob.getFriendlyName(), money);
+						RewardManager.setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
 								UUID.fromString(mob.getPlayerUUID().toString()));
 						world.dropItem(location, head);
 					}
@@ -258,35 +258,35 @@ public class HeadCommand implements ICommand, Listener {
 			String partial = args[1].toLowerCase();
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.getName().toLowerCase().startsWith(partial))
-					items.add(player.getName());
+					items.add(ChatColor.stripColor(player.getName()));
 			}
 		} else if ((args.length == 3 && args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
 			String partial = args[2].toLowerCase();
 			for (MinecraftMob mob : MinecraftMob.values()) {
 				if (mob.getFriendlyName().toLowerCase().startsWith(partial)
 						|| mob.getDisplayName().toLowerCase().startsWith(partial))
-					items.add(mob.getFriendlyName().replace(" ", "_"));
+					items.add(ChatColor.stripColor(mob.getFriendlyName().replace(" ", "_")));
 			}
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.getName().toLowerCase().startsWith(partial))
-					items.add(player.getName());
+					items.add(ChatColor.stripColor(player.getName()));
 			}
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("drop")) {
 			String partial = args[1].toLowerCase();
 			for (MinecraftMob mob : MinecraftMob.values()) {
 				if (mob.getFriendlyName().toLowerCase().startsWith(partial)
 						|| mob.getDisplayName().toLowerCase().startsWith(partial))
-					items.add(mob.getFriendlyName().replace(" ", "_"));
+					items.add(ChatColor.stripColor(mob.getFriendlyName().replace(" ", "_")));
 			}
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.getName().toLowerCase().startsWith(partial))
-					items.add(player.getName());
+					items.add(ChatColor.stripColor(player.getName()));
 			}
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("drop")) {
 			String partial = args[2].toLowerCase();
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (player.getName().toLowerCase().startsWith(partial))
-					items.add(player.getName());
+					items.add(ChatColor.stripColor(player.getName()));
 			}
 		}
 		return items;

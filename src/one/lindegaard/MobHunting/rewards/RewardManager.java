@@ -128,10 +128,6 @@ public class RewardManager implements Listener {
 				ItemStack is = new ItemStack(d.key.type.getType(), 1);
 				while (rest >= (d.value / unit)) {
 					item = location.getWorld().dropItem(location, is);
-					//item.setMetadata(MH_HIDDEN_REWARD_DATA,
-					//		new FixedMetadataValue(MobHunting.getInstance(),
-					//				new HiddenRewardData(MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-					//						d.value / unit, UUID.fromString(MH_REWARD_ITEM_UUID), UUID.randomUUID())));
 					rest = rest - (d.value / unit);
 				}
 			}

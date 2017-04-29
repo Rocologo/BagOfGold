@@ -89,11 +89,11 @@ public class NpcCommand implements ICommand, Listener {
 		String[] subcmds = { "create", "remove", "select", "spawn", "despawn", "update", "tphere", "sethome" };
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			//if (args.length < 2 ) {
-			//	for (String cmd : subcmds)
-			//		items.add(cmd);
-			//} else
-			if (args.length == 1) { 
+			// if (args.length < 2 ) {
+			// for (String cmd : subcmds)
+			// items.add(cmd);
+			// } else
+			if (args.length == 1) {
 				for (String cmd : subcmds)
 					if (args[0].toLowerCase().startsWith(cmd.toLowerCase()))
 						items.add(cmd);
@@ -102,7 +102,7 @@ public class NpcCommand implements ICommand, Listener {
 					StatType[] values = StatType.values();
 					for (int i = 0; i < values.length; i++) {
 						if (values[i].translateName().replace(" ", "_").toLowerCase().startsWith(args[1].toLowerCase()))
-							items.add(values[i].translateName().replace(" ", "_"));
+							items.add(ChatColor.stripColor(values[i].translateName().replace(" ", "_")));
 					}
 				}
 			} else if (args.length == 3) {
@@ -110,7 +110,7 @@ public class NpcCommand implements ICommand, Listener {
 					TimePeriod[] values = TimePeriod.values();
 					for (int i = 0; i < values.length; i++) {
 						if (values[i].translateName().replace(" ", "_").toLowerCase().startsWith(args[2].toLowerCase()))
-							items.add(values[i].translateName().replace(" ", "_"));
+							items.add(ChatColor.stripColor(values[i].translateName().replace(" ", "_")));
 					}
 				}
 
@@ -153,8 +153,8 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("tphere")) {
 				if (masterMobHunterManager.contains(npc.getId())) {
 					npc.teleport(((Player) sender).getLocation(), TeleportCause.PLUGIN);
-					Block b = Misc.getTargetBlock((Player)sender, 200);
-					if (b!=null)
+					Block b = Misc.getTargetBlock((Player) sender, 200);
+					if (b != null)
 						npc.faceLocation(b.getLocation());
 					// npc.getEntity().teleport((Player)sender);
 				}

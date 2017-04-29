@@ -30,7 +30,7 @@ public enum MinecraftMob {
 	// ******************************************************************
 	// Minecraft 1.12
 	// ******************************************************************
-	
+
 	// ******************************************************************
 	// Minecraft 1.11
 	// ******************************************************************
@@ -841,7 +841,8 @@ public enum MinecraftMob {
 
 	public static String getTexture(String displayname) {
 		for (MinecraftMob mob : MinecraftMob.values()) {
-			if (mob.mDisplayName.equalsIgnoreCase(displayname)) {
+			if (mob.getDisplayName().equalsIgnoreCase(displayname)
+					|| mob.getFriendlyName().equalsIgnoreCase(displayname)) {
 				return String.valueOf(mob.getTextureValue());
 			}
 		}
@@ -851,7 +852,8 @@ public enum MinecraftMob {
 
 	public static String getSignature(String displayname) {
 		for (MinecraftMob mob : MinecraftMob.values()) {
-			if (mob.mDisplayName.equalsIgnoreCase(displayname)) {
+			if (mob.getDisplayName().equalsIgnoreCase(displayname)
+					|| mob.getFriendlyName().equalsIgnoreCase(displayname)) {
 				return String.valueOf(mob.getTextureSignature());
 			}
 		}
