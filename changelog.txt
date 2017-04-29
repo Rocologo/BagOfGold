@@ -1,3 +1,5 @@
+V4.8.4
+* Fixed bug when using Gringotts currency as rewards.
 V4.8.3
 * Minor change: fixed bug when assisted kill or integration to MyPet was disabled
 V4.8.2
