@@ -748,17 +748,20 @@ public class MobHuntingManager implements Listener {
 						MobHunting.getMobHuntingManager().cancelDrops(event,
 								MobHunting.getConfigManager().disableNaturalItemDropsOnNetherGoldFarms,
 								MobHunting.getConfigManager().disableNaturalXPDropsOnNetherGoldFarms);
-						if (getPlayer(killer, killed) != null
-								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(getPlayer(killer, killed))
-										.isLearningMode()
-								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist")
-								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show"))
-							ProtocolLibHelper.showGrindingArea(getPlayer(killer, killed),
-									new Area(killed.getLocation(),
-											MobHunting.getConfigManager().rangeToSearchForGrinding,
-											MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
-									killed.getLocation());
-						Messages.learn(getPlayer(killer, killed), Messages.getString("mobhunting.learn.grindingfarm"));
+						if (getPlayer(killer, killed) != null) {
+							if ((MobHunting.getPlayerSettingsmanager().containsKey(getPlayer(killer, killed))
+									&& MobHunting.getPlayerSettingsmanager()
+											.getPlayerSettings(getPlayer(killer, killed)).isLearningMode())
+									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist")
+									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show"))
+								ProtocolLibHelper.showGrindingArea(getPlayer(killer, killed),
+										new Area(killed.getLocation(),
+												MobHunting.getConfigManager().rangeToSearchForGrinding,
+												MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
+										killed.getLocation());
+							Messages.learn(getPlayer(killer, killed),
+									Messages.getString("mobhunting.learn.grindingfarm"));
+						}
 						Messages.debug("================== Farm detection Ended (1)=================");
 						return;
 					}
@@ -767,21 +770,23 @@ public class MobHuntingManager implements Listener {
 						MobHunting.getMobHuntingManager().cancelDrops(event,
 								MobHunting.getConfigManager().disableNaturalItemDropsOnOtherFarms,
 								MobHunting.getConfigManager().disableNaturalXPDropsOnOtherFarms);
-						Messages.debug("================== Farm detection Ended (2)=================");
-						if (getPlayer(killer, killed) != null
-								&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(getPlayer(killer, killed))
-										.isLearningMode()
-								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show")
-								|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist"))
-							ProtocolLibHelper.showGrindingArea(getPlayer(killer, killed),
-									new Area(killed.getLocation(),
-											MobHunting.getConfigManager().rangeToSearchForGrinding,
-											MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
-									killed.getLocation());
-						Messages.learn(getPlayer(killer, killed), Messages.getString("mobhunting.learn.grindingfarm"));
+						if (getPlayer(killer, killed) != null) {
+							if ((MobHunting.getPlayerSettingsmanager().containsKey(getPlayer(killer, killed))
+									&& MobHunting.getPlayerSettingsmanager()
+											.getPlayerSettings(getPlayer(killer, killed)).isLearningMode())
+									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist.show")
+									|| getPlayer(killer, killed).hasPermission("mobhunting.blacklist"))
+								ProtocolLibHelper.showGrindingArea(getPlayer(killer, killed),
+										new Area(killed.getLocation(),
+												MobHunting.getConfigManager().rangeToSearchForGrinding,
+												MobHunting.getConfigManager().numberOfDeathsWhenSearchingForGringding),
+										killed.getLocation());
+							Messages.learn(getPlayer(killer, killed),
+									Messages.getString("mobhunting.learn.grindingfarm"));
+						}
 						return;
 					}
-					Messages.debug("================== Farm detection Ended (3)=================");
+					Messages.debug("================== Farm detection Ended (2)=================");
 				}
 			} else {
 				// Messages.debug("The %s (%s) died without a damageCause.",
