@@ -547,4 +547,18 @@ public class GrindingManager implements Listener {
 		saveWhitelist();
 	}
 
+	/**
+	 * Check if Grindind detection is disabled in world
+	 * 
+	 * @param world
+	 * @return true if Grinding is disabled.
+	 */
+	public boolean isGrindingDisabledInWorld(World world) {
+		if (world != null)
+			for (String worldName : MobHunting.getConfigManager().disableGrindingDetectionInWorlds) {
+				if (world.getName().equalsIgnoreCase(worldName))
+					return true;
+			}
+		return false;
+	}
 }

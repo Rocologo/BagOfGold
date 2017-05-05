@@ -57,6 +57,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
+import net.minecraft.server.v1_11_R1.GameRules;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
@@ -737,7 +738,8 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Grinding Farm detections
-		if (MobHunting.getConfigManager().detectFarms) {
+		if (MobHunting.getConfigManager().detectFarms
+				&& !MobHunting.getGrindingManager().isGrindingDisabledInWorld(event.getEntity().getWorld())) {
 			if (killed.getLastDamageCause() != null) {
 				if (killed.getLastDamageCause().getCause() == DamageCause.FALL
 						&& !MobHunting.getGrindingManager().isWhitelisted(killed.getLocation())) {
