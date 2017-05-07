@@ -49,7 +49,7 @@ public class FishingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void Fish(PlayerFishEvent event) {
-
+		
 		if (event.isCancelled()) {
 			Messages.debug("FishingEvent: event was cancelled");
 			return;
@@ -58,6 +58,11 @@ public class FishingManager implements Listener {
 		Player player = event.getPlayer();
 		if (player == null) {
 			Messages.debug("FishingEvent: player was null");
+			return;
+		}
+
+		if (!MobHunting.getMobHuntingManager().isHuntEnabled(player)) {
+			Messages.debug("FishingEvent %s: Player doesnt have permission mobhunting.enable", player.getName());
 			return;
 		}
 
