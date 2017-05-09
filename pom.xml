@@ -82,6 +82,7 @@
 		<towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
 		<residence.jar.version>Residence4.6.1.4.jar</residence.jar.version>
 		<bossshop.jar.version>BossShop-2.7.3.jar</bossshop.jar.version>
+		<extrahardmode.jar.version>ExtraHardMode-3.11.jar</extrahardmode.jar.version>
 	</properties>
 
 
@@ -716,6 +717,15 @@
 			<version>${bossshop.jar.version}</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${bossshop.jar.version}</systemPath>
+		</dependency>
+		
+		<!-- ExtraHardMode -->
+		<dependency>
+			<groupId>com.extrahardmode.ExtraHardMode</groupId>
+			<artifactId>ExtraHardMode</artifactId>
+			<version>${extrahardmode.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${extrahardmode.jar.version}</systemPath>
 		</dependency>
 
 	</dependencies>

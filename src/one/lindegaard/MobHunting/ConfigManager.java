@@ -1430,13 +1430,15 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Multiplier pr World Difficulty
 	// #####################################################################################
-	@ConfigField(name = "world-difficulty-multiplier", category = "multiplier", comment = "WorldDifficulty")
+	@ConfigField(name = "world-difficulty-multiplier", category = "multiplier", comment = "This is the reward multiplier for the WorldDifficulty. Note that extrahard is "
+			+ "\nused for worlds where the plugin ExtraHardMode is enabled.")
 	public HashMap<String, String> difficultyMultiplier = new HashMap<String, String>();
 	{
 		difficultyMultiplier.put("difficulty.multiplier.peaceful", "0.5");
 		difficultyMultiplier.put("difficulty.multiplier.easy", "0.75");
 		difficultyMultiplier.put("difficulty.multiplier.normal", "1");
 		difficultyMultiplier.put("difficulty.multiplier.hard", "2");
+		difficultyMultiplier.put("difficulty.multiplier.extrahard", "2.5");
 	}
 
 	// #####################################################################################
@@ -1639,18 +1641,17 @@ public class ConfigManager extends AutoConfig {
 			+ "\ndrop-money-on-ground-skull-texture-signature: 'k1xQ6E1NuxG1ZN7nlQqRJltYrJn44XHVhNA9pSEu2Pt2mkuixMxhIDj2Tg6o+JWlTyGfXtPVWLxygeGymmeSGaVcmDTaCALg7PL11ZfSzSWSxaIufNbj1EcSi264jg5FrAa/2/DnFsgu16wjlWiIGtjCzgx2QabY8YofoPKw6Y6Y5FHZJVXpT8Rsxs8ok6ZHtfm/ZyyTgvRSzh2mKmVyQIYJ1ZKxuqWhDQfbtBpu3dlEzMAEJo85Dvb7uIFYa7WFitjFJue/c9qpqAnazWFLrx33nYpjjeYhcfAvsaNQW3JVFEkyxzEgzOHbdsbiZcqTCwO+49whu175xOqT7XhouEubDT7A3H1jiSvQvkUZJv/GzUF4qFYHSfxhr6OWoBrRGwWmPdcrYx7fUWKo43CAqa5inaiTV4gU70BWrx5i3LhIJxpnspAyTXs8tZBxeoh8IizWD7uXkYYqh3j9cwuHoxfwZuMpOx9CPTC6R/YwJ1YK5OgJBY1+QhNw+NOilWT3jTok82elFvOLm3a5yLyVs+/UPmLD7rZsFm7/DD3VnRcpgjKRiyy2j9vYsYLyNE2BVLVJxBVk2yyy9u7L4VR6PO+8v2dh9DQl7vM2ORCxKPl2lt6woHWM2+eT1PXr16LtMtAOGYT8mlKFhp8Ou2+9fu4AqWkX7n3swU6XLiK5cJs='"
 			+ "\n\nChoose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\"")
 	public String dropMoneyOnGroundItemtype = "SKULL";
-	
-	@ConfigField(name = "drop-money-use-item-as-currency", category = "dropmoneyonground", 
-			comment = "Use the reward as a currency (bag of gold) which can be sold, bought, stored in a"
-					+ "\nprotected chest or a protected area (a Bank?). Check the command /mh money sell."
-					+ "\nIf false the bag of gold will be picked up as money, if true the bag of gold "
-					+ "\nwill be picked up as an item.")
+
+	@ConfigField(name = "drop-money-use-item-as-currency", category = "dropmoneyonground", comment = "Use the reward as a currency (bag of gold) which can be sold, bought, stored in a"
+			+ "\nprotected chest or a protected area (a Bank?). Check the command /mh money sell."
+			+ "\nIf false the bag of gold will be picked up as money, if true the bag of gold "
+			+ "\nwill be picked up as an item.")
 	public boolean dropMoneyOnGroundUseAsCurrency = true;
-	
+
 	@ConfigField(name = "drop-money-command-alias", category = "dropmoneyonground", comment = "Here you can change the command /mh money ... to /mh <alias> ..."
 			+ "\nExample: gold,bag,silver,coin,???? ")
 	public String dropMoneyOnGroundMoneyCommandAlias = "money";
-	
+
 	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used when you have chosen drop-money-on-ground-itemtype: ITEM. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
@@ -1765,6 +1766,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-bossshop", category = "plugins", comment = "Disable integration with BossShop."
 			+ "\nhttps://www.spigotmc.org/resources/bossshop-powerful-and-playerfriendly-chest-gui-shop-menu-plugin.222/")
 	public boolean disableIntegrationBossShop = false;
+
+	@ConfigField(name = "disable-integration-extra-hard-mode", category = "plugins", comment = "Disable integration with ExtraHardmode."
+			+ "\nhttps://www.spigotmc.org/resources/extra-hard-mode.19673/")
+	public boolean disableIntegrationExtraHardMode = false;
 
 	// #####################################################################################
 	// Database

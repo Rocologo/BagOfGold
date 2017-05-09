@@ -12,6 +12,7 @@ import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.HuntData;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 
 public class DifficultyBonus implements IModifier {
 
@@ -21,22 +22,27 @@ public class DifficultyBonus implements IModifier {
 	}
 
 	@Override
-	public double getMultiplier(Entity deadEntity, Player killer,
-			HuntData data, DamageInformation extraInfo,
+	public double getMultiplier(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
+
 		Difficulty worldDifficulty = killer.getWorld().getDifficulty();
-		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier
-				.entrySet().iterator();
+		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier.entrySet()
+				.iterator();
 		String multiplierStr = "1";
 		while (difficulties.hasNext()) {
 			Entry<String, String> difficulty = difficulties.next();
 			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
-					&& !difficulty.getKey().equalsIgnoreCase(
-							"difficulty.multiplier")
-							&& (difficulty.getKey().equals("difficulty.multiplier."
-									+ worldDifficulty.name().toLowerCase()))) {
-				multiplierStr = difficulty.getValue();
-				break;
+					&& !difficulty.getKey().equalsIgnoreCase("difficulty.multiplier")) {
+				if (ExtraHardModeCompat.isEnabledForWorld(killer.getWorld())) {
+					if (difficulty.getKey().equalsIgnoreCase("difficulty.multiplier.extrahard")) {
+						multiplierStr = difficulty.getValue();
+						break;
+					}
+				} else if ((difficulty.getKey()
+						.equalsIgnoreCase("difficulty.multiplier." + worldDifficulty.name().toLowerCase()))) {
+					multiplierStr = difficulty.getValue();
+					break;
+				}
 			}
 		}
 		if (multiplierStr != null && Double.valueOf(multiplierStr) != 0)
@@ -46,22 +52,26 @@ public class DifficultyBonus implements IModifier {
 	}
 
 	@Override
-	public boolean doesApply(Entity deadEntity, Player killer,
-			HuntData data, DamageInformation extraInfo,
+	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
 		Difficulty worldDifficulty = killer.getWorld().getDifficulty();
-		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier
-				.entrySet().iterator();
+		Iterator<Entry<String, String>> difficulties = MobHunting.getConfigManager().difficultyMultiplier.entrySet()
+				.iterator();
 		String multiplierStr = "1";
 		while (difficulties.hasNext()) {
 			Entry<String, String> difficulty = difficulties.next();
 			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
-					&& !difficulty.getKey().equalsIgnoreCase(
-							"difficulty.multiplier")
-					&& (difficulty.getKey().equals("difficulty.multiplier."
-							+ worldDifficulty.name().toLowerCase()))) {
-				multiplierStr = difficulty.getValue();
-				break;
+					&& !difficulty.getKey().equalsIgnoreCase("difficulty.multiplier")) {
+				if (ExtraHardModeCompat.isEnabledForWorld(killer.getWorld())) {
+					if (difficulty.getKey().equalsIgnoreCase("difficulty.multiplier.extrahard")) {
+						multiplierStr = difficulty.getValue();
+						break;
+					}
+				} else if ((difficulty.getKey()
+						.equalsIgnoreCase("difficulty.multiplier." + worldDifficulty.name().toLowerCase()))) {
+					multiplierStr = difficulty.getValue();
+					break;
+				}
 			}
 		}
 		if (multiplierStr != null && Double.valueOf(multiplierStr) != 0)

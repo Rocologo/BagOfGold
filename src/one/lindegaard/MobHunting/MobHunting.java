@@ -40,6 +40,7 @@ import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
@@ -232,6 +233,9 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(CustomMobsCompat.class, "CustomMobs");
 		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
 		registerPlugin(CitizensCompat.class, "Citizens");
+		
+		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
+		
 		mExtendedMobManager = new ExtendedMobManager();
 
 		// Register commands

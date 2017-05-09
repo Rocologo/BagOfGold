@@ -19,6 +19,7 @@ import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
@@ -125,6 +126,7 @@ public class MetricsManager {
 				valueMap.put("MyPet", MyPetCompat.isSupported() ? 1 : 0);
 				valueMap.put("WorldEdit", WorldEditCompat.isSupported() ? 1 : 0);
 				valueMap.put("ProtocolLib", ProtocolLibCompat.isSupported() ? 1 : 0);
+				valueMap.put("ExtraHardMode", ExtraHardModeCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -251,6 +253,12 @@ public class MetricsManager {
 				return ProtocolLibCompat.isSupported() ? 1 : 0;
 			}
 		});
+		integrationsGraph.addPlotter(new Metrics.Plotter("ExtraHardMode") {
+			@Override
+			public int getValue() {
+				return ExtraHardModeCompat.isSupported() ? 1 : 0;
+			}
+		});
 		metrics.addGraph(integrationsGraph);
 
 		protectionPluginsGraph = metrics.createGraph("Protection plugins");
@@ -289,7 +297,7 @@ public class MetricsManager {
 			}
 		});
 		metrics.addGraph(protectionPluginsGraph);
-		
+
 		minigamesGraph = metrics.createGraph("Minigames");
 		minigamesGraph.addPlotter(new Metrics.Plotter("MobArena") {
 			@Override
@@ -405,7 +413,7 @@ public class MetricsManager {
 				}
 			}
 		});
-		
+
 		metrics.addGraph(disguiseGraph);
 
 		titleManagerGraph = metrics.createGraph("TitleManagers");

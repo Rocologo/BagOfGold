@@ -1,5 +1,6 @@
 V4.8.6
 * Fixed bug: player now need to have mobhunting.enable to get Fishing rewards. This can be used to disable Fishing rewards in specific worlds.
+* Added support for another plaugin ExtraHardMode (https://www.spigotmc.org/resources/extra-hard-mode.19673/)
 V4.8.5
 * Added setting in config.yml to disable grinding detection in some worlds. See "disable-grinding-detection-in-worlds".
 * Fixed Ticket 187 Translation of MobNames (https://github.com/Rocologo/MobHunting/issues/187) 
