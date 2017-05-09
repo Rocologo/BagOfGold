@@ -27,8 +27,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	private static TARDISWeepingAngels mPlugin;
 	private static boolean supported = false;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
-	private File file = new File(MobHunting.getInstance().getDataFolder(), "TARDISWeepingAngels-rewards.yml");
-	private YamlConfiguration config = new YamlConfiguration();
+	private static File file = new File(MobHunting.getInstance().getDataFolder(), "TARDISWeepingAngels-rewards.yml");
+	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_TARDISWEEPINGANGELS = "MH:TARDISWeepingAngels";
 
 	// http://dev.bukkit.org/bukkit-plugins/tardisweepingangels/
@@ -104,7 +104,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
-	public void loadTARDISWeepingAngelsMobsData() {
+	public static void loadTARDISWeepingAngelsMobsData() {
 		try {
 			if (!file.exists()) {
 				for (Monster monster : Monster.getValues()) {
@@ -134,7 +134,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 
 	}
 
-	public void loadTARDISWeepingAngelsMobsData(String key) {
+	public static void loadTARDISWeepingAngelsMobsData(String key) {
 		try {
 			if (!file.exists()) {
 				return;
@@ -154,7 +154,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		}
 	}
 
-	public void saveTARDISWeepingAngelsMobsData() {
+	public static void saveTARDISWeepingAngelsMobsData() {
 		try {
 			config.options().header("This a extra MobHunting config data for the TARDISWeepingAngels on your server.");
 
@@ -177,7 +177,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		}
 	}
 
-	public void saveTARDISWeepingAngelsMobsData(String key) {
+	public static void saveTARDISWeepingAngelsMobsData(String key) {
 		try {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);

@@ -8,6 +8,11 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 
 public class ReloadCommand implements ICommand {
 	@Override
@@ -47,9 +52,9 @@ public class ReloadCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-		
+
 		MobHunting.getGrindingManager().saveData();
-		
+
 		long starttime = System.currentTimeMillis();
 		int i = 1;
 		while (MobHunting.getDataStoreManager().isRunning() && (starttime + 10000 > System.currentTimeMillis())) {
@@ -74,6 +79,18 @@ public class ReloadCommand implements ICommand {
 				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers())
 					MobHunting.getAchievementManager().load(player);
 			}
+
+			if (MythicMobsCompat.isSupported())
+				MythicMobsCompat.loadMythicMobsData();
+			if (TARDISWeepingAngelsCompat.isSupported())
+				TARDISWeepingAngelsCompat.loadTARDISWeepingAngelsMobsData();
+			if (CustomMobsCompat.isSupported())
+				CustomMobsCompat.loadCustomMobsData();
+			if (MysteriousHalloweenCompat.isSupported())
+				MysteriousHalloweenCompat.loadMysteriousHalloweenMobsData();
+			if (CitizensCompat.isSupported())
+				CitizensCompat.loadCitizensData();
+			
 			sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.reload.reload-complete"));
 
 		} else

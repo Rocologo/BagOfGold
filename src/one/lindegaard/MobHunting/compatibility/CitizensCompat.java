@@ -42,8 +42,8 @@ public class CitizensCompat implements Listener {
 	private static boolean supported = false;
 	private static CitizensPlugin citizensAPI;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
-	private File fileMobRewardData = new File(MobHunting.getInstance().getDataFolder(), "citizens-rewards.yml");
-	private YamlConfiguration config = new YamlConfiguration();
+	private static File fileMobRewardData = new File(MobHunting.getInstance().getDataFolder(), "citizens-rewards.yml");
+	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_CITIZENS = "MH:CITIZENS";
 
 	private static MasterMobHunterManager masterMobHunterManager = new MasterMobHunterManager();
@@ -86,7 +86,7 @@ public class CitizensCompat implements Listener {
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
-	public void loadCitizensData() {
+	public static void loadCitizensData() {
 		try {
 			if (!fileMobRewardData.exists())
 				return;
@@ -115,7 +115,7 @@ public class CitizensCompat implements Listener {
 
 	}
 
-	public void saveCitizensData() {
+	public static void saveCitizensData() {
 		try {
 			config.options().header("This a extra MobHunting config data for the Citizens/NPC's on your server.");
 

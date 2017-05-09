@@ -35,8 +35,8 @@ public class CustomMobsCompat implements Listener {
 	private static boolean supported = false;
 	private static Plugin mPlugin;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
-	private File file = new File(MobHunting.getInstance().getDataFolder(), "custommobs-rewards.yml");
-	private YamlConfiguration config = new YamlConfiguration();
+	private static File file = new File(MobHunting.getInstance().getDataFolder(), "custommobs-rewards.yml");
+	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_CUSTOMMOBS = "MH:CUSTOMMOBS";
 
 	public CustomMobsCompat() {
@@ -60,7 +60,7 @@ public class CustomMobsCompat implements Listener {
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
-	public void loadCustomMobsData() {
+	public static void loadCustomMobsData() {
 		try {
 			if (!file.exists())
 				return;
@@ -92,7 +92,7 @@ public class CustomMobsCompat implements Listener {
 		}
 	}
 
-	public void loadCustomMobsData(String key) {
+	public static void loadCustomMobsData(String key) {
 		try {
 			if (!file.exists())
 				return;
@@ -117,7 +117,7 @@ public class CustomMobsCompat implements Listener {
 		}
 	}
 
-	public void saveCustomMobsData() {
+	public static void saveCustomMobsData() {
 		try {
 			config.options().header("This a extra MobHunting config data for the CustomMobs on your server.");
 
@@ -140,7 +140,7 @@ public class CustomMobsCompat implements Listener {
 		}
 	}
 
-	public void saveCustomMobsData(String key) {
+	public static void saveCustomMobsData(String key) {
 		try {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);

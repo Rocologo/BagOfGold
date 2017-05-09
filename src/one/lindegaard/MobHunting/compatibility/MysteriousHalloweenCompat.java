@@ -30,8 +30,8 @@ public class MysteriousHalloweenCompat implements Listener {
 	private static Plugin mPlugin;
 	private static boolean supported = false;
 	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
-	private File file = new File(MobHunting.getInstance().getDataFolder(), "MysteriousHalloween-rewards.yml");
-	private YamlConfiguration config = new YamlConfiguration();
+	private static File file = new File(MobHunting.getInstance().getDataFolder(), "MysteriousHalloween-rewards.yml");
+	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_MYSTERIOUSHALLOWEEN = "MH:MysteriousHalloween";
 
 	// https://www.spigotmc.org/resources/mysterioushalloween.13059/
@@ -111,7 +111,7 @@ public class MysteriousHalloweenCompat implements Listener {
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
-	public void loadMysteriousHalloweenMobsData() {
+	public static void loadMysteriousHalloweenMobsData() {
 		try {
 			if (!file.exists()) {
 				for (MobType monster : MysteriousHalloweenAPI.getMobTypes()) {
@@ -142,7 +142,7 @@ public class MysteriousHalloweenCompat implements Listener {
 
 	}
 
-	public void loadMysteriousHalloweenMobsData(String key) {
+	public static void loadMysteriousHalloweenMobsData(String key) {
 		try {
 			if (!file.exists()) {
 				return;
@@ -162,7 +162,7 @@ public class MysteriousHalloweenCompat implements Listener {
 		}
 	}
 
-	public void saveMysteriousHalloweenMobsData() {
+	public static void saveMysteriousHalloweenMobsData() {
 		try {
 			config.options().header("This a extra MobHunting config data for the MysteriousHalloween on your server.");
 
@@ -185,7 +185,7 @@ public class MysteriousHalloweenCompat implements Listener {
 		}
 	}
 
-	public void saveMysteriousHalloweenMobsData(String key) {
+	public static void saveMysteriousHalloweenMobsData(String key) {
 		try {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);

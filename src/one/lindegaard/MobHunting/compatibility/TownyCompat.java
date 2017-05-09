@@ -1,6 +1,8 @@
 package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -19,9 +21,17 @@ public class TownyCompat {
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("Towny");
 
-			Bukkit.getLogger().info(
-					"[MobHunting] Enabling compatibility with Towny (" + mPlugin.getDescription().getVersion() + ").");
-			supported = true;
+			try {
+				@SuppressWarnings({ "rawtypes", "unused" })
+				Class cls = Class.forName("com.palmergames.bukkit.towny.object.TownyUniverse");
+				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with Towny ("
+						+ mPlugin.getDescription().getVersion() + ").");
+				supported = true;
+			} catch (ClassNotFoundException e) {
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				console.sendMessage(ChatColor.RED + "[MobHunting] Your version of Towny ("
+						+ mPlugin.getDescription().getVersion() + ") is not complatible with this version of MobHunting, please upgrade.");
+			}
 		}
 	}
 

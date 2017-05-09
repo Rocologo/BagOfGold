@@ -153,7 +153,7 @@ public class MythicMobsCompat {
 
 	}
 
-	public void loadMythicMobsData(String key) {
+	public static void loadMythicMobsData(String key) {
 		try {
 			if (!file.exists())
 				return;
