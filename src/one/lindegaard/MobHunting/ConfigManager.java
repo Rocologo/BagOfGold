@@ -1966,12 +1966,15 @@ public class ConfigManager extends AutoConfig {
 			return 0;
 
 		} else if (MythicMobsCompat.isMythicMob(mob)) {
-			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+			// if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+			// List<MetadataValue> data =
+			// mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+			// for (MetadataValue value : data)
+			// if (value.value() instanceof MobRewardData)
+			// return getPrice(mob, ((MobRewardData)
+			// value.value()).getRewardPrize());
+			// } else
+			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return getPrice(mob, MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getRewardPrize());
 			Messages.debug("MythicMob %s has no reward data", MythicMobsCompat.getMythicMobType(mob));
@@ -2240,12 +2243,13 @@ public class ConfigManager extends AutoConfig {
 			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getConsoleRunCommand();
-			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+			//if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+			//	List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+			//	for (MetadataValue value : data)
+			//		if (value.value() instanceof MobRewardData)
+			//			return ((MobRewardData) value.value()).getConsoleRunCommand();
+			//} else
+			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getConsoleRunCommand();
 			return "";
@@ -2462,12 +2466,13 @@ public class ConfigManager extends AutoConfig {
 			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-				List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getRewardDescription();
-			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
+			//if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+			//	List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+			//	for (MetadataValue value : data)
+			//		if (value.value() instanceof MobRewardData)
+			//			return ((MobRewardData) value.value()).getRewardDescription();
+			//} else
+			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getRewardDescription();
 			return "";
@@ -2677,13 +2682,14 @@ public class ConfigManager extends AutoConfig {
 			return 0;
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
-			if (killed.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-				List<MetadataValue> data = killed.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getChance();
+			//if (killed.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
+			//	List<MetadataValue> data = killed.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
+			//	for (MetadataValue value : data)
+			//		if (value.value() instanceof MobRewardData)
+			//			return ((MobRewardData) value.value()).getChance();
 
-			} else if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
+			//} else 
+			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed)).getChance();
 			return 0;
 
