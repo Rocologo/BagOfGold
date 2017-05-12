@@ -1,8 +1,9 @@
 V4.8.6
+* MythicMobs, TARDISWeepingAngels, Citizens2, MysteriousHalloween, CustomMobs configuration files can now be reloaded with /mh reload. (https://www.spigotmc.org/threads/mobhunting.46937/page-123#post-2405604)
 * Fixed bug: player now need to have mobhunting.enable to get Fishing rewards. This can be used to disable Fishing rewards in specific worlds.
 * Added support for another plugin ExtraHardMode (https://www.spigotmc.org/resources/extra-hard-mode.19673/)
 * Added added test to check if Towny is compliant with MobHunting.
-* /mh reload, now reload MythicMobs, TARDISWeepingAngels, Citizens2, MysteriousHalloween, CustomMobs configuration files. (https://www.spigotmc.org/threads/mobhunting.46937/page-123#post-2405604)
+* Change: If a player in creative gamemode places a bag of gold on the ground as a block the value will be set to 0, to make sure that the player can duplicate money bags. 
 V4.8.5
 * Added setting in config.yml to disable grinding detection in some worlds. See "disable-grinding-detection-in-worlds".
 * Fixed Ticket 187 Translation of MobNames (https://github.com/Rocologo/MobHunting/issues/187) 

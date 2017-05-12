@@ -38,7 +38,7 @@
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<!-- <metrics.version>R7</metrics.version> -->
 		<vault.version>1.6.6</vault.version>
-		<protocollib.version>4.1.0</protocollib.version>
+		<protocollib.version>4.2.0-SNAPSHOT</protocollib.version>
 		<minigames.version>1.9.0-SNAPSHOT</minigames.version>
 		<minigameslib.version>1.14.14</minigameslib.version>
 		<mypet.version>2.2.5</mypet.version>
@@ -46,7 +46,6 @@
 		<worldguard.version>6.2</worldguard.version>
 		<citizensapi.version>2.0.21-SNAPSHOT</citizensapi.version>
 		<libsdisguises.version>9.1.1</libsdisguises.version>
-		<protocollib.version>4.2.0-SNAPSHOT</protocollib.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
@@ -769,4 +768,7 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+	<issueManagement>
+		<url>https://github.com/Rocologo/MobHunting/issues</url>
+	</issueManagement>
 </project>

@@ -366,3 +366,4 @@ mobhunting.learn.factions-no-rewards-in-safezone=No rewards when you are in a Fa
 mobhunting.learn.towny-no-rewards-in-home-town=No rewards when you are in your home town.
 mobhunting.learn.assisted-kill-is-disabled=Assisted kill is disabled by Admin.
 mobhunting.learn.residence-no-rewards-in-protected-area=No reward: You are in a Residence with flag damage=false
+mobhunting.learn.no-duplication=You are not allowed to duplicate this item, value was set to 0.

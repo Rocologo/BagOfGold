@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -326,6 +327,10 @@ public class RewardListeners implements Listener {
 		Block block = event.getBlockPlaced();
 		if (HiddenRewardData.hasHiddenRewardData(is)) {
 			HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+			if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) {
+				hiddenRewardData.setMoney(0);
+				Messages.learn(event.getPlayer(), Messages.getString("mobhunting.learn.no-duplication"));
+			}
 			if (hiddenRewardData.getMoney() == 0)
 				hiddenRewardData.setUniqueId(UUID.randomUUID());
 			Messages.debug("Placed block-reward:%s", hiddenRewardData.toString());

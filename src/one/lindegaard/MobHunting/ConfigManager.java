@@ -1952,12 +1952,7 @@ public class ConfigManager extends AutoConfig {
 	 */
 	public double getBaseKillPrize(Entity mob) {
 		if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
-				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return getPrice(mob, TARDISWeepingAngelsCompat.getMobRewardData()
 						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getRewardPrize());
@@ -1966,14 +1961,6 @@ public class ConfigManager extends AutoConfig {
 			return 0;
 
 		} else if (MythicMobsCompat.isMythicMob(mob)) {
-			// if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-			// List<MetadataValue> data =
-			// mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			// for (MetadataValue value : data)
-			// if (value.value() instanceof MobRewardData)
-			// return getPrice(mob, ((MobRewardData)
-			// value.value()).getRewardPrize());
-			// } else
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return getPrice(mob, MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getRewardPrize());
@@ -1983,36 +1970,21 @@ public class ConfigManager extends AutoConfig {
 		} else if (CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
-			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
-				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+			if (CitizensCompat.getMobRewardData().containsKey(key)) {
 				return getPrice(mob, CitizensCompat.getMobRewardData().get(key).getRewardPrize());
 			}
 			Messages.debug("Citizens mob %s has no reward data", npc.getName());
 			return 0;
 
 		} else if (CustomMobsCompat.isCustomMob(mob)) {
-			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
-				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
 				return getPrice(mob, CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
 						.getRewardPrize());
 			Messages.debug("CustomMob %s has no reward data", CustomMobsCompat.getCustomMobType(mob));
 			return 0;
 
 		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
-			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
-				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return getPrice(mob, ((MobRewardData) value.value()).getRewardPrize());
-			} else if (MysteriousHalloweenCompat.getMobRewardData()
+			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return getPrice(mob, MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardPrize());
@@ -2231,24 +2203,13 @@ public class ConfigManager extends AutoConfig {
 	 */
 	public String getKillConsoleCmd(Entity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
-				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getConsoleRunCommand();
-			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
 						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getConsoleRunCommand();
 			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			//if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-			//	List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			//	for (MetadataValue value : data)
-			//		if (value.value() instanceof MobRewardData)
-			//			return ((MobRewardData) value.value()).getConsoleRunCommand();
-			//} else
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getConsoleRunCommand();
@@ -2258,12 +2219,7 @@ public class ConfigManager extends AutoConfig {
 				&& CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
-			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
-				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getConsoleRunCommand();
-			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+			if (CitizensCompat.getMobRewardData().containsKey(key)) {
 				return CitizensCompat.getMobRewardData().get(key).getConsoleRunCommand();
 			}
 			return "";
@@ -2280,12 +2236,7 @@ public class ConfigManager extends AutoConfig {
 			return "";
 
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
-			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
-				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getConsoleRunCommand();
-			} else if (MysteriousHalloweenCompat.getMobRewardData()
+			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getConsoleRunCommand();
@@ -2454,24 +2405,13 @@ public class ConfigManager extends AutoConfig {
 	 */
 	public String getKillRewardDescription(Entity mob) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
-			if (mob.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
-				List<MetadataValue> data = mob.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getRewardDescription();
-			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
 						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getRewardDescription();
 			return "";
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
-			//if (mob.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-			//	List<MetadataValue> data = mob.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			//	for (MetadataValue value : data)
-			//		if (value.value() instanceof MobRewardData)
-			//			return ((MobRewardData) value.value()).getRewardDescription();
-			//} else
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getRewardDescription();
@@ -2481,34 +2421,19 @@ public class ConfigManager extends AutoConfig {
 				&& CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
-			if (mob.hasMetadata(CitizensCompat.MH_CITIZENS)) {
-				List<MetadataValue> data = mob.getMetadata(CitizensCompat.MH_CITIZENS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getRewardDescription();
-			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+			if (CitizensCompat.getMobRewardData().containsKey(key)) {
 				return CitizensCompat.getMobRewardData().get(key).getRewardDescription();
 			}
 			return "";
 
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
-			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
-				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getRewardDescription();
-			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
+			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
 				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
 						.getRewardDescription();
 			return "";
 
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
-			if (mob.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
-				List<MetadataValue> data = mob.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getRewardDescription();
-			} else if (MysteriousHalloweenCompat.getMobRewardData()
+			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardDescription();
@@ -2670,25 +2595,13 @@ public class ConfigManager extends AutoConfig {
 
 	public double getCmdRunChance(Entity killed) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
-			if (killed.hasMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS)) {
-				List<MetadataValue> data = killed.getMetadata(TARDISWeepingAngelsCompat.MH_TARDISWEEPINGANGELS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getChance();
-			} else if (TARDISWeepingAngelsCompat.getMobRewardData()
+			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
 						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()).getChance();
 			return 0;
 
 		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
-			//if (killed.hasMetadata(MythicMobsCompat.MH_MYTHICMOBS)) {
-			//	List<MetadataValue> data = killed.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
-			//	for (MetadataValue value : data)
-			//		if (value.value() instanceof MobRewardData)
-			//			return ((MobRewardData) value.value()).getChance();
-
-			//} else 
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed)).getChance();
 			return 0;
@@ -2698,33 +2611,18 @@ public class ConfigManager extends AutoConfig {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(killed);
 			String key = String.valueOf(npc.getId());
-			if (killed.hasMetadata(CitizensCompat.MH_CITIZENS)) {
-				List<MetadataValue> data = killed.getMetadata(CitizensCompat.MH_CITIZENS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getChance();
-			} else if (CitizensCompat.getMobRewardData().containsKey(key)) {
+			if (CitizensCompat.getMobRewardData().containsKey(key)) {
 				return CitizensCompat.getMobRewardData().get(key).getChance();
 			}
 			return 0;
 
 		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(killed)) {
-			if (killed.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
-				List<MetadataValue> data = killed.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getChance();
-			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
+			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
 				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(killed)).getChance();
 			return 0;
 
 		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
-			if (killed.hasMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN)) {
-				List<MetadataValue> data = killed.getMetadata(MysteriousHalloweenCompat.MH_MYSTERIOUSHALLOWEEN);
-				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getChance();
-			} else if (MysteriousHalloweenCompat.getMobRewardData()
+			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()).getChance();
