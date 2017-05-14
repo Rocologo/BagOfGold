@@ -657,7 +657,7 @@ public class ConfigManager extends AutoConfig {
 	public String farmerHeadPrize = "0";
 
 	@ConfigField(name = "illusioner", category = "villager")
-	public String illusionerPrize = "20:40";
+	public String illusionerPrize = "30:50";
 	@ConfigField(name = "illusioner-cmd", category = "villager")
 	public String illusionerCmd = "mobhunt head give {player} illusioner illusioner 1 silent|give {player} iron_ingot 1";
 	@ConfigField(name = "illusioner-cmd-desc", category = "villager")
