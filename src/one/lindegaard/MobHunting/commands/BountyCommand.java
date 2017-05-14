@@ -13,7 +13,6 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyManager;
-import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
 
 public class BountyCommand implements ICommand {

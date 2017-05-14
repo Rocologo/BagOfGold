@@ -37,6 +37,7 @@ import org.bukkit.entity.Giant;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Husk;
+import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Llama;
@@ -44,6 +45,7 @@ import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Mule;
 import org.bukkit.entity.MushroomCow;
 import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
@@ -351,17 +353,6 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "endermite-head-prize", category = "mobs")
 	public String endermiteHeadPrize = "0";
 
-	@ConfigField(name = "evoker", category = "mobs")
-	public String evokerPrize = "10";
-	@ConfigField(name = "evoker-cmd", category = "mobs")
-	public String evokerCmd = "mobhunt head give {player} Evoker Evoker 1 silent|give {player} iron_ingot 1";
-	@ConfigField(name = "evoker-cmd-desc", category = "mobs")
-	public String evokerCmdDesc = "You got a Evoker skull and an Iron ingot.";
-	@ConfigField(name = "evoker-cmd-run-chance", category = "mobs")
-	public double evokerCmdRunChance = 0.50;
-	@ConfigField(name = "evoker-head-prize", category = "mobs")
-	public String evokerHeadPrize = "0";
-
 	@ConfigField(name = "ghast", category = "mobs")
 	public String ghastPrize = "40:80";
 	@ConfigField(name = "ghast-cmd", category = "mobs")
@@ -549,17 +540,6 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "vex-head-prize", category = "mobs")
 	public String vexHeadPrize = "0";
 
-	@ConfigField(name = "vindicator", category = "mobs")
-	public String vindicatorPrize = "10:15";
-	@ConfigField(name = "vindicator-cmd", category = "mobs")
-	public String vindicatorCmd = "mobhunt head give {player} vindicator Vindicator 1 silent|give {player} gold_ingot 1";
-	@ConfigField(name = "vindicator-cmd-desc", category = "mobs")
-	public String vindicatorCmdDesc = "You got a Vindicator skull and an Gold ingot.";
-	@ConfigField(name = "vindicator-cmd-run-chance", category = "mobs")
-	public double vindicatorCmdRunChance = 0.05;
-	@ConfigField(name = "vindicator-head-prize", category = "mobs")
-	public String vindicatorHeadPrize = "0";
-
 	@ConfigField(name = "witch", category = "mobs")
 	public String witchPrize = "10:15";
 	@ConfigField(name = "witch-cmd", category = "mobs")
@@ -621,50 +601,6 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Villagers
 	// #####################################################################################
-	@ConfigField(name = "cartographer", category = "villager")
-	public String cartographerPrize = "1:2";
-	@ConfigField(name = "cartographer-cmd", category = "villager")
-	public String cartographerCmd = "mobhunt head give {player} cartographer Cartographer 1";
-	@ConfigField(name = "cartographer-cmd-desc", category = "villager")
-	public String cartographerCmdDesc = "You got a Cartographer Skull";
-	@ConfigField(name = "cartographer-cmd-run-chance", category = "villager")
-	public double cartographerCmdRunChance = 1.00;
-	@ConfigField(name = "cartographer-head-prize", category = "villager")
-	public String cartographerHeadPrize = "0";
-
-	@ConfigField(name = "nitwit", category = "villager")
-	public String nitwitPrize = "1:2";
-	@ConfigField(name = "nitwit-cmd", category = "villager")
-	public String nitwitCmd = "mobhunt head give {player} nitwit Nitwit 1";
-	@ConfigField(name = "nitwit-cmd-desc", category = "villager")
-	public String nitwitCmdDesc = "You got a Nitwit Skull";
-	@ConfigField(name = "nitwit-cmd-run-chance", category = "villager")
-	public double nitwitCmdRunChance = 1.00;
-	@ConfigField(name = "nitwit-head-prize", category = "villager")
-	public String nitwitHeadPrize = "0";
-
-	@ConfigField(name = "farmer", category = "villager")
-	public String farmerPrize = "1:2";
-	@ConfigField(name = "farmer-cmd", category = "villager")
-	public String farmerCmd = "mobhunt head give {player} farmer Farmer 1";
-	@ConfigField(name = "farmer-cmd-desc", category = "villager")
-	public String farmerCmdDesc = "You got a Farmer Skull";
-	@ConfigField(name = "farmer-cmd-run-chance", category = "villager")
-	public double farmerCmdRunChance = 1.00;
-	@ConfigField(name = "farmer-head-prize", category = "villager")
-	public String farmerHeadPrize = "0";
-
-	@ConfigField(name = "priest", category = "villager")
-	public String priestPrize = "1:2";
-	@ConfigField(name = "priest-cmd", category = "villager")
-	public String priestCmd = "mobhunt head give {player} Priest Priest 1";
-	@ConfigField(name = "priest-cmd-desc", category = "villager")
-	public String priestCmdDesc = "You got a Priest Skull";
-	@ConfigField(name = "priest-cmd-run-chance", category = "villager")
-	public double priestCmdRunChance = 1.00;
-	@ConfigField(name = "priest-head-prize", category = "villager")
-	public String priestHeadPrize = "0";
-
 	@ConfigField(name = "blacksmith", category = "villager")
 	public String blacksmithPrize = "1:2";
 	@ConfigField(name = "blacksmith-cmd", category = "villager")
@@ -687,6 +623,50 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "butcher-head-prize", category = "villager")
 	public String butcherHeadPrize = "0";
 
+	@ConfigField(name = "cartographer", category = "villager")
+	public String cartographerPrize = "1:2";
+	@ConfigField(name = "cartographer-cmd", category = "villager")
+	public String cartographerCmd = "mobhunt head give {player} cartographer Cartographer 1";
+	@ConfigField(name = "cartographer-cmd-desc", category = "villager")
+	public String cartographerCmdDesc = "You got a Cartographer Skull";
+	@ConfigField(name = "cartographer-cmd-run-chance", category = "villager")
+	public double cartographerCmdRunChance = 1.00;
+	@ConfigField(name = "cartographer-head-prize", category = "villager")
+	public String cartographerHeadPrize = "0";
+
+	@ConfigField(name = "evoker", category = "villager")
+	public String evokerPrize = "10";
+	@ConfigField(name = "evoker-cmd", category = "villager")
+	public String evokerCmd = "mobhunt head give {player} Evoker Evoker 1 silent|give {player} iron_ingot 1";
+	@ConfigField(name = "evoker-cmd-desc", category = "villager")
+	public String evokerCmdDesc = "You got a Evoker skull and an Iron ingot.";
+	@ConfigField(name = "evoker-cmd-run-chance", category = "villager")
+	public double evokerCmdRunChance = 0.50;
+	@ConfigField(name = "evoker-head-prize", category = "villager")
+	public String evokerHeadPrize = "0";
+
+	@ConfigField(name = "farmer", category = "villager")
+	public String farmerPrize = "1:2";
+	@ConfigField(name = "farmer-cmd", category = "villager")
+	public String farmerCmd = "mobhunt head give {player} farmer Farmer 1";
+	@ConfigField(name = "farmer-cmd-desc", category = "villager")
+	public String farmerCmdDesc = "You got a Farmer Skull";
+	@ConfigField(name = "farmer-cmd-run-chance", category = "villager")
+	public double farmerCmdRunChance = 1.00;
+	@ConfigField(name = "farmer-head-prize", category = "villager")
+	public String farmerHeadPrize = "0";
+
+	@ConfigField(name = "illusioner", category = "villager")
+	public String illusionerPrize = "20:40";
+	@ConfigField(name = "illusioner-cmd", category = "villager")
+	public String illusionerCmd = "mobhunt head give {player} illusioner illusioner 1 silent|give {player} iron_ingot 1";
+	@ConfigField(name = "illusioner-cmd-desc", category = "villager")
+	public String illusionerCmdDesc = "You got an Illusioner skull and an Iron ingot.";
+	@ConfigField(name = "illusioner-cmd-run-chance", category = "villager")
+	public double illusionerCmdRunChance = 0.10;
+	@ConfigField(name = "illusioner-head-prize", category = "villager")
+	public String illusionerHeadPrize = "0";
+
 	@ConfigField(name = "librarian", category = "villager")
 	public String librarianPrize = "1:2";
 	@ConfigField(name = "librarian-cmd", category = "villager")
@@ -697,6 +677,28 @@ public class ConfigManager extends AutoConfig {
 	public double librarianCmdRunChance = 1.00;
 	@ConfigField(name = "librarian-head-prize", category = "villager")
 	public String librarianHeadPrize = "0";
+
+	@ConfigField(name = "nitwit", category = "villager")
+	public String nitwitPrize = "1:2";
+	@ConfigField(name = "nitwit-cmd", category = "villager")
+	public String nitwitCmd = "mobhunt head give {player} nitwit Nitwit 1";
+	@ConfigField(name = "nitwit-cmd-desc", category = "villager")
+	public String nitwitCmdDesc = "You got a Nitwit Skull";
+	@ConfigField(name = "nitwit-cmd-run-chance", category = "villager")
+	public double nitwitCmdRunChance = 1.00;
+	@ConfigField(name = "nitwit-head-prize", category = "villager")
+	public String nitwitHeadPrize = "0";
+
+	@ConfigField(name = "priest", category = "villager")
+	public String priestPrize = "1:2";
+	@ConfigField(name = "priest-cmd", category = "villager")
+	public String priestCmd = "mobhunt head give {player} Priest Priest 1";
+	@ConfigField(name = "priest-cmd-desc", category = "villager")
+	public String priestCmdDesc = "You got a Priest Skull";
+	@ConfigField(name = "priest-cmd-run-chance", category = "villager")
+	public double priestCmdRunChance = 1.00;
+	@ConfigField(name = "priest-head-prize", category = "villager")
+	public String priestHeadPrize = "0";
 
 	@ConfigField(name = "villager", category = "villager")
 	public String villagerPrize = "1";
@@ -709,6 +711,17 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "villager-head-prize", category = "villager")
 	public String villagerHeadPrize = "0";
 
+	@ConfigField(name = "vindicator", category = "villager")
+	public String vindicatorPrize = "10:15";
+	@ConfigField(name = "vindicator-cmd", category = "villager")
+	public String vindicatorCmd = "mobhunt head give {player} vindicator Vindicator 1 silent|give {player} gold_ingot 1";
+	@ConfigField(name = "vindicator-cmd-desc", category = "villager")
+	public String vindicatorCmdDesc = "You got a Vindicator skull and an Gold ingot.";
+	@ConfigField(name = "vindicator-cmd-run-chance", category = "villager")
+	public double vindicatorCmdRunChance = 0.05;
+	@ConfigField(name = "vindicator-head-prize", category = "villager")
+	public String vindicatorHeadPrize = "0";
+
 	@ConfigField(name = "zombie-villager", category = "villager")
 	public String zombieVillagerPrize = "1:2";
 	@ConfigField(name = "zombie-villager-cmd", category = "villager")
@@ -716,7 +729,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "zombie-villager-cmd-desc", category = "villager")
 	public String zombieVillagerCmdDesc = "You got a ZombieVillager Skull";
 	@ConfigField(name = "zombie-villager-cmd-run-chance", category = "villager")
-	public double zombieVillagerCmdRunChance = 1.00;
+	public double zombieVillagerCmdRunChance = 0.05;
 	@ConfigField(name = "zombie-head-prize", category = "villager")
 	public String zombieVillagerHeadPrize = "0";
 
@@ -821,6 +834,17 @@ public class ConfigManager extends AutoConfig {
 	public double ocelotCmdRunChance = 0.05;
 	@ConfigField(name = "ocelot-head-prize", category = "passive")
 	public String ocelotHeadPrize = "0";
+
+	@ConfigField(name = "parrot", category = "mobs")
+	public String parrotPrize = "2";
+	@ConfigField(name = "parrot-cmd", category = "mobs")
+	public String parrotCmd = "mobhunt head give {player} Parrot Parrot 1 silent";
+	@ConfigField(name = "parrot-cmd-desc", category = "mobs")
+	public String parrotCmdDesc = "You got a Parrot skull.";
+	@ConfigField(name = "parrot-cmd-run-chance", category = "mobs")
+	public double parrotCmdRunChance = 0.10;
+	@ConfigField(name = "parrot-head-prize", category = "mobs")
+	public String parrotHeadPrize = "0";
 
 	@ConfigField(name = "pig", category = "passive")
 	public String pigPrize = "0";
@@ -1125,6 +1149,12 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "blaze_level1", category = "achievement_levels")
 	public int blazeLevel1 = 80;
+
+	@ConfigField(name = "parrot_level1", category = "achievement_levels")
+	public int parrotLevel1 = 100;
+
+	@ConfigField(name = "illusioner_level1", category = "achievement_levels")
+	public int illusionerLevel1 = 100;
 
 	@ConfigField(name = "creeper_level1", category = "achievement_levels")
 	public int creeperLevel1 = 100;
@@ -1998,6 +2028,12 @@ public class ConfigManager extends AutoConfig {
 			return getPrice(mob, MobHunting.getConfigManager().wolfPrize);
 
 		} else {
+			if (Misc.isMC112OrNewer())
+				if (mob instanceof Parrot)
+					return getPrice(mob, MobHunting.getConfigManager().parrotPrize);
+				else if (mob instanceof Illusioner)
+					return getPrice(mob, MobHunting.getConfigManager().illusionerPrize);
+
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
 					return getPrice(mob, MobHunting.getConfigManager().llamaPrize);
@@ -2246,6 +2282,12 @@ public class ConfigManager extends AutoConfig {
 			return MobHunting.getConfigManager().wolfCmd;
 
 		} else {
+			if (Misc.isMC112OrNewer())
+				if (mob instanceof Parrot)
+					return MobHunting.getConfigManager().parrotCmd;
+				else if (mob instanceof Illusioner)
+					return MobHunting.getConfigManager().illusionerCmd;
+
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
 					return MobHunting.getConfigManager().llamaCmd;
@@ -2443,6 +2485,12 @@ public class ConfigManager extends AutoConfig {
 			return MobHunting.getConfigManager().wolfCmdDesc;
 
 		} else {
+			if (Misc.isMC112OrNewer())
+				if (mob instanceof Parrot)
+					return MobHunting.getConfigManager().parrotCmdDesc;
+				else if (mob instanceof Illusioner)
+					return MobHunting.getConfigManager().illusionerCmdDesc;
+
 			if (Misc.isMC111OrNewer())
 				if (mob instanceof Llama)
 					return MobHunting.getConfigManager().llamaCmdDesc;
@@ -2632,6 +2680,12 @@ public class ConfigManager extends AutoConfig {
 			return MobHunting.getConfigManager().wolfCmdRunChance;
 
 		} else {
+			if (Misc.isMC112OrNewer())
+				if (killed instanceof Parrot)
+					return MobHunting.getConfigManager().parrotCmdRunChance;
+				else if (killed instanceof Illusioner)
+					return MobHunting.getConfigManager().illusionerCmdRunChance;
+
 			if (Misc.isMC111OrNewer())
 				if (killed instanceof Llama)
 					return MobHunting.getConfigManager().llamaCmdRunChance;

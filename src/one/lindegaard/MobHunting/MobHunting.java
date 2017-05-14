@@ -233,9 +233,9 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(CustomMobsCompat.class, "CustomMobs");
 		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
 		registerPlugin(CitizensCompat.class, "Citizens");
-		
+
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
-		
+
 		mExtendedMobManager = new ExtendedMobManager();
 
 		// Register commands
@@ -308,8 +308,8 @@ public class MobHunting extends JavaPlugin {
 				mMobHuntingManager.setHuntEnabled(player, true);
 			}
 		}
-		
-		//Messages.debug("Random uuid = %s", UUID.randomUUID());
+		//for (int i = 0; i < 2; i++)
+		//	Messages.debug("Random uuid = %s", UUID.randomUUID());
 
 		mInitialized = true;
 

@@ -68,6 +68,10 @@ public class Misc {
 			return new Location(null, x, y, z, yaw, pitch);
 	}
 
+	public static boolean isMC112() {
+		return Bukkit.getBukkitVersion().contains("1.12");
+	}
+
 	public static boolean isMC111() {
 		return Bukkit.getBukkitVersion().contains("1.11");
 	}
@@ -86,6 +90,14 @@ public class Misc {
 
 	public static boolean isMC17() {
 		return Bukkit.getBukkitVersion().contains("1.7");
+	}
+
+	public static boolean isMC112OrNewer() {
+		if (isMC112())
+			return true;
+		else if (isMC111() || isMC110() || isMC19() || isMC18() || isMC17())
+			return false;
+		return true;
 	}
 
 	public static boolean isMC111OrNewer() {

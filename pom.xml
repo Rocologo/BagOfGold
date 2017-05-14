@@ -5,8 +5,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>4.8.6</version>
-	<!-- <version>4.8.6-SNAPSHOT-B${build.number}</version> -->
+	<version>4.9.0</version>
+	<!-- <version>4.9.0-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -27,8 +27,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.11-R0.1-SNAPSHOT</bukkit.version>
-		<spigotmc.version>1.11-R0.1-SNAPSHOT</spigotmc.version>
+		<bukkit.version>1.12-pre2-SNAPSHOT</bukkit.version>
+		<spigotmc.version>1.12-pre2-SNAPSHOT</spigotmc.version>
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.7</javacompiler.version>
 		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
@@ -187,7 +187,7 @@
 		<repository>
 			<id>MobHunting-Repository</id>
 			<name>mobhunting-snapshots</name>
-			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshots-local</url>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshots-local</url>
 		</repository>
 
 		<!-- SpigotMC Repository -->
@@ -759,12 +759,12 @@
 		<repository>
 			<id>central</id>
 			<name>fractal-releases</name>
-			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-release-local</url>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release-local</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>fractal-snapshot</name>
-			<url>http://artifactory.lindegaard.one:8081/artifactory/plugins-snapshot-local</url>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 

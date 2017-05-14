@@ -30,6 +30,15 @@ public enum MinecraftMob {
 	// ******************************************************************
 	// Minecraft 1.12
 	// ******************************************************************
+	// Parrot
+	Parrot("Parrot", "MH_Parrot", "587f68aa-d7d9-4cfd-bc94-88c9d862dc26", "Parrot",
+			"eyJ0aW1lc3RhbXAiOjE0OTQ3ODI5NjA4NjcsInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzVhZmI4MTJiM2NiZjQxN2QxNTM3NTFiZjBkNzVjZmRmY2ZkYWRjMzI4ZGU4MmQ4N2EyOWViZGE3MmEyNGQ3NiJ9fX0=",
+			"B1CFOdU51WYBMxC6KXYYaX+tCtd7HgczdPkWzw+r//6JFMxmSqAfhdAo0NEXs4rDrbDMqCf2lB2IfPMru4taL8xOdd06gcPE1Q8BObi54w6znCQ0lyuMBCCRpy9SWY0HcIoQin58G7JcPNoB55J43Z/MdJACcmjDmHDMB83c2/J0GYIW46I49RDPdhwoGZExzelWEWSoaNo37Px35KJjO5yLj7tndDU99i8lHytggb0eNhaXgbPqpqUxMSirTRfRLwmz3Y+NymLkVyfTIT+eZKJ6pNce+YT3f/bC4913oNkS2t0YgzWLujU6na/P7GDSS+r1VqLEgJIFvHtRF83EFkB8YlTSgO4qY3YWhq4L8Xl+oHegLXOwO6apv8F6rrqM5eTaDnThYsDk0+AG+XYqJNH7GvxOrs7uC/eNr85/WlDMtCftLPOfh9gW8qZ9bLzostP7JmoN7/HiG6y8kC4u7csw2e71erDrtAAjqaRwyz4mhuizNuo31bBU8IhSNsyO9Pnqk3Ag9+GAMutAqujB0FgtPFv00FyU32nnI8WGqleWRbmixv1JN5+OXUhpYu3/e3OlIJoEr8ahw4FNLuk9JH6Op0Nkjmy9+GDy57+IpEpqzvRPAmW7UK8S4sbg5h64GBxp+/N4lt7tTZjki1h3rbEaCO3cCbO5YjkDyIpFS5A="),
+
+	// Illusioner
+	Illusioner("Illusioner", "MH_Illusioner", "99df8125-0394-448a-be62-8f2339777b0d", "Illusioner",
+			"eyJ0aW1lc3RhbXAiOjE0OTQ3NzM4NzUxODQsInByb2ZpbGVJZCI6IjNjOWE4MjkyMGZhNzRlN2M4NDEzMmJjYjE1OTY4MjA0IiwicHJvZmlsZU5hbWUiOiJSb2NvbG9nbyIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2Y0MjM1MjI1NDcyNWNiNGJiYzEyNTAxMzRmODEwZjdmZTA0ZDVkNWRlMzcyNGMyNWZkZGVlYTZmMjEifX19",
+			"VO77Z9wxYE+YuhSHfoJuxjh5Ez82V+SAZa3uqkSEMc3DrTtZhSRSHee7UhPR2qlCk4YgQUit9QV6oOLfNn1duh6gQ6oc7wNFl98U3CrlTqEIjoF48GEc33HvOsY3KHHyyz0GzrXGDYLqGg55nFpwCbU/PlRGFttldqIZG9ngnzwtfF8gH3fwrOOOQVVFU2p2aYQQM6vg3XpFTVZxlVw+dKqbBfYNKunfjWYW+Ht/MIdSjkfSuVLHKhRZnEDw3DjxHC7v5n/X6MM3fJ7sX5vmHFCYJo4hH46CJv75T+OwZIwwPtbkeqZucIVB5Omsbb0+9u/3q/mKbeg646I8tS1B/tx8AewkHcGbcwjn9JXqbX4eUixNlT1JMoU1GoRuflRn/a+53/0zJ6RCFOe15OMqiEknm1Kowev/snSrfjGf338G83OaugIdQPLgPRBvBdYj+DNwscKsjdKXKXSMBo+oVB/NERo0X/ahGIVBTw+FnZX8vuqcv7T6UTjPF/HkcxWtEFzwoebfoJH5INkaYR87pBZROrSJwF4ANNVEvbm/EbQBhLr9sETH89QLe7h5wxU/x5D8Pvf/tvAjciAI/woCxo909qnGBOhkQwnMuSkidgxDhN0pVagfp9I5PuRa0tR+/Gpk50a11eo3HoeckoUTEQuvG96DkLl7FN3yvLtJl5s="),
 
 	// ******************************************************************
 	// Minecraft 1.11
@@ -373,128 +382,132 @@ public enum MinecraftMob {
 
 	public int getMax() {
 		switch (this) {
-		case Giant:
-			return MobHunting.getConfigManager().giantLevel1;
-		case EnderDragon:
-			return MobHunting.getConfigManager().enderdragonLevel1;
-		case Slime:
-			return MobHunting.getConfigManager().slimeLevel1;
-		case MagmaCube:
-			return MobHunting.getConfigManager().magmaCubeLevel1;
-		case Ghast:
-			return MobHunting.getConfigManager().ghastLevel1;
-		case Blaze:
-			return MobHunting.getConfigManager().blazeLevel1;
-		case Creeper:
-			return MobHunting.getConfigManager().creeperLevel1;
-		case Enderman:
-			return MobHunting.getConfigManager().endermanLevel1;
-		case Silverfish:
-			return MobHunting.getConfigManager().silverfishLevel1;
-		case Skeleton:
-			return MobHunting.getConfigManager().skeletonLevel1;
-		case WitherSkeleton:
-			return MobHunting.getConfigManager().witherSkeletonLevel1;
-		case Spider:
-			return MobHunting.getConfigManager().spiderLevel1;
-		case CaveSpider:
-			return MobHunting.getConfigManager().caveSpiderLevel1;
-		case Witch:
-			return MobHunting.getConfigManager().witchLevel1;
-		case Wither:
-			return MobHunting.getConfigManager().witherLevel1;
-		case ZombiePigman:
-			return MobHunting.getConfigManager().zombiePigmanLevel1;
-		case Zombie:
-			return MobHunting.getConfigManager().zombieLevel1;
-		case BonusMob:
-			return MobHunting.getConfigManager().bonusMobLevel1;
-		case IronGolem:
-			return MobHunting.getConfigManager().ironGolemLevel1;
 		case Bat:
 			return MobHunting.getConfigManager().batLevel1;
+		case BonusMob:
+			return MobHunting.getConfigManager().bonusMobLevel1;
+		case Blacksmith:
+			return MobHunting.getConfigManager().blacksmithLevel1;
+		case Blaze:
+			return MobHunting.getConfigManager().blazeLevel1;
+		case Butcher:
+			return MobHunting.getConfigManager().butcherLevel1;
+		case Clownfish:
+			return MobHunting.getConfigManager().clownfishLevel1;
+		case Cartographer:
+			return MobHunting.getConfigManager().cartographerLevel1;
+		case CaveSpider:
+			return MobHunting.getConfigManager().caveSpiderLevel1;
 		case Chicken:
 			return MobHunting.getConfigManager().chickenLevel1;
 		case Cow:
 			return MobHunting.getConfigManager().cowLevel1;
-		case Horse:
-			return MobHunting.getConfigManager().horseLevel1;
-		case MushroomCow:
-			return MobHunting.getConfigManager().mushroomCowLevel1;
-		case Ocelot:
-			return MobHunting.getConfigManager().ocelotLevel1;
-		case Pig:
-			return MobHunting.getConfigManager().pigLevel1;
-		case PassiveRabbit:
-			return MobHunting.getConfigManager().rabbitLevel1;
-		case Sheep:
-			return MobHunting.getConfigManager().sheepLevel1;
-		case Snowman:
-			return MobHunting.getConfigManager().snowmanLevel1;
-		case Squid:
-			return MobHunting.getConfigManager().squidLevel1;
-		case Villager:
-			return MobHunting.getConfigManager().villagerLevel1;
-		case Wolf:
-			return MobHunting.getConfigManager().wolfLevel1;
-		case Endermite:
-			return MobHunting.getConfigManager().endermiteLevel1;
-		case Guardian:
-			return MobHunting.getConfigManager().guardianLevel1;
-		case ElderGuardian:
-			return MobHunting.getConfigManager().elderGuardianLevel1;
-		case KillerRabbit:
-			return MobHunting.getConfigManager().killerRabbitLevel1;
-		case PvpPlayer:
-			return MobHunting.getConfigManager().pvpPlayerLevel1;
-		case Shulker:
-			return MobHunting.getConfigManager().shulkerLevel1;
-		case PolarBear:
-			return MobHunting.getConfigManager().polarBearLevel1;
-		case Stray:
-			return MobHunting.getConfigManager().strayLevel1;
-		case Husk:
-			return MobHunting.getConfigManager().huskLevel1;
-		case Cartographer:
-			return MobHunting.getConfigManager().cartographerLevel1;
+		case Creeper:
+			return MobHunting.getConfigManager().creeperLevel1;
 		case Donkey:
 			return MobHunting.getConfigManager().donkeyLevel1;
+		case ElderGuardian:
+			return MobHunting.getConfigManager().elderGuardianLevel1;
+		case EnderDragon:
+			return MobHunting.getConfigManager().enderdragonLevel1;
+		case Enderman:
+			return MobHunting.getConfigManager().endermanLevel1;
+		case Endermite:
+			return MobHunting.getConfigManager().endermiteLevel1;
 		case Evoker:
 			return MobHunting.getConfigManager().evokerLevel1;
+		case Farmer:
+			return MobHunting.getConfigManager().farmerLevel1;
+		case Ghast:
+			return MobHunting.getConfigManager().ghastLevel1;
+		case Giant:
+			return MobHunting.getConfigManager().giantLevel1;
+		case Guardian:
+			return MobHunting.getConfigManager().guardianLevel1;
+		case Horse:
+			return MobHunting.getConfigManager().horseLevel1;
+		case Husk:
+			return MobHunting.getConfigManager().huskLevel1;
+		case Illusioner:
+			return MobHunting.getConfigManager().illusionerLevel1;
+		case IronGolem:
+			return MobHunting.getConfigManager().ironGolemLevel1;
+		case KillerRabbit:
+			return MobHunting.getConfigManager().killerRabbitLevel1;
+		case Librarian:
+			return MobHunting.getConfigManager().librarianLevel1;
 		case Llama:
 			return MobHunting.getConfigManager().llamaLevel1;
 		case Mule:
 			return MobHunting.getConfigManager().muleLevel1;
+		case MagmaCube:
+			return MobHunting.getConfigManager().magmaCubeLevel1;
+		case MushroomCow:
+			return MobHunting.getConfigManager().mushroomCowLevel1;
 		case Nitwit:
 			return MobHunting.getConfigManager().nitwitLevel1;
-		case Vex:
-			return MobHunting.getConfigManager().vexLevel1;
-		case Vindicator:
-			return MobHunting.getConfigManager().vindicatorLevel1;
-		case ZombieHorse:
-			return MobHunting.getConfigManager().zombieHorseLevel1;
-		case SkeletonHorse:
-			return MobHunting.getConfigManager().skeletonHorseLevel1;
-		case ZombieVillager:
-			return MobHunting.getConfigManager().zombieVillagerLevel1;
-		case Blacksmith:
-			return MobHunting.getConfigManager().blacksmithLevel1;
-		case Butcher:
-			return MobHunting.getConfigManager().butcherLevel1;
-		case Farmer:
-			return MobHunting.getConfigManager().farmerLevel1;
-		case Librarian:
-			return MobHunting.getConfigManager().librarianLevel1;
+		case Ocelot:
+			return MobHunting.getConfigManager().ocelotLevel1;
+		case Parrot:
+			return MobHunting.getConfigManager().parrotLevel1;
+		case PassiveRabbit:
+			return MobHunting.getConfigManager().rabbitLevel1;
+		case Pig:
+			return MobHunting.getConfigManager().pigLevel1;
+		case PolarBear:
+			return MobHunting.getConfigManager().polarBearLevel1;
 		case Priest:
 			return MobHunting.getConfigManager().priestLevel1;
-		case Clownfish:
-			return MobHunting.getConfigManager().clownfishLevel1;
 		case Pufferfish:
 			return MobHunting.getConfigManager().pufferfishLevel1;
+		case PvpPlayer:
+			return MobHunting.getConfigManager().pvpPlayerLevel1;
 		case RawFish:
 			return MobHunting.getConfigManager().rawfishLevel1;
 		case RawSalmon:
 			return MobHunting.getConfigManager().rawsalmonLevel1;
+		case Sheep:
+			return MobHunting.getConfigManager().sheepLevel1;
+		case Shulker:
+			return MobHunting.getConfigManager().shulkerLevel1;
+		case Silverfish:
+			return MobHunting.getConfigManager().silverfishLevel1;
+		case Skeleton:
+			return MobHunting.getConfigManager().skeletonLevel1;
+		case SkeletonHorse:
+			return MobHunting.getConfigManager().skeletonHorseLevel1;
+		case Slime:
+			return MobHunting.getConfigManager().slimeLevel1;
+		case Snowman:
+			return MobHunting.getConfigManager().snowmanLevel1;
+		case Spider:
+			return MobHunting.getConfigManager().spiderLevel1;
+		case Squid:
+			return MobHunting.getConfigManager().squidLevel1;
+		case Stray:
+			return MobHunting.getConfigManager().strayLevel1;
+		case Vex:
+			return MobHunting.getConfigManager().vexLevel1;
+		case Villager:
+			return MobHunting.getConfigManager().villagerLevel1;
+		case Vindicator:
+			return MobHunting.getConfigManager().vindicatorLevel1;
+		case Witch:
+			return MobHunting.getConfigManager().witchLevel1;
+		case Wither:
+			return MobHunting.getConfigManager().witherLevel1;
+		case WitherSkeleton:
+			return MobHunting.getConfigManager().witherSkeletonLevel1;
+		case Wolf:
+			return MobHunting.getConfigManager().wolfLevel1;
+		case Zombie:
+			return MobHunting.getConfigManager().zombieLevel1;
+		case ZombieHorse:
+			return MobHunting.getConfigManager().zombieHorseLevel1;
+		case ZombiePigman:
+			return MobHunting.getConfigManager().zombiePigmanLevel1;
+		case ZombieVillager:
+			return MobHunting.getConfigManager().zombieVillagerLevel1;
 		}
 		return 100;
 	}
@@ -553,6 +566,8 @@ public enum MinecraftMob {
 			return getPrice(MobHunting.getConfigManager().horseHeadPrize);
 		case Husk:
 			return getPrice(MobHunting.getConfigManager().huskHeadPrize);
+		case Illusioner:
+			return getPrice(MobHunting.getConfigManager().illusionerHeadPrize);
 		case IronGolem:
 			return getPrice(MobHunting.getConfigManager().ironGolemHeadPrize);
 		case KillerRabbit:
@@ -571,6 +586,8 @@ public enum MinecraftMob {
 			return getPrice(MobHunting.getConfigManager().nitwitHeadPrize);
 		case Ocelot:
 			return getPrice(MobHunting.getConfigManager().ocelotHeadPrize);
+		case Parrot:
+			return getPrice(MobHunting.getConfigManager().parrotHeadPrize);
 		case PassiveRabbit:
 			return getPrice(MobHunting.getConfigManager().rabbitHeadPrize);
 		case Pig:
@@ -658,6 +675,12 @@ public enum MinecraftMob {
 	}
 
 	public boolean matches(Entity entity) {
+		if (Misc.isMC112OrNewer())
+			if (this == Parrot)
+				return entity instanceof org.bukkit.entity.Parrot;
+			else if (this == Illusioner)
+				return entity instanceof org.bukkit.entity.Illusioner;
+
 		if (Misc.isMC111OrNewer())
 			if (this == Llama)
 				return entity instanceof org.bukkit.entity.Llama;

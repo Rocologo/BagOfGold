@@ -1,3 +1,5 @@
+V4.9.0
+* Minecraft 1.12 release :-) The new mobs - Parrot and Illusioner added, including a chance to get Parrot/Illusioner skull as a rewards.
 V4.8.6
 * MythicMobs, TARDISWeepingAngels, Citizens2, MysteriousHalloween, CustomMobs configuration files can now be reloaded with /mh reload. (https://www.spigotmc.org/threads/mobhunting.46937/page-123#post-2405604)
 * Fixed bug: player now need to have mobhunting.enable to get Fishing rewards. This can be used to disable Fishing rewards in specific worlds.
