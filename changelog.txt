@@ -1,3 +1,5 @@
+V4.9.1
+* New feature: Added a [BagOfGold] sign, which let the players easier sell and buy bags of gold. New permissions added: mobhunting.bagofgoldsign.use, mobhunting.bagofgoldsign.create, mobhunting.bagofgoldsign.destroy
 V4.9.0
 * First Minecraft 1.12 release :-) The new mobs - Parrot and Illusioner added, including a chance to get Parrot/Illusioner skull as a rewards.
 V4.8.6

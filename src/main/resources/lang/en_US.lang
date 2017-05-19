@@ -236,7 +236,6 @@ stats.both=Both
 stats.cash=Coin
 stats.cashs=Coins
 
-
 stats.day=Day
 stats.week=Week
 stats.month=Month
@@ -248,7 +247,6 @@ stats.week.friendly=This Week
 stats.month.friendly=This Month
 stats.year.friendly=This Year
 stats.alltime.friendly=All Time
-
 
 stats.name-format=${mob} ${stattype}
 
@@ -275,6 +273,52 @@ bonus.factionwarzone.name=WarZone
 
 penalty.flying.name=Flying Penalty
 penalty.grinding.name=Grinding Penalty
+
+leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick
+leaderboard.exists=The leaderboard ${leaderboard} already exists
+leaderboard.notexists=The leaderboard ${leaderboard} does not exist
+
+mobhunting.bagofgoldsign.line1=&2[${rewardname}]
+mobhunting.bagofgoldsign.line2.sell=Sell
+mobhunting.bagofgoldsign.line2.buy=Buy
+mobhunting.bagofgoldsign.line3.everything=Everything
+mobhunting.bagofgoldsign.line2.mustbe_sell_or_buy=&4Line 2 must be Sell or Buy
+mobhunting.bagofgoldsign.line3.not_a_number=&4Line 3 must be a positive number or '${everything}'
+mobhunting.bagofgoldsign.sold=&2You sold the ${rewardname} &2for ${money}
+mobhunting.bagofgoldsign.bought=&2You bought the ${rewardname} &2for ${money}
+mobhunting.bagofgoldsign.not_enough_money=&4You don't have enough money
+mobhunting.bagofgoldsign.hold_bag_in_hand=&4You must hold the ${rewardname} &4in your hand to sell it. 
+mobhunting.bagofgoldsign.no_permission=&4You need permission (${perm}) to do this.
+mobhunting.bagofgoldsign.no_permission_to_use=&4You need permission to use this sign (${perm})
+mobhunting.bagofgoldsign.line4.error_on_sign=&4Error line ${line}
+
+mobhunting.learn.prefix=[MobHunting]
+mobhunting.learn.overruled=MobHunting disabled in ${huntworld}, but region allows mobhunting=allow 
+mobhunting.learn.disabled=MobHunting is disabled in this world by Admin.
+mobhunting.learn.mob-damage-flag=No reward: You are in a protected region with mob-damage=DENY
+mobhunting.learn.mobhunting-deny=No reward: You are in a protected region with MobHunting=DENY
+mobhunting.learn.mobarena=You don't get rewards while playing MobArena
+mobhunting.learn.pvparena=You don't get rewards while playing PvpArena
+mobhunting.learn.battlearena=You don't get rewards while playing BattleArena
+mobhunting.learn.minigameslib=You don't get rewards while playing MiniGames
+mobhunting.learn.godmode=You don't get rewards while you are in God mode
+mobhunting.learn.vanished=You don't get rewards while you are Vanished
+mobhunting.learn.no-permission=No permission to get rewards for killing this mob: ${killed-mob}
+mobhunting.learn.no-reward=There is no reward for killing this mob/player: ${killed}
+mobhunting.learn.mobspawner=No reward:${killed} was probably spawned from a mob spawner
+mobhunting.learn.creative=No MobHunting rewards, while you are in Creative mode.
+mobhunting.learn.survival=You must be in survival mode to get rewards.
+mobhunting.learn.killedcreative=No MobHunting reward for killing a player who is in Creative mode.
+mobhunting.learn.huntdisabled=Admin has disabled MobHunting.
+mobhunting.learn.suiside=Suicide is not rewarded
+mobhunting.learn.nopvp=PVP is not allowed.
+mobhunting.learn.grindingnotallowed=Grinding is not allowed on this server.
+mobhunting.learn.grindingfarm=Mob Farm grinding is not allowed on this server.
+mobhunting.learn.factions-no-rewards-in-safezone=No rewards when you are in a Factions SafeZone
+mobhunting.learn.towny-no-rewards-in-home-town=No rewards when you are in your home town.
+mobhunting.learn.assisted-kill-is-disabled=Assisted kill is disabled by Admin.
+mobhunting.learn.residence-no-rewards-in-protected-area=No reward: You are in a Residence with flag damage=false
+mobhunting.learn.no-duplication=You are not allowed to duplicate this item, value was set to 0.
 
 mobs.Blaze.name=Blaze
 mobs.CaveSpider.name=Cave Spider
@@ -341,35 +385,3 @@ mobs.Squid.name=Squid
 mobs.Wolf.name=Wolf
 mobs.Illusioner.name=Illusioner
 mobs.Parrot.name=Parrot
-
-leaderboard.thick=The selection is too thick. Either the X dimension or the Z dimension of the selection must be 1 thick
-leaderboard.exists=The leaderboard ${leaderboard} already exists
-leaderboard.notexists=The leaderboard ${leaderboard} does not exist
-
-mobhunting.learn.prefix=[MobHunting]
-mobhunting.learn.overruled=MobHunting disabled in ${huntworld}, but region allows mobhunting=allow 
-mobhunting.learn.disabled=MobHunting is disabled in this world by Admin.
-mobhunting.learn.mob-damage-flag=No reward: You are in a protected region with mob-damage=DENY
-mobhunting.learn.mobhunting-deny=No reward: You are in a protected region with MobHunting=DENY
-mobhunting.learn.mobarena=You don't get rewards while playing MobArena
-mobhunting.learn.pvparena=You don't get rewards while playing PvpArena
-mobhunting.learn.battlearena=You don't get rewards while playing BattleArena
-mobhunting.learn.minigameslib=You don't get rewards while playing MiniGames
-mobhunting.learn.godmode=You don't get rewards while you are in God mode
-mobhunting.learn.vanished=You don't get rewards while you are Vanished
-mobhunting.learn.no-permission=No permission to get rewards for killing this mob: ${killed-mob}
-mobhunting.learn.no-reward=There is no reward for killing this mob/player: ${killed}
-mobhunting.learn.mobspawner=No reward:${killed} was probably spawned from a mob spawner
-mobhunting.learn.creative=No MobHunting rewards, while you are in Creative mode.
-mobhunting.learn.survival=You must be in survival mode to get rewards.
-mobhunting.learn.killedcreative=No MobHunting reward for killing a player who is in Creative mode.
-mobhunting.learn.huntdisabled=Admin has disabled MobHunting.
-mobhunting.learn.suiside=Suicide is not rewarded
-mobhunting.learn.nopvp=PVP is not allowed.
-mobhunting.learn.grindingnotallowed=Grinding is not allowed on this server.
-mobhunting.learn.grindingfarm=Mob Farm grinding is not allowed on this server.
-mobhunting.learn.factions-no-rewards-in-safezone=No rewards when you are in a Factions SafeZone
-mobhunting.learn.towny-no-rewards-in-home-town=No rewards when you are in your home town.
-mobhunting.learn.assisted-kill-is-disabled=Assisted kill is disabled by Admin.
-mobhunting.learn.residence-no-rewards-in-protected-area=No reward: You are in a Residence with flag damage=false
-mobhunting.learn.no-duplication=You are not allowed to duplicate this item, value was set to 0.

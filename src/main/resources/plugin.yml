@@ -184,6 +184,15 @@ permissions:
     default: op
     children:
       mobhunting.cmd: true
+  mobhunting.bagofgoldsign.use:
+    description: Allows you to use Bag of gold signs
+    default: true
+  mobhunting.bagofgoldsign.create:
+    description: Allows you to create Bag of gold signs
+    default: op
+  mobhunting.bagofgoldsign.destroy:
+    description: Allows you to destroy Bag of gold signs
+    default: op
 
 
 

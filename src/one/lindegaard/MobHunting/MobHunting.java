@@ -68,6 +68,7 @@ import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.grinding.GrindingManager;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
+import one.lindegaard.MobHunting.rewards.BagOfGoldSign;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
@@ -308,6 +309,10 @@ public class MobHunting extends JavaPlugin {
 				mMobHuntingManager.setHuntEnabled(player, true);
 			}
 		}
+		
+		if (getConfigManager().dropMoneyOnGroundUseAsCurrency)
+			new BagOfGoldSign();
+		
 		//for (int i = 0; i < 2; i++)
 		//	Messages.debug("Random uuid = %s", UUID.randomUUID());
 
