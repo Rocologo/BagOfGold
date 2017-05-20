@@ -118,7 +118,7 @@ public class MysteriousHalloweenCompat implements Listener {
 					mMobRewardData.put(monster.name(),
 							new MobRewardData(MobPlugin.MysteriousHalloween, monster.name(),
 									MysteriousHalloweenAPI.getMobTypeName(monster), "40:60",
-									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 					saveMysteriousHalloweenMobsData(mMobRewardData.get(monster.name()).getMobType());
 				}
 				return;
@@ -219,7 +219,7 @@ public class MysteriousHalloweenCompat implements Listener {
 				mMobRewardData.put(monster.name(),
 						new MobRewardData(MobPlugin.MysteriousHalloween, monster.name(),
 								MysteriousHalloweenAPI.getMobTypeName(monster), "40:60",
-								"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+								"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 				saveMysteriousHalloweenMobsData(monster.name());
 				MobHunting.getStoreManager().insertMysteriousHalloweenMobs(monster.name());
 				// Update mob loaded into memory

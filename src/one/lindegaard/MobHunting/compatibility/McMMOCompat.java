@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.compatibility;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -12,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import com.gmail.nossr50.api.ExperienceAPI;
+import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingEvent;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingTreasureEvent;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerMagicHunterEvent;
@@ -72,6 +73,10 @@ public class McMMOCompat implements Listener {
 		return !MobHunting.getConfigManager().disableIntegrationMcMMO;
 	}
 
+	public static void addXP(Player player, String skillType, int XP, String xpGainReason) {
+		ExperienceAPI.addModifiedXP(player, skillType, XP, xpGainReason);
+	}
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
@@ -102,7 +107,5 @@ public class McMMOCompat implements Listener {
 		ItemStack is = event.getDrop();
 		Messages.debug("McMMO-FishingEvent4: %s, Drop = %s", p.getName(), is.getType());
 	}
-
-
 
 }

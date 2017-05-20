@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
 
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
+import one.lindegaard.MobHunting.compatibility.McMMOCompat;
 import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.modifier.DifficultyBonus;
@@ -49,7 +50,7 @@ public class FishingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void Fish(PlayerFishEvent event) {
-		
+
 		if (event.isCancelled()) {
 			Messages.debug("FishingEvent: event was cancelled");
 			return;
@@ -170,7 +171,7 @@ public class FishingManager implements Listener {
 				if (player != null) {
 					Messages.debug("RecordFishing: %s caught a %s (%s)", player.getName(), eMob.getName(),
 							eMob.getMobPlugin().name());
-					MobHunting.getDataStoreManager().recordKill(player, eMob, player.hasMetadata("MH:hasBonus"),cash);
+					MobHunting.getDataStoreManager().recordKill(player, eMob, player.hasMetadata("MH:hasBonus"), cash);
 				}
 
 				// Handle Muted mode
@@ -214,6 +215,19 @@ public class FishingManager implements Listener {
 							Messages.debug("FishingBlocked %s: Reward was less than %s", player.getName(),
 									MobHunting.getConfigManager().minimumReward);
 					}
+
+				// McMMO Experience rewards
+				if (McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOExperienceRewards) {
+					double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
+					int xp = MobHunting.getConfigManager().getMcMMOExperience(fish);
+					Messages.debug("Chance to get McMMO XP (%s<%s)", chance,
+							MobHunting.getConfigManager().getMcMMOChance(fish));
+					if (chance < MobHunting.getConfigManager().getMcMMOChance(fish)) {
+						McMMOCompat.addXP(player, "fishing", xp, "UNKNOWN");
+						Messages.debug("%s was rewarded with %s McMMO fishing XP", player.getName(), xp);
+						player.sendMessage(Messages.getString("mobhunting.mcmmo.fishing_xp", "mcmmo_xp", xp));
+					}
+				}
 
 				String fishermanPos = player.getLocation().getBlockX() + " " + player.getLocation().getBlockY() + " "
 						+ player.getLocation().getBlockZ();

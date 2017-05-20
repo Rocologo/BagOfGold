@@ -78,7 +78,7 @@ public class CustomMobsCompat implements Listener {
 					} else
 						mob = new MobRewardData(MobPlugin.CustomMobs, CustomMobsAPI.getCustomMob(key).getName(),
 								CustomMobsAPI.getCustomMob(key).getDisplayName(), "10",
-								"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1);
+								"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02);
 
 					mMobRewardData.put(key, mob);
 					MobHunting.getStoreManager().insertCustomMobs(key);
@@ -228,7 +228,7 @@ public class CustomMobsCompat implements Listener {
 			Messages.debug("New CustomMobName found=%s,%s", mob.getName(), mob.getDisplayName());
 			String name = mob.getDisplayName() == null ? mob.getName() : mob.getDisplayName();
 			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(), name, "10",
-					"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+					"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 			saveCustomMobsData(mob.getName());
 			MobHunting.getStoreManager().insertCustomMobs(mob.getName());
 			// Update mob loaded into memory

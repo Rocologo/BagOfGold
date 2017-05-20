@@ -61,7 +61,7 @@ public class MythicMobsV251Compat implements Listener {
 			Messages.debug("New MythicMobType found=%s (%s)", mobtype, event.getMobType().getDisplayName());
 			MythicMobsCompat.getMobRewardData().put(mobtype,
 					new MobRewardData(MobPlugin.MythicMobs, mobtype, event.getMobType().getDisplayName(), "10",
-							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 			MythicMobsCompat.saveMythicMobsData(mobtype);
 			MobHunting.getStoreManager().insertMissingMythicMobs(mobtype);
 			// Update mob loaded into memory
@@ -72,10 +72,10 @@ public class MythicMobsV251Compat implements Listener {
 		event.getLivingEntity().setMetadata(MythicMobsCompat.MH_MYTHICMOBS, new FixedMetadataValue(mPlugin,
 				MythicMobsCompat.getMobRewardData().get(event.getMobType().getInternalName())));
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void onMythicMobV251DeathEvent(MythicMobDeathEvent event) {
-		
+
 	}
 
 }

@@ -19,12 +19,15 @@ public class MobRewardData {
 	private int propabilityBase = 100;
 	private double chance = 1;
 
+	private double mcMMOSkillRewardChance = 0.02;
+	private int mcMMOSkillRewardAmount = 1;
+
 	public MobRewardData() {
 		super();
 	}
 
 	public MobRewardData(MobPlugin pluginName, String mobType, String mobName, String rewardPrize, String cmd,
-			String cmdDesc, double chance) {
+			String cmdDesc, double chance, int mcmmo_xp, double mcmmo_chance) {
 		this.mobPluginName = pluginName;
 		this.mobType = mobType;
 		this.mobName = mobName;
@@ -32,6 +35,8 @@ public class MobRewardData {
 		this.consoleRunCommand = cmd;
 		this.rewardDescription = cmdDesc;
 		this.chance = chance;
+		this.setMcMMOSkillRewardAmount(mcmmo_xp);
+		this.setMcMMOSkillRewardChance(mcmmo_chance);
 	}
 
 	// **************************************************************************
@@ -54,7 +59,7 @@ public class MobRewardData {
 	}
 
 	public String getMobName() {
-		if (mobName==null||mobName.equals(""))
+		if (mobName == null || mobName.equals(""))
 			return mobType;
 		return mobName;
 	}
@@ -114,17 +119,6 @@ public class MobRewardData {
 	// **************************************************************************
 	// Load & Save
 	// **************************************************************************
-	public void save(ConfigurationSection section) {
-		section.set("plugin", mobPluginName.toString());
-		section.set("mobName", mobName);
-		section.set("rewardPrize", reward);
-		section.set("consoleRunCommand", consoleRunCommand);
-		section.set("rewardDescription", rewardDescription);
-		// section.set("propability", propability);
-		// section.set("propabilityBase", propabilityBase);
-		section.set("chance", chance);
-	}
-
 	@SuppressWarnings("unused")
 	private long toLong(Object obj) {
 		if (obj instanceof Long)
@@ -158,6 +152,17 @@ public class MobRewardData {
 		return Boolean.parseBoolean(obj.toString());
 	}
 
+	public void save(ConfigurationSection section) {
+		section.set("plugin", mobPluginName.toString());
+		section.set("mobName", mobName);
+		section.set("rewardPrize", reward);
+		section.set("consoleRunCommand", consoleRunCommand);
+		section.set("rewardDescription", rewardDescription);
+		section.set("chance", chance);
+		section.set("mcmmo_chance", mcMMOSkillRewardChance);
+		section.set("mcmmo_xp", mcMMOSkillRewardAmount);
+	}
+
 	public Map<String, Object> write() {
 		HashMap<String, Object> objects = new HashMap<String, Object>();
 		objects.put("plugin", mobPluginName);
@@ -172,6 +177,8 @@ public class MobRewardData {
 		else
 			objects.put("rewardDescription", "''");
 		objects.put("chance", chance);
+		objects.put("mcmmo_chance", mcMMOSkillRewardChance);
+		objects.put("mcmmo_xp", mcMMOSkillRewardAmount);
 		return objects;
 	}
 
@@ -187,6 +194,8 @@ public class MobRewardData {
 			chance = propability / propabilityBase;
 		} else
 			chance = toDouble(data.get("chance"));
+		mcMMOSkillRewardChance = data.get("mcmmo_chance") != null ? (Double) toDouble(data.get("mcmmo_chance")) : 0.02;
+		mcMMOSkillRewardAmount = data.get("mcmmo_xp") != null ? (int) toInt(data.get("mcmmo_xp")) : 1;
 	}
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
@@ -202,6 +211,24 @@ public class MobRewardData {
 			propabilityBase = section.getInt("propabilityBase");
 			chance = propability / propabilityBase;
 		}
+		mcMMOSkillRewardChance = section.getDouble("mcmmo_chance", 0.02);
+		mcMMOSkillRewardAmount = section.getInt("mcmmo_xp", 1);
+	}
+
+	public double getMcMMOSkillRewardChance() {
+		return mcMMOSkillRewardChance;
+	}
+
+	public void setMcMMOSkillRewardChance(double mcMMOSkillRewardChance) {
+		this.mcMMOSkillRewardChance = mcMMOSkillRewardChance;
+	}
+
+	public int getMcMMOSkillRewardAmount() {
+		return mcMMOSkillRewardAmount;
+	}
+
+	public void setMcMMOSkillRewardAmount(int mcMMOSkillRewardAmount) {
+		this.mcMMOSkillRewardAmount = mcMMOSkillRewardAmount;
 	}
 
 }

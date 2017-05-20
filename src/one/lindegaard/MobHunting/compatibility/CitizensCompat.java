@@ -246,8 +246,9 @@ public class CitizensCompat implements Listener {
 			if (isSentryOrSentinelOrSentries(npc.getEntity())) {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
-					mMobRewardData.put(String.valueOf(npc.getId()), new MobRewardData(MobPlugin.Citizens, "npc",
-							npc.getFullName(), "10", "give {player} iron_sword 1", "You got an Iron sword.", 1));
+					mMobRewardData.put(String.valueOf(npc.getId()),
+							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "10",
+									"give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}
@@ -291,8 +292,9 @@ public class CitizensCompat implements Listener {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					// Update Reward data in memory
-					mMobRewardData.put(String.valueOf(npc.getId()), new MobRewardData(MobPlugin.Citizens, "npc",
-							npc.getFullName(), "0", "give {player} iron_sword 1", "You got an Iron sword.", 0));
+					mMobRewardData.put(String.valueOf(npc.getId()),
+							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
+									"give {player} iron_sword 1", "You got an Iron sword.", 0, 1, 0.02));
 					// Save Reward Data to disk
 					saveCitizensData(String.valueOf(npc.getId()));
 					// Insert new mob to Database

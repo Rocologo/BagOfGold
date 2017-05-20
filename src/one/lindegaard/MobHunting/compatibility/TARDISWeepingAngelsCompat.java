@@ -110,7 +110,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 				for (Monster monster : Monster.getValues()) {
 					mMobRewardData.put(monster.name(),
 							new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.getName(), "40:60",
-									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 					saveTARDISWeepingAngelsMobsData(mMobRewardData.get(monster.name()).getMobType());
 				}
 				return;
@@ -205,8 +205,9 @@ public class TARDISWeepingAngelsCompat implements Listener {
 
 		if (mMobRewardData != null && !mMobRewardData.containsKey(monster.name())) {
 			Messages.debug("New TARDIS mob found=%s (%s)", monster.name(), monster.getName());
-			mMobRewardData.put(monster.name(), new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(),
-					monster.getName(), "40:60", "minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1));
+			mMobRewardData.put(monster.name(),
+					new MobRewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.getName(), "40:60",
+							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 			saveTARDISWeepingAngelsMobsData(monster.name());
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
 			// Update mob loaded into memory

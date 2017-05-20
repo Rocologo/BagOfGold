@@ -55,6 +55,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.gmail.nossr50.datatypes.skills.XPGainReason;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 import one.lindegaard.MobHunting.bounty.Bounty;
@@ -67,6 +68,7 @@ import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
+import one.lindegaard.MobHunting.compatibility.McMMOCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
 import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
 import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
@@ -1537,6 +1539,33 @@ public class MobHuntingManager implements Listener {
 			MobHunting.getDataStoreManager().recordKill(getPlayer(killer, killed), mob,
 					killed.hasMetadata("MH:hasBonus"), cash);
 
+			// McMMO Experience rewards
+			if (killer != null && McMMOCompat.isSupported()
+					&& MobHunting.getConfigManager().enableMcMMOExperienceRewards) {
+				double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
+				Messages.debug("Chance to get McMMO XP (%s<%s)", chance,
+						MobHunting.getConfigManager().getMcMMOChance(killed));
+
+				String skilltype = "";
+				if (Misc.isAxe(info.getWeapon()))
+					skilltype = "axes";
+				else if (Misc.isSword(info.getWeapon()))
+					skilltype = "swords";
+				else if (Misc.isBow(info.getWeapon()))
+					skilltype = "archery";
+				else if (Misc.isUnarmed(info.getWeapon()))
+					skilltype = "unarmed";
+
+				if (chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
+					int xp = MobHunting.getConfigManager().getMcMMOExperience(killed);
+					McMMOCompat.addXP(killer, skilltype, xp, "UNKNOWN");
+					Messages.debug("%s was rewarded with %s McMMO %s XP", killer.getName(),
+							MobHunting.getConfigManager().getMcMMOExperience(killed), skilltype);
+					killer.sendMessage(Messages.getString("mobhunting.mcmmo.skilltype_xp", "mcmmo_xp", xp,
+							"skilltype", skilltype));
+				}
+			}
+
 			// Tell the player that he got the reward/penalty, unless muted
 			if (!killer_muted)
 
@@ -1799,29 +1828,7 @@ public class MobHuntingManager implements Listener {
 				if (!MobHunting.getGrindingManager().isWhitelisted(event.getEntity().getLocation()))
 					event.getEntity().setMetadata(SPAWNER_BLOCKED,
 							new FixedMetadataValue(MobHunting.getInstance(), true));
-		} // else {
-			// Messages.debug("SpawnReason=%s, loc=%s,%s,%s",
-			// event.getSpawnReason().toString(),
-			// event.getLocation().getBlockX(), event.getLocation().getBlockY(),
-			// event.getLocation().getBlockZ());
-			//
-			// for (int x=event.getLocation().getBlockX()-4;
-			// x<event.getLocation().getBlockX()+4;x++){
-			// for (int y=event.getLocation().getBlockY()-4;
-			// y<event.getLocation().getBlockY()+4;y++){
-			// for (int z=event.getLocation().getBlockZ()-4;
-			// z<event.getLocation().getBlockZ()+4;z++){
-			// if ( new Location(event.getLocation().getWorld(), x, y,
-			// z).getBlock().getType()==
-			// Material.MOB_SPAWNER){
-			// Messages.debug("ERROR: Mob spawned close to Spawner????");
-			// }
-			//
-			// }
-			// }
-			// }
-			// }
-
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

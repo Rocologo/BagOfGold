@@ -263,6 +263,13 @@ public class ConfigManager extends AutoConfig {
 						+ "\n########################################################################"
 						+ "\nHere you can change the behavior of the grinding detection.");
 
+		setCategoryComment("mcmmo",
+				"########################################################################" + "\nIntegration to McMMO"
+						+ "\n########################################################################"
+						+ "\nThis section only relevant if you use McMMO."
+						+ "\nHere you configure if the player will get McMMO Expirence for MobHunting kills and"
+						+ "\nand the chance to get the xp.");
+
 		setCategoryComment("plugins",
 				"########################################################################"
 						+ "\nIntegration to other plugins."
@@ -1704,6 +1711,392 @@ public class ConfigManager extends AutoConfig {
 	public boolean denyHoppersToPickUpMoney = true;
 
 	// #####################################################################################
+	// McMMO integration
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-mcmmo", category = "mcmmo", comment = "Disable integration with McMMO."
+			+ "\nhttps://www.spigotmc.org/resources/mcmmo.2445/")
+	public boolean disableIntegrationMcMMO = false;
+
+	@ConfigField(name = "enable-mcmmo-experience-rewards", category = "mcmmo", comment = "Set 'enable-mcmmo-expirience-rewards: true' to let the players get Exprience as a MobHunting reward.")
+	public boolean enableMcMMOExperienceRewards = false;
+
+	@ConfigField(name = "bat-mcmmo-skillreward-amount", category = "mcmmo")
+	public String batMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "bat-mcmmo-skillreward-chance", category = "mcmmo")
+	public double batMcMMOSkillRewardChance = 0.025;
+
+	@ConfigField(name = "blacksmith-mcmmo-skillreward-amount", category = "mcmmo")
+	public String blacksmithMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "blacksmith-mcmmo-skillreward-chance", category = "mcmmo")
+	public double blacksmithMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "blaze-mcmmo-skillreward-amount", category = "mcmmo")
+	public String blazeMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "blaze-mcmmo-skillreward-chance", category = "mcmmo")
+	public double blazeMcMMOSkillRewardChance = 0.05;
+	// Hostile, normal challenge
+
+	@ConfigField(name = "bonusmob-mcmmo-skillreward-amount", category = "mcmmo")
+	public String bonusMobMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "bonusmob-mcmmo-skillreward-chance", category = "mcmmo")
+	public double bonusMobMcMMOSkillRewardChance = 0.05;
+	// No opinion yet, I'm not quite sure what a bonus mob is
+
+	@ConfigField(name = "butcher-mcmmo-skillreward-amount", category = "mcmmo")
+	public String butcherMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "butcher-mcmmo-skillreward-chance", category = "mcmmo")
+	public double butcherMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "cartographer-mcmmo-skillreward-amount", category = "mcmmo")
+	public String cartographerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "cartographer-mcmmo-skillreward-chance", category = "mcmmo")
+	public double cartographerMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "cave-spider-mcmmo-skillreward-amount", category = "mcmmo")
+	public String caveSpiderMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "cave-spider-mcmmo-skillreward-chance", category = "mcmmo")
+	public double caveSpiderMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "chicken-mcmmo-skillreward-amount", category = "mcmmo")
+	public String chickenMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "chicken-mcmmo-skillreward-chance", category = "mcmmo")
+	public double chickenMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "clownfish-mcmmo-skillreward-amount", category = "mcmmo")
+	public String clownfishMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "clownfish-mcmmo-skillreward-chance", category = "mcmmo")
+	public double clownfishMcMMOSkillRewardChance = 0.075;
+	// Fishing Hard
+
+	@ConfigField(name = "cow-mcmmo-skillreward-amount", category = "mcmmo")
+	public String cowMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "cow-mcmmo-skillreward-chance", category = "mcmmo")
+	public double cowMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "creeper-mcmmo-skillreward-amount", category = "mcmmo")
+	public String creeperMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "creeper-mcmmo-skillreward-chance", category = "mcmmo")
+	public double creeperMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "donkey-mcmmo-skillreward-amount", category = "mcmmo")
+	public String donkeyMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "donkey-mcmmo-skillreward-chance", category = "mcmmo")
+	public double donkeyMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "elder_guardian-mcmmo-skillreward-amount", category = "mcmmo")
+	public String elderGuardianMcMMOSkillRewardAmount = "1:2";
+	@ConfigField(name = "elder_guardian-mcmmo-skillreward-chance", category = "mcmmo")
+	public double elderGuardianMcMMOSkillRewardChance = 0.1;
+	// Hostile mob, challenging
+
+	@ConfigField(name = "enderdragon-mcmmo-skillreward-amount", category = "mcmmo")
+	public String enderdragonMcMMOSkillRewardAmount = "5";
+	@ConfigField(name = "enderdragon-mcmmo-skillreward-chance", category = "mcmmo")
+	public double enderdragonMcMMOSkillRewardChance = 0.33;
+	// Hostile mob, hard
+
+	@ConfigField(name = "enderman-mcmmo-skillreward-amount", category = "mcmmo")
+	public String endermanMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "enderman-mcmmo-skillreward-chance", category = "mcmmo")
+	public double endermanMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "endermite-mcmmo-skillreward-amount", category = "mcmmo")
+	public String endermiteMcMMOSkillRewardAmount = "1:2";
+	@ConfigField(name = "endermite-mcmmo-skillreward-chance", category = "mcmmo")
+	public double endermiteMcMMOSkillRewardChance = 0.2;
+	// Hostile mob, easy (but rare)
+
+	@ConfigField(name = "evoker-mcmmo-skillreward-amount", category = "mcmmo")
+	public String evokerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "evoker-mcmmo-skillreward-chance", category = "mcmmo")
+	public double evokerMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "farmer-mcmmo-skillreward-amount", category = "mcmmo")
+	public String farmerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "farmer-mcmmo-skillreward-chance", category = "mcmmo")
+	public double farmerMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "ghast-mcmmo-skillreward-amount", category = "mcmmo")
+	public String ghastMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "ghast-mcmmo-skillreward-chance", category = "mcmmo")
+	public double ghastMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "giant-mcmmo-skillreward-amount", category = "mcmmo")
+	public String giantMcMMOSkillRewardAmount = "1:2";
+	@ConfigField(name = "giant-mcmmo-skillreward-chance", category = "mcmmo")
+	public double giantMcMMOSkillRewardChance = 0.1;
+	// Not really a part of the standard game, but I imagine they are Hostile,
+	// Challenging
+
+	@ConfigField(name = "guardian-mcmmo-skillreward-amount", category = "mcmmo")
+	public String guardianMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "guardian-mcmmo-skillreward-chance", category = "mcmmo")
+	public double guardianMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal (because of the terrain and beam attack)
+
+	@ConfigField(name = "horse-mcmmo-skillreward-amount", category = "mcmmo")
+	public String horseMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "horse-mcmmo-skillreward-chance", category = "mcmmo")
+	public double horseMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "husk-mcmmo-skillreward-amount", category = "mcmmo")
+	public String huskMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "husk-mcmmo-skillreward-chance", category = "mcmmo")
+	public double huskMcMMOSkillRewardChance = 0.04;
+	// Passive mob, easy
+
+	@ConfigField(name = "illusioner-mcmmo-skillreward-amount", category = "mcmmo")
+	public String illusionerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "illusioner-mcmmo-skillreward-chance", category = "mcmmo")
+	public double illusionerMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, looks normal on Youtube videos (haven't tried 1.12)
+
+	@ConfigField(name = "iron-golem-mcmmo-skillreward-amount", category = "mcmmo")
+	public String ironGolemMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "iron-golem-mcmmo-skillreward-chance", category = "mcmmo")
+	public double ironGolemMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "killerrabbit-mcmmo-skillreward-amount", category = "mcmmo")
+	public String killerRabbitMcMMOSkillRewardAmount = "5";
+	@ConfigField(name = "killerrabbit-mcmmo-skillreward-chance", category = "mcmmo")
+	public double killerRabbitMcMMOSkillRewardChance = 1.0;
+	// Hostile mob, easy (but extremely rare)
+
+	@ConfigField(name = "llama-mcmmo-skillreward-amount", category = "mcmmo")
+	public String llamaMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "llama-mcmmo-skillreward-chance", category = "mcmmo")
+	public double llamaMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "librarian-mcmmo-skillreward-amount", category = "mcmmo")
+	public String librarianMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "librarian-mcmmo-skillreward-chance", category = "mcmmo")
+	public double librarianMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "magma-cube-mcmmo-skillreward-amount", category = "mcmmo")
+	public String magmaCubeMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "magma-cube-mcmmo-skillreward-chance", category = "mcmmo")
+	public double magmaCubeMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "mule-mcmmo-skillreward-amount", category = "mcmmo")
+	public String muleMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "mule-mcmmo-skillreward-chance", category = "mcmmo")
+	public double muleMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "mushroom-cow-mcmmo-skillreward-amount", category = "mcmmo")
+	public String mushroomCowMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "mushroom-cow-mcmmo-skillreward-chance", category = "mcmmo")
+	public double mushroomCowMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "nitwit-mcmmo-skillreward-amount", category = "mcmmo")
+	public String nitwitMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "nitwit-mcmmo-skillreward-chance", category = "mcmmo")
+	public double nitwitMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "ocelot-mcmmo-skillreward-amount", category = "mcmmo")
+	public String ocelotMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "ocelot-mcmmo-skillreward-chance", category = "mcmmo")
+	public double ocelotMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "parrot-mcmmo-skillreward-amount", category = "mcmmo")
+	public String parrotMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "parrot-mcmmo-skillreward-chance", category = "mcmmo")
+	public double parrotMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "pig-mcmmo-skillreward-amount", category = "mcmmo")
+	public String pigMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "pig-mcmmo-skillreward-chance", category = "mcmmo")
+	public double pigMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "polar_bear-mcmmo-skillreward-amount", category = "mcmmo")
+	public String polarBearMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "polar_bear-mcmmo-skillreward-chance", category = "mcmmo")
+	public double polarBearMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "priest-mcmmo-skillreward-amount", category = "mcmmo")
+	public String priestMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "priest-mcmmo-skillreward-chance", category = "mcmmo")
+	public double priestMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "pufferfish-mcmmo-skillreward-amount", category = "mcmmo")
+	public String pufferfishMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "pufferfish-mcmmo-skillreward-chance", category = "mcmmo")
+	public double pufferfishMcMMOSkillRewardChance = 0.06;
+	// Fishing Hard
+
+	@ConfigField(name = "pvpplayer-mcmmo-skillreward-amount", category = "mcmmo")
+	public String pvpPlayerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "pvpplayer-mcmmo-skillreward-chance", category = "mcmmo")
+	public double pvpPlayerMcMMOSkillRewardChance = 0.025;
+	// Easy to abuse
+
+	@ConfigField(name = "rabbit-mcmmo-skillreward-amount", category = "mcmmo")
+	public String rabbitMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "rabbit-mcmmo-skillreward-chance", category = "mcmmo")
+	public double rabbitMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "rawfish-mcmmo-skillreward-amount", category = "mcmmo")
+	public String rawfishMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "rawfish-mcmmo-skillreward-chance", category = "mcmmo")
+	public double rawfishMcMMOSkillRewardChance = 0.05;
+	// Fishing Easy
+
+	@ConfigField(name = "rawsalmon-mcmmo-skillreward-amount", category = "mcmmo")
+	public String rawsalmonMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "rawsalmon-mcmmo-skillreward-chance", category = "mcmmo")
+	public double rawsalmonMcMMOSkillRewardChance = 0.06;
+	// Fishing normal
+
+	@ConfigField(name = "sheep-mcmmo-skillreward-amount", category = "mcmmo")
+	public String sheepMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "sheep-mcmmo-skillreward-chance", category = "mcmmo")
+	public double sheepMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "shulker-mcmmo-skillreward-amount", category = "mcmmo")
+	public String shulkerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "shulker-mcmmo-skillreward-chance", category = "mcmmo")
+	public double shulkerMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "silverfish-mcmmo-skillreward-amount", category = "mcmmo")
+	public String silverfishMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "silverfish-mcmmo-skillreward-chance", category = "mcmmo")
+	public double silverfishMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "skeleton-mcmmo-skillreward-amount", category = "mcmmo")
+	public String skeletonMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "skeleton-mcmmo-skillreward-chance", category = "mcmmo")
+	public double skeletonMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "skeletonhorse-mcmmo-skillreward-amount", category = "mcmmo")
+	public String skeletonHorseMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "skeletonhorse-mcmmo-skillreward-chance", category = "mcmmo")
+	public double skeletonHorseMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "slime-base-mcmmo-skillreward-amount", category = "mcmmo")
+	public String slimeMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "slime-base-mcmmo-skillreward-chance", category = "mcmmo")
+	public double slimeMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "snowman-mcmmo-skillreward-amount", category = "mcmmo")
+	public String snowmanMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "snowman-mcmmo-skillreward-chance", category = "mcmmo")
+	public double snowmanMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "spider-mcmmo-skillreward-amount", category = "mcmmo")
+	public String spiderMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "spider-mcmmo-skillreward-chance", category = "mcmmo")
+	public double spiderMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "squid-mcmmo-skillreward-amount", category = "mcmmo")
+	public String squidMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "squid-mcmmo-skillreward-chance", category = "mcmmo")
+	public double squidMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "stray-mcmmo-skillreward-amount", category = "mcmmo")
+	public String strayMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "stray-mcmmo-skillreward-chance", category = "mcmmo")
+	public double strayMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "vex-mcmmo-skillreward-amount", category = "mcmmo")
+	public String vexMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "vex-mcmmo-skillreward-chance", category = "mcmmo")
+	public double vexMcMMOSkillRewardChance = 0.04;
+	// Hostile mob, easy
+
+	@ConfigField(name = "villager-mcmmo-skillreward-amount", category = "mcmmo")
+	public String villagerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "villager-mcmmo-skillreward-chance", category = "mcmmo")
+	public double villagerMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "vindicator-mcmmo-skillreward-amount", category = "mcmmo")
+	public String vindicatorMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "vindicator-mcmmo-skillreward-chance", category = "mcmmo")
+	public double vindicatorMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "witch-mcmmo-skillreward-amount", category = "mcmmo")
+	public String witchMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "witch-mcmmo-skillreward-chance", category = "mcmmo")
+	public double witchMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "wither-mcmmo-skillreward-amount", category = "mcmmo")
+	public String witherMcMMOSkillRewardAmount = "5";
+	@ConfigField(name = "wither-mcmmo-skillreward-chance", category = "mcmmo")
+	public double witherMcMMOSkillRewardChance = 0.33;
+	// Hostile mob, hard (and rare considering the summoning requirements)
+
+	@ConfigField(name = "wither-skeleton-mcmmo-skillreward-amount", category = "mcmmo")
+	public String witherSkeletonMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "wither-skeleton-mcmmo-skillreward-chance", category = "mcmmo")
+	public double witherSkeletonMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "wolf-mcmmo-skillreward-amount", category = "mcmmo")
+	public String wolfMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "wolf-mcmmo-skillreward-chance", category = "mcmmo")
+	public double wolfMcMMOSkillRewardChance = 0.04;
+	// Hostile mob (kind of, needs to be hit first), easy
+
+	@ConfigField(name = "zombie-mcmmo-skillreward-amount", category = "mcmmo")
+	public String zombieMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "zombie-mcmmo-skillreward-chance", category = "mcmmo")
+	public double zombieMcMMOSkillRewardChance = 0.4;
+	// Hostile mob, easy
+
+	@ConfigField(name = "zombiehorse-mcmmo-skillreward-amount", category = "mcmmo")
+	public String zombieHorseMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "zombiehorse-mcmmo-skillreward-chance", category = "mcmmo")
+	public double zombieHorseMcMMOSkillRewardChance = 0.025;
+	// Passive mob, risk free
+
+	@ConfigField(name = "zombie-pigman-mcmmo-skillreward-amount", category = "mcmmo")
+	public String zombiePigManMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "zombie-pigman-mcmmo-skillreward-chance", category = "mcmmo")
+	public double zombiePigManMcMMOSkillRewardChance = 0.05;
+	// Hostile mob, normal
+
+	@ConfigField(name = "zombie_villager-mcmmo-skillreward-amount", category = "mcmmo")
+	public String zombieVillagerMcMMOSkillRewardAmount = "1";
+	@ConfigField(name = "zombie_villager-mcmmo-skillreward-chance", category = "mcmmo")
+	public double zombieVillagerMcMMOSkillRewardChance = 0.04;
+	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
 	@ConfigField(name = "disable-integration-mobarena", category = "plugins", comment = "Disable integration with MobArena")
@@ -1784,10 +2177,6 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-mysterious-halloween", category = "plugins", comment = "Disable integration with MysteriousHalloween."
 			+ "\nhttps://www.spigotmc.org/resources/mysterioushalloween.13059/")
 	public boolean disableIntegrationMysteriousHalloween = false;
-
-	@ConfigField(name = "disable-integration-mcmmo", category = "plugins", comment = "Disable integration with McMMO."
-			+ "\nhttps://www.spigotmc.org/resources/mcmmo.2445/")
-	public boolean disableIntegrationMcMMO = false;
 
 	@ConfigField(name = "disable-integration-placeholderapi", category = "plugins", comment = "Disable integration with PlaceholderAPI."
 			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")
@@ -2830,6 +3219,429 @@ public class ConfigManager extends AutoConfig {
 					return MobHunting.getConfigManager().clownfishCmdRunChance;
 				} else if (is.getData().getData() == (byte) 3) {
 					return MobHunting.getConfigManager().pufferfishCmdRunChance;
+				}
+			}
+		}
+		return 0;
+	}
+
+	public double getMcMMOChance(Entity killed) {
+		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
+			if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name())
+						.getMcMMOSkillRewardChance();
+			return 0;
+
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
+			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed))
+						.getMcMMOSkillRewardChance();
+			return 0;
+
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(killed)
+				&& CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(killed);
+			String key = String.valueOf(npc.getId());
+			if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return CitizensCompat.getMobRewardData().get(key).getMcMMOSkillRewardChance();
+			}
+			return 0;
+
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(killed)) {
+			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(killed))
+						.getMcMMOSkillRewardChance();
+			return 0;
+
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+			if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name())
+						.getMcMMOSkillRewardChance();
+			return 0;
+
+		} else if (MyPetCompat.isMyPet(killed)) {
+			return MobHunting.getConfigManager().wolfMcMMOSkillRewardChance;
+
+		} else {
+			if (Misc.isMC112OrNewer())
+				if (killed instanceof Parrot)
+					return MobHunting.getConfigManager().parrotMcMMOSkillRewardChance;
+				else if (killed instanceof Illusioner)
+					return MobHunting.getConfigManager().illusionerMcMMOSkillRewardChance;
+
+			if (Misc.isMC111OrNewer())
+				if (killed instanceof Llama)
+					return MobHunting.getConfigManager().llamaMcMMOSkillRewardChance;
+				else if (killed instanceof Vex)
+					return MobHunting.getConfigManager().vexMcMMOSkillRewardChance;
+				else if (killed instanceof Vindicator)
+					return MobHunting.getConfigManager().vindicatorMcMMOSkillRewardChance;
+				else if (killed instanceof Evoker)
+					return MobHunting.getConfigManager().evokerMcMMOSkillRewardChance;
+				else if (killed instanceof Donkey)
+					return MobHunting.getConfigManager().donkeyMcMMOSkillRewardChance;
+				else if (killed instanceof Mule)
+					return MobHunting.getConfigManager().muleMcMMOSkillRewardChance;
+				else if (killed instanceof SkeletonHorse)
+					return MobHunting.getConfigManager().skeletonHorseMcMMOSkillRewardChance;
+				else if (killed instanceof ZombieHorse)
+					return MobHunting.getConfigManager().zombieHorseMcMMOSkillRewardChance;
+				else if (killed instanceof Stray)
+					return MobHunting.getConfigManager().strayMcMMOSkillRewardChance;
+				else if (killed instanceof Husk)
+					return MobHunting.getConfigManager().huskMcMMOSkillRewardChance;
+				else if (killed instanceof ZombieVillager)
+					return MobHunting.getConfigManager().zombieVillagerMcMMOSkillRewardChance;
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NITWIT)
+					return MobHunting.getConfigManager().nitwitMcMMOSkillRewardChance;
+
+			if (Misc.isMC110OrNewer())
+				if (killed instanceof PolarBear)
+					return MobHunting.getConfigManager().polarBearMcMMOSkillRewardChance;
+				else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.STRAY)
+					return MobHunting.getConfigManager().strayMcMMOSkillRewardChance;
+				else if (killed instanceof Zombie && ((Zombie) killed).getVillagerProfession() == Profession.HUSK)
+					return MobHunting.getConfigManager().huskMcMMOSkillRewardChance;
+
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NORMAL)
+					return MobHunting.getConfigManager().villagerMcMMOSkillRewardChance;
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.PRIEST)
+					return MobHunting.getConfigManager().priestMcMMOSkillRewardChance;
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.BUTCHER)
+					return MobHunting.getConfigManager().butcherMcMMOSkillRewardChance;
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.BLACKSMITH)
+					return MobHunting.getConfigManager().blacksmithMcMMOSkillRewardChance;
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.LIBRARIAN)
+					return MobHunting.getConfigManager().librarianMcMMOSkillRewardChance;
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.FARMER)
+					return MobHunting.getConfigManager().farmerMcMMOSkillRewardChance;
+
+			if (Misc.isMC19OrNewer())
+				if (killed instanceof Shulker)
+					return MobHunting.getConfigManager().shulkerMcMMOSkillRewardChance;
+
+			if (Misc.isMC18OrNewer())
+				if (killed instanceof Guardian && ((Guardian) killed).isElder())
+					return MobHunting.getConfigManager().elderGuardianMcMMOSkillRewardChance;
+				else if (killed instanceof Guardian)
+					return MobHunting.getConfigManager().guardianMcMMOSkillRewardChance;
+				else if (killed instanceof Endermite)
+					return MobHunting.getConfigManager().endermiteMcMMOSkillRewardChance;
+				else if (killed instanceof Rabbit)
+					if ((((Rabbit) killed).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return MobHunting.getConfigManager().killerRabbitMcMMOSkillRewardChance;
+					else
+						return MobHunting.getConfigManager().rabbitMcMMOSkillRewardChance;
+
+			// MC1.7 or older
+			if (killed instanceof Player) {
+				return MobHunting.getConfigManager().pvpPlayerMcMMOSkillRewardChance;
+			} else if (killed instanceof Blaze)
+				return MobHunting.getConfigManager().blazeMcMMOSkillRewardChance;
+			else if (killed instanceof Creeper)
+				return MobHunting.getConfigManager().creeperMcMMOSkillRewardChance;
+			else if (killed instanceof Silverfish)
+				return MobHunting.getConfigManager().silverfishMcMMOSkillRewardChance;
+			else if (killed instanceof Enderman)
+				return MobHunting.getConfigManager().endermanMcMMOSkillRewardChance;
+			else if (killed instanceof Giant)
+				return MobHunting.getConfigManager().giantMcMMOSkillRewardChance;
+			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.NORMAL)
+				return MobHunting.getConfigManager().skeletonMcMMOSkillRewardChance;
+			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.WITHER)
+				return MobHunting.getConfigManager().witherSkeletonMcMMOSkillRewardChance;
+			else if (killed instanceof CaveSpider)
+				// CaveSpider is a subclass of Spider
+				return MobHunting.getConfigManager().caveSpiderMcMMOSkillRewardChance;
+			else if (killed instanceof Spider)
+				return MobHunting.getConfigManager().spiderMcMMOSkillRewardChance;
+			else if (killed instanceof Witch)
+				return MobHunting.getConfigManager().witchMcMMOSkillRewardChance;
+			else if (killed instanceof PigZombie)
+				// PigZombie is a subclass of Zombie.
+				return MobHunting.getConfigManager().zombiePigManMcMMOSkillRewardChance;
+			else if (killed instanceof Zombie)
+				return MobHunting.getConfigManager().zombieMcMMOSkillRewardChance;
+			else if (killed instanceof Ghast)
+				return MobHunting.getConfigManager().ghastMcMMOSkillRewardChance;
+			else if (killed instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime
+				return MobHunting.getConfigManager().magmaCubeMcMMOSkillRewardChance;
+			else if (killed instanceof Slime)
+				return MobHunting.getConfigManager().slimeMcMMOSkillRewardChance;
+			else if (killed instanceof EnderDragon)
+				return MobHunting.getConfigManager().enderdragonMcMMOSkillRewardChance;
+			else if (killed instanceof Wither)
+				return MobHunting.getConfigManager().witherMcMMOSkillRewardChance;
+			else if (killed instanceof IronGolem)
+				return MobHunting.getConfigManager().ironGolemMcMMOSkillRewardChance;
+
+			// Passive mobs
+			else if (killed instanceof Bat)
+				return MobHunting.getConfigManager().batMcMMOSkillRewardChance;
+			else if (killed instanceof Chicken)
+				return MobHunting.getConfigManager().chickenMcMMOSkillRewardChance;
+			else if (killed instanceof Cow)
+				if (killed instanceof MushroomCow)
+					// MushroomCow is a subclass of Cow
+					return MobHunting.getConfigManager().mushroomCowMcMMOSkillRewardChance;
+				else
+					return MobHunting.getConfigManager().cowMcMMOSkillRewardChance;
+			else if (killed instanceof Horse)
+				return MobHunting.getConfigManager().horseMcMMOSkillRewardChance;
+			else if (killed instanceof Ocelot)
+				return MobHunting.getConfigManager().ocelotMcMMOSkillRewardChance;
+			else if (killed instanceof Pig)
+				return MobHunting.getConfigManager().pigMcMMOSkillRewardChance;
+			else if (killed instanceof Sheep)
+				return MobHunting.getConfigManager().sheepMcMMOSkillRewardChance;
+			else if (killed instanceof Snowman)
+				return MobHunting.getConfigManager().snowmanMcMMOSkillRewardChance;
+			else if (killed instanceof Squid)
+				return MobHunting.getConfigManager().squidMcMMOSkillRewardChance;
+			else if (killed instanceof Villager)
+				return MobHunting.getConfigManager().villagerMcMMOSkillRewardChance;
+			else if (killed instanceof Wolf)
+				return MobHunting.getConfigManager().wolfMcMMOSkillRewardChance;
+			else if (killed instanceof Item && ((Item) killed).getItemStack().getType() == Material.RAW_FISH) {
+				ItemStack is = ((Item) killed).getItemStack();
+				if (is.getData().getData() == (byte) 0) {
+					return MobHunting.getConfigManager().rawfishMcMMOSkillRewardChance;
+				} else if (is.getData().getData() == (byte) 1) {
+					return MobHunting.getConfigManager().rawsalmonMcMMOSkillRewardChance;
+				} else if (is.getData().getData() == (byte) 2) {
+					return MobHunting.getConfigManager().clownfishMcMMOSkillRewardChance;
+				} else if (is.getData().getData() == (byte) 3) {
+					return MobHunting.getConfigManager().pufferfishMcMMOSkillRewardChance;
+				}
+			}
+		}
+		return 0;
+	}
+
+	private int getMcMMOXP(Entity mob, String str) {
+		if (str == null || str.equals("") || str.isEmpty()) {
+			Bukkit.getServer().getConsoleSender()
+					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
+							+ " The McMMO XP for killing a " + ExtendedMobManager.getMobName(mob)
+							+ " is not set in config.yml. Please set the McMMO XP to 0 or a positive number.");
+			return 0;
+		} else if (str.startsWith(":")) {
+			Bukkit.getServer().getConsoleSender()
+					.sendMessage(ChatColor.RED + "[MobHunting] [WARNING]" + ChatColor.RESET
+							+ " The McMMO XP for killing a " + ExtendedMobManager.getMobName(mob)
+							+ " in config.yml has a wrong format. The prize can't start with \":\"");
+			if (str.length() > 1)
+				return getMcMMOXP(mob, str.substring(1, str.length()));
+			else
+				return 0;
+		} else if (str.contains(":")) {
+			String[] str1 = str.split(":");
+			Integer prize = MobHunting.getMobHuntingManager().mRand.nextInt(Integer.valueOf(str1[1]))
+					+ Integer.valueOf(str1[0]);
+			return prize;
+		} else
+			return Integer.valueOf(str);
+	}
+
+	public int getMcMMOExperience(Entity killed) {
+		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
+			if (TARDISWeepingAngelsCompat.getMobRewardData()
+					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))
+				return TARDISWeepingAngelsCompat.getMobRewardData()
+						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name())
+						.getMcMMOSkillRewardAmount();
+			return 0;
+
+		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
+			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
+				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed))
+						.getMcMMOSkillRewardAmount();
+			return 0;
+
+		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(killed)
+				&& CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
+			NPCRegistry registry = CitizensAPI.getNPCRegistry();
+			NPC npc = registry.getNPC(killed);
+			String key = String.valueOf(npc.getId());
+			if (CitizensCompat.getMobRewardData().containsKey(key)) {
+				return CitizensCompat.getMobRewardData().get(key).getMcMMOSkillRewardAmount();
+			}
+			return 0;
+
+		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(killed)) {
+			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
+				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(killed))
+						.getMcMMOSkillRewardAmount();
+			return 0;
+
+		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+			if (MysteriousHalloweenCompat.getMobRewardData()
+					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()))
+				return MysteriousHalloweenCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name())
+						.getMcMMOSkillRewardAmount();
+			return 0;
+
+		} else if (MyPetCompat.isMyPet(killed)) {
+			return getMcMMOXP(killed, MobHunting.getConfigManager().wolfMcMMOSkillRewardAmount);
+
+		} else {
+			if (Misc.isMC112OrNewer())
+				if (killed instanceof Parrot)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().parrotMcMMOSkillRewardAmount);
+				else if (killed instanceof Illusioner)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().illusionerMcMMOSkillRewardAmount);
+
+			if (Misc.isMC111OrNewer())
+				if (killed instanceof Llama)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().llamaMcMMOSkillRewardAmount);
+				else if (killed instanceof Vex)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().vexMcMMOSkillRewardAmount);
+				else if (killed instanceof Vindicator)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().vindicatorMcMMOSkillRewardAmount);
+				else if (killed instanceof Evoker)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().evokerMcMMOSkillRewardAmount);
+				else if (killed instanceof Donkey)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().donkeyMcMMOSkillRewardAmount);
+				else if (killed instanceof Mule)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().muleMcMMOSkillRewardAmount);
+				else if (killed instanceof SkeletonHorse)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().skeletonHorseMcMMOSkillRewardAmount);
+				else if (killed instanceof ZombieHorse)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().zombieHorseMcMMOSkillRewardAmount);
+				else if (killed instanceof Stray)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().strayMcMMOSkillRewardAmount);
+				else if (killed instanceof Husk)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().huskMcMMOSkillRewardAmount);
+				else if (killed instanceof ZombieVillager)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().zombieVillagerMcMMOSkillRewardAmount);
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NITWIT)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().nitwitMcMMOSkillRewardAmount);
+
+			if (Misc.isMC110OrNewer())
+				if (killed instanceof PolarBear)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().polarBearMcMMOSkillRewardAmount);
+				else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.STRAY)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().strayMcMMOSkillRewardAmount);
+				else if (killed instanceof Zombie && ((Zombie) killed).getVillagerProfession() == Profession.HUSK)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().huskMcMMOSkillRewardAmount);
+
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.NORMAL)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().villagerMcMMOSkillRewardAmount);
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.PRIEST)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().priestMcMMOSkillRewardAmount);
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.BUTCHER)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().butcherMcMMOSkillRewardAmount);
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.BLACKSMITH)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().blacksmithMcMMOSkillRewardAmount);
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.LIBRARIAN)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().librarianMcMMOSkillRewardAmount);
+				else if (killed instanceof Villager && ((Villager) killed).getProfession() == Profession.FARMER)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().farmerMcMMOSkillRewardAmount);
+
+			if (Misc.isMC19OrNewer())
+				if (killed instanceof Shulker)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().shulkerMcMMOSkillRewardAmount);
+
+			if (Misc.isMC18OrNewer())
+				if (killed instanceof Guardian && ((Guardian) killed).isElder())
+					return getMcMMOXP(killed, MobHunting.getConfigManager().elderGuardianMcMMOSkillRewardAmount);
+				else if (killed instanceof Guardian)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().guardianMcMMOSkillRewardAmount);
+				else if (killed instanceof Endermite)
+					return getMcMMOXP(killed, MobHunting.getConfigManager().endermiteMcMMOSkillRewardAmount);
+				else if (killed instanceof Rabbit)
+					if ((((Rabbit) killed).getRabbitType()) == Rabbit.Type.THE_KILLER_BUNNY)
+						return getMcMMOXP(killed, MobHunting.getConfigManager().killerRabbitMcMMOSkillRewardAmount);
+					else
+						return getMcMMOXP(killed, MobHunting.getConfigManager().rabbitMcMMOSkillRewardAmount);
+
+			// MC1.7 or older
+			if (killed instanceof Player) {
+				return getMcMMOXP(killed, MobHunting.getConfigManager().pvpPlayerMcMMOSkillRewardAmount);
+			} else if (killed instanceof Blaze)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().blazeMcMMOSkillRewardAmount);
+			else if (killed instanceof Creeper)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().creeperMcMMOSkillRewardAmount);
+			else if (killed instanceof Silverfish)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().silverfishMcMMOSkillRewardAmount);
+			else if (killed instanceof Enderman)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().endermanMcMMOSkillRewardAmount);
+			else if (killed instanceof Giant)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().giantMcMMOSkillRewardAmount);
+			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.NORMAL)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().skeletonMcMMOSkillRewardAmount);
+			else if (killed instanceof Skeleton && ((Skeleton) killed).getSkeletonType() == SkeletonType.WITHER)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().witherSkeletonMcMMOSkillRewardAmount);
+			else if (killed instanceof CaveSpider)
+				// CaveSpider is a subclass of Spider
+				return getMcMMOXP(killed, MobHunting.getConfigManager().caveSpiderMcMMOSkillRewardAmount);
+			else if (killed instanceof Spider)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().spiderMcMMOSkillRewardAmount);
+			else if (killed instanceof Witch)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().witchMcMMOSkillRewardAmount);
+			else if (killed instanceof PigZombie)
+				// PigZombie is a subclass of Zombie.
+				return getMcMMOXP(killed, MobHunting.getConfigManager().zombiePigManMcMMOSkillRewardAmount);
+			else if (killed instanceof Zombie)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().zombieMcMMOSkillRewardAmount);
+			else if (killed instanceof Ghast)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().ghastMcMMOSkillRewardAmount);
+			else if (killed instanceof MagmaCube)
+				// MagmaCube is a subclass of Slime
+				return getMcMMOXP(killed, MobHunting.getConfigManager().magmaCubeMcMMOSkillRewardAmount);
+			else if (killed instanceof Slime)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().slimeMcMMOSkillRewardAmount);
+			else if (killed instanceof EnderDragon)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().enderdragonMcMMOSkillRewardAmount);
+			else if (killed instanceof Wither)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().witherMcMMOSkillRewardAmount);
+			else if (killed instanceof IronGolem)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().ironGolemMcMMOSkillRewardAmount);
+
+			// Passive mobs
+			else if (killed instanceof Bat)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().batMcMMOSkillRewardAmount);
+			else if (killed instanceof Chicken)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().chickenMcMMOSkillRewardAmount);
+			else if (killed instanceof Cow)
+				if (killed instanceof MushroomCow)
+					// MushroomCow is a subclass of Cow
+					return getMcMMOXP(killed, MobHunting.getConfigManager().mushroomCowMcMMOSkillRewardAmount);
+				else
+					return getMcMMOXP(killed, MobHunting.getConfigManager().cowMcMMOSkillRewardAmount);
+			else if (killed instanceof Horse)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().horseMcMMOSkillRewardAmount);
+			else if (killed instanceof Ocelot)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().ocelotMcMMOSkillRewardAmount);
+			else if (killed instanceof Pig)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().pigMcMMOSkillRewardAmount);
+			else if (killed instanceof Sheep)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().sheepMcMMOSkillRewardAmount);
+			else if (killed instanceof Snowman)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().snowmanMcMMOSkillRewardAmount);
+			else if (killed instanceof Squid)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().squidMcMMOSkillRewardAmount);
+			else if (killed instanceof Villager)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().villagerMcMMOSkillRewardAmount);
+			else if (killed instanceof Wolf)
+				return getMcMMOXP(killed, MobHunting.getConfigManager().wolfMcMMOSkillRewardAmount);
+			else if (killed instanceof Item && ((Item) killed).getItemStack().getType() == Material.RAW_FISH) {
+				ItemStack is = ((Item) killed).getItemStack();
+				if (is.getData().getData() == (byte) 0) {
+					return getMcMMOXP(killed, MobHunting.getConfigManager().rawfishMcMMOSkillRewardAmount);
+				} else if (is.getData().getData() == (byte) 1) {
+					return getMcMMOXP(killed, MobHunting.getConfigManager().rawsalmonMcMMOSkillRewardAmount);
+				} else if (is.getData().getData() == (byte) 2) {
+					return getMcMMOXP(killed, MobHunting.getConfigManager().clownfishMcMMOSkillRewardAmount);
+				} else if (is.getData().getData() == (byte) 3) {
+					return getMcMMOXP(killed, MobHunting.getConfigManager().pufferfishMcMMOSkillRewardAmount);
 				}
 			}
 		}

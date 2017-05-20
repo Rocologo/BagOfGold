@@ -17,21 +17,29 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class Misc {
 	public static boolean isAxe(ItemStack item) {
-		return (item.getType() == Material.DIAMOND_AXE || item.getType() == Material.GOLD_AXE
+		return item != null && (item.getType() == Material.DIAMOND_AXE || item.getType() == Material.GOLD_AXE
 				|| item.getType() == Material.IRON_AXE || item.getType() == Material.STONE_AXE
 				|| item.getType() == Material.WOOD_AXE);
 	}
 
 	public static boolean isSword(ItemStack item) {
-		return (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.GOLD_SWORD
+		return item != null && (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.GOLD_SWORD
 				|| item.getType() == Material.IRON_SWORD || item.getType() == Material.STONE_SWORD
 				|| item.getType() == Material.WOOD_SWORD);
 	}
 
 	public static boolean isPick(ItemStack item) {
-		return (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.GOLD_PICKAXE
+		return item != null && (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.GOLD_PICKAXE
 				|| item.getType() == Material.IRON_PICKAXE || item.getType() == Material.STONE_PICKAXE
 				|| item.getType() == Material.WOOD_PICKAXE);
+	}
+
+	public static boolean isBow(ItemStack item) {
+		return item != null && (item.getType() == Material.BOW);
+	}
+
+	public static boolean isUnarmed(ItemStack item) {
+		return (item == null || item.getType() == Material.AIR);
 	}
 
 	public static Map<String, Object> toMap(Location loc) {
