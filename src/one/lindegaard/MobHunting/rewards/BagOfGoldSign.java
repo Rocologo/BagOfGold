@@ -182,9 +182,6 @@ public class BagOfGoldSign implements Listener {
 				player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.no_permission_to_use", "perm",
 						"mobhunting.bagofgoldsign.use"));
 			}
-
-		} else {
-			Messages.debug("This is not a bag of gold");
 		}
 	}
 
@@ -204,7 +201,7 @@ public class BagOfGoldSign implements Listener {
 
 				} else if (ChatColor.stripColor(event.getLine(1)).equalsIgnoreCase(
 						ChatColor.stripColor(Messages.getString("mobhunting.bagofgoldsign.line2.buy")))) {
-					event.setLine(1, Messages.getString("mobhunting.bagofgoldsign.line2.nuy"));
+					event.setLine(1, Messages.getString("mobhunting.bagofgoldsign.line2.buy"));
 				} else {
 					player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.line2.mustbe_sell_or_buy"));
 					event.setLine(3, Messages.getString("mobhunting.bagofgoldsign.line4.error_on_sign", "line", "2"));
@@ -214,16 +211,11 @@ public class BagOfGoldSign implements Listener {
 				// Check line 3
 				if (event.getLine(2).isEmpty() || ChatColor.stripColor(event.getLine(2)).equalsIgnoreCase(
 						ChatColor.stripColor(Messages.getString("mobhunting.bagofgoldsign.line3.everything")))) {
-					event.setLine(0, Messages.getString("mobhunting.bagofgoldsign.line1", "rewardname",
-							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
 					event.setLine(2, Messages.getString("mobhunting.bagofgoldsign.line3.everything"));
 				} else {
 					try {
 						if (Double.valueOf(event.getLine(2)) > 0) {
 							Messages.debug("%s created a Bag of gold Sign", event.getPlayer().getName());
-							event.setLine(0, Messages.getString("mobhunting.bagofgoldsign.line1", "rewardname",
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
-							event.setLine(1, Messages.getString("mobhunting.bagofgoldsign.line2"));
 						}
 					} catch (NumberFormatException e) {
 						Messages.debug("Line no. 3 is not positive a number");
@@ -236,7 +228,9 @@ public class BagOfGoldSign implements Listener {
 					}
 				}
 
-				event.setLine(3, "");
+				event.setLine(0, Messages.getString("mobhunting.bagofgoldsign.line1", "rewardname",
+						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
+				event.setLine(3, Messages.getString("mobhunting.bagofgoldsign.line4.ok"));
 
 			} else {
 				player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.no_permission", "perm",

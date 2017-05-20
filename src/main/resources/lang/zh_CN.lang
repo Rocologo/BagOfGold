@@ -282,6 +282,7 @@ mobhunting.bagofgoldsign.line1=&2[${rewardname}]
 mobhunting.bagofgoldsign.line2.sell=Sell
 mobhunting.bagofgoldsign.line2.buy=Buy
 mobhunting.bagofgoldsign.line3.everything=Everything
+mobhunting.bagofgoldsign.line4.ok=
 mobhunting.bagofgoldsign.line2.mustbe_sell_or_buy=&4Line 2 must be Sell or Buy
 mobhunting.bagofgoldsign.line3.not_a_number=&4Line 3 must be a positive number or '${everything}'
 mobhunting.bagofgoldsign.sold=&2You sold the ${rewardname} &2for ${money}

@@ -68,6 +68,13 @@ public class MetricsManager {
 			}
 		});
 
+		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("language") {
+			@Override
+			public String getValue() {
+				return MobHunting.getConfigManager().language;
+			}
+		});
+
 		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimpleBarChart("protection_plugin_integrations") {
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
