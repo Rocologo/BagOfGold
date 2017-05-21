@@ -18,6 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
 
+import com.gmail.nossr50.datatypes.skills.SkillType;
+
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.McMMOCompat;
 import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
@@ -166,8 +168,9 @@ public class FishingManager implements Listener {
 					Messages.debug("%s got a penalty (%s)", player.getName(),
 							MobHunting.getRewardManager().format(cash));
 				}
-				
-				// Record Fishing Achievement is done using SeventhHuntAchievement.java (onFishingCompleted)
+
+				// Record Fishing Achievement is done using
+				// SeventhHuntAchievement.java (onFishingCompleted)
 
 				// Record the kill in the Database
 				if (player != null) {
@@ -219,15 +222,15 @@ public class FishingManager implements Listener {
 					}
 
 				// McMMO Experience rewards
-				if (McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOExperienceRewards) {
+				if (McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards) {
 					double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
-					int xp = MobHunting.getConfigManager().getMcMMOExperience(fish);
-					Messages.debug("Chance to get McMMO XP (%s<%s)", chance,
+					int level = MobHunting.getConfigManager().getMcMMOLevel(fish);
+					Messages.debug("Chance to get a McMMO Level (%s<%s)", chance,
 							MobHunting.getConfigManager().getMcMMOChance(fish));
 					if (chance < MobHunting.getConfigManager().getMcMMOChance(fish)) {
-						McMMOCompat.addXP(player, "fishing", xp, "UNKNOWN");
-						Messages.debug("%s was rewarded with %s McMMO fishing XP", player.getName(), xp);
-						player.sendMessage(Messages.getString("mobhunting.mcmmo.fishing_xp", "mcmmo_xp", xp));
+						McMMOCompat.addLevel(player, SkillType.FISHING.getName(), level);
+						Messages.debug("%s was rewarded with %s McMMO level for Fishing", player.getName(), level);
+						player.sendMessage(Messages.getString("mobhunting.mcmmo.fishing_level", "mcmmo_level", level));
 					}
 				}
 

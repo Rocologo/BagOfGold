@@ -267,7 +267,7 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nIntegration to McMMO"
 						+ "\n########################################################################"
 						+ "\nThis section only relevant if you use McMMO."
-						+ "\nHere you configure if the player will get McMMO Expirence for MobHunting kills and"
+						+ "\nHere you configure if the player will get McMMO Levels for MobHunting kills and"
 						+ "\nand the chance to get the xp.");
 
 		setCategoryComment("plugins",
@@ -1724,8 +1724,8 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/mcmmo.2445/")
 	public boolean disableIntegrationMcMMO = false;
 
-	@ConfigField(name = "enable-mcmmo-experience-rewards", category = "mcmmo", comment = "Set 'enable-mcmmo-expirience-rewards: true' to let the players get Exprience as a MobHunting reward.")
-	public boolean enableMcMMOExperienceRewards = false;
+	@ConfigField(name = "enable-mcmmo-level-rewards", category = "mcmmo", comment = "Set 'enable-mcmmo-level-rewards: true' to let the players get Level as a MobHunting reward.")
+	public boolean enableMcMMOLevelRewards = false;
 
 	@ConfigField(name = "bat-mcmmo-skillreward-amount", category = "mcmmo")
 	public String batMcMMOSkillRewardAmount = "1";
@@ -3456,7 +3456,7 @@ public class ConfigManager extends AutoConfig {
 			return Integer.valueOf(str);
 	}
 
-	public int getMcMMOExperience(Entity killed) {
+	public int getMcMMOLevel(Entity killed) {
 		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))

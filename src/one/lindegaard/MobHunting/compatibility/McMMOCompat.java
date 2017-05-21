@@ -36,8 +36,8 @@ public class McMMOCompat implements Listener {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with McMMO ("
 						+ getMcMmoAPI().getDescription().getVersion() + ")");
-				Bukkit.getLogger().info("[MobHunting] McMMO XP is "
-						+ (MobHunting.getConfigManager().enableMcMMOExperienceRewards ? "enabled" : "disabled"));
+				Bukkit.getLogger().info("[MobHunting] McMMO XP rewards is "
+						+ (MobHunting.getConfigManager().enableMcMMOLevelRewards ? "enabled" : "disabled"));
 				supported = true;
 			} else {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
@@ -76,6 +76,10 @@ public class McMMOCompat implements Listener {
 
 	public static void addXP(Player player, String skillType, int XP, String xpGainReason) {
 		ExperienceAPI.addXP(player, skillType, XP, xpGainReason);
+	}
+
+	public static void addLevel(Player player, String skillType, int levels) {
+		ExperienceAPI.addLevel(player, skillType, levels);
 	}
 
 	// **************************************************************************

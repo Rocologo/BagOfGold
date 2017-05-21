@@ -55,6 +55,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.datatypes.skills.XPGainReason;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
@@ -938,8 +939,7 @@ public class MobHuntingManager implements Listener {
 		// MobHunting is Disabled in World
 		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getEntity().getWorld())) {
 			if (WorldGuardCompat.isSupported()) {
-				if ((// killer != null || MyPetCompat.isMyPet(killer)) &&
-				!CitizensCompat.isNPC(killer))) {
+				if (!CitizensCompat.isNPC(killer)) {
 					if (WorldGuardHelper.isAllowedByWorldGuard(killer, killed, WorldGuardHelper.getMobHuntingFlag(),
 							false)) {
 						Messages.debug("KillBlocked %s: Mobhunting disabled in world '%s'",
@@ -1036,7 +1036,6 @@ public class MobHuntingManager implements Listener {
 		// BattleArena
 		// Player is in Godmode or Vanished
 		// Player permission to Hunt (and get rewards)
-		// if (killer != null) {
 		if (MobArenaCompat.isPlayingMobArena(getPlayer(killer, killed))
 				&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 			Messages.debug("KillBlocked: %s is currently playing MobArena.", getPlayer(killer, killed).getName());
@@ -1081,7 +1080,6 @@ public class MobHuntingManager implements Listener {
 			Messages.debug("======================= kill ended (25)=====================");
 			return;
 		}
-		// }
 
 		// Mob Spawner / Egg / Egg Dispenser detection
 		if (event.getEntity().hasMetadata(SPAWNER_BLOCKED)) {
@@ -1143,16 +1141,16 @@ public class MobHuntingManager implements Listener {
 
 			if (System.currentTimeMillis() - info.getTime() > MobHunting.getConfigManager().assistTimeout * 1000)
 				info = null;
-			else if (killer == null)
-				killer = info.getAttacker();
+			// else if (killer == null)
+			// killer = info.getAttacker();
 		}
 		if (info == null) {
 			info = new DamageInformation();
 			info.setTime(System.currentTimeMillis());
 			info.setLastAttackTime(info.getTime());
 			if (killer != null) {
-				info.setAttacker(killer);
-				info.setAttackerPosition(killer.getLocation());
+				info.setAttacker(getPlayer(killer, killed));
+				info.setAttackerPosition(getPlayer(killer, killed).getLocation());
 			}
 			info.setHasUsedWeapon(true);
 		}
@@ -1454,7 +1452,7 @@ public class MobHuntingManager implements Listener {
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, getPlayer(killer, killed));
 			Bukkit.getPluginManager().callEvent(event2);
 			if (event2.isCancelled()) {
-				Messages.debug("KillBlocked %s: MobHuntKillEvent was cancelled", (getPlayer(killer, killed)).getName());
+				Messages.debug("KillBlocked %s: MobHuntKillEvent was cancelled", getPlayer(killer, killed).getName());
 				Messages.debug("======================= kill ended (35)=====================");
 				return;
 			}
@@ -1533,37 +1531,37 @@ public class MobHuntingManager implements Listener {
 				}
 			}
 
-			// Record Hunt Achievement is done using SeventhHuntAchievement.java (onKillCompleted)
-			
+			// Record Hunt Achievement is done using SeventhHuntAchievement.java
+			// (onKillCompleted)
+
 			// Record the kill in the Database
 			Messages.debug("RecordKill: %s killed a %s (%s) Cash=%s", getPlayer(killer, killed).getName(),
 					mob.getName(), mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
 			MobHunting.getDataStoreManager().recordKill(getPlayer(killer, killed), mob,
 					killed.hasMetadata("MH:hasBonus"), cash);
 
-			// McMMO Experience rewards
-			if (killer != null && McMMOCompat.isSupported()
-					&& MobHunting.getConfigManager().enableMcMMOExperienceRewards) {
+			// McMMO Level rewards
+			if (killer != null && McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards) {
 				double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
-				Messages.debug("Chance to get McMMO XP (%s<%s)", chance,
+				Messages.debug("Chance to get a McMMO Level (%s<%s)", chance,
 						MobHunting.getConfigManager().getMcMMOChance(killed));
 
-				String skilltype = "";
+				SkillType skilltype = null;
 				if (Misc.isAxe(info.getWeapon()))
-					skilltype = "axes";
+					skilltype = SkillType.AXES;
 				else if (Misc.isSword(info.getWeapon()))
-					skilltype = "swords";
+					skilltype = SkillType.SWORDS;
 				else if (Misc.isBow(info.getWeapon()))
-					skilltype = "archery";
+					skilltype = SkillType.ARCHERY;
 				else if (Misc.isUnarmed(info.getWeapon()))
-					skilltype = "unarmed";
+					skilltype = SkillType.UNARMED;
 
 				if (chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
-					int xp = MobHunting.getConfigManager().getMcMMOExperience(killed);
-					McMMOCompat.addXP(killer, skilltype, xp, "UNKNOWN");
-					Messages.debug("%s was rewarded with %s McMMO %s XP", killer.getName(),
-							MobHunting.getConfigManager().getMcMMOExperience(killed), skilltype);
-					killer.sendMessage(Messages.getString("mobhunting.mcmmo.skilltype_xp", "mcmmo_xp", xp,
+					int level = MobHunting.getConfigManager().getMcMMOLevel(killed);
+					McMMOCompat.addLevel(killer, skilltype.getName(), level);
+					Messages.debug("%s was rewarded with %s McMMO Levels for %s", killer.getName(),
+							MobHunting.getConfigManager().getMcMMOLevel(killed), skilltype.getName());
+					killer.sendMessage(Messages.getString("mobhunting.mcmmo.skilltype_level", "mcmmo_level", level,
 							"skilltype", skilltype));
 				}
 			}
