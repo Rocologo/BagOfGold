@@ -24,7 +24,7 @@ import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 import one.lindegaard.MobHunting.npc.MasterMobHunterTrait;
-import one.lindegaard.MobHunting.rewards.MobRewardData;
+import one.lindegaard.MobHunting.rewards.RewardData;
 import one.lindegaard.MobHunting.util.Misc;
 
 import org.bukkit.Bukkit;
@@ -41,7 +41,7 @@ public class CitizensCompat implements Listener {
 
 	private static boolean supported = false;
 	private static CitizensPlugin citizensAPI;
-	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
+	private static HashMap<String, RewardData> mMobRewardData = new HashMap<String, RewardData>();
 	private static File fileMobRewardData = new File(MobHunting.getInstance().getDataFolder(), "citizens-rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_CITIZENS = "MH:CITIZENS";
@@ -97,7 +97,7 @@ public class CitizensCompat implements Listener {
 			for (String key : config.getKeys(false)) {
 				if (isNPC(Integer.valueOf(key))) {
 					ConfigurationSection section = config.getConfigurationSection(key);
-					MobRewardData mrd = new MobRewardData();
+					RewardData mrd = new RewardData();
 					mrd.read(section);
 					mMobRewardData.put(key, mrd);
 					MobHunting.getStoreManager().insertCitizensMobs(key);
@@ -227,7 +227,7 @@ public class CitizensCompat implements Listener {
 		return false;
 	}
 
-	public static HashMap<String, MobRewardData> getMobRewardData() {
+	public static HashMap<String, RewardData> getMobRewardData() {
 		return mMobRewardData;
 	}
 
@@ -247,7 +247,7 @@ public class CitizensCompat implements Listener {
 				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					mMobRewardData.put(String.valueOf(npc.getId()),
-							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "10",
+							new RewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "10",
 									"give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
@@ -293,7 +293,7 @@ public class CitizensCompat implements Listener {
 					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
 					// Update Reward data in memory
 					mMobRewardData.put(String.valueOf(npc.getId()),
-							new MobRewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
+							new RewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
 									"give {player} iron_sword 1", "You got an Iron sword.", 0, 1, 0.02));
 					// Save Reward Data to disk
 					saveCitizensData(String.valueOf(npc.getId()));

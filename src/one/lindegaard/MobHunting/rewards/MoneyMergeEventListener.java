@@ -24,30 +24,29 @@ public class MoneyMergeEventListener implements Listener {
 
 		Item item1 = event.getEntity();
 		Item item2 = event.getTarget();
-		//ItemStack is1 = item1.getItemStack();
 		ItemStack is2 = item2.getItemStack();
-		if (HiddenRewardData.hasHiddenRewardData(item1) && HiddenRewardData.hasHiddenRewardData(item2)) {
-			HiddenRewardData hiddenRewardData1 = HiddenRewardData.getHiddenRewardData(item1);
-			HiddenRewardData hiddenRewardData2 = HiddenRewardData.getHiddenRewardData(item2);
-			if (hiddenRewardData1.getRewardUUID().equals(hiddenRewardData2.getRewardUUID())
-					&& (hiddenRewardData1.isBagOfGoldReward() || hiddenRewardData1.isItemReward())) {
-				if (hiddenRewardData1.getMoney() + hiddenRewardData2.getMoney() != 0) {
-					hiddenRewardData2.setMoney(hiddenRewardData1.getMoney() + hiddenRewardData2.getMoney());
+		if (Reward.hasReward(item1) && Reward.hasReward(item2)) {
+			Reward reward1 = Reward.getReward(item1);
+			Reward reward2 = Reward.getReward(item2);
+			if (reward1.getRewardUUID().equals(reward2.getRewardUUID())
+					&& (reward1.isBagOfGoldReward() || reward1.isItemReward())) {
+				if (reward1.getMoney() + reward2.getMoney() != 0) {
+					reward2.setMoney(reward1.getMoney() + reward2.getMoney());
 					ItemMeta im = is2.getItemMeta();
 					is2.setItemMeta(im);
 					is2.setAmount(0);
 					item2.setItemStack(is2);
-					String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase(
-							"ITEM") ? MobHunting.getRewardManager().format(hiddenRewardData2.getMoney())
-									: hiddenRewardData2.getDisplayname() + "("
-											+ MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()) + ")";
+					String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
+							.equalsIgnoreCase("ITEM") ? MobHunting.getRewardManager().format(reward2.getMoney())
+									: reward2.getDisplayname() + "("
+											+ MobHunting.getRewardManager().format(reward2.getMoney()) + ")";
 					item2.setCustomName(
 							ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 					item2.setCustomNameVisible(true);
-					item2.setMetadata(RewardManager.MH_HIDDEN_REWARD_DATA,
-							new FixedMetadataValue(MobHunting.getInstance(), new HiddenRewardData(hiddenRewardData2)));
+					item2.setMetadata(RewardManager.MH_REWARD_DATA,
+							new FixedMetadataValue(MobHunting.getInstance(), new Reward(reward2)));
 					Messages.debug("Rewards merged - new value=%s",
-							MobHunting.getRewardManager().format(hiddenRewardData2.getMoney()));
+							MobHunting.getRewardManager().format(reward2.getMoney()));
 				}
 				if (RewardManager.getDroppedMoney().containsKey(item1.getEntityId()))
 					RewardManager.getDroppedMoney().remove(item1.getEntityId());

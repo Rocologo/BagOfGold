@@ -1,7 +1,8 @@
 V4.9.2
-* New feature. Added a chance to get McMMO experience XP when killing a Mob. McMMO section added in config.yml
+* New feature. Added a chance to get McMMO experience XP when killing a Mob. McMMO section added in config.yml. Notice: this must be enabled in config.yml before it works. enable-mcmmo-experience-rewards: true 
 * Improved MobHuntingAPI.
-* Ticket 231. Fishing achievements has actually never worked, but this is fixed now. (https://github.com/Rocologo/MobHunting/issues/231) 
+* Ticket 231. Fishing achievements has actually never worked, but this is fixed now. (https://github.com/Rocologo/MobHunting/issues/231)
+* HiddenRewardData re-factored to Reward.  
 V4.9.1
 * New feature: Added a [BagOfGold] sign, which let the players easier sell and buy bags of gold. New permissions added: mobhunting.bagofgoldsign.use, mobhunting.bagofgoldsign.create, mobhunting.bagofgoldsign.destroy
 V4.9.0

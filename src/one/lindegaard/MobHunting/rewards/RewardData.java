@@ -8,7 +8,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 
-public class MobRewardData {
+public class RewardData {
 	private MobPlugin mobPluginName;
 	private String mobType = "";
 	private String mobName = "";
@@ -18,15 +18,15 @@ public class MobRewardData {
 	private int propability = 100;
 	private int propabilityBase = 100;
 	private double chance = 1;
-
+	// McMMO
 	private double mcMMOSkillRewardChance = 0.02;
 	private int mcMMOSkillRewardAmount = 1;
 
-	public MobRewardData() {
+	public RewardData() {
 		super();
 	}
 
-	public MobRewardData(MobPlugin pluginName, String mobType, String mobName, String rewardPrize, String cmd,
+	public RewardData(MobPlugin pluginName, String mobType, String mobName, String rewardPrize, String cmd,
 			String cmdDesc, double chance, int mcmmo_xp, double mcmmo_chance) {
 		this.mobPluginName = pluginName;
 		this.mobType = mobType;

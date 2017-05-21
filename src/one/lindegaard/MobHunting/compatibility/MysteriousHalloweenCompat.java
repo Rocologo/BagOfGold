@@ -21,7 +21,7 @@ import org.bukkit.plugin.Plugin;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
-import one.lindegaard.MobHunting.rewards.MobRewardData;
+import one.lindegaard.MobHunting.rewards.RewardData;
 import me.F_o_F_1092.MysteriousHalloween.MysteriousHalloweenAPI;
 import me.F_o_F_1092.MysteriousHalloween.MysteriousHalloweenAPI.MobType;
 
@@ -29,7 +29,7 @@ public class MysteriousHalloweenCompat implements Listener {
 
 	private static Plugin mPlugin;
 	private static boolean supported = false;
-	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
+	private static HashMap<String, RewardData> mMobRewardData = new HashMap<String, RewardData>();
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "MysteriousHalloween-rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_MYSTERIOUSHALLOWEEN = "MH:MysteriousHalloween";
@@ -104,7 +104,7 @@ public class MysteriousHalloweenCompat implements Listener {
 		return null;
 	}
 
-	public static HashMap<String, MobRewardData> getMobRewardData() {
+	public static HashMap<String, RewardData> getMobRewardData() {
 		return mMobRewardData;
 	}
 
@@ -116,7 +116,7 @@ public class MysteriousHalloweenCompat implements Listener {
 			if (!file.exists()) {
 				for (MobType monster : MysteriousHalloweenAPI.getMobTypes()) {
 					mMobRewardData.put(monster.name(),
-							new MobRewardData(MobPlugin.MysteriousHalloween, monster.name(),
+							new RewardData(MobPlugin.MysteriousHalloween, monster.name(),
 									MysteriousHalloweenAPI.getMobTypeName(monster), "40:60",
 									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 					saveMysteriousHalloweenMobsData(mMobRewardData.get(monster.name()).getMobType());
@@ -127,7 +127,7 @@ public class MysteriousHalloweenCompat implements Listener {
 			config.load(file);
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config.getConfigurationSection(key);
-				MobRewardData mob = new MobRewardData();
+				RewardData mob = new RewardData();
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);
@@ -150,7 +150,7 @@ public class MysteriousHalloweenCompat implements Listener {
 
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
-			MobRewardData mob = new MobRewardData();
+			RewardData mob = new RewardData();
 			mob.read(section);
 			mob.setMobType(key);
 			mMobRewardData.put(key, mob);
@@ -217,7 +217,7 @@ public class MysteriousHalloweenCompat implements Listener {
 			if (mMobRewardData != null && !mMobRewardData.containsKey(monster.name())) {
 				Messages.debug("New MysteriousHalloween mob found=%s (%s)", monster.name(), monster.toString());
 				mMobRewardData.put(monster.name(),
-						new MobRewardData(MobPlugin.MysteriousHalloween, monster.name(),
+						new RewardData(MobPlugin.MysteriousHalloween, monster.name(),
 								MysteriousHalloweenAPI.getMobTypeName(monster), "40:60",
 								"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 				saveMysteriousHalloweenMobsData(monster.name());

@@ -18,13 +18,13 @@ import org.bukkit.plugin.Plugin;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
-import one.lindegaard.MobHunting.rewards.MobRewardData;
+import one.lindegaard.MobHunting.rewards.RewardData;
 
 public class MythicMobsCompat {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
-	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
+	private static HashMap<String, RewardData> mMobRewardData = new HashMap<String, RewardData>();
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "mythicmobs-rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
 
@@ -110,13 +110,13 @@ public class MythicMobsCompat {
 	public static String getMythicMobType(Entity killed) {
 		List<MetadataValue> data = killed.getMetadata(MythicMobsCompat.MH_MYTHICMOBS);
 		for (MetadataValue mdv : data) {
-			if (mdv.value() instanceof MobRewardData)
-				return ((MobRewardData) mdv.value()).getMobType();
+			if (mdv.value() instanceof RewardData)
+				return ((RewardData) mdv.value()).getMobType();
 		}
 		return null;
 	}
 
-	public static HashMap<String, MobRewardData> getMobRewardData() {
+	public static HashMap<String, RewardData> getMobRewardData() {
 		return mMobRewardData;
 	}
 
@@ -134,7 +134,7 @@ public class MythicMobsCompat {
 			for (String key : config.getKeys(false)) {
 				ConfigurationSection section = config.getConfigurationSection(key);
 				if (isMythicMob(key)) {
-					MobRewardData mob = new MobRewardData();
+					RewardData mob = new RewardData();
 					mob.read(section);
 					mob.setMobType(key);
 					mMobRewardData.put(key, mob);
@@ -161,7 +161,7 @@ public class MythicMobsCompat {
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
 			if (isMythicMob(key)) {
-				MobRewardData mob = new MobRewardData();
+				RewardData mob = new RewardData();
 				mob.read(section);
 				mob.setMobType(key);
 				mMobRewardData.put(key, mob);

@@ -26,7 +26,7 @@ import de.hellfirepvp.api.event.CustomMobSpawnEvent.SpawnReason;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
-import one.lindegaard.MobHunting.rewards.MobRewardData;
+import one.lindegaard.MobHunting.rewards.RewardData;
 
 public class CustomMobsCompat implements Listener {
 
@@ -34,7 +34,7 @@ public class CustomMobsCompat implements Listener {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
-	private static HashMap<String, MobRewardData> mMobRewardData = new HashMap<String, MobRewardData>();
+	private static HashMap<String, RewardData> mMobRewardData = new HashMap<String, RewardData>();
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "custommobs-rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_CUSTOMMOBS = "MH:CUSTOMMOBS";
@@ -69,14 +69,14 @@ public class CustomMobsCompat implements Listener {
 			for (String key : CustomMobsAPI.getKnownMobTypes()) {
 				if (config.contains(key)) {
 					ConfigurationSection section = config.getConfigurationSection(key);
-					MobRewardData mob = new MobRewardData();
+					RewardData mob = new RewardData();
 					if (isCustomMob(key)) {
 						mob.read(section);
 						mob.setMobType(key);
 						if (mob.getMobName() == null)
 							mob.setMobName(mob.getMobType());
 					} else
-						mob = new MobRewardData(MobPlugin.CustomMobs, CustomMobsAPI.getCustomMob(key).getName(),
+						mob = new RewardData(MobPlugin.CustomMobs, CustomMobsAPI.getCustomMob(key).getName(),
 								CustomMobsAPI.getCustomMob(key).getDisplayName(), "10",
 								"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02);
 
@@ -100,7 +100,7 @@ public class CustomMobsCompat implements Listener {
 			config.load(file);
 			ConfigurationSection section = config.getConfigurationSection(key);
 			if (isCustomMob(key)) {
-				MobRewardData mob = new MobRewardData();
+				RewardData mob = new RewardData();
 				mob.read(section);
 				mob.setMobType(key);
 				if (mob.getMobName() == null)
@@ -181,10 +181,10 @@ public class CustomMobsCompat implements Listener {
 	public static String getCustomMobType(Entity killed) {
 		List<MetadataValue> data = killed.getMetadata(MH_CUSTOMMOBS);
 		MetadataValue value = data.get(0);
-		return ((MobRewardData) value.value()).getMobType();
+		return ((RewardData) value.value()).getMobType();
 	}
 
-	public static HashMap<String, MobRewardData> getMobRewardData() {
+	public static HashMap<String, RewardData> getMobRewardData() {
 		return mMobRewardData;
 	}
 
@@ -227,7 +227,7 @@ public class CustomMobsCompat implements Listener {
 		if (mMobRewardData != null && !mMobRewardData.containsKey(mob.getName())) {
 			Messages.debug("New CustomMobName found=%s,%s", mob.getName(), mob.getDisplayName());
 			String name = mob.getDisplayName() == null ? mob.getName() : mob.getDisplayName();
-			mMobRewardData.put(mob.getName(), new MobRewardData(MobPlugin.CustomMobs, mob.getName(), name, "10",
+			mMobRewardData.put(mob.getName(), new RewardData(MobPlugin.CustomMobs, mob.getName(), name, "10",
 					"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 			saveCustomMobsData(mob.getName());
 			MobHunting.getStoreManager().insertCustomMobs(mob.getName());

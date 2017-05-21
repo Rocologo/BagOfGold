@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.MobHuntingManager;
-import one.lindegaard.MobHunting.rewards.HiddenRewardData;
+import one.lindegaard.MobHunting.rewards.Reward;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 
 public class MobHuntingAPI {
@@ -49,34 +49,34 @@ public class MobHuntingAPI {
 	}
 
 	public static boolean isMobHuntingReward(ItemStack itemStack) {
-		return HiddenRewardData.hasHiddenRewardData(itemStack);
+		return Reward.hasReward(itemStack);
 	}
 
 	public static boolean isMobHuntingReward(Block block) {
-		return HiddenRewardData.hasHiddenRewardData(block);
+		return Reward.hasReward(block);
 	}
 
 	public static boolean isBagOfGoldReward(ItemStack itemStack) {
-		if (HiddenRewardData.hasHiddenRewardData(itemStack))
-			return HiddenRewardData.getHiddenRewardData(itemStack).isBagOfGoldReward();
+		if (Reward.hasReward(itemStack))
+			return Reward.getReward(itemStack).isBagOfGoldReward();
 		return false;
 	}
 
 	public boolean isKilledHeadReward(ItemStack itemStack) {
-		if (HiddenRewardData.hasHiddenRewardData(itemStack))
-			return HiddenRewardData.getHiddenRewardData(itemStack).isKilledHeadReward();
+		if (Reward.hasReward(itemStack))
+			return Reward.getReward(itemStack).isKilledHeadReward();
 		return false;
 	}
 
 	public boolean isKillerHeadReward(ItemStack itemStack) {
-		if (HiddenRewardData.hasHiddenRewardData(itemStack))
-			return HiddenRewardData.getHiddenRewardData(itemStack).isKillerHeadReward();
+		if (Reward.hasReward(itemStack))
+			return Reward.getReward(itemStack).isKillerHeadReward();
 		return false;
 	}
 
 	public boolean isItemReward(ItemStack itemStack) {
-		if (HiddenRewardData.hasHiddenRewardData(itemStack))
-			return HiddenRewardData.getHiddenRewardData(itemStack).isItemReward();
+		if (Reward.hasReward(itemStack))
+			return Reward.getReward(itemStack).isItemReward();
 		return false;
 	}
 

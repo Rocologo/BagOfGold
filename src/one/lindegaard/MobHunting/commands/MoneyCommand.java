@@ -17,7 +17,7 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.BossShopCompat;
 import one.lindegaard.MobHunting.compatibility.BossShopHelper;
 import one.lindegaard.MobHunting.rewards.CustomItems;
-import one.lindegaard.MobHunting.rewards.HiddenRewardData;
+import one.lindegaard.MobHunting.rewards.Reward;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.util.Misc;
 
@@ -145,8 +145,8 @@ public class MoneyCommand implements ICommand {
 				double sum = 0;
 				for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 					ItemStack is = player.getInventory().getItem(slot);
-					if (HiddenRewardData.hasHiddenRewardData(is)) {
-						HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+					if (Reward.hasReward(is)) {
+						Reward hiddenRewardData = Reward.getReward(is);
 						sum = sum + hiddenRewardData.getMoney();
 					}
 				}
@@ -299,8 +299,8 @@ public class MoneyCommand implements ICommand {
 							double rest = Misc.ceil(Double.valueOf(args[2]));
 							for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 								ItemStack is = player.getInventory().getItem(slot);
-								if (HiddenRewardData.hasHiddenRewardData(is)) {
-									HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+								if (Reward.hasReward(is)) {
+									Reward hiddenRewardData = Reward.getReward(is);
 									double saldo = hiddenRewardData.getMoney();
 									if (saldo >= rest) {
 										hiddenRewardData.setMoney(saldo - rest);
@@ -361,8 +361,8 @@ public class MoneyCommand implements ICommand {
 				Player player = (Player) sender;
 				if (args.length == 1) {
 					ItemStack is = player.getItemInHand();
-					if (HiddenRewardData.hasHiddenRewardData(is)) {
-						HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+					if (Reward.hasReward(is)) {
+						Reward hiddenRewardData = Reward.getReward(is);
 						RewardManager.getEconomy().depositPlayer(player, hiddenRewardData.getMoney());
 						is.setType(Material.AIR);
 						is.setAmount(0);
@@ -378,9 +378,9 @@ public class MoneyCommand implements ICommand {
 					double toBeSold = Misc.ceil(Double.valueOf(args[1]));
 					for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 						ItemStack is = player.getInventory().getItem(slot);
-						if (HiddenRewardData.hasHiddenRewardData(is) && HiddenRewardData.getHiddenRewardData(is)
+						if (Reward.hasReward(is) && Reward.getReward(is)
 								.getRewardUUID().equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
-							HiddenRewardData hiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
+							Reward hiddenRewardData = Reward.getReward(is);
 							double saldo = hiddenRewardData.getMoney();
 							if (saldo >= toBeSold) {
 								hiddenRewardData.setMoney(saldo - toBeSold);

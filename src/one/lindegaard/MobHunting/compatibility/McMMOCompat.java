@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import com.gmail.nossr50.api.ExperienceAPI;
-import com.gmail.nossr50.datatypes.skills.SkillType;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingEvent;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingTreasureEvent;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerMagicHunterEvent;
@@ -37,6 +36,8 @@ public class McMMOCompat implements Listener {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with McMMO ("
 						+ getMcMmoAPI().getDescription().getVersion() + ")");
+				Bukkit.getLogger().info("[MobHunting] McMMO XP is "
+						+ (MobHunting.getConfigManager().enableMcMMOExperienceRewards ? "enabled" : "disabled"));
 				supported = true;
 			} else {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
@@ -74,7 +75,7 @@ public class McMMOCompat implements Listener {
 	}
 
 	public static void addXP(Player player, String skillType, int XP, String xpGainReason) {
-		ExperienceAPI.addModifiedXP(player, skillType, XP, xpGainReason);
+		ExperienceAPI.addXP(player, skillType, XP, xpGainReason);
 	}
 
 	// **************************************************************************

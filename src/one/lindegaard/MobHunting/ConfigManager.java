@@ -11,7 +11,7 @@ import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
-import one.lindegaard.MobHunting.rewards.MobRewardData;
+import one.lindegaard.MobHunting.rewards.RewardData;
 import one.lindegaard.MobHunting.util.AutoConfig;
 import one.lindegaard.MobHunting.util.ConfigField;
 import one.lindegaard.MobHunting.util.Misc;
@@ -1154,186 +1154,193 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Achievement Hunter Levels
 	// #####################################################################################
-	@ConfigField(name = "blaze_level1", category = "achievement_levels")
-	public int blazeLevel1 = 80;
-
-	@ConfigField(name = "parrot_level1", category = "achievement_levels")
-	public int parrotLevel1 = 100;
-
-	@ConfigField(name = "illusioner_level1", category = "achievement_levels")
-	public int illusionerLevel1 = 100;
-
-	@ConfigField(name = "creeper_level1", category = "achievement_levels")
-	public int creeperLevel1 = 100;
-
-	@ConfigField(name = "silverfish_level1", category = "achievement_levels")
-	public int silverfishLevel1 = 100;
-
-	@ConfigField(name = "zombie-pigman_level1", category = "achievement_levels")
-	public int zombiePigmanLevel1 = 100;
-
-	@ConfigField(name = "enderman_level1", category = "achievement_levels")
-	public int endermanLevel1 = 100;;
-
-	@ConfigField(name = "giant_level1", category = "achievement_levels")
-	public int giantLevel1 = 100;
-
-	@ConfigField(name = "skeleton_level1", category = "achievement_levels")
-	public int skeletonLevel1 = 100;
-
-	@ConfigField(name = "wither-skeleton_level1", category = "achievement_levels")
-	public int witherSkeletonLevel1 = 80;
-
-	@ConfigField(name = "spider_level1", category = "achievement_levels")
-	public int spiderLevel1 = 100;
-
-	@ConfigField(name = "cave-spider_level1", category = "achievement_levels")
-	public int caveSpiderLevel1 = 100;
-
-	@ConfigField(name = "witch_level1", category = "achievement_levels")
-	public int witchLevel1 = 80;
-
-	@ConfigField(name = "zombie_level1", category = "achievement_levels")
-	public int zombieLevel1 = 100;
-
-	@ConfigField(name = "ghast_level1", category = "achievement_levels")
-	public int ghastLevel1 = 80;
-
-	@ConfigField(name = "iron-golem_level1", category = "achievement_levels")
-	public int ironGolemLevel1 = 100;
-
-	@ConfigField(name = "magma-cube_level1", category = "achievement_levels")
-	public int magmaCubeLevel1 = 100;
-
-	@ConfigField(name = "endermite_level1", category = "achievement_levels")
-	public int endermiteLevel1 = 100;;
-
-	@ConfigField(name = "guardian_level1", category = "achievement_levels")
-	public int guardianLevel1 = 100;
-
-	@ConfigField(name = "elder_guardian_level1", category = "achievement_levels")
-	public int elderGuardianLevel1 = 50;
-
-	@ConfigField(name = "killerrabbit_level1", category = "achievement_levels")
-	public int killerRabbitLevel1 = 100;
-
-	@ConfigField(name = "slime-base_level1", category = "achievement_levels")
-	public int slimeLevel1 = 100;
-
-	@ConfigField(name = "shulker_level1", category = "achievement_levels")
-	public int shulkerLevel1 = 100;
-
 	@ConfigField(name = "bat_level1", category = "achievement_levels")
 	public int batLevel1 = 100;
 
-	@ConfigField(name = "chicken_level1", category = "achievement_levels")
-	public int chickenLevel1 = 100;
+	@ConfigField(name = "blaze_level1", category = "achievement_levels")
+	public int blazeLevel1 = 80;
 
-	@ConfigField(name = "cow_level1", category = "achievement_levels")
-	public int cowLevel1 = 100;
-
-	@ConfigField(name = "horse_level1", category = "achievement_levels")
-	public int horseLevel1 = 100;
-
-	@ConfigField(name = "mushroom-cow_level1", category = "achievement_levels")
-	public int mushroomCowLevel1 = 100;
-
-	@ConfigField(name = "ocelot_level1", category = "achievement_levels")
-	public int ocelotLevel1 = 100;
-
-	@ConfigField(name = "pig_level1", category = "achievement_levels")
-	public int pigLevel1 = 100;
-
-	@ConfigField(name = "rabbit_level1", category = "achievement_levels")
-	public int rabbitLevel1 = 100;
-
-	@ConfigField(name = "sheep_level1", category = "achievement_levels")
-	public int sheepLevel1 = 100;
-
-	@ConfigField(name = "snowman_level1", category = "achievement_levels")
-	public int snowmanLevel1 = 100;
-
-	@ConfigField(name = "squid_level1", category = "achievement_levels")
-	public int squidLevel1 = 100;
-
-	@ConfigField(name = "villager_level1", category = "achievement_levels")
-	public int villagerLevel1 = 100;
-
-	@ConfigField(name = "wolf_level1", category = "achievement_levels")
-	public int wolfLevel1 = 100;
-
-	@ConfigField(name = "pvpplayer_level1", category = "achievement_levels")
-	public int pvpPlayerLevel1 = 100;
+	@ConfigField(name = "blacksmith_level1", category = "achievement_levels")
+	public int blacksmithLevel1 = 100;
 
 	@ConfigField(name = "bonusmob_level1", category = "achievement_levels")
 	public int bonusMobLevel1 = 20;
 
-	@ConfigField(name = "polar_bear_level1", category = "achievement_levels")
-	public int polarBearLevel1 = 100;
+	@ConfigField(name = "butcher_level1", category = "achievement_levels")
+	public int butcherLevel1 = 100;
+	@ConfigField(name = "cartographer_level1", category = "achievement_levels")
+	public int cartographerLevel1 = 100;
 
-	@ConfigField(name = "stray_level1", category = "achievement_levels")
-	public int strayLevel1 = 100;
+	@ConfigField(name = "cave-spider_level1", category = "achievement_levels")
+	public int caveSpiderLevel1 = 100;
 
-	@ConfigField(name = "husk_level1", category = "achievement_levels")
-	public int huskLevel1 = 100;
+	@ConfigField(name = "chicken_level1", category = "achievement_levels")
+	public int chickenLevel1 = 100;
 
-	@ConfigField(name = "wither_level1", category = "achievement_levels")
-	public int witherLevel1 = 20;
+	@ConfigField(name = "clownfish_level1", category = "achievement_levels")
+	public int clownfishLevel1 = 100;
+
+	@ConfigField(name = "cow_level1", category = "achievement_levels")
+	public int cowLevel1 = 100;
+
+	@ConfigField(name = "creeper_level1", category = "achievement_levels")
+	public int creeperLevel1 = 100;
+
+	@ConfigField(name = "donkey_level1", category = "achievement_levels")
+	public int donkeyLevel1 = 100;
+
+	@ConfigField(name = "elder_guardian_level1", category = "achievement_levels")
+	public int elderGuardianLevel1 = 50;
 
 	@ConfigField(name = "enderdragon_level1", category = "achievement_levels")
 	public int enderdragonLevel1 = 20;
 
-	@ConfigField(name = "cartographer_level1", category = "achievement_levels")
-	public int cartographerLevel1 = 100;
+	@ConfigField(name = "enderman_level1", category = "achievement_levels")
+	public int endermanLevel1 = 100;
 
-	@ConfigField(name = "nitwit_level1", category = "achievement_levels")
-	public int nitwitLevel1 = 100;
-
-	@ConfigField(name = "farmer_level1", category = "achievement_levels")
-	public int farmerLevel1 = 100;
-	@ConfigField(name = "librarian_level1", category = "achievement_levels")
-	public int librarianLevel1 = 100;
-	@ConfigField(name = "priest_level1", category = "achievement_levels")
-	public int priestLevel1 = 100;
-	@ConfigField(name = "butcher_level1", category = "achievement_levels")
-	public int butcherLevel1 = 100;
-	@ConfigField(name = "blacksmith_level1", category = "achievement_levels")
-	public int blacksmithLevel1 = 100;
-	@ConfigField(name = "donkey_level1", category = "achievement_levels")
-	public int donkeyLevel1 = 100;
+	@ConfigField(name = "endermite_level1", category = "achievement_levels")
+	public int endermiteLevel1 = 100;
 
 	@ConfigField(name = "evoker_level1", category = "achievement_levels")
 	public int evokerLevel1 = 50;
 
+	@ConfigField(name = "farmer_level1", category = "achievement_levels")
+	public int farmerLevel1 = 100;
+
+	@ConfigField(name = "ghast_level1", category = "achievement_levels")
+	public int ghastLevel1 = 80;
+
+	@ConfigField(name = "giant_level1", category = "achievement_levels")
+	public int giantLevel1 = 100;
+
+	@ConfigField(name = "guardian_level1", category = "achievement_levels")
+	public int guardianLevel1 = 100;
+
+	@ConfigField(name = "horse_level1", category = "achievement_levels")
+	public int horseLevel1 = 100;
+
+	@ConfigField(name = "husk_level1", category = "achievement_levels")
+	public int huskLevel1 = 100;
+
+	@ConfigField(name = "illusioner_level1", category = "achievement_levels")
+	public int illusionerLevel1 = 100;
+
+	@ConfigField(name = "iron-golem_level1", category = "achievement_levels")
+	public int ironGolemLevel1 = 100;
+
+	@ConfigField(name = "killerrabbit_level1", category = "achievement_levels")
+	public int killerRabbitLevel1 = 100;
+
+	@ConfigField(name = "librarian_level1", category = "achievement_levels")
+	public int librarianLevel1 = 100;
+
 	@ConfigField(name = "llama_level1", category = "achievement_levels")
 	public int llamaLevel1 = 100;
+
+	@ConfigField(name = "magma-cube_level1", category = "achievement_levels")
+	public int magmaCubeLevel1 = 100;
 
 	@ConfigField(name = "mule_level1", category = "achievement_levels")
 	public int muleLevel1 = 100;
 
-	@ConfigField(name = "vex_level1", category = "achievement_levels")
-	public int vexLevel1 = 100;
+	@ConfigField(name = "mushroom-cow_level1", category = "achievement_levels")
+	public int mushroomCowLevel1 = 100;
 
-	@ConfigField(name = "vindicator_level1", category = "achievement_levels")
-	public int vindicatorLevel1 = 100;
+	@ConfigField(name = "nitwit_level1", category = "achievement_levels")
+	public int nitwitLevel1 = 100;
 
-	@ConfigField(name = "zombiehorse_level1", category = "achievement_levels")
-	public int zombieHorseLevel1 = 100;
+	@ConfigField(name = "ocelot_level1", category = "achievement_levels")
+	public int ocelotLevel1 = 100;
+
+	@ConfigField(name = "parrot_level1", category = "achievement_levels")
+	public int parrotLevel1 = 100;
+
+	@ConfigField(name = "pig_level1", category = "achievement_levels")
+	public int pigLevel1 = 100;
+
+	@ConfigField(name = "polar_bear_level1", category = "achievement_levels")
+	public int polarBearLevel1 = 100;
+
+	@ConfigField(name = "priest_level1", category = "achievement_levels")
+	public int priestLevel1 = 100;
+
+	@ConfigField(name = "pvpplayer_level1", category = "achievement_levels")
+	public int pvpPlayerLevel1 = 100;
+
+	@ConfigField(name = "pufferfish_level1", category = "achievement_levels")
+	public int pufferfishLevel1 = 100;
+
+	@ConfigField(name = "rabbit_level1", category = "achievement_levels")
+	public int rabbitLevel1 = 100;
+
+	@ConfigField(name = "rawfish_level1", category = "achievement_levels")
+	public int rawfishLevel1 = 100;
+
+	@ConfigField(name = "rawsalmon_level1", category = "achievement_levels")
+	public int rawsalmonLevel1 = 100;
+
+	@ConfigField(name = "sheep_level1", category = "achievement_levels")
+	public int sheepLevel1 = 100;
+
+	@ConfigField(name = "shulker_level1", category = "achievement_levels")
+	public int shulkerLevel1 = 100;
+
+	@ConfigField(name = "silverfish_level1", category = "achievement_levels")
+	public int silverfishLevel1 = 100;
+
+	@ConfigField(name = "skeleton_level1", category = "achievement_levels")
+	public int skeletonLevel1 = 100;
 
 	@ConfigField(name = "skeletonhorse_level1", category = "achievement_levels")
 	public int skeletonHorseLevel1 = 100;
 
+	@ConfigField(name = "slime-base_level1", category = "achievement_levels")
+	public int slimeLevel1 = 100;
+
+	@ConfigField(name = "snowman_level1", category = "achievement_levels")
+	public int snowmanLevel1 = 100;
+
+	@ConfigField(name = "spider_level1", category = "achievement_levels")
+	public int spiderLevel1 = 100;
+
+	@ConfigField(name = "squid_level1", category = "achievement_levels")
+	public int squidLevel1 = 100;
+
+	@ConfigField(name = "stray_level1", category = "achievement_levels")
+	public int strayLevel1 = 100;
+
+	@ConfigField(name = "vex_level1", category = "achievement_levels")
+	public int vexLevel1 = 100;
+
+	@ConfigField(name = "villager_level1", category = "achievement_levels")
+	public int villagerLevel1 = 100;
+
+	@ConfigField(name = "vindicator_level1", category = "achievement_levels")
+	public int vindicatorLevel1 = 100;
+
+	@ConfigField(name = "witch_level1", category = "achievement_levels")
+	public int witchLevel1 = 80;
+
+	@ConfigField(name = "wither_level1", category = "achievement_levels")
+	public int witherLevel1 = 20;
+
+	@ConfigField(name = "wither-skeleton_level1", category = "achievement_levels")
+	public int witherSkeletonLevel1 = 80;
+
+	@ConfigField(name = "wolf_level1", category = "achievement_levels")
+	public int wolfLevel1 = 100;
+
+	@ConfigField(name = "zombie_level1", category = "achievement_levels")
+	public int zombieLevel1 = 100;
+
+	@ConfigField(name = "zombiehorse_level1", category = "achievement_levels")
+	public int zombieHorseLevel1 = 100;
+
+	@ConfigField(name = "zombie-pigman_level1", category = "achievement_levels")
+	public int zombiePigmanLevel1 = 100;
+
 	@ConfigField(name = "zombie_villager_level1", category = "achievement_levels")
 	public int zombieVillagerLevel1 = 100;
-
-	@ConfigField(name = "rawfish_level1", category = "achievement_levels")
-	public int rawfishLevel1 = 100;
-	@ConfigField(name = "rawsalmon_level1", category = "achievement_levels")
-	public int rawsalmonLevel1 = 100;
-	@ConfigField(name = "clownfish_level1", category = "achievement_levels")
-	public int clownfishLevel1 = 100;
-	@ConfigField(name = "pufferfish_level1", category = "achievement_levels")
-	public int pufferfishLevel1 = 100;
 
 	// #####################################################################################
 	// Assists
@@ -2653,8 +2660,8 @@ public class ConfigManager extends AutoConfig {
 			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 				for (MetadataValue value : data)
-					if (value.value() instanceof MobRewardData)
-						return ((MobRewardData) value.value()).getConsoleRunCommand();
+					if (value.value() instanceof RewardData)
+						return ((RewardData) value.value()).getConsoleRunCommand();
 			} else if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
 				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
 						.getConsoleRunCommand();

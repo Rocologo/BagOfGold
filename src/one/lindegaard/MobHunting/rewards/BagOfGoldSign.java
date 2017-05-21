@@ -53,8 +53,8 @@ public class BagOfGoldSign implements Listener {
 				// SELL BagOfGold Sign
 				if (signType.equalsIgnoreCase(Messages.getString("mobhunting.bagofgoldsign.line2.sell"))) {
 					if (player.getItemInHand().getType().equals(Material.SKULL_ITEM)
-							&& HiddenRewardData.hasHiddenRewardData(player.getItemInHand())) {
-						HiddenRewardData hrd = HiddenRewardData.getHiddenRewardData(player.getItemInHand());
+							&& Reward.hasReward(player.getItemInHand())) {
+						Reward hrd = Reward.getReward(player.getItemInHand());
 						moneyInHand = hrd.getMoney();
 						if (sign.getLine(2).isEmpty() || sign.getLine(2)
 								.equalsIgnoreCase(Messages.getString("mobhunting.bagofgoldsign.line3.everything"))) {
@@ -118,20 +118,20 @@ public class BagOfGoldSign implements Listener {
 						boolean found = false;
 						for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 							ItemStack is = player.getInventory().getItem(slot);
-							if (HiddenRewardData.hasHiddenRewardData(is)) {
-								HiddenRewardData hrd = HiddenRewardData.getHiddenRewardData(is);
+							if (Reward.hasReward(is)) {
+								Reward hrd = Reward.getReward(is);
 								if ((hrd.isBagOfGoldReward() || hrd.isItemReward())
 										&& hrd.getRewardUUID().equals(hrd.getRewardUUID())) {
 									ItemMeta im = is.getItemMeta();
-									HiddenRewardData newHiddenRewardData = HiddenRewardData.getHiddenRewardData(is);
-									newHiddenRewardData.setMoney(newHiddenRewardData.getMoney() + moneyOnSign);
-									im.setLore(newHiddenRewardData.getHiddenLore());
+									Reward newReward = Reward.getReward(is);
+									newReward.setMoney(newReward.getMoney() + moneyOnSign);
+									im.setLore(newReward.getHiddenLore());
 									String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
 											.equalsIgnoreCase("ITEM")
 													? MobHunting.getRewardManager()
-															.format(newHiddenRewardData.getMoney())
-													: newHiddenRewardData.getDisplayname() + "(" + MobHunting
-															.getRewardManager().format(newHiddenRewardData.getMoney())
+															.format(newReward.getMoney())
+													: newReward.getDisplayname() + "(" + MobHunting
+															.getRewardManager().format(newReward.getMoney())
 															+ ")";
 									im.setDisplayName(
 											ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
@@ -141,7 +141,7 @@ public class BagOfGoldSign implements Listener {
 									event.setCancelled(true);
 									Messages.debug("Added %s to item in slot %s, new value is %s",
 											MobHunting.getRewardManager().format(hrd.getMoney()), slot,
-											MobHunting.getRewardManager().format(newHiddenRewardData.getMoney()));
+											MobHunting.getRewardManager().format(newReward.getMoney()));
 									found = true;
 									break;
 								}

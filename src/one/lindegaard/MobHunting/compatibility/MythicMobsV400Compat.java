@@ -14,7 +14,7 @@ import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
-import one.lindegaard.MobHunting.rewards.MobRewardData;
+import one.lindegaard.MobHunting.rewards.RewardData;
 
 public class MythicMobsV400Compat implements Listener {
 
@@ -63,7 +63,7 @@ public class MythicMobsV400Compat implements Listener {
 		if (!MythicMobsCompat.getMobRewardData().containsKey(mobtype)) {
 			Messages.debug("New MythicMobType found=%s (%s)", mobtype, event.getMobType().getDisplayName());
 			MythicMobsCompat.getMobRewardData().put(mobtype,
-					new MobRewardData(MobPlugin.MythicMobs, mobtype, event.getMobType().getDisplayName(), "10",
+					new RewardData(MobPlugin.MythicMobs, mobtype, event.getMobType().getDisplayName(), "10",
 							"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 			MythicMobsCompat.saveMythicMobsData(mobtype);
 			MobHunting.getStoreManager().insertMissingMythicMobs(mobtype);

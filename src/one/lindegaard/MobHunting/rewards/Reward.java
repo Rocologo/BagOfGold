@@ -13,7 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
-public class HiddenRewardData {
+public class Reward {
 
 	private String description = "";;
 	private double money = 0;
@@ -21,28 +21,28 @@ public class HiddenRewardData {
 	private UUID uniqueId;
 	private final static int NUMBER_OF_DATA = 4;
 
-	HiddenRewardData() {
+	Reward() {
 		this.description = "Skull";
 		this.money = 0;
 		this.uuid = UUID.randomUUID();
 		this.uniqueId = UUID.randomUUID();
 	}
 
-	HiddenRewardData(HiddenRewardData hiddenRewardData) {
-		this.description = hiddenRewardData.getDisplayname();
-		this.money = hiddenRewardData.getMoney();
-		this.uuid = hiddenRewardData.getRewardUUID();
-		this.uniqueId = hiddenRewardData.getUniqueUUID();
+	Reward(Reward reward) {
+		this.description = reward.getDisplayname();
+		this.money = reward.getMoney();
+		this.uuid = reward.getRewardUUID();
+		this.uniqueId = reward.getUniqueUUID();
 	}
 
-	HiddenRewardData(String displayName, double money, UUID uuid, UUID uniqueId) {
+	Reward(String displayName, double money, UUID uuid, UUID uniqueId) {
 		this.description = displayName.startsWith("Hidden:") ? displayName.substring(7) : displayName;
 		this.money = money;
 		this.uuid = uuid;
 		this.uniqueId = uniqueId;
 	}
 
-	HiddenRewardData(List<String> lore) {
+	Reward(List<String> lore) {
 		this.description = lore.get(0).startsWith("Hidden:") ? lore.get(0).substring(7) : lore.get(0);
 		this.money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
 		this.uuid = (lore.get(2).startsWith("Hidden:")) ? UUID.fromString(lore.get(2).substring(7))
@@ -54,7 +54,7 @@ public class HiddenRewardData {
 					: UUID.fromString(lore.get(3));
 	}
 
-	public void setHiddenRewardData(List<String> lore) {
+	public void setReward(List<String> lore) {
 		this.description = lore.get(0).startsWith("Hidden:") ? lore.get(0).substring(7) : lore.get(0);
 		this.money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
 		this.uuid = (lore.get(2).startsWith("Hidden:")) ? UUID.fromString(lore.get(2).substring(7))
@@ -66,7 +66,7 @@ public class HiddenRewardData {
 					: UUID.fromString(lore.get(3));
 	}
 
-	public void setHiddenRewardData(String displayName, double money, UUID uuid, UUID uniqueId) {
+	public void setReward(String displayName, double money, UUID uuid, UUID uniqueId) {
 		this.description = (displayName.startsWith("Hidden:")) ? displayName.substring(7) : displayName;
 		this.money = money;
 		this.uuid = uuid;
@@ -173,18 +173,18 @@ public class HiddenRewardData {
 		return uuid.toString().equalsIgnoreCase(RewardManager.MH_REWARD_ITEM_UUID);
 	}
 
-	public static boolean hasHiddenRewardData(Item item) {
-		return item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA) || hasHiddenRewardData(item.getItemStack());
+	public static boolean hasReward(Item item) {
+		return item.hasMetadata(RewardManager.MH_REWARD_DATA) || hasReward(item.getItemStack());
 	}
 
-	public static HiddenRewardData getHiddenRewardData(Item item) {
-		if (item.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA))
-			return (HiddenRewardData) item.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
+	public static Reward getReward(Item item) {
+		if (item.hasMetadata(RewardManager.MH_REWARD_DATA))
+			return (Reward) item.getMetadata(RewardManager.MH_REWARD_DATA).get(0).value();
 		else
-			return getHiddenRewardData(item.getItemStack());
+			return getReward(item.getItemStack());
 	}
 
-	public static boolean hasHiddenRewardData(ItemStack itemStack) {
+	public static boolean hasReward(ItemStack itemStack) {
 		return itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
 				&& itemStack.getItemMeta().getLore().size() == NUMBER_OF_DATA
 				&& (itemStack.getItemMeta().getLore().get(2)
@@ -197,24 +197,24 @@ public class HiddenRewardData {
 								.equals("Hidden:" + RewardManager.MH_REWARD_ITEM_UUID));
 	}
 
-	public static HiddenRewardData getHiddenRewardData(ItemStack itemStack) {
-		return new HiddenRewardData(itemStack.getItemMeta().getLore());
+	public static Reward getReward(ItemStack itemStack) {
+		return new Reward(itemStack.getItemMeta().getLore());
 	}
 
-	public static boolean hasHiddenRewardData(Block block) {
-		return block.getType() == Material.SKULL && block.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA);
+	public static boolean hasReward(Block block) {
+		return block.getType() == Material.SKULL && block.hasMetadata(RewardManager.MH_REWARD_DATA);
 	}
 
-	public static HiddenRewardData getHiddenRewardData(Block block) {
-		return (HiddenRewardData) block.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
+	public static Reward getReward(Block block) {
+		return (Reward) block.getMetadata(RewardManager.MH_REWARD_DATA).get(0).value();
 	}
 
-	public static boolean hasHiddenRewardData(Entity entity) {
-		return entity.hasMetadata(RewardManager.MH_HIDDEN_REWARD_DATA);
+	public static boolean hasReward(Entity entity) {
+		return entity.hasMetadata(RewardManager.MH_REWARD_DATA);
 	}
 
-	public static HiddenRewardData getHiddenRewardData(Entity entity) {
-		return (HiddenRewardData) entity.getMetadata(RewardManager.MH_HIDDEN_REWARD_DATA).get(0).value();
+	public static Reward getReward(Entity entity) {
+		return (Reward) entity.getMetadata(RewardManager.MH_REWARD_DATA).get(0).value();
 	}
 
 }
