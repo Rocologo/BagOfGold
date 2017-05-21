@@ -7,7 +7,7 @@ public class Test {
 	public Test(){
 	}
 
-	MobHuntingAPI mobHuntingAPI;
+	//MobHuntingAPI mobHuntingAPI;
 	
 	/** This Method is only for test using the API
 	 * 
@@ -15,12 +15,12 @@ public class Test {
 	 */
 	public boolean test(Player player){
 	
-	mobHuntingAPI = new MobHuntingAPI();
+	//mobHuntingAPI = new MobHuntingAPI();
 	
 	@SuppressWarnings("unused")
-	int n=mobHuntingAPI.getMobHuntingManager().getOnlinePlayersAmount();
+	int n=MobHuntingAPI.getMobHuntingManager().getOnlinePlayersAmount();
 	
-	return mobHuntingAPI.isMobHuntingEnabled(player);
+	return MobHuntingAPI.isMobHuntingEnabled(player);
 	
 	}
 }

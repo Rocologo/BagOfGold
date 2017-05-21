@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.events.MobHuntFishingEvent;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
@@ -77,7 +78,14 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onKillCompleted(MobHuntKillEvent event) {
-		if (mType.matches(event.getKilledEntity())){
+		if (mType.matches(event.getKilledEntity())) {
+			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(), 1);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onFishingCompleted(MobHuntFishingEvent event) {
+		if (mType.matches(event.getFish())) {
 			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(), 1);
 		}
 	}

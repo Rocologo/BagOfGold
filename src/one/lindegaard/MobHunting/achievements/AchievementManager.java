@@ -491,7 +491,7 @@ public class AchievementManager implements Listener {
 				load(event.getPlayer());
 			}
 		}, (long) 5);
-		
+
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

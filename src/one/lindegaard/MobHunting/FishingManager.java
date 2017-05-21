@@ -166,6 +166,8 @@ public class FishingManager implements Listener {
 					Messages.debug("%s got a penalty (%s)", player.getName(),
 							MobHunting.getRewardManager().format(cash));
 				}
+				
+				// Record Fishing Achievement is done using SeventhHuntAchievement.java (onFishingCompleted)
 
 				// Record the kill in the Database
 				if (player != null) {

@@ -1533,6 +1533,8 @@ public class MobHuntingManager implements Listener {
 				}
 			}
 
+			// Record Hunt Achievement is done using SeventhHuntAchievement.java (onKillCompleted)
+			
 			// Record the kill in the Database
 			Messages.debug("RecordKill: %s killed a %s (%s) Cash=%s", getPlayer(killer, killed).getName(),
 					mob.getName(), mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
