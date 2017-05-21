@@ -225,8 +225,8 @@ public class FishingManager implements Listener {
 				if (McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards) {
 					double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
 					int level = MobHunting.getConfigManager().getMcMMOLevel(fish);
-					Messages.debug("Chance to get a McMMO Level (%s<%s)", chance,
-							MobHunting.getConfigManager().getMcMMOChance(fish));
+					Messages.debug("If %s<%s %s will get a McMMO Level for fishing", chance,
+							MobHunting.getConfigManager().getMcMMOChance(fish), player.getName());
 					if (chance < MobHunting.getConfigManager().getMcMMOChance(fish)) {
 						McMMOCompat.addLevel(player, SkillType.FISHING.getName(), level);
 						Messages.debug("%s was rewarded with %s McMMO level for Fishing", player.getName(), level);

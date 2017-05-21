@@ -1542,9 +1542,6 @@ public class MobHuntingManager implements Listener {
 
 			// McMMO Level rewards
 			if (killer != null && McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards) {
-				double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
-				Messages.debug("Chance to get a McMMO Level (%s<%s)", chance,
-						MobHunting.getConfigManager().getMcMMOChance(killed));
 
 				SkillType skilltype = null;
 				if (Misc.isAxe(info.getWeapon()))
@@ -1556,13 +1553,20 @@ public class MobHuntingManager implements Listener {
 				else if (Misc.isUnarmed(info.getWeapon()))
 					skilltype = SkillType.UNARMED;
 
-				if (skilltype!=null && chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
-					int level = MobHunting.getConfigManager().getMcMMOLevel(killed);
-					McMMOCompat.addLevel(killer, skilltype.getName(), level);
-					Messages.debug("%s was rewarded with %s McMMO Levels for %s", killer.getName(),
-							MobHunting.getConfigManager().getMcMMOLevel(killed), skilltype.getName());
-					killer.sendMessage(Messages.getString("mobhunting.mcmmo.skilltype_level", "mcmmo_level", level,
-							"skilltype", skilltype));
+				if (skilltype != null) {
+					double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
+					Messages.debug("If %s<%s %s will get a McMMO Level for %s", chance,
+							MobHunting.getConfigManager().getMcMMOChance(killed), killer.getName(),
+							skilltype.getName());
+
+					if (chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
+						int level = MobHunting.getConfigManager().getMcMMOLevel(killed);
+						McMMOCompat.addLevel(killer, skilltype.getName(), level);
+						Messages.debug("%s was rewarded with %s McMMO Levels for %s", killer.getName(),
+								MobHunting.getConfigManager().getMcMMOLevel(killed), skilltype.getName());
+						killer.sendMessage(Messages.getString("mobhunting.mcmmo.skilltype_level", "mcmmo_level", level,
+								"skilltype", skilltype));
+					}
 				}
 			}
 
