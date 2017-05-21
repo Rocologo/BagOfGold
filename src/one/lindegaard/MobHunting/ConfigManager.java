@@ -1720,12 +1720,12 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// McMMO integration
 	// #####################################################################################
-	@ConfigField(name = "disable-integration-mcmmo", category = "mcmmo", comment = "Disable integration with McMMO."
+	@ConfigField(name = "disable-integration-mcmmo", category = "mcmmo", comment = "Here you can disable the integration with McMMO."
 			+ "\nhttps://www.spigotmc.org/resources/mcmmo.2445/")
 	public boolean disableIntegrationMcMMO = false;
 
 	@ConfigField(name = "enable-mcmmo-level-rewards", category = "mcmmo", comment = "Set 'enable-mcmmo-level-rewards: true' to let the players get Level as a MobHunting reward.")
-	public boolean enableMcMMOLevelRewards = false;
+	public boolean enableMcMMOLevelRewards = true;
 
 	@ConfigField(name = "bat-mcmmo-skillreward-amount", category = "mcmmo")
 	public String batMcMMOSkillRewardAmount = "1";

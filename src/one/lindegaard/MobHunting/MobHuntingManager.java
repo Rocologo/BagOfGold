@@ -1556,7 +1556,7 @@ public class MobHuntingManager implements Listener {
 				else if (Misc.isUnarmed(info.getWeapon()))
 					skilltype = SkillType.UNARMED;
 
-				if (chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
+				if (skilltype!=null && chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
 					int level = MobHunting.getConfigManager().getMcMMOLevel(killed);
 					McMMOCompat.addLevel(killer, skilltype.getName(), level);
 					Messages.debug("%s was rewarded with %s McMMO Levels for %s", killer.getName(),
