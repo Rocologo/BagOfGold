@@ -7,6 +7,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -219,7 +220,16 @@ public class AchievementManager implements Listener {
 	 * @return a Collection of achievements.
 	 */
 	public Collection<Achievement> getAllAchievements() {
-		return Collections.unmodifiableCollection(mAchievements.values());
+		List<Achievement> list = new ArrayList<Achievement>();
+		list.addAll(mAchievements.values());
+		Comparator<Achievement> comparator = new Comparator<Achievement>() {
+			@Override
+			public int compare(Achievement left, Achievement right) {
+				return left.getID().compareTo(right.getID());
+			}
+		};
+		Collections.sort(list, comparator);
+		return Collections.unmodifiableCollection(list);
 	}
 
 	/**
@@ -530,6 +540,24 @@ public class AchievementManager implements Listener {
 			@Override
 			public void onCompleted(List<Entry<Achievement, Integer>> data) {
 
+				List<Entry<Achievement, Integer>> list = data;
+				Comparator<Entry<Achievement, Integer>> comparator = new Comparator<Entry<Achievement, Integer>>() {
+					@Override
+					public int compare(Entry<Achievement, Integer> left, Entry<Achievement, Integer> right) {
+						String id1 = left.getKey().getID(), id2 = right.getKey().getID();
+						if (id1.startsWith("hunting-level") && id2.startsWith("hunting-level")) {
+							id1 = id1.substring(12, id1.length());
+							id2 = id2.substring(12, id2.length());
+							String[] str1 = id1.split("-");
+							String[] str2 = id2.split("-");
+							return (str1[1] + str1[0]).compareTo(str2[1] + str2[0]);
+						} else
+							return left.getKey().getID().compareTo(right.getKey().getID());
+					}
+				};
+				list.sort(comparator);
+				data = list;
+
 				int outOf = 0;
 
 				for (Achievement achievement : getAllAchievements()) {
@@ -573,26 +601,27 @@ public class AchievementManager implements Listener {
 							lines.add(
 									ChatColor.GRAY + "    " + ChatColor.ITALIC + achievement.getKey().getDescription());
 						} else if (sender instanceof Player)
-							if (self)
-								addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
-										ChatColor.YELLOW + achievement.getKey().getName(),
-										new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-												achievement.getKey().getDescription(), "",
-												Messages.getString(
-														"mobhunting.commands.listachievements.completed.self", "num",
-														ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
-														ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
-							else if (n < 53) {
-								addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
-										ChatColor.YELLOW + achievement.getKey().getName(),
-										new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-												achievement.getKey().getDescription(), "",
-												Messages.getString(
-														"mobhunting.commands.listachievements.completed.other",
-														"player", otherPlayer.getName(), "num",
-														ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
-														ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
-
+							if (n < 53) {
+								if (self)
+									addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
+											ChatColor.YELLOW + achievement.getKey().getName(),
+											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+													achievement.getKey().getDescription(), "",
+													Messages.getString(
+															"mobhunting.commands.listachievements.completed.self",
+															"num", ChatColor.YELLOW + "" + count + ChatColor.GRAY,
+															"max", ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
+								else {
+									addInventoryDetails(achievement.getKey().getSymbol(), inventory, n,
+											ChatColor.YELLOW + achievement.getKey().getName(),
+											new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+													achievement.getKey().getDescription(), "",
+													Messages.getString(
+															"mobhunting.commands.listachievements.completed.other",
+															"player", otherPlayer.getName(), "num",
+															ChatColor.YELLOW + "" + count + ChatColor.GRAY, "max",
+															ChatColor.YELLOW + "" + outOf + ChatColor.GRAY) });
+								}
 								n++;
 							} else {
 								Messages.debug("No room for more Achievements");
@@ -647,6 +676,10 @@ public class AchievementManager implements Listener {
 								if (achievement.getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward) {
 									if (m < 53) {
+										if (achievement instanceof ProgressAchievement)
+											Messages.debug("Ach:%s, %s", achievement.getName(),
+													((ProgressAchievement) achievement).getExtendedMobType()
+															.getCustomHead(1, 0));
 										addInventoryDetails(achievement.getSymbol(), inventory2, m,
 												ChatColor.YELLOW + achievement.getName(),
 												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
@@ -722,10 +755,12 @@ public class AchievementManager implements Listener {
 		if (inv != null && (ChatColor.stripColor(inv.getName()).startsWith("Not started"))) {
 			event.setCancelled(true);
 			Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
+
 				public void run() {
 					player.closeInventory();
 					inventoryMap2.remove(player);
 				}
+
 			});
 		}
 	}

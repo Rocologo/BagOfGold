@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.achievements;
 
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -68,7 +67,7 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public ItemStack getSymbol() {
-		return new ItemStack(Material.DIAMOND_BLOCK);
+		return getExtendedMobType().getCustomHead(7, 0);
 	}
 
 	@Override

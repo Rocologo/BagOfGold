@@ -794,42 +794,45 @@ public enum MinecraftMob {
 		return null;
 	}
 
-	public ItemStack getHead(String name, double money) {
+	public ItemStack getHead(String name, int amount, double money) {
 		ItemStack skull;
 		switch (this) {
 		case Skeleton:
-			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 0);
 			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case WitherSkeleton:
-			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 1);
 			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case Zombie:
-			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 2);
 			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case Creeper:
-			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 4);
 			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case EnderDragon:
-			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 5);
 			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		default:
-			return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), name,
-					mTextureValue, mTextureSignature, money, UUID.randomUUID());
+			ItemStack is = new ItemStack(
+					CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), name,
+							mTextureValue, mTextureSignature, money, UUID.randomUUID()));
+			is.setAmount(amount);
+			return is;
 		}
 		return skull;
 	}
@@ -840,9 +843,11 @@ public enum MinecraftMob {
 	 * 
 	 * @return ItemStack with custom texture.
 	 */
-	public ItemStack getCustomProfileHead(double money) {
-		return CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), mDisplayName,
+	public ItemStack getCustomHead(int amount, double money) {
+		ItemStack is = CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), mDisplayName,
 				mTextureValue, mTextureSignature, money, UUID.fromString(mPlayerUUID));
+		is.setAmount(amount);
+		return is;
 	}
 
 	/**

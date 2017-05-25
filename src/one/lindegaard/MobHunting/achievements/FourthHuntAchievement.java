@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.achievements;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
@@ -16,8 +15,7 @@ public class FourthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.4.name", "mob",
-				mType.getFriendlyName());
+		return Messages.getString("achievements.hunter.4.name", "mob", mType.getFriendlyName());
 	}
 
 	@Override
@@ -27,8 +25,8 @@ public class FourthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("achievements.hunter.4.description", "count",
-				getMaxProgress(), "mob", mType.getFriendlyName());
+		return Messages.getString("achievements.hunter.4.description", "count", getMaxProgress(), "mob",
+				mType.getFriendlyName());
 	}
 
 	@Override
@@ -45,7 +43,7 @@ public class FourthHuntAchievement implements ProgressAchievement {
 	public String inheritFrom() {
 		return "hunting-level3-" + mType.name().toLowerCase();
 	}
-	
+
 	@Override
 	public String nextLevelId() {
 		return "hunting-level5-" + mType.name().toLowerCase();
@@ -60,12 +58,12 @@ public class FourthHuntAchievement implements ProgressAchievement {
 	public String getPrizeCmdDescription() {
 		return MobHunting.getConfigManager().specialHunter4CmdDesc;
 	}
-	
+
 	@Override
 	public ItemStack getSymbol() {
-		return new ItemStack(Material.EMERALD);
+		return getExtendedMobType().getCustomHead(4, 0);
 	}
-	
+
 	@Override
 	public MinecraftMob getExtendedMobType() {
 		return mType;

@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.achievements;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
@@ -44,7 +43,7 @@ public class SecondHuntAchievement implements ProgressAchievement {
 	public String inheritFrom() {
 		return "hunting-level1-" + mType.name().toLowerCase();
 	}
-	
+
 	@Override
 	public String nextLevelId() {
 		return "hunting-level3-" + mType.name().toLowerCase();
@@ -62,9 +61,9 @@ public class SecondHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return new ItemStack(Material.GOLD_INGOT);
+		return getExtendedMobType().getCustomHead(2, 0);
 	}
-	
+
 	@Override
 	public MinecraftMob getExtendedMobType() {
 		return mType;

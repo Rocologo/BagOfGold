@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.achievements;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
@@ -63,7 +62,7 @@ public class SixthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return new ItemStack(Material.ENDER_PEARL);
+		return getExtendedMobType().getCustomHead(6,0);
 	}
 	
 	@Override

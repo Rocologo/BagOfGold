@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.achievements;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
@@ -16,12 +15,12 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.3.name", "mob", mType.getFriendlyName()); 
+		return Messages.getString("achievements.hunter.3.name", "mob", mType.getFriendlyName());
 	}
 
 	@Override
 	public String getID() {
-		return "hunting-level3-" + mType.name().toLowerCase(); 
+		return "hunting-level3-" + mType.name().toLowerCase();
 	}
 
 	@Override
@@ -44,7 +43,7 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 	public String inheritFrom() {
 		return "hunting-level2-" + mType.name().toLowerCase();
 	}
-	
+
 	@Override
 	public String nextLevelId() {
 		return "hunting-level4-" + mType.name().toLowerCase();
@@ -62,9 +61,9 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return new ItemStack(Material.GOLD_INGOT);
+		return getExtendedMobType().getCustomHead(3, 0);
 	}
-	
+
 	@Override
 	public MinecraftMob getExtendedMobType() {
 		return mType;
