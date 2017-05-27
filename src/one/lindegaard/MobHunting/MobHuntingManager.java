@@ -1124,7 +1124,7 @@ public class MobHuntingManager implements Listener {
 
 		// There is no reward and no penalty for this kill
 		if (basic_prize == 0 && MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
-			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player", mob.getName(),
+			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player and is not counted as kill/achievement.", mob.getName(),
 					killed.getEntityId());
 			Messages.learn(getPlayer(killer, killed),
 					Messages.getString("mobhunting.learn.no-reward", "killed", mob.getName()));

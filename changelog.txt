@@ -1,6 +1,8 @@
 V4.9.3
 * Fixed "/mh achivements gui" so its show all completed Achievements. 
-* The Achivements Items is now changed to Mob heads and sorted. 
+* "/mh achievements" does now show three inventories: Completed, Ongoing, Not started.
+* The Achivements Items is now changed to Mob heads and sorted.
+* Errors in the database will be fixed when the player logon.
 V4.9.2
 * New feature. Added a chance to get a McMMO level as a reward when killing a Mob. McMMO section added in config.yml.  
 * Improved MobHuntingAPI.
