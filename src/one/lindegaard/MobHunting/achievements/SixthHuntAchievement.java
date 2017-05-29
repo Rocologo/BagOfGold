@@ -62,7 +62,7 @@ public class SixthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return getExtendedMobType().getCustomHead(6,0);
+		return getExtendedMobType().getCustomHead(mType.getDisplayName(), 6,0);
 	}
 	
 	@Override

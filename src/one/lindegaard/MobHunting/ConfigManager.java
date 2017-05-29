@@ -297,7 +297,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "blaze", category = "mobs")
 	public String blazePrize = "10.0";
 	@ConfigField(name = "blaze-cmd", category = "mobs")
-	public String blazeCmd = "mobhunt head give {player} Blaze Blaze 1 silent|give {player} iron_ingot 1";
+	public String blazeCmd = "mobhunt head give {player} Blaze Blaze 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "blaze-cmd-desc", category = "mobs")
 	public String blazeCmdDesc = "You got a Blaze skull and an Iron ingot.";
 	@ConfigField(name = "blaze-cmd-run-chance", category = "mobs")
@@ -308,7 +308,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "cave-spider", category = "mobs")
 	public String caveSpiderPrize = "10:20";
 	@ConfigField(name = "cave-spider-cmd", category = "mobs")
-	public String caveSpiderCmd = "mobhunt head give {player} Cave_Spider Cave_Spider 1 silent|give {player} iron_ingot 1";
+	public String caveSpiderCmd = "mobhunt head give {player} Cave_Spider Cave_Spider 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "cave-spider-cmd-desc", category = "mobs")
 	public String caveSpiderCmdDesc = "You got a Cave Spider skull and an Iron ingot.";
 	@ConfigField(name = "cave-spider-cmd-run-chance", category = "mobs")
@@ -319,7 +319,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "creeper", category = "mobs")
 	public String creeperPrize = "10.0";
 	@ConfigField(name = "creeper-cmd", category = "mobs")
-	public String creeperCmd = "mobhunt head give {player} Creeper Creeper 1 silent|give {player} iron_ingot 1";
+	public String creeperCmd = "mobhunt head give {player} Creeper Creeper 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "creeper-cmd-desc", category = "mobs")
 	public String creeperCmdDesc = "You got a Creeper skull and an Iron ingot.";
 	@ConfigField(name = "creeper-cmd-run-chance", category = "mobs")
@@ -330,9 +330,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "elder-guardian", category = "mobs")
 	public String elderGuardianPrize = "40:80";
 	@ConfigField(name = "elder-guardian-cmd", category = "mobs")
-	public String elderGuardianCmd = "mobhunt head give {player} ElderGuardian ElderGuardian 1 silent|give {player} iron_ingot 1";
+	public String elderGuardianCmd = "mobhunt head give {player} ElderGuardian ElderGuardian 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "elder-guardian-cmd-desc", category = "mobs")
-	public String elderGuardianCmdDesc = "You got a Elder Guardian skull and an Iron ingot.";
+	public String elderGuardianCmdDesc = "You got an Elder Guardian skull and an Iron ingot.";
 	@ConfigField(name = "elder-guardian-cmd-run-chance", category = "mobs")
 	public double elderGuardianCmdRunChance = 0.33;
 	@ConfigField(name = "elder-guardian-head-prize", category = "mobs")
@@ -343,7 +343,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "enderman-cmd", category = "mobs")
 	public String endermanCmd = "mobhunt head give {player} Enderman Enderman 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "enderman-cmd-desc", category = "mobs")
-	public String endermanCmdDesc = "You got a Enderman skull and an Gold ingot.";
+	public String endermanCmdDesc = "You got an Enderman skull and a Gold ingot.";
 	@ConfigField(name = "enderman-cmd-run-chance", category = "mobs")
 	public double endermanCmdRunChance = 0.20;
 	@ConfigField(name = "enderman-head-prize", category = "mobs")
@@ -352,9 +352,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "endermite", category = "mobs")
 	public String endermitePrize = "10";
 	@ConfigField(name = "endermite-cmd", category = "mobs")
-	public String endermiteCmd = "mobhunt head give {player} Endermite Endermite 1 silent|give {player} iron_ingot 1";
+	public String endermiteCmd = "mobhunt head give {player} Endermite Endermite 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "endermite-cmd-desc", category = "mobs")
-	public String endermiteCmdDesc = "You got a Endermite skull and an Iron ingot.";
+	public String endermiteCmdDesc = "You got an Endermite skull and an Iron ingot.";
 	@ConfigField(name = "endermite-cmd-run-chance", category = "mobs")
 	public double endermiteCmdRunChance = 0.10;
 	@ConfigField(name = "endermite-head-prize", category = "mobs")
@@ -374,20 +374,20 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "giant", category = "mobs")
 	public String giantPrize = "5.0";
 	@ConfigField(name = "giant-cmd", category = "mobs")
-	public String giantCmd = "mobhunt head give {player} Giant Giant 1 silent|give {player} iron_ingot 1";
+	public String giantCmd = "mobhunt head give {player} Giant Giant 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "giant-cmd-desc", category = "mobs")
-	public String giantCmdDesc = "You got a Giant head and an iron ingot.";
+	public String giantCmdDesc = "You got a Giant head and an Iron ingot.";
 	@ConfigField(name = "giant-cmd-run-chance", category = "mobs")
 	public double giantCmdRunChance = 0.05;
 	@ConfigField(name = "giant-head-prize", category = "mobs")
 	public String giantHeadPrize = "0";
 
-	@ConfigField(name = "iron-golem", category = "mobs")
+	@ConfigField(name = "Iron-golem", category = "mobs")
 	public String ironGolemPrize = "20:40";
 	@ConfigField(name = "iron-golem-cmd", category = "mobs")
-	public String ironGolemCmd = "mobhunt head give {player} Iron_Golem Iron_Golem 1 silent|give {player} iron_ingot 4";
+	public String ironGolemCmd = "mobhunt head give {player} Iron_Golem Iron_Golem 1 silent|give {player} Iron_ingot 4";
 	@ConfigField(name = "iron-golem-cmd-desc", category = "mobs")
-	public String ironGolemCmdDesc = "You got an Iron Golem skull and 4 Iron ingot.";
+	public String ironGolemCmdDesc = "You got an Iron Golem skull and 4 Iron ingots.";
 	@ConfigField(name = "iron-golem-cmd-run-chance", category = "mobs")
 	public double ironGolemCmdRunChance = 0.10;
 	@ConfigField(name = "iron-golem-head-prize", category = "mobs")
@@ -396,7 +396,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "guardian", category = "mobs")
 	public String guardianPrize = "20:40";
 	@ConfigField(name = "guardian-cmd", category = "mobs")
-	public String guardianCmd = "mobhunt head give {player} Guardian Guardian 1 silent|give {player} iron_ingot 1";
+	public String guardianCmd = "mobhunt head give {player} Guardian Guardian 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "guardian-cmd-desc", category = "mobs")
 	public String guardianCmdDesc = "You got a Guardian skull and an Iron ingot.";
 	@ConfigField(name = "guardian-cmd-run-chance", category = "mobs")
@@ -407,7 +407,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "husk", category = "mobs")
 	public String huskPrize = "9:13";
 	@ConfigField(name = "husk-cmd", category = "mobs")
-	public String huskCmd = "mobhunt head give {player} Husk Husk 1 silent|give {player} iron_ingot 1";
+	public String huskCmd = "mobhunt head give {player} Husk Husk 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "husk-cmd-desc", category = "mobs")
 	public String huskCmdDesc = "You got a Zombie Husk skull and an Iron ingot.";
 	@ConfigField(name = "husk-cmd-run-chance", category = "mobs")
@@ -418,9 +418,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "killerrabbit", category = "mobs")
 	public String killerrabbitPrize = "200";
 	@ConfigField(name = "killerrabbit-cmd", category = "mobs")
-	public String killerrabbitCmd = "mobhunt head give {player} KillerRabbit KillerRabbit 1 silent|give {player} iron_ingot 1";
+	public String killerrabbitCmd = "mobhunt head give {player} KillerRabbit KillerRabbit 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "killerrabbit-cmd-desc", category = "mobs")
-	public String killerrabbitCmdDesc = "You got Killer Rabbit Skull and an iron ingot.";
+	public String killerrabbitCmdDesc = "You got Killer Rabbit Skull and an Iron ingot.";
 	@ConfigField(name = "killerrabbit-cmd-run-chance", category = "mobs")
 	public double killerrabbitCmdRunChance = 0.25;
 	@ConfigField(name = "killerrabbit-head-prize", category = "mobs")
@@ -429,7 +429,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "magma-cube", category = "mobs", comment = "This is multiplied by the size of the magma cube. So a big natural magma cube is 4x this value")
 	public String magmaCubePrize = "10:20";
 	@ConfigField(name = "magma-cube-cmd", category = "mobs")
-	public String magmaCubeCmd = "mobhunt head give {player} MAGMA_CUBE MAGMA_CUBE 1 silent|give {player} iron_ingot 1";
+	public String magmaCubeCmd = "mobhunt head give {player} MAGMA_CUBE MAGMA_CUBE 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "magma-cube-cmd-desc", category = "mobs")
 	public String magmaCubeCmdDesc = "You got a Magma Cube skull and an Iron ingot.";
 	@ConfigField(name = "magma-cube-cmd-run-chance", category = "mobs")
@@ -440,7 +440,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "polar-bear", category = "mobs")
 	public String polarBearPrize = "25";
 	@ConfigField(name = "polar-bear-cmd", category = "mobs")
-	public String polarBearCmd = "mobhunt head give {player} Polar_Bear Polar_Bear 1 silent|give {player} iron_ingot 1";
+	public String polarBearCmd = "mobhunt head give {player} Polar_Bear Polar_Bear 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "polar-bear-cmd-desc", category = "mobs")
 	public String polarBearCmdDesc = "You got a Polar Bear skull and an Iron ingot.";
 	@ConfigField(name = "polar-bear-cmd-run-chance", category = "mobs")
@@ -451,7 +451,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "slime-base", category = "mobs", comment = "This is multiplied by the size of the slime. So a big natural slime is 4x this value")
 	public String slimeTinyPrize = "25";
 	@ConfigField(name = "slime-cmd", category = "mobs")
-	public String slimeCmd = "mobhunt head give {player} Slime Slime 1 silent|give {player} iron_ingot 1";
+	public String slimeCmd = "mobhunt head give {player} Slime Slime 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "slime-cmd-desc", category = "mobs")
 	public String slimeCmdDesc = "You got a Slime skull and an Iron ingot.";
 	@ConfigField(name = "slime-cmd-run-chance", category = "mobs")
@@ -462,7 +462,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "shulker", category = "mobs")
 	public String shulkerPrize = "25";
 	@ConfigField(name = "shulker-cmd", category = "mobs")
-	public String shulkerCmd = "mobhunt head give {player} Shulker Shulker 1 silent|give {player} iron_ingot 1";
+	public String shulkerCmd = "mobhunt head give {player} Shulker Shulker 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "shulker-cmd-desc", category = "mobs")
 	public String shulkerCmdDesc = "You got a Shulker skull and an Iron ingot.";
 	@ConfigField(name = "shulker-cmd-run-chance", category = "mobs")
@@ -473,7 +473,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "stray", category = "mobs")
 	public String strayPrize = "15:35";
 	@ConfigField(name = "stray-cmd", category = "mobs")
-	public String strayCmd = "mobhunt head give {player} Stray Stray 1 silent|give {player} iron_ingot 1";
+	public String strayCmd = "mobhunt head give {player} Stray Stray 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "stray-cmd-desc", category = "mobs")
 	public String strayCmdDesc = "You got a Skeleton Stray skull and an Iron ingot.";
 	@ConfigField(name = "stray-cmd-run-chance", category = "mobs")
@@ -484,9 +484,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "silverfish", category = "mobs")
 	public String silverfishPrize = "10";
 	@ConfigField(name = "silverfish-cmd", category = "mobs")
-	public String silverfishCmd = "mobhunt head give {player} SilverFish SilverFish 1 silent|give {player} iron_ingot 1";
+	public String silverfishCmd = "mobhunt head give {player} Silverfish Silverfish 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "silverfish-cmd-desc", category = "mobs")
-	public String silverfishCmdDesc = "You got a SilverFish head and an iron ingot.";
+	public String silverfishCmdDesc = "You got a Silverfish head and an Iron ingot.";
 	@ConfigField(name = "silverfish-cmd-run-chance", category = "mobs")
 	public double silverfishCmdRunChance = 0.20;
 	@ConfigField(name = "silverfish-head-prize", category = "mobs")
@@ -497,7 +497,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "skeleton-cmd", category = "mobs")
 	public String skeletonCmd = "mobhunt head give {player} Skeleton Skeleton 1 silent|give {player} dye 1 4";
 	@ConfigField(name = "skeleton-cmd-desc", category = "mobs")
-	public String skeletonCmdDesc = "You got 1 Skeleton skull and 1 Lapis Lazuli.";
+	public String skeletonCmdDesc = "You got a Skeleton skull and one Lapis Lazuli.";
 	@ConfigField(name = "skeleton-cmd-run-chance", category = "mobs")
 	public double skeletonCmdRunChance = 0.05;
 	@ConfigField(name = "skeleton-head-prize", category = "mobs")
@@ -506,7 +506,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "spider", category = "mobs")
 	public String spiderPrize = "5.5:10.5";
 	@ConfigField(name = "spider-cmd", category = "mobs")
-	public String spiderCmd = "mobhunt head give {player} Spider Spider 1 silent|give {player} iron_ingot 1";
+	public String spiderCmd = "mobhunt head give {player} Spider Spider 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "spider-cmd-desc", category = "mobs")
 	public String spiderCmdDesc = "You got a Spider skull and an Iron ingot.";
 	@ConfigField(name = "spider-cmd-run-chance", category = "mobs")
@@ -517,7 +517,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "zombie", category = "mobs")
 	public String zombiePrize = "7:11";
 	@ConfigField(name = "zombie-cmd", category = "mobs")
-	public String zombieCmd = "mobhunt head give {player} Zombie Zombie 1 silent|give {player} iron_ingot 1";
+	public String zombieCmd = "mobhunt head give {player} Zombie Zombie 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "zombie-cmd-desc", category = "mobs")
 	public String zombieCmdDesc = "You got a Zombie skull and an Iron ingot.";
 	@ConfigField(name = "zombie-cmd-run-chance", category = "mobs")
@@ -528,7 +528,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "zombie-pigman", category = "mobs")
 	public String zombiePigmanPrize = "4:8";
 	@ConfigField(name = "zombie-pigman-cmd", category = "mobs")
-	public String zombiePigmanCmd = "mobhunt head give {player} Zombie_Pigman Zombie_Pigman 1 silent|give {player} iron_ingot 1";
+	public String zombiePigmanCmd = "mobhunt head give {player} Zombie_Pigman Zombie_Pigman 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "zombie-pigman-cmd-desc", category = "mobs")
 	public String zombiePigmanCmdDesc = "You got a Zombie Pigman skull and an Iron ingot.";
 	@ConfigField(name = "zombie-pigman-cmd-run-chance", category = "mobs")
@@ -541,7 +541,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "vex-cmd", category = "mobs")
 	public String vexCmd = "mobhunt head give {player} Vex Vex 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "vex-cmd-desc", category = "mobs")
-	public String vexCmdDesc = "You got a Vex skull and an Gold ingot.";
+	public String vexCmdDesc = "You got a Vex skull and a Gold ingot.";
 	@ConfigField(name = "vex-cmd-run-chance", category = "mobs")
 	public double vexCmdRunChance = 0.5;
 	@ConfigField(name = "vex-head-prize", category = "mobs")
@@ -552,7 +552,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "witch-cmd", category = "mobs")
 	public String witchCmd = "mobhunt head give {player} Witch Witch 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "witch-cmd-desc", category = "mobs")
-	public String witchCmdDesc = "You got a Witch skull and an Gold ingot.";
+	public String witchCmdDesc = "You got a Witch skull and a Gold ingot.";
 	@ConfigField(name = "witch-cmd-run-chance", category = "mobs")
 	public double witchCmdRunChance = 0.05;
 	@ConfigField(name = "witch-head-prize", category = "mobs")
@@ -563,7 +563,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "wither-skeleton-cmd", category = "mobs")
 	public String witherSkeletonCmd = "mobhunt head give {player} WitherSkeleton WitherSkeleton 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "wither-skeleton-cmd-desc", category = "mobs")
-	public String witherSkeletonCmdDesc = "You got 1 Wither Skeleton skull and 1 Gold ingot.";
+	public String witherSkeletonCmdDesc = "You got a Wither Skeleton skull and a Gold ingot.";
 	@ConfigField(name = "wither-skeleton-cmd-run-chance", category = "mobs")
 	public double witherSkeletonCmdRunChance = 0.10;
 	@ConfigField(name = "wither-skeleton-head-prize", category = "mobs")
@@ -588,7 +588,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "enderdragon-cmd", category = "boss")
 	public String enderdragonCmd = "mobhunt head give {player} Enderdragon Enderdragon 1 silent|give {player} diamond 10";
 	@ConfigField(name = "enderdragon-cmd-desc", category = "boss")
-	public String enderdragonCmdDesc = "You got a Enderdragon skull and 10 Diamonds.";
+	public String enderdragonCmdDesc = "You got an Enderdragon skull and ten Diamonds.";
 	@ConfigField(name = "enderdragon-cmd-run-chance", category = "boss")
 	public double enderdragonCmdRunChance = 0.50;
 	@ConfigField(name = "enderdragon-head-prize", category = "boss")
@@ -613,7 +613,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "blacksmith-cmd", category = "villager")
 	public String blacksmithCmd = "mobhunt head give {player} Blacksmith Blacksmith 1";
 	@ConfigField(name = "blacksmith-cmd-desc", category = "villager")
-	public String blacksmithCmdDesc = "You got a Blacksmith Skull";
+	public String blacksmithCmdDesc = "You got a Blacksmith skull";
 	@ConfigField(name = "blacksmith-cmd-run-chance", category = "villager")
 	public double blacksmithCmdRunChance = 1.00;
 	@ConfigField(name = "blacksmith-head-prize", category = "villager")
@@ -624,7 +624,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "butcher-cmd", category = "villager")
 	public String butcherCmd = "mobhunt head give {player} Butcher Butcher 1";
 	@ConfigField(name = "butcher-cmd-desc", category = "villager")
-	public String butcherCmdDesc = "You got a Butcher Skull";
+	public String butcherCmdDesc = "You got a Butcher skull";
 	@ConfigField(name = "butcher-cmd-run-chance", category = "villager")
 	public double butcherCmdRunChance = 1.00;
 	@ConfigField(name = "butcher-head-prize", category = "villager")
@@ -635,7 +635,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "cartographer-cmd", category = "villager")
 	public String cartographerCmd = "mobhunt head give {player} cartographer Cartographer 1";
 	@ConfigField(name = "cartographer-cmd-desc", category = "villager")
-	public String cartographerCmdDesc = "You got a Cartographer Skull";
+	public String cartographerCmdDesc = "You got a Cartographer skull";
 	@ConfigField(name = "cartographer-cmd-run-chance", category = "villager")
 	public double cartographerCmdRunChance = 1.00;
 	@ConfigField(name = "cartographer-head-prize", category = "villager")
@@ -644,7 +644,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "evoker", category = "villager")
 	public String evokerPrize = "10";
 	@ConfigField(name = "evoker-cmd", category = "villager")
-	public String evokerCmd = "mobhunt head give {player} Evoker Evoker 1 silent|give {player} iron_ingot 1";
+	public String evokerCmd = "mobhunt head give {player} Evoker Evoker 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "evoker-cmd-desc", category = "villager")
 	public String evokerCmdDesc = "You got a Evoker skull and an Iron ingot.";
 	@ConfigField(name = "evoker-cmd-run-chance", category = "villager")
@@ -657,7 +657,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "farmer-cmd", category = "villager")
 	public String farmerCmd = "mobhunt head give {player} farmer Farmer 1";
 	@ConfigField(name = "farmer-cmd-desc", category = "villager")
-	public String farmerCmdDesc = "You got a Farmer Skull";
+	public String farmerCmdDesc = "You got a Farmer skull";
 	@ConfigField(name = "farmer-cmd-run-chance", category = "villager")
 	public double farmerCmdRunChance = 1.00;
 	@ConfigField(name = "farmer-head-prize", category = "villager")
@@ -666,7 +666,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "illusioner", category = "villager")
 	public String illusionerPrize = "30:50";
 	@ConfigField(name = "illusioner-cmd", category = "villager")
-	public String illusionerCmd = "mobhunt head give {player} illusioner illusioner 1 silent|give {player} iron_ingot 1";
+	public String illusionerCmd = "mobhunt head give {player} illusioner illusioner 1 silent|give {player} Iron_ingot 1";
 	@ConfigField(name = "illusioner-cmd-desc", category = "villager")
 	public String illusionerCmdDesc = "You got an Illusioner skull and an Iron ingot.";
 	@ConfigField(name = "illusioner-cmd-run-chance", category = "villager")
@@ -679,7 +679,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "librarian-cmd", category = "villager")
 	public String librarianCmd = "mobhunt head give {player} Libraian Librarian 1";
 	@ConfigField(name = "librarian-cmd-desc", category = "villager")
-	public String librarianCmdDesc = "You got a Librarian Skull";
+	public String librarianCmdDesc = "You got a Librarian skull";
 	@ConfigField(name = "librarian-cmd-run-chance", category = "villager")
 	public double librarianCmdRunChance = 1.00;
 	@ConfigField(name = "librarian-head-prize", category = "villager")
@@ -690,7 +690,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "nitwit-cmd", category = "villager")
 	public String nitwitCmd = "mobhunt head give {player} nitwit Nitwit 1";
 	@ConfigField(name = "nitwit-cmd-desc", category = "villager")
-	public String nitwitCmdDesc = "You got a Nitwit Skull";
+	public String nitwitCmdDesc = "You got a Nitwit skull";
 	@ConfigField(name = "nitwit-cmd-run-chance", category = "villager")
 	public double nitwitCmdRunChance = 1.00;
 	@ConfigField(name = "nitwit-head-prize", category = "villager")
@@ -701,7 +701,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "priest-cmd", category = "villager")
 	public String priestCmd = "mobhunt head give {player} Priest Priest 1";
 	@ConfigField(name = "priest-cmd-desc", category = "villager")
-	public String priestCmdDesc = "You got a Priest Skull";
+	public String priestCmdDesc = "You got a Priest skull";
 	@ConfigField(name = "priest-cmd-run-chance", category = "villager")
 	public double priestCmdRunChance = 1.00;
 	@ConfigField(name = "priest-head-prize", category = "villager")
@@ -712,7 +712,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "villager-cmd", category = "villager")
 	public String villagerCmd = "mobhunt head give {player} Villager";
 	@ConfigField(name = "villager-cmd-desc", category = "villager")
-	public String villagerCmdDesc = "You got a Villager Skull";
+	public String villagerCmdDesc = "You got a Villager skull";
 	@ConfigField(name = "villager-cmd-run-chance", category = "villager")
 	public double villagerCmdRunChance = 0.30;
 	@ConfigField(name = "villager-head-prize", category = "villager")
@@ -723,7 +723,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "vindicator-cmd", category = "villager")
 	public String vindicatorCmd = "mobhunt head give {player} vindicator Vindicator 1 silent|give {player} gold_ingot 1";
 	@ConfigField(name = "vindicator-cmd-desc", category = "villager")
-	public String vindicatorCmdDesc = "You got a Vindicator skull and an Gold ingot.";
+	public String vindicatorCmdDesc = "You got a Vindicator skull and a Gold ingot.";
 	@ConfigField(name = "vindicator-cmd-run-chance", category = "villager")
 	public double vindicatorCmdRunChance = 0.05;
 	@ConfigField(name = "vindicator-head-prize", category = "villager")
@@ -734,7 +734,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "zombie-villager-cmd", category = "villager")
 	public String zombieVillagerCmd = "mobhunt head give {player} ZombieVillager ZombieVillager 1 silent";
 	@ConfigField(name = "zombie-villager-cmd-desc", category = "villager")
-	public String zombieVillagerCmdDesc = "You got a ZombieVillager Skull";
+	public String zombieVillagerCmdDesc = "You got a ZombieVillager skull";
 	@ConfigField(name = "zombie-villager-cmd-run-chance", category = "villager")
 	public double zombieVillagerCmdRunChance = 0.05;
 	@ConfigField(name = "zombie-head-prize", category = "villager")
@@ -748,7 +748,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "bat-cmd", category = "passive")
 	public String batCmd = "mobhunt head give {player} Bat Bat 1 silent";
 	@ConfigField(name = "bat-cmd-desc", category = "passive")
-	public String batCmdDesc = "You got a Bat Skull";
+	public String batCmdDesc = "You got a Bat skull";
 	@ConfigField(name = "bat-cmd-run-chance", category = "passive")
 	public double batCmdRunChance = 0.05;
 	@ConfigField(name = "bat-head-prize", category = "passive")
@@ -759,7 +759,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "chicken-cmd", category = "passive")
 	public String chickenCmd = "mobhunt head give {player} Chicken Chicken 1 silent";
 	@ConfigField(name = "chicken-cmd-desc", category = "passive")
-	public String chickenCmdDesc = "You got a Chicken Skull";
+	public String chickenCmdDesc = "You got a Chicken skull";
 	@ConfigField(name = "chicken-cmd-run-chance", category = "passive")
 	public double chickenCmdRunChance = 0.05;
 	@ConfigField(name = "chicken-head-prize", category = "passive")
@@ -770,7 +770,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "cow-cmd", category = "passive")
 	public String cowCmd = "mobhunt head give {player} Cow Cow 1 silent";
 	@ConfigField(name = "cow-cmd-desc", category = "passive")
-	public String cowCmdDesc = "You got a Cow Skull";
+	public String cowCmdDesc = "You got a Cow skull";
 	@ConfigField(name = "cow-cmd-run-chance", category = "passive")
 	public double cowCmdRunChance = 0.05;
 	@ConfigField(name = "cow-head-prize", category = "passive")
@@ -781,7 +781,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "donkey-cmd", category = "passive")
 	public String donkeyCmd = "mobhunt head give {player} donkey Donkey 1 silent";
 	@ConfigField(name = "donkey-cmd-desc", category = "passive")
-	public String donkeyCmdDesc = "You got a Donkey Skull";
+	public String donkeyCmdDesc = "You got a Donkey skull";
 	@ConfigField(name = "donkey-cmd-run-chance", category = "passive")
 	public double donkeyCmdRunChance = 0.05;
 	@ConfigField(name = "donkey-head-prize", category = "passive")
@@ -792,7 +792,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "horse-cmd", category = "passive")
 	public String horseCmd = "mobhunt head give {player} Horse Horse 1 silent";
 	@ConfigField(name = "horse-cmd-desc", category = "passive")
-	public String horseCmdDesc = "You got a Horse Skull";
+	public String horseCmdDesc = "You got a Horse skull";
 	@ConfigField(name = "horse-cmd-run-chance", category = "passive")
 	public double horseCmdRunChance = 0.05;
 	@ConfigField(name = "horse-head-prize", category = "passive")
@@ -803,7 +803,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "llama-cmd", category = "passive")
 	public String llamaCmd = "mobhunt head give {player} llama Llama 1";
 	@ConfigField(name = "llama-cmd-desc", category = "passive")
-	public String llamaCmdDesc = "You got a Llama Skull";
+	public String llamaCmdDesc = "You got a Llama skull";
 	@ConfigField(name = "llama-cmd-run-chance", category = "passive")
 	public double llamaCmdRunChance = 0.05;
 	@ConfigField(name = "llama-head-prize", category = "passive")
@@ -814,7 +814,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "mule-cmd", category = "passive")
 	public String muleCmd = "mobhunt head give {player} mule Mule 1 silent";
 	@ConfigField(name = "mule-cmd-desc", category = "passive")
-	public String muleCmdDesc = "You got a Mule Skull";
+	public String muleCmdDesc = "You got a Mule skull";
 	@ConfigField(name = "mule-cmd-run-chance", category = "passive")
 	public double muleCmdRunChance = 0.05;
 	@ConfigField(name = "mule-head-prize", category = "passive")
@@ -825,7 +825,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "mushroom-cow-cmd", category = "passive")
 	public String mushroomCowCmd = "mobhunt head give {player} Mushroom_Cow Mushroom_Cow 1 silent";
 	@ConfigField(name = "mushroom-cow-cmd-desc", category = "passive")
-	public String mushroomCowCmdDesc = "You got a Mushroom Cow Skull";
+	public String mushroomCowCmdDesc = "You got a Mushroom Cow skull";
 	@ConfigField(name = "mushroom-cow-cmd-run-chance", category = "passive")
 	public double mushroomCowCmdRunChance = 0.05;
 	@ConfigField(name = "mushroom-cow-head-prize", category = "passive")
@@ -836,7 +836,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "ocelot-cmd", category = "passive")
 	public String ocelotCmd = "mobhunt head give {player} Ocelot Ocelot 1 silent";
 	@ConfigField(name = "ocelot-cmd-desc", category = "passive")
-	public String ocelotCmdDesc = "";
+	public String ocelotCmdDesc = "You got an Ocelot skull";
 	@ConfigField(name = "ocelot-cmd-run-chance", category = "passive")
 	public double ocelotCmdRunChance = 0.05;
 	@ConfigField(name = "ocelot-head-prize", category = "passive")
@@ -858,7 +858,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "pig-cmd", category = "passive")
 	public String pigCmd = "mobhunt head give {player} Pig Pig 1 silent";
 	@ConfigField(name = "pig-cmd-desc", category = "passive")
-	public String pigCmdDesc = "You got a Pig Skull";
+	public String pigCmdDesc = "You got a Pig skull";
 	@ConfigField(name = "pig-cmd-run-chance", category = "passive")
 	public double pigCmdRunChance = 0.05;
 	@ConfigField(name = "pig-head-prize", category = "passive")
@@ -869,7 +869,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "rabbit-cmd", category = "passive")
 	public String rabbitCmd = "mobhunt head give {player} Rabbit Rabbit 1 silent";
 	@ConfigField(name = "rabbit-cmd-desc", category = "passive")
-	public String rabbitCmdDesc = "You got a Rabbit Skull";
+	public String rabbitCmdDesc = "You got a Rabbit skull";
 	@ConfigField(name = "rabbit-cmd-run-chance", category = "passive")
 	public double rabbitCmdRunChance = 0.05;
 	@ConfigField(name = "rabbit-head-prize", category = "passive")
@@ -880,7 +880,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "sheep-cmd", category = "passive")
 	public String sheepCmd = "mobhunt head give {player} Sheep Sheep 1 silent";
 	@ConfigField(name = "sheep-cmd-desc", category = "passive")
-	public String sheepCmdDesc = "You got a Sheep Skull";
+	public String sheepCmdDesc = "You got a Sheep skull";
 	@ConfigField(name = "sheep-cmd-run-chance", category = "passive")
 	public double sheepCmdRunChance = 0.05;
 	@ConfigField(name = "sheep-head-prize", category = "passive")
@@ -891,7 +891,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "skeletonhorse-cmd", category = "passive")
 	public String skeletonhorseCmd = "mobhunt head give {player} skeletonhorse SkeletonHorse 1 silent";
 	@ConfigField(name = "skeletonhorse-cmd-desc", category = "passive")
-	public String skeletonhorseCmdDesc = "You got a SkeletonHorse Skull";
+	public String skeletonhorseCmdDesc = "You got a SkeletonHorse skull";
 	@ConfigField(name = "skeletonhorse-cmd-run-chance", category = "passive")
 	public double skeletonhorseCmdRunChance = 0.05;
 	@ConfigField(name = "skeletonhorse-head-prize", category = "passive")
@@ -902,7 +902,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "snowman-cmd", category = "passive")
 	public String snowmanCmd = "mobhunt head give {player} SnowMan Snowman 1 silent";
 	@ConfigField(name = "snowman-cmd-desc", category = "passive")
-	public String snowmanCmdDesc = "You got a Snowman Skull";
+	public String snowmanCmdDesc = "You got a Snowman skull";
 	@ConfigField(name = "snowman-cmd-run-chance", category = "passive")
 	public double snowmanCmdRunChance = 0.05;
 	@ConfigField(name = "snowman-head-prize", category = "passive")
@@ -913,7 +913,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "squid-cmd", category = "passive")
 	public String squidCmd = "mobhunt head give {player} Squid Squid 1 silent";
 	@ConfigField(name = "squid-cmd-desc", category = "passive")
-	public String squidCmdDesc = "You got a Squid Skull";
+	public String squidCmdDesc = "You got a Squid skull";
 	@ConfigField(name = "squid-cmd-run-chance", category = "passive")
 	public double squidCmdRunChance = 0.05;
 	@ConfigField(name = "squid-head-prize", category = "passive")
@@ -924,7 +924,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "wolf-cmd", category = "passive")
 	public String wolfCmd = "mobhunt head give {player} Wolf Wolf 1 silent";
 	@ConfigField(name = "wolf-cmd-desc", category = "passive")
-	public String wolfCmdDesc = "You got a Wolf Skull";
+	public String wolfCmdDesc = "You got a Wolf skull";
 	@ConfigField(name = "wolf-cmd-run-chance", category = "passive")
 	public double wolfCmdRunChance = 0.05;
 	@ConfigField(name = "wolf-head-prize", category = "passive")
@@ -935,7 +935,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "zombiehorse-cmd", category = "passive")
 	public String zombiehorseCmd = "mobhunt head give {player} zombiehorse ZombieHorse 1 silent";
 	@ConfigField(name = "zombiehorse-cmd-desc", category = "passive")
-	public String zombiehorseCmdDesc = "You got a ZombieHorse Skull";
+	public String zombiehorseCmdDesc = "You got a ZombieHorse skull";
 	@ConfigField(name = "zombiehorse-cmd-run-chance", category = "passive")
 	public double zombiehorseCmdRunChance = 0.25;
 	@ConfigField(name = "zombiehorse-head-prize", category = "passive")
@@ -952,7 +952,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "rawfish-cmd", category = "fishing")
 	public String rawFishCmd = "mobhunt head give {player} rawfish Raw_Fish 1 silent";
 	@ConfigField(name = "rawfish-cmd-desc", category = "fishing")
-	public String rawFishCmdDesc = "You got a head of a Raw Fish";
+	public String rawFishCmdDesc = "You got the head of a Raw Fish";
 	@ConfigField(name = "rawfish-cmd-run-chance", category = "fishing")
 	public double rawFishCmdRunChance = 0.05;
 	@ConfigField(name = "rawfish-head-prize", category = "fishing")
@@ -963,7 +963,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "rawsalmon-cmd", category = "fishing")
 	public String rawSalmonCmd = "mobhunt head give {player} rawsalmon Raw_Salmon 1 silent";
 	@ConfigField(name = "rawsalmon-cmd-desc", category = "fishing")
-	public String rawSalmonCmdDesc = "You got a head of a Raw Salmon";
+	public String rawSalmonCmdDesc = "You got the head of a Raw Salmon";
 	@ConfigField(name = "rawsalmon-cmd-run-chance", category = "fishing")
 	public double rawSalmonCmdRunChance = 0.1;
 	@ConfigField(name = "rawSalmon-head-prize", category = "fishing")
@@ -974,7 +974,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "clownfish-cmd", category = "fishing")
 	public String clownfishCmd = "mobhunt head give {player} clownfish Clowfish 1 silent";
 	@ConfigField(name = "clownfish-cmd-desc", category = "fishing")
-	public String clownfishCmdDesc = "You got a head of a Clownfish";
+	public String clownfishCmdDesc = "You got the head of a Clownfish";
 	@ConfigField(name = "clownfish-cmd-run-chance", category = "fishing")
 	public double clownfishCmdRunChance = 0.5;
 	@ConfigField(name = "clownfish-head-prize", category = "fishing")
@@ -985,7 +985,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "pufferfish-cmd", category = "fishing")
 	public String pufferfishCmd = "mobhunt head give {player} pufferfish Pufferfish 1 silent";
 	@ConfigField(name = "pufferfish-cmd-desc", category = "fishing")
-	public String pufferfishCmdDesc = "You got a head of a Pufferfish";
+	public String pufferfishCmdDesc = "You got the head of a Pufferfish";
 	@ConfigField(name = "pufferfish-cmd-run-chance", category = "fishing")
 	public double pufferfishCmdRunChance = 0.4;
 	@ConfigField(name = "pufferfish-head-prize", category = "fishing")
@@ -1083,73 +1083,73 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "itsmagic-cmd", category = "achievements")
 	public String specialItsMagicCmd = "give {player} gold_ingot 1";
 	@ConfigField(name = "itsmagic-cmd-desc", category = "achievements")
-	public String specialItsMagicCmdDesc = "Enjoy you Gold Ingot";
+	public String specialItsMagicCmdDesc = "Enjoy you Gold ingot";
 	@ConfigField(name = "fancypants", category = "achievements")
 	public double specialFancyPants = 1000;
 	@ConfigField(name = "fancypants-cmd", category = "achievements")
 	public String specialFancyPantsCmd = "give {player} gold_ingot 1";
 	@ConfigField(name = "fancypants-cmd-desc", category = "achievements")
-	public String specialFancyPantsCmdDesc = "Enjoy you Gold Ingots";
+	public String specialFancyPantsCmdDesc = "Enjoy you Gold ingot";
 	@ConfigField(name = "master-sniper", category = "achievements")
 	public double specialMasterSniper = 2000;
 	@ConfigField(name = "master-sniper-cmd", category = "achievements")
 	public String specialMasterSniperCmd = "give {player} gold_ingot 1";
 	@ConfigField(name = "master-sniper-cmd-desc", category = "achievements")
-	public String specialMasterSniperCmdDesc = "Enjoy you Gold Ingots";
+	public String specialMasterSniperCmdDesc = "Enjoy you Gold ingot";
 	@ConfigField(name = "justintime", category = "achievements")
 	public double specialJustInTime = 1000;
 	@ConfigField(name = "justintime-cmd", category = "achievements")
 	public String specialJustInTimeCmd = "give {player} gold_ingot 1";
 	@ConfigField(name = "justintime-cmd-desc", category = "achievements")
-	public String specialJustInTimeCmdDesc = "Enjoy you Gold Ingots";
+	public String specialJustInTimeCmdDesc = "Enjoy you Gold ingot";
 	@ConfigField(name = "fangmaster", category = "achievements")
 	public double specialFangMaster = 1000;
 	@ConfigField(name = "fangmaster-cmd", category = "achievements")
 	public String specialFangMasterCmd = "give {player} gold_ingot 1";
 	@ConfigField(name = "fangmaster-cmd-desc", category = "achievements")
-	public String specialFangMasterCmdDesc = "Enjoy your Gold Ingot";
+	public String specialFangMasterCmdDesc = "Enjoy your Gold ingot";
 	@ConfigField(name = "hunter1", category = "achievements")
 	public double specialHunter1 = 1000;
 	@ConfigField(name = "hunter1-cmd", category = "achievements")
 	public String specialHunter1Cmd = "give {player} gold_ingot 5";
 	@ConfigField(name = "hunter1-cmd-desc", category = "achievements")
-	public String specialHunter1CmdDesc = "Enjoy your 5 Gold Ingots";
+	public String specialHunter1CmdDesc = "Enjoy your 5 Gold ingots";
 	@ConfigField(name = "hunter2", category = "achievements")
 	public double specialHunter2 = 2500;
 	@ConfigField(name = "hunter2-cmd", category = "achievements")
 	public String specialHunter2Cmd = "give {player} gold_ingot 10";
 	@ConfigField(name = "hunter2-cmd-desc", category = "achievements")
-	public String specialHunter2CmdDesc = "Enjoy your 10 Gold Ingots";
+	public String specialHunter2CmdDesc = "Enjoy your 10 Gold ingots";
 	@ConfigField(name = "hunter3", category = "achievements")
 	public double specialHunter3 = 5000;
 	@ConfigField(name = "hunter3-cmd", category = "achievements")
 	public String specialHunter3Cmd = "give {player} gold_ingot 20";
 	@ConfigField(name = "hunter3-cmd-desc", category = "achievements")
-	public String specialHunter3CmdDesc = "Enjoy your 20 Gold Ingots";
+	public String specialHunter3CmdDesc = "Enjoy your 20 Gold ingots";
 	@ConfigField(name = "hunter4", category = "achievements")
 	public double specialHunter4 = 10000;
 	@ConfigField(name = "hunter4-cmd", category = "achievements")
 	public String specialHunter4Cmd = "give {player} gold_ingot 25";
 	@ConfigField(name = "hunter4-cmd-desc", category = "achievements")
-	public String specialHunter4CmdDesc = "Enjoy your 25 Gold Ingots";
+	public String specialHunter4CmdDesc = "Enjoy your 25 Gold ingots";
 	@ConfigField(name = "hunter5", category = "achievements")
 	public double specialHunter5 = 20000;
 	@ConfigField(name = "hunter5-cmd", category = "achievements")
 	public String specialHunter5Cmd = "give {player} gold_ingot 40";
 	@ConfigField(name = "hunter5-cmd-desc", category = "achievements")
-	public String specialHunter5CmdDesc = "Enjoy your 40 Gold Ingots";
+	public String specialHunter5CmdDesc = "Enjoy your 40 Gold ingots";
 	@ConfigField(name = "hunter6", category = "achievements")
 	public double specialHunter6 = 40000;
 	@ConfigField(name = "hunter6-cmd", category = "achievements")
 	public String specialHunter6Cmd = "give {player} gold_ingot 50";
 	@ConfigField(name = "hunter6-cmd-desc", category = "achievements")
-	public String specialHunter6CmdDesc = "Enjoy your 50 Gold Ingots";
+	public String specialHunter6CmdDesc = "Enjoy your 50 Gold ingots";
 	@ConfigField(name = "hunter7", category = "achievements")
 	public double specialHunter7 = 80000;
 	@ConfigField(name = "hunter7-cmd", category = "achievements")
 	public String specialHunter7Cmd = "give {player} gold_ingot 60";
 	@ConfigField(name = "hunter7-cmd-desc", category = "achievements")
-	public String specialHunter7CmdDesc = "Enjoy your 60 Gold Ingots";
+	public String specialHunter7CmdDesc = "Enjoy your 60 Gold ingots";
 
 	// #####################################################################################
 	// Achievement Hunter Levels

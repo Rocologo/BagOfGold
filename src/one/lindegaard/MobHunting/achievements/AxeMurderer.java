@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class AxeMurderer implements Achievement, Listener {
@@ -36,7 +37,8 @@ public class AxeMurderer implements Achievement, Listener {
 	private void onKill(MobHuntKillEvent event) {
 		if (Misc.isAxe(event.getDamageInfo().getWeapon())
 				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
-			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
+					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -794,7 +795,7 @@ public enum MinecraftMob {
 		return null;
 	}
 
-	public ItemStack getHead(String name, int amount, double money) {
+	public ItemStack getCustomHead(String name, int amount, double money) {
 		ItemStack skull;
 		switch (this) {
 		case Skeleton:
@@ -815,6 +816,13 @@ public enum MinecraftMob {
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
+		case PvpPlayer:
+			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta sm = (SkullMeta) skull.getItemMeta();
+			sm.setOwner(name);
+			skull.setItemMeta(sm);
+			break;
+
 		case Creeper:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 4);
 			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
@@ -829,25 +837,12 @@ public enum MinecraftMob {
 
 		default:
 			ItemStack is = new ItemStack(
-					CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), name,
+					CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), mDisplayName,
 							mTextureValue, mTextureSignature, money, UUID.randomUUID()));
 			is.setAmount(amount);
 			return is;
 		}
 		return skull;
-	}
-
-	/**
-	 * Return an ItemStack with a custom texture. If Mojang changes the way they
-	 * calculate Signatures this method will stop working.
-	 * 
-	 * @return ItemStack with custom texture.
-	 */
-	public ItemStack getCustomHead(int amount, double money) {
-		ItemStack is = CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), mDisplayName,
-				mTextureValue, mTextureSignature, money, UUID.fromString(mPlayerUUID));
-		is.setAmount(amount);
-		return is;
 	}
 
 	/**

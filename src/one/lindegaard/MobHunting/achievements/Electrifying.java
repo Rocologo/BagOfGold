@@ -37,7 +37,8 @@ public class Electrifying implements Achievement, Listener {
 	private void onKill(MobHuntKillEvent event) {
 		if (event.getKilledEntity() instanceof Creeper && ((Creeper) event.getKilledEntity()).isPowered()
 				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
-			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
+					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}
 
 	@Override

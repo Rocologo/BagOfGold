@@ -3,7 +3,10 @@ package one.lindegaard.MobHunting.modifier;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -33,15 +36,21 @@ public class DifficultyBonus implements IModifier {
 			Entry<String, String> difficulty = difficulties.next();
 			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
 					&& !difficulty.getKey().equalsIgnoreCase("difficulty.multiplier")) {
-				if (ExtraHardModeCompat.isEnabledForWorld(killer.getWorld())) {
-					if (difficulty.getKey().equalsIgnoreCase("difficulty.multiplier.extrahard")) {
+				try {
+					if (ExtraHardModeCompat.isEnabledForWorld(killer.getWorld())) {
+						if (difficulty.getKey().equalsIgnoreCase("difficulty.multiplier.extrahard")) {
+							multiplierStr = difficulty.getValue();
+							break;
+						}
+					} else if ((difficulty.getKey()
+							.equalsIgnoreCase("difficulty.multiplier." + worldDifficulty.name().toLowerCase()))) {
 						multiplierStr = difficulty.getValue();
 						break;
 					}
-				} else if ((difficulty.getKey()
-						.equalsIgnoreCase("difficulty.multiplier." + worldDifficulty.name().toLowerCase()))) {
-					multiplierStr = difficulty.getValue();
-					break;
+				} catch (Exception e) {
+					ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+					console.sendMessage(ChatColor.RED
+							+ "[MobHunting] The difficulty section in your config.yml could not be read. Check the section for errors. Make sure that you have surrounded the number with a '. Ex.: '1.1'");
 				}
 			}
 		}
@@ -62,15 +71,20 @@ public class DifficultyBonus implements IModifier {
 			Entry<String, String> difficulty = difficulties.next();
 			if (!difficulty.getKey().equalsIgnoreCase("difficulty")
 					&& !difficulty.getKey().equalsIgnoreCase("difficulty.multiplier")) {
-				if (ExtraHardModeCompat.isEnabledForWorld(killer.getWorld())) {
-					if (difficulty.getKey().equalsIgnoreCase("difficulty.multiplier.extrahard")) {
+				try {
+					if (ExtraHardModeCompat.isEnabledForWorld(killer.getWorld())) {
+						if (difficulty.getKey().equalsIgnoreCase("difficulty.multiplier.extrahard")) {
+							multiplierStr = difficulty.getValue();
+							break;
+						}
+					} else if ((difficulty.getKey()
+							.equalsIgnoreCase("difficulty.multiplier." + worldDifficulty.name().toLowerCase()))) {
 						multiplierStr = difficulty.getValue();
 						break;
 					}
-				} else if ((difficulty.getKey()
-						.equalsIgnoreCase("difficulty.multiplier." + worldDifficulty.name().toLowerCase()))) {
-					multiplierStr = difficulty.getValue();
-					break;
+				} catch (Exception e) {
+					if (MobHunting.getConfigManager().killDebug)
+						e.printStackTrace();
 				}
 			}
 		}

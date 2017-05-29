@@ -67,7 +67,7 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public ItemStack getSymbol() {
-		return getExtendedMobType().getCustomHead(7, 0);
+		return getExtendedMobType().getCustomHead(mType.getDisplayName(), 7, 0);
 	}
 
 	@Override
@@ -78,14 +78,16 @@ public class SeventhHuntAchievement implements ProgressAchievement, Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onKillCompleted(MobHuntKillEvent event) {
 		if (mType.matches(event.getKilledEntity())) {
-			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(), 1);
+			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(),
+					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()), 1);
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void onFishingCompleted(MobHuntFishingEvent event) {
 		if (mType.matches(event.getFish())) {
-			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(), 1);
+			MobHunting.getAchievementManager().awardAchievementProgress(this, event.getPlayer(),
+					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getFish()), 1);
 		}
 	}
 }

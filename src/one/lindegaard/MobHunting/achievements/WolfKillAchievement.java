@@ -77,7 +77,8 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 							owner.getName());
 					Messages.learn(owner, Messages.getString("mobhunting.learn.mobarena"));
 				} else
-					MobHunting.getAchievementManager().awardAchievementProgress(this, owner, 1);
+					MobHunting.getAchievementManager().awardAchievementProgress(this, owner,
+							MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()), 1);
 			}
 		}
 

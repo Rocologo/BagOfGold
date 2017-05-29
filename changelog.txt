@@ -1,4 +1,5 @@
 V4.9.3
+* Fixed "/mh head give ...." command. Give playerheadsnow works again.
 * Fixed "/mh achivements gui" so its show all completed Achievements. 
 * "/mh achievements" does now show three inventories: Completed, Ongoing, Not started.
 * The Achivements Items is now changed to Mob heads and sorted.

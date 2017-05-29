@@ -61,7 +61,7 @@ public class SecondHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return getExtendedMobType().getCustomHead(2, 0);
+		return getExtendedMobType().getCustomHead(mType.getDisplayName(), 2, 0);
 	}
 
 	@Override

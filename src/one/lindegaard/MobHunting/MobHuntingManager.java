@@ -56,7 +56,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.nossr50.datatypes.skills.SkillType;
-import com.gmail.nossr50.datatypes.skills.XPGainReason;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 import one.lindegaard.MobHunting.bounty.Bounty;
@@ -645,12 +644,12 @@ public class MobHuntingManager implements Listener {
 		if (MyPetCompat.isMyPet(damager)) {
 			cause = MyPetCompat.getMyPetOwner(damaged);
 			info.setIsMeleWeaponUsed(false);
-			info.setIsWolfAssist(true);
+			info.setIsMyPetAssist(true);
 		} else if (damager instanceof Wolf && ((Wolf) damager).isTamed()
 				&& ((Wolf) damager).getOwner() instanceof Player) {
 			cause = (Player) ((Wolf) damager).getOwner();
 			info.setIsMeleWeaponUsed(false);
-			info.setIsWolfAssist(true);
+			info.setIsMyPetAssist(true);
 		}
 
 		if (weapon == null && cause != null) {
@@ -1124,8 +1123,9 @@ public class MobHuntingManager implements Listener {
 
 		// There is no reward and no penalty for this kill
 		if (basic_prize == 0 && MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
-			Messages.debug("KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player and is not counted as kill/achievement.", mob.getName(),
-					killed.getEntityId());
+			Messages.debug(
+					"KillBlocked %s(%d): There is no reward and no penalty for this Mob/Player and is not counted as kill/achievement.",
+					mob.getName(), killed.getEntityId());
 			Messages.learn(getPlayer(killer, killed),
 					Messages.getString("mobhunting.learn.no-reward", "killed", mob.getName()));
 			Messages.debug("======================= kill ended (29)=====================");
@@ -1300,7 +1300,7 @@ public class MobHuntingManager implements Listener {
 										loc);
 							Messages.learn(getPlayer(killer, killed),
 									Messages.getString("mobhunting.learn.grindingnotallowed"));
-							Messages.debug("3======================= kill ended (33)======================");
+							Messages.debug("======================= kill ended (33)======================");
 							return;
 						} else {
 							Messages.debug("DampendKills=%s", data.getDampenedKills());
@@ -1533,12 +1533,19 @@ public class MobHuntingManager implements Listener {
 
 			// Record Hunt Achievement is done using SeventhHuntAchievement.java
 			// (onKillCompleted)
-
 			// Record the kill in the Database
-			Messages.debug("RecordKill: %s killed a %s (%s) Cash=%s", getPlayer(killer, killed).getName(),
-					mob.getName(), mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
-			MobHunting.getDataStoreManager().recordKill(getPlayer(killer, killed), mob,
-					killed.hasMetadata("MH:hasBonus"), cash);
+			if (info.getAssister() == null || MobHunting.getConfigManager().enableAssists == false) {
+				Messages.debug("RecordKill: %s killed a %s (%s) Cash=%s", getPlayer(killer, killed).getName(),
+						mob.getName(), mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
+				MobHunting.getDataStoreManager().recordKill(getPlayer(killer, killed), mob,
+						killed.hasMetadata("MH:hasBonus"), cash);
+			} else {
+				Messages.debug("RecordAssistedKill: %s killed a %s (%s) Cash=%s",
+						info.getAttacker().getName()+"/"+info.getAssister().getName(), mob.getName(),
+						mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
+				MobHunting.getDataStoreManager().recordAssist(getPlayer(killer, killed), killer, mob,
+						killed.hasMetadata("MH:hasBonus"), cash);
+			}
 
 			// McMMO Level rewards
 			if (killer != null && McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards) {
@@ -1758,7 +1765,8 @@ public class MobHuntingManager implements Listener {
 				Bukkit.getLogger().warning("Please report this to developer!");
 				return;
 			}
-			MobHunting.getDataStoreManager().recordAssist(player, killer, mob, killed.hasMetadata("MH:hasBonus"), cash);
+			// MobHunting.getDataStoreManager().recordAssist(player, killer,
+			// mob, killed.hasMetadata("MH:hasBonus"), cash);
 			if (cash >= 0)
 				MobHunting.getRewardManager().depositPlayer(player, cash);
 			else

@@ -35,7 +35,8 @@ public class ItsMagic implements Achievement, Listener {
 	private void onKill(MobHuntKillEvent event) {
 		if (event.getDamageInfo().getWeapon().getType() == Material.POTION
 				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
-			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
+					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}
 
 	@Override

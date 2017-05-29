@@ -104,9 +104,10 @@ public class DataStoreManager {
 	// **************************************************************************************
 	// Achievements
 	// **************************************************************************************
-	public void recordAchievement(OfflinePlayer player, Achievement achievement) {
+	public void recordAchievement(OfflinePlayer player, Achievement achievement, ExtendedMob mob) {
 		synchronized (mWaiting) {
 			mWaiting.add(new AchievementStore(achievement.getID(), player, -1));
+			mWaiting.add(new StatStore(StatType.AchievementCount, mob, player));
 		}
 	}
 

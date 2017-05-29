@@ -169,7 +169,7 @@ public class DamageInformation {
 	 * @param wolfAssist
 	 *            the wolfAssist to set
 	 */
-	public void setIsWolfAssist(boolean wolfAssist) {
+	public void setIsMyPetAssist(boolean wolfAssist) {
 		this.wolfAssist = wolfAssist;
 	}
 

@@ -33,7 +33,8 @@ public class TheHuntBegins implements Achievement, Listener {
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
 		if (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
-			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
+			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
+					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}
 
 	@Override

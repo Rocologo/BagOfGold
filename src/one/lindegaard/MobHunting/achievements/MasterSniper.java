@@ -40,7 +40,8 @@ public class MasterSniper implements Achievement, Listener {
 				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0) {
 			double dist = event.getDamageInfo().getAttackerPosition().distance(event.getKilledEntity().getLocation());
 			if (dist >= 40) {
-				MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer());
+				MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
+						MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 			}
 		}
 	}

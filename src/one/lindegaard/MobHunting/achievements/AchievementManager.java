@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.IDataCallback;
@@ -200,15 +201,6 @@ public class AchievementManager implements Listener {
 						Achievement achievement = mAchievements.get(stored.id);
 						achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement,
 								stored.progress));
-
-						// If the achievement is a higher level, remove
-						// the lower level from the list
-						if (achievement instanceof ProgressAchievement
-								// && stored.progress == -1
-								&& ((ProgressAchievement) stored).getMaxProgress() != stored.progress
-								&& ((ProgressAchievement) achievement).inheritFrom() != null)
-							Messages.debug("Error %s: %s=%s", achievement.getID(),
-									((ProgressAchievement) achievement).getMaxProgress(), stored.progress);
 						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
 								getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
 					}
@@ -229,13 +221,6 @@ public class AchievementManager implements Listener {
 	public Collection<Achievement> getAllAchievements() {
 		List<Achievement> list = new ArrayList<Achievement>();
 		list.addAll(mAchievements.values());
-		// Comparator<Achievement> comparatorOld = new Comparator<Achievement>()
-		// {
-		// @Override
-		// public int compare(Achievement left, Achievement right) {
-		// return left.getID().compareTo(right.getID());
-		// }
-		// };
 		Comparator<Achievement> comparator = new Comparator<Achievement>() {
 			@Override
 			public int compare(Achievement left, Achievement right) {
@@ -273,8 +258,8 @@ public class AchievementManager implements Listener {
 	 * @param achievement
 	 * @param player
 	 */
-	public void awardAchievement(String achievement, Player player) {
-		awardAchievement(getAchievement(achievement), player);
+	public void awardAchievement(String achievement, Player player, ExtendedMob mob) {
+		awardAchievement(getAchievement(achievement), player, mob);
 	}
 
 	/**
@@ -283,7 +268,7 @@ public class AchievementManager implements Listener {
 	 * @param achievement
 	 * @param player
 	 */
-	public void awardAchievement(Achievement achievement, Player player) {
+	public void awardAchievement(Achievement achievement, Player player, ExtendedMob mob) {
 		if (!achievementsEnabledFor(player)) {
 			Messages.debug("[AchievementBlocked] Achievements is disabled for player %s", player.getName());
 			return;
@@ -306,7 +291,7 @@ public class AchievementManager implements Listener {
 		}
 
 		Messages.debug("RecordAchievement: %s achieved.", achievement.getID());
-		MobHunting.getDataStoreManager().recordAchievement(player, achievement);
+		MobHunting.getDataStoreManager().recordAchievement(player, achievement, mob);
 		storage.gainedAchievements.add(achievement.getID());
 		mStorage.put(player.getUniqueId(), storage);
 
@@ -363,15 +348,15 @@ public class AchievementManager implements Listener {
 		firework.setFireworkMeta(meta);
 	}
 
-	public void awardAchievementProgress(String achievement, Player player, int amount) {
+	public void awardAchievementProgress(String achievement, Player player, ExtendedMob mob, int amount) {
 		Achievement a = getAchievement(achievement);
 		Validate.isTrue(a instanceof ProgressAchievement,
 				"You need to award normal achievements with awardAchievement()");
 
-		awardAchievementProgress((ProgressAchievement) a, player, amount);
+		awardAchievementProgress((ProgressAchievement) a, player, mob, amount);
 	}
 
-	public void awardAchievementProgress(ProgressAchievement achievement, Player player, int amount) {
+	public void awardAchievementProgress(ProgressAchievement achievement, Player player, ExtendedMob mob, int amount) {
 		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
 
@@ -407,7 +392,7 @@ public class AchievementManager implements Listener {
 		int nextProgress = Math.min(maxProgress, curProgress + amount);
 
 		if (nextProgress == maxProgress && maxProgress != 0)
-			awardAchievement(achievement, player);
+			awardAchievement(achievement, player, mob);
 		else {
 			storage.progressAchievements.put(achievement.getID(), nextProgress);
 
@@ -444,7 +429,7 @@ public class AchievementManager implements Listener {
 						if (obj instanceof String) {
 							MobHunting.getInstance();
 							MobHunting.getDataStoreManager().recordAchievement(Bukkit.getOfflinePlayer(player),
-									getAchievement((String) obj));
+									getAchievement((String) obj), null);
 						} else if (obj instanceof Map) {
 							Map<String, Integer> map = (Map<String, Integer>) obj;
 							String id = map.keySet().iterator().next();
@@ -562,7 +547,6 @@ public class AchievementManager implements Listener {
 	// *************************************************************************************
 	// ACHIEVEMENTS GUI
 	// *************************************************************************************
-	// Inventory inventory, inventory2;
 	private static HashMap<CommandSender, Inventory> inventoryMapCompleted = new HashMap<CommandSender, Inventory>();
 	private static HashMap<CommandSender, Inventory> inventoryMapOngoing = new HashMap<CommandSender, Inventory>();
 	private static HashMap<CommandSender, Inventory> inventoryMapNotStarted = new HashMap<CommandSender, Inventory>();
@@ -646,7 +630,7 @@ public class AchievementManager implements Listener {
 
 				boolean inProgress = false;
 				int n = 0;
-				for (Map.Entry<Achievement, Integer> achievement : data) {
+				for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
 					if (achievement.getValue() == -1 && (achievement.getKey().getPrize() > 0
 							|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
 						if (!gui) {
@@ -678,6 +662,7 @@ public class AchievementManager implements Listener {
 								n++;
 							} else {
 								Messages.debug("No room for more Achievements");
+								break for_loop;
 							}
 					} else
 						inProgress = true;
@@ -690,7 +675,7 @@ public class AchievementManager implements Listener {
 								ChatColor.YELLOW + Messages.getString("mobhunting.commands.listachievements.progress"));
 					}
 
-					for (Map.Entry<Achievement, Integer> achievement : data) {
+					for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
 						if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
 								&& (achievement.getKey().getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
@@ -710,11 +695,10 @@ public class AchievementManager implements Listener {
 															+ " " + ChatColor.WHITE + achievement.getValue() + " / "
 															+ ((ProgressAchievement) achievement.getKey())
 																	.getMaxProgress() });
-
 									n++;
 								} else {
 									Messages.debug("No room for more achievements");
-									break;
+									break for_loop;
 								}
 						} else
 							inProgress = true;
@@ -724,16 +708,12 @@ public class AchievementManager implements Listener {
 				int m = 0;
 				// Normal Achievement
 				if (sender instanceof Player) {
-					for (Achievement achievement : getAllAchievements()) {
+					for_loop: for (Achievement achievement : getAllAchievements()) {
 						if (!(achievement instanceof ProgressAchievement)) {
 							if (!isOnGoingOrCompleted(achievement, data)) {
 								if (achievement.getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward) {
 									if (m <= 53) {
-										if (achievement instanceof ProgressAchievement)
-											Messages.debug("Ach:%s, %s", achievement.getName(),
-													((ProgressAchievement) achievement).getExtendedMobType()
-															.getCustomHead(1, 0));
 										addInventoryDetails(achievement.getSymbol(), inventoryNotStarted, m,
 												ChatColor.YELLOW + achievement.getName(),
 												new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
@@ -743,14 +723,14 @@ public class AchievementManager implements Listener {
 										m++;
 									} else {
 										Messages.debug("No room for achievement: %s", achievement.getName());
-										break;
+										break for_loop;
 									}
 								}
 							}
 						}
 					}
 					// ProgressAchivement
-					for (Achievement achievement : getAllAchievements()) {
+					for_loop: for (Achievement achievement : getAllAchievements()) {
 						if ((achievement instanceof ProgressAchievement
 								&& (achievement.getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
@@ -771,7 +751,7 @@ public class AchievementManager implements Listener {
 										m++;
 									} else {
 										Messages.debug("No room for achievement: %s", achievement.getName());
-										break;
+										break for_loop;
 									}
 								}
 							}

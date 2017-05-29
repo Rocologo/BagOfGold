@@ -62,7 +62,7 @@ public class BasicHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return getExtendedMobType().getCustomHead(1,0);
+		return getExtendedMobType().getCustomHead(mType.getDisplayName(),1,0);
 	}
 	
 	@Override

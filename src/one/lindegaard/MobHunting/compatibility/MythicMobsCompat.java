@@ -43,14 +43,14 @@ public class MythicMobsCompat {
 			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
 			if (mPlugin.getDescription().getVersion().compareTo("4.0.0") >= 0) {
 
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
+				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with MythicMobs ("
 						+ mPlugin.getDescription().getVersion() + ")");
 				mmVersion = MythicMobVersion.MYTHICMOBS_V400;
 				supported = true;
 				Bukkit.getPluginManager().registerEvents(new MythicMobsV400Compat(), MobHunting.getInstance());
 
 			} else if (mPlugin.getDescription().getVersion().compareTo("2.5.1") >= 0) {
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with MythicMobs ("
+				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with MythicMobs ("
 						+ mPlugin.getDescription().getVersion() + ")");
 				mmVersion = MythicMobVersion.MYTHICMOBS_V251;
 				supported = true;

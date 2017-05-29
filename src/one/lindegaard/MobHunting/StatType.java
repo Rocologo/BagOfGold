@@ -35,7 +35,7 @@ public class StatType {
 					"stats." + MobPlugin.values()[i].name() + ".assists");
 
 		for (int i = 0; i < MobPlugin.values().length; ++i)
-			mValues[offset + i + 2*MobPlugin.values().length] = new StatType(MobPlugin.values()[i] + "_cash",
+			mValues[offset + i + 2 * MobPlugin.values().length] = new StatType(MobPlugin.values()[i] + "_cash",
 					"stats." + MobPlugin.values()[i].name() + ".cashs");
 
 		// Adding Vanilla Minecraft mobTypes
@@ -50,7 +50,7 @@ public class StatType {
 					"stats.assists");
 
 		for (int i = 0; i < MinecraftMob.values().length; ++i)
-			mValues[offset + i + 2*MinecraftMob.values().length] = new StatType(MinecraftMob.values()[i] + "_cash",
+			mValues[offset + i + 2 * MinecraftMob.values().length] = new StatType(MinecraftMob.values()[i] + "_cash",
 					"stats.name-format", "mob", "mobs." + MinecraftMob.values()[i].name() + ".name", "stattype",
 					"stats.cashs");
 
@@ -98,12 +98,23 @@ public class StatType {
 
 	public static StatType fromMobType(ExtendedMob mob, boolean kill) {
 		if (mob.getMobPlugin() == MobPlugin.Minecraft) {
-			return new StatType(mob.getMobtype() + "_Kill", "stats.name-format", "mob",
-					"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype", "stats.kills");
+			if (kill)
+				return new StatType(mob.getMobtype() + "_Kill", "stats.name-format", "mob",
+						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
+						"stats.kills");
+			else
+				return new StatType(mob.getMobtype() + "_Assist", "stats.name-format", "mob",
+						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
+						"stats.assists");
 		} else {
-			return new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill", "stats.name-format",
-					"mob", "mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
-					"stats.kills");
+			if (kill)
+				return new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Kill", "stats.name-format",
+						"mob", "mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
+						"stats.kills");
+			else
+				return new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist", "stats.name-format",
+						"mob", "mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
+						"stats.assists");
 		}
 	}
 

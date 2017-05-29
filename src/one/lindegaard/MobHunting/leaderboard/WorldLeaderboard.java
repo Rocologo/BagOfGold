@@ -169,7 +169,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 				if (mPeriodIndex >= mPeriod.length)
 					mPeriodIndex = 0;
 			}
-			MobHunting.getDataStoreManager().requestStats(getType(), getPeriod(), mWidth * mHeight * 2, this);
+			MobHunting.getDataStoreManager().requestStats(getStatType(), getPeriod(), mWidth * mHeight * 2, this);
 		} else {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting][WARNING] The leaderboard at "
 					+ mLocation.toString() + " has no StatType");
@@ -198,7 +198,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) signBlock.getState();
 			sign.setLine(0, ChatColor.BLUE + ChatColor.BOLD.toString() + "MobHunting");
-			String statName = getType().translateName();
+			String statName = getStatType().translateName();
 			if (statName.length() > 15) {
 				int splitPos = statName.indexOf(' ');
 
@@ -258,7 +258,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 						else
 							name1 = name1.substring(0, 12).trim();
 					sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + " " + ChatColor.BLACK + name1);
-					if (getType().getDBColumn().endsWith("_cash"))
+					if (getStatType().getDBColumn().endsWith("_cash"))
 						sign.setLine(1,
 								ChatColor.BLUE + RewardManager.getEconomy().format(Misc.round(stat1.getCash())));
 					else
@@ -278,7 +278,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 						else
 							name2 = name2.substring(0, 12).trim();
 					sign.setLine(2, ChatColor.GREEN + String.valueOf(place + 1) + " " + ChatColor.BLACK + name2);
-					if (getType().getDBColumn().endsWith("_cash"))
+					if (getStatType().getDBColumn().endsWith("_cash"))
 						sign.setLine(3,
 								ChatColor.BLUE + RewardManager.getEconomy().format(Misc.round(stat2.getCash())));
 					else
@@ -347,7 +347,7 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		mHorizontal = horizontal;
 	}
 
-	public StatType getType() {
+	public StatType getStatType() {
 		return mType[mTypeIndex];
 	}
 

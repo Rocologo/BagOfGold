@@ -34,9 +34,9 @@ public class McMMOCompat implements Listener {
 
 			if (mPlugin.getDescription().getVersion().compareTo("1.5.00") >= 0) {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with McMMO ("
+				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with McMMO ("
 						+ getMcMmoAPI().getDescription().getVersion() + ")");
-				Bukkit.getLogger().info("[MobHunting] McMMO XP rewards is "
+				Bukkit.getLogger().info("[MobHunting] McMMO Level rewards is "
 						+ (MobHunting.getConfigManager().enableMcMMOLevelRewards ? "enabled" : "disabled"));
 				supported = true;
 			} else {

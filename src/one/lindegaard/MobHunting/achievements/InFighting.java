@@ -67,7 +67,8 @@ public class InFighting implements Achievement, Listener {
 					initiator = b.getAttacker();
 
 				if (initiator != null && MobHunting.getMobHuntingManager().isHuntEnabled(initiator))
-					MobHunting.getAchievementManager().awardAchievement(this, initiator);
+					MobHunting.getAchievementManager().awardAchievement(this, initiator,
+							MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 			}
 		}
 	}

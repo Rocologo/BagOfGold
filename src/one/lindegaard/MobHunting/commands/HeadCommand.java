@@ -12,9 +12,9 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-//import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
@@ -139,8 +139,11 @@ public class HeadCommand implements ICommand, Listener {
 				if (mob != null) {
 					if (Misc.isMC18OrNewer()) {
 						// Use GameProfile
-						((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(),
-								mob.getHead(displayName, 1, mob.getHeadPrize()));
+						ItemStack head = mob.getCustomHead(displayName, amount, mob.getHeadPrize());
+						// ItemStack head = mob.getHead(displayName, 1,
+						// mob.getHeadPrize());
+						((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(), head);
+
 					} else {
 						String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
 								.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
@@ -199,14 +202,14 @@ public class HeadCommand implements ICommand, Listener {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
 						Messages.debug("The head was dropped at %s", location);
-						player.getWorld().dropItem(location, mob.getHead(mob.getFriendlyName(), 1, money));
+						player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
 
 					} else if (args.length == 3) {
 						if (Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
 							Location location = Misc.getTargetBlock(player, 3).getLocation();
 							Messages.debug("The head dropped at %s", location);
-							player.getWorld().dropItem(location, mob.getHead(mob.getFriendlyName(), 1, money));
+							player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
 
 						} else {
 							sender.sendMessage(ChatColor.RED + Messages
@@ -225,7 +228,7 @@ public class HeadCommand implements ICommand, Listener {
 						} else
 							return false;
 						Location location = new Location(world, xpos, ypos, zpos);
-						ItemStack head = mob.getHead(mob.getFriendlyName(), 1, money);
+						ItemStack head = mob.getCustomHead(mob.getDisplayName(), 1, money);
 						RewardManager.setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
 								UUID.fromString(mob.getPlayerUUID().toString()));
 						world.dropItem(location, head);
