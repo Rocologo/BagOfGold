@@ -633,6 +633,10 @@ public class AchievementManager implements Listener {
 				for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
 					if (achievement.getValue() == -1 && (achievement.getKey().getPrize() > 0
 							|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
+						if (achievement.getKey() instanceof ProgressAchievement
+								&& hasAchievement(((ProgressAchievement) achievement.getKey()).nextLevelId(), player))
+							continue for_loop;
+
 						if (!gui) {
 							lines.add(ChatColor.YELLOW + " " + achievement.getKey().getName());
 							lines.add(
@@ -667,6 +671,7 @@ public class AchievementManager implements Listener {
 					} else
 						inProgress = true;
 				}
+
 				n = 0;
 				if (inProgress) {
 					if (!gui) {
