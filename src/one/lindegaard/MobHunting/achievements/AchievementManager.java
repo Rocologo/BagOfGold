@@ -479,37 +479,37 @@ public class AchievementManager implements Listener {
 							@Override
 							public void onCompleted(Set<AchievementStore> data) {
 								Messages.debug("Loaded %s Achievements.", data.size());
-								for (AchievementStore achievement : data) {
-									if (achievement.progress == -1)
-										storage.gainedAchievements.add(achievement.id);
+								for (AchievementStore achievementStore : data) {
+									if (achievementStore.progress == -1)
+										storage.gainedAchievements.add(achievementStore.id);
 									else {
 										// Check if there is progress
 										// achievements with a wrong status
-										if (getAchievement(achievement.id) instanceof ProgressAchievement
-												&& achievement.progress != 0
-												&& achievement.progress != ((ProgressAchievement) getAchievement(
-														achievement.id)).getMaxProgress()
-												&& ((ProgressAchievement) getAchievement(achievement.id))
+										if (getAchievement(achievementStore.id) instanceof ProgressAchievement
+												&& achievementStore.progress != 0
+												&& achievementStore.progress != ((ProgressAchievement) getAchievement(
+														achievementStore.id)).getMaxProgress()
+												&& ((ProgressAchievement) getAchievement(achievementStore.id))
 														.inheritFrom() != null) {
 											boolean gained = false;
 											for (AchievementStore as : data) {
 												if (as.id.equalsIgnoreCase(
-														((ProgressAchievement) getAchievement(achievement.id))
+														((ProgressAchievement) getAchievement(achievementStore.id))
 																.nextLevelId())) {
 													Messages.debug(
 															"Error in mh_Achievements: %s=%s. Changing status to completed. ",
-															achievement.id, achievement.progress);
+															achievementStore.id, achievementStore.progress);
 													MobHunting.getDataStoreManager().recordAchievementProgress(player,
-															(ProgressAchievement) getAchievement(achievement.id), -1);
-													storage.gainedAchievements.add(achievement.id);
+															(ProgressAchievement) getAchievement(achievementStore.id), -1);
+													storage.gainedAchievements.add(achievementStore.id);
 													gained = true;
 													break;
 												}
 											}
 											if (!gained)
-												storage.progressAchievements.put(achievement.id, achievement.progress);
+												storage.progressAchievements.put(achievementStore.id, achievementStore.progress);
 										} else {
-											storage.progressAchievements.put(achievement.id, achievement.progress);
+											storage.progressAchievements.put(achievementStore.id, achievementStore.progress);
 										}
 									}
 
