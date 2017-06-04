@@ -600,16 +600,18 @@ public class AchievementManager implements Listener {
 				list.sort(comparator);
 				data = list;
 
-				int outOf = 0;
+				//int outOf = 0;
 
-				for (Achievement achievement : getAllAchievements()) {
-					if (achievement instanceof ProgressAchievement
-							&& ((ProgressAchievement) achievement).getMaxProgress() != 0) {
-						if (((ProgressAchievement) achievement).inheritFrom() == null)
-							++outOf;
-					} else
-						++outOf;
-				}
+				//for (Achievement achievement : getAllAchievements()) {
+				//	if (achievement instanceof ProgressAchievement
+				//			&& ((ProgressAchievement) achievement).getMaxProgress() != 0) {
+				//		if (((ProgressAchievement) achievement).inheritFrom() == null)
+				//			++outOf;
+				//	} else
+				//		++outOf;
+				//}
+				
+				int outOf = getAllAchievements().size();
 
 				int count = 0;
 				for (Map.Entry<Achievement, Integer> achievement : data) {
