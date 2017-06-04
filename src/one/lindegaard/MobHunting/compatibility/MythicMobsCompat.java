@@ -87,6 +87,10 @@ public class MythicMobsCompat {
 		return !MobHunting.getConfigManager().disableIntegrationMythicmobs;
 	}
 
+	public static HashMap<String, RewardData> getMobRewardData() {
+		return mMobRewardData;
+	}
+
 	public static boolean isMythicMob(String mob) {
 		switch (mmVersion) {
 		case MYTHICMOBS_V251:
@@ -116,8 +120,8 @@ public class MythicMobsCompat {
 		return null;
 	}
 
-	public static HashMap<String, RewardData> getMobRewardData() {
-		return mMobRewardData;
+	public static int getProgressAchievementLevel1(String mobtype) {
+		return mMobRewardData.get(mobtype).getAchivementLevel1();
 	}
 
 	// **************************************************************************

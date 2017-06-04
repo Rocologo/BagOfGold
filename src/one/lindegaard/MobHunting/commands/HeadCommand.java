@@ -100,7 +100,7 @@ public class HeadCommand implements ICommand, Listener {
 				}
 
 				// get MobType / PlayerName
-				MinecraftMob mob = MinecraftMob.getExtendedMobType(args[2]);
+				MinecraftMob mob = MinecraftMob.getMinecraftMobType(args[2]);
 				if (mob == null) {
 					offlinePlayer = Bukkit.getOfflinePlayer(args[2]);
 					if (offlinePlayer != null) {
@@ -194,7 +194,7 @@ public class HeadCommand implements ICommand, Listener {
 			// /mh head drop <head> <x> <y> <z> <world>
 			if (sender.hasPermission("mobhunting.money.drop")) {
 				// /mh head drop
-				MinecraftMob mob = MinecraftMob.getExtendedMobType(args[1]);
+				MinecraftMob mob = MinecraftMob.getMinecraftMobType(args[1]);
 				if (mob != null) {
 					// double money = mob.getHeadPrize();
 					double money = 0;

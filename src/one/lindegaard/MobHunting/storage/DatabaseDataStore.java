@@ -20,6 +20,7 @@ import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.mobs.PluginManager;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
@@ -814,6 +815,45 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 	}
 
+	@Override
+	public void insertSmartGiants() {
+		int n = 0;
+		try {
+			Connection mConnection = setupConnection();
+			Statement statement = mConnection.createStatement();
+			for (String mob : SmartGiantsCompat.getMobRewardData().keySet())
+				if (SmartGiantsCompat.isSmartGiants(mob)
+						&& getMobIdFromExtendedMobType(mob, MobPlugin.SmartGiants) == 0) {
+					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (6,'" + mob + "')");
+					n++;
+				}
+			if (n > 0)
+				Bukkit.getLogger().info("[MobHunting] " + n + " SmartGiants was inserted to mh_Mobs");
+			statement.close();
+			mConnection.commit();
+			mConnection.close();
+		} catch (SQLException | DataStoreException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void insertSmartGiants(String mob) {
+		if (getMobIdFromExtendedMobType(mob, MobPlugin.SmartGiants) == 0)
+			try {
+				Connection mConnection = setupConnection();
+				Statement statement = mConnection.createStatement();
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (6,'" + mob + "')");
+				Bukkit.getLogger().info("[MobHunting] SmartGiants MobType " + mob + " was inserted to mh_Mobs");
+				statement.close();
+				mConnection.commit();
+				mConnection.close();
+			} catch (SQLException | DataStoreException e) {
+				e.printStackTrace();
+			}
+	}
+
+	
 	// ******************************************************************
 	// Bounties
 	// ******************************************************************
@@ -1261,7 +1301,13 @@ public abstract class DatabaseDataStore implements IDataStore {
 					if (!MysteriousHalloweenCompat.isSupported() || MysteriousHalloweenCompat.isDisabledInConfig())
 						continue;
 					break;
+				case SmartGiants:
+					if (!SmartGiantsCompat.isSupported() || SmartGiantsCompat.isDisabledInConfig())
+						continue;
+					break;
 				case Minecraft:
+					break;
+				default:
 					break;
 				}
 				mobs.add(new ExtendedMob(set.getInt("MOB_ID"), PluginManager.valueOf(set.getInt("PLUGIN_ID")),

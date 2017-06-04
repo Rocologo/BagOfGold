@@ -240,4 +240,8 @@ public class CustomMobsCompat implements Listener {
 				new FixedMetadataValue(MobHunting.getInstance(), mMobRewardData.get(mob.getName())));
 	}
 
+	public static int getProgressAchievementLevel1(String mobtype) {
+		return mMobRewardData.get(mobtype).getAchivementLevel1();
+	}
+
 }

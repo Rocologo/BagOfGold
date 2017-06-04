@@ -18,8 +18,14 @@ import java.util.UUID;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
+import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
+import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.storage.AchievementStore;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
@@ -105,14 +111,82 @@ public class AchievementManager implements Listener {
 		registerAchievement(new WolfKillAchievement());
 
 		for (MinecraftMob type : MinecraftMob.values()) {
-			registerAchievement(new BasicHuntAchievement(type));
-			registerAchievement(new SecondHuntAchievement(type));
-			registerAchievement(new ThirdHuntAchievement(type));
-			registerAchievement(new FourthHuntAchievement(type));
-			registerAchievement(new FifthHuntAchievement(type));
-			registerAchievement(new SixthHuntAchievement(type));
-			registerAchievement(new SeventhHuntAchievement(type));
+			ExtendedMob extendedMob = new ExtendedMob(MobPlugin.Minecraft, type.name());
+			registerAchievement(new BasicHuntAchievement(extendedMob));
+			registerAchievement(new SecondHuntAchievement(extendedMob));
+			registerAchievement(new ThirdHuntAchievement(extendedMob));
+			registerAchievement(new FourthHuntAchievement(extendedMob));
+			registerAchievement(new FifthHuntAchievement(extendedMob));
+			registerAchievement(new SixthHuntAchievement(extendedMob));
+			registerAchievement(new SeventhHuntAchievement(extendedMob));
+			registerAchievement(new EighthHuntAchievement(extendedMob));
 		}
+
+		if (MythicMobsCompat.isSupported())
+			for (String type : MythicMobsCompat.getMobRewardData().keySet()) {
+				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MythicMobs, type);
+				registerAchievement(new BasicHuntAchievement(extendedMob));
+				registerAchievement(new SecondHuntAchievement(extendedMob));
+				registerAchievement(new ThirdHuntAchievement(extendedMob));
+				registerAchievement(new FourthHuntAchievement(extendedMob));
+				registerAchievement(new FifthHuntAchievement(extendedMob));
+				registerAchievement(new SixthHuntAchievement(extendedMob));
+				registerAchievement(new SeventhHuntAchievement(extendedMob));
+				registerAchievement(new EighthHuntAchievement(extendedMob));
+			}
+
+		if (CitizensCompat.isSupported())
+			for (String type : CitizensCompat.getMobRewardData().keySet()) {
+				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.Citizens, type);
+				registerAchievement(new BasicHuntAchievement(extendedMob));
+				registerAchievement(new SecondHuntAchievement(extendedMob));
+				registerAchievement(new ThirdHuntAchievement(extendedMob));
+				registerAchievement(new FourthHuntAchievement(extendedMob));
+				registerAchievement(new FifthHuntAchievement(extendedMob));
+				registerAchievement(new SixthHuntAchievement(extendedMob));
+				registerAchievement(new SeventhHuntAchievement(extendedMob));
+				registerAchievement(new EighthHuntAchievement(extendedMob));
+			}
+
+		if (MysteriousHalloweenCompat.isSupported())
+			for (String type : MysteriousHalloweenCompat.getMobRewardData().keySet()) {
+				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MysteriousHalloween, type);
+				registerAchievement(new BasicHuntAchievement(extendedMob));
+				registerAchievement(new SecondHuntAchievement(extendedMob));
+				registerAchievement(new ThirdHuntAchievement(extendedMob));
+				registerAchievement(new FourthHuntAchievement(extendedMob));
+				registerAchievement(new FifthHuntAchievement(extendedMob));
+				registerAchievement(new SixthHuntAchievement(extendedMob));
+				registerAchievement(new SeventhHuntAchievement(extendedMob));
+				registerAchievement(new EighthHuntAchievement(extendedMob));
+			}
+
+		if (CustomMobsCompat.isSupported())
+			for (String type : CustomMobsCompat.getMobRewardData().keySet()) {
+				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MysteriousHalloween, type);
+				registerAchievement(new BasicHuntAchievement(extendedMob));
+				registerAchievement(new SecondHuntAchievement(extendedMob));
+				registerAchievement(new ThirdHuntAchievement(extendedMob));
+				registerAchievement(new FourthHuntAchievement(extendedMob));
+				registerAchievement(new FifthHuntAchievement(extendedMob));
+				registerAchievement(new SixthHuntAchievement(extendedMob));
+				registerAchievement(new SeventhHuntAchievement(extendedMob));
+				registerAchievement(new EighthHuntAchievement(extendedMob));
+			}
+
+		if (TARDISWeepingAngelsCompat.isSupported())
+			for (String type : TARDISWeepingAngelsCompat.getMobRewardData().keySet()) {
+				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.TARDISWeepingAngels, type);
+				registerAchievement(new BasicHuntAchievement(extendedMob));
+				registerAchievement(new SecondHuntAchievement(extendedMob));
+				registerAchievement(new ThirdHuntAchievement(extendedMob));
+				registerAchievement(new FourthHuntAchievement(extendedMob));
+				registerAchievement(new FifthHuntAchievement(extendedMob));
+				registerAchievement(new SixthHuntAchievement(extendedMob));
+				registerAchievement(new SeventhHuntAchievement(extendedMob));
+				registerAchievement(new EighthHuntAchievement(extendedMob));
+			}
+
 	}
 
 	public boolean hasAchievement(String achievement, OfflinePlayer player) {
@@ -203,8 +277,9 @@ public class AchievementManager implements Listener {
 						Achievement achievement = mAchievements.get(stored.id);
 						achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement,
 								stored.progress));
-						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
-								getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
+						if (((ProgressAchievement) achievement).inheritFrom() != null)
+							toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
+									getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
 					}
 				}
 
@@ -362,11 +437,11 @@ public class AchievementManager implements Listener {
 		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
 
-		if (achievement.getExtendedMobType().getMax() == 0) {
+		if (achievement.getExtendedMob().getProgressAchievementLevel1() == 0) {
 			Messages.debug(
 					"[AchievementBlocked] ProgressAchievement for killing a %s is disabled (%s_level1 is 0 in config.yml)",
-					achievement.getExtendedMobType().getExtendedMobType().toLowerCase(),
-					achievement.getExtendedMobType().getExtendedMobType().toLowerCase());
+					achievement.getExtendedMob().getMobtype().toLowerCase(),
+					achievement.getExtendedMob().getMobtype().toLowerCase());
 			return;
 		}
 
@@ -600,17 +675,19 @@ public class AchievementManager implements Listener {
 				list.sort(comparator);
 				data = list;
 
-				//int outOf = 0;
+				// int outOf = 0;
 
-				//for (Achievement achievement : getAllAchievements()) {
-				//	if (achievement instanceof ProgressAchievement
-				//			&& ((ProgressAchievement) achievement).getMaxProgress() != 0) {
-				//		if (((ProgressAchievement) achievement).inheritFrom() == null)
-				//			++outOf;
-				//	} else
-				//		++outOf;
-				//}
-				
+				// for (Achievement achievement : getAllAchievements()) {
+				// if (achievement instanceof ProgressAchievement
+				// && ((ProgressAchievement) achievement).getMaxProgress() != 0)
+				// {
+				// if (((ProgressAchievement) achievement).inheritFrom() ==
+				// null)
+				// ++outOf;
+				// } else
+				// ++outOf;
+				// }
+
 				int outOf = getAllAchievements().size();
 
 				int count = 0;
@@ -693,7 +770,8 @@ public class AchievementManager implements Listener {
 								&& (achievement.getKey().getPrize() > 0
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0
-								&& ((ProgressAchievement) achievement.getKey()).getExtendedMobType().getMax() != 0) {
+								&& ((ProgressAchievement) achievement.getKey()).getExtendedMob()
+										.getProgressAchievementLevel1() != 0) {
 							if (!gui)
 								lines.add(ChatColor.GRAY + " " + achievement.getKey().getName() + ChatColor.WHITE + "  "
 										+ achievement.getValue() + " / "

@@ -9,15 +9,19 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class RewardData {
+	private final static int PROGRESS_ACHIEVEMENT_LEVEL1=50;
 	private MobPlugin mobPluginName;
 	private String mobType = "";
 	private String mobName = "";
 	private String reward = "5";
 	private String consoleRunCommand = "";
 	private String rewardDescription = "";
+	@Deprecated
 	private int propability = 100;
+	@Deprecated
 	private int propabilityBase = 100;
 	private double chance = 1;
+	private int progressAchievementLevel1 = PROGRESS_ACHIEVEMENT_LEVEL1;
 	// McMMO
 	private double mcMMOSkillRewardChance = 0.02;
 	private int mcMMOSkillRewardAmount = 1;
@@ -116,6 +120,14 @@ public class RewardData {
 		this.chance = chance;
 	}
 
+	public int getAchivementLevel1() {
+		return progressAchievementLevel1;
+	}
+
+	public void setAchivementLevel1(int achivementLevel1) {
+		this.progressAchievementLevel1 = achivementLevel1;
+	}
+
 	// **************************************************************************
 	// Load & Save
 	// **************************************************************************
@@ -161,6 +173,7 @@ public class RewardData {
 		section.set("chance", chance);
 		section.set("mcmmo_chance", mcMMOSkillRewardChance);
 		section.set("mcmmo_xp", mcMMOSkillRewardAmount);
+		section.set("achievement_level1", progressAchievementLevel1);
 	}
 
 	public Map<String, Object> write() {
@@ -179,6 +192,7 @@ public class RewardData {
 		objects.put("chance", chance);
 		objects.put("mcmmo_chance", mcMMOSkillRewardChance);
 		objects.put("mcmmo_xp", mcMMOSkillRewardAmount);
+		objects.put("achievement_level1", progressAchievementLevel1);
 		return objects;
 	}
 
@@ -196,6 +210,7 @@ public class RewardData {
 			chance = toDouble(data.get("chance"));
 		mcMMOSkillRewardChance = data.get("mcmmo_chance") != null ? (Double) toDouble(data.get("mcmmo_chance")) : 0.02;
 		mcMMOSkillRewardAmount = data.get("mcmmo_xp") != null ? (int) toInt(data.get("mcmmo_xp")) : 1;
+		progressAchievementLevel1 = data.get("achivement_level1") != null ? (int) toInt(data.get("achivement_level1")) : PROGRESS_ACHIEVEMENT_LEVEL1;
 	}
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException, IllegalStateException {
@@ -213,6 +228,7 @@ public class RewardData {
 		}
 		mcMMOSkillRewardChance = section.getDouble("mcmmo_chance", 0.02);
 		mcMMOSkillRewardAmount = section.getInt("mcmmo_xp", 1);
+		progressAchievementLevel1 = section.getInt("achivement_level1",PROGRESS_ACHIEVEMENT_LEVEL1);
 	}
 
 	public double getMcMMOSkillRewardChance() {

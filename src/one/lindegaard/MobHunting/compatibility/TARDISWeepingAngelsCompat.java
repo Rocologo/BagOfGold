@@ -218,4 +218,8 @@ public class TARDISWeepingAngelsCompat implements Listener {
 				new FixedMetadataValue(mPlugin, mMobRewardData.get(monster.name())));
 	}
 
+	public static int getProgressAchievementLevel1(String mobtype) {
+		return mMobRewardData.get(mobtype).getAchivementLevel1();
+	}
+
 }

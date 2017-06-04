@@ -630,16 +630,17 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "butcher-head-prize", category = "villager")
 	public String butcherHeadPrize = "0";
 
-	@ConfigField(name = "cartographer", category = "villager")
-	public String cartographerPrize = "1:2";
-	@ConfigField(name = "cartographer-cmd", category = "villager")
-	public String cartographerCmd = "mobhunt head give {player} cartographer Cartographer 1";
-	@ConfigField(name = "cartographer-cmd-desc", category = "villager")
-	public String cartographerCmdDesc = "You got a Cartographer skull";
-	@ConfigField(name = "cartographer-cmd-run-chance", category = "villager")
-	public double cartographerCmdRunChance = 1.00;
-	@ConfigField(name = "cartographer-head-prize", category = "villager")
-	public String cartographerHeadPrize = "0";
+	// @ConfigField(name = "cartographer", category = "villager")
+	// public String cartographerPrize = "1:2";
+	// @ConfigField(name = "cartographer-cmd", category = "villager")
+	// public String cartographerCmd = "mobhunt head give {player} cartographer
+	// Cartographer 1";
+	// @ConfigField(name = "cartographer-cmd-desc", category = "villager")
+	// public String cartographerCmdDesc = "You got a Cartographer skull";
+	// @ConfigField(name = "cartographer-cmd-run-chance", category = "villager")
+	// public double cartographerCmdRunChance = 1.00;
+	// @ConfigField(name = "cartographer-head-prize", category = "villager")
+	// public String cartographerHeadPrize = "0";
 
 	@ConfigField(name = "evoker", category = "villager")
 	public String evokerPrize = "10";
@@ -707,7 +708,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "priest-head-prize", category = "villager")
 	public String priestHeadPrize = "0";
 
-	@ConfigField(name = "villager", category = "villager")
+	@ConfigField(name = "villager", category = "villager", comment = "This is the Villager in MC1.7.10")
 	public String villagerPrize = "1";
 	@ConfigField(name = "villager-cmd", category = "villager")
 	public String villagerCmd = "mobhunt head give {player} Villager";
@@ -2184,6 +2185,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-mysterious-halloween", category = "plugins", comment = "Disable integration with MysteriousHalloween."
 			+ "\nhttps://www.spigotmc.org/resources/mysterioushalloween.13059/")
 	public boolean disableIntegrationMysteriousHalloween = false;
+
+	@ConfigField(name = "disable-integration-smartgiants", category = "plugins", comment = "Disable integration with SmartGiants."
+			+ "\nhttps://www.spigotmc.org/threads/smartgiants.55208/")
+	public boolean disableIntegrationSmartGiants = false;
 
 	@ConfigField(name = "disable-integration-placeholderapi", category = "plugins", comment = "Disable integration with PlaceholderAPI."
 			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")

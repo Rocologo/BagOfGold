@@ -2,7 +2,8 @@ package one.lindegaard.MobHunting.mobs;
 
 public enum MobPlugin {
 	Minecraft("Minecraft", 0), MythicMobs("MythicMobs", 1), Citizens("Citizens", 2), TARDISWeepingAngels(
-			"TARDISWeepingAngels", 3), CustomMobs("CustomMobs", 4), MysteriousHalloween("MysteriousHalloween", 5);
+			"TARDISWeepingAngels", 3), CustomMobs("CustomMobs",
+					4), MysteriousHalloween("MysteriousHalloween", 5), SmartGiants("SmartGiants", 6);
 
 	private final String name;
 	private final Integer id;

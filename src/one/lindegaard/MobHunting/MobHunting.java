@@ -57,6 +57,7 @@ import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
+import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
@@ -234,6 +235,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(CustomMobsCompat.class, "CustomMobs");
 		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
 		registerPlugin(CitizensCompat.class, "Citizens");
+		registerPlugin(SmartGiantsCompat.class, "SmartGiants");
 
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
 

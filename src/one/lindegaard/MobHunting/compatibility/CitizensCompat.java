@@ -325,4 +325,8 @@ public class CitizensCompat implements Listener {
 		// Messages.debug("NPCCreateNPCEvent");
 	}
 
+	public static int getProgressAchievementLevel1(String mobtype) {
+		return mMobRewardData.get(mobtype).getAchivementLevel1();
+	}
+
 }

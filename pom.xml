@@ -76,6 +76,7 @@
 		<ConquestiaMobs.jar.version>CqMobs-3.3.3.jar</ConquestiaMobs.jar.version>
 		<StackMob.jar.version>StackMob-1.6.4.jar</StackMob.jar.version>
 		<MysteriousHalloween.jar.version>MysteriousHalloween-1.3.2.jar</MysteriousHalloween.jar.version>
+		<SmartGiants.jar.version>SmartGiants-2.3.3.jar</SmartGiants.jar.version>
 		<massivecore.jar.version>MassiveCore-2.10.0.jar</massivecore.jar.version>
 		<factions.jar.version>Factions-2.10.0.jar</factions.jar.version>
 		<towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
@@ -486,6 +487,15 @@
 			<version>${MysteriousHalloween.jar.version}</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${MysteriousHalloween.jar.version}</systemPath>
+		</dependency>
+
+		<!-- SmartGiants -->
+		<dependency>
+			<groupId>me.jjm_223.smartgiants.SmartGiants</groupId>
+			<artifactId>SmartGiants</artifactId>
+			<version>${SmartGiants.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${SmartGiants.jar.version}</systemPath>
 		</dependency>
 
 		<!-- iDisguise -->

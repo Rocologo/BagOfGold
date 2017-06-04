@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
-import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class AxeMurderer implements Achievement, Listener {

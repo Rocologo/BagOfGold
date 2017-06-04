@@ -15,7 +15,7 @@ public class ResidenceCompat {
 
 	public ResidenceCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("[MobHunting] Compatibility with Residence in config.yml");
+			Bukkit.getLogger().info("[MobHunting] Compatibility with Residence is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("Residence");
 

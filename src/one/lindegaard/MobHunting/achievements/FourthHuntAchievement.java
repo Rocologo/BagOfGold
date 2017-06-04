@@ -4,29 +4,34 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class FourthHuntAchievement implements ProgressAchievement {
-	private MinecraftMob mType;
+	private ExtendedMob mExtendedMob;
 
-	public FourthHuntAchievement(MinecraftMob entity) {
-		mType = entity;
+	public FourthHuntAchievement(ExtendedMob entity) {
+		mExtendedMob = entity;
 	}
 
 	@Override
 	public String getName() {
-		return Messages.getString("achievements.hunter.4.name", "mob", mType.getFriendlyName());
+		return Messages.getString("achievements.hunter.4.name", "mob", mExtendedMob.getFriendlyName());
 	}
 
 	@Override
 	public String getID() {
-		return "hunting-level4-" + mType.name().toLowerCase();
+		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
+			return "hunting-level4-" + mExtendedMob.getName().toLowerCase();
+		else
+			return mExtendedMob.getMobPlugin().name() + "-hunting-level4-" + mExtendedMob.getMobtype().toLowerCase();
+
 	}
 
 	@Override
 	public String getDescription() {
 		return Messages.getString("achievements.hunter.4.description", "count", getMaxProgress(), "mob",
-				mType.getFriendlyName());
+				mExtendedMob.getFriendlyName());
 	}
 
 	@Override
@@ -36,17 +41,23 @@ public class FourthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public int getMaxProgress() {
-		return mType.getMax() * 10;
+		return mExtendedMob.getProgressAchievementLevel1() * 10;
 	}
 
 	@Override
 	public String inheritFrom() {
-		return "hunting-level3-" + mType.name().toLowerCase();
+		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
+			return "hunting-level3-" + mExtendedMob.getMobtype().toLowerCase();
+		else
+			return mExtendedMob.getMobPlugin().name() + "-hunting-level3-" + mExtendedMob.getMobtype().toLowerCase();
 	}
 
 	@Override
 	public String nextLevelId() {
-		return "hunting-level5-" + mType.name().toLowerCase();
+		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
+			return "hunting-level5-" + mExtendedMob.getMobtype().toLowerCase();
+		else
+			return mExtendedMob.getMobPlugin().name() + "-hunting-level5-" + mExtendedMob.getMobtype().toLowerCase();
 	}
 
 	@Override
@@ -61,11 +72,11 @@ public class FourthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return getExtendedMobType().getCustomHead(mType.getDisplayName(), 4, 0);
+		return mExtendedMob.getCustomHead(mExtendedMob.getName(), 4, 0);
 	}
 
 	@Override
-	public MinecraftMob getExtendedMobType() {
-		return mType;
+	public ExtendedMob getExtendedMob() {
+		return mExtendedMob;
 	}
 }

@@ -150,6 +150,8 @@ public interface IDataStore {
 	public void insertTARDISWeepingAngelsMobs();
 
 	public void insertMysteriousHalloweenMobs();
+	
+	public void insertSmartGiants();
 
 	public void insertCustomMobs();
 
@@ -166,5 +168,7 @@ public interface IDataStore {
 	public void insertMysteriousHalloweenMobs(String mob);
 	
 	public void insertCustomMobs(String mob);
+	
+	public void insertSmartGiants(String mob);
 
 }

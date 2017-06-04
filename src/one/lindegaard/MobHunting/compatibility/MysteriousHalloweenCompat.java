@@ -231,4 +231,8 @@ public class MysteriousHalloweenCompat implements Listener {
 		}
 	}
 
+	public static int getProgressAchievementLevel1(String mobtype) {
+		return mMobRewardData.get(mobtype).getAchivementLevel1();
+	}
+
 }

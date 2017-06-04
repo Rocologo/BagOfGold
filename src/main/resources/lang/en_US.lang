@@ -70,6 +70,9 @@ achievements.hunter.6.description=Hunt ${count} ${mob}s
 achievements.hunter.6.name=Grand Master ${mob}&r Hunter
 achievements.hunter.7.description=Hunt ${count} ${mob}s
 achievements.hunter.7.name=President Master ${mob}&r Hunter
+achievements.hunter.8.description=Hunt ${count} ${mob}s
+achievements.hunter.8.name=SuperMan ${mob}&r Hunter
+
 
 achievements.infighting.description=Get a skeleton to kill another skeleton
 achievements.infighting.name=Infighting

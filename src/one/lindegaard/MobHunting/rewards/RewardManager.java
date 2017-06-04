@@ -135,7 +135,7 @@ public class RewardManager implements Listener {
 			ItemStack is;
 			UUID uuid = null;
 			if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED")) {
-				MinecraftMob mob = MinecraftMob.getExtendedMobType(killedEntity);
+				MinecraftMob mob = MinecraftMob.getMinecraftMobType(killedEntity);
 				uuid = UUID.fromString(MH_REWARD_KILLED_UUID);
 				if (mob != null)
 					is = mob.getCustomHead(mob.getDisplayName(), 1, money);

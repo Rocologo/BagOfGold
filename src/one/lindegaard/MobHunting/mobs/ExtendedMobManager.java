@@ -15,6 +15,7 @@ import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.util.Misc;
@@ -39,6 +40,8 @@ public class ExtendedMobManager {
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs();
 		if (MysteriousHalloweenCompat.isSupported())
 			MobHunting.getStoreManager().insertMysteriousHalloweenMobs();
+		if (SmartGiantsCompat.isSupported())
+			MobHunting.getStoreManager().insertSmartGiants();
 
 		Set<ExtendedMob> set = new HashSet<ExtendedMob>();
 
@@ -134,7 +137,7 @@ public class ExtendedMobManager {
 		} else {
 			// StatType
 			mobPlugin = MobPlugin.Minecraft;
-			MinecraftMob mob = MinecraftMob.getExtendedMobType(entity);
+			MinecraftMob mob = MinecraftMob.getMinecraftMobType(entity);
 			if (mob != null)
 				mobtype = mob.name();
 			else {

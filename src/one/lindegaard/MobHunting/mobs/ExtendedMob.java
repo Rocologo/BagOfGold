@@ -1,11 +1,17 @@
 package one.lindegaard.MobHunting.mobs;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+
 import net.citizensnpcs.api.npc.NPC;
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 
 public class ExtendedMob {
@@ -16,6 +22,11 @@ public class ExtendedMob {
 
 	public ExtendedMob(Integer mob_id, MobPlugin mobPlugin, String mobtype) {
 		this.mob_id = mob_id;
+		this.mobPlugin = mobPlugin;
+		this.mobtype = mobtype;
+	}
+
+	public ExtendedMob(MobPlugin mobPlugin, String mobtype) {
 		this.mobPlugin = mobPlugin;
 		this.mobtype = mobtype;
 	}
@@ -71,33 +82,32 @@ public class ExtendedMob {
 	}
 
 	public String getName() {
-		switch (mobPlugin.getId()) {
-		case 1:
-			// MythicMobs
-			String name=MythicMobsCompat.getMobRewardData().get(mobtype).getMobName();
-			if (name==null || name.equals(""))
-				name=MythicMobsCompat.getMobRewardData().get(mobtype).getMobType();
+		switch (mobPlugin) {
+		case MythicMobs:
+			String name = MythicMobsCompat.getMobRewardData().get(mobtype).getMobName();
+			if (name == null || name.equals(""))
+				name = MythicMobsCompat.getMobRewardData().get(mobtype).getMobType();
 			return name;
-		case 2:
-			// Citizens
+		case Citizens:
 			NPC npc = CitizensCompat.getCitizensPlugin().getNPCRegistry().getById(Integer.valueOf(mobtype));
 			if (npc != null)
 				return npc.getName();
 			else
 				return "";
-		case 3:
-			// TARDISWeepingAngels
+		case TARDISWeepingAngels:
 			return TARDISWeepingAngelsCompat.getMobRewardData().get(mobtype).getMobName();
-		case 4:
-			// CustomMobs
+		case CustomMobs:
 			return CustomMobsCompat.getMobRewardData().get(mobtype).getMobName();
-		case 5:
-			//MysteriousHalloween
+		case MysteriousHalloween:
 			return MysteriousHalloweenCompat.getMobRewardData().get(mobtype).getMobName();
-		case 0:
-			// Minecraft
+		case Minecraft:
+			return mobtype;
+		case SmartGiants:
+			return "SmartGiant";
+		default:
+			break;
 		}
-		return mobtype;
+		return null;
 	}
 
 	public String getFriendlyName() {
@@ -105,5 +115,41 @@ public class ExtendedMob {
 			return Messages.getString("mobs." + getName() + ".name");
 		else
 			return Messages.getString("mobs." + mobPlugin + "_" + getMobtype() + ".name");
+	}
+
+	public int getProgressAchievementLevel1() {
+		switch (mobPlugin) {
+		case Minecraft:
+			return MinecraftMob.getMinecraftMobType(mobtype).getProgressAchievementLevel1();
+		case MythicMobs:
+			return MythicMobsCompat.getProgressAchievementLevel1(mobtype);
+		case Citizens:
+			return CitizensCompat.getProgressAchievementLevel1(mobtype);
+		case MysteriousHalloween:
+			return MysteriousHalloweenCompat.getProgressAchievementLevel1(mobtype);
+		case TARDISWeepingAngels:
+			return TARDISWeepingAngelsCompat.getProgressAchievementLevel1(mobtype);
+		case CustomMobs:
+			return CustomMobsCompat.getProgressAchievementLevel1(mobtype);
+		case SmartGiants:
+			return SmartGiantsCompat.getProgressAchievementLevel1(mobtype);
+		default:
+			break;
+		}
+		return 0;
+	}
+
+	public ItemStack getCustomHead(String name, int amount, int money) {
+		switch (mobPlugin) {
+		case Minecraft:
+			return MinecraftMob.getMinecraftMobType(name).getCustomHead(name, amount, money);
+		default:
+			return new ItemStack(Material.IRON_INGOT, amount);
+		}
+	}
+
+	public boolean matches(Entity entity) {
+		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(entity);
+		return mobtype.equalsIgnoreCase(mob.mobtype);
 	}
 }
