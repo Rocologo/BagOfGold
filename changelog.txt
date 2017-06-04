@@ -1,3 +1,6 @@
+V4.9.4
+* Fixed Ticket 235 - NPE when achieving Level 7 achievements (https://github.com/Rocologo/MobHunting/issues/235)
+* Fixed Ticket 236 - where players got a reward while fishing on the ground. (https://github.com/Rocologo/MobHunting/issues/236)  
 V4.9.3
 * Fixed "/mh head give ...." command. Give playerheadsnow works again.
 * Fixed "/mh achivements gui" so its show all completed Achievements. 

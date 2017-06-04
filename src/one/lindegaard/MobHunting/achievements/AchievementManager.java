@@ -120,6 +120,8 @@ public class AchievementManager implements Listener {
 	}
 
 	public boolean hasAchievement(Achievement achievement, OfflinePlayer player) {
+		if (achievement == null)
+			return false;
 		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null)
 			return false;
@@ -500,16 +502,19 @@ public class AchievementManager implements Listener {
 															"Error in mh_Achievements: %s=%s. Changing status to completed. ",
 															achievementStore.id, achievementStore.progress);
 													MobHunting.getDataStoreManager().recordAchievementProgress(player,
-															(ProgressAchievement) getAchievement(achievementStore.id), -1);
+															(ProgressAchievement) getAchievement(achievementStore.id),
+															-1);
 													storage.gainedAchievements.add(achievementStore.id);
 													gained = true;
 													break;
 												}
 											}
 											if (!gained)
-												storage.progressAchievements.put(achievementStore.id, achievementStore.progress);
+												storage.progressAchievements.put(achievementStore.id,
+														achievementStore.progress);
 										} else {
-											storage.progressAchievements.put(achievementStore.id, achievementStore.progress);
+											storage.progressAchievements.put(achievementStore.id,
+													achievementStore.progress);
 										}
 									}
 
@@ -634,6 +639,7 @@ public class AchievementManager implements Listener {
 					if (achievement.getValue() == -1 && (achievement.getKey().getPrize() > 0
 							|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
 						if (achievement.getKey() instanceof ProgressAchievement
+								&& ((ProgressAchievement) achievement.getKey()).nextLevelId() != null
 								&& hasAchievement(((ProgressAchievement) achievement.getKey()).nextLevelId(), player))
 							continue for_loop;
 

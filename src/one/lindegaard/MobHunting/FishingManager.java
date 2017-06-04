@@ -71,6 +71,7 @@ public class FishingManager implements Listener {
 
 		State state = event.getState();
 		Entity fish = event.getCaught();
+
 		if (fish == null || (fish != null && !(fish instanceof Item)))
 			Messages.debug("FishingEvent: State=%s", state);
 		else
@@ -93,6 +94,12 @@ public class FishingManager implements Listener {
 			if (fish == null || !(fish instanceof Item)
 					|| ((Item) fish).getItemStack().getType() != Material.RAW_FISH) {
 				Messages.debug("FishingBlocked: %s only get rewards for fish", player.getName());
+				return;
+			}
+
+			Material material_under_hook = fish.getLocation().getBlock().getType();
+			if (!(material_under_hook == Material.WATER || material_under_hook == Material.STATIONARY_WATER )) {
+				Messages.debug("FishingBlocked: %s was fishing on %s", player.getName(), material_under_hook);
 				return;
 			}
 
@@ -284,6 +291,7 @@ public class FishingManager implements Listener {
 			break;
 		case IN_GROUND:
 			// When a bobber is stuck in the ground
+			Messages.debug("State is IN_GROUND");
 			break;
 		// default:
 		// break;
