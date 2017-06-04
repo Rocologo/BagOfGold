@@ -152,7 +152,7 @@ public class ProtocolLibHelper {
 							this.cancel();
 					}
 				}
-			}.runTaskTimer(MobHunting.getInstance(), 0L, 20L);
+			}.runTaskTimerAsynchronously(MobHunting.getInstance(), 0L, 20L);
 		}
 	}
 }
