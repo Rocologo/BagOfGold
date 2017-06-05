@@ -42,7 +42,7 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public double getPrize() {
-		return MobHunting.getConfigManager().specialHunter7;
+		return MobHunting.getConfigManager().specialHunter8;
 	}
 
 	@Override
@@ -65,12 +65,12 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public String getPrizeCmd() {
-		return MobHunting.getConfigManager().specialHunter7Cmd;
+		return MobHunting.getConfigManager().specialHunter8Cmd;
 	}
 
 	@Override
 	public String getPrizeCmdDescription() {
-		return MobHunting.getConfigManager().specialHunter7CmdDesc;
+		return MobHunting.getConfigManager().specialHunter8CmdDesc;
 	}
 
 	@Override

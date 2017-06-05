@@ -8,6 +8,7 @@ V4.9.4
 * Added Support for SmartGiants (https://www.spigotmc.org/resources/smartgiants.4882/)
 * Removed Cartographer from config.yml
 * Fixed Bounty error when using MySQL with a non Locale.US settings.    
+* Removed Achivements from the GUI if both Prize=0 and mob-run-cmd="" and show-achivements-without-a-reward=false
 V4.9.3
 * Fixed "/mh head give ...." command. Give playerheadsnow works again.
 * Fixed "/mh achivements gui" so its show all completed Achievements. 

@@ -22,6 +22,7 @@ import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
@@ -186,6 +187,18 @@ public class AchievementManager implements Listener {
 				registerAchievement(new SeventhHuntAchievement(extendedMob));
 				registerAchievement(new EighthHuntAchievement(extendedMob));
 			}
+
+		if (SmartGiantsCompat.isSupported()) {
+			ExtendedMob extendedMob = new ExtendedMob(MobPlugin.SmartGiants, SmartGiantsCompat.MONSTER_NAME);
+			registerAchievement(new BasicHuntAchievement(extendedMob));
+			registerAchievement(new SecondHuntAchievement(extendedMob));
+			registerAchievement(new ThirdHuntAchievement(extendedMob));
+			registerAchievement(new FourthHuntAchievement(extendedMob));
+			registerAchievement(new FifthHuntAchievement(extendedMob));
+			registerAchievement(new SixthHuntAchievement(extendedMob));
+			registerAchievement(new SeventhHuntAchievement(extendedMob));
+			registerAchievement(new EighthHuntAchievement(extendedMob));
+		}
 
 	}
 
@@ -715,8 +728,9 @@ public class AchievementManager implements Listener {
 				boolean inProgress = false;
 				int n = 0;
 				for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
-					if (achievement.getValue() == -1 && (achievement.getKey().getPrize() > 0
-							|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
+					if (achievement.getValue() == -1
+							&& (!(achievement.getKey().getPrize() == 0 && achievement.getKey().getPrizeCmd().isEmpty())
+									|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
 						if (achievement.getKey() instanceof ProgressAchievement
 								&& ((ProgressAchievement) achievement.getKey()).nextLevelId() != null
 								&& hasAchievement(((ProgressAchievement) achievement.getKey()).nextLevelId(), player))
@@ -767,7 +781,8 @@ public class AchievementManager implements Listener {
 
 					for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
 						if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
-								&& (achievement.getKey().getPrize() > 0
+								&& (!(achievement.getKey().getPrize() == 0
+										&& achievement.getKey().getPrizeCmd().isEmpty())
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0
 								&& ((ProgressAchievement) achievement.getKey()).getExtendedMob()
@@ -823,7 +838,7 @@ public class AchievementManager implements Listener {
 					// ProgressAchivement
 					for_loop: for (Achievement achievement : getAllAchievements()) {
 						if ((achievement instanceof ProgressAchievement
-								&& (achievement.getPrize() > 0
+								&& (!(achievement.getPrize() == 0 && achievement.getPrizeCmd().isEmpty())
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
 							boolean ongoing = isOnGoingOrCompleted(achievement, data);

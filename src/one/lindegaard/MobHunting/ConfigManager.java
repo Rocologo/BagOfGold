@@ -1152,6 +1152,12 @@ public class ConfigManager extends AutoConfig {
 	public String specialHunter7Cmd = "give {player} gold_ingot 60";
 	@ConfigField(name = "hunter7-cmd-desc", category = "achievements")
 	public String specialHunter7CmdDesc = "Enjoy your 60 Gold ingots";
+	@ConfigField(name = "hunter8", category = "achievements")
+	public double specialHunter8 = 160000;
+	@ConfigField(name = "hunter8-cmd", category = "achievements")
+	public String specialHunter8Cmd = "give {player} gold_ingot 120";
+	@ConfigField(name = "hunter8-cmd-desc", category = "achievements")
+	public String specialHunter8CmdDesc = "Enjoy your 120 Gold ingots";
 
 	// #####################################################################################
 	// Achievement Hunter Levels

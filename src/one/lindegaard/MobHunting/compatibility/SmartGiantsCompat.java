@@ -217,9 +217,11 @@ public class SmartGiantsCompat implements Listener {
 		Entity entity = event.getEntity();
 
 		if (isSmartGiants(entity)) {
-			Messages.debug("A SmartGiant was spawned at %s,%s,%s in %s", event.getEntity().getLocation().getBlock(),
-					event.getEntity().getLocation().getBlockY(), event.getEntity().getLocation().getBlockZ(),
-					event.getEntity().getLocation().getWorld());
+			Messages.debug("A SmartGiant was spawned at %s,%s,%s in %s", 
+					event.getEntity().getLocation().getBlockX(),
+					event.getEntity().getLocation().getBlockY(),
+					event.getEntity().getLocation().getBlockZ(),
+					event.getEntity().getLocation().getWorld().getName());
 			String mobtype = MONSTER_NAME;
 			if (mMobRewardData != null && !mMobRewardData.containsKey(mobtype)) {
 				Messages.debug("New SmartGiants mob found=%s (%s)", mobtype, mobtype.toString());

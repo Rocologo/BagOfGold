@@ -320,22 +320,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				mInsertBounty.executeBatch();
 				mInsertBounty.close();
 
-				// "DELETE FROM mh_Bounties WHERE WANTEDPLAYER_ID=? AND
-				// BOUNTYOWNER_ID=? AND WORLDGROUP=?;");
-				//openPreparedStatements(mConnection, PreparedConnectionType.INSERT_BOUNTY);
-				//for (Bounty bounty : bountyDataSet) {
-				//	if (bounty.getStatus() != BountyStatus.open) {
-				//		int bountyOwnerId = getPlayerId(bounty.getBountyOwner());
-				//		int wantedPlayerId = getPlayerId(bounty.getWantedPlayer());
-				//		mDeleteBounty.setInt(1, wantedPlayerId);
-				//		mDeleteBounty.setInt(2, bountyOwnerId);
-				//		mDeleteBounty.setString(3, bounty.getWorldGroup());
-				//		mDeleteBounty.addBatch();
-				//	}
-				//}
-				//mDeleteBounty.executeBatch();
-				//mDeleteBounty.close();
-
 				mConnection.commit();
 				mConnection.close();
 			} catch (SQLException e) {

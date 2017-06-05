@@ -134,6 +134,9 @@ public class ExtendedMobManager {
 		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(entity)) {
 			mobPlugin = MobPlugin.MysteriousHalloween;
 			mobtype = MysteriousHalloweenCompat.getMysteriousHalloweenType(entity).name();
+		} else if (SmartGiantsCompat.isSmartGiants(entity)) {
+			mobPlugin = MobPlugin.SmartGiants;
+			mobtype = SmartGiantsCompat.getSmartGiantsMobType(entity);
 		} else {
 			// StatType
 			mobPlugin = MobPlugin.Minecraft;
