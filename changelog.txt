@@ -6,7 +6,8 @@ V4.9.4
 * Added an extra EighthHuntAchivement. 
 * Added Hunt Progress Achievements for MythicMobs, MysteriousHalloween, Citizens, TARDISWeepingAngels, CustomMobs, SmartGiants
 * Added Support for SmartGiants (https://www.spigotmc.org/resources/smartgiants.4882/)
-* Removed Cartographer from config.yml   
+* Removed Cartographer from config.yml
+* Fixed Bounty error when using MySQL with a non Locale.US settings.    
 V4.9.3
 * Fixed "/mh head give ...." command. Give playerheadsnow works again.
 * Fixed "/mh achivements gui" so its show all completed Achievements. 

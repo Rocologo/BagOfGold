@@ -179,9 +179,12 @@ public class CustomMobsCompat implements Listener {
 	}
 
 	public static String getCustomMobType(Entity killed) {
-		List<MetadataValue> data = killed.getMetadata(MH_CUSTOMMOBS);
-		MetadataValue value = data.get(0);
-		return ((RewardData) value.value()).getMobType();
+		if (killed.hasMetadata(MH_CUSTOMMOBS)) {
+			List<MetadataValue> data = killed.getMetadata(MH_CUSTOMMOBS);
+			MetadataValue value = data.get(0);
+			return ((RewardData) value.value()).getMobType();
+		} else
+			return "";
 	}
 
 	public static HashMap<String, RewardData> getMobRewardData() {

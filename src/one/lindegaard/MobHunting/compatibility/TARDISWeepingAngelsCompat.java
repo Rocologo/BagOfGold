@@ -212,6 +212,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 			MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
 			// Update mob loaded into memory
 			MobHunting.getExtendedMobManager().updateExtendedMobs();
+			Messages.injectMissingMobNamesToLangFiles();
 		}
 
 		event.getEntity().setMetadata(MH_TARDISWEEPINGANGELS,

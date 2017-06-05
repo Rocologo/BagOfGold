@@ -35,6 +35,7 @@ public class SmartGiantsCompat implements Listener {
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "smartgiants-rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_SMARTGIANTS = "MH:SMARTGIANTS";
+	public static final String MONSTER_NAME = "SmartGiant"; 
 
 	// https://www.spigotmc.org/threads/smartgiants.55208/
 
@@ -94,7 +95,7 @@ public class SmartGiantsCompat implements Listener {
 
 	public static boolean isSmartGiants(String mob) {
 		if (supported) {
-			return mob.equalsIgnoreCase("SmartGiant");
+			return mob.equalsIgnoreCase(MONSTER_NAME);
 		}
 		return false;
 	}
@@ -108,9 +109,12 @@ public class SmartGiantsCompat implements Listener {
 	}
 
 	public static String getSmartGiantsMobType(Entity killed) {
-		List<MetadataValue> data = killed.getMetadata(MH_SMARTGIANTS);
-		MetadataValue value = data.get(0);
-		return ((RewardData) value.value()).getMobType();
+		if (killed.hasMetadata(MH_SMARTGIANTS)) {
+			List<MetadataValue> data = killed.getMetadata(MH_SMARTGIANTS);
+			MetadataValue value = data.get(0);
+			return ((RewardData) value.value()).getMobType();
+		} else
+			return MONSTER_NAME;
 	}
 
 	// **************************************************************************
@@ -213,7 +217,10 @@ public class SmartGiantsCompat implements Listener {
 		Entity entity = event.getEntity();
 
 		if (isSmartGiants(entity)) {
-			String mobtype = "SmartGiant";
+			Messages.debug("A SmartGiant was spawned at %s,%s,%s in %s", event.getEntity().getLocation().getBlock(),
+					event.getEntity().getLocation().getBlockY(), event.getEntity().getLocation().getBlockZ(),
+					event.getEntity().getLocation().getWorld());
+			String mobtype = MONSTER_NAME;
 			if (mMobRewardData != null && !mMobRewardData.containsKey(mobtype)) {
 				Messages.debug("New SmartGiants mob found=%s (%s)", mobtype, mobtype.toString());
 				mMobRewardData.put(mobtype, new RewardData(MobPlugin.SmartGiants, mobtype, mobtype, "100:200",
@@ -222,6 +229,7 @@ public class SmartGiantsCompat implements Listener {
 				MobHunting.getStoreManager().insertSmartGiants(mobtype);
 				// Update mob loaded into memory
 				MobHunting.getExtendedMobManager().updateExtendedMobs();
+				Messages.injectMissingMobNamesToLangFiles();
 			}
 			event.getEntity().setMetadata(MH_SMARTGIANTS, new FixedMetadataValue(mPlugin, mMobRewardData.get(mobtype)));
 		}

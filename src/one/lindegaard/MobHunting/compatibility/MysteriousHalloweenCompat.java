@@ -224,6 +224,7 @@ public class MysteriousHalloweenCompat implements Listener {
 				MobHunting.getStoreManager().insertMysteriousHalloweenMobs(monster.name());
 				// Update mob loaded into memory
 				MobHunting.getExtendedMobManager().updateExtendedMobs();
+				Messages.injectMissingMobNamesToLangFiles();
 			}
 
 			event.getEntity().setMetadata(MH_MYSTERIOUSHALLOWEEN,

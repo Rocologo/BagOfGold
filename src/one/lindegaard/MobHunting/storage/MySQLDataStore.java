@@ -35,6 +35,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 	@Override
 	protected Connection setupConnection() throws DataStoreException {
 		try {
+			Locale.setDefault(new Locale("us", "US"));
 			Class.forName("com.mysql.jdbc.Driver");
 			// return DriverManager.getConnection(
 			// "jdbc:mysql://" + MobHunting.getConfigManager().databaseHost +
@@ -56,6 +57,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			Connection c = dataSource.getConnection();
 			Statement statement = c.createStatement();
 			statement.executeUpdate("SET NAMES 'utf8'");
+			statement.executeUpdate("SET CHARACTER SET 'utf8'");
 			statement.close();
 			c.setAutoCommit(false);
 			return c;
@@ -106,8 +108,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		case INSERT_BOUNTY:
 			mInsertBounty = connection.prepareStatement("INSERT INTO mh_Bounties "
 					+ "(MOBTYPE, BOUNTYOWNER_ID, WANTEDPLAYER_ID, NPC_ID, MOB_ID, WORLDGROUP, "
-					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE, STATUS) " 
-					+ " VALUES (?,?,?,?,?,?,?,?,?,?,?);"
+					+ "CREATED_DATE, END_DATE, PRIZE, MESSAGE, STATUS) " + " VALUES (?,?,?,?,?,?,?,?,?,?,?);"
 					+ " ON DUPLICATE KEY UPDATE SET CREATED_DATE=?, END_DATE=?, PRIZE=?, MESSAGE=?, STATUS=?");
 			break;
 		case UPDATE_BOUNTY:
@@ -288,7 +289,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			throw new DataStoreException(e);
 		}
 	}
-	
+
 	@Override
 	public void saveBounties(Set<Bounty> bountyDataSet) throws DataStoreException {
 		Connection mConnection;
@@ -309,13 +310,13 @@ public class MySQLDataStore extends DatabaseDataStore {
 					mInsertBounty.setString(6, bounty.getWorldGroup());
 					mInsertBounty.setLong(7, bounty.getCreatedDate());
 					mInsertBounty.setLong(8, bounty.getEndDate());
-					mInsertBounty.setDouble(9, bounty.getPrize());
+					mInsertBounty.setString(9, String.format(Locale.US, String.valueOf(bounty.getPrize())));
 					mInsertBounty.setString(10, bounty.getMessage());
 					mInsertBounty.setInt(11, bounty.getStatus().getValue());
 					// ON DUPLCATE KEY
 					mInsertBounty.setLong(12, bounty.getCreatedDate());
 					mInsertBounty.setLong(13, bounty.getEndDate());
-					mInsertBounty.setDouble(14, bounty.getPrize());
+					mInsertBounty.setString(14, String.format(Locale.US, String.valueOf(bounty.getPrize())));
 					mInsertBounty.setString(15, bounty.getMessage());
 					mInsertBounty.setInt(16, bounty.getStatus().getValue());
 

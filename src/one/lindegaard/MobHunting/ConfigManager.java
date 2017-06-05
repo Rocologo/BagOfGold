@@ -2427,7 +2427,7 @@ public class ConfigManager extends AutoConfig {
 		} else if (SmartGiantsCompat.isSmartGiants(mob)) {
 			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(mob)))
 				return getPrice(mob, SmartGiantsCompat.getMobRewardData()
-						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardPrize());
+						.get(SmartGiantsCompat.getSmartGiantsMobType(mob)).getRewardPrize());
 			Messages.debug("SmartGiantsS %s has no reward data", SmartGiantsCompat.getSmartGiantsMobType(mob));
 			return 0;
 

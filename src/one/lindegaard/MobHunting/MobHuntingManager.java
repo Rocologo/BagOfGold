@@ -820,7 +820,7 @@ public class MobHuntingManager implements Listener {
 			return;
 		}
 
-		// Write killer name to Log
+		// Write killer name to Server Log
 		if (killer != null)
 			Messages.debug("%s killed a %s (%s)", killer.getName(), mob.getName(), mob.getMobPlugin().getName());
 		else
@@ -1542,7 +1542,7 @@ public class MobHuntingManager implements Listener {
 						killed.hasMetadata("MH:hasBonus"), cash);
 			} else {
 				Messages.debug("RecordAssistedKill: %s killed a %s (%s) Cash=%s",
-						info.getAttacker().getName()+"/"+info.getAssister().getName(), mob.getName(),
+						info.getAttacker().getName() + "/" + info.getAssister().getName(), mob.getName(),
 						mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
 				MobHunting.getDataStoreManager().recordAssist(getPlayer(killer, killed), killer, mob,
 						killed.hasMetadata("MH:hasBonus"), cash);
@@ -1657,31 +1657,30 @@ public class MobHuntingManager implements Listener {
 				Messages.debug("Command to be run:" + prizeCommand);
 				if (!MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
 					String str = prizeCommand;
-					boolean error = false;
 					do {
 						if (str.contains("|")) {
 							int n = str.indexOf("|");
 							try {
-								error = Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
+								Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
 										str.substring(0, n));
 							} catch (CommandException e) {
 								Bukkit.getConsoleSender()
 										.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
 												+ str.substring(0, n) + "\" when Mob:" + mob.getName()
 												+ " was killed by " + getPlayer(killer, killed).getName());
-								// e.printStackTrace();
+								Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str.substring(0, n));
 							}
 							str = str.substring(n + 1, str.length()).toString();
 						}
 					} while (str.contains("|"));
 					try {
-						error = Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
 					} catch (CommandException e) {
 						Bukkit.getConsoleSender()
 								.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\"" + str
 										+ "\" when Mob:" + mob.getName() + " was killed by "
 										+ getPlayer(killer, killed).getName());
-						// e.printStackTrace();
+						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str);
 					}
 				}
 				// send a message to the player
@@ -1730,7 +1729,7 @@ public class MobHuntingManager implements Listener {
 			return "";
 	}
 
-	public void cancelDrops(EntityDeathEvent event, boolean items, boolean xp) {
+	private void cancelDrops(EntityDeathEvent event, boolean items, boolean xp) {
 		if (items) {
 			Messages.debug("Removing naturally dropped items");
 			event.getDrops().clear();

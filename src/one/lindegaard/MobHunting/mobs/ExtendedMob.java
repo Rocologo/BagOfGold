@@ -104,8 +104,6 @@ public class ExtendedMob {
 			return mobtype;
 		case SmartGiants:
 			return "SmartGiant";
-		default:
-			break;
 		}
 		return null;
 	}
@@ -114,7 +112,7 @@ public class ExtendedMob {
 		if (mobPlugin == MobPlugin.Minecraft)
 			return Messages.getString("mobs." + getName() + ".name");
 		else
-			return Messages.getString("mobs." + mobPlugin + "_" + getMobtype() + ".name");
+			return Messages.getString("mobs." + mobPlugin.name() + "_" + getMobtype() + ".name");
 	}
 
 	public int getProgressAchievementLevel1() {
@@ -133,8 +131,6 @@ public class ExtendedMob {
 			return CustomMobsCompat.getProgressAchievementLevel1(mobtype);
 		case SmartGiants:
 			return SmartGiantsCompat.getProgressAchievementLevel1(mobtype);
-		default:
-			break;
 		}
 		return 0;
 	}

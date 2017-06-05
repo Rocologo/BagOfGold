@@ -306,6 +306,7 @@ public class Messages {
 			injectChanges(resource, file);
 			mTranslationTable = loadLang(file);
 			injectMissingPluginNamesToLangFile(file);
+			injectMissingMobNamesToLangFile(file);
 			sortFileOnDisk(file);
 		} else {
 			Bukkit.getLogger().warning(PREFIX + " Could not read the language file:" + file.getName());
