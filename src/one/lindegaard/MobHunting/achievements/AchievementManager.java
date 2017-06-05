@@ -110,6 +110,8 @@ public class AchievementManager implements Listener {
 		registerAchievement(new MasterSniper());
 		registerAchievement(new JustInTime());
 		registerAchievement(new WolfKillAchievement());
+		if (SmartGiantsCompat.isSupported())
+			registerAchievement(new DavidAndGoliath());
 
 		for (MinecraftMob type : MinecraftMob.values()) {
 			ExtendedMob extendedMob = new ExtendedMob(MobPlugin.Minecraft, type.name());

@@ -1050,6 +1050,12 @@ public class ConfigManager extends AutoConfig {
 	public String specialAxeMurdererCmd = "give {player} gold_ingot 1";
 	@ConfigField(name = "axe-murderer-cmd-desc", category = "achievements")
 	public String specialAxeMurdererCmdDesc = "";
+	@ConfigField(name = "david-and-goliat", category = "achievements")
+	public double davidAndGoliat = 1000;
+	@ConfigField(name = "david-and-goliat-cmd", category = "achievements")
+	public String davidAndGoliatCmd = "give {player} gold_ingot 1";
+	@ConfigField(name = "david-and-goliat-cmd-desc", category = "achievements")
+	public String davidAndGoliatCmdDesc = "";
 	@ConfigField(name = "recordhungry", category = "achievements")
 	public double specialRecordHungry = 1000;
 	@ConfigField(name = "recordhungry-cmd", category = "achievements")
