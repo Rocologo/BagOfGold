@@ -5,7 +5,8 @@ V4.9.4
 * Fixed Ticket 237: Changed the way the Total number of achievements is counted. (https://github.com/Rocologo/MobHunting/issues/237)
 * Added an extra EighthHuntAchivement. 
 * Added Hunt Progress Achievements for MythicMobs, MysteriousHalloween, Citizens, TARDISWeepingAngels, CustomMobs, SmartGiants
-* Added Support for SmartGiants (https://www.spigotmc.org/resources/smartgiants.4882/)   
+* Added Support for SmartGiants (https://www.spigotmc.org/resources/smartgiants.4882/)
+* Removed Cartographer from config.yml   
 V4.9.3
 * Fixed "/mh head give ...." command. Give playerheadsnow works again.
 * Fixed "/mh achivements gui" so its show all completed Achievements. 

@@ -34,6 +34,7 @@ import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
+import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
@@ -148,6 +149,7 @@ public class MetricsManager {
 				valueMap.put("ConquestiaMobs", ConquestiaMobsCompat.isSupported() ? 1 : 0);
 				valueMap.put("StackMob", StackMobCompat.isSupported() ? 1 : 0);
 				valueMap.put("MysteriousHalloween", MysteriousHalloweenCompat.isSupported() ? 1 : 0);
+				valueMap.put("SmartGiants", SmartGiantsCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -379,6 +381,12 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return MysteriousHalloweenCompat.isSupported() ? 1 : 0;
+			}
+		});
+		mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("SmartGiants") {
+			@Override
+			public int getValue() {
+				return SmartGiantsCompat.isSupported() ? 1 : 0;
 			}
 		});
 		metrics.addGraph(mobPluginIntegrationsGraph);

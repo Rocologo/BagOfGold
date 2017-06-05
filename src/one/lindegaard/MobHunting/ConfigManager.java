@@ -9,6 +9,7 @@ import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
+import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.rewards.RewardData;
@@ -2423,6 +2424,13 @@ public class ConfigManager extends AutoConfig {
 					MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name());
 			return 0;
 
+		} else if (SmartGiantsCompat.isSmartGiants(mob)) {
+			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(mob)))
+				return getPrice(mob, SmartGiantsCompat.getMobRewardData()
+						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardPrize());
+			Messages.debug("SmartGiantsS %s has no reward data", SmartGiantsCompat.getSmartGiantsMobType(mob));
+			return 0;
+
 		} else if (MyPetCompat.isMyPet(mob)) {
 			Messages.debug("Tried to find a prize for a MyPet: %s (Owner=%s)", MyPetCompat.getMyPet(mob),
 					MyPetCompat.getMyPetOwner(mob));
@@ -2639,21 +2647,20 @@ public class ConfigManager extends AutoConfig {
 	 *         be separeted by a "|"
 	 */
 	public String getKillConsoleCmd(Entity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
+		if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
 			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
 						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getConsoleRunCommand();
 			return "";
 
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+		} else if (MythicMobsCompat.isMythicMob(mob)) {
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getConsoleRunCommand();
 			return "";
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
-				&& CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
+		} else if (CitizensCompat.isNPC(mob) && CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
 			if (CitizensCompat.getMobRewardData().containsKey(key)) {
@@ -2661,7 +2668,7 @@ public class ConfigManager extends AutoConfig {
 			}
 			return "";
 
-		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+		} else if (CustomMobsCompat.isCustomMob(mob)) {
 			if (mob.hasMetadata(CustomMobsCompat.MH_CUSTOMMOBS)) {
 				List<MetadataValue> data = mob.getMetadata(CustomMobsCompat.MH_CUSTOMMOBS);
 				for (MetadataValue value : data)
@@ -2672,11 +2679,17 @@ public class ConfigManager extends AutoConfig {
 						.getConsoleRunCommand();
 			return "";
 
-		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
 			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getConsoleRunCommand();
+			return "";
+
+		} else if (SmartGiantsCompat.isSmartGiants(mob)) {
+			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(mob)))
+				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(mob))
+						.getConsoleRunCommand();
 			return "";
 
 		} else if (MyPetCompat.isMyPet(mob)) {
@@ -2847,21 +2860,20 @@ public class ConfigManager extends AutoConfig {
 	 * @return String
 	 */
 	public String getKillRewardDescription(Entity mob) {
-		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
+		if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(mob)) {
 			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
 						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(mob).name()).getRewardDescription();
 			return "";
 
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(mob)) {
+		} else if (MythicMobsCompat.isMythicMob(mob)) {
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(mob)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(mob))
 						.getRewardDescription();
 			return "";
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(mob)
-				&& CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
+		} else if (CitizensCompat.isNPC(mob) && CitizensCompat.isSentryOrSentinelOrSentries(mob)) {
 			NPC npc = CitizensAPI.getNPCRegistry().getNPC(mob);
 			String key = String.valueOf(npc.getId());
 			if (CitizensCompat.getMobRewardData().containsKey(key)) {
@@ -2869,17 +2881,23 @@ public class ConfigManager extends AutoConfig {
 			}
 			return "";
 
-		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(mob)) {
+		} else if (CustomMobsCompat.isCustomMob(mob)) {
 			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(mob)))
 				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(mob))
 						.getRewardDescription();
 			return "";
 
-		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(mob)) {
 			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(mob).name()).getRewardDescription();
+			return "";
+
+		} else if (SmartGiantsCompat.isSmartGiants(mob)) {
+			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(mob)))
+				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(mob))
+						.getRewardDescription();
 			return "";
 
 		} else if (MyPetCompat.isMyPet(mob)) {
@@ -3043,20 +3061,19 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	public double getCmdRunChance(Entity killed) {
-		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
+		if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
 						.get(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()).getChance();
 			return 0;
 
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
+		} else if (MythicMobsCompat.isMythicMob(killed)) {
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed)).getChance();
 			return 0;
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(killed)
-				&& CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
+		} else if (CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(killed);
 			String key = String.valueOf(npc.getId());
@@ -3065,16 +3082,22 @@ public class ConfigManager extends AutoConfig {
 			}
 			return 0;
 
-		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(killed)) {
+		} else if (CustomMobsCompat.isCustomMob(killed)) {
 			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
 				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(killed)).getChance();
 			return 0;
 
-		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
 			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()).getChance();
+			return 0;
+
+		} else if (SmartGiantsCompat.isSmartGiants(killed)) {
+			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(killed)))
+				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(killed))
+						.getChance();
 			return 0;
 
 		} else if (MyPetCompat.isMyPet(killed)) {
@@ -3238,7 +3261,7 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	public double getMcMMOChance(Entity killed) {
-		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
+		if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
@@ -3246,14 +3269,13 @@ public class ConfigManager extends AutoConfig {
 						.getMcMMOSkillRewardChance();
 			return 0;
 
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
+		} else if (MythicMobsCompat.isMythicMob(killed)) {
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed))
 						.getMcMMOSkillRewardChance();
 			return 0;
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(killed)
-				&& CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
+		} else if (CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(killed);
 			String key = String.valueOf(npc.getId());
@@ -3262,17 +3284,23 @@ public class ConfigManager extends AutoConfig {
 			}
 			return 0;
 
-		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(killed)) {
+		} else if (CustomMobsCompat.isCustomMob(killed)) {
 			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
 				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(killed))
 						.getMcMMOSkillRewardChance();
 			return 0;
 
-		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
 			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name())
+						.getMcMMOSkillRewardChance();
+			return 0;
+
+		} else if (SmartGiantsCompat.isSmartGiants(killed)) {
+			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(killed)))
+				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(killed))
 						.getMcMMOSkillRewardChance();
 			return 0;
 
@@ -3462,7 +3490,7 @@ public class ConfigManager extends AutoConfig {
 	}
 
 	public int getMcMMOLevel(Entity killed) {
-		if (TARDISWeepingAngelsCompat.isSupported() && TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
+		if (TARDISWeepingAngelsCompat.isWeepingAngelMonster(killed)) {
 			if (TARDISWeepingAngelsCompat.getMobRewardData()
 					.containsKey(TARDISWeepingAngelsCompat.getWeepingAngelMonsterType(killed).name()))
 				return TARDISWeepingAngelsCompat.getMobRewardData()
@@ -3470,14 +3498,13 @@ public class ConfigManager extends AutoConfig {
 						.getMcMMOSkillRewardAmount();
 			return 0;
 
-		} else if (MythicMobsCompat.isSupported() && MythicMobsCompat.isMythicMob(killed)) {
+		} else if (MythicMobsCompat.isMythicMob(killed)) {
 			if (MythicMobsCompat.getMobRewardData().containsKey(MythicMobsCompat.getMythicMobType(killed)))
 				return MythicMobsCompat.getMobRewardData().get(MythicMobsCompat.getMythicMobType(killed))
 						.getMcMMOSkillRewardAmount();
 			return 0;
 
-		} else if (CitizensCompat.isSupported() && CitizensCompat.isNPC(killed)
-				&& CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
+		} else if (CitizensCompat.isNPC(killed) && CitizensCompat.isSentryOrSentinelOrSentries(killed)) {
 			NPCRegistry registry = CitizensAPI.getNPCRegistry();
 			NPC npc = registry.getNPC(killed);
 			String key = String.valueOf(npc.getId());
@@ -3486,17 +3513,23 @@ public class ConfigManager extends AutoConfig {
 			}
 			return 0;
 
-		} else if (CustomMobsCompat.isSupported() && CustomMobsCompat.isCustomMob(killed)) {
+		} else if (CustomMobsCompat.isCustomMob(killed)) {
 			if (CustomMobsCompat.getMobRewardData().containsKey(CustomMobsCompat.getCustomMobType(killed)))
 				return CustomMobsCompat.getMobRewardData().get(CustomMobsCompat.getCustomMobType(killed))
 						.getMcMMOSkillRewardAmount();
 			return 0;
 
-		} else if (MysteriousHalloweenCompat.isSupported() && MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
+		} else if (MysteriousHalloweenCompat.isMysteriousHalloween(killed)) {
 			if (MysteriousHalloweenCompat.getMobRewardData()
 					.containsKey(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name()))
 				return MysteriousHalloweenCompat.getMobRewardData()
 						.get(MysteriousHalloweenCompat.getMysteriousHalloweenType(killed).name())
+						.getMcMMOSkillRewardAmount();
+			return 0;
+
+		} else if (SmartGiantsCompat.isSmartGiants(killed)) {
+			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(killed)))
+				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(killed))
 						.getMcMMOSkillRewardAmount();
 			return 0;
 
