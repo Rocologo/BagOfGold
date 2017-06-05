@@ -731,7 +731,7 @@ public class AchievementManager implements Listener {
 				int n = 0;
 				for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
 					if (achievement.getValue() == -1
-							&& (!(achievement.getKey().getPrize() == 0 && achievement.getKey().getPrizeCmd().isEmpty())
+							&& (achievement.getKey().getPrize() != 0 || !achievement.getKey().getPrizeCmd().isEmpty()
 									|| MobHunting.getConfigManager().showAchievementsWithoutAReward)) {
 						if (achievement.getKey() instanceof ProgressAchievement
 								&& ((ProgressAchievement) achievement.getKey()).nextLevelId() != null
@@ -783,8 +783,7 @@ public class AchievementManager implements Listener {
 
 					for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
 						if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
-								&& (!(achievement.getKey().getPrize() == 0
-										&& achievement.getKey().getPrizeCmd().isEmpty())
+								&& (achievement.getKey().getPrize() != 0 || !achievement.getKey().getPrizeCmd().isEmpty()
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0
 								&& ((ProgressAchievement) achievement.getKey()).getExtendedMob()
@@ -819,7 +818,7 @@ public class AchievementManager implements Listener {
 					for_loop: for (Achievement achievement : getAllAchievements()) {
 						if (!(achievement instanceof ProgressAchievement)) {
 							if (!isOnGoingOrCompleted(achievement, data)) {
-								if (achievement.getPrize() > 0
+								if (achievement.getPrize() != 0 || !achievement.getPrizeCmd().isEmpty()
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward) {
 									if (m <= 53) {
 										addInventoryDetails(achievement.getSymbol(), inventoryNotStarted, m,
@@ -840,7 +839,7 @@ public class AchievementManager implements Listener {
 					// ProgressAchivement
 					for_loop: for (Achievement achievement : getAllAchievements()) {
 						if ((achievement instanceof ProgressAchievement
-								&& (!(achievement.getPrize() == 0 && achievement.getPrizeCmd().isEmpty())
+								&& (achievement.getPrize() != 0 || !achievement.getPrizeCmd().isEmpty()
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
 							boolean ongoing = isOnGoingOrCompleted(achievement, data);

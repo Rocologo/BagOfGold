@@ -1,6 +1,6 @@
 V4.9.4
 * Added Support for SmartGiants (https://www.spigotmc.org/resources/smartgiants.4882/)
-* Added new Achievement "Davis and Goliat" - Kill a SmartGiant with a Stone Button. 
+* Added new Achievement "Davis and Goliath" - Kill a SmartGiant with a Stone Button. 
 * Added an extra EighthHuntAchivement. 
 * Added Hunt Progress Achievements for MythicMobs, MysteriousHalloween, Citizens, TARDISWeepingAngels, CustomMobs, SmartGiants
 * Fixed Ticket 235 - NPE when achieving Level 7 achievements (https://github.com/Rocologo/MobHunting/issues/235)
