@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.achievements;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -32,9 +33,11 @@ public class TheHuntBegins implements Achievement, Listener {
 
 	@EventHandler
 	private void onKill(MobHuntKillEvent event) {
-		if (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
+		Entity killedEntity = event.getKilledEntity();
+		if (MobHunting.getConfigManager().getBaseKillPrize(killedEntity) != 0
+				|| !MobHunting.getConfigManager().getKillConsoleCmd(killedEntity).isEmpty())
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
-					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
+					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killedEntity));
 	}
 
 	@Override

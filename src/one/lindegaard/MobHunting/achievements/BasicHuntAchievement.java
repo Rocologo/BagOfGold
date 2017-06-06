@@ -30,7 +30,7 @@ public class BasicHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("achievements.hunter.1.description", "count", getMaxProgress(), "mob",
+		return Messages.getString("achievements.hunter.1.description", "count", getNextLevel(), "mob",
 				mExtendedMob.getFriendlyName());
 	}
 
@@ -40,7 +40,7 @@ public class BasicHuntAchievement implements ProgressAchievement {
 	}
 
 	@Override
-	public int getMaxProgress() {
+	public int getNextLevel() {
 		return mExtendedMob.getProgressAchievementLevel1();
 	}
 

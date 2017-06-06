@@ -83,7 +83,7 @@ public class AchievementManager implements Listener {
 
 		if (achievement instanceof ProgressAchievement) {
 			if (((ProgressAchievement) achievement).inheritFrom() != null
-					&& ((ProgressAchievement) achievement).getMaxProgress() != 0) {
+					&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
 				Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
 				Validate.isTrue(mAchievements
 						.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
@@ -241,7 +241,7 @@ public class AchievementManager implements Listener {
 		Integer progress = storage.progressAchievements.get(achievement.getID());
 
 		if (progress == null)
-			return (storage.gainedAchievements.contains(achievement.getID()) ? achievement.getMaxProgress() : 0);
+			return (storage.gainedAchievements.contains(achievement.getID()) ? achievement.getNextLevel() : 0);
 		return progress;
 	}
 
@@ -476,11 +476,11 @@ public class AchievementManager implements Listener {
 				achievement = (ProgressAchievement) getAchievement(achievement.inheritFrom());
 				curProgress = getProgress(achievement, player);
 			} else {
-				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom())).getMaxProgress();
+				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom())).getNextLevel();
 			}
 		}
 
-		int maxProgress = achievement.getMaxProgress();
+		int maxProgress = achievement.getNextLevel();
 		int nextProgress = Math.min(maxProgress, curProgress + amount);
 
 		if (nextProgress == maxProgress && maxProgress != 0)
@@ -580,7 +580,7 @@ public class AchievementManager implements Listener {
 										if (getAchievement(achievementStore.id) instanceof ProgressAchievement
 												&& achievementStore.progress != 0
 												&& achievementStore.progress != ((ProgressAchievement) getAchievement(
-														achievementStore.id)).getMaxProgress()
+														achievementStore.id)).getNextLevel()
 												&& ((ProgressAchievement) getAchievement(achievementStore.id))
 														.inheritFrom() != null) {
 											boolean gained = false;
@@ -690,19 +690,6 @@ public class AchievementManager implements Listener {
 				list.sort(comparator);
 				data = list;
 
-				// int outOf = 0;
-
-				// for (Achievement achievement : getAllAchievements()) {
-				// if (achievement instanceof ProgressAchievement
-				// && ((ProgressAchievement) achievement).getMaxProgress() != 0)
-				// {
-				// if (((ProgressAchievement) achievement).inheritFrom() ==
-				// null)
-				// ++outOf;
-				// } else
-				// ++outOf;
-				// }
-
 				int outOf = getAllAchievements().size();
 
 				int count = 0;
@@ -785,13 +772,13 @@ public class AchievementManager implements Listener {
 						if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
 								&& (achievement.getKey().getPrize() != 0 || !achievement.getKey().getPrizeCmd().isEmpty()
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
-								&& ((ProgressAchievement) achievement.getKey()).getMaxProgress() != 0
+								&& ((ProgressAchievement) achievement.getKey()).getNextLevel() != 0
 								&& ((ProgressAchievement) achievement.getKey()).getExtendedMob()
 										.getProgressAchievementLevel1() != 0) {
 							if (!gui)
 								lines.add(ChatColor.GRAY + " " + achievement.getKey().getName() + ChatColor.WHITE + "  "
 										+ achievement.getValue() + " / "
-										+ ((ProgressAchievement) achievement.getKey()).getMaxProgress());
+										+ ((ProgressAchievement) achievement.getKey()).getNextLevel());
 							else if (sender instanceof Player)
 								if (n <= 53) {
 									addInventoryDetails(achievement.getKey().getSymbol(), inventoryOngoing, n,
@@ -801,7 +788,7 @@ public class AchievementManager implements Listener {
 													Messages.getString("mobhunting.commands.listachievements.progress")
 															+ " " + ChatColor.WHITE + achievement.getValue() + " / "
 															+ ((ProgressAchievement) achievement.getKey())
-																	.getMaxProgress() });
+																	.getNextLevel() });
 									n++;
 								} else {
 									Messages.debug("No room for more achievements");
@@ -841,7 +828,7 @@ public class AchievementManager implements Listener {
 						if ((achievement instanceof ProgressAchievement
 								&& (achievement.getPrize() != 0 || !achievement.getPrizeCmd().isEmpty()
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
-								&& ((ProgressAchievement) achievement).getMaxProgress() != 0)) {
+								&& ((ProgressAchievement) achievement).getNextLevel() != 0)) {
 							boolean ongoing = isOnGoingOrCompleted(achievement, data);
 							if (!ongoing) {
 								boolean nextLevelBegun = isNextLevelBegun((ProgressAchievement) achievement, data);

@@ -148,4 +148,5 @@ public class ExtendedMob {
 		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(entity);
 		return mobtype.equalsIgnoreCase(mob.mobtype);
 	}
+	
 }

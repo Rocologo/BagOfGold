@@ -36,7 +36,7 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("achievements.hunter.8.description", "count", getMaxProgress(), "mob",
+		return Messages.getString("achievements.hunter.8.description", "count", getNextLevel(), "mob",
 				mExtendedMob.getFriendlyName());
 	}
 
@@ -46,7 +46,7 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 	}
 
 	@Override
-	public int getMaxProgress() {
+	public int getNextLevel() {
 		return mExtendedMob.getProgressAchievementLevel1() * 500;
 	}
 

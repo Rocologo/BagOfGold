@@ -31,7 +31,7 @@ public class SeventhHuntAchievement implements ProgressAchievement{
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("achievements.hunter.7.description", "count", getMaxProgress(), "mob",
+		return Messages.getString("achievements.hunter.7.description", "count", getNextLevel(), "mob",
 				mExtendedMob.getFriendlyName());
 	}
 
@@ -41,7 +41,7 @@ public class SeventhHuntAchievement implements ProgressAchievement{
 	}
 
 	@Override
-	public int getMaxProgress() {
+	public int getNextLevel() {
 		return mExtendedMob.getProgressAchievementLevel1() * 100;
 	}
 

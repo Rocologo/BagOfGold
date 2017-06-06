@@ -41,7 +41,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	}
 
 	@Override
-	public int getMaxProgress() {
+	public int getNextLevel() {
 		return 500;
 	}
 

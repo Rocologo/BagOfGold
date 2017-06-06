@@ -78,7 +78,6 @@ import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
 import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
-import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
 import one.lindegaard.MobHunting.compatibility.StackMobCompat;
 import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 import one.lindegaard.MobHunting.compatibility.TownyCompat;
@@ -1445,18 +1444,47 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
-		// Pay the reward to player and assister
-		if ((cash >= MobHunting.getConfigManager().minimumReward)
-				|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
+		//TODO: make RewardManager.hasreward(Entuty entity)
+		// Check if there is a reward for this kill
+		if (cash >= MobHunting.getConfigManager().minimumReward || cash <= -MobHunting.getConfigManager().minimumReward
+				|| !MobHunting.getConfigManager().getKillConsoleCmd(killed).isEmpty() || (killer != null
+						&& McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards)) {
 
 			// Handle MobHuntKillEvent
+			// Record Hunt Achievement is done using EighthsHuntAchievement.java
+			// (onKillCompleted)
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, getPlayer(killer, killed));
 			Bukkit.getPluginManager().callEvent(event2);
+			// Check if Event is cancelled before paying the reward
 			if (event2.isCancelled()) {
 				Messages.debug("KillBlocked %s: MobHuntKillEvent was cancelled", getPlayer(killer, killed).getName());
 				Messages.debug("======================= kill ended (35)=====================");
 				return;
 			}
+
+			// Record the kill in the Database
+			if (info.getAssister() == null || MobHunting.getConfigManager().enableAssists == false) {
+				Messages.debug("RecordKill: %s killed a %s (%s) Cash=%s", getPlayer(killer, killed).getName(),
+						mob.getName(), mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
+				MobHunting.getDataStoreManager().recordKill(getPlayer(killer, killed), mob,
+						killed.hasMetadata("MH:hasBonus"), cash);
+			} else {
+				Messages.debug("RecordAssistedKill: %s killed a %s (%s) Cash=%s",
+						info.getAttacker().getName() + "/" + info.getAssister().getName(), mob.getName(),
+						mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
+				MobHunting.getDataStoreManager().recordAssist(getPlayer(killer, killed), killer, mob,
+						killed.hasMetadata("MH:hasBonus"), cash);
+			}
+		} else {
+			Messages.debug("KillBlocked %s: There is now reward for killing a %s", getPlayer(killer, killed).getName(),
+					mob.getName());
+			Messages.debug("======================= kill ended (36)=====================");
+			return;
+		}
+
+		// Pay the reward to player and assister
+		if ((cash >= MobHunting.getConfigManager().minimumReward)
+				|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
 
 			// Handle reward on PVP kill. (Robbing)
 			boolean robbing = killer != null && killed instanceof Player && !CitizensCompat.isNPC(killed)
@@ -1530,22 +1558,6 @@ public class MobHuntingManager implements Listener {
 							getPlayer(killer, killed).getName(), getKillerName(killer, killed),
 							MobHunting.getRewardManager().format(cash));
 				}
-			}
-
-			// Record Hunt Achievement is done using SeventhHuntAchievement.java
-			// (onKillCompleted)
-			// Record the kill in the Database
-			if (info.getAssister() == null || MobHunting.getConfigManager().enableAssists == false) {
-				Messages.debug("RecordKill: %s killed a %s (%s) Cash=%s", getPlayer(killer, killed).getName(),
-						mob.getName(), mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
-				MobHunting.getDataStoreManager().recordKill(getPlayer(killer, killed), mob,
-						killed.hasMetadata("MH:hasBonus"), cash);
-			} else {
-				Messages.debug("RecordAssistedKill: %s killed a %s (%s) Cash=%s",
-						info.getAttacker().getName() + "/" + info.getAssister().getName(), mob.getName(),
-						mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
-				MobHunting.getDataStoreManager().recordAssist(getPlayer(killer, killed), killer, mob,
-						killed.hasMetadata("MH:hasBonus"), cash);
 			}
 
 			// McMMO Level rewards
@@ -1630,7 +1642,7 @@ public class MobHuntingManager implements Listener {
 					}
 				}
 		} else
-			Messages.debug("KillBlocked %s: Reward was less than %s  (Bonuses=%s)", getPlayer(killer, killed).getName(),
+			Messages.debug("Reward was less than %s  (Bonuses=%s)", getPlayer(killer, killed).getName(),
 					MobHunting.getConfigManager().minimumReward, extraString);
 
 		// Run console commands as a reward
@@ -1703,7 +1715,7 @@ public class MobHuntingManager implements Listener {
 				}
 			}
 		}
-		Messages.debug("======================= kill ended (36)=====================");
+		Messages.debug("======================= kill ended (37)=====================");
 	}
 
 	/**
