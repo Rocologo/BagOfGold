@@ -271,5 +271,5 @@ public class RewardManager implements Listener {
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
-
+	
 }

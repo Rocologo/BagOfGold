@@ -1403,7 +1403,7 @@ public class MobHuntingManager implements Listener {
 					MobHunting.getBountyManager().getAllBounties().size());
 			OfflinePlayer wantedPlayer = (OfflinePlayer) killed;
 			String worldGroupName = MobHunting.getWorldGroupManager().getCurrentWorldGroup(getPlayer(killer, killed));
-			if (BountyManager.hasOpenBounties(worldGroupName, wantedPlayer)) {
+			if (BountyManager.hasOpenBounties(wantedPlayer)) {
 				BountyKillEvent bountyEvent = new BountyKillEvent(worldGroupName, getPlayer(killer, killed),
 						wantedPlayer, MobHunting.getBountyManager().getOpenBounties(worldGroupName, wantedPlayer));
 				Bukkit.getPluginManager().callEvent(bountyEvent);
@@ -1444,15 +1444,13 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
-		//TODO: make RewardManager.hasreward(Entuty entity)
 		// Check if there is a reward for this kill
 		if (cash >= MobHunting.getConfigManager().minimumReward || cash <= -MobHunting.getConfigManager().minimumReward
 				|| !MobHunting.getConfigManager().getKillConsoleCmd(killed).isEmpty() || (killer != null
 						&& McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards)) {
 
-			// Handle MobHuntKillEvent
-			// Record Hunt Achievement is done using EighthsHuntAchievement.java
-			// (onKillCompleted)
+			// Handle MobHuntKillEvent and Record Hunt Achievement is done using
+			// EighthsHuntAchievement.java (onKillCompleted)
 			MobHuntKillEvent event2 = new MobHuntKillEvent(data, info, killed, getPlayer(killer, killed));
 			Bukkit.getPluginManager().callEvent(event2);
 			// Check if Event is cancelled before paying the reward
@@ -1482,7 +1480,7 @@ public class MobHuntingManager implements Listener {
 			return;
 		}
 
-		// Pay the reward to player and assister
+		// Pay the money reward to player and assister
 		if ((cash >= MobHunting.getConfigManager().minimumReward)
 				|| (cash <= -MobHunting.getConfigManager().minimumReward)) {
 
@@ -1560,36 +1558,6 @@ public class MobHuntingManager implements Listener {
 				}
 			}
 
-			// McMMO Level rewards
-			if (killer != null && McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards) {
-
-				SkillType skilltype = null;
-				if (Misc.isAxe(info.getWeapon()))
-					skilltype = SkillType.AXES;
-				else if (Misc.isSword(info.getWeapon()))
-					skilltype = SkillType.SWORDS;
-				else if (Misc.isBow(info.getWeapon()))
-					skilltype = SkillType.ARCHERY;
-				else if (Misc.isUnarmed(info.getWeapon()))
-					skilltype = SkillType.UNARMED;
-
-				if (skilltype != null) {
-					double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
-					Messages.debug("If %s<%s %s will get a McMMO Level for %s", chance,
-							MobHunting.getConfigManager().getMcMMOChance(killed), killer.getName(),
-							skilltype.getName());
-
-					if (chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
-						int level = MobHunting.getConfigManager().getMcMMOLevel(killed);
-						McMMOCompat.addLevel(killer, skilltype.getName(), level);
-						Messages.debug("%s was rewarded with %s McMMO Levels for %s", killer.getName(),
-								MobHunting.getConfigManager().getMcMMOLevel(killed), skilltype.getName());
-						killer.sendMessage(Messages.getString("mobhunting.mcmmo.skilltype_level", "mcmmo_level", level,
-								"skilltype", skilltype));
-					}
-				}
-			}
-
 			// Tell the player that he got the reward/penalty, unless muted
 			if (!killer_muted)
 
@@ -1642,77 +1610,104 @@ public class MobHuntingManager implements Listener {
 					}
 				}
 		} else
-			Messages.debug("Reward was less than %s  (Bonuses=%s)", getPlayer(killer, killed).getName(),
+			Messages.debug("The money reward was 0 or less than %s  (Bonuses=%s)", getPlayer(killer, killed).getName(),
 					MobHunting.getConfigManager().minimumReward, extraString);
 
+		// McMMO Level rewards
+		if (killer != null && McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards
+				&& data.getDampenedKills() < 10) {
+
+			SkillType skilltype = null;
+			if (Misc.isAxe(info.getWeapon()))
+				skilltype = SkillType.AXES;
+			else if (Misc.isSword(info.getWeapon()))
+				skilltype = SkillType.SWORDS;
+			else if (Misc.isBow(info.getWeapon()))
+				skilltype = SkillType.ARCHERY;
+			else if (Misc.isUnarmed(info.getWeapon()))
+				skilltype = SkillType.UNARMED;
+
+			if (skilltype != null) {
+				double chance = MobHunting.getMobHuntingManager().mRand.nextDouble();
+				Messages.debug("If %s<%s %s will get a McMMO Level for %s", chance,
+						MobHunting.getConfigManager().getMcMMOChance(killed), killer.getName(), skilltype.getName());
+
+				if (chance < MobHunting.getConfigManager().getMcMMOChance(killed)) {
+					int level = MobHunting.getConfigManager().getMcMMOLevel(killed);
+					McMMOCompat.addLevel(killer, skilltype.getName(), level);
+					Messages.debug("%s was rewarded with %s McMMO Levels for %s", killer.getName(),
+							MobHunting.getConfigManager().getMcMMOLevel(killed), skilltype.getName());
+					killer.sendMessage(Messages.getString("mobhunting.mcmmo.skilltype_level", "mcmmo_level", level,
+							"skilltype", skilltype));
+				}
+			}
+		}
+
 		// Run console commands as a reward
-		if (data.getDampenedKills() < 10) {
-			if (MobHunting.getConfigManager().isCmdGointToBeExcuted(killed)) {
-				String worldname = getPlayer(killer, killed).getWorld().getName();
-				String killerpos = getPlayer(killer, killed).getLocation().getBlockX() + " "
-						+ getPlayer(killer, killed).getLocation().getBlockY() + " "
-						+ getPlayer(killer, killed).getLocation().getBlockZ();
-				String killedpos = killed.getLocation().getBlockX() + " " + killed.getLocation().getBlockY() + " "
-						+ killed.getLocation().getBlockZ();
-				String prizeCommand = MobHunting.getConfigManager().getKillConsoleCmd(killed)
-						.replaceAll("\\{player\\}", getPlayer(killer, killed).getName())
-						.replaceAll("\\{killer\\}", getPlayer(killer, killed).getName())
-						.replaceAll("\\{world\\}", worldname)
-						.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
-						.replaceAll("\\{killerpos\\}", killerpos).replaceAll("\\{killedpos\\}", killedpos);
-				if (killed instanceof Player)
-					prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getName())
-							.replaceAll("\\{killed\\}", killed.getName());
-				else
-					prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", mob.getName())
-							.replaceAll("\\{killed\\}", mob.getName());
-				Messages.debug("Command to be run:" + prizeCommand);
-				if (!MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
-					String str = prizeCommand;
-					do {
-						if (str.contains("|")) {
-							int n = str.indexOf("|");
-							try {
-								Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
-										str.substring(0, n));
-							} catch (CommandException e) {
-								Bukkit.getConsoleSender()
-										.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
-												+ str.substring(0, n) + "\" when Mob:" + mob.getName()
-												+ " was killed by " + getPlayer(killer, killed).getName());
-								Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str.substring(0, n));
-							}
-							str = str.substring(n + 1, str.length()).toString();
+		if (MobHunting.getConfigManager().isCmdGointToBeExcuted(killed) && data.getDampenedKills() < 10) {
+			String worldname = getPlayer(killer, killed).getWorld().getName();
+			String killerpos = getPlayer(killer, killed).getLocation().getBlockX() + " "
+					+ getPlayer(killer, killed).getLocation().getBlockY() + " "
+					+ getPlayer(killer, killed).getLocation().getBlockZ();
+			String killedpos = killed.getLocation().getBlockX() + " " + killed.getLocation().getBlockY() + " "
+					+ killed.getLocation().getBlockZ();
+			String prizeCommand = MobHunting.getConfigManager().getKillConsoleCmd(killed)
+					.replaceAll("\\{player\\}", getPlayer(killer, killed).getName())
+					.replaceAll("\\{killer\\}", getPlayer(killer, killed).getName())
+					.replaceAll("\\{world\\}", worldname)
+					.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
+					.replaceAll("\\{killerpos\\}", killerpos).replaceAll("\\{killedpos\\}", killedpos);
+			if (killed instanceof Player)
+				prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getName())
+						.replaceAll("\\{killed\\}", killed.getName());
+			else
+				prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", mob.getName()).replaceAll("\\{killed\\}",
+						mob.getName());
+			Messages.debug("Command to be run:" + prizeCommand);
+			if (!MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
+				String str = prizeCommand;
+				do {
+					if (str.contains("|")) {
+						int n = str.indexOf("|");
+						try {
+							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
+									str.substring(0, n));
+						} catch (CommandException e) {
+							Bukkit.getConsoleSender()
+									.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
+											+ str.substring(0, n) + "\" when Mob:" + mob.getName() + " was killed by "
+											+ getPlayer(killer, killed).getName());
+							Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str.substring(0, n));
 						}
-					} while (str.contains("|"));
-					try {
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
-					} catch (CommandException e) {
-						Bukkit.getConsoleSender()
-								.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\"" + str
-										+ "\" when Mob:" + mob.getName() + " was killed by "
-										+ getPlayer(killer, killed).getName());
-						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str);
+						str = str.substring(n + 1, str.length()).toString();
 					}
+				} while (str.contains("|"));
+				try {
+					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+				} catch (CommandException e) {
+					Bukkit.getConsoleSender().sendMessage(
+							ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\"" + str + "\" when Mob:"
+									+ mob.getName() + " was killed by " + getPlayer(killer, killed).getName());
+					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str);
 				}
-				// send a message to the player
-				if (!MobHunting.getConfigManager().getKillRewardDescription(killed).equals("") && !killer_muted) {
-					String message = ChatColor.GREEN + "" + ChatColor.ITALIC
-							+ MobHunting.getConfigManager().getKillRewardDescription(killed)
-									.replaceAll("\\{player\\}", getPlayer(killer, killed).getName())
-									.replaceAll("\\{killer\\}", getPlayer(killer, killed).getName())
-									.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
-									.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
-									.replaceAll("\\{killedpos\\}", killedpos);
-					if (killed instanceof Player)
-						message = message.replaceAll("\\{killed_player\\}", killed.getName()).replaceAll("\\{killed\\}",
-								killed.getName());
-					else
-						message = message.replaceAll("\\{killed_player\\}", mob.getName()).replaceAll("\\{killed\\}",
-								mob.getName());
-					Messages.debug("Description to be send:" + message);
-					getPlayer(killer, killed).sendMessage(message);
-				}
+			}
+			// send a message to the player
+			if (!MobHunting.getConfigManager().getKillRewardDescription(killed).equals("") && !killer_muted) {
+				String message = ChatColor.GREEN + "" + ChatColor.ITALIC
+						+ MobHunting.getConfigManager().getKillRewardDescription(killed)
+								.replaceAll("\\{player\\}", getPlayer(killer, killed).getName())
+								.replaceAll("\\{killer\\}", getPlayer(killer, killed).getName())
+								.replace("\\{prize\\}", MobHunting.getRewardManager().format(cash))
+								.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", killerpos)
+								.replaceAll("\\{killedpos\\}", killedpos);
+				if (killed instanceof Player)
+					message = message.replaceAll("\\{killed_player\\}", killed.getName()).replaceAll("\\{killed\\}",
+							killed.getName());
+				else
+					message = message.replaceAll("\\{killed_player\\}", mob.getName()).replaceAll("\\{killed\\}",
+							mob.getName());
+				Messages.debug("Description to be send:" + message);
+				getPlayer(killer, killed).sendMessage(message);
 			}
 		}
 		Messages.debug("======================= kill ended (37)=====================");

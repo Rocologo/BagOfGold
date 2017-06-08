@@ -19,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -191,7 +190,7 @@ public class BountyManager implements Listener {
 		return false;
 	}
 
-	public static boolean hasOpenBounties(String worldGroup, OfflinePlayer wantedPlayer) {
+	public static boolean hasOpenBounties(OfflinePlayer wantedPlayer) {
 		for (Bounty bounty : mOpenBounties) {
 			if (bounty.isOpen() && bounty.getWantedPlayer().equals(wantedPlayer))
 				return true;
@@ -211,8 +210,7 @@ public class BountyManager implements Listener {
 		Bukkit.getScheduler().runTaskLater(instance, new Runnable() {
 			@Override
 			public void run() {
-				Player player = event.getPlayer();
-				load(player);
+				load(event.getPlayer());
 			}
 		}, (long) 5);
 	}
@@ -238,8 +236,8 @@ public class BountyManager implements Listener {
 	// ****************************************************************************
 	// Save & Load
 	// ****************************************************************************
-	public void load(final OfflinePlayer offlinePlayer) {
-		MobHunting.getDataStoreManager().requestBounties(BountyStatus.open, offlinePlayer,
+	public void load(final Player player) {
+		MobHunting.getDataStoreManager().requestBounties(BountyStatus.open, player,
 				new IDataCallback<Set<Bounty>>() {
 
 					@Override
@@ -265,25 +263,25 @@ public class BountyManager implements Listener {
 						}
 						if (sort)
 							sort();
-						Messages.debug("%s bounties for %s was loaded.", n, offlinePlayer.getName());
-						if (n > 0) {
-							Messages.playerActionBarMessage((Player) offlinePlayer,
+						Messages.debug("%s bounties for %s was loaded.", n, player.getName());
+						if (n > 0 && hasOpenBounties(player)){
+							Messages.playerActionBarMessage(player,
 									Messages.getString("mobhunting.bounty.youarewanted"));
 							Messages.broadcast(Messages.getString("mobhunting.bounty.playeriswanted", "playername",
-									offlinePlayer.getName()), (Player) offlinePlayer);
+									player.getName()), player);
 						}
 					}
 
 					@Override
 					public void onError(Throwable error) {
 						if (error instanceof UserNotFoundException)
-							if (offlinePlayer.isOnline()) {
-								Player p = (Player) offlinePlayer;
+							if (player.isOnline()) {
+								Player p = (Player) player;
 								p.sendMessage(Messages.getString("mobhunting.bounty.user-not-found"));
 							} else {
 								error.printStackTrace();
-								if (offlinePlayer.isOnline()) {
-									Player p = (Player) offlinePlayer;
+								if (player.isOnline()) {
+									Player p = (Player) player;
 									p.sendMessage(Messages.getString("mobhunting.bounty.load-fail"));
 								}
 							}
@@ -350,11 +348,11 @@ public class BountyManager implements Listener {
 			boolean useGui) {
 		if (sender instanceof Player) {
 
-			if (hasOpenBounties(worldGroupName, wantedPlayer)) {
+			if (hasOpenBounties(wantedPlayer)) {
 				Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getOpenBounties(worldGroupName,
 						wantedPlayer);
 				if (useGui) {
-					final Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
+					final Inventory inventory = Bukkit.createInventory(null, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
 					int n = 0;
 					for (Bounty bounty : bountiesOnWantedPlayer) {
@@ -421,7 +419,7 @@ public class BountyManager implements Listener {
 		if (sender instanceof Player) {
 			if (!mOpenBounties.isEmpty()) {
 				if (useGui) {
-					Inventory inventory = Bukkit.createInventory((InventoryHolder) sender, 54,
+					Inventory inventory = Bukkit.createInventory(null, 54,
 							ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
 					int n = 0;
 					for (Bounty bounty : mOpenBounties) {

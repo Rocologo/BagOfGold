@@ -154,7 +154,8 @@ public class ConfigManager extends AutoConfig {
 				+ "\nfor 1 hour or use give command to the player items."
 				+ "\nYou can also specify the message send to the player."
 				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
-				+ "\nAchievements will not be shown if the prize is 0, unless you set show-achievements-without-reward=true.");
+				+ "\nAchievements will not be shown in the GUI if there is a reward for killing the mob,"
+				+ "\nunless you set show-achievements-without-reward=true.");
 
 		setCategoryComment("achievement_levels",
 				"########################################################################"

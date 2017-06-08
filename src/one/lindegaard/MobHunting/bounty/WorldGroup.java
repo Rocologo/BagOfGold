@@ -15,14 +15,14 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 /**
- * @author christian
+ * @author Rocologo
  *
  */
 public class WorldGroup {
 
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "worldGroups.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
-	private HashMap<String, List<String>> worldGroups = new HashMap<String, List<String>>();
+	private static HashMap<String, List<String>> worldGroups = new HashMap<String, List<String>>();
 
 	public WorldGroup() {
 		if (worldGroups.isEmpty()) {
@@ -54,7 +54,7 @@ public class WorldGroup {
 		return worldGroups.get(worldGroup);
 	}
 
-	public String getWorldGroup(String world) {
+	public static String getWorldGroup(String world) {
 		for (String worldGroup : worldGroups.keySet()) {
 			if (worldGroup.contains(world))
 				return worldGroup;
