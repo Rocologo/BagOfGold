@@ -514,6 +514,13 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		mTypeIndex = 0;
 
 		mLocation = pos.toLocation(world);
+		
+		if (!Misc.isSign(mLocation.getBlock())){
+			throw new InvalidConfigurationException("Leaderboard in world "+mLocation.getWorld().getName()+
+					" at pos ("+mLocation.getBlockX()+","+mLocation.getBlockY()+","+mLocation.getBlockZ()+
+					") has been deleted from world");
+		}
+				
 	}
 
 }

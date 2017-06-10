@@ -173,8 +173,8 @@ public class Reward {
 		return uuid.toString().equalsIgnoreCase(RewardManager.MH_REWARD_ITEM_UUID);
 	}
 
-	public static boolean hasReward(Item item) {
-		return item.hasMetadata(RewardManager.MH_REWARD_DATA) || hasReward(item.getItemStack());
+	public static boolean isReward(Item item) {
+		return item.hasMetadata(RewardManager.MH_REWARD_DATA) || isReward(item.getItemStack());
 	}
 
 	public static Reward getReward(Item item) {
@@ -184,7 +184,7 @@ public class Reward {
 			return getReward(item.getItemStack());
 	}
 
-	public static boolean hasReward(ItemStack itemStack) {
+	public static boolean isReward(ItemStack itemStack) {
 		return itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
 				&& itemStack.getItemMeta().getLore().size() == NUMBER_OF_DATA
 				&& (itemStack.getItemMeta().getLore().get(2)
@@ -209,8 +209,8 @@ public class Reward {
 		return (Reward) block.getMetadata(RewardManager.MH_REWARD_DATA).get(0).value();
 	}
 
-	public static boolean hasReward(Entity entity) {
-		return entity.hasMetadata(RewardManager.MH_REWARD_DATA);
+	public static boolean isReward(Entity entity) {
+		return entity.hasMetadata(RewardManager.MH_REWARD_DATA); 
 	}
 
 	public static Reward getReward(Entity entity) {

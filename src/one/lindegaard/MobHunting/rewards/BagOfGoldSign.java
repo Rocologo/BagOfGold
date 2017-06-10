@@ -53,7 +53,7 @@ public class BagOfGoldSign implements Listener {
 				// SELL BagOfGold Sign
 				if (signType.equalsIgnoreCase(Messages.getString("mobhunting.bagofgoldsign.line2.sell"))) {
 					if (player.getItemInHand().getType().equals(Material.SKULL_ITEM)
-							&& Reward.hasReward(player.getItemInHand())) {
+							&& Reward.isReward(player.getItemInHand())) {
 						Reward hrd = Reward.getReward(player.getItemInHand());
 						moneyInHand = hrd.getMoney();
 						if (sign.getLine(2).isEmpty() || sign.getLine(2)
@@ -118,7 +118,7 @@ public class BagOfGoldSign implements Listener {
 						boolean found = false;
 						for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 							ItemStack is = player.getInventory().getItem(slot);
-							if (Reward.hasReward(is)) {
+							if (Reward.isReward(is)) {
 								Reward hrd = Reward.getReward(is);
 								if ((hrd.isBagOfGoldReward() || hrd.isItemReward())
 										&& hrd.getRewardUUID().equals(hrd.getRewardUUID())) {
@@ -262,16 +262,8 @@ public class BagOfGoldSign implements Listener {
 	// TESTS
 	// ************************************************************************************
 
-	public static boolean isSign(Block block) {
-		return block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.WALL_SIGN);
-	}
-
-	public static boolean isSign(Material material) {
-		return material.equals(Material.SIGN_POST) || material.equals(Material.WALL_SIGN);
-	}
-
 	public static boolean isBagOfGoldSign(Block block) {
-		if (isSign(block))
+		if (Misc.isSign(block))
 			return ChatColor.stripColor(((Sign) block.getState()).getLine(0))
 					.equalsIgnoreCase(ChatColor.stripColor(Messages.getString("mobhunting.bagofgoldsign.line1",
 							"rewardname", MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName)))

@@ -197,7 +197,7 @@ public class MasterMobHunterSign implements Listener {
 	// ****************************************************************************'
 
 	public static int getNPCIdOnSign(Block block) {
-		if (!isSign(block))
+		if (!Misc.isSign(block))
 			return -1;
 		String str = ((Sign) block.getState()).getLine(0);
 
@@ -577,22 +577,8 @@ public class MasterMobHunterSign implements Listener {
 			return false;
 	}
 
-	public static boolean isSign(Block block) {
-		if (block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.WALL_SIGN))
-			return true;
-		else
-			return false;
-	}
-
-	public static boolean isSign(Material material) {
-		if (material.equals(Material.SIGN_POST) || material.equals(Material.WALL_SIGN))
-			return true;
-		else
-			return false;
-	}
-
 	public static boolean isMHSign(Block block) {
-		if (isSign(block)) {
+		if (Misc.isSign(block)) {
 			Sign sign = (Sign) block.getState();
 			if (sign.getLine(0).matches(MASTERMOBHUNTERSIGN))
 				return true;

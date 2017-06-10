@@ -145,7 +145,7 @@ public class MoneyCommand implements ICommand {
 				double sum = 0;
 				for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 					ItemStack is = player.getInventory().getItem(slot);
-					if (Reward.hasReward(is)) {
+					if (Reward.isReward(is)) {
 						Reward hiddenRewardData = Reward.getReward(is);
 						sum = sum + hiddenRewardData.getMoney();
 					}
@@ -299,7 +299,7 @@ public class MoneyCommand implements ICommand {
 							double rest = Misc.ceil(Double.valueOf(args[2]));
 							for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 								ItemStack is = player.getInventory().getItem(slot);
-								if (Reward.hasReward(is)) {
+								if (Reward.isReward(is)) {
 									Reward hiddenRewardData = Reward.getReward(is);
 									double saldo = hiddenRewardData.getMoney();
 									if (saldo >= rest) {
@@ -361,7 +361,7 @@ public class MoneyCommand implements ICommand {
 				Player player = (Player) sender;
 				if (args.length == 1) {
 					ItemStack is = player.getItemInHand();
-					if (Reward.hasReward(is)) {
+					if (Reward.isReward(is)) {
 						Reward hiddenRewardData = Reward.getReward(is);
 						RewardManager.getEconomy().depositPlayer(player, hiddenRewardData.getMoney());
 						is.setType(Material.AIR);
@@ -378,7 +378,7 @@ public class MoneyCommand implements ICommand {
 					double toBeSold = Misc.ceil(Double.valueOf(args[1]));
 					for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 						ItemStack is = player.getInventory().getItem(slot);
-						if (Reward.hasReward(is) && Reward.getReward(is)
+						if (Reward.isReward(is) && Reward.getReward(is)
 								.getRewardUUID().equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
 							Reward hiddenRewardData = Reward.getReward(is);
 							double saldo = hiddenRewardData.getMoney();

@@ -215,12 +215,12 @@ public class LeaderboardManager implements Listener {
 				board.read(section);
 				board.update();
 				board.refresh();
+				mLeaderboards.put(world, board);
 			} catch (InvalidConfigurationException e) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getMessage());
 				if (MobHunting.getConfigManager().killDebug)
 					e.printStackTrace();
 			}
-			mLeaderboards.put(world, board);
 		}
 
 		if (mLeaderboards.size() > 0)

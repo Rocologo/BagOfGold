@@ -577,7 +577,13 @@ public class AchievementManager implements Listener {
 									else {
 										// Check if there is progress
 										// achievements with a wrong status
-										if (getAchievement(achievementStore.id) instanceof ProgressAchievement
+										Achievement achievement=null;
+										try {
+											achievement = getAchievement(achievementStore.id);
+										} catch (IllegalArgumentException e){
+											
+										}
+										if (achievement instanceof ProgressAchievement
 												&& achievementStore.progress != 0
 												&& achievementStore.progress != ((ProgressAchievement) getAchievement(
 														achievementStore.id)).getNextLevel()

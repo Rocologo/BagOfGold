@@ -25,7 +25,7 @@ public class MoneyMergeEventListener implements Listener {
 		Item item1 = event.getEntity();
 		Item item2 = event.getTarget();
 		ItemStack is2 = item2.getItemStack();
-		if (Reward.hasReward(item1) && Reward.hasReward(item2)) {
+		if (Reward.isReward(item1) && Reward.isReward(item2)) {
 			Reward reward1 = Reward.getReward(item1);
 			Reward reward2 = Reward.getReward(item2);
 			if (reward1.getRewardUUID().equals(reward2.getRewardUUID())
@@ -52,6 +52,5 @@ public class MoneyMergeEventListener implements Listener {
 					RewardManager.getDroppedMoney().remove(item1.getEntityId());
 			}
 		}
-
 	}
 }

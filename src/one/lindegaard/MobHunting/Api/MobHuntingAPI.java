@@ -49,7 +49,7 @@ public class MobHuntingAPI {
 	}
 
 	public static boolean isMobHuntingReward(ItemStack itemStack) {
-		return Reward.hasReward(itemStack);
+		return Reward.isReward(itemStack);
 	}
 
 	public static boolean isMobHuntingReward(Block block) {
@@ -57,25 +57,25 @@ public class MobHuntingAPI {
 	}
 
 	public static boolean isBagOfGoldReward(ItemStack itemStack) {
-		if (Reward.hasReward(itemStack))
+		if (Reward.isReward(itemStack))
 			return Reward.getReward(itemStack).isBagOfGoldReward();
 		return false;
 	}
 
 	public static boolean isKilledHeadReward(ItemStack itemStack) {
-		if (Reward.hasReward(itemStack))
+		if (Reward.isReward(itemStack))
 			return Reward.getReward(itemStack).isKilledHeadReward();
 		return false;
 	}
 
 	public static boolean isKillerHeadReward(ItemStack itemStack) {
-		if (Reward.hasReward(itemStack))
+		if (Reward.isReward(itemStack))
 			return Reward.getReward(itemStack).isKillerHeadReward();
 		return false;
 	}
 
 	public static boolean isItemReward(ItemStack itemStack) {
-		if (Reward.hasReward(itemStack))
+		if (Reward.isReward(itemStack))
 			return Reward.getReward(itemStack).isItemReward();
 		return false;
 	}

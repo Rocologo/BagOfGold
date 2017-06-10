@@ -41,6 +41,20 @@ public class Misc {
 	public static boolean isUnarmed(ItemStack item) {
 		return (item == null || item.getType() == Material.AIR);
 	}
+	
+	public static boolean isSign(Block block) {
+		if (block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.WALL_SIGN))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isSign(Material material) {
+		if (material.equals(Material.SIGN_POST) || material.equals(Material.WALL_SIGN))
+			return true;
+		else
+			return false;
+	}
 
 	public static Map<String, Object> toMap(Location loc) {
 		HashMap<String, Object> map = new HashMap<String, Object>();

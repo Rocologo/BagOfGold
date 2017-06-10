@@ -680,7 +680,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "librarian", category = "villager")
 	public String librarianPrize = "1:2";
 	@ConfigField(name = "librarian-cmd", category = "villager")
-	public String librarianCmd = "mobhunt head give {player} Libraian Librarian 1";
+	public String librarianCmd = "mobhunt head give {player} Librarian Librarian 1";
 	@ConfigField(name = "librarian-cmd-desc", category = "villager")
 	public String librarianCmdDesc = "You got a Librarian skull";
 	@ConfigField(name = "librarian-cmd-run-chance", category = "villager")
