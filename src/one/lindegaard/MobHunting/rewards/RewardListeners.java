@@ -47,7 +47,6 @@ public class RewardListeners implements Listener {
 		if (Reward.isReward(item)) {
 			Reward reward = Reward.getReward(item);
 			Player player = event.getPlayer();
-			Messages.debug("onPickupReward");
 			// If not Gringotts
 			if (reward.getMoney() != 0)
 				if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
@@ -114,8 +113,13 @@ public class RewardListeners implements Listener {
 				}
 			if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
 				RewardManager.getDroppedMoney().remove(item.getEntityId());
-			Messages.debug("%s picked up %s money. (# of rewards left=%s)", player.getName(),
-					MobHunting.getRewardManager().format(reward.getMoney()), RewardManager.getDroppedMoney().size());
+			if (reward.getMoney() == 0)
+				Messages.debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
+						reward.getDisplayname(), RewardManager.getDroppedMoney().size());
+			else
+				Messages.debug("%s picked up a %s with a value:%s (# of rewards left=%s)", player.getName(),
+						reward.getDisplayname(), MobHunting.getRewardManager().format(reward.getMoney()),
+						RewardManager.getDroppedMoney().size());
 		}
 	}
 

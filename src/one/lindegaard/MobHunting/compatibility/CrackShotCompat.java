@@ -16,7 +16,6 @@ public class CrackShotCompat implements Listener {
 
 	private static Plugin mPlugin;
 	private static boolean supported = false;
-
 	// https://dev.bukkit.org/projects/crackshot
 	// API: https://github.com/Shampaggon/CrackShot/wiki/Hooking-into-CrackShot
 
@@ -66,32 +65,32 @@ public class CrackShotCompat implements Listener {
 
 	public static boolean isCrackShotWeapon(ItemStack itemStack) {
 		if (isSupported()) {
-			CSUtility crackShot = (CSUtility) mPlugin;
-			return crackShot.getWeaponTitle(itemStack) != null;
+			CSUtility cs = new CSUtility();
+			return cs.getWeaponTitle(itemStack) != null;
 		}
 		return false;
 	}
 
 	public static String getCrackShotWeapon(ItemStack itemStack) {
 		if (isSupported()) {
-			CSUtility crackShot = (CSUtility) mPlugin;
-			return crackShot.getWeaponTitle(itemStack);
+			CSUtility cs = new CSUtility();
+			return cs.getWeaponTitle(itemStack);
 		}
 		return null;
 	}
 
 	public static boolean isCrackShotProjectile(Projectile Projectile) {
 		if (isSupported()) {
-			CSUtility crackShot = (CSUtility) mPlugin;
-			return crackShot.getWeaponTitle(Projectile) != null;
+			CSUtility cs = new CSUtility();
+			return cs.getWeaponTitle(Projectile) != null;
 		}
 		return false;
 	}
 
 	public static String getCrackShotWeapon(Projectile Projectile) {
 		if (isSupported()) {
-			CSUtility crackShot = (CSUtility) mPlugin;
-			return crackShot.getWeaponTitle(Projectile);
+			CSUtility cs = new CSUtility();
+			return cs.getWeaponTitle(Projectile);
 		}
 		return null;
 	}

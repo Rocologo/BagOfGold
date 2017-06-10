@@ -1161,8 +1161,18 @@ public class MobHuntingManager implements Listener {
 			if (killer != null) {
 				info.setAttacker(getPlayer(killer, killed));
 				info.setAttackerPosition(getPlayer(killer, killed).getLocation());
+				ItemStack weapon = killer.getItemInHand();
+				if (!weapon.equals(new ItemStack(Material.AIR))) {
+					info.setHasUsedWeapon(true);
+					if (CrackShotCompat.isCrackShotWeapon(weapon)) {
+						info.setCrackShotWeapon(CrackShotCompat.getCrackShotWeapon(weapon));
+						Messages.debug("%s used a CrackShot weapon: %s", killer.getName(),
+								CrackShotCompat.getCrackShotWeapon(weapon));
+					}
+				}
 			}
-			info.setHasUsedWeapon(true);
+			// TODO: WHY THIS??????????????????????????
+			// info.setHasUsedWeapon(true);
 		}
 
 		// Check if the kill was within the time limit on both kills and
