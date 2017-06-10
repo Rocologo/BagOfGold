@@ -16,6 +16,7 @@ import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
+import one.lindegaard.MobHunting.compatibility.CrackShotCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
@@ -135,6 +136,7 @@ public class MetricsManager {
 				valueMap.put("WorldEdit", WorldEditCompat.isSupported() ? 1 : 0);
 				valueMap.put("ProtocolLib", ProtocolLibCompat.isSupported() ? 1 : 0);
 				valueMap.put("ExtraHardMode", ExtraHardModeCompat.isSupported() ? 1 : 0);
+				valueMap.put("CrackShot", CrackShotCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});

@@ -83,6 +83,7 @@
 		<residence.jar.version>Residence4.6.1.4.jar</residence.jar.version>
 		<bossshop.jar.version>BossShop-2.7.3.jar</bossshop.jar.version>
 		<extrahardmode.jar.version>ExtraHardMode-3.11.jar</extrahardmode.jar.version>
+		<crackshot.jar.version>CrackShot-0.98.5.jar</crackshot.jar.version>
 	</properties>
 
 
@@ -735,6 +736,15 @@
 			<version>${extrahardmode.jar.version}</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${extrahardmode.jar.version}</systemPath>
+		</dependency>
+		
+		<!-- CrackShot -->
+		<dependency>
+			<groupId>com.shampaggon.crackshot.CSDirector</groupId>
+			<artifactId>CrackShot</artifactId>
+			<version>${crackshot.jar.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/${crackshot.jar.version}</systemPath>
 		</dependency>
 
 	</dependencies>

@@ -64,6 +64,7 @@ import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
+import one.lindegaard.MobHunting.compatibility.CrackShotCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
@@ -638,6 +639,11 @@ public class MobHuntingManager implements Listener {
 
 			info.setIsMeleWeaponUsed(false);
 			projectile = true;
+
+			if (CrackShotCompat.isCrackShotProjectile((Projectile) damager)) {
+				info.setCrackShotWeapon(CrackShotCompat.getCrackShotWeapon((Projectile) damager));
+			}
+
 		} else
 			info.setIsMeleWeaponUsed(true);
 
@@ -662,6 +668,10 @@ public class MobHuntingManager implements Listener {
 			} else {
 				weapon = cause.getItemInHand();
 			}
+			if (CrackShotCompat.isCrackShotWeapon(weapon)) {
+				info.setCrackShotWeapon(CrackShotCompat.getCrackShotWeapon(weapon));
+				Messages.debug("%s use a CrackShot weapon: %s", cause.getName(), info.getCrackShotWeaponUsed());
+			}
 		}
 
 		if (weapon != null)
@@ -669,7 +679,7 @@ public class MobHuntingManager implements Listener {
 
 		// Take note that a weapon has been used at all
 		if (info.getWeapon() != null && (Misc.isSword(info.getWeapon()) || Misc.isAxe(info.getWeapon())
-				|| Misc.isPick(info.getWeapon()) || projectile))
+				|| Misc.isPick(info.getWeapon()) || info.isCrackShotWeaponUsed() || projectile))
 			info.setHasUsedWeapon(true);
 
 		if (cause != null) {

@@ -2216,6 +2216,10 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/extra-hard-mode.19673/")
 	public boolean disableIntegrationExtraHardMode = false;
 
+	@ConfigField(name = "disable-integration-crackshot", category = "plugins", comment = "Disable integration with CrackShot."
+			+ "\nhttps://dev.bukkit.org/projects/crackshot")
+	public boolean disableIntegrationCrackShot = false;
+
 	// #####################################################################################
 	// Database
 	// #####################################################################################

@@ -17,6 +17,7 @@ public class DamageInformation {
 	private Location attackerPosition; // TODO: Is this really needed???
 	private boolean wolfAssist;
 	private boolean wasFlying;
+	private String crackShotWeapon = "";
 
 	// Disguises
 	private boolean playerUndercover; // Player attacking undercover (disguise)
@@ -24,6 +25,7 @@ public class DamageInformation {
 
 	/**
 	 * The time where the attack happened.
+	 * 
 	 * @return time as a long
 	 */
 	public long getTime() {
@@ -32,6 +34,7 @@ public class DamageInformation {
 
 	/**
 	 * Set the time where the attack happened
+	 * 
 	 * @param time
 	 */
 	public void setTime(long time) {
@@ -54,7 +57,7 @@ public class DamageInformation {
 	}
 
 	/**
-	 * @return the usedWeapon 
+	 * @return the usedWeapon
 	 */
 	public boolean hasUsedWeapon() {
 		return usedWeapon;
@@ -216,6 +219,19 @@ public class DamageInformation {
 	 */
 	public void setMobCoverBlown(boolean mobCoverBlown) {
 		this.mobCoverBlown = mobCoverBlown;
+	}
+
+	// CRACKSHOT Integration
+	public boolean isCrackShotWeaponUsed() {
+		return !crackShotWeapon.isEmpty();
+	}
+
+	public String getCrackShotWeaponUsed() {
+		return crackShotWeapon;
+	}
+
+	public void setCrackShotWeapon(String weapon) {
+		crackShotWeapon = weapon;
 	}
 
 }

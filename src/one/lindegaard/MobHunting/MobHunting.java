@@ -37,6 +37,7 @@ import one.lindegaard.MobHunting.compatibility.BossShopCompat;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
 import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
+import one.lindegaard.MobHunting.compatibility.CrackShotCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
@@ -238,6 +239,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(SmartGiantsCompat.class, "SmartGiants");
 
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
+		registerPlugin(CrackShotCompat.class, "CrackShot");
 
 		mExtendedMobManager = new ExtendedMobManager();
 

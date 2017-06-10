@@ -26,7 +26,7 @@ public class BrawlerBonus implements IModifier {
 	@Override
 	public boolean doesApply(Entity deadEntity, Player killer, HuntData data, DamageInformation extraInfo,
 			EntityDamageByEntityEvent lastDamageCause) {
-		return !extraInfo.hasUsedWeapon() && !extraInfo.isWolfAssist();
+		return !extraInfo.hasUsedWeapon() && !extraInfo.isWolfAssist() && !extraInfo.isCrackShotWeaponUsed();
 	}
 
 }
