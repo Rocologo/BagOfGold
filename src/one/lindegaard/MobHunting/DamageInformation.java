@@ -18,6 +18,7 @@ public class DamageInformation {
 	private boolean wolfAssist;
 	private boolean wasFlying;
 	private String crackShotWeapon = "";
+	private Player crackShotPlayer;
 
 	// Disguises
 	private boolean playerUndercover; // Player attacking undercover (disguise)
@@ -232,6 +233,14 @@ public class DamageInformation {
 
 	public void setCrackShotWeapon(String weapon) {
 		crackShotWeapon = weapon;
+	}
+
+	public Player getCrackShotPlayer() {
+		return crackShotPlayer;
+	}
+
+	public void setCrackShotPlayer(Player crackShotPlayer) {
+		this.crackShotPlayer = crackShotPlayer;
 	}
 
 }

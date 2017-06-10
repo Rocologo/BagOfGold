@@ -142,7 +142,7 @@ public class MobHuntingManager implements Listener {
 	 * @param entity
 	 * @return
 	 */
-	public DamageInformation getDamageInformation(LivingEntity entity) {
+	public DamageInformation getDamageInformation(Entity entity) {
 		return mDamageHistory.get(entity);
 	}
 
@@ -808,8 +808,12 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
+		DamageInformation info = mDamageHistory.get(killed);
+		Messages.debug("CrackShot used=%s, weapon=%s", info.isCrackShotWeaponUsed(), info.getCrackShotWeaponUsed());
+
 		// Killer is not a player and not a MyPet.
-		if (killer == null && !MyPetCompat.isKilledByMyPet(killed)) {
+		if (killer == null && !MyPetCompat.isKilledByMyPet(killed) && !info.isCrackShotWeaponUsed()) {
+			Messages.debug("not killed ny Player or MyPet or CrackShot");
 			return;
 		}
 
@@ -832,9 +836,14 @@ public class MobHuntingManager implements Listener {
 		// Write killer name to Server Log
 		if (killer != null)
 			Messages.debug("%s killed a %s (%s)", killer.getName(), mob.getName(), mob.getMobPlugin().getName());
-		else
+		else if (MyPetCompat.isKilledByMyPet(killed))
 			Messages.debug("%s owned by %s killed a %s (%s)", MyPetCompat.getMyPet(killed).getName(),
 					MyPetCompat.getMyPetOwner(killed).getName(), mob.getName(), mob.getMobPlugin().getName());
+		else if (info.isCrackShotWeaponUsed()){
+			killer = info.getCrackShotPlayer();
+			Messages.debug("%s killed a %s (%s) using a %s", killer.getName(), mob.getName(), mob.getMobPlugin().getName(),
+					info.getCrackShotWeaponUsed());
+		}
 
 		// Killer is a NPC
 		if (killer != null && CitizensCompat.isNPC(killer)) {
@@ -1143,9 +1152,6 @@ public class MobHuntingManager implements Listener {
 		}
 
 		// Update DamageInformation
-		DamageInformation info = null;
-		info = mDamageHistory.get(killed);
-
 		if (killed instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity) killed)) {
 			info = mDamageHistory.get(killed);
 
@@ -1171,8 +1177,6 @@ public class MobHuntingManager implements Listener {
 					}
 				}
 			}
-			// TODO: WHY THIS??????????????????????????
-			// info.setHasUsedWeapon(true);
 		}
 
 		// Check if the kill was within the time limit on both kills and
@@ -1892,6 +1896,10 @@ public class MobHuntingManager implements Listener {
 
 	public Set<IModifier> getHuntingModifiers() {
 		return mHuntingModifiers;
+	}
+
+	public WeakHashMap<LivingEntity, DamageInformation> getDamageHistory() {
+		return mDamageHistory;
 	}
 
 }

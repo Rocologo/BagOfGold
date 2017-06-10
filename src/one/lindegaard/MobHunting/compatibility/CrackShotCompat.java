@@ -3,13 +3,20 @@ package one.lindegaard.MobHunting.compatibility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import com.shampaggon.crackshot.CSUtility;
-
+import com.shampaggon.crackshot.events.WeaponDamageEntityEvent;
+import com.shampaggon.crackshot.events.WeaponExplodeEvent;
+import one.lindegaard.MobHunting.DamageInformation;
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class CrackShotCompat implements Listener {
@@ -95,8 +102,29 @@ public class CrackShotCompat implements Listener {
 		return null;
 	}
 
+	public static boolean isCrackShotUsed(Entity entity) {
+		return !MobHunting.getMobHuntingManager().getDamageHistory().get(entity).getCrackShotWeaponUsed().isEmpty();
+	}
+
 	// **************************************************************************
 	// EVENTS
 	// **************************************************************************
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onWeaponDamageEntityEvent(WeaponDamageEntityEvent event) {
+		Messages.debug("onWeaponDamageEntityEvent: Victim=%s", event.getVictim().getName());
+		if (event.getVictim() instanceof LivingEntity) {
+			DamageInformation info = new DamageInformation();
+			Messages.debug("Mob damed with a %s", getCrackShotWeapon(event.getPlayer().getItemInHand()));
+			info.setCrackShotWeapon(getCrackShotWeapon(event.getPlayer().getItemInHand()));
+			info.setCrackShotPlayer(event.getPlayer());
+			MobHunting.getMobHuntingManager().getDamageHistory().put((LivingEntity) event.getVictim(), info);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onWeaponDamageEntityEvent(WeaponExplodeEvent event) {
+		Messages.debug("WeaponExplodeEvent: Weapon=%s", event.getWeaponTitle());
+	}
 
 }
