@@ -1,5 +1,6 @@
 V4.9.5
 * Added support for CrackShot (https://dev.bukkit.org/projects/crackshot)
+* NPE bug on Assisted kills. (https://github.com/Rocologo/MobHunting/issues/247
 * Fixed typo in the config.yml (Libraian -> Librarian) 
 * Fixed bug where some Bag of gold could not be picked up.
 * Fixed NPE where if there are Achievements in the database related to a Mob plugin, but the plugin is not loaded.

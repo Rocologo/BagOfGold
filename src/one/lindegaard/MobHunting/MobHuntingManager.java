@@ -839,10 +839,10 @@ public class MobHuntingManager implements Listener {
 		else if (MyPetCompat.isKilledByMyPet(killed))
 			Messages.debug("%s owned by %s killed a %s (%s)", MyPetCompat.getMyPet(killed).getName(),
 					MyPetCompat.getMyPetOwner(killed).getName(), mob.getName(), mob.getMobPlugin().getName());
-		else if (info.isCrackShotWeaponUsed()){
+		else if (info.isCrackShotWeaponUsed()) {
 			killer = info.getCrackShotPlayer();
-			Messages.debug("%s killed a %s (%s) using a %s", killer.getName(), mob.getName(), mob.getMobPlugin().getName(),
-					info.getCrackShotWeaponUsed());
+			Messages.debug("%s killed a %s (%s) using a %s", killer.getName(), mob.getName(),
+					mob.getMobPlugin().getName(), info.getCrackShotWeaponUsed());
 		}
 
 		// Killer is a NPC
@@ -1492,7 +1492,7 @@ public class MobHuntingManager implements Listener {
 						killed.hasMetadata("MH:hasBonus"), cash);
 			} else {
 				Messages.debug("RecordAssistedKill: %s killed a %s (%s) Cash=%s",
-						info.getAttacker().getName() + "/" + info.getAssister().getName(), mob.getName(),
+						getPlayer(killer, killed).getName() + "/" + info.getAssister().getName(), mob.getName(),
 						mob.getMobPlugin().name(), MobHunting.getRewardManager().format(cash));
 				MobHunting.getDataStoreManager().recordAssist(getPlayer(killer, killed), killer, mob,
 						killed.hasMetadata("MH:hasBonus"), cash);
