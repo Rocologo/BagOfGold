@@ -809,7 +809,9 @@ public class MobHuntingManager implements Listener {
 		}
 
 		DamageInformation info = mDamageHistory.get(killed);
-		Messages.debug("CrackShot used=%s, weapon=%s", info.isCrackShotWeaponUsed(), info.getCrackShotWeaponUsed());
+		if (info == null) {
+			info = new DamageInformation();
+		}
 
 		// Killer is not a player and not a MyPet.
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed) && !info.isCrackShotWeaponUsed()) {
