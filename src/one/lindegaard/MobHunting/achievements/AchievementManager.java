@@ -872,7 +872,7 @@ public class AchievementManager implements Listener {
 
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		final Inventory inv = event.getInventory();
 		final Player player = (Player) event.getWhoClicked();

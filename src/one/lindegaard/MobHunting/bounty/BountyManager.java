@@ -232,6 +232,22 @@ public class BountyManager implements Listener {
 			Messages.debug("%s bounties on %s was removed when player quit", n, event.getPlayer().getName());
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onInventoryClick(InventoryClickEvent event) {
+		final Inventory inv = event.getInventory();
+		final Player player = (Player) event.getWhoClicked();
+		if (ChatColor.stripColor(inv.getName()).startsWith("MostWanted:")
+				|| ChatColor.stripColor(inv.getName()).startsWith("Wanted:")) {
+			event.setCancelled(true);
+			Bukkit.getScheduler().runTask(instance, new Runnable() {
+				public void run() {
+					player.closeInventory();
+					inventoryMap.remove(player);
+				}
+			});
+		}
+	}
 
 	// ****************************************************************************
 	// Save & Load
@@ -473,22 +489,6 @@ public class BountyManager implements Listener {
 			}
 		} else {
 			sender.sendMessage("[MobHunting] You cant use this command in the console");
-		}
-	}
-
-	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) {
-		final Inventory inv = event.getInventory();
-		final Player player = (Player) event.getWhoClicked();
-		if (ChatColor.stripColor(inv.getName()).startsWith("MostWanted:")
-				|| ChatColor.stripColor(inv.getName()).startsWith("Wanted:")) {
-			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(instance, new Runnable() {
-				public void run() {
-					player.closeInventory();
-					inventoryMap.remove(player);
-				}
-			});
 		}
 	}
 
