@@ -232,7 +232,7 @@ public class BountyManager implements Listener {
 			Messages.debug("%s bounties on %s was removed when player quit", n, event.getPlayer().getName());
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		final Inventory inv = event.getInventory();
@@ -253,57 +253,55 @@ public class BountyManager implements Listener {
 	// Save & Load
 	// ****************************************************************************
 	public void load(final Player player) {
-		MobHunting.getDataStoreManager().requestBounties(BountyStatus.open, player,
-				new IDataCallback<Set<Bounty>>() {
+		MobHunting.getDataStoreManager().requestBounties(BountyStatus.open, player, new IDataCallback<Set<Bounty>>() {
 
-					@Override
-					public void onCompleted(Set<Bounty> data) {
-						boolean sort = false;
-						int n = 0;
-						Iterator<Bounty> itr = data.iterator();
-						while (itr.hasNext()) {
-							Bounty bounty = itr.next();
-							if (!hasOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(),
-									bounty.getBountyOwner())) {
-								if (bounty.getEndDate() > System.currentTimeMillis() && bounty.isOpen()) {
-									mOpenBounties.add(bounty);
-									n++;
-								} else {
-									Messages.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
-									bounty.setStatus(BountyStatus.expired);
-									MobHunting.getDataStoreManager().updateBounty(bounty);
-									delete(bounty);
-								}
-								sort = true;
-							}
+			@Override
+			public void onCompleted(Set<Bounty> data) {
+				boolean sort = false;
+				int n = 0;
+				Iterator<Bounty> itr = data.iterator();
+				while (itr.hasNext()) {
+					Bounty bounty = itr.next();
+					if (!hasOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner())) {
+						if (bounty.getEndDate() > System.currentTimeMillis() && bounty.isOpen()) {
+							mOpenBounties.add(bounty);
+							n++;
+						} else {
+							Messages.debug("BountyManager: Expired onLoad Bounty %s", bounty.toString());
+							bounty.setStatus(BountyStatus.expired);
+							MobHunting.getDataStoreManager().updateBounty(bounty);
+							delete(bounty);
 						}
-						if (sort)
-							sort();
-						Messages.debug("%s bounties for %s was loaded.", n, player.getName());
-						if (n > 0 && hasOpenBounties(player)){
-							Messages.playerActionBarMessage(player,
-									Messages.getString("mobhunting.bounty.youarewanted"));
-							Messages.broadcast(Messages.getString("mobhunting.bounty.playeriswanted", "playername",
-									player.getName()), player);
+						sort = true;
+					}
+				}
+				if (sort)
+					sort();
+				Messages.debug("%s bounties for %s was loaded.", n, player.getName());
+				if (n > 0 && hasOpenBounties(player)) {
+					Messages.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
+					Messages.broadcast(
+							Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()),
+							player);
+				}
+			}
+
+			@Override
+			public void onError(Throwable error) {
+				if (error instanceof UserNotFoundException)
+					if (player.isOnline()) {
+						Player p = (Player) player;
+						p.sendMessage(Messages.getString("mobhunting.bounty.user-not-found"));
+					} else {
+						error.printStackTrace();
+						if (player.isOnline()) {
+							Player p = (Player) player;
+							p.sendMessage(Messages.getString("mobhunting.bounty.load-fail"));
 						}
 					}
+			}
 
-					@Override
-					public void onError(Throwable error) {
-						if (error instanceof UserNotFoundException)
-							if (player.isOnline()) {
-								Player p = (Player) player;
-								p.sendMessage(Messages.getString("mobhunting.bounty.user-not-found"));
-							} else {
-								error.printStackTrace();
-								if (player.isOnline()) {
-									Player p = (Player) player;
-									p.sendMessage(Messages.getString("mobhunting.bounty.load-fail"));
-								}
-							}
-					}
-
-				});
+		});
 	}
 
 	/**
@@ -328,28 +326,32 @@ public class BountyManager implements Listener {
 	}
 
 	public void cancel(Bounty bounty) {
-		Bounty b1 = getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner());
-		b1.setStatus(BountyStatus.canceled);
-		MobHunting.getDataStoreManager().updateBounty(b1);
+		Bounty b1 = getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner());
+		if (b1 != null) {
+			b1.setStatus(BountyStatus.canceled);
+			MobHunting.getDataStoreManager().updateBounty(b1);
 
-		Iterator<Bounty> it = mOpenBounties.iterator();
-		while (it.hasNext()) {
-			Bounty b = (Bounty) it.next();
-			if (b.equals(bounty))
-				it.remove();
+			Iterator<Bounty> it = mOpenBounties.iterator();
+			while (it.hasNext()) {
+				Bounty b = (Bounty) it.next();
+				if (b.equals(bounty))
+					it.remove();
+			}
 		}
 	}
 
 	public void delete(Bounty bounty) {
-		Bounty b1 = getOpenBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner());
-		b1.setStatus(BountyStatus.deleted);
-		MobHunting.getDataStoreManager().updateBounty(b1);
+		Bounty b1 = getBounty(bounty.getWorldGroup(), bounty.getWantedPlayer(), bounty.getBountyOwner());
+		if (b1 != null) {
+			b1.setStatus(BountyStatus.deleted);
+			MobHunting.getDataStoreManager().updateBounty(b1);
 
-		Iterator<Bounty> it = mOpenBounties.iterator();
-		while (it.hasNext()) {
-			Bounty b = (Bounty) it.next();
-			if (b.equals(bounty))
-				it.remove();
+			Iterator<Bounty> it = mOpenBounties.iterator();
+			while (it.hasNext()) {
+				Bounty b = (Bounty) it.next();
+				if (b.equals(bounty))
+					it.remove();
+			}
 		}
 	}
 

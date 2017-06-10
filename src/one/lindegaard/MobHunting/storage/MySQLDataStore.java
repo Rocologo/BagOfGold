@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
+import com.earth2me.essentials.commands.WarpNotFoundException;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import one.lindegaard.MobHunting.Messages;
@@ -316,6 +317,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 					// ON DUPLCATE KEY
 					mInsertBounty.setLong(12, bounty.getCreatedDate());
 					mInsertBounty.setLong(13, bounty.getEndDate());
+					Messages.debug("Saving Bounty on wantedplayer=%s (value=%s)", bounty.getWantedPlayer().getName(),
+							bounty.getPrize());
 					mInsertBounty.setString(14, String.format(Locale.US, String.valueOf(bounty.getPrize())));
 					mInsertBounty.setString(15, bounty.getMessage());
 					mInsertBounty.setInt(16, bounty.getStatus().getValue());
