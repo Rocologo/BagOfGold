@@ -615,6 +615,10 @@ public class MobHuntingManager implements Listener {
 			return;
 		}
 
+		if (CrackShotCompat.isSupported() && CrackShotCompat.isCrackShotUsed(damaged)){
+			return;
+		}
+
 		DamageInformation info = null;
 		info = mDamageHistory.get(damaged);
 		if (info == null)
@@ -670,7 +674,7 @@ public class MobHuntingManager implements Listener {
 			}
 			if (CrackShotCompat.isCrackShotWeapon(weapon)) {
 				info.setCrackShotWeapon(CrackShotCompat.getCrackShotWeapon(weapon));
-				Messages.debug("%s use a CrackShot weapon: %s", cause.getName(), info.getCrackShotWeaponUsed());
+				Messages.debug("%s used a CrackShot weapon: %s", cause.getName(), info.getCrackShotWeaponUsed());
 			}
 		}
 
@@ -813,9 +817,8 @@ public class MobHuntingManager implements Listener {
 			info = new DamageInformation();
 		}
 
-		// Killer is not a player and not a MyPet.
+		// Killer is not a player and not a MyPet and CrackShot not used.
 		if (killer == null && !MyPetCompat.isKilledByMyPet(killed) && !info.isCrackShotWeaponUsed()) {
-			Messages.debug("not killed ny Player or MyPet or CrackShot");
 			return;
 		}
 
@@ -1156,9 +1159,9 @@ public class MobHuntingManager implements Listener {
 		// Update DamageInformation
 		if (killed instanceof LivingEntity && mDamageHistory.containsKey((LivingEntity) killed)) {
 			info = mDamageHistory.get(killed);
-
 			if (System.currentTimeMillis() - info.getTime() > MobHunting.getConfigManager().assistTimeout * 1000)
 				info = null;
+			//else 
 			// else if (killer == null)
 			// killer = info.getAttacker();
 		}
