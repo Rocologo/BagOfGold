@@ -103,7 +103,9 @@ public class CrackShotCompat implements Listener {
 	}
 
 	public static boolean isCrackShotUsed(Entity entity) {
-		return !MobHunting.getMobHuntingManager().getDamageHistory().get(entity).getCrackShotWeaponUsed().isEmpty();
+		if (MobHunting.getMobHuntingManager().getDamageHistory().containsKey(entity))
+			return !MobHunting.getMobHuntingManager().getDamageHistory().get(entity).getCrackShotWeaponUsed().isEmpty();
+		return false;
 	}
 
 	// **************************************************************************
@@ -126,9 +128,9 @@ public class CrackShotCompat implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onWeaponDamageEntityEvent(WeaponExplodeEvent event) {
-		Messages.debug("WeaponExplodeEvent: Weapon=%s", event.getWeaponTitle());
-	}
+	// @EventHandler(priority = EventPriority.NORMAL)
+	// public void onWeaponDamageEntityEvent(WeaponExplodeEvent event) {
+	// Messages.debug("WeaponExplodeEvent: Weapon=%s", event.getWeaponTitle());
+	// }
 
 }
