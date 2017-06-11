@@ -271,8 +271,16 @@ public class LeaderboardCommand implements ICommand, Listener {
 		} else if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("create")) {
 				if (args.length == 2) {
-					for (StatType type : StatType.values())
-						items.add(type.translateName().replaceAll(" ", "_"));
+					//int i = 0;
+					for (StatType type : StatType.values()) {
+						if (type != null) {
+							//Messages.debug("StatType(%s)=%s", i, type.getDBColumn());
+							//items.add(type.translateName().replaceAll(" ", "_"));
+							items.add(type.getDBColumn());
+						} //else
+						//	Messages.debug("StatType(%s)=%s", i, type);
+						//i++;
+					}
 				} else if (args.length == 3) {
 					for (TimePeriod period : TimePeriod.values())
 						items.add(period.translateName().replaceAll(" ", "_"));

@@ -84,6 +84,7 @@ public class CustomMobsCompat implements Listener {
 					MobHunting.getStoreManager().insertCustomMobs(key);
 				}
 			}
+			Messages.injectMissingMobNamesToLangFiles();
 			Messages.debug("Loaded %s CustomMobs", mMobRewardData.size());
 		} catch (IOException e) {
 			e.printStackTrace();

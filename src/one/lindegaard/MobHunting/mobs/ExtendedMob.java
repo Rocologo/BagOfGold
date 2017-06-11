@@ -1,6 +1,9 @@
 package one.lindegaard.MobHunting.mobs;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
@@ -104,6 +107,9 @@ public class ExtendedMob {
 			return mobtype;
 		case SmartGiants:
 			return "SmartGiant";
+		default:
+			ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+			console.sendMessage(ChatColor.RED + "[MobHunting] Missing pluginType '"+mobPlugin.name()+"' in ExtendeMob.");
 		}
 		return null;
 	}
@@ -131,6 +137,9 @@ public class ExtendedMob {
 			return CustomMobsCompat.getProgressAchievementLevel1(mobtype);
 		case SmartGiants:
 			return SmartGiantsCompat.getProgressAchievementLevel1(mobtype);
+		default:
+			ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+			console.sendMessage(ChatColor.RED + "[MobHunting] Missing pluginType '"+mobPlugin.name()+"' in ExtendeMob.");
 		}
 		return 0;
 	}

@@ -139,6 +139,7 @@ public class SmartGiantsCompat implements Listener {
 				mMobRewardData.put(key, mob);
 				MobHunting.getStoreManager().insertSmartGiants(key);
 			}
+			Messages.injectMissingMobNamesToLangFiles();
 			Messages.debug("Loaded %s SmartGiants", mMobRewardData.size());
 		} catch (IOException e) {
 			e.printStackTrace();

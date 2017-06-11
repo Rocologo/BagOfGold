@@ -114,8 +114,8 @@ public class RewardListeners implements Listener {
 			if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
 				RewardManager.getDroppedMoney().remove(item.getEntityId());
 			if (reward.getMoney() == 0)
-				Messages.debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
-						reward.getDisplayname(), RewardManager.getDroppedMoney().size());
+				Messages.debug("%s picked up a %s (# of rewards left=%s)", player.getName(), reward.getDisplayname(),
+						RewardManager.getDroppedMoney().size());
 			else
 				Messages.debug("%s picked up a %s with a value:%s (# of rewards left=%s)", player.getName(),
 						reward.getDisplayname(), MobHunting.getRewardManager().format(reward.getMoney()),

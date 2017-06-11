@@ -148,6 +148,7 @@ public class MythicMobsCompat {
 					Messages.debug("The mob=%s can't be found in MythicMobs configuration files", key);
 				}
 			}
+			Messages.injectMissingMobNamesToLangFiles();
 			Messages.debug("Loaded %s MythicMobs", n);
 		} catch (IOException e) {
 			e.printStackTrace();

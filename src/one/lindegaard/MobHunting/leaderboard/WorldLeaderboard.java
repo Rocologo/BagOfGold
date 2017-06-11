@@ -507,20 +507,22 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		for (int i = 0; i < stats.size(); ++i) {
 			mType[i] = StatType.fromColumnName(stats.get(i));
 			if (mType[i] == null)
-				throw new InvalidConfigurationException("Invalid stat type " + stats.get(i));
+				throw new InvalidConfigurationException("Invalid stat type " + stats.get(i) + " on Leaderboard at pos ("
+						+ mLocation.getBlockX() + "," + mLocation.getBlockY() + "," + mLocation.getBlockZ()
+						+ ") has been deleted from world");
 		}
 
 		mPeriodIndex = 0;
 		mTypeIndex = 0;
 
 		mLocation = pos.toLocation(world);
-		
-		if (!Misc.isSign(mLocation.getBlock())){
-			throw new InvalidConfigurationException("Leaderboard in world "+mLocation.getWorld().getName()+
-					" at pos ("+mLocation.getBlockX()+","+mLocation.getBlockY()+","+mLocation.getBlockZ()+
-					") has been deleted from world");
+
+		if (!Misc.isSign(mLocation.getBlock())) {
+			throw new InvalidConfigurationException(
+					"Leaderboard in world " + mLocation.getWorld().getName() + " at pos (" + mLocation.getBlockX() + ","
+							+ mLocation.getBlockY() + "," + mLocation.getBlockZ() + ") has been deleted from world");
 		}
-				
+
 	}
 
 }

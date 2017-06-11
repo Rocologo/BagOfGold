@@ -77,6 +77,7 @@ public class CitizensCompat implements Listener {
 					masterMobHunterManager.initialize();
 					findMissingNPCs();
 					MobHunting.getExtendedMobManager().updateExtendedMobs();
+					Messages.injectMissingMobNamesToLangFiles();
 				}
 			}, 20 * 5); // 20ticks/sec * 3 sec.
 

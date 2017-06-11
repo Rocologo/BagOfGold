@@ -48,6 +48,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 
 			loadTARDISWeepingAngelsMobsData();
 			saveTARDISWeepingAngelsMobsData();
+
 		}
 	}
 
@@ -112,7 +113,9 @@ public class TARDISWeepingAngelsCompat implements Listener {
 							new RewardData(MobPlugin.TARDISWeepingAngels, monster.name(), monster.getName(), "40:60",
 									"minecraft:give {player} iron_sword 1", "You got an Iron sword.", 1, 1, 0.02));
 					saveTARDISWeepingAngelsMobsData(mMobRewardData.get(monster.name()).getMobType());
+					MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(monster.name);
 				}
+				Messages.injectMissingMobNamesToLangFiles();
 				return;
 			}
 
@@ -125,6 +128,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 				mMobRewardData.put(key, mob);
 				MobHunting.getStoreManager().insertTARDISWeepingAngelsMobs(key);
 			}
+			Messages.injectMissingMobNamesToLangFiles();
 			Messages.debug("Loaded %s TARDISWeepingAngels-Mobs", mMobRewardData.size());
 		} catch (IOException e) {
 			e.printStackTrace();

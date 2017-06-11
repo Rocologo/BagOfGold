@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 
 import one.lindegaard.MobHunting.Messages;
@@ -62,29 +64,41 @@ public class ExtendedMobManager {
 						|| !MythicMobsCompat.isMythicMob(mob.getMobtype()))
 					continue;
 				break;
+
 			case CustomMobs:
 				if (!CustomMobsCompat.isSupported() || CustomMobsCompat.isDisabledInConfig())
 					continue;
 				break;
+
 			case TARDISWeepingAngels:
 				if (!TARDISWeepingAngelsCompat.isSupported() || TARDISWeepingAngelsCompat.isDisabledInConfig())
 					continue;
 				break;
+
 			case Citizens:
 				if (!CitizensCompat.isSupported() || CitizensCompat.isDisabledInConfig()
 						|| !CitizensCompat.isSentryOrSentinelOrSentries(mob.getMobtype()))
 					continue;
 				break;
+
 			case MysteriousHalloween:
 				if (!MysteriousHalloweenCompat.isSupported() || MysteriousHalloweenCompat.isDisabledInConfig())
 					continue;
 				break;
 
-			case Minecraft:
-				break;
-			default:
+			case SmartGiants:
+				if (!SmartGiantsCompat.isSupported() || SmartGiantsCompat.isDisabledInConfig())
+					continue;
 				break;
 
+			case Minecraft:
+				break;
+
+			default:
+				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+				console.sendMessage(ChatColor.RED + "[MobHunting] Missing PluginType: " + mob.getMobPlugin().getName()
+						+ " in ExtendedMobManager.");
+				continue;
 			}
 			if (!mobs.containsKey(mob.getMob_id())) {
 				n++;
@@ -103,14 +117,14 @@ public class ExtendedMobManager {
 	}
 
 	public int getMobIdFromMobTypeAndPluginID(String mobtype, MobPlugin mobPlugin) {
-
 		Iterator<Entry<Integer, ExtendedMob>> mobset = mobs.entrySet().iterator();
 		while (mobset.hasNext()) {
 			ExtendedMob mob = (ExtendedMob) mobset.next().getValue();
 			if (mob.getMobPlugin().equals(mobPlugin) && mob.getMobtype().equalsIgnoreCase(mobtype))
 				return mob.getMob_id();
 		}
-		//Bukkit.getLogger().warning("[MobHunting] The " + mobPlugin.name() + " mobtype " + mobtype + " was not found.");
+		// Bukkit.getLogger().warning("[MobHunting] The " + mobPlugin.name() + "
+		// mobtype " + mobtype + " was not found.");
 		return 0;
 	}
 
@@ -144,7 +158,7 @@ public class ExtendedMobManager {
 			if (mob != null)
 				mobtype = mob.name();
 			else {
-				//Messages.debug("ERROR!!! Unsupported mob/entity: '%s'", mob);
+				// Messages.debug("ERROR!!! Unsupported mob/entity: '%s'", mob);
 				mobtype = "";
 			}
 		}
@@ -154,7 +168,7 @@ public class ExtendedMobManager {
 
 	// This is only used to get a "random" mob_id stored when an Achievement is
 	// stored in mh_Daily
-	public static ExtendedMob getFirstMob() {
+	public ExtendedMob getFirstMob() {
 		int mob_id = mobs.keySet().iterator().next().intValue();
 		return mobs.get(mob_id);
 	}
@@ -165,8 +179,8 @@ public class ExtendedMobManager {
 		else
 			return mob.getType().toString();
 	}
-	
-	public String getTranslatedName(){
+
+	public String getTranslatedName() {
 		return "";
 	};
 

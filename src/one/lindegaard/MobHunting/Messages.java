@@ -81,7 +81,8 @@ public class Messages {
 			}
 
 			if (!newEntries.isEmpty()) {
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
+				BufferedWriter writer = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
 				for (Entry<String, String> entry : newEntries.entrySet())
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				writer.close();
@@ -99,12 +100,13 @@ public class Messages {
 		try {
 			Map<String, String> source = loadLang(onDisk);
 			source = sortByKeys(source);
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, false), StandardCharsets.UTF_8));
+			BufferedWriter writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(onDisk, false), StandardCharsets.UTF_8));
 			for (Entry<String, String> entry : source.entrySet()) {
 				writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 			}
 			writer.close();
-			Bukkit.getLogger().info(PREFIX + " Sorted " + onDisk.getName() + " translation");
+			//Bukkit.getLogger().info(PREFIX + " Sorted " + onDisk.getName() + " translation");
 
 			return true;
 		} catch (IOException e) {
@@ -118,10 +120,20 @@ public class Messages {
 		if (!folder.exists())
 			folder.mkdirs();
 
+		boolean customLanguage = true;
 		for (String source : sources) {
+			if (source.equalsIgnoreCase(MobHunting.getConfigManager().language))
+				customLanguage = false;
 			File dest = new File(folder, source);
 			injectMissingMobNamesToLangFile(dest);
 		}
+
+		if (customLanguage) {
+			File dest = new File(folder, MobHunting.getConfigManager().language + ".lang");
+			injectMissingMobNamesToLangFile(dest);
+			sortFileOnDisk(dest);
+		}
+
 	}
 
 	private static boolean injectMissingMobNamesToLangFile(File onDisk) {
@@ -148,7 +160,8 @@ public class Messages {
 				}
 
 			if (!newEntries.isEmpty()) {
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
+				BufferedWriter writer = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
 				for (Entry<String, String> entry : newEntries.entrySet()) {
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				}
@@ -198,7 +211,8 @@ public class Messages {
 			}
 
 			if (!newEntries.isEmpty()) {
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
+				BufferedWriter writer = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(onDisk, true), StandardCharsets.UTF_8));
 				for (Entry<String, String> entry : newEntries.entrySet()) {
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				}
