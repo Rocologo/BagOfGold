@@ -218,7 +218,7 @@ public class AchievementManager implements Listener {
 		return storage.gainedAchievements.contains(achievement.getID());
 	}
 
-	public boolean achievementsEnabledFor(OfflinePlayer player) {
+	private boolean achievementsEnabledFor(OfflinePlayer player) {
 		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null)
 			return false;
@@ -577,14 +577,13 @@ public class AchievementManager implements Listener {
 									else {
 										// Check if there is progress
 										// achievements with a wrong status
-										Achievement achievement=null;
+										Achievement achievement = null;
 										try {
 											achievement = getAchievement(achievementStore.id);
-										} catch (IllegalArgumentException e){
-											
+										} catch (IllegalArgumentException e) {
+
 										}
-										if (achievement instanceof ProgressAchievement
-												&& achievementStore.progress != 0
+										if (achievement instanceof ProgressAchievement && achievementStore.progress != 0
 												&& achievementStore.progress != ((ProgressAchievement) getAchievement(
 														achievementStore.id)).getNextLevel()
 												&& ((ProgressAchievement) getAchievement(achievementStore.id))
@@ -620,7 +619,13 @@ public class AchievementManager implements Listener {
 							}
 						});
 			} else {
-				Messages.debug("Using cached achievements for player %s", player.getName());
+				Messages.debug("Using cached achievements for %s", player.getName());
+				PlayerStorage storage = mStorage.get(player.getUniqueId());
+				if (!storage.enableAchievements) {
+					Messages.debug("Enabling achievements in cache for %s.", player.getName());
+					storage.enableAchievements = true;
+					mStorage.put(player.getUniqueId(), storage);
+				}
 			}
 		} else {
 			Messages.debug("achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",
@@ -776,7 +781,8 @@ public class AchievementManager implements Listener {
 
 					for_loop: for (Map.Entry<Achievement, Integer> achievement : data) {
 						if (achievement.getValue() != -1 && achievement.getKey() instanceof ProgressAchievement
-								&& (achievement.getKey().getPrize() != 0 || !achievement.getKey().getPrizeCmd().isEmpty()
+								&& (achievement.getKey().getPrize() != 0
+										|| !achievement.getKey().getPrizeCmd().isEmpty()
 										|| MobHunting.getConfigManager().showAchievementsWithoutAReward)
 								&& ((ProgressAchievement) achievement.getKey()).getNextLevel() != 0
 								&& ((ProgressAchievement) achievement.getKey()).getExtendedMob()
