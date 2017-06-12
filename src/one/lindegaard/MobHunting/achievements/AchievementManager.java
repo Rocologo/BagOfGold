@@ -68,7 +68,7 @@ public class AchievementManager implements Listener {
 		// version of Mobhunting
 		if (upgradeAchievements())
 			MobHunting.getDataStoreManager().waitForUpdates();
-
+		
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -81,14 +81,14 @@ public class AchievementManager implements Listener {
 	private void registerAchievement(Achievement achievement) {
 		Validate.notNull(achievement);
 
-		if (achievement instanceof ProgressAchievement) {
-			if (((ProgressAchievement) achievement).inheritFrom() != null
-					&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
-				Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
-				Validate.isTrue(mAchievements
-						.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
-			}
-		}
+		//if (achievement instanceof ProgressAchievement) {
+			//if (((ProgressAchievement) achievement).inheritFrom() != null
+			//		&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
+				//Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
+				//Validate.isTrue(mAchievements
+				//		.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
+			//}
+		//}
 
 		mAchievements.put(achievement.getID(), achievement);
 
@@ -125,6 +125,7 @@ public class AchievementManager implements Listener {
 			registerAchievement(new EighthHuntAchievement(extendedMob));
 		}
 
+		Messages.debug("step3.1.3");
 		if (MythicMobsCompat.isSupported())
 			for (String type : MythicMobsCompat.getMobRewardData().keySet()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MythicMobs, type);

@@ -229,8 +229,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(StackMobCompat.class, "StackMob");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
-		registerPlugin(CrackShotCompat.class, "CrackShot");
-
+		
 		// ExtendedMob Plugins where special mobs are created
 		registerPlugin(MythicMobsCompat.class, "MythicMobs");
 		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
@@ -240,6 +239,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(SmartGiantsCompat.class, "SmartGiants");
 
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
+		registerPlugin(CrackShotCompat.class, "CrackShot");
 		
 		mExtendedMobManager = new ExtendedMobManager();
 
@@ -280,7 +280,7 @@ public class MobHunting extends JavaPlugin {
 		mMobHuntingManager = new MobHuntingManager(this);
 		if (!mConfig.disableFishingRewards)
 			mFishingManager = new FishingManager();
-
+		
 		mAchievementManager = new AchievementManager();
 
 		if (!mConfig.disablePlayerBounties)

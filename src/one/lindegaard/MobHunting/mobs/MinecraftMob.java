@@ -711,7 +711,6 @@ public enum MinecraftMob {
 			else if (this == Nitwit)
 				return entity instanceof org.bukkit.entity.Villager
 						&& (((org.bukkit.entity.Villager) entity).getProfession() == Profession.NITWIT);
-		// TODO: Villagers: Cartographer
 
 		if (Misc.isMC110OrNewer())
 			if (this == PolarBear)
