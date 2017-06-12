@@ -96,9 +96,10 @@ public enum MinecraftMob {
 			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
 
 	// Cartographer Villager
-	//Cartographer("CARTOGRAFER", "MH_Cartographer", "3bb10df8-7712-46d8-82ee-00b1ed2a85db", "Cartographer",
-	//		"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
-	//		"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
+	// Cartographer("CARTOGRAFER", "MH_Cartographer",
+	// "3bb10df8-7712-46d8-82ee-00b1ed2a85db", "Cartographer",
+	// "eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
+	// "Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
 
 	// Donkey
 	Donkey("DONKEY", "MH_Donkey", "1096104c-9dbc-41f5-a402-6d53059788e3", "Donkey",
@@ -395,8 +396,8 @@ public enum MinecraftMob {
 			return MobHunting.getConfigManager().butcherLevel1;
 		case Clownfish:
 			return MobHunting.getConfigManager().clownfishLevel1;
-		//case Cartographer:
-		//	return MobHunting.getConfigManager().cartographerLevel1;
+		// case Cartographer:
+		// return MobHunting.getConfigManager().cartographerLevel1;
 		case CaveSpider:
 			return MobHunting.getConfigManager().caveSpiderLevel1;
 		case Chicken:
@@ -531,8 +532,8 @@ public enum MinecraftMob {
 			return getPrice(MobHunting.getConfigManager().bonusMobHeadPrize);
 		case Butcher:
 			return getPrice(MobHunting.getConfigManager().butcherHeadPrize);
-		//case Cartographer:
-		//	return getPrice(MobHunting.getConfigManager().cartographerHeadPrize);
+		// case Cartographer:
+		// return getPrice(MobHunting.getConfigManager().cartographerHeadPrize);
 		case CaveSpider:
 			return getPrice(MobHunting.getConfigManager().caveSpiderHeadPrize);
 		case Chicken:
@@ -787,7 +788,9 @@ public enum MinecraftMob {
 		for (MinecraftMob type : values())
 			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name)
 					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name)
-					|| type.name().equalsIgnoreCase(name))
+					|| type.name().equalsIgnoreCase(name)
+					// check for playername must be last!!!
+					|| Bukkit.getServer().getOfflinePlayer(name).isOnline())
 				return type;
 		return null;
 	}

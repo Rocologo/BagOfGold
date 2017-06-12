@@ -94,6 +94,7 @@ import one.lindegaard.MobHunting.modifier.BonusMobBonus;
 import one.lindegaard.MobHunting.modifier.BrawlerBonus;
 import one.lindegaard.MobHunting.modifier.ConquestiaBonus;
 import one.lindegaard.MobHunting.modifier.CoverBlown;
+import one.lindegaard.MobHunting.modifier.CrackShotPenalty;
 import one.lindegaard.MobHunting.modifier.CriticalModifier;
 import one.lindegaard.MobHunting.modifier.DifficultyBonus;
 import one.lindegaard.MobHunting.modifier.FactionWarZoneBonus;
@@ -303,7 +304,8 @@ public class MobHuntingManager implements Listener {
 		if (MobStackerCompat.isSupported() || StackMobCompat.isSupported())
 			mHuntingModifiers.add(new StackedMobBonus());
 		mHuntingModifiers.add(new Undercover());
-
+		if (CrackShotCompat.isSupported())
+			mHuntingModifiers.add(new CrackShotPenalty());
 	}
 
 	public double handleKillstreak(Player player) {
@@ -615,7 +617,7 @@ public class MobHuntingManager implements Listener {
 			return;
 		}
 
-		if (CrackShotCompat.isSupported() && CrackShotCompat.isCrackShotUsed(damaged)){
+		if (CrackShotCompat.isSupported() && CrackShotCompat.isCrackShotUsed(damaged)) {
 			return;
 		}
 
@@ -1161,7 +1163,7 @@ public class MobHuntingManager implements Listener {
 			info = mDamageHistory.get(killed);
 			if (System.currentTimeMillis() - info.getTime() > MobHunting.getConfigManager().assistTimeout * 1000)
 				info = null;
-			//else 
+			// else
 			// else if (killer == null)
 			// killer = info.getAttacker();
 		}

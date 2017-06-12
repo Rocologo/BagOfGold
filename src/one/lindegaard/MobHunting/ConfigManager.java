@@ -144,18 +144,19 @@ public class ConfigManager extends AutoConfig {
 				+ "\nThese are penalty multipliers that can modify the base prize. "
 				+ "\nREMEMBER: These are not in $ but they are a multiplier. " + "\nSetting to 1 will disable them.");
 
-		setCategoryComment("achievements", "########################################################################"
-				+ "\nSpecial / Achievements rewards"
-				+ "\n########################################################################"
-				+ "\nHere is where you set the prize in $ for achieving a special kill. "
-				+ "\nFor each achievment you can run a console command to give the player a reward. "
-				+ "\nYou can use the following variables {player},{world}."
-				+ "\nAn example could be to give the player permission to fly "
-				+ "\nfor 1 hour or use give command to the player items."
-				+ "\nYou can also specify the message send to the player."
-				+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
-				+ "\nAchievements will not be shown in the GUI if there is a reward for killing the mob,"
-				+ "\nunless you set show-achievements-without-reward=true.");
+		setCategoryComment("achievements",
+				"########################################################################"
+						+ "\nSpecial / Achievements rewards"
+						+ "\n########################################################################"
+						+ "\nHere is where you set the prize in $ for achieving a special kill. "
+						+ "\nFor each achievment you can run a console command to give the player a reward. "
+						+ "\nYou can use the following variables {player},{world}."
+						+ "\nAn example could be to give the player permission to fly "
+						+ "\nfor 1 hour or use give command to the player items."
+						+ "\nYou can also specify the message send to the player."
+						+ "\nYou can run many console commands on each line, each command" + "\nmust be separated by |"
+						+ "\nAchievements will not be shown in the GUI if there is a reward for killing the mob,"
+						+ "\nunless you set show-achievements-without-reward=true.");
 
 		setCategoryComment("achievement_levels",
 				"########################################################################"
@@ -271,6 +272,12 @@ public class ConfigManager extends AutoConfig {
 						+ "\nThis section only relevant if you use McMMO."
 						+ "\nHere you configure if the player will get McMMO Levels for MobHunting kills and"
 						+ "\nand the chance to get the xp.");
+
+		setCategoryComment("crackshot",
+				"########################################################################" + "\nIntegration to McMMO"
+						+ "\n########################################################################"
+						+ "\nThis section only relevant if you use CrackShot."
+						+ "\nHere you configure if the player will get a multiplier for using a CrackShot weapon");
 
 		setCategoryComment("plugins",
 				"########################################################################"
@@ -1445,7 +1452,7 @@ public class ConfigManager extends AutoConfig {
 	// Penalties
 	// #####################################################################################
 	@ConfigField(name = "flyingPenalty", category = "penalty", comment = "If a player flies at any point in a fight, this penalty will be applied")
-	public double penaltyFlying = 0.5;
+	public double penaltyFlying = 0.2;
 
 	@ConfigField(name = "mob-rob-from-player", category = "penalty", comment = "This is the penalty if the player gets killed by a mob."
 			+ "\nSet mob-rob-from-player=10 to let the mob steal 10 dollars"
@@ -1514,7 +1521,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nIf you dont want the player to get any money for PVP kills, you MUST set pvp-kill-prize: 0")
 	public String pvpKillPrize = "1.0%";
 	@ConfigField(name = "pvp-kill-cmd", category = "pvp", comment = "One or more console commands to be run when a player kills another player.")
-	public String pvpKillCmd = "mobhunt head give {player} 397 1 3 {SkullOwner:\"{killed_player}\"} 1 silent|give {player} diamond 1";
+	public String pvpKillCmd = "mobhunt head give {player} {killed_player} {killed_player} 1 silent";
 	@ConfigField(name = "pvp-kill-cmd-desc", category = "pvp", comment = "Write the message to the killer, describing the reward / console commands")
 	public String pvpKillCmdDesc = "You got {killed_player}\'s skull";
 	@ConfigField(name = "pvp-kill-cmd-run-chance", category = "pvp", comment = "This is the chance for running the command. 1 = 100% (each time the player is killed), 0.5 ~ 50% and 0.001 = 0.1% (very rare) ")
@@ -2118,6 +2125,17 @@ public class ConfigManager extends AutoConfig {
 	public String zombieVillagerMcMMOSkillRewardAmount = "1";
 	@ConfigField(name = "zombie_villager-mcmmo-skillreward-chance", category = "mcmmo")
 	public double zombieVillagerMcMMOSkillRewardChance = 0.04;
+
+	// #####################################################################################
+	// CrackShot integration
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-crackshot", category = "crackshot", comment = "Disable integration with CrackShot."
+			+ "\nhttps://dev.bukkit.org/projects/crackshot")
+	public boolean disableIntegrationCrackShot = false;
+
+	@ConfigField(name = "crackshot-multiplier", category = "crackshot")
+	public double crackShot = 0.7;
+
 	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
@@ -2215,10 +2233,6 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-extra-hard-mode", category = "plugins", comment = "Disable integration with ExtraHardmode."
 			+ "\nhttps://www.spigotmc.org/resources/extra-hard-mode.19673/")
 	public boolean disableIntegrationExtraHardMode = false;
-
-	@ConfigField(name = "disable-integration-crackshot", category = "plugins", comment = "Disable integration with CrackShot."
-			+ "\nhttps://dev.bukkit.org/projects/crackshot")
-	public boolean disableIntegrationCrackShot = false;
 
 	// #####################################################################################
 	// Database

@@ -229,6 +229,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(StackMobCompat.class, "StackMob");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
+		registerPlugin(CrackShotCompat.class, "CrackShot");
 
 		// ExtendedMob Plugins where special mobs are created
 		registerPlugin(MythicMobsCompat.class, "MythicMobs");
@@ -239,8 +240,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(SmartGiantsCompat.class, "SmartGiants");
 
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
-		registerPlugin(CrackShotCompat.class, "CrackShot");
-
+		
 		mExtendedMobManager = new ExtendedMobManager();
 
 		// Register commands
