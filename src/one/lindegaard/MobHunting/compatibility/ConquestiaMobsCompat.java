@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,12 +33,12 @@ public class ConquestiaMobsCompat implements Listener {
 
 			if (mPlugin.getDescription().getVersion().compareTo("3.3.3") >= 0) {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
-				Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with ConquestiaMobs ("
+				Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling Compatibility with ConquestiaMobs ("
 						+ getCustomMobs().getDescription().getVersion() + ")");
 				supported = true;
 			} else {
-				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of Conqustia Mobs ("
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED
+						+ "[MobHunting] Your current version of Conqustia Mobs ("
 						+ mPlugin.getDescription().getVersion()
 						+ ") is not supported by MobHunting. Please update Conquestia Mobs to version 3.3.3 or newer.");
 			}

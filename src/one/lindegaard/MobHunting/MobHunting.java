@@ -128,19 +128,27 @@ public class MobHunting extends JavaPlugin {
 			mConfig.saveConfig();
 		} else
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
+		if (mConfig.pvpKillCmd.toLowerCase().contains("skullowner")
+				&& mConfig.pvpKillCmd.toLowerCase().contains("mobhunt")) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]==================WARNING=================================");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Potential error in your config.yml. pvp-kill-cmd contains SkullOwner,");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "which indicates that pvp-kill-cmd is outdated. Check the head command");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "or delete the line pvp-kill-cmd, and then reload the plugin. The ");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "correct syntax to get a player head is:");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "\"mobhunt head give {player} {killed_player} {killed_player} 1 silent\"");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]=========================================================");
+			}
 
 		if (isbStatsEnabled())
 			Messages.debug("bStat is enabled");
 		else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "=====================WARNING=====================");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "WARNING. The statistics collection is disabled.");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "As developer I need the statistics from");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "bStats.org. The statistics is 100% anonymous.");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]=====================WARNING=============================");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "The statistics collection is disabled. As developer I need the");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "statistics from bStats.org. The statistics is 100% anonymous.");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "https://bstats.org/plugin/bukkit/MobHunting");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Please enable this in /plugins/bStats/config.yml");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "and get rid of this message. Loading will");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "continue in 15 sec.");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "=================================================");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Please enable this in /plugins/bStats/config.yml and get rid of this");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "message. Loading will continue in 15 sec.");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]=========================================================");
 			long now = System.currentTimeMillis();
 			while (System.currentTimeMillis() < now + 15000L) {
 				try {
@@ -229,7 +237,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(StackMobCompat.class, "StackMob");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
-		
+
 		// ExtendedMob Plugins where special mobs are created
 		registerPlugin(MythicMobsCompat.class, "MythicMobs");
 		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
@@ -240,7 +248,7 @@ public class MobHunting extends JavaPlugin {
 
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
 		registerPlugin(CrackShotCompat.class, "CrackShot");
-		
+
 		mExtendedMobManager = new ExtendedMobManager();
 
 		// Register commands
@@ -280,7 +288,7 @@ public class MobHunting extends JavaPlugin {
 		mMobHuntingManager = new MobHuntingManager(this);
 		if (!mConfig.disableFishingRewards)
 			mFishingManager = new FishingManager();
-		
+
 		mAchievementManager = new AchievementManager();
 
 		if (!mConfig.disablePlayerBounties)
@@ -313,12 +321,12 @@ public class MobHunting extends JavaPlugin {
 				mMobHuntingManager.setHuntEnabled(player, true);
 			}
 		}
-		
+
 		if (getConfigManager().dropMoneyOnGroundUseAsCurrency)
 			new BagOfGoldSign();
-		
-		//for (int i = 0; i < 2; i++)
-		//	Messages.debug("Random uuid = %s", UUID.randomUUID());
+
+		// for (int i = 0; i < 2; i++)
+		// Messages.debug("Random uuid = %s", UUID.randomUUID());
 
 		mInitialized = true;
 

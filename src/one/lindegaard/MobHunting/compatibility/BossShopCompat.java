@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.MobHunting;
 
-public class BossShopCompat implements Listener{
+public class BossShopCompat implements Listener {
 
 	private static Plugin mPlugin;
 	private static boolean supported = false;
@@ -17,16 +17,16 @@ public class BossShopCompat implements Listener{
 
 	public BossShopCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("[MobHunting] Compatibility with BossShop is disabled in config.yml");
+			Bukkit.getConsoleSender().sendMessage("[MobHunting] Compatibility with BossShop is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BossShop");
-			
+
 			bs = (BossShop) mPlugin;
-			
+
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with BossShop ("
-					+ bs.getDescription().getVersion() + ").");
+			Bukkit.getConsoleSender().sendMessage(
+					"[MobHunting] Enabling compatibility with BossShop (" + bs.getDescription().getVersion() + ").");
 			supported = true;
 		}
 	}
@@ -38,7 +38,7 @@ public class BossShopCompat implements Listener{
 	public static BossShop getBossShop() {
 		return bs;
 	}
-	
+
 	public static boolean isSupported() {
 		return supported;
 	}
@@ -50,5 +50,5 @@ public class BossShopCompat implements Listener{
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationBossShop;
 	}
-	
+
 }

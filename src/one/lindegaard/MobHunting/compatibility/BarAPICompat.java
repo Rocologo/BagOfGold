@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -18,16 +17,15 @@ public class BarAPICompat {
 
 	public BarAPICompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("[MobHunting] Compatibility with BarAPI is disabled in config.yml");
+			Bukkit.getConsoleSender().sendMessage("[MobHunting] Compatibility with BarAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
 			if (mPlugin.getDescription().getVersion().compareTo("3.0") < 0) {
-				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of BarAPI ("
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting] Your current version of BarAPI ("
 						+ mPlugin.getDescription().getVersion()
 						+ ") is not supported by MobHunting. Mobhunting does only support version 3.0 or newer.");
 			} else {
-				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with BarAPI ("
+				Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with BarAPI ("
 						+ getBarAPI().getDescription().getVersion() + ")");
 				supported = true;
 			}

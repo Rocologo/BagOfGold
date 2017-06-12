@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -14,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 
 import com.shampaggon.crackshot.CSUtility;
 import com.shampaggon.crackshot.events.WeaponDamageEntityEvent;
-import com.shampaggon.crackshot.events.WeaponExplodeEvent;
 import one.lindegaard.MobHunting.DamageInformation;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -34,7 +32,7 @@ public class CrackShotCompat implements Listener {
 
 			if (mPlugin.getDescription().getVersion().compareTo("0.98.5") >= 0) {
 
-				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with CrackShot ("
+				Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with CrackShot ("
 						+ mPlugin.getDescription().getVersion() + ")");
 
 				supported = true;
@@ -42,10 +40,10 @@ public class CrackShotCompat implements Listener {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 			} else {
-				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of CrackShot ("
-						+ mPlugin.getDescription().getVersion()
-						+ ") has no API implemented. Please update to V0.98.5 or newer.");
+				Bukkit.getConsoleSender()
+						.sendMessage(ChatColor.RED + "[MobHunting] Your current version of CrackShot ("
+								+ mPlugin.getDescription().getVersion()
+								+ ") has no API implemented. Please update to V0.98.5 or newer.");
 			}
 		}
 	}

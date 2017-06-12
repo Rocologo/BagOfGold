@@ -13,12 +13,13 @@ public class BossBarAPICompat {
 
 	public BossBarAPICompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("[MobHunting] Compatibility with BossBarAPI is disabled in config.yml");
+			Bukkit.getConsoleSender()
+					.sendMessage("[MobHunting] Compatibility with BossBarAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("BossBarAPI");
 
-			Bukkit.getLogger().info(
-					"[MobHunting] Enabling compatibility with BossBarAPI (" + getBossBarAPI().getDescription().getVersion() + ")");
+			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with BossBarAPI ("
+					+ getBossBarAPI().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}
@@ -42,9 +43,9 @@ public class BossBarAPICompat {
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationBossBarAPI;
 	}
-	
-	public static void setSupported(boolean b){
-		supported=b;
+
+	public static void setSupported(boolean b) {
+		supported = b;
 	}
 
 	public static void addBar(Player player, String text) {

@@ -30,23 +30,12 @@ public class StatType {
 			if (MobPlugin.values()[i].isSupported()) {
 				mValues[offset + count] = new StatType(MobPlugin.values()[i] + "_kill",
 						"stats." + MobPlugin.values()[i].name() + ".kills");
-				//Messages.debug("StatType[%s]=%s", offset + count, mValues[offset + count].getDBColumn());
 				count++;
-			}
-
-		for (int i = 0; i < MobPlugin.values().length; ++i)
-			if (MobPlugin.values()[i].isSupported()) {
 				mValues[offset + count] = new StatType(MobPlugin.values()[i] + "_assist",
 						"stats." + MobPlugin.values()[i].name() + ".assists");
-				//Messages.debug("StatType[%s]=%s", offset + count, mValues[offset + count].getDBColumn());
 				count++;
-			}
-
-		for (int i = 0; i < MobPlugin.values().length; ++i)
-			if (MobPlugin.values()[i].isSupported()) {
 				mValues[offset + count] = new StatType(MobPlugin.values()[i] + "_cash",
 						"stats." + MobPlugin.values()[i].name() + ".cashs");
-				//Messages.debug("StatType[%s]=%s", offset + count, mValues[offset + count].getDBColumn());
 				count++;
 			}
 
@@ -55,23 +44,12 @@ public class StatType {
 		for (int i = 0; i < MinecraftMob.values().length; ++i) {
 			mValues[offset + i] = new StatType(MinecraftMob.values()[i] + "_kill", "stats.name-format", "mob",
 					"mobs." + MinecraftMob.values()[i].name() + ".name", "stattype", "stats.kills");
-			//Messages.debug("StatType[%s]=%s", offset + i, mValues[offset + i].getDBColumn());
-		}
-
-		for (int i = 0; i < MinecraftMob.values().length; ++i) {
 			mValues[offset + i + MinecraftMob.values().length] = new StatType(MinecraftMob.values()[i] + "_assist",
 					"stats.name-format", "mob", "mobs." + MinecraftMob.values()[i].name() + ".name", "stattype",
 					"stats.assists");
-			//Messages.debug("StatType[%s]=%s", offset + i + MinecraftMob.values().length,
-			//		mValues[offset + i + MinecraftMob.values().length].getDBColumn());
-		}
-
-		for (int i = 0; i < MinecraftMob.values().length; ++i) {
 			mValues[offset + i + 2 * MinecraftMob.values().length] = new StatType(MinecraftMob.values()[i] + "_cash",
 					"stats.name-format", "mob", "mobs." + MinecraftMob.values()[i].name() + ".name", "stattype",
 					"stats.cashs");
-			//Messages.debug("StatType[%s]=%s", offset + i + 2 * MinecraftMob.values().length,
-			//		mValues[offset + i + 2 * MinecraftMob.values().length].getDBColumn());
 		}
 
 		// adding other mobtypes from other plugins
@@ -86,19 +64,16 @@ public class StatType {
 						"stats.name-format", "mob",
 						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
 						"stats.kills");
-				//Messages.debug("StatType[%s]=%s", offset, mValues[offset].getDBColumn());
 
 				mValues[offset + 1] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_Assist",
 						"stats.name-format", "mob",
 						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
 						"stats.assists");
-				//Messages.debug("StatType[%s]=%s", offset + 1, mValues[offset + 1].getDBColumn());
 
 				mValues[offset + 2] = new StatType(mob.getMobPlugin().name() + "_" + mob.getMobtype() + "_cash",
 						"stats.name-format", "mob",
 						"mobs." + mob.getMobPlugin().name() + "_" + mob.getMobtype() + ".name", "stattype",
 						"stats.cashs");
-				//Messages.debug("StatType[%s]=%s", offset + 2, mValues[offset + 2].getDBColumn());
 
 				offset = offset + 3;
 			}
@@ -107,7 +82,6 @@ public class StatType {
 		for (int i = 0; i < mValues.length; ++i)
 			if (mValues[i] != null)
 				mNameLookup.put(mValues[i].mColumnName, mValues[i]);
-
 	}
 
 	private String mColumnName;

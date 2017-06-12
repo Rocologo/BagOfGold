@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.compatibility;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.inventivetalent.bossbar.BossBarAPI;
 
@@ -23,8 +24,8 @@ public class BossBarAPICompatHelper {
 			} catch (ClassNotFoundException
 					// | NoSuchMethodException
 					| SecurityException e) {
-				Bukkit.getLogger()
-						.warning("[MobHunting] Your version of BossBarAPI is not compatible with MobHunting.");
+				Bukkit.getConsoleSender().sendMessage(
+						ChatColor.RED + "[MobHunting] Your version of BossBarAPI is not compatible with MobHunting.");
 				player.sendMessage(text);
 				BossBarAPICompat.setSupported(false);
 			}

@@ -41,13 +41,14 @@ public class CustomMobsCompat implements Listener {
 
 	public CustomMobsCompat() {
 		if (isDisabledInConfig()) {
-			Bukkit.getLogger().info("[MobHunting] Compatibility with CustomMobs is disabled in config.yml");
+			Bukkit.getConsoleSender()
+					.sendMessage("[MobHunting] Compatibility with CustomMobs is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin("CustomMobs");
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
-			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with CustomMobs ("
+			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling Compatibility with CustomMobs ("
 					+ getCustomMobs().getDescription().getVersion() + ")");
 
 			supported = true;
