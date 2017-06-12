@@ -568,8 +568,7 @@ public class MobHuntingManager implements Listener {
 				if (blaze.getTarget() instanceof Player
 						&& MobHunting.getMobHuntingManager().isHuntEnabled((Player) blaze.getTarget())
 						&& ((Player) blaze.getTarget()).getGameMode() != GameMode.CREATIVE) {
-					DamageInformation info = null;
-					info = mDamageHistory.get(blaze);
+					DamageInformation info = mDamageHistory.get(blaze);
 					if (info == null)
 						info = new DamageInformation();
 					info.setTime(System.currentTimeMillis());
@@ -745,7 +744,6 @@ public class MobHuntingManager implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	private void onMobDeath(EntityDeathEvent event) {
-
 		LivingEntity killed = event.getEntity();
 
 		Player killer = event.getEntity().getKiller();
@@ -814,6 +812,7 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
+		Messages.debug("Size of mDamageHistory=%s", mDamageHistory.size());
 		DamageInformation info = mDamageHistory.get(killed);
 		if (info == null) {
 			info = new DamageInformation();

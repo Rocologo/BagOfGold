@@ -396,8 +396,6 @@ public enum MinecraftMob {
 			return MobHunting.getConfigManager().butcherLevel1;
 		case Clownfish:
 			return MobHunting.getConfigManager().clownfishLevel1;
-		// case Cartographer:
-		// return MobHunting.getConfigManager().cartographerLevel1;
 		case CaveSpider:
 			return MobHunting.getConfigManager().caveSpiderLevel1;
 		case Chicken:

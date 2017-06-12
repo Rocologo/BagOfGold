@@ -113,11 +113,12 @@ public class CrackShotCompat implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onWeaponDamageEntityEvent(WeaponDamageEntityEvent event) {
 		if (event.getVictim() instanceof LivingEntity) {
-			DamageInformation info = new DamageInformation();
+			DamageInformation info = MobHunting.getMobHuntingManager().getDamageHistory().get(event.getVictim());
+			if (info == null)
+				info = new DamageInformation();
 			Messages.debug("onWeaponDamageEntityEvent: Victim=%s damaged with a %s", event.getVictim().getType(),
 					getCrackShotWeapon(event.getPlayer().getItemInHand()));
 			info.setTime(System.currentTimeMillis());
-			info.setLastAttackTime(info.getTime());
 			info.setAttacker(event.getPlayer());
 			info.setAttackerPosition(event.getPlayer().getLocation().clone());
 			info.setCrackShotWeapon(getCrackShotWeapon(event.getPlayer().getItemInHand()));

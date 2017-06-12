@@ -233,19 +233,13 @@ public class BountyManager implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent event) {
-		final Inventory inv = event.getInventory();
-		final Player player = (Player) event.getWhoClicked();
-		if (ChatColor.stripColor(inv.getName()).startsWith("MostWanted:")
-				|| ChatColor.stripColor(inv.getName()).startsWith("Wanted:")) {
+		if (ChatColor.stripColor(event.getInventory().getName()).startsWith("MostWanted:")
+				|| ChatColor.stripColor(event.getInventory().getName()).startsWith("Wanted:")) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(instance, new Runnable() {
-				public void run() {
-					player.closeInventory();
-					inventoryMap.remove(player);
-				}
-			});
+			event.getWhoClicked().closeInventory();
+			inventoryMap.remove(event.getWhoClicked());
 		}
 	}
 

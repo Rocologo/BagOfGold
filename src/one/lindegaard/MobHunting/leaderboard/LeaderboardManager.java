@@ -218,8 +218,8 @@ public class LeaderboardManager implements Listener {
 				mLeaderboards.put(world, board);
 			} catch (InvalidConfigurationException e) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getMessage());
-				if (MobHunting.getConfigManager().killDebug)
-					e.printStackTrace();
+				//if (MobHunting.getConfigManager().killDebug)
+				//	e.printStackTrace();
 			}
 		}
 

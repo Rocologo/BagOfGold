@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -59,7 +60,7 @@ public class AchievementManager implements Listener {
 
 	// String contains ID
 	private HashMap<String, Achievement> mAchievements = new HashMap<String, Achievement>();
-	private HashMap<UUID, PlayerStorage> mStorage = new HashMap<UUID, PlayerStorage>();
+	private WeakHashMap<UUID, PlayerStorage> mStorage = new WeakHashMap<UUID, PlayerStorage>();
 
 	public AchievementManager() {
 		registerAchievements();
@@ -68,7 +69,7 @@ public class AchievementManager implements Listener {
 		// version of Mobhunting
 		if (upgradeAchievements())
 			MobHunting.getDataStoreManager().waitForUpdates();
-		
+
 		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -82,12 +83,12 @@ public class AchievementManager implements Listener {
 		Validate.notNull(achievement);
 
 		//if (achievement instanceof ProgressAchievement) {
-			//if (((ProgressAchievement) achievement).inheritFrom() != null
-			//		&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
-				//Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
-				//Validate.isTrue(mAchievements
-				//		.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
-			//}
+		//	if (((ProgressAchievement) achievement).inheritFrom() != null
+		//			&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
+		//		Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
+		//		Validate.isTrue(mAchievements
+		//				.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
+		//	}
 		//}
 
 		mAchievements.put(achievement.getID(), achievement);
@@ -125,7 +126,6 @@ public class AchievementManager implements Listener {
 			registerAchievement(new EighthHuntAchievement(extendedMob));
 		}
 
-		Messages.debug("step3.1.3");
 		if (MythicMobsCompat.isSupported())
 			for (String type : MythicMobsCompat.getMobRewardData().keySet()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MythicMobs, type);
@@ -646,17 +646,18 @@ public class AchievementManager implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	private void onPlayerQuit(PlayerQuitEvent event) {
-
+		if (mStorage.containsKey(event.getPlayer().getUniqueId()))
+			mStorage.remove(event.getPlayer().getUniqueId());
 	}
 
 	// *************************************************************************************
 	// ACHIEVEMENTS GUI
 	// *************************************************************************************
-	private static HashMap<CommandSender, Inventory> inventoryMapCompleted = new HashMap<CommandSender, Inventory>();
-	private static HashMap<CommandSender, Inventory> inventoryMapOngoing = new HashMap<CommandSender, Inventory>();
-	private static HashMap<CommandSender, Inventory> inventoryMapNotStarted = new HashMap<CommandSender, Inventory>();
+	private static WeakHashMap<CommandSender, Inventory> inventoryMapCompleted = new WeakHashMap<CommandSender, Inventory>();
+	private static WeakHashMap<CommandSender, Inventory> inventoryMapOngoing = new WeakHashMap<CommandSender, Inventory>();
+	private static WeakHashMap<CommandSender, Inventory> inventoryMapNotStarted = new WeakHashMap<CommandSender, Inventory>();
 
 	public void showAllAchievements(final CommandSender sender, final OfflinePlayer player, final boolean gui,
 			final boolean self) {
@@ -879,42 +880,27 @@ public class AchievementManager implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent event) {
-		final Inventory inv = event.getInventory();
-		final Player player = (Player) event.getWhoClicked();
-		if (inv != null && (ChatColor.stripColor(inv.getName()).startsWith("Completed:"))) {
+		if (event.getInventory() != null
+				&& (ChatColor.stripColor(event.getInventory().getName()).startsWith("Completed:"))) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
-				public void run() {
-					player.closeInventory();
-					inventoryMapCompleted.remove(player);
-					player.openInventory(inventoryMapOngoing.get(player));
-				}
-			});
-
+			event.getWhoClicked().closeInventory();
+			inventoryMapCompleted.remove(event.getWhoClicked());
+			event.getWhoClicked().openInventory(inventoryMapOngoing.get(event.getWhoClicked()));
 		}
-		if (inv != null && (ChatColor.stripColor(inv.getName()).startsWith("Ongoing:"))) {
+		if (event.getInventory() != null
+				&& (ChatColor.stripColor(event.getInventory().getName()).startsWith("Ongoing:"))) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
-				public void run() {
-					player.closeInventory();
-					inventoryMapOngoing.remove(player);
-					player.openInventory(inventoryMapNotStarted.get(player));
-				}
-			});
-
+			event.getWhoClicked().closeInventory();
+			inventoryMapOngoing.remove(event.getWhoClicked());
+			event.getWhoClicked().openInventory(inventoryMapNotStarted.get(event.getWhoClicked()));
 		}
-		if (inv != null && (ChatColor.stripColor(inv.getName()).startsWith("Not started:"))) {
+		if (event.getInventory() != null
+				&& (ChatColor.stripColor(event.getInventory().getName()).startsWith("Not started:"))) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(MobHunting.getInstance(), new Runnable() {
-
-				public void run() {
-					player.closeInventory();
-					inventoryMapNotStarted.remove(player);
-				}
-
-			});
+			event.getWhoClicked().closeInventory();
+			inventoryMapNotStarted.remove(event.getWhoClicked());
 		}
 	}
 

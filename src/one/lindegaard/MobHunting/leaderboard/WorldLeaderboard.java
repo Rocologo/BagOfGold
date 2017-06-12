@@ -483,44 +483,45 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 		if (mFacing != BlockFace.NORTH && mFacing != BlockFace.SOUTH && mFacing != BlockFace.WEST
 				&& mFacing != BlockFace.EAST)
-			throw new InvalidConfigurationException("Invalid leaderboard facing " + section.getString("facing"));
+			throw new InvalidConfigurationException("Error on Leaderboard " + section.getName()
+					+ ":Invalid leaderboard facing " + section.getString("facing"));
 		if (periods == null)
-			throw new InvalidConfigurationException("Error in time period list");
+			throw new InvalidConfigurationException(
+					"Error on Leaderboard " + section.getName() + ":Error in time period list");
 		if (stats == null)
-			throw new InvalidConfigurationException("Error in stat type list");
+			throw new InvalidConfigurationException(
+					"Error on Leaderboard " + section.getName() + ":Error in stat type list");
 		if (pos == null)
-			throw new InvalidConfigurationException("Error in position");
+			throw new InvalidConfigurationException("Error on Leaderboard " + section.getName() + ":Error in position");
 
 		if (mWidth < 1)
-			throw new InvalidConfigurationException("Invalid width");
+			throw new InvalidConfigurationException("Error on Leaderboard " + section.getName() + ":Invalid width");
 		if (mHeight < 1)
-			throw new InvalidConfigurationException("Invalid height");
+			throw new InvalidConfigurationException("Error on Leaderboard " + section.getName() + ":Invalid height");
 
 		mPeriod = new TimePeriod[periods.size()];
 		for (int i = 0; i < periods.size(); ++i) {
 			mPeriod[i] = TimePeriod.valueOf(periods.get(i));
 			if (mPeriod[i] == null)
-				throw new InvalidConfigurationException("Invalid time period " + periods.get(i));
-		}
-
-		mType = new StatType[stats.size()];
-		for (int i = 0; i < stats.size(); ++i) {
-			mType[i] = StatType.fromColumnName(stats.get(i));
-			if (mType[i] == null)
-				throw new InvalidConfigurationException("Invalid stat type " + stats.get(i) + " on Leaderboard at pos ("
-						+ mLocation.getBlockX() + "," + mLocation.getBlockY() + "," + mLocation.getBlockZ()
-						+ ") has been deleted from world");
+				throw new InvalidConfigurationException(
+						"Error on Leaderboard " + section.getName() + ":Invalid time period " + periods.get(i));
 		}
 
 		mPeriodIndex = 0;
 		mTypeIndex = 0;
-
 		mLocation = pos.toLocation(world);
+		mType = new StatType[stats.size()];
+		for (int i = 0; i < stats.size(); ++i) {
+			mType[i] = StatType.fromColumnName(stats.get(i));
+			if (mType[i] == null)
+				throw new InvalidConfigurationException("Error on Leaderboard " + section.getName()
+						+ ":Invalid stat type " + stats.get(i));
+		}
 
 		if (!Misc.isSign(mLocation.getBlock())) {
-			throw new InvalidConfigurationException(
-					"Leaderboard in world " + mLocation.getWorld().getName() + " at pos (" + mLocation.getBlockX() + ","
-							+ mLocation.getBlockY() + "," + mLocation.getBlockZ() + ") has been deleted from world");
+			throw new InvalidConfigurationException("Error on Leaderboard " + section.getName()
+					+ ":Leaderboard in world " + mLocation.getWorld().getName() + " at pos (" + mLocation.getBlockX()
+					+ "," + mLocation.getBlockY() + "," + mLocation.getBlockZ() + ") has been deleted from world");
 		}
 
 	}

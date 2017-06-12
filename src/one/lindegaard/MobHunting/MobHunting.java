@@ -285,11 +285,11 @@ public class MobHunting extends JavaPlugin {
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
+		mAchievementManager = new AchievementManager();
+
 		mMobHuntingManager = new MobHuntingManager(this);
 		if (!mConfig.disableFishingRewards)
 			mFishingManager = new FishingManager();
-
-		mAchievementManager = new AchievementManager();
 
 		if (!mConfig.disablePlayerBounties)
 			mBountyManager = new BountyManager(this);
@@ -302,7 +302,7 @@ public class MobHunting extends JavaPlugin {
 			mMetricsManager.startMetrics();
 		}
 		mMetricsManager.startBStatsMetrics();
-
+		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {
 				Messages.injectMissingMobNamesToLangFiles();
