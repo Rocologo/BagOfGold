@@ -319,11 +319,13 @@ public class GrindingManager implements Listener {
 	}
 
 	public boolean isGrindingArea(Location location) {
-		LinkedList<Area> areas = getKnownGrindingSpots(location);
-		for (Area area : areas) {
-			if (area.getCenter().getWorld().equals(location.getWorld())) {
-				if (area.getCenter().distance(location) < area.getRange()) {
-					return true;
+		if (location != null) {
+			LinkedList<Area> areas = getKnownGrindingSpots(location);
+			for (Area area : areas) {
+				if (area.getCenter().getWorld().equals(location.getWorld())) {
+					if (area.getCenter().distance(location) < area.getRange()) {
+						return true;
+					}
 				}
 			}
 		}
