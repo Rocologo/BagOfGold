@@ -82,14 +82,14 @@ public class AchievementManager implements Listener {
 	private void registerAchievement(Achievement achievement) {
 		Validate.notNull(achievement);
 
-		//if (achievement instanceof ProgressAchievement) {
-		//	if (((ProgressAchievement) achievement).inheritFrom() != null
-		//			&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
-		//		Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
-		//		Validate.isTrue(mAchievements
-		//				.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
-		//	}
-		//}
+		if (achievement instanceof ProgressAchievement) {
+			if (((ProgressAchievement) achievement).inheritFrom() != null
+					&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
+				Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
+				Validate.isTrue(mAchievements
+						.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
+			}
+		}
 
 		mAchievements.put(achievement.getID(), achievement);
 
@@ -202,7 +202,6 @@ public class AchievementManager implements Listener {
 			registerAchievement(new SeventhHuntAchievement(extendedMob));
 			registerAchievement(new EighthHuntAchievement(extendedMob));
 		}
-
 	}
 
 	public boolean hasAchievement(String achievement, OfflinePlayer player) {
@@ -462,6 +461,7 @@ public class AchievementManager implements Listener {
 		}
 
 		Validate.isTrue(amount > 0);
+
 		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null) {
 			storage = new PlayerStorage();
@@ -470,6 +470,7 @@ public class AchievementManager implements Listener {
 
 		int curProgress = getProgress(achievement, player);
 
+		int i = 0;
 		while (achievement.inheritFrom() != null && curProgress == 0) {
 			// This allows us to just mark progress against the highest level
 			// version and have it automatically given to the lower level ones
@@ -479,6 +480,7 @@ public class AchievementManager implements Listener {
 			} else {
 				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom())).getNextLevel();
 			}
+			i++;
 		}
 
 		int maxProgress = achievement.getNextLevel();
