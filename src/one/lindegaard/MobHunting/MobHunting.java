@@ -27,6 +27,7 @@ import one.lindegaard.MobHunting.commands.TopCommand;
 import one.lindegaard.MobHunting.commands.UpdateCommand;
 import one.lindegaard.MobHunting.commands.VersionCommand;
 import one.lindegaard.MobHunting.commands.WhitelistAreaCommand;
+import one.lindegaard.MobHunting.commands.MobHuntingAdvancement;
 import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.MobHunting.compatibility.ActionBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
@@ -282,7 +283,8 @@ public class MobHunting extends JavaPlugin {
 			cmd.registerCommand(new BountyCommand());
 		cmd.registerCommand(new HappyHourCommand());
 		cmd.registerCommand(new MoneyCommand());
-		//getCommand("ad").setExecutor(new command());
+		cmd.registerCommand(new MobHuntingAdvancement());
+		//getCommand("mobhunt").setExecutor(new command());
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
