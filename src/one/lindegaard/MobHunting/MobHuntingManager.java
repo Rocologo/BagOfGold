@@ -812,7 +812,6 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
-		Messages.debug("Size of mDamageHistory=%s", mDamageHistory.size());
 		DamageInformation info = mDamageHistory.get(killed);
 		if (info == null) {
 			info = new DamageInformation();

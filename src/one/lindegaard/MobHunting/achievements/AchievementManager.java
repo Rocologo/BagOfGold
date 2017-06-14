@@ -470,7 +470,6 @@ public class AchievementManager implements Listener {
 
 		int curProgress = getProgress(achievement, player);
 
-		int i = 0;
 		while (achievement.inheritFrom() != null && curProgress == 0) {
 			// This allows us to just mark progress against the highest level
 			// version and have it automatically given to the lower level ones
@@ -480,7 +479,6 @@ public class AchievementManager implements Listener {
 			} else {
 				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom())).getNextLevel();
 			}
-			i++;
 		}
 
 		int maxProgress = achievement.getNextLevel();

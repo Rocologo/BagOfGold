@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
-import com.earth2me.essentials.commands.WarpNotFoundException;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import one.lindegaard.MobHunting.Messages;

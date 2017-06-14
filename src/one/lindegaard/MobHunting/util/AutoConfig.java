@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -17,7 +18,6 @@ import java.util.Map.Entry;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class AutoConfig {

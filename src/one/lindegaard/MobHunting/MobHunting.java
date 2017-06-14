@@ -282,6 +282,7 @@ public class MobHunting extends JavaPlugin {
 			cmd.registerCommand(new BountyCommand());
 		cmd.registerCommand(new HappyHourCommand());
 		cmd.registerCommand(new MoneyCommand());
+		//getCommand("ad").setExecutor(new command());
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
@@ -507,5 +508,27 @@ public class MobHunting extends JavaPlugin {
 	public static FishingManager getFishingManager() {
 		return mFishingManager;
 	}
+	
+	/**
+	public void send(String title, String description, MaterialData material, Player ... player){
+		AdvancementAPI test = new AdvancementAPI(new NamespacedKey(getInstance(), "story/" + UUID.randomUUID().toString()))
+        .withFrame(FrameType.CHALLANGE)
+        .withTrigger("minecraft:impossible")
+        .withIcon(material)
+        .withTitle(title)
+        .withDescription(description)
+        .withAnnouncement(false)
+		.withBackground("minecraft:textures/blocks/bedrock.png");
+		test.loadAdvancement();
+		test.sendPlayer(player);
+		
+		Bukkit.getScheduler().runTaskLater(getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				test.delete(player);
+			}
+		}, 10);
+		
+}**/
 
 }

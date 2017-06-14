@@ -193,23 +193,32 @@ public class HeadCommand implements ICommand, Listener {
 			// /mh head drop <head> <player>
 			// /mh head drop <head> <x> <y> <z> <world>
 			if (sender.hasPermission("mobhunting.money.drop")) {
+
 				// /mh head drop
 				MinecraftMob mob = MinecraftMob.getMinecraftMobType(args[1]);
+
+				if (mob == null && Bukkit.getServer().getOfflinePlayer(args[1]).getName().equalsIgnoreCase(args[1]))
+					mob = MinecraftMob.PvpPlayer;
+
 				if (mob != null) {
 					// double money = mob.getHeadPrize();
 					double money = 0;
 					if (args.length == 2) {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
-						Messages.debug("The head was dropped at %s", location);
-						player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
+						if (mob == MinecraftMob.PvpPlayer)
+							player.getWorld().dropItem(location, mob.getCustomHead(args[1], 1, money));
+						else
+							player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
 
 					} else if (args.length == 3) {
 						if (Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
 							Location location = Misc.getTargetBlock(player, 3).getLocation();
-							Messages.debug("The head dropped at %s", location);
-							player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
+							if (mob == MinecraftMob.PvpPlayer)
+								player.getWorld().dropItem(location, mob.getCustomHead(args[1], 1, money));
+							else
+								player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
 
 						} else {
 							sender.sendMessage(ChatColor.RED + Messages
@@ -228,10 +237,17 @@ public class HeadCommand implements ICommand, Listener {
 						} else
 							return false;
 						Location location = new Location(world, xpos, ypos, zpos);
-						ItemStack head = mob.getCustomHead(mob.getDisplayName(), 1, money);
-						RewardManager.setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
-								UUID.fromString(mob.getPlayerUUID().toString()));
-						world.dropItem(location, head);
+						if (mob == MinecraftMob.PvpPlayer) {
+							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
+							ItemStack head = mob.getCustomHead(args[1], 1, money);
+							RewardManager.setDisplayNameAndHiddenLores(head, args[1], money, player.getUniqueId());
+							world.dropItem(location, head);
+						} else {
+							ItemStack head = mob.getCustomHead(mob.getDisplayName(), 1, money);
+							RewardManager.setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
+									UUID.fromString(mob.getPlayerUUID().toString()));
+							world.dropItem(location, head);
+						}
 					}
 				} else {
 					sender.sendMessage(

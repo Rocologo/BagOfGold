@@ -785,10 +785,7 @@ public enum MinecraftMob {
 		for (MinecraftMob type : values())
 			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name)
 					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name)
-					|| type.name().equalsIgnoreCase(name)
-					// check for playername must be last!!!
-					//|| Bukkit.getServer().getOfflinePlayer(name).isOnline()
-					)
+					|| type.name().equalsIgnoreCase(name))
 				return type;
 		return null;
 	}

@@ -7,6 +7,7 @@ V4.9.5
 * Changed priority on the Bounty and Achivements GUI to fix ticket 8 (https://github.com/Rocologo/MobHunting/issues/84)
 * Fixed NPE bug, when creating Leaderboards using tab-complete.
 * Bug fixing Ticket 250. Enabling Achievements on playerlogin, if they are disabled. (https://github.com/Rocologo/MobHunting/issues/250)
+* Added fix for Ticket 252 (https://github.com/Rocologo/MobHunting/issues/252)
 V4.9.4
 * Added Support for SmartGiants (https://www.spigotmc.org/resources/smartgiants.4882/)
 * Added new Achievement "Davis and Goliath" - Kill a SmartGiant with a Stone Button. 
