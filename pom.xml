@@ -28,7 +28,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
 		<bukkit.version>1.12-pre6-SNAPSHOT</bukkit.version>
-		<craftbukkit.version>LATEST</craftbukkit.version>
+		<craftbukkit.version>1.12-R0.1-SNAPSHOT</craftbukkit.version>
 		<spigotmc.version>1.12-pre6-SNAPSHOT</spigotmc.version>
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.8</javacompiler.version>
