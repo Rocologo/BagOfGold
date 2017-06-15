@@ -30,10 +30,10 @@
 		<bukkit.version>1.12-pre6-SNAPSHOT</bukkit.version>
 		<spigotmc.version>1.12-pre6-SNAPSHOT</spigotmc.version>
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
-		<javacompiler.version>1.7</javacompiler.version>
-		<mavenCompilerPlugin.version>3.2</mavenCompilerPlugin.version>
+		<javacompiler.version>1.8</javacompiler.version>
+		<mavenCompilerPlugin.version>3.6.1</mavenCompilerPlugin.version>
 		<mavenJarPlugin.version>3.0.2</mavenJarPlugin.version>
-		<mavenShadePlugin.version>2.4.3</mavenShadePlugin.version>
+		<mavenShadePlugin.version>3.0.0</mavenShadePlugin.version>
 
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<!-- <metrics.version>R7</metrics.version> -->
