@@ -14,7 +14,6 @@ import org.bukkit.plugin.Plugin;
 import com.shampaggon.crackshot.CSUtility;
 import com.shampaggon.crackshot.events.WeaponDamageEntityEvent;
 import one.lindegaard.MobHunting.DamageInformation;
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class CrackShotCompat implements Listener {
@@ -116,8 +115,8 @@ public class CrackShotCompat implements Listener {
 			DamageInformation info = MobHunting.getMobHuntingManager().getDamageHistory().get(event.getVictim());
 			if (info == null)
 				info = new DamageInformation();
-			Messages.debug("onWeaponDamageEntityEvent: Victim=%s damaged with a %s", event.getVictim().getType(),
-					getCrackShotWeapon(event.getPlayer().getItemInHand()));
+			//Messages.debug("onWeaponDamageEntityEvent: Victim=%s damaged with a %s", event.getVictim().getType(),
+			//		getCrackShotWeapon(event.getPlayer().getItemInHand()));
 			info.setTime(System.currentTimeMillis());
 			info.setAttacker(event.getPlayer());
 			info.setAttackerPosition(event.getPlayer().getLocation().clone());

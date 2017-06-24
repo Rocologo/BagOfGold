@@ -29,7 +29,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.PistonBaseMaterial;
 import org.bukkit.material.PistonExtensionMaterial;
@@ -309,8 +308,9 @@ public class MasterMobHunterSign implements Listener {
 		if (event.getClickedBlock() == null)
 			return;
 
-		if (Misc.isMC19OrNewer() && (event.getHand() == null || event.getHand().equals(EquipmentSlot.OFF_HAND)))
-			return;
+		// fails on some 1.9 servers???
+		//if (Misc.isMC19OrNewer() && (event.getHand() == null || event.getHand().equals(EquipmentSlot.OFF_HAND)))
+		//	return;
 
 		if (event.getPlayer().getItemInHand().getType().equals(Material.STICK)) {
 
