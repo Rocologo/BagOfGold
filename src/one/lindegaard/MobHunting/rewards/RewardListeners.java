@@ -345,7 +345,7 @@ public class RewardListeners implements Listener {
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, reward.getMoney(),
 						reward.getUniqueUUID());
 			} else {
-				// Is it an EnderDragon
+				// check if is a Minecraft supported head.
 				if (reward.getDisplayname().equalsIgnoreCase(MinecraftMob.Skeleton.getFriendlyName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
 				else if (reward.getDisplayname().equalsIgnoreCase(MinecraftMob.WitherSkeleton.getFriendlyName()))
@@ -354,9 +354,9 @@ public class RewardListeners implements Listener {
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
 				else if (reward.getDisplayname().equalsIgnoreCase(MinecraftMob.Creeper.getFriendlyName()))
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 4);
-				else if (reward.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getFriendlyName()))
+				else if (reward.getDisplayname().equalsIgnoreCase(MinecraftMob.EnderDragon.getFriendlyName())) {
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
-				else
+				} else
 					is = CustomItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
 							MinecraftMob.getTexture(reward.getDisplayname()),
 							MinecraftMob.getSignature(reward.getDisplayname()), reward.getMoney(),
@@ -368,9 +368,15 @@ public class RewardListeners implements Listener {
 			if (reward.getMoney() == 0)
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 						+ reward.getDisplayname());
-			else
-				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-						+ MobHunting.getRewardManager().format(reward.getMoney()));
+			else {
+				if (reward.isBagOfGoldReward())
+					item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+							+ reward.getDisplayname() + " ("
+							+ MobHunting.getRewardManager().format(Double.valueOf(reward.getMoney())) + ")");
+				else
+					item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+							+ MobHunting.getRewardManager().format(reward.getMoney()));
+			}
 			item.setCustomNameVisible(true);
 			item.setMetadata(RewardManager.MH_REWARD_DATA,
 					new FixedMetadataValue(MobHunting.getInstance(), new Reward(reward.getHiddenLore())));

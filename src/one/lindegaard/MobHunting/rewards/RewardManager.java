@@ -138,7 +138,7 @@ public class RewardManager implements Listener {
 				MinecraftMob mob = MinecraftMob.getMinecraftMobType(killedEntity);
 				uuid = UUID.fromString(MH_REWARD_KILLED_UUID);
 				if (mob != null)
-					is = mob.getCustomHead(mob.getDisplayName(), 1, money);
+					is = mob.getCustomHead(mob.getFriendlyName(), 1, money);
 				else // https://mineskin.org/6875
 					is = CustomItems.getCustomtexture(uuid,
 							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,

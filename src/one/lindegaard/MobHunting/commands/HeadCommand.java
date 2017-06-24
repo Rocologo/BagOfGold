@@ -112,14 +112,14 @@ public class HeadCommand implements ICommand, Listener {
 					}
 				}
 				// get displayname
-				if (args.length >= 4) {
-					displayName = args[3].replace("_", " ");
-				} else {
+				//if (args.length >= 4) {
+				//	displayName = args[3].replace("_", " ");
+				//} else {
 					if (mob != MinecraftMob.PvpPlayer)
 						displayName = mob.getFriendlyName().replace("_", " ");
 					else
 						displayName = offlinePlayer.getName();
-				}
+				//}
 				// get amount
 				if (args.length >= 5) {
 					try {
@@ -209,7 +209,7 @@ public class HeadCommand implements ICommand, Listener {
 						if (mob == MinecraftMob.PvpPlayer)
 							player.getWorld().dropItem(location, mob.getCustomHead(args[1], 1, money));
 						else
-							player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
+							player.getWorld().dropItem(location, mob.getCustomHead(mob.getFriendlyName(), 1, money));
 
 					} else if (args.length == 3) {
 						if (Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
@@ -218,7 +218,7 @@ public class HeadCommand implements ICommand, Listener {
 							if (mob == MinecraftMob.PvpPlayer)
 								player.getWorld().dropItem(location, mob.getCustomHead(args[1], 1, money));
 							else
-								player.getWorld().dropItem(location, mob.getCustomHead(mob.getDisplayName(), 1, money));
+								player.getWorld().dropItem(location, mob.getCustomHead(mob.getFriendlyName(), 1, money));
 
 						} else {
 							sender.sendMessage(ChatColor.RED + Messages
@@ -243,7 +243,7 @@ public class HeadCommand implements ICommand, Listener {
 							RewardManager.setDisplayNameAndHiddenLores(head, args[1], money, player.getUniqueId());
 							world.dropItem(location, head);
 						} else {
-							ItemStack head = mob.getCustomHead(mob.getDisplayName(), 1, money);
+							ItemStack head = mob.getCustomHead(mob.getFriendlyName(), 1, money);
 							RewardManager.setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
 									UUID.fromString(mob.getPlayerUUID().toString()));
 							world.dropItem(location, head);

@@ -189,7 +189,7 @@
 		<!-- MobHunhting repository -->
 		<repository>
 			<id>MobHunting-Repository</id>
-			<name>mobhunting-snapshots</name>
+			<name>plugins-snapshots</name>
 			<url>https://fractal.lindegaard.one:8187/artifactory/</url>
 		</repository>
 

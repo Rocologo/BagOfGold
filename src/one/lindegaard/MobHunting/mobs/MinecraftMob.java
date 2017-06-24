@@ -654,13 +654,14 @@ public enum MinecraftMob {
 		if (str == null || str.equals("") || str.isEmpty()) {
 			Bukkit.getServer().getConsoleSender()
 					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET + " The prize for killing a "
-							+ mDisplayName
+							+ getFriendlyName()
 							+ " is not set in config.yml. Please set the prize to 0 or a positive or negative number.");
 			return 0;
 		} else if (str.startsWith(":")) {
 			Bukkit.getServer().getConsoleSender()
 					.sendMessage(ChatColor.RED + "[MobHunting][WARNING]" + ChatColor.RESET + " The prize for killing a "
-							+ mDisplayName + " in config.yml has a wrong format. The prize can't start with \":\"");
+							+ getFriendlyName()
+							+ " in config.yml has a wrong format. The prize can't start with \":\"");
 			if (str.length() > 1)
 				return getPrice(str.substring(1, str.length()));
 			else
@@ -795,19 +796,19 @@ public enum MinecraftMob {
 		switch (this) {
 		case Skeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 0);
-			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case WitherSkeleton:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 1);
-			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case Zombie:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 2);
-			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
@@ -820,20 +821,20 @@ public enum MinecraftMob {
 
 		case Creeper:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 4);
-			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		case EnderDragon:
 			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 5);
-			skull = RewardManager.setDisplayNameAndHiddenLores(skull, mDisplayName, money,
+			skull = RewardManager.setDisplayNameAndHiddenLores(skull, getFriendlyName(), money,
 					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
 			break;
 
 		default:
 			ItemStack is = new ItemStack(
-					CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID), mDisplayName,
-							mTextureValue, mTextureSignature, money, UUID.randomUUID()));
+					CustomItems.getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID),
+							getFriendlyName(), mTextureValue, mTextureSignature, money, UUID.randomUUID()));
 			is.setAmount(amount);
 			return is;
 		}
