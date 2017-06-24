@@ -845,9 +845,17 @@ public class MobHuntingManager implements Listener {
 			Messages.debug("%s owned by %s killed a %s (%s)", MyPetCompat.getMyPet(killed).getName(),
 					MyPetCompat.getMyPetOwner(killed).getName(), mob.getName(), mob.getMobPlugin().getName());
 		else if (info.isCrackShotWeaponUsed()) {
-			killer = info.getCrackShotPlayer();
-			Messages.debug("%s killed a %s (%s) using a %s", killer.getName(), mob.getName(),
-					mob.getMobPlugin().getName(), info.getCrackShotWeaponUsed());
+			if (killer == null) {
+				killer = info.getCrackShotPlayer();
+				if (killer != null)
+					Messages.debug("%s killed a %s (%s) using a %s", 
+							killer.getName(), 
+							mob.getName(),
+							mob.getMobPlugin().getName(), 
+							info.getCrackShotWeaponUsed());
+				else
+					Messages.debug("No killer was stored in the Damageinformation");
+			}
 		}
 
 		// Killer is a NPC
@@ -1644,7 +1652,7 @@ public class MobHuntingManager implements Listener {
 
 		// McMMO Level rewards
 		if (killer != null && McMMOCompat.isSupported() && MobHunting.getConfigManager().enableMcMMOLevelRewards
-				&& data.getDampenedKills() < 10) {
+				&& data.getDampenedKills() < 10 && !CrackShotCompat.isCrackShotUsed(killed)) {
 
 			SkillType skilltype = null;
 			if (Misc.isAxe(info.getWeapon()))

@@ -56,6 +56,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import io.chazza.advancementapi.Advancements;
+
 public class AchievementManager implements Listener {
 
 	// String contains ID
@@ -617,6 +619,7 @@ public class AchievementManager implements Listener {
 								}
 								storage.enableAchievements = true;
 								mStorage.put(p.getUniqueId(), storage);
+
 							}
 						});
 			} else {
@@ -632,6 +635,7 @@ public class AchievementManager implements Listener {
 			Messages.debug("achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",
 					player.getName());
 		}
+		
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -641,7 +645,7 @@ public class AchievementManager implements Listener {
 			@Override
 			public void run() {
 				load(event.getPlayer());
-			}
+				}
 		}, (long) 5);
 
 	}

@@ -74,7 +74,7 @@ public class McMMOCompat implements Listener {
 		return !MobHunting.getConfigManager().disableIntegrationMcMMO;
 	}
 
-	public static void addXP(Player player, String skillType, int XP, String xpGainReason) {
+	public static void addXP2(Player player, String skillType, int XP, String xpGainReason) {
 		ExperienceAPI.addXP(player, skillType, XP, xpGainReason);
 	}
 

@@ -27,7 +27,6 @@ import one.lindegaard.MobHunting.commands.TopCommand;
 import one.lindegaard.MobHunting.commands.UpdateCommand;
 import one.lindegaard.MobHunting.commands.VersionCommand;
 import one.lindegaard.MobHunting.commands.WhitelistAreaCommand;
-import one.lindegaard.MobHunting.commands.MobHuntingAdvancement;
 import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.MobHunting.compatibility.ActionBarAPICompat;
 import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
@@ -79,11 +78,15 @@ import one.lindegaard.MobHunting.storage.IDataStore;
 import one.lindegaard.MobHunting.storage.MySQLDataStore;
 import one.lindegaard.MobHunting.storage.SQLiteDataStore;
 import one.lindegaard.MobHunting.update.Updater;
+import one.lindegaard.MobHunting.util.Misc;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import io.chazza.advancementapi.Advancements;
 
 public class MobHunting extends JavaPlugin {
 
@@ -283,7 +286,7 @@ public class MobHunting extends JavaPlugin {
 			cmd.registerCommand(new BountyCommand());
 		cmd.registerCommand(new HappyHourCommand());
 		cmd.registerCommand(new MoneyCommand());
-		cmd.registerCommand(new MobHuntingAdvancement());
+		//cmd.registerCommand(new MobHuntingAdvancement());
 		//getCommand("mobhunt").setExecutor(new command());
 
 		mLeaderboardManager = new LeaderboardManager(this);
@@ -327,7 +330,11 @@ public class MobHunting extends JavaPlugin {
 
 		if (getConfigManager().dropMoneyOnGroundUseAsCurrency)
 			new BagOfGoldSign();
-
+		
+		Messages.debug("Updating advancements");
+		if (Misc.isMC112OrNewer()){
+			Advancements.updateAdvancements();
+		}
 		// for (int i = 0; i < 2; i++)
 		// Messages.debug("Random uuid = %s", UUID.randomUUID());
 
@@ -511,26 +518,4 @@ public class MobHunting extends JavaPlugin {
 		return mFishingManager;
 	}
 	
-	/**
-	public void send(String title, String description, MaterialData material, Player ... player){
-		AdvancementAPI test = new AdvancementAPI(new NamespacedKey(getInstance(), "story/" + UUID.randomUUID().toString()))
-        .withFrame(FrameType.CHALLANGE)
-        .withTrigger("minecraft:impossible")
-        .withIcon(material)
-        .withTitle(title)
-        .withDescription(description)
-        .withAnnouncement(false)
-		.withBackground("minecraft:textures/blocks/bedrock.png");
-		test.loadAdvancement();
-		test.sendPlayer(player);
-		
-		Bukkit.getScheduler().runTaskLater(getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				test.delete(player);
-			}
-		}, 10);
-		
-}**/
-
 }
