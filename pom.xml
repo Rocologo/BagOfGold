@@ -26,6 +26,7 @@
 	<!-- ********************************************************************** -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
 		<bukkit.version>1.12-R0.1-SNAPSHOT</bukkit.version>
 		<craftbukkit.version>1.12-R0.1-SNAPSHOT</craftbukkit.version>
@@ -77,11 +78,11 @@
 		<ConquestiaMobs.jar.version>CqMobs-3.3.3.jar</ConquestiaMobs.jar.version>
 		<StackMob.jar.version>StackMob-1.6.4.jar</StackMob.jar.version>
 		<MysteriousHalloween.jar.version>MysteriousHalloween-1.3.2.jar</MysteriousHalloween.jar.version>
-		<SmartGiants.jar.version>SmartGiants-2.3.3.jar</SmartGiants.jar.version>
-		<massivecore.jar.version>MassiveCore-2.10.0.jar</massivecore.jar.version>
-		<factions.jar.version>Factions-2.10.0.jar</factions.jar.version>
+		<SmartGiants.jar.version>SmartGiants-2.3.6.jar</SmartGiants.jar.version>
+		<massivecore.jar.version>MassiveCore-2.12.1.jar</massivecore.jar.version>
+		<factions.jar.version>Factions-2.12.1.jar</factions.jar.version>
 		<towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
-		<residence.jar.version>Residence4.6.1.4.jar</residence.jar.version>
+		<residence.jar.version>Residence4.7.0.2.jar</residence.jar.version>
 		<bossshop.jar.version>BossShop-2.7.3.jar</bossshop.jar.version>
 		<extrahardmode.jar.version>ExtraHardMode-3.11.jar</extrahardmode.jar.version>
 		<crackshot.jar.version>CrackShot-0.98.5.jar</crackshot.jar.version>
@@ -754,7 +755,7 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${crackshot.jar.version}</systemPath>
 		</dependency>
-
+		
 	</dependencies>
 
 

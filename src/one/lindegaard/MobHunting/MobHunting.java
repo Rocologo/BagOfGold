@@ -86,7 +86,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import io.chazza.advancementapi.Advancements;
+import io.chazza.advancementapi.AdvancementManager;
 
 public class MobHunting extends JavaPlugin {
 
@@ -110,6 +110,7 @@ public class MobHunting extends JavaPlugin {
 	private static IDataStore mStore;
 	private static DataStoreManager mStoreManager;
 	private static ConfigManager mConfig;
+	private static AdvancementManager mAdvancementManager;
 
 	private boolean mInitialized = false;
 
@@ -333,7 +334,8 @@ public class MobHunting extends JavaPlugin {
 		
 		Messages.debug("Updating advancements");
 		if (Misc.isMC112OrNewer()){
-			Advancements.updateAdvancements();
+			mAdvancementManager = new AdvancementManager();
+			mAdvancementManager.updateAdvancements();
 		}
 		// for (int i = 0; i < 2; i++)
 		// Messages.debug("Random uuid = %s", UUID.randomUUID());
@@ -517,5 +519,15 @@ public class MobHunting extends JavaPlugin {
 	public static FishingManager getFishingManager() {
 		return mFishingManager;
 	}
+
+	/**
+	 * Get the AdvancementManager
+	 * 
+	 * @return
+	 */
+	public static AdvancementManager getAdvancementManager() {
+		return mAdvancementManager;
+	}
 	
+
 }

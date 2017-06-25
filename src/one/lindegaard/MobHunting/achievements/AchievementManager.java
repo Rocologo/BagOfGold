@@ -56,8 +56,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import io.chazza.advancementapi.Advancements;
-
 public class AchievementManager implements Listener {
 
 	// String contains ID
@@ -620,6 +618,8 @@ public class AchievementManager implements Listener {
 								storage.enableAchievements = true;
 								mStorage.put(p.getUniqueId(), storage);
 
+								MobHunting.getAdvancementManager().updatePlayerAdvancements(player);
+								
 							}
 						});
 			} else {
