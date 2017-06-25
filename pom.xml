@@ -40,22 +40,19 @@
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<!-- <metrics.version>R7</metrics.version> -->
 		<vault.version>1.6.6</vault.version>
-		<protocollib.version>4.2.0-SNAPSHOT</protocollib.version>
+		<protocollib.version>4.3.0</protocollib.version>
 		<minigames.version>1.9.0-SNAPSHOT</minigames.version>
 		<minigameslib.version>1.14.14</minigameslib.version>
-		<mypet.version>2.2.5</mypet.version>
+		<mypet.version>2.2.9</mypet.version>
 		<worldedit.version>6.1.5</worldedit.version>
 		<worldguard.version>6.2</worldguard.version>
-		<citizensapi.version>2.0.21-SNAPSHOT</citizensapi.version>
-		<libsdisguises.version>9.1.1</libsdisguises.version>
+		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
+		<libsdisguises.version>9.4.0</libsdisguises.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>2.0.0</titlemanager.version>
 		<placeholderapi.version>2.0.6</placeholderapi.version>
-
-		<slf4j.version>1.7.21</slf4j.version>
-		<slf4j-log4j.jar.version>slf4j-log4j12-1.7.21.jar</slf4j-log4j.jar.version>
 
 		<mythicmobsold.jar.version>MythicMobs-2.5.1.jar</mythicmobsold.jar.version>
 		<mythicmobs.jar.version>MythicMobs-4.0.0.jar</mythicmobs.jar.version>
@@ -191,7 +188,7 @@
 		<repository>
 			<id>MobHunting-Repository</id>
 			<name>plugins-snapshots</name>
-			<url>https://fractal.lindegaard.one:8187/artifactory/</url>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release</url>
 		</repository>
 
 		<!-- SpigotMC Repository -->
@@ -345,20 +342,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- XLF4J Logging -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
-			your class path. -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
 		<!-- WorldEdit -->
 		<dependency>
 			<groupId>com.sk89q.worldedit</groupId>
@@ -427,11 +410,6 @@
 			<version>${battleArena.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency> <groupId>mc.alk</groupId> <artifactId>BattleArena</artifactId> 
-			<version>${BattleArena.jar.version}</version> <scope>system</scope> <type>jar</type> 
-			<systemPath>${project.basedir}/lib/${BattleArena.jar.version}</systemPath> 
-			</dependency> -->
-
 
 		<!-- BossBarAPI -->
 		<dependency>
@@ -689,20 +667,20 @@
 
 		<!-- MassiveCore / Factions -->
 		<dependency>
-			<groupId>com.massivecraft.massivecore.MassiveCore</groupId>
+			<groupId>com.massivecraft.massivecore</groupId>
 			<artifactId>MassiveCore</artifactId>
-			<version>2.10.0</version>
+			<version>2.12.1</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${massivecore.jar.version}</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>com.massivecraft.factions.Factions</groupId>
+			<groupId>com.massivecraft.factions</groupId>
 			<artifactId>Factions</artifactId>
-			<version>2.10.0</version>
+			<version>2.12.1</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${factions.jar.version}</systemPath>
 		</dependency>
-
+		
 		<!-- Towny -->
 		<dependency>
 			<groupId>com.palmergames</groupId>
@@ -764,18 +742,11 @@
 	<!-- ********************************************************************** -->
 	<dependencyManagement>
 		<dependencies>
-			<!-- XLF4J Logging -->
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
-				your class path. -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<scope>test</scope>
+				<version>6.8.8</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

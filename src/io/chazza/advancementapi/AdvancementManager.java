@@ -77,6 +77,7 @@ public class AdvancementManager {
 				.frame(FrameType.TASK).build();
 
 		parent.save(worldName);
+		parent.add();
 
 		// you're able to use TextComponents @see
 		// https://www.spigotmc.org/wiki/the-chat-component-api/#colors-and-formatting
@@ -106,6 +107,7 @@ public class AdvancementManager {
 				.build();
 
 		advancementAPI.save(worldName);
+		advancementAPI.add();
 
 	}
 
@@ -122,7 +124,7 @@ public class AdvancementManager {
 		for (AdvancementAPI api : apiList) {
 			if (api.getDescription().getText().equalsIgnoreCase("Starting")) {
 				Messages.debug("Granting %s", api.getDescription().getText());
-				//api.grant(player);
+				api.grant(player);
 			} else {
 				Messages.debug("Not granting %s", api.getDescription().getText());
 			}

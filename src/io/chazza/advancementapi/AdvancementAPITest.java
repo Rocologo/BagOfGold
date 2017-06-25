@@ -54,7 +54,7 @@ public class AdvancementAPITest {
                         Trigger.builder(
                                 Trigger.TriggerType.CONSUME_ITEM, "test") // triggers when consuming an item
                                 .condition(Condition.builder("potion", new ItemStack(Material.APPLE, 1)))) //1 x apple
-                .hidden(true) // Advancement is hidden before completed
+                .hidden(false) // Advancement is hidden before completed
                 .toast(true) // should send a Toast Message -> popup right upper corner
                 .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
                 .frame(FrameType.GOAL)
