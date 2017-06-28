@@ -1,5 +1,6 @@
 V5.0.0
 * Java 8 is now hard dependent! I want to take advantage of new features in Minecraft 1.12, so I have chosen to compile MobHunting against Java 8 going forward.
+* pom.xml has been updated
 * EnderDragon head chnaged shape when broken on the ground. Ticket 258. (https://github.com/Rocologo/MobHunting/issues/258)
 * Fixed ticket 255 (https://github.com/Rocologo/MobHunting/issues/255) 
 * Added basic Advancements  

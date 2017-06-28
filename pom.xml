@@ -53,36 +53,39 @@
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>2.0.0</titlemanager.version>
 		<placeholderapi.version>2.0.6</placeholderapi.version>
+		<custommobs.version>4.16</custommobs.version>
+		<mobarena.version>0.97.1</mobarena.version>
+		<massivecore.version>2.12.1</massivecore.version>
+		<factions.version>2.12.1</factions.version>
+		<ActionBarAPI.version>1.5.2</ActionBarAPI.version>
+		<ActionAnnouncer.version>1.10</ActionAnnouncer.version>
+		<EssentialsX.version>2.0.1</EssentialsX.version>
+		<iDisguise.version>5.5.5</iDisguise.version>
+		<vanishnopacket.version>3.20</vanishnopacket.version>
+		<mcmmo.version>1.5.01-SNAPSHOT</mcmmo.version>
+		<disguisecraft.version>5.1</disguisecraft.version>
+		<crackshot.version>0.98.5</crackshot.version>
+		<placeholderapi.version>2.0.8</placeholderapi.version>
+		<PvpArena.version>1.3</PvpArena.version>
+		<TitleAPI.version>1.7.3</TitleAPI.version>
+		<TARDISWeepingAngels.version>2.4</TARDISWeepingAngels.version>
+		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
+		<MysteriousHalloween.version>1.3.2</MysteriousHalloween.version>
+		<SmartGiants.version>2.3.6</SmartGiants.version>
+		<towny.version>0.91.4.2</towny.version>
+		<residence.version>Residence4.7.0.2</residence.version>
+		<bossshop.version>2.7.3</bossshop.version>
+		<MobStacker.version>MobStacker_v2.0.0</MobStacker.version>
+		<mythicmobsold.version>2.5.1</mythicmobsold.version>
+		<mythicmobs.version>4.0.0</mythicmobs.version>
+		<mythiclib.version>0.0.1-20170628.172950-1</mythiclib.version>
+		<StackMob.version>1.6.4</StackMob.version>
 
-		<mythicmobsold.jar.version>MythicMobs-2.5.1.jar</mythicmobsold.jar.version>
-		<mythicmobs.jar.version>MythicMobs-4.0.0.jar</mythicmobs.jar.version>
-		<mythiclib.jar.version>MythicLib-4.0.0.jar</mythiclib.jar.version>
-		<custommobs.jar.version>CustomMobs-4.16.jar</custommobs.jar.version>
-		<mobarena.jar.version>MobArena0.97.1.jar</mobarena.jar.version>
 		<minigameslib.jar.version>MinigamesLib-1.14.15-SNAPSHOT.jar</minigameslib.jar.version>
-		<ActionBarAPI.jar.version>ActionBarAPI-1.5.2.jar</ActionBarAPI.jar.version>
-		<ActionAnnouncer.jar.version>ActionAnnouncer-1.10.jar</ActionAnnouncer.jar.version>
+		<minigameslib.version>1.14.15-20170123.094017</minigameslib.version>
 		<Gringotts.jar.version>Gringotts-2.9.jar</Gringotts.jar.version>
-		<Essentials.jar.version>EssentialsX-2.0.1.jar</Essentials.jar.version>
-		<iDisguise.jar.version>iDisguise-5.5.5.jar</iDisguise.jar.version>
-		<disguisecraft.jar.version>DisguiseCraft-5.1.jar</disguisecraft.jar.version>
-		<PvpArena.jar.version>pvparena.jar</PvpArena.jar.version>
-		<BattleArena.jar.version>BattleArena-3.9.10.5.jar</BattleArena.jar.version>
-		<TitleAPI.jar.version>TitleAPI-1.7.3.jar</TitleAPI.jar.version>
-		<VanishNoPacket.jar.version>VanishNoPacket3.20.jar</VanishNoPacket.jar.version>
-		<MobStacker.jar.version>MobStacker_v2.0.0.jar</MobStacker.jar.version>
-		<TARDISWeepingAngels.jar.version>TARDISWeepingAngels-B85.jar</TARDISWeepingAngels.jar.version>
-		<ConquestiaMobs.jar.version>CqMobs-3.3.3.jar</ConquestiaMobs.jar.version>
-		<StackMob.jar.version>StackMob-1.6.4.jar</StackMob.jar.version>
-		<MysteriousHalloween.jar.version>MysteriousHalloween-1.3.2.jar</MysteriousHalloween.jar.version>
-		<SmartGiants.jar.version>SmartGiants-2.3.6.jar</SmartGiants.jar.version>
-		<massivecore.jar.version>MassiveCore-2.12.1.jar</massivecore.jar.version>
-		<factions.jar.version>Factions-2.12.1.jar</factions.jar.version>
-		<towny.jar.version>Towny-0.91.4.2.jar</towny.jar.version>
-		<residence.jar.version>Residence4.7.0.2.jar</residence.jar.version>
-		<bossshop.jar.version>BossShop-2.7.3.jar</bossshop.jar.version>
 		<extrahardmode.jar.version>ExtraHardMode-3.11.jar</extrahardmode.jar.version>
-		<crackshot.jar.version>CrackShot-0.98.5.jar</crackshot.jar.version>
+
 	</properties>
 
 
@@ -186,9 +189,14 @@
 	<repositories>
 		<!-- MobHunhting repository -->
 		<repository>
-            <id>fractal</id>
-            <url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
+			<id>fractal</id>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
 		</repository>
+		<repository>
+			<id>fractal-snapshots</id>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshots/</url>
+		</repository>
+
 
 		<!-- SpigotMC Repository -->
 		<repository>
@@ -289,11 +297,8 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 
-		<!-- BossShop 
-		<repository>
-			<id>confuser-repo</id>
-			<url>http://ci.frostcast.net/plugin/repository/everything/</url>
-		</repository>-->
+		<!-- BossShop <repository> <id>confuser-repo</id> <url>http://ci.frostcast.net/plugin/repository/everything/</url> 
+			</repository> -->
 
 	</repositories>
 
@@ -365,7 +370,7 @@
 		<dependency>
 			<groupId>com.gmail.nossr50.mcMMO</groupId>
 			<artifactId>mcMMO</artifactId>
-			<version>1.5.01-SNAPSHOT</version>
+			<version>${mcmmo.version}</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -444,73 +449,56 @@
 		<dependency>
 			<groupId>me.eccentric_nz.tardisweepingangels</groupId>
 			<artifactId>TARDISWeepingAngels</artifactId>
-			<version>${TARDISWeepingAngels.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${TARDISWeepingAngels.jar.version}</systemPath>
+			<version>${TARDISWeepingAngels.version}</version>
 		</dependency>
 
 		<!-- ConquestiaMobs -->
 		<dependency>
-			<groupId>com.conquestiamc.cqmobs.CqMobs</groupId>
-			<artifactId>ConquestiaMobs</artifactId>
-			<version>${ConquestiaMobs.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${ConquestiaMobs.jar.version}</systemPath>
+			<groupId>CqMobs</groupId>
+			<artifactId>CqMobs</artifactId>
+			<version>${ConquestiaMobs.version}</version>
 		</dependency>
 
 		<!-- MobStack -->
 		<dependency>
-			<groupId>uk.antiperson.stackmob.StackMob</groupId>
-			<artifactId>StackMob</artifactId>
-			<version>${StackMob.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${StackMob.jar.version}</systemPath>
+			<groupId>StackMob</groupId>
+			<artifactId>uk.antiperson.stackmob</artifactId>
+			<version>${StackMob.version}</version>
 		</dependency>
 
 		<!-- MysteriousHalloween -->
 		<dependency>
-			<groupId>me.F_o_F_1092.MysteriousHalloween.Main</groupId>
-			<artifactId>MysteriousHallowen</artifactId>
-			<version>${MysteriousHalloween.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${MysteriousHalloween.jar.version}</systemPath>
+			<groupId>MysteriousHalloween</groupId>
+			<artifactId>MysteriousHalloween</artifactId>
+			<version>${MysteriousHalloween.version}</version>
 		</dependency>
 
 		<!-- SmartGiants -->
 		<dependency>
-			<groupId>me.jjm_223.smartgiants.SmartGiants</groupId>
+			<groupId>me.jjm_223.smartgiants</groupId>
 			<artifactId>SmartGiants</artifactId>
-			<version>${SmartGiants.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${SmartGiants.jar.version}</systemPath>
+			<version>${SmartGiants.version}</version>
 		</dependency>
 
 		<!-- iDisguise -->
 		<dependency>
-			<groupId>de.robingrether.idisguise</groupId>
-			<artifactId>idisguise</artifactId>
-			<version>${iDisguise.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${iDisguise.jar.version}</systemPath>
+			<groupId>iDisguise</groupId>
+			<artifactId>iDisguise</artifactId>
+			<version>${iDisguise.version}</version>
 		</dependency>
 
 		<!-- DisguiseCraft -->
 		<dependency>
-			<groupId>pgDev.bukkit.DisguiseCraft.DisguiseCraft</groupId>
+			<groupId>pgDev</groupId>
 			<artifactId>DisguiseCraft</artifactId>
-			<version>${disguisecraft.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${disguisecraft.jar.version}</systemPath>
+			<version>${disguisecraft.version}</version>
 		</dependency>
 
 		<!-- PvpArena -->
 		<dependency>
-			<groupId>net.slipcor.pvparena</groupId>
-			<artifactId>PVPArena</artifactId>
-			<version>${PvpArena.jar.version}</version>
-			<scope>system</scope>
-			<type>jar</type>
-			<systemPath>${project.basedir}/lib/${PvpArena.jar.version}</systemPath>
+			<groupId>net.slipcor</groupId>
+			<artifactId>pvparena</artifactId>
+			<version>${PvpArena.version}</version>
 		</dependency>
 
 		<!-- MinigamesLib -->
@@ -526,38 +514,29 @@
 		<!-- TitleAPI -->
 		<dependency>
 			<groupId>com.connorlinfoot</groupId>
-			<artifactId>titleapi</artifactId>
-			<version>${TitleAPI.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${TitleAPI.jar.version}</systemPath>
+			<artifactId>TitleAPI</artifactId>
+			<version>${TitleAPI.version}</version>
 		</dependency>
 
 		<!-- VanishNoPacket -->
 		<dependency>
-			<groupId>org.kitteh.vanish</groupId>
+			<groupId>org.kitteh</groupId>
 			<artifactId>VanishNoPacket</artifactId>
-			<version>${VanishNoPacket.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${VanishNoPacket.jar.version}</systemPath>
+			<version>${vanishnopacket.version}</version>
 		</dependency>
 
 		<!-- Essentials -->
 		<dependency>
 			<groupId>net.ess3</groupId>
-			<artifactId>Essentials</artifactId>
-			<version>${Essentials.jar.version}</version>
-			<scope>system</scope>
-			<type>jar</type>
-			<systemPath>${project.basedir}/lib/${Essentials.jar.version}</systemPath>
+			<artifactId>EssentialsX</artifactId>
+			<version>${EssentialsX.version}</version>
 		</dependency>
 
 		<!-- MobStacker -->
 		<dependency>
-			<groupId>com.kiwifisher.mobstacker</groupId>
-			<artifactId>MobStacker</artifactId>
-			<version>${MobStacker.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${MobStacker.jar.version}</systemPath>
+			<groupId>MobStacker_v2.0.0</groupId>
+			<artifactId>MobStacker_v2.0.0</artifactId>
+			<version>${MobStacker.version}</version>
 		</dependency>
 
 		<!-- Gringotts -->
@@ -569,74 +548,55 @@
 			<systemPath>${project.basedir}/lib/Gringotts-2.9.jar</systemPath>
 		</dependency>
 
+
 		<!-- MythicMobs Old -->
 		<dependency>
-			<groupId>net.elseland.xikage.MythicMobs</groupId>
+			<groupId>net.elseland.xikage</groupId>
 			<artifactId>MythicMobs</artifactId>
-			<version>${mythicmobsold.jar.version}</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${mythicmobsold.jar.version}</systemPath>
+			<version>${mythicmobsold.version}</version>
 		</dependency>
 
 		<!-- MythicMobs -->
 		<dependency>
-			<groupId>io.lumine.xikage.mythicmobs</groupId>
+			<groupId>io.lumine.xikage</groupId>
 			<artifactId>MythicMobs</artifactId>
-			<version>${mythicmobs.jar.version}</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${mythicmobs.jar.version}</systemPath>
+			<version>${mythicmobs.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.lumine.xikage.MythicLib</groupId>
-			<artifactId>MythicPlugin</artifactId>
-			<version>${mythiclib.jar.version}</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${mythiclib.jar.version}</systemPath>
+			<groupId>MythicLib</groupId>
+			<artifactId>MythicLib</artifactId>
+			<version>${mythiclib.version}</version>
 		</dependency>
 
 
 		<!-- CustomMobs -->
 		<dependency>
-			<groupId>de.hellfirepvp.CustomMobs</groupId>
+			<groupId>de.hellfirepvp</groupId>
 			<artifactId>CustomMobs</artifactId>
-			<version>${custommobs.jar.version}</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${custommobs.jar.version}</systemPath>
+			<version>${custommobs.version}</version>
 		</dependency>
 
 		<!-- MobArena -->
 		<dependency>
 			<groupId>com.garbagemule</groupId>
-			<artifactId>MobArena</artifactId>
-			<version>${mobarena.jar.version}</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${mobarena.jar.version}</systemPath>
+			<artifactId>mobarena</artifactId>
+			<version>${mobarena.version}</version>
 		</dependency>
 
 		<!-- ActionBarAPI -->
 		<dependency>
-			<groupId>com.connorlinfoot.actionbarapi.ActionBarAPI</groupId>
+			<groupId>ActionBarAPI</groupId>
 			<artifactId>ActionBarAPI</artifactId>
-			<version>${ActionBarAPI.jar.version}</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${ActionBarAPI.jar.version}</systemPath>
+			<version>${ActionBarAPI.version}</version>
 		</dependency>
 
 		<!-- ActionAnnouncer -->
 		<dependency>
-			<groupId>me.clip.actionannouncer.ActionAnnouncer</groupId>
+			<groupId>ActionAnnouncer</groupId>
 			<artifactId>ActionAnnouncer</artifactId>
-			<version>${ActionAnnouncer.jar.version}</version>
-			<type>jar</type>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${ActionAnnouncer.jar.version}</systemPath>
+			<version>${ActionAnnouncer.version}</version>
 		</dependency>
+
 
 		<!-- Minigames -->
 		<dependency>
@@ -668,40 +628,34 @@
 		<dependency>
 			<groupId>com.massivecraft.massivecore</groupId>
 			<artifactId>MassiveCore</artifactId>
-			<version>2.12.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${massivecore.jar.version}</systemPath>
+			<version>${massivecore.version}</version>
 		</dependency>
 		<dependency>
-            <groupId>com.massivecraft.factions</groupId>
-            <artifactId>Factions</artifactId>
-            <version>2.12.1</version>
-            <scope>provided</scope>
+			<groupId>com.massivecraft.factions</groupId>
+			<artifactId>Factions</artifactId>
+			<version>${factions.version}</version>
+			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Towny -->
 		<dependency>
-			<groupId>com.palmergames</groupId>
+			<groupId>Towny</groupId>
 			<artifactId>Towny</artifactId>
-			<version>0.91.4.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${towny.jar.version}</systemPath>
+			<version>${towny.version}</version>
 		</dependency>
 
 		<!-- Residence -->
 		<dependency>
-			<groupId>com.bekvon.bukkit.residence</groupId>
-			<artifactId>Residence</artifactId>
-			<version>4.6.1.4</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${residence.jar.version}</systemPath>
+			<groupId>Residence4.7.0.2</groupId>
+			<artifactId>Residence4.7.0.2</artifactId>
+			<version>${residence.version}</version>
 		</dependency>
 
 		<!-- PlacholdeAPI -->
 		<dependency>
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
-			<version>2.0.8</version>
+			<version>${placeholderapi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -709,11 +663,9 @@
 		<dependency>
 			<groupId>org.black_ixx</groupId>
 			<artifactId>BossShop</artifactId>
-			<version>${bossshop.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${bossshop.jar.version}</systemPath>
+			<version>${bossshop.version}</version>
 		</dependency>
-		
+
 		<!-- ExtraHardMode -->
 		<dependency>
 			<groupId>com.extrahardmode.ExtraHardMode</groupId>
@@ -722,16 +674,14 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${extrahardmode.jar.version}</systemPath>
 		</dependency>
-		
+
 		<!-- CrackShot -->
 		<dependency>
-			<groupId>com.shampaggon.crackshot.CSDirector</groupId>
+			<groupId>CrackShot</groupId>
 			<artifactId>CrackShot</artifactId>
-			<version>${crackshot.jar.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${crackshot.jar.version}</systemPath>
+			<version>${crackshot.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 
 
