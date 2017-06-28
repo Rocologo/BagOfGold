@@ -618,8 +618,9 @@ public class AchievementManager implements Listener {
 								storage.enableAchievements = true;
 								mStorage.put(p.getUniqueId(), storage);
 
-								MobHunting.getAdvancementManager().updatePlayerAdvancements(player);
-								
+								if (MobHunting.ADD_ADVANCEMENTS)
+									MobHunting.getAdvancementManager().updatePlayerAdvancements(player);
+
 							}
 						});
 			} else {
@@ -635,7 +636,7 @@ public class AchievementManager implements Listener {
 			Messages.debug("achievements is disabled with permission 'mobhunting.achievements.disabled' for player %s",
 					player.getName());
 		}
-		
+
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -645,7 +646,7 @@ public class AchievementManager implements Listener {
 			@Override
 			public void run() {
 				load(event.getPlayer());
-				}
+			}
 		}, (long) 5);
 
 	}

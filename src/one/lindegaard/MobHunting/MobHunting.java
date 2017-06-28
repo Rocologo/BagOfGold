@@ -114,6 +114,8 @@ public class MobHunting extends JavaPlugin {
 
 	private boolean mInitialized = false;
 
+	public static final boolean ADD_ADVANCEMENTS = false;
+
 	@Override
 	public void onLoad() {
 	}
@@ -135,25 +137,36 @@ public class MobHunting extends JavaPlugin {
 			throw new RuntimeException(Messages.getString(pluginName + ".config.fail"));
 		if (mConfig.pvpKillCmd.toLowerCase().contains("skullowner")
 				&& mConfig.pvpKillCmd.toLowerCase().contains("mobhunt")) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]==================WARNING=================================");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Potential error in your config.yml. pvp-kill-cmd contains SkullOwner,");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "which indicates that pvp-kill-cmd is outdated. Check the head command");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "or delete the line pvp-kill-cmd, and then reload the plugin. The ");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "[Mobhunting]==================WARNING=================================");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "Potential error in your config.yml. pvp-kill-cmd contains SkullOwner,");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "which indicates that pvp-kill-cmd is outdated. Check the head command");
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.RED + "or delete the line pvp-kill-cmd, and then reload the plugin. The ");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "correct syntax to get a player head is:");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "\"mobhunt head give {player} {killed_player} {killed_player} 1 silent\"");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]=========================================================");
-			}
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "\"mobhunt head give {player} {killed_player} {killed_player} 1 silent\"");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "[Mobhunting]=========================================================");
+		}
 
 		if (isbStatsEnabled())
 			Messages.debug("bStat is enabled");
 		else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]=====================WARNING=============================");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "The statistics collection is disabled. As developer I need the");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "statistics from bStats.org. The statistics is 100% anonymous.");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "[Mobhunting]=====================WARNING=============================");
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.RED + "The statistics collection is disabled. As developer I need the");
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.RED + "statistics from bStats.org. The statistics is 100% anonymous.");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "https://bstats.org/plugin/bukkit/MobHunting");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Please enable this in /plugins/bStats/config.yml and get rid of this");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "Please enable this in /plugins/bStats/config.yml and get rid of this");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "message. Loading will continue in 15 sec.");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[Mobhunting]=========================================================");
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.RED + "[Mobhunting]=========================================================");
 			long now = System.currentTimeMillis();
 			while (System.currentTimeMillis() < now + 15000L) {
 				try {
@@ -287,8 +300,8 @@ public class MobHunting extends JavaPlugin {
 			cmd.registerCommand(new BountyCommand());
 		cmd.registerCommand(new HappyHourCommand());
 		cmd.registerCommand(new MoneyCommand());
-		//cmd.registerCommand(new MobHuntingAdvancement());
-		//getCommand("mobhunt").setExecutor(new command());
+		// cmd.registerCommand(new MobHuntingAdvancement());
+		// getCommand("mobhunt").setExecutor(new command());
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
@@ -309,7 +322,7 @@ public class MobHunting extends JavaPlugin {
 			mMetricsManager.startMetrics();
 		}
 		mMetricsManager.startBStatsMetrics();
-		
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {
 				Messages.injectMissingMobNamesToLangFiles();
@@ -331,9 +344,9 @@ public class MobHunting extends JavaPlugin {
 
 		if (getConfigManager().dropMoneyOnGroundUseAsCurrency)
 			new BagOfGoldSign();
-		
+
 		Messages.debug("Updating advancements");
-		if (Misc.isMC112OrNewer()){
+		if (ADD_ADVANCEMENTS && Misc.isMC112OrNewer()) {
 			mAdvancementManager = new AdvancementManager();
 			mAdvancementManager.updateAdvancements();
 		}
@@ -528,6 +541,5 @@ public class MobHunting extends JavaPlugin {
 	public static AdvancementManager getAdvancementManager() {
 		return mAdvancementManager;
 	}
-	
 
 }
