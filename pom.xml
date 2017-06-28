@@ -186,9 +186,8 @@
 	<repositories>
 		<!-- MobHunhting repository -->
 		<repository>
-			<id>MobHunting-Repository</id>
-			<name>plugins-snapshots</name>
-			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release</url>
+            <id>fractal</id>
+            <url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
 		</repository>
 
 		<!-- SpigotMC Repository -->
@@ -674,11 +673,10 @@
 			<systemPath>${project.basedir}/lib/${massivecore.jar.version}</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>com.massivecraft.factions</groupId>
-			<artifactId>Factions</artifactId>
-			<version>2.12.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/${factions.jar.version}</systemPath>
+            <groupId>com.massivecraft.factions</groupId>
+            <artifactId>Factions</artifactId>
+            <version>2.12.1</version>
+            <scope>provided</scope>
 		</dependency>
 		
 		<!-- Towny -->
