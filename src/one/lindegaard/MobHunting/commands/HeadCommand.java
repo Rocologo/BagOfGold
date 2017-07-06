@@ -112,14 +112,14 @@ public class HeadCommand implements ICommand, Listener {
 					}
 				}
 				// get displayname
-				//if (args.length >= 4) {
-				//	displayName = args[3].replace("_", " ");
-				//} else {
-					if (mob != MinecraftMob.PvpPlayer)
-						displayName = mob.getFriendlyName().replace("_", " ");
-					else
-						displayName = offlinePlayer.getName();
-				//}
+				// if (args.length >= 4) {
+				// displayName = args[3].replace("_", " ");
+				// } else {
+				if (mob != MinecraftMob.PvpPlayer)
+					displayName = mob.getFriendlyName().replace("_", " ");
+				else
+					displayName = offlinePlayer.getName();
+				// }
 				// get amount
 				if (args.length >= 5) {
 					try {
@@ -154,10 +154,9 @@ public class HeadCommand implements ICommand, Listener {
 						Messages.debug("%s Cmd=%s", mob.getFriendlyName(), cmdString);
 						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), cmdString);
 					}
-					if (toPlayer.isOnline() && !silent) {
-						((Player) toPlayer).sendMessage(
+					if (toPlayer.isOnline() && !silent)
+						Messages.playerSendMessage((Player) toPlayer,
 								Messages.getString("mobhunting.commands.head.you_got_a_head", "mobname", displayName));
-					}
 
 				}
 			}
@@ -218,7 +217,8 @@ public class HeadCommand implements ICommand, Listener {
 							if (mob == MinecraftMob.PvpPlayer)
 								player.getWorld().dropItem(location, mob.getCustomHead(args[1], 1, money));
 							else
-								player.getWorld().dropItem(location, mob.getCustomHead(mob.getFriendlyName(), 1, money));
+								player.getWorld().dropItem(location,
+										mob.getCustomHead(mob.getFriendlyName(), 1, money));
 
 						} else {
 							sender.sendMessage(ChatColor.RED + Messages

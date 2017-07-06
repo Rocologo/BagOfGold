@@ -106,7 +106,8 @@ public class Messages {
 				writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 			}
 			writer.close();
-			//Bukkit.getLogger().info(PREFIX + " Sorted " + onDisk.getName() + " translation");
+			// Bukkit.getLogger().info(PREFIX + " Sorted " + onDisk.getName() +
+			// " translation");
 
 			return true;
 		} catch (IOException e) {
@@ -415,7 +416,7 @@ public class Messages {
 				continue;
 			if (MobHunting.getConfigManager().useActionBarforBroadcasts)
 				playerActionBarMessage(player, message);
-			else
+			else if (isEmpty(message))
 				player.sendMessage(message);
 		}
 	}
@@ -440,7 +441,7 @@ public class Messages {
 	 */
 	public static void learn(Player player, String text, Object... args) {
 		if (player != null && !CitizensCompat.isNPC(player)
-				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode())
+				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode() && !isEmpty(text))
 			playerBossbarMessage(player, text, args);
 	}
 
@@ -483,9 +484,14 @@ public class Messages {
 		} else if (ActionBarAPICompat.isSupported()) {
 			ActionBarAPICompat.setMessage(player, message);
 		} else {
-			if (!message.isEmpty())
+			if (!isEmpty(message))
 				player.sendMessage(message);
 		}
+	}
+
+	public static void playerSendMessage(final Player player, final String message) {
+		if (!isEmpty(message))
+			player.sendMessage(message);
 	}
 
 	public static void playerSendTitlesMessage(Player player, String title, String subtitle, int fadein, int stay,
@@ -495,7 +501,7 @@ public class Messages {
 		} else if (TitleAPICompat.isSupported()) {
 			TitleAPICompat.sendTitles(player, title, subtitle, fadein, stay, fadeout);
 		} else {
-			if (!(title.isEmpty() && subtitle.isEmpty()))
+			if (!(isEmpty(title) && isEmpty(subtitle)))
 				player.sendMessage(new String[] { title, subtitle });
 		}
 	}
