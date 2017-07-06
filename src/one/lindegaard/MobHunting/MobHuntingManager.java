@@ -848,11 +848,8 @@ public class MobHuntingManager implements Listener {
 			if (killer == null) {
 				killer = info.getCrackShotPlayer();
 				if (killer != null)
-					Messages.debug("%s killed a %s (%s) using a %s", 
-							killer.getName(), 
-							mob.getName(),
-							mob.getMobPlugin().getName(), 
-							info.getCrackShotWeaponUsed());
+					Messages.debug("%s killed a %s (%s) using a %s", killer.getName(), mob.getName(),
+							mob.getMobPlugin().getName(), info.getCrackShotWeaponUsed());
 				else
 					Messages.debug("No killer was stored in the Damageinformation");
 			}
@@ -1761,7 +1758,20 @@ public class MobHuntingManager implements Listener {
 	 *         not killed by a MyPet.
 	 */
 	private Player getPlayer(Player killer, Entity killed) {
-		return killer != null ? killer : MyPetCompat.getMyPetOwner(killed);
+		if (killer != null)
+			return killer;
+
+		Player p = MyPetCompat.getMyPetOwner(killed);
+		if (p != null)
+			return p;
+
+		DamageInformation damageInformation = mDamageHistory.get(killed);
+		if (damageInformation != null && damageInformation.isCrackShotWeaponUsed())
+			return damageInformation.getAttacker();
+
+		return null;
+		// return killer != null ? killer : MyPetCompat.getMyPetOwner(killed);
+
 	}
 
 	private String getKillerName(Player killer, Entity killed) {

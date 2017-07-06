@@ -4,7 +4,8 @@ V5.0.0
 * EnderDragon head chnaged shape when broken on the ground. Ticket 258. (https://github.com/Rocologo/MobHunting/issues/258)
 * Fixed ticket 255 (https://github.com/Rocologo/MobHunting/issues/255) 
 * Added basic Advancements
-* Fixed ticket 265. (https://github.com/Rocologo/MobHunting/issues/264)  
+* Fixed ticket 264. (https://github.com/Rocologo/MobHunting/issues/264)
+* Fixed ticket 265. (https://github.com/Rocologo/MobHunting/issues/265)  
 V4.9.5
 * Added support for CrackShot (https://dev.bukkit.org/projects/crackshot)
 * Fixed Ticket 247. NPE bug on Assisted kills. (https://github.com/Rocologo/MobHunting/issues/247
