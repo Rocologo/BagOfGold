@@ -1,114 +1,116 @@
 package io.chazza.advancementapi;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.achievements.Achievement;
 import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 
 public class AdvancementManager {
 
-	private final String worldName = "world";
-	ArrayList<AdvancementAPI> apiList = new ArrayList<AdvancementAPI>();
+	private static ArrayList<AdvancementAPI> knowAdvancements = new ArrayList<AdvancementAPI>();
 
 	public AdvancementManager() {
-
 	}
 
-	public void updateAdvancements() {
+	public void getAdvancementsFromAchivements() {
 
-		AdvancementAPI parent = AdvancementAPI.builder(new NamespacedKey(MobHunting.getInstance(), "my/firststeps"))
-				.title("First Steps").description("Starting").icon("minecraft:wood_sword")
-				.trigger(Trigger.builder(Trigger.TriggerType.CONSUME_ITEM, "test")
-						.condition(Condition.builder("potion", new ItemStack(Material.BREAD, 1))))
-				.hidden(false).toast(false).background("minecraft:textures/gui/advancements/backgrounds/stone.png")
-				.frame(FrameType.TASK).build();
+		ArrayList<Achievement> achivements = new ArrayList<>();
+		achivements.addAll(MobHunting.getAchievementManager().getAllAchievements());
 
-		parent.save(worldName);
-		apiList.add(parent);
+		AdvancementAPI huntbegins;
+		Achievement ach = MobHunting.getAchievementManager().getAchievement("huntbegins");
+		huntbegins = AdvancementAPI.builder(new NamespacedKey(MobHunting.getInstance(), "hunter/" + ach.getID()))
+				.title(ach.getName()).description(ach.getDescription()).icon("minecraft:bow")
+				.trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "default")
+						.condition(Condition.builder("elytra", new ItemStack(Material.STONE, 1))))
+				.hidden(false).toast(false).background(Background.STONE.toString()).frame(FrameType.CHALLENGE).build();
+		huntbegins.add();
+		knowAdvancements.add(huntbegins);
+		achivements.remove(ach);
 
-		// you're able to use TextComponents @see
-		// https://www.spigotmc.org/wiki/the-chat-component-api/#colors-and-formatting
-		TextComponent textComponent = new TextComponent("Addiction!");
-		textComponent.setBold(true);
-		textComponent.setColor(ChatColor.GOLD);
+		for (Achievement achievement : achivements) {
+			if (!(achievement instanceof ProgressAchievement)) {
+				AdvancementAPI child = AdvancementAPI
+						.builder(new NamespacedKey(MobHunting.getInstance(), "hunter/" + achievement.getID()))
+						.title(achievement.getName()).description(achievement.getDescription()).icon("minecraft:stone")
+						.trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "test")
+								.condition(Condition.builder("elytra", achievement.getSymbol())))
+						.hidden(false).toast(true).frame(FrameType.CHALLENGE).parent(huntbegins.getId().toString())
+						.build();
+				child.add();
+				knowAdvancements.add(child);
+			}
+		}
 
-		AdvancementAPI child = AdvancementAPI.builder(new NamespacedKey(MobHunting.getInstance(), "my/addiction"))
-				.title(textComponent) // the TextComponent define above
-				.description("Eat an Apple") // you can also use a normal String
-												// instead of the TextComponent
-				.icon("minecraft:golden_apple")
-				.trigger(Trigger.builder(Trigger.TriggerType.CONSUME_ITEM, "test") // triggers
-																					// when
-																					// consuming
-																					// an
-																					// item
-						.condition(Condition.builder("potion", new ItemStack(Material.APPLE, 1)))) // 1
-																									// x
-																									// apple
-				.hidden(true) // Advancement is hidden before completed
-				.toast(true) // should send a Toast Message -> popup right upper
-								// corner
-				.background("minecraft:textures/gui/advancements/backgrounds/stone.png").frame(FrameType.GOAL)
-				.parent(parent.getId().toString()) // define a parent! example
-													// above
-				.build();
+		for (Achievement achievement : achivements) {
+			if (achievement instanceof ProgressAchievement
+					&& ((ProgressAchievement) achievement).inheritFrom() == null) {
+				if (((ProgressAchievement) achievement).nextLevelId() != null) {
+					AdvancementAPI child = AdvancementAPI
+							.builder(new NamespacedKey(MobHunting.getInstance(), "hunter/" + achievement.getID()))
+							.title(achievement.getName()).description(achievement.getDescription())
+							.icon("minecraft:stone")
+							.trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "test")
+									.condition(Condition.builder("elytra", achievement.getSymbol())))
+							.hidden(false).toast(true).frame(FrameType.TASK).parent(huntbegins.getId().toString())
+							.build();
+					child.add();
+					knowAdvancements.add(child);
+				} else {
+					AdvancementAPI child = AdvancementAPI
+							.builder(new NamespacedKey(MobHunting.getInstance(), "hunter/" + achievement.getID()))
+							.title(achievement.getName()).description(achievement.getDescription())
+							.icon("minecraft:stone")
+							.trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "test")
+									.condition(Condition.builder("elytra", achievement.getSymbol())))
+							.hidden(false).toast(true).frame(FrameType.GOAL).parent(huntbegins.getId().toString())
+							.build();
+					child.add();
+					knowAdvancements.add(child);
+				}
 
-		child.save(worldName);
-		apiList.add(child);
-
+				if ((achievement instanceof ProgressAchievement)
+						&& ((ProgressAchievement) achievement).nextLevelId() != null)
+					addNext(MobHunting.getAchievementManager()
+							.getAchievement(((ProgressAchievement) achievement).nextLevelId()));
+			}
+		}
 	}
 
-	public void createAndSave() {
+	private void addNext(Achievement achievement) {
+		if (achievement instanceof ProgressAchievement) {
+			if (((ProgressAchievement) achievement).nextLevelId() != null) {
+				AdvancementAPI child = AdvancementAPI
+						.builder(new NamespacedKey(MobHunting.getInstance(), "hunter/" + achievement.getID()))
+						.title(achievement.getName()).description(achievement.getDescription()).icon("minecraft:stone")
+						.trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "test")
+								.condition(Condition.builder("elytra", achievement.getSymbol())))
+						.hidden(false).toast(true).frame(FrameType.TASK)
+						.parent("mobhunting:hunter/" + ((ProgressAchievement) achievement).inheritFrom()).build();
+				child.add();
+				knowAdvancements.add(child);
 
-		AdvancementAPI parent = AdvancementAPI.builder(new NamespacedKey("test", "my/firststeps")).title("First Steps")
-				.description("Starting").icon("minecraft:wood_sword")
-				.trigger(Trigger.builder(Trigger.TriggerType.CONSUME_ITEM, "test")
-						.condition(Condition.builder("potion", new ItemStack(Material.BREAD, 1))))
-				.hidden(false).toast(false).background("minecraft:textures/gui/advancements/backgrounds/stone.png")
-				.frame(FrameType.TASK).build();
+				addNext(MobHunting.getAchievementManager()
+						.getAchievement(((ProgressAchievement) achievement).nextLevelId()));
 
-		parent.save(worldName);
-		parent.add();
-
-		// you're able to use TextComponents @see
-		// https://www.spigotmc.org/wiki/the-chat-component-api/#colors-and-formatting
-		TextComponent textComponent = new TextComponent("Addiction!");
-		textComponent.setBold(true);
-		textComponent.setColor(ChatColor.GOLD);
-
-		AdvancementAPI advancementAPI = AdvancementAPI.builder(new NamespacedKey("test", "my/addiction"))
-				.title(textComponent) // the TextComponent define above
-				.description("Eat an Apple") // you can also use a normal String
-												// instead of the TextComponent
-				.icon("minecraft:golden_apple")
-				.trigger(Trigger.builder(Trigger.TriggerType.CONSUME_ITEM, "test") // triggers
-																					// when
-																					// consuming
-																					// an
-																					// item
-						.condition(Condition.builder("potion", new ItemStack(Material.APPLE, 1)))) // 1
-																									// x
-																									// apple
-				.hidden(true) // Advancement is hidden before completed
-				.toast(true) // should send a Toast Message -> popup right upper
-								// corner
-				.background("minecraft:textures/gui/advancements/backgrounds/stone.png").frame(FrameType.GOAL)
-				.parent(parent.getId().toString()) // define a parent! example
-													// above
-				.build();
-
-		advancementAPI.save(worldName);
-		advancementAPI.add();
-
+			} else {
+				AdvancementAPI child = AdvancementAPI
+						.builder(new NamespacedKey(MobHunting.getInstance(), "hunter/" + achievement.getID()))
+						.title(achievement.getName()).description(achievement.getDescription()).icon("minecraft:stone")
+						.trigger(Trigger.builder(Trigger.TriggerType.IMPOSSIBLE, "test")
+								.condition(Condition.builder("elytra", achievement.getSymbol())))
+						.hidden(false).toast(true).background(Background.STONE.toString()) // .background("minecraft:textures/gui/advancements/backgrounds/stone.png")
+						.frame(FrameType.GOAL)
+						.parent("mobhunting:hunter/" + ((ProgressAchievement) achievement).inheritFrom()).build();
+				child.add();
+				knowAdvancements.add(child);
+			}
+		}
 	}
 
 	/**
@@ -118,32 +120,28 @@ public class AdvancementManager {
 	 * @param player
 	 */
 	public void updatePlayerAdvancements(Player player) {
-
-		Collection<Achievement> achivements = MobHunting.getAchievementManager().getAllAchievements();
-
-		for (AdvancementAPI api : apiList) {
-			if (api.getDescription().getText().equalsIgnoreCase("Starting")) {
-				Messages.debug("Granting %s", api.getDescription().getText());
-				api.grant(player);
-			} else {
-				Messages.debug("Not granting %s", api.getDescription().getText());
-			}
-		}
-
-		for (Achievement achievement : achivements) {
+		for (AdvancementAPI api : knowAdvancements) {
+			Achievement achievement = MobHunting.getAchievementManager()
+					.getAchievement(api.getId().getKey().split("/")[1]);
 			if (MobHunting.getAchievementManager().hasAchievement(achievement, player)) {
-				//Messages.debug("Handle: %s", achievement.getID());
-				if (achievement.getID().equalsIgnoreCase("huntbegins")) {
-					// do nothing, manually added
-				} else if (achievement instanceof ProgressAchievement
-						&& ((ProgressAchievement) achievement).inheritFrom() != null) {
-
-				} else {
-
-				}
+				api.grant(player);
 			}
 		}
+	}
 
+	/**
+	 * updatePlayerAdvancements is run after Achievements is loaded from disk,
+	 * when the player joins the server
+	 * 
+	 * @param player
+	 */
+	public void grantAdvancement(Player player, Achievement achievement) {
+		for (AdvancementAPI api : knowAdvancements) {
+			if (api.getId().getKey().split("/")[1].equalsIgnoreCase(achievement.getID())) {
+				api.grant(player);
+				break;
+			}
+		}
 	}
 
 }

@@ -21,6 +21,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -74,9 +75,9 @@ public class AchievementManager implements Listener {
 	}
 
 	public Achievement getAchievement(String id) {
-		if (!mAchievements.containsKey(id))
+		if (!mAchievements.containsKey(id.toLowerCase()))
 			throw new IllegalArgumentException("There is no achievement by the id: " + id);
-		return mAchievements.get(id);
+		return mAchievements.get(id.toLowerCase());
 	}
 
 	private void registerAchievement(Achievement achievement) {
@@ -85,19 +86,20 @@ public class AchievementManager implements Listener {
 		if (achievement instanceof ProgressAchievement) {
 			if (((ProgressAchievement) achievement).inheritFrom() != null
 					&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
-				Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom()));
+				Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom().toLowerCase()));
 				Validate.isTrue(mAchievements
-						.get(((ProgressAchievement) achievement).inheritFrom()) instanceof ProgressAchievement);
+						.get(((ProgressAchievement) achievement).inheritFrom().toLowerCase()) instanceof ProgressAchievement);
 			}
 		}
 
-		mAchievements.put(achievement.getID(), achievement);
+		mAchievements.put(achievement.getID().toLowerCase(), achievement);
 
 		if (achievement instanceof Listener)
 			Bukkit.getPluginManager().registerEvents((Listener) achievement, MobHunting.getInstance());
 	}
 
 	private void registerAchievements() {
+		registerAchievement(new TheHuntBegins());
 		registerAchievement(new AxeMurderer());
 		registerAchievement(new CreeperBoxing());
 		registerAchievement(new Electrifying());
@@ -105,7 +107,6 @@ public class AchievementManager implements Listener {
 		registerAchievement(new InFighting());
 		registerAchievement(new ByTheBook());
 		registerAchievement(new Creepercide());
-		registerAchievement(new TheHuntBegins());
 		registerAchievement(new ItsMagic());
 		registerAchievement(new FancyPants());
 		registerAchievement(new MasterSniper());
@@ -167,7 +168,7 @@ public class AchievementManager implements Listener {
 
 		if (CustomMobsCompat.isSupported())
 			for (String type : CustomMobsCompat.getMobRewardData().keySet()) {
-				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MysteriousHalloween, type);
+				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.CustomMobs, type);
 				registerAchievement(new BasicHuntAchievement(extendedMob));
 				registerAchievement(new SecondHuntAchievement(extendedMob));
 				registerAchievement(new ThirdHuntAchievement(extendedMob));
@@ -201,6 +202,20 @@ public class AchievementManager implements Listener {
 			registerAchievement(new SixthHuntAchievement(extendedMob));
 			registerAchievement(new SeventhHuntAchievement(extendedMob));
 			registerAchievement(new EighthHuntAchievement(extendedMob));
+		}
+
+		if (InfernalMobsCompat.isSupported()) {
+			for (MinecraftMob type : MinecraftMob.values()) {
+				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.InfernalMobs, type.name());
+				registerAchievement(new BasicHuntAchievement(extendedMob));
+				registerAchievement(new SecondHuntAchievement(extendedMob));
+				registerAchievement(new ThirdHuntAchievement(extendedMob));
+				registerAchievement(new FourthHuntAchievement(extendedMob));
+				registerAchievement(new FifthHuntAchievement(extendedMob));
+				registerAchievement(new SixthHuntAchievement(extendedMob));
+				registerAchievement(new SeventhHuntAchievement(extendedMob));
+				registerAchievement(new EighthHuntAchievement(extendedMob));
+			}
 		}
 	}
 
@@ -260,7 +275,7 @@ public class AchievementManager implements Listener {
 					if (achievement instanceof ProgressAchievement
 							&& ((ProgressAchievement) achievement).inheritFrom() != null) {
 						toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
-								getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
+								getAchievement(((ProgressAchievement) achievement).inheritFrom().toLowerCase()), -1));
 					}
 				} else if (achievement instanceof ProgressAchievement
 						&& getProgress((ProgressAchievement) achievement, player.getPlayer()) > 0) {
@@ -294,7 +309,7 @@ public class AchievementManager implements Listener {
 								stored.progress));
 						if (((ProgressAchievement) achievement).inheritFrom() != null)
 							toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
-									getAchievement(((ProgressAchievement) achievement).inheritFrom()), -1));
+									getAchievement(((ProgressAchievement) achievement).inheritFrom().toLowerCase()), -1));
 					}
 				}
 
@@ -375,6 +390,9 @@ public class AchievementManager implements Listener {
 				Messages.debug("[AchievementBlocked] Achievements is disabled in this world");
 				return;
 			}
+		
+		if (MobHunting.ADD_ADVANCEMENTS && Misc.isMC112OrNewer())
+			MobHunting.getAdvancementManager().grantAdvancement(player, achievement);
 
 		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null) {
@@ -474,10 +492,10 @@ public class AchievementManager implements Listener {
 			// This allows us to just mark progress against the highest level
 			// version and have it automatically given to the lower level ones
 			if (!hasAchievement(achievement.inheritFrom(), player)) {
-				achievement = (ProgressAchievement) getAchievement(achievement.inheritFrom());
+				achievement = (ProgressAchievement) getAchievement(achievement.inheritFrom().toLowerCase());
 				curProgress = getProgress(achievement, player);
 			} else {
-				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom())).getNextLevel();
+				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom().toLowerCase())).getNextLevel();
 			}
 		}
 
@@ -618,7 +636,7 @@ public class AchievementManager implements Listener {
 								storage.enableAchievements = true;
 								mStorage.put(p.getUniqueId(), storage);
 
-								if (MobHunting.ADD_ADVANCEMENTS)
+								if (MobHunting.ADD_ADVANCEMENTS && Misc.isMC112OrNewer())
 									MobHunting.getAdvancementManager().updatePlayerAdvancements(player);
 
 							}
@@ -914,14 +932,14 @@ public class AchievementManager implements Listener {
 			if (isOnGoingOrCompleted(achievement, data))
 				return true;
 			else
-				return isNextLevelBegun((ProgressAchievement) getAchievement(achievement.nextLevelId()), data);
+				return isNextLevelBegun((ProgressAchievement) getAchievement(achievement.nextLevelId().toLowerCase()), data);
 		} else
 			return false;
 	}
 
 	private boolean isPreviousLevelCompleted3(ProgressAchievement achievement, List<Entry<Achievement, Integer>> data) {
 		if (achievement.inheritFrom() != null) {
-			if (isCompleted((ProgressAchievement) getAchievement(achievement.inheritFrom()), data))
+			if (isCompleted((ProgressAchievement) getAchievement(achievement.inheritFrom().toLowerCase()), data))
 				return true;
 			else
 				return false;

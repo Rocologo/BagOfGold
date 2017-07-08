@@ -24,6 +24,7 @@ import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
+import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
@@ -152,6 +153,7 @@ public class MetricsManager {
 				valueMap.put("StackMob", StackMobCompat.isSupported() ? 1 : 0);
 				valueMap.put("MysteriousHalloween", MysteriousHalloweenCompat.isSupported() ? 1 : 0);
 				valueMap.put("SmartGiants", SmartGiantsCompat.isSupported() ? 1 : 0);
+				valueMap.put("InfernalMobs", InfernalMobsCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -389,6 +391,12 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return SmartGiantsCompat.isSupported() ? 1 : 0;
+			}
+		});
+		mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("InfernalMobs") {
+			@Override
+			public int getValue() {
+				return InfernalMobsCompat.isSupported() ? 1 : 0;
 			}
 		});
 		metrics.addGraph(mobPluginIntegrationsGraph);

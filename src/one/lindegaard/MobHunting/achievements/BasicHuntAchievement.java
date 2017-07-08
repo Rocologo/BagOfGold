@@ -22,9 +22,9 @@ public class BasicHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getID() {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
-			return "hunting-level1-" + mExtendedMob.getName().toLowerCase();
+			return "hunting-level1-" + mExtendedMob.getMobName().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name() + "-hunting-level1-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level1-" + mExtendedMob.getMobtype().toLowerCase();
 
 	}
 
@@ -69,7 +69,7 @@ public class BasicHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return mExtendedMob.getCustomHead(mExtendedMob.getName(), 1, 0);
+		return mExtendedMob.getCustomHead(mExtendedMob.getMobName(), 1, 0);
 	}
 
 	@Override

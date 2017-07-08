@@ -23,9 +23,9 @@ public class FifthHuntAchievement implements ProgressAchievement {
 	@Override
 	public String getID() {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
-			return "hunting-level5-" + mExtendedMob.getName().toLowerCase();
+			return "hunting-level5-" + mExtendedMob.getMobName().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name() + "-hunting-level5-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level5-" + mExtendedMob.getMobtype().toLowerCase();
 
 	}
 
@@ -50,7 +50,7 @@ public class FifthHuntAchievement implements ProgressAchievement {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
 			return "hunting-level4-" + mExtendedMob.getMobtype().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name() + "-hunting-level4-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level4-" + mExtendedMob.getMobtype().toLowerCase();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class FifthHuntAchievement implements ProgressAchievement {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
 			return "hunting-level6-" + mExtendedMob.getMobtype().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name() + "-hunting-level6-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level6-" + mExtendedMob.getMobtype().toLowerCase();
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class FifthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return mExtendedMob.getCustomHead(mExtendedMob.getName(), 5, 0);
+		return mExtendedMob.getCustomHead(mExtendedMob.getMobName(), 5, 0);
 	}
 
 	@Override

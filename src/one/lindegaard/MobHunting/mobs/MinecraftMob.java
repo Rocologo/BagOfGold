@@ -880,4 +880,5 @@ public enum MinecraftMob {
 		return "";
 
 	}
+
 }

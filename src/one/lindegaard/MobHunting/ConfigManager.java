@@ -237,6 +237,12 @@ public class ConfigManager extends AutoConfig {
 						+ "\nHere you can change the behavior of CustomMobs Integration, or you can disable"
 						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/custommobs.7339/");
 
+		setCategoryComment("infernalmobs",
+				"########################################################################" + "\nInfernalMobs settings"
+						+ "\n########################################################################"
+						+ "\nHere you can change the behavior of InfernalMobs Integration, or you can disable"
+						+ "\nintegration completely." + "\nhttps://www.spigotmc.org/resources/infernal-mobs.2156/");
+
 		setCategoryComment("conquestiamobs",
 				"########################################################################"
 						+ "\nConquestia Mobs settings"
@@ -1603,6 +1609,16 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "allow_custom_mobspawners_and_eggs", category = "custommobs", comment = "Can the players earn money on mobs spawned from CustomMobs Spawners and eggs?")
 	public boolean allowCustomMobsSpawners = false;
+
+	// #####################################################################################
+	// InfernalMobs Settings
+	// #####################################################################################
+	@ConfigField(name = "disable-integration-infernalmobs", category = "infernalmobs", comment = "Disable integration with InfernalMobs")
+	public boolean disableIntegrationInfernalMobs = false;
+
+	@ConfigField(name = "multiplier_per_level", category = "infernalmobs", comment = "For InfernalMobs mob prize is calculated by the minecraft reward x multiplier_per_level^Infernal_Level"
+			+ "\nEx.If multiplier=1.2 and level is 3 normal reward will be multiplied with 1.2*1.2*1.2=1,728")
+	public double multiplierPerInfernalLevel = 1.25;
 
 	// #####################################################################################
 	// ConquestiaMobs Settings

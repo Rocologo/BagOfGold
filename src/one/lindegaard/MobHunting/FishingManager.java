@@ -106,14 +106,14 @@ public class FishingManager implements Listener {
 			// Calculate basic the reward
 			ExtendedMob eMob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(fish);
 			if (eMob.getMob_id() == 0) {
-				Bukkit.getLogger().warning("Unknown Mob:" + eMob.getName() + " from plugin " + eMob.getMobPlugin());
+				Bukkit.getLogger().warning("Unknown Mob:" + eMob.getMobName() + " from plugin " + eMob.getMobPlugin());
 				Bukkit.getLogger().warning("Please report this to developer!");
 				return;
 			}
 			double cash = MobHunting.getConfigManager().getBaseKillPrize(fish);
 
 			Messages.debug("Basic Prize=%s for catching a %s", MobHunting.getRewardManager().format(cash),
-					eMob.getName());
+					eMob.getMobName());
 
 			// Pay the reward to player and assister
 			if ((cash >= MobHunting.getConfigManager().minimumReward)
@@ -181,7 +181,7 @@ public class FishingManager implements Listener {
 
 				// Record the kill in the Database
 				if (player != null) {
-					Messages.debug("RecordFishing: %s caught a %s (%s)", player.getName(), eMob.getName(),
+					Messages.debug("RecordFishing: %s caught a %s (%s)", player.getName(), eMob.getMobName(),
 							eMob.getMobPlugin().name());
 					MobHunting.getDataStoreManager().recordKill(player, eMob, player.hasMetadata("MH:hasBonus"), cash);
 				}

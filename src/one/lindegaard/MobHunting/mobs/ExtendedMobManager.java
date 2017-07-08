@@ -15,6 +15,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -44,6 +45,9 @@ public class ExtendedMobManager {
 			MobHunting.getStoreManager().insertMysteriousHalloweenMobs();
 		if (SmartGiantsCompat.isSupported())
 			MobHunting.getStoreManager().insertSmartGiants();
+		// Not needed
+		// if (InfernalMobsCompat.isSupported())
+		// MobHunting.getStoreManager().insertInfernalMobs();
 
 		Set<ExtendedMob> set = new HashSet<ExtendedMob>();
 
@@ -88,6 +92,11 @@ public class ExtendedMobManager {
 
 			case SmartGiants:
 				if (!SmartGiantsCompat.isSupported() || SmartGiantsCompat.isDisabledInConfig())
+					continue;
+				break;
+
+			case InfernalMobs:
+				if (!InfernalMobsCompat.isSupported() || InfernalMobsCompat.isDisabledInConfig())
 					continue;
 				break;
 
@@ -151,16 +160,23 @@ public class ExtendedMobManager {
 		} else if (SmartGiantsCompat.isSmartGiants(entity)) {
 			mobPlugin = MobPlugin.SmartGiants;
 			mobtype = SmartGiantsCompat.getSmartGiantsMobType(entity);
+		} else if (InfernalMobsCompat.isInfernalMob(entity)) {
+			mobPlugin = MobPlugin.InfernalMobs;
+			MinecraftMob mob = MinecraftMob.getMinecraftMobType(entity);
+			if (mob != null)
+				mobtype = mob.name();
+			else{
+				Messages.debug("unhandled entity %s", entity.getType());
+				mobtype = "";
+			}
 		} else {
 			// StatType
 			mobPlugin = MobPlugin.Minecraft;
 			MinecraftMob mob = MinecraftMob.getMinecraftMobType(entity);
 			if (mob != null)
 				mobtype = mob.name();
-			else {
-				// Messages.debug("ERROR!!! Unsupported mob/entity: '%s'", mob);
+			else
 				mobtype = "";
-			}
 		}
 		mob_id = getMobIdFromMobTypeAndPluginID(mobtype, mobPlugin);
 		return new ExtendedMob(mob_id, mobPlugin, mobtype);

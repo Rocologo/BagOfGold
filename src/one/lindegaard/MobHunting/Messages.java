@@ -156,7 +156,7 @@ public class Messages {
 					if (!dest.containsKey(k)) {
 						Bukkit.getLogger().info(
 								PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
-						newEntries.put(k, key.getValue().getName());
+						newEntries.put(k, key.getValue().getMobName());
 					}
 				}
 

@@ -28,9 +28,9 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 	@Override
 	public String getID() {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
-			return "hunting-level8-" + mExtendedMob.getName().toLowerCase();
+			return "hunting-level8-" + mExtendedMob.getMobName().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name() + "-hunting-level8-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level8-" + mExtendedMob.getMobtype().toLowerCase();
 
 	}
 
@@ -55,7 +55,7 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
 			return "hunting-level7-" + mExtendedMob.getMobtype().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin() + "-hunting-level7-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level7-" + mExtendedMob.getMobtype().toLowerCase();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class EighthHuntAchievement implements ProgressAchievement, Listener {
 
 	@Override
 	public ItemStack getSymbol() {
-		return mExtendedMob.getCustomHead(mExtendedMob.getName(), 7, 0);
+		return mExtendedMob.getCustomHead(mExtendedMob.getMobName(), 7, 0);
 	}
 
 	@Override

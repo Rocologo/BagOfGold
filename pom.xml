@@ -576,6 +576,13 @@
 			<version>${custommobs.version}</version>
 		</dependency>
 
+		<!-- InfernalMobs -->
+		<dependency>
+			<groupId>io.hotmail.com.jacob_vejvoda.infernal_mobs.infernal_mob</groupId>
+			<artifactId>InfernalMobs</artifactId>
+			<version>5.3</version>
+		</dependency>
+
 		<!-- MobArena -->
 		<dependency>
 			<groupId>com.garbagemule</groupId>

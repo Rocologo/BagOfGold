@@ -852,6 +852,29 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 	}
+	
+	@Override
+	public void insertInfernalMobs() {
+		Connection connection;
+		try {
+			connection = setupConnection();
+			int n = 0;
+			Statement statement = connection.createStatement();
+			for (MinecraftMob mob : MinecraftMob.values())
+				if (getMobIdFromExtendedMobType(mob.name(), MobPlugin.InfernalMobs) == 0) {
+					statement
+							.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES ( 7,'" + mob.name() + "')");
+					n++;
+				}
+			if (n > 0)
+				Bukkit.getLogger().info("[MobHunting] " + n + " InfernalMobs was inserted to mh_Mobs");
+			statement.close();
+			connection.commit();
+			connection.close();
+		} catch (SQLException | DataStoreException e1) {
+			e1.printStackTrace();
+		}
+	}
 
 	
 	// ******************************************************************

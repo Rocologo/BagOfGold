@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+import one.lindegaard.MobHunting.Messages;
+
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -82,7 +84,7 @@ public class AdvancementAPI {
 
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(getJSON());
-                Bukkit.getLogger().info("[AdvancementAPI] Created " + id.toString());
+                Bukkit.getLogger().info("[MobHunting/AdvancementAPI] Created " + id.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -179,9 +181,9 @@ public class AdvancementAPI {
     public AdvancementAPI add() {
         try {
             Bukkit.getUnsafe().loadAdvancement(id, getJSON());
-            Bukkit.getLogger().info("Successfully registered advancement.");
+            //Bukkit.getLogger().info("Successfully registered advancement.");
         } catch (IllegalArgumentException e) {
-            Bukkit.getLogger().info("Error registering advancement. It seems to already exist!");
+            Messages.debug("[MobHunting][Warning] Error registering advancement "+getId()+". It seems to already exist!");
         }
         return this;
     }
@@ -195,7 +197,7 @@ public class AdvancementAPI {
                 for (String remainingCriterion : remainingCriteria)
                     player.getAdvancementProgress(getAdvancement())
                             .awardCriteria(remainingCriterion);
-            }
+            } 
         }
         return this;
     }
@@ -406,7 +408,7 @@ public class AdvancementAPI {
         }
 
         public String toString() {
-            return "io.chazza.advancementapi.AdvancementAPI.AdvancementAPIBuilder(id=" + this.id + ", parent=" + this.parent + ", icon=" + this.icon + ", background=" + this.background + ", title=" + this.title + ", description=" + this.description + ", frame=" + this.frame + ", announce=" + this.announce + ", toast=" + this.toast + ", hidden=" + this.hidden + ", counter=" + this.counter + ", triggers=" + this.triggers + ")";
+            return "AdvancementAPI={id=" + this.id + ", parent=" + this.parent + ", icon=" + this.icon + ", background=" + this.background + ", title=" + this.title.getText() + ", description=" + this.description.getText() + ", frame=" + this.frame + ", announce=" + this.announce + ", toast=" + this.toast + ", hidden=" + this.hidden + ", counter=" + this.counter + ", triggers=" + this.triggers + "}";
         }
     }
 

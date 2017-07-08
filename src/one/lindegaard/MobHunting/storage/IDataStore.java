@@ -154,6 +154,8 @@ public interface IDataStore {
 	public void insertSmartGiants();
 
 	public void insertCustomMobs();
+	
+	public void insertInfernalMobs();
 
 	public void insertMobs(Set<ExtendedMob> mobs) throws DataStoreException;
 

@@ -45,6 +45,7 @@ import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
+import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
 import one.lindegaard.MobHunting.compatibility.McMMOCompat;
 import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
@@ -114,7 +115,7 @@ public class MobHunting extends JavaPlugin {
 
 	private boolean mInitialized = false;
 
-	public static final boolean ADD_ADVANCEMENTS = false;
+	public static final boolean ADD_ADVANCEMENTS = true;
 
 	@Override
 	public void onLoad() {
@@ -255,7 +256,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(StackMobCompat.class, "StackMob");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
-
+		
 		// ExtendedMob Plugins where special mobs are created
 		registerPlugin(MythicMobsCompat.class, "MythicMobs");
 		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
@@ -263,6 +264,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
 		registerPlugin(CitizensCompat.class, "Citizens");
 		registerPlugin(SmartGiantsCompat.class, "SmartGiants");
+		registerPlugin(InfernalMobsCompat.class, "InfernalMobs");
 
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
 		registerPlugin(CrackShotCompat.class, "CrackShot");
@@ -348,7 +350,7 @@ public class MobHunting extends JavaPlugin {
 		Messages.debug("Updating advancements");
 		if (ADD_ADVANCEMENTS && Misc.isMC112OrNewer()) {
 			mAdvancementManager = new AdvancementManager();
-			mAdvancementManager.updateAdvancements();
+			mAdvancementManager.getAdvancementsFromAchivements();
 		}
 		// for (int i = 0; i < 2; i++)
 		// Messages.debug("Random uuid = %s", UUID.randomUUID());

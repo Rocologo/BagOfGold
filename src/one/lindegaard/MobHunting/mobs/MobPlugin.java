@@ -6,6 +6,7 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -13,8 +14,8 @@ import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
 
 public enum MobPlugin {
 	Minecraft("Minecraft", 0), MythicMobs("MythicMobs", 1), Citizens("Citizens", 2), TARDISWeepingAngels(
-			"TARDISWeepingAngels", 3), CustomMobs("CustomMobs",
-					4), MysteriousHalloween("MysteriousHalloween", 5), SmartGiants("SmartGiants", 6);
+			"TARDISWeepingAngels", 3), CustomMobs("CustomMobs", 4), MysteriousHalloween("MysteriousHalloween",
+					5), SmartGiants("SmartGiants", 6), InfernalMobs("InfernalMobs", 7);
 
 	private final String name;
 	private final Integer id;
@@ -43,8 +44,8 @@ public enum MobPlugin {
 	public String getName() {
 		return name;
 	}
-	
-	public boolean isSupported(){
+
+	public boolean isSupported() {
 		switch (this) {
 		case Minecraft:
 			return true;
@@ -60,9 +61,11 @@ public enum MobPlugin {
 			return SmartGiantsCompat.isSupported();
 		case TARDISWeepingAngels:
 			return TARDISWeepingAngelsCompat.isSupported();
+		case InfernalMobs:
+			return InfernalMobsCompat.isSupported();
 		default:
 			ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-			console.sendMessage(ChatColor.RED + "[MobHunting] Missing pluginType '"+this.name()+"' in MobPlugin");
+			console.sendMessage(ChatColor.RED + "[MobHunting] Missing pluginType '" + this.name() + "' in MobPlugin");
 		}
 		return false;
 	}

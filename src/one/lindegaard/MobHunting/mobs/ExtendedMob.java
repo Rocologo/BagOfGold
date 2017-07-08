@@ -12,6 +12,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -84,8 +85,10 @@ public class ExtendedMob {
 				mobtype);
 	}
 
-	public String getName() {
+	public String getMobName() {
 		switch (mobPlugin) {
+		case Minecraft:
+			return mobtype;
 		case MythicMobs:
 			String name = MythicMobsCompat.getMobRewardData().get(mobtype).getMobName();
 			if (name == null || name.equals(""))
@@ -103,22 +106,23 @@ public class ExtendedMob {
 			return CustomMobsCompat.getMobRewardData().get(mobtype).getMobName();
 		case MysteriousHalloween:
 			return MysteriousHalloweenCompat.getMobRewardData().get(mobtype).getMobName();
-		case Minecraft:
-			return mobtype;
 		case SmartGiants:
 			return "SmartGiant";
+		case InfernalMobs:
+			return "Infernal " + mobtype;
 		default:
 			ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-			console.sendMessage(ChatColor.RED + "[MobHunting] Missing pluginType '"+mobPlugin.name()+"' in ExtendeMob.");
+			console.sendMessage(
+					ChatColor.RED + "[MobHunting] Missing pluginType '" + mobPlugin.name() + "' in ExtendeMob.");
 		}
 		return null;
 	}
 
 	public String getFriendlyName() {
 		if (mobPlugin == MobPlugin.Minecraft)
-			return Messages.getString("mobs." + getName() + ".name");
+			return Messages.getString("mobs." + mobtype + ".name");
 		else
-			return Messages.getString("mobs." + mobPlugin.name() + "_" + getMobtype() + ".name");
+			return Messages.getString("mobs." + mobPlugin.name() + "_" + mobtype + ".name");
 	}
 
 	public int getProgressAchievementLevel1() {
@@ -137,9 +141,12 @@ public class ExtendedMob {
 			return CustomMobsCompat.getProgressAchievementLevel1(mobtype);
 		case SmartGiants:
 			return SmartGiantsCompat.getProgressAchievementLevel1(mobtype);
+		case InfernalMobs:
+			return InfernalMobsCompat.getProgressAchievementLevel1(mobtype);
 		default:
 			ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-			console.sendMessage(ChatColor.RED + "[MobHunting] Missing pluginType '"+mobPlugin.name()+"' in ExtendeMob.");
+			console.sendMessage(
+					ChatColor.RED + "[MobHunting] Missing pluginType '" + mobPlugin.name() + "' in ExtendeMob.");
 		}
 		return 0;
 	}
@@ -157,5 +164,5 @@ public class ExtendedMob {
 		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(entity);
 		return mobtype.equalsIgnoreCase(mob.mobtype);
 	}
-	
+
 }
