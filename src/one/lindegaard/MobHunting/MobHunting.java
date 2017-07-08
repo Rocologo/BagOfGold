@@ -302,8 +302,6 @@ public class MobHunting extends JavaPlugin {
 			cmd.registerCommand(new BountyCommand());
 		cmd.registerCommand(new HappyHourCommand());
 		cmd.registerCommand(new MoneyCommand());
-		// cmd.registerCommand(new MobHuntingAdvancement());
-		// getCommand("mobhunt").setExecutor(new command());
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
@@ -329,7 +327,7 @@ public class MobHunting extends JavaPlugin {
 			public void run() {
 				Messages.injectMissingMobNamesToLangFiles();
 			}
-		}, 20 * 5); // 20ticks/sec * 3 sec.
+		}, 20 * 5); 
 
 		// Handle online players when server admin do a /reload or /mh reload
 		if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {

@@ -5,7 +5,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<!-- <version>5.0.0</v ersion> -->
+	<!-- <version>5.0.0</version> -->
 	<version>5.0.0-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>

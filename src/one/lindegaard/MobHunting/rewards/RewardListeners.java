@@ -199,7 +199,8 @@ public class RewardListeners implements Listener {
 			return;
 
 		Player player = event.getPlayer();
-		if (player.getInventory().firstEmpty() == -1 && !player.getCanPickupItems()) {
+		if (player.getInventory().firstEmpty() == -1 //&& !player.getCanPickupItems()
+				) {
 			Iterator<Entity> entityList = ((Entity) player).getNearbyEntities(1, 1, 1).iterator();
 			while (entityList.hasNext()) {
 				Entity entity = entityList.next();
@@ -282,7 +283,7 @@ public class RewardListeners implements Listener {
 
 						}
 					}
-				}
+				} 
 			}
 		}
 	}
@@ -319,7 +320,7 @@ public class RewardListeners implements Listener {
 			}
 			if (reward.getMoney() == 0)
 				reward.setUniqueId(UUID.randomUUID());
-			Messages.debug("Placed block-reward:%s", reward.toString());
+			Messages.debug("Placed Reward Block:%s", reward.toString());
 			block.setMetadata(RewardManager.MH_REWARD_DATA, new FixedMetadataValue(MobHunting.getInstance(), reward));
 			RewardManager.getLocations().put(reward.getUniqueUUID(), reward);
 			RewardManager.getReward().put(reward.getUniqueUUID(), block.getLocation());
