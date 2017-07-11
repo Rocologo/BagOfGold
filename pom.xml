@@ -5,8 +5,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<!-- <version>5.0.0</version> -->
-	<version>5.0.0-SNAPSHOT-B${build.number}</version>
+	<version>5.0.0</version>
+	<!-- <version>5.0.0-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -58,7 +58,7 @@
 		<massivecore.version>2.12.1</massivecore.version>
 		<factions.version>2.12.1</factions.version>
 		<ActionBarAPI.version>1.5.2</ActionBarAPI.version>
-		<ActionAnnouncer.version>1.10</ActionAnnouncer.version>
+		<ActionAnnouncer.version>1.10.0</ActionAnnouncer.version>
 		<EssentialsX.version>2.0.1</EssentialsX.version>
 		<iDisguise.version>5.5.5</iDisguise.version>
 		<vanishnopacket.version>3.20</vanishnopacket.version>
@@ -73,13 +73,14 @@
 		<MysteriousHalloween.version>1.3.2</MysteriousHalloween.version>
 		<SmartGiants.version>2.3.6</SmartGiants.version>
 		<towny.version>0.91.4.2</towny.version>
-		<residence.version>Residence4.7.0.2</residence.version>
+		<residence.version>4.7.0.1</residence.version>
 		<bossshop.version>2.7.3</bossshop.version>
-		<MobStacker.version>MobStacker_v2.0.0</MobStacker.version>
+		<MobStacker.version>2.0.0</MobStacker.version>
 		<mythicmobsold.version>2.5.1</mythicmobsold.version>
-		<mythicmobs.version>4.0.0</mythicmobs.version>
+		<mythicmobs.version>4.1.0-SNAPSHOT</mythicmobs.version>
 		<mythiclib.version>0.0.1-20170628.172950-1</mythiclib.version>
 		<StackMob.version>1.6.4</StackMob.version>
+		<InfernalMobs.version>5.3</InfernalMobs.version>
 
 		<minigameslib.jar.version>MinigamesLib-1.14.15-SNAPSHOT.jar</minigameslib.jar.version>
 		<minigameslib.version>1.14.15-20170123.094017</minigameslib.version>
@@ -502,6 +503,9 @@
 		</dependency>
 
 		<!-- MinigamesLib -->
+		<!-- <dependency> <groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId> 
+			<artifactId>MinigamesLib</artifactId> <version>1.14.16-20170514.144611</version> 
+			<type>pom</type> </dependency> -->
 		<dependency>
 			<groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
 			<artifactId>MinigamesLib</artifactId>
@@ -534,12 +538,14 @@
 
 		<!-- MobStacker -->
 		<dependency>
-			<groupId>MobStacker_v2.0.0</groupId>
-			<artifactId>MobStacker_v2.0.0</artifactId>
+			<groupId>com.kiwifisher.mobstacker.MobStacker</groupId>
+			<artifactId>MobStacker</artifactId>
 			<version>${MobStacker.version}</version>
 		</dependency>
 
 		<!-- Gringotts -->
+		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
+			<version>2.9</version> </dependency> -->
 		<dependency>
 			<groupId>org.gestern</groupId>
 			<artifactId>gringotts</artifactId>
@@ -580,7 +586,7 @@
 		<dependency>
 			<groupId>io.hotmail.com.jacob_vejvoda.infernal_mobs.infernal_mob</groupId>
 			<artifactId>InfernalMobs</artifactId>
-			<version>5.3</version>
+			<version>${InfernalMobs.version}</version>
 		</dependency>
 
 		<!-- MobArena -->
@@ -599,7 +605,7 @@
 
 		<!-- ActionAnnouncer -->
 		<dependency>
-			<groupId>ActionAnnouncer</groupId>
+			<groupId>me.clip.actionannouncer.ActionAnnouncer</groupId>
 			<artifactId>ActionAnnouncer</artifactId>
 			<version>${ActionAnnouncer.version}</version>
 		</dependency>
@@ -653,8 +659,8 @@
 
 		<!-- Residence -->
 		<dependency>
-			<groupId>Residence4.7.0.2</groupId>
-			<artifactId>Residence4.7.0.2</artifactId>
+			<groupId>com.bekvon.bukkit.residence.ResidenceCommandListener</groupId>
+			<artifactId>Residence</artifactId>
 			<version>${residence.version}</version>
 		</dependency>
 
