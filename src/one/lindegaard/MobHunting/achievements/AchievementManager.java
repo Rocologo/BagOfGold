@@ -86,9 +86,10 @@ public class AchievementManager implements Listener {
 		if (achievement instanceof ProgressAchievement) {
 			if (((ProgressAchievement) achievement).inheritFrom() != null
 					&& ((ProgressAchievement) achievement).getNextLevel() != 0) {
-				Validate.isTrue(mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom().toLowerCase()));
-				Validate.isTrue(mAchievements
-						.get(((ProgressAchievement) achievement).inheritFrom().toLowerCase()) instanceof ProgressAchievement);
+				Validate.isTrue(
+						mAchievements.containsKey(((ProgressAchievement) achievement).inheritFrom().toLowerCase()));
+				Validate.isTrue(mAchievements.get(((ProgressAchievement) achievement).inheritFrom()
+						.toLowerCase()) instanceof ProgressAchievement);
 			}
 		}
 
@@ -309,7 +310,8 @@ public class AchievementManager implements Listener {
 								stored.progress));
 						if (((ProgressAchievement) achievement).inheritFrom() != null)
 							toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
-									getAchievement(((ProgressAchievement) achievement).inheritFrom().toLowerCase()), -1));
+									getAchievement(((ProgressAchievement) achievement).inheritFrom().toLowerCase()),
+									-1));
 					}
 				}
 
@@ -390,8 +392,8 @@ public class AchievementManager implements Listener {
 				Messages.debug("[AchievementBlocked] Achievements is disabled in this world");
 				return;
 			}
-		
-		if (MobHunting.ADD_ADVANCEMENTS && Misc.isMC112OrNewer())
+
+		if (!MobHunting.getConfigManager().disableMobHuntingAdvancements && Misc.isMC112OrNewer())
 			MobHunting.getAdvancementManager().grantAdvancement(player, achievement);
 
 		PlayerStorage storage = mStorage.get(player.getUniqueId());
@@ -495,7 +497,8 @@ public class AchievementManager implements Listener {
 				achievement = (ProgressAchievement) getAchievement(achievement.inheritFrom().toLowerCase());
 				curProgress = getProgress(achievement, player);
 			} else {
-				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom().toLowerCase())).getNextLevel();
+				curProgress = ((ProgressAchievement) getAchievement(achievement.inheritFrom().toLowerCase()))
+						.getNextLevel();
 			}
 		}
 
@@ -636,7 +639,8 @@ public class AchievementManager implements Listener {
 								storage.enableAchievements = true;
 								mStorage.put(p.getUniqueId(), storage);
 
-								if (MobHunting.ADD_ADVANCEMENTS && Misc.isMC112OrNewer())
+								if (!MobHunting.getConfigManager().disableMobHuntingAdvancements
+										&& Misc.isMC112OrNewer())
 									MobHunting.getAdvancementManager().updatePlayerAdvancements(player);
 
 							}
@@ -932,7 +936,8 @@ public class AchievementManager implements Listener {
 			if (isOnGoingOrCompleted(achievement, data))
 				return true;
 			else
-				return isNextLevelBegun((ProgressAchievement) getAchievement(achievement.nextLevelId().toLowerCase()), data);
+				return isNextLevelBegun((ProgressAchievement) getAchievement(achievement.nextLevelId().toLowerCase()),
+						data);
 		} else
 			return false;
 	}

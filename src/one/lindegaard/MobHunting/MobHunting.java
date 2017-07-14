@@ -115,8 +115,6 @@ public class MobHunting extends JavaPlugin {
 
 	private boolean mInitialized = false;
 
-	public static final boolean ADD_ADVANCEMENTS = true;
-
 	@Override
 	public void onLoad() {
 	}
@@ -256,7 +254,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(StackMobCompat.class, "StackMob");
 		registerPlugin(MobStackerCompat.class, "MobStacker");
 		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
-		
+
 		// ExtendedMob Plugins where special mobs are created
 		registerPlugin(MythicMobsCompat.class, "MythicMobs");
 		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
@@ -327,7 +325,7 @@ public class MobHunting extends JavaPlugin {
 			public void run() {
 				Messages.injectMissingMobNamesToLangFiles();
 			}
-		}, 20 * 5); 
+		}, 20 * 5);
 
 		// Handle online players when server admin do a /reload or /mh reload
 		if (mMobHuntingManager.getOnlinePlayersAmount() > 0) {
@@ -346,7 +344,7 @@ public class MobHunting extends JavaPlugin {
 			new BagOfGoldSign();
 
 		Messages.debug("Updating advancements");
-		if (ADD_ADVANCEMENTS && Misc.isMC112OrNewer()) {
+		if (!MobHunting.getConfigManager().disableMobHuntingAdvancements && Misc.isMC112OrNewer()) {
 			mAdvancementManager = new AdvancementManager();
 			mAdvancementManager.getAdvancementsFromAchivements();
 		}
