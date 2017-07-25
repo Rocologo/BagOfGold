@@ -2300,7 +2300,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "disable_mobhunting_advancements", category = "general", comment = "As of V 5.0.0 MobHunting utilizises the Advancement system (L key) to to show which"
 			+ "\nAchievements the players has made. This is still BETA feature and if you have any problems, you can set 'disable_mobhunting_advancements: true and the reload the plugin.")
-	public boolean disableMobHuntingAdvancements = false;
+	public boolean disableMobHuntingAdvancements = true;
 
 	@ConfigField(name = "use-actionbar-for-broadcasts", category = "general", comment = "Broadcast messages will be send in the ActionBar if MobHunting finds a supported ActionBar plugin.")
 	public boolean useActionBarforBroadcasts = true;
