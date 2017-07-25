@@ -178,6 +178,7 @@ mobhunting.commands.money.sell=You sold a ${rewardname} money for ${money}.
 mobhunting.commands.money.take=Admin has taken ${money} ${rewardname} from you.
 mobhunting.commands.money.take-sender=You took a ${rewardname} (${money}) from ${player} 
 mobhunting.commands.money.no-bossshop=The BossShop plugin is not installed on this server.
+mobhunting.commands.money.not-enough-money=You don't have ${money} in your pockets.
 mobhunting.commands.mute.description=Turns reward notifications on/off
 mobhunting.commands.mute.muted=MobHunting rewards is now &bmuted&f for player &b${player}
 mobhunting.commands.mute.unmuted=MobHunting rewards is now &bunmuted&f for player &b${player}

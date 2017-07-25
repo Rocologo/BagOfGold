@@ -1,4 +1,5 @@
 V5.0.1
+* Fixed bug where is was possible to buy Bag of gold with not enough money on the account.
 * Added setting in config.yml to disable the new MobHunting Advancements which was added in V5.0.0. The Minecraft Advancements is still BETA feature and the is some bugs in Minecraft. (https://www.spigotmc.org/threads/advancementapi-create-1-12-advancements-with-a-breeze.240462/page-7#post-2485952)
 * Added debug information in AdvancementManager for Advancements.
 V5.0.0

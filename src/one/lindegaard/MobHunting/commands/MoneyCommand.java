@@ -165,7 +165,7 @@ public class MoneyCommand implements ICommand {
 			// /mh money shop - to open a shop, where the player can buy or sell
 			// "Bag of gold"
 
-			//MobHunting.registerPlugin(BossShopCompat.class, "BossShop");
+			// MobHunting.registerPlugin(BossShopCompat.class, "BossShop");
 
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
@@ -378,8 +378,8 @@ public class MoneyCommand implements ICommand {
 					double toBeSold = Misc.ceil(Double.valueOf(args[1]));
 					for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 						ItemStack is = player.getInventory().getItem(slot);
-						if (Reward.isReward(is) && Reward.getReward(is)
-								.getRewardUUID().equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
+						if (Reward.isReward(is) && Reward.getReward(is).getRewardUUID()
+								.equals(UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID))) {
 							Reward hiddenRewardData = Reward.getReward(is);
 							double saldo = hiddenRewardData.getMoney();
 							if (saldo >= toBeSold) {
@@ -424,23 +424,28 @@ public class MoneyCommand implements ICommand {
 			if (sender.hasPermission("mobhunting.money.buy") || sender.hasPermission("mobhunting.money.*")) {
 				if (args.length == 2 && args[1].matches("\\d+(\\.\\d+)?")) {
 					Player player = (Player) sender;
-					if (player.getInventory().firstEmpty() == -1)
-						RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
-								Misc.ceil(Double.valueOf(args[1])));
-					else {
-						ItemStack is = CustomItems.getCustomtexture(
-								UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID),
-								MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
-								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-								MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-								Misc.ceil(Double.valueOf(args[1])), UUID.randomUUID());
-						player.getInventory().addItem(is);
+					if (RewardManager.getEconomy().has(player, Misc.ceil(Double.valueOf(args[1])))) {
+						if (player.getInventory().firstEmpty() == -1)
+							RewardManager.dropMoneyOnGround(player, null, player.getLocation(),
+									Misc.ceil(Double.valueOf(args[1])));
+						else {
+							ItemStack is = CustomItems.getCustomtexture(
+									UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID),
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+									Misc.ceil(Double.valueOf(args[1])), UUID.randomUUID());
+							player.getInventory().addItem(is);
+						}
+						RewardManager.getEconomy().withdrawPlayer(player, Misc.ceil(Double.valueOf(args[1])));
+						Messages.playerActionBarMessage(player,
+								Messages.getString("mobhunting.commands.money.buy", "rewardname",
+										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
+										RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[1])))));
+					} else {
+						sender.sendMessage(ChatColor.RED
+								+ Messages.getString("mobhunting.commands.money.not-enough-money", "money", args[1]));
 					}
-					RewardManager.getEconomy().withdrawPlayer(player, Misc.ceil(Double.valueOf(args[1])));
-					Messages.playerActionBarMessage(player,
-							Messages.getString("mobhunting.commands.money.buy", "rewardname",
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName, "money",
-									RewardManager.getEconomy().format(Misc.ceil(Double.valueOf(args[1])))));
 				} else {
 					sender.sendMessage(ChatColor.RED
 							+ Messages.getString("mobhunting.commands.base.not_a_number", "number", args[1]));
