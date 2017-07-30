@@ -389,7 +389,7 @@ public class AchievementManager implements Listener {
 
 		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
 			if (world.equalsIgnoreCase(player.getWorld().getName())) {
-				Messages.debug("[AchievementBlocked] Achievements is disabled in this world");
+				Messages.debug("[AchievementBlocked] Achievements is disabled in world:%s", world);
 				return;
 			}
 
@@ -471,6 +471,12 @@ public class AchievementManager implements Listener {
 	public void awardAchievementProgress(ProgressAchievement achievement, Player player, ExtendedMob mob, int amount) {
 		if (!achievementsEnabledFor(player) || hasAchievement(achievement, player))
 			return;
+
+		for (String world : MobHunting.getConfigManager().disableAchievementsInWorlds)
+			if (world.equalsIgnoreCase(player.getWorld().getName())) {
+				Messages.debug("[AchievementBlocked] Achievements is disabled in world:%s", world);
+				return;
+			}
 
 		if (achievement.getExtendedMob().getProgressAchievementLevel1() == 0) {
 			Messages.debug(

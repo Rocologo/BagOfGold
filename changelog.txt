@@ -1,5 +1,6 @@
 V5.0.2
-* KillStreak is now reset to 0 if the player change world. 
+* KillStreak is now reset to 0 if the player change world.
+* Fixed ticket 268. (https://github.com/Rocologo/MobHunting/issues/268) 
 V5.0.1
 * Fixed bug where is was possible to buy Bag of gold with not enough money on the account.
 * Added setting in config.yml to disable the new MobHunting Advancements which was added in V5.0.0. The Minecraft Advancements is still BETA feature and the is some bugs in Minecraft. (https://www.spigotmc.org/threads/advancementapi-create-1-12-advancements-with-a-breeze.240462/page-7#post-2485952)
