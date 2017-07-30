@@ -150,7 +150,8 @@ public class Metrics {
      *
      * @return The plugin specific data.
      */
-    public JSONObject getPluginData() {
+    @SuppressWarnings("unchecked")
+	public JSONObject getPluginData() {
         JSONObject data = new JSONObject();
 
         String pluginName = plugin.getDescription().getName();
@@ -177,7 +178,8 @@ public class Metrics {
      *
      * @return The server specific data.
      */
-    private JSONObject getServerData() {
+    @SuppressWarnings("unchecked")
+	private JSONObject getServerData() {
         // Minecraft specific data
         int playerAmount = Bukkit.getOnlinePlayers().size();
         int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
@@ -211,7 +213,8 @@ public class Metrics {
     /**
      * Collects the data and sends it afterwards.
      */
-    private void submitData() {
+    @SuppressWarnings("unchecked")
+	private void submitData() {
         final JSONObject data = getServerData();
 
         JSONArray pluginData = new JSONArray();
@@ -324,7 +327,8 @@ public class Metrics {
             this.chartId = chartId;
         }
 
-        protected JSONObject getRequestJsonObject() {
+        @SuppressWarnings("unchecked")
+		protected JSONObject getRequestJsonObject() {
             JSONObject chart = new JSONObject();
             chart.put("chartId", chartId);
             try {
@@ -368,7 +372,8 @@ public class Metrics {
          */
         public abstract String getValue();
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             String value = getValue();
@@ -404,7 +409,8 @@ public class Metrics {
          */
         public abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
@@ -451,7 +457,8 @@ public class Metrics {
          */
         public abstract int getValue();
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             int value = getValue();
@@ -488,7 +495,8 @@ public class Metrics {
          */
         public abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
@@ -538,7 +546,8 @@ public class Metrics {
          */
         public abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
@@ -581,7 +590,8 @@ public class Metrics {
          */
         public abstract HashMap<String, int[]> getValues(HashMap<String, int[]> valueMap);
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
@@ -633,7 +643,8 @@ public class Metrics {
          */
         public abstract Country getValue();
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             Country value = getValue();
@@ -671,7 +682,8 @@ public class Metrics {
          */
         public abstract HashMap<Country, Integer> getValues(HashMap<Country, Integer> valueMap);
 
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();

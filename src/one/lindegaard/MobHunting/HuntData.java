@@ -3,24 +3,58 @@ package one.lindegaard.MobHunting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 import one.lindegaard.MobHunting.grinding.Area;
 
-public class HuntData {
+public class HuntData{
 
-	MobHunting instance;
-	private int killStreak = 0;
-	private int dampenedKills = 0;
-	private static double cDampnerRange = MobHunting.getConfigManager().grindingDetectionRange;
+	private static final String HUNTDATA = "MH:HuntData";
+	
+	private int killStreak;
+	private int dampenedKills;
+	private double cDampnerRange;
 	private Location lastKillAreaCenter;
-	private ArrayList<Area> lastGridingAreas = new ArrayList<Area>();
-	private double reward = 0;
-	private HashMap<String, Double> modifiers = new HashMap<String, Double>();
+	private ArrayList<Area> lastGridingAreas;
+	private double reward;
+	private HashMap<String, Double> modifiers;
 
-	public HuntData(MobHunting instance) {
-		this.instance = instance;
+	public HuntData() {
+		killStreak = 0;
+		dampenedKills = 0;
+		cDampnerRange = MobHunting.getConfigManager().grindingDetectionRange;
+		lastKillAreaCenter = null;
+		lastGridingAreas = new ArrayList<Area>();
+		reward = 0;
+		modifiers = new HashMap<String, Double>();
+
+	}
+
+	public HuntData(Player player) {
+		killStreak = 0;
+		dampenedKills = 0;
+		cDampnerRange = MobHunting.getConfigManager().grindingDetectionRange;
+		lastKillAreaCenter = null;
+		lastGridingAreas = new ArrayList<Area>();
+		reward = 0;
+		modifiers = new HashMap<String, Double>();
+		getHuntDataFromPlayer(player);
+	}
+
+	public void setHuntData(HuntData data) {
+		killStreak = data.getKillStreak();
+		dampenedKills = data.getDampenedKills();
+		cDampnerRange = data.getcDampnerRange();
+		lastKillAreaCenter = data.getLastKillAreaCenter();
+		lastGridingAreas = data.getLastGridingAreas();
+		reward = data.getReward();
+		modifiers = data.getModifiers();
 	}
 
 	public Area getPlayerSpecificGrindingArea(Location location) {
@@ -158,6 +192,14 @@ public class HuntData {
 		killStreak = kills;
 	}
 
+	public ArrayList<Area> getLastGridingAreas() {
+		return lastGridingAreas;
+	}
+
+	public void setLastGridingAreas(ArrayList<Area> lastGridingAreas) {
+		this.lastGridingAreas = lastGridingAreas;
+	}
+
 	public int getKillstreakLevel() {
 		if (killStreak < MobHunting.getConfigManager().killstreakLevel1)
 			return 0;
@@ -214,6 +256,80 @@ public class HuntData {
 
 	public void addModifier(String name, double modifier) {
 		modifiers.put(name, modifier);
+	}
+
+	public void resetKillStreak(Player player) {
+		killStreak = 0;
+		putHuntDataToPlayer(player);
+	}
+
+	public double handleKillstreak(Player player) {
+		int lastKillstreakLevel = getKillstreakLevel();
+		killStreak++;
+		putHuntDataToPlayer(player);
+		
+		// Killstreak can be disabled by setting the multiplier to 1
+		double multiplier = getKillstreakMultiplier();
+		if (multiplier != 1) {
+			// Give a message notifying of killstreak increase
+			if (getKillstreakLevel() != lastKillstreakLevel) {
+				switch (getKillstreakLevel()) {
+				case 1:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				case 2:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				case 3:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				default:
+					Messages.playerBossbarMessage(player,
+							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4") + " " + ChatColor.GRAY
+									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
+											String.format("%.1f", multiplier)));
+					break;
+				}
+
+			}
+		}
+
+		return multiplier;
+	}
+
+	/**
+	 * get the HuntData() stored on the player.
+	 * 
+	 * @param player
+	 * @return HuntData
+	 */
+	public void getHuntDataFromPlayer(Player player) {
+		if (!player.hasMetadata(HUNTDATA)) {
+			putHuntDataToPlayer(player);
+		} else {
+			HuntData data = new HuntData();
+			List<MetadataValue> md = player.getMetadata(HUNTDATA);
+			for (MetadataValue mdv : md) {
+				if (mdv.value() instanceof HuntData) {
+					data = (HuntData) mdv.value();
+					break;
+				}
+			}
+			setHuntData(data);
+		}
+	}
+
+	public void putHuntDataToPlayer(Player player) {
+		player.setMetadata(HUNTDATA, new FixedMetadataValue(MobHunting.getInstance(), this));
 	}
 
 }

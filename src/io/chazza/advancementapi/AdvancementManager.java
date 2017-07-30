@@ -125,7 +125,7 @@ public class AdvancementManager {
 			Achievement achievement = MobHunting.getAchievementManager()
 					.getAchievement(api.getId().getKey().split("/")[1]);
 			if (MobHunting.getAchievementManager().hasAchievement(achievement, player)) {
-				Messages.debug("AdvancementManager: granting % to player:", achievement.getID(), player.getName());
+				Messages.debug("AdvancementManager: granting %s to player:%s", achievement.getID(), player.getName());
 				api.grant(player);
 			}
 		}

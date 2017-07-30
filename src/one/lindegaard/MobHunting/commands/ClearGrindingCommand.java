@@ -16,7 +16,7 @@ public class ClearGrindingCommand implements ICommand {
 
 	@Override
 	public String getName() {
-		return "cleargrinding"; 
+		return "cleargrinding";
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class ClearGrindingCommand implements ICommand {
 
 	@Override
 	public String getPermission() {
-		return "mobhunting.cleargrinding"; 
+		return "mobhunting.cleargrinding";
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ClearGrindingCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("mobhunting.commands.cleargrinding.description"); 
+		return Messages.getString("mobhunting.commands.cleargrinding.description");
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ClearGrindingCommand implements ICommand {
 		MobHunting.getGrindingManager().clearGrindingArea(loc);
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
+			HuntData data = new HuntData(player);
 			data.clearGrindingArea(loc);
 		}
 

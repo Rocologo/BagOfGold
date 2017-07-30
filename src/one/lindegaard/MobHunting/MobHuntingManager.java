@@ -46,6 +46,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -122,7 +123,6 @@ public class MobHuntingManager implements Listener {
 
 	private MobHunting instance;
 	public Random mRand = new Random();
-	private final String HUNTDATA = "MH:HuntData";
 	private final String SPAWNER_BLOCKED = "MH:SpawnerBlocked";
 
 	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
@@ -161,6 +161,18 @@ public class MobHuntingManager implements Listener {
 				}
 			}.runTaskLater(instance, 20L);
 		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+	private void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+		Player player = event.getPlayer();
+		HuntData data = new HuntData(player);
+		if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1) {
+			Messages.playerActionBarMessage(player,
+					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
+		}
+		data.setKillStreak(0);
+		data.putHuntDataToPlayer(player);
 	}
 
 	/**
@@ -260,28 +272,6 @@ public class MobHuntingManager implements Listener {
 		return event.isEnabled();
 	}
 
-	/**
-	 * get the HuntData() stored on the player.
-	 * 
-	 * @param player
-	 * @return HuntData
-	 */
-	public HuntData getHuntData(Player player) {
-		HuntData data = new HuntData(instance);
-		if (!player.hasMetadata(HUNTDATA)) {
-			player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
-		} else {
-			List<MetadataValue> md = player.getMetadata(HUNTDATA);
-			for (MetadataValue mdv : md) {
-				if (mdv.value() instanceof HuntData) {
-					data = (HuntData) mdv.value();
-					break;
-				}
-			}
-		}
-		return data;
-	}
-
 	private void registerHuntingModifiers() {
 		mHuntingModifiers.add(new BonusMobBonus());
 		mHuntingModifiers.add(new BrawlerBonus());
@@ -310,53 +300,6 @@ public class MobHuntingManager implements Listener {
 			mHuntingModifiers.add(new CrackShotPenalty());
 		if (InfernalMobsCompat.isSupported())
 			mHuntingModifiers.add(new InfernalMobBonus());
-	}
-
-	public double handleKillstreak(Player player) {
-		HuntData data = getHuntData(player);
-
-		// Killstreak can be disabled by setting the multiplier to 1
-
-		int lastKillstreakLevel = data.getKillstreakLevel();
-
-		data.setKillStreak(data.getKillStreak() + 1);
-		player.setMetadata(HUNTDATA, new FixedMetadataValue(instance, data));
-
-		double multiplier = data.getKillstreakMultiplier();
-		if (multiplier != 1) {
-			// Give a message notifying of killstreak increase
-			if (data.getKillstreakLevel() != lastKillstreakLevel) {
-				switch (data.getKillstreakLevel()) {
-				case 1:
-					Messages.playerBossbarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1") + " " + ChatColor.GRAY
-									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
-											String.format("%.1f", multiplier)));
-					break;
-				case 2:
-					Messages.playerBossbarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2") + " " + ChatColor.GRAY
-									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
-											String.format("%.1f", multiplier)));
-					break;
-				case 3:
-					Messages.playerBossbarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3") + " " + ChatColor.GRAY
-									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
-											String.format("%.1f", multiplier)));
-					break;
-				default:
-					Messages.playerBossbarMessage(player,
-							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4") + " " + ChatColor.GRAY
-									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
-											String.format("%.1f", multiplier)));
-					break;
-				}
-
-			}
-		}
-
-		return multiplier;
 	}
 
 	/**
@@ -445,14 +388,15 @@ public class MobHuntingManager implements Listener {
 				|| !MobHunting.getMobHuntingManager().isHuntEnabled(event.getEntity()))
 			return;
 
-		HuntData data = MobHunting.getMobHuntingManager().getHuntData(event.getEntity());
+		Player killed = event.getEntity();
+
+		HuntData data = new HuntData(killed);
 		if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 			Messages.playerActionBarMessage((Player) event.getEntity(),
 					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-		data.setKillStreak(0);
+		data.resetKillStreak(killed);
 
 		double playerPenalty = 0;
-		Player killed = event.getEntity();
 
 		if (CitizensCompat.isNPC(killed))
 			return;
@@ -530,11 +474,11 @@ public class MobHuntingManager implements Listener {
 			return;
 
 		Player player = (Player) event.getEntity();
-		HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
+		HuntData data = new HuntData(player);
 		if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 			Messages.playerActionBarMessage(player,
 					ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-		data.setKillStreak(0);
+		data.resetKillStreak(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -1249,36 +1193,36 @@ public class MobHuntingManager implements Listener {
 				}
 			}
 
-		HuntData data = new HuntData(instance);
+		HuntData data = new HuntData(killer);
 		if (killer != null) {
-			data = getHuntData(killer);
 			if (cash != 0 && (!MobHunting.getGrindingManager().isGrindingArea(killer.getLocation())
-					|| MobHunting.getGrindingManager().isWhitelisted(killer.getLocation())))
+					|| MobHunting.getGrindingManager().isWhitelisted(killer.getLocation()))) {
 				// Killstreak
-				handleKillstreak(killer);
-			else {
+				data.handleKillstreak(killer);
+			} else {
 				// Killstreak ended. Players started to kill 4 chicken and the
 				// one mob to gain 4 x prize
 				if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 					Messages.playerActionBarMessage(getPlayer(killer, killed),
 							ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-				data.setKillStreak(0);
+				data.resetKillStreak(killer);
 			}
 		} else if (MyPetCompat.isKilledByMyPet(killed)) {
-			data = getHuntData(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
+			Player player = MyPetCompat.getMyPet(killed).getOwner().getPlayer();
+			data.getHuntDataFromPlayer(player);
 			if (cash != 0 && (!MobHunting.getGrindingManager()
 					.isGrindingArea(MyPetCompat.getMyPet(killed).getOwner().getPlayer().getLocation())
 					|| MobHunting.getGrindingManager()
 							.isWhitelisted(MyPetCompat.getMyPet(killed).getOwner().getPlayer().getLocation())))
 				// Killstreak
-				handleKillstreak(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
+				data.handleKillstreak(MyPetCompat.getMyPet(killed).getOwner().getPlayer());
 			else {
 				// Killstreak ended. Players started to kill 4 chicken and the
 				// one mob to gain 4 x prize
 				if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 					Messages.playerActionBarMessage(MyPetCompat.getMyPet(killed).getOwner().getPlayer(),
 							ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-				data.setKillStreak(0);
+				data.resetKillStreak(player);
 			}
 		} else {
 			Messages.debug("======================= kill ended (31)=====================");
@@ -1393,6 +1337,7 @@ public class MobHuntingManager implements Listener {
 					Messages.debug("KillStreak reset to 0");
 					data.setKillStreak(0);
 				}
+				data.putHuntDataToPlayer(getPlayer(killer, killed));
 			}
 		}
 
@@ -1415,6 +1360,7 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 		data.setReward(cash);
+		data.putHuntDataToPlayer(getPlayer(killer, killed));
 
 		Messages.debug("Killstreak=%s, level=%s, multiplier=%s ", data.getKillStreak(), data.getKillstreakLevel(),
 				data.getKillstreakMultiplier());
@@ -1699,8 +1645,8 @@ public class MobHuntingManager implements Listener {
 				prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", killed.getName())
 						.replaceAll("\\{killed\\}", killed.getName());
 			else
-				prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", mob.getMobName()).replaceAll("\\{killed\\}",
-						mob.getMobName());
+				prizeCommand = prizeCommand.replaceAll("\\{killed_player\\}", mob.getMobName())
+						.replaceAll("\\{killed\\}", mob.getMobName());
 			Messages.debug("Command to be run:" + prizeCommand);
 			if (!MobHunting.getConfigManager().getKillConsoleCmd(killed).equals("")) {
 				String str = prizeCommand;
@@ -1713,8 +1659,8 @@ public class MobHuntingManager implements Listener {
 						} catch (CommandException e) {
 							Bukkit.getConsoleSender()
 									.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\""
-											+ str.substring(0, n) + "\" when Mob:" + mob.getMobName() + " was killed by "
-											+ getPlayer(killer, killed).getName());
+											+ str.substring(0, n) + "\" when Mob:" + mob.getMobName()
+											+ " was killed by " + getPlayer(killer, killed).getName());
 							Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str.substring(0, n));
 						}
 						str = str.substring(n + 1, str.length()).toString();
@@ -1723,9 +1669,10 @@ public class MobHuntingManager implements Listener {
 				try {
 					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
 				} catch (CommandException e) {
-					Bukkit.getConsoleSender().sendMessage(
-							ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\"" + str + "\" when Mob:"
-									+ mob.getMobName() + " was killed by " + getPlayer(killer, killed).getName());
+					Bukkit.getConsoleSender()
+							.sendMessage(ChatColor.RED + "[MobHunting][ERROR] Could not run cmd:\"" + str
+									+ "\" when Mob:" + mob.getMobName() + " was killed by "
+									+ getPlayer(killer, killed).getName());
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str);
 				}
 			}
@@ -1805,8 +1752,10 @@ public class MobHuntingManager implements Listener {
 
 		double multiplier = MobHunting.getConfigManager().assistMultiplier;
 		double ks = 1.0;
-		if (MobHunting.getConfigManager().assistAllowKillstreak)
-			ks = MobHunting.getMobHuntingManager().handleKillstreak(player);
+		if (MobHunting.getConfigManager().assistAllowKillstreak) {
+			HuntData data = new HuntData(player);
+			ks = data.handleKillstreak(player);
+		}
 
 		multiplier *= ks;
 		double cash = 0;

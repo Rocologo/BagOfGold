@@ -71,7 +71,7 @@ public class CheckGrindingCommand implements ICommand {
 			Area area = null;
 			ArrayList<Player> players = new ArrayList<Player>();
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				HuntData data = MobHunting.getMobHuntingManager().getHuntData(player);
+				HuntData data = new HuntData(player);
 				area = data.getPlayerSpecificGrindingArea(loc);
 				if (area != null)
 					players.add(player);
