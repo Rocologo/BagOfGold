@@ -788,16 +788,24 @@ public class MobHuntingManager implements Listener {
 
 		// Write killer name to Server Log
 		if (killer != null)
-			Messages.debug("%s killed a %s (%s)", killer.getName(), mob.getMobName(), mob.getMobPlugin().getName());
+			Messages.debug("%s killed a %s (%s)@(%s:%s,%s,%s)", killer.getName(), mob.getMobName(),
+					mob.getMobPlugin().getName(), killer.getWorld().getName(), (int) killer.getLocation().getBlockX(),
+					(int) killer.getLocation().getBlockY(), (int) killer.getLocation().getBlockZ());
 		else if (MyPetCompat.isKilledByMyPet(killed))
-			Messages.debug("%s owned by %s killed a %s (%s)", MyPetCompat.getMyPet(killed).getName(),
-					MyPetCompat.getMyPetOwner(killed).getName(), mob.getMobName(), mob.getMobPlugin().getName());
+			Messages.debug("%s owned by %s killed a %s (%s)@(%s:%s,%s,%s)", MyPetCompat.getMyPet(killed).getName(),
+					MyPetCompat.getMyPetOwner(killed).getName(), mob.getMobName(), mob.getMobPlugin().getName(),
+					MyPetCompat.getMyPetOwner(killed).getWorld().getName(),
+					(int) MyPetCompat.getMyPetOwner(killed).getLocation().getBlockX(),
+					(int) MyPetCompat.getMyPetOwner(killed).getLocation().getBlockY(),
+					(int) MyPetCompat.getMyPetOwner(killed).getLocation().getBlockZ());
 		else if (info.isCrackShotWeaponUsed()) {
 			if (killer == null) {
 				killer = info.getCrackShotPlayer();
 				if (killer != null)
-					Messages.debug("%s killed a %s (%s) using a %s", killer.getName(), mob.getMobName(),
-							mob.getMobPlugin().getName(), info.getCrackShotWeaponUsed());
+					Messages.debug("%s killed a %s (%s) using a %s@(%s:%s,%s,%s)", killer.getName(), mob.getMobName(),
+							mob.getMobPlugin().getName(), info.getCrackShotWeaponUsed(), killer.getWorld().getName(),
+							(int) killer.getLocation().getBlockX(), (int) killer.getLocation().getBlockY(),
+							(int) killer.getLocation().getBlockZ());
 				else
 					Messages.debug("No killer was stored in the Damageinformation");
 			}
