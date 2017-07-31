@@ -72,6 +72,11 @@ public class RewardManager implements Listener {
 		if (Misc.isMC18OrNewer())
 			Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(), MobHunting.getInstance());
 
+		if (Misc.isMC112OrNewer())
+			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(), MobHunting.getInstance());
+		else
+			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(), MobHunting.getInstance());
+		
 		loadAllStoredRewards();
 	}
 

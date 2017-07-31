@@ -15,7 +15,7 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class MoneyMergeEventListener implements Listener {
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=false)
 	public void onMoneyMergeEvent(ItemMergeEvent event) {
 		// OBS: ItemMergeEvent does only exist in MC1.8 and newer
 
