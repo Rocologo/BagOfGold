@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -274,38 +275,30 @@ public class HeadCommand implements ICommand, Listener {
 				items.add("rename");
 			}
 		} else if (args.length == 2 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
-			String partial = args[1].toLowerCase();
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getName().toLowerCase().startsWith(partial))
+			for (Player player : Bukkit.getOnlinePlayers()) 
 					items.add(ChatColor.stripColor(player.getName()));
-			}
 		} else if ((args.length == 3 && args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
-			String partial = args[2].toLowerCase();
-			for (MinecraftMob mob : MinecraftMob.values()) {
-				if (mob.getFriendlyName().toLowerCase().startsWith(partial)
-						|| mob.getDisplayName().toLowerCase().startsWith(partial))
+			for (MinecraftMob mob : MinecraftMob.values()) 
 					items.add(ChatColor.stripColor(mob.getFriendlyName().replace(" ", "_")));
-			}
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getName().toLowerCase().startsWith(partial))
+			for (Player player : Bukkit.getOnlinePlayers()) 
 					items.add(ChatColor.stripColor(player.getName()));
-			}
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("drop")) {
-			String partial = args[1].toLowerCase();
-			for (MinecraftMob mob : MinecraftMob.values()) {
-				if (mob.getFriendlyName().toLowerCase().startsWith(partial)
-						|| mob.getDisplayName().toLowerCase().startsWith(partial))
+			for (MinecraftMob mob : MinecraftMob.values()) 
 					items.add(ChatColor.stripColor(mob.getFriendlyName().replace(" ", "_")));
-			}
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getName().toLowerCase().startsWith(partial))
+			for (Player player : Bukkit.getOnlinePlayers()) 
 					items.add(ChatColor.stripColor(player.getName()));
-			}
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("drop")) {
-			String partial = args[2].toLowerCase();
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getName().toLowerCase().startsWith(partial))
+			for (Player player : Bukkit.getOnlinePlayers()) 
 					items.add(ChatColor.stripColor(player.getName()));
+		}
+		
+		if (!args[args.length - 1].trim().isEmpty()) {
+			String match = args[args.length - 1].trim().toLowerCase();
+			Iterator<String> it = items.iterator();
+			while (it.hasNext()) {
+				String name = it.next();
+				if (!name.toLowerCase().startsWith(match))
+					it.remove();
 			}
 		}
 		return items;

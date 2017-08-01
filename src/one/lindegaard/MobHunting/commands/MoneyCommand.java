@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -471,11 +472,18 @@ public class MoneyCommand implements ICommand {
 			items.add("sell");
 			items.add("buy");
 			items.add("shop");
-		} else if (args.length == 2) {
-			String partial = args[1].toLowerCase();
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getName().toLowerCase().startsWith(partial))
+		} else if (args.length == 2) 
+			for (Player player : Bukkit.getOnlinePlayers()) 
 					items.add(player.getName());
+
+		if (!args[args.length - 1].trim().isEmpty()) {
+			String match = args[args.length - 1].trim().toLowerCase();
+
+			Iterator<String> it = items.iterator();
+			while (it.hasNext()) {
+				String name = it.next();
+				if (!name.toLowerCase().startsWith(match))
+					it.remove();
 			}
 		}
 		return items;

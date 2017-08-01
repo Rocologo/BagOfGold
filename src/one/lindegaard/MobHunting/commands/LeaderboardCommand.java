@@ -270,21 +270,13 @@ public class LeaderboardCommand implements ICommand, Listener {
 			items.add("edit");
 		} else if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("create")) {
-				if (args.length == 2) {
-					//int i = 0;
-					for (StatType type : StatType.values()) {
-						if (type != null) {
-							//Messages.debug("StatType(%s)=%s", i, type.getDBColumn());
-							//items.add(type.translateName().replaceAll(" ", "_"));
+				if (args.length == 2)
+					for (StatType type : StatType.values())
+						if (type != null)
 							items.add(type.getDBColumn());
-						} //else
-						//	Messages.debug("StatType(%s)=%s", i, type);
-						//i++;
-					}
-				} else if (args.length == 3) {
-					for (TimePeriod period : TimePeriod.values())
-						items.add(period.translateName().replaceAll(" ", "_"));
-				}
+						else if (args.length == 3)
+							for (TimePeriod period : TimePeriod.values())
+								items.add(period.translateName().replaceAll(" ", "_"));
 			} else if (args[0].equalsIgnoreCase("edit")) {
 				if (args.length == 2) {
 					items.add("type");
@@ -293,13 +285,13 @@ public class LeaderboardCommand implements ICommand, Listener {
 					items.add("addperiod");
 					items.add("horizontal");
 				} else if (args.length == 3) {
-					if (args[1].equalsIgnoreCase("type") || args[1].equalsIgnoreCase("addtype")) {
+					if (args[1].equalsIgnoreCase("type") || args[1].equalsIgnoreCase("addtype"))
 						for (StatType type : StatType.values())
 							items.add(ChatColor.stripColor(type.translateName().replaceAll(" ", "_")));
-					} else if (args[1].equalsIgnoreCase("period") || args[1].equalsIgnoreCase("addperiod")) {
+					else if (args[1].equalsIgnoreCase("period") || args[1].equalsIgnoreCase("addperiod"))
 						for (TimePeriod period : TimePeriod.values())
 							items.add(ChatColor.stripColor(period.translateName().replaceAll(" ", "_")));
-					} else if (args[1].equalsIgnoreCase("horizontal")) {
+					else if (args[1].equalsIgnoreCase("horizontal")) {
 						items.add("true");
 						items.add("false");
 					}

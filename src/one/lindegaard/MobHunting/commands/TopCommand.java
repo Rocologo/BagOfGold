@@ -99,7 +99,8 @@ public class TopCommand implements ICommand {
 
 		if (args.length == 1) {
 			for (StatType type : StatType.values())
-				items.add(type.translateName().replaceAll(" ", "_"));
+				if (type != null)
+					items.add(type.translateName().replaceAll(" ", "_"));
 		} else if (args.length == 2) {
 			for (TimePeriod period : TimePeriod.values())
 				items.add(period.translateName().replaceAll(" ", "_"));

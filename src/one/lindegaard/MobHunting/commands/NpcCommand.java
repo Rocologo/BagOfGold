@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -89,31 +90,32 @@ public class NpcCommand implements ICommand, Listener {
 		String[] subcmds = { "create", "remove", "select", "spawn", "despawn", "update", "tphere", "sethome" };
 		ArrayList<String> items = new ArrayList<String>();
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class)) {
-			// if (args.length < 2 ) {
-			// for (String cmd : subcmds)
-			// items.add(cmd);
-			// } else
 			if (args.length == 1) {
 				for (String cmd : subcmds)
-					if (args[0].toLowerCase().startsWith(cmd.toLowerCase()))
-						items.add(cmd);
+					items.add(cmd);
 			} else if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("create")) {
 					StatType[] values = StatType.values();
-					for (int i = 0; i < values.length; i++) {
-						if (values[i].translateName().replace(" ", "_").toLowerCase().startsWith(args[1].toLowerCase()))
+					for (int i = 0; i < values.length; i++) 
+						if (values[i] != null)
 							items.add(ChatColor.stripColor(values[i].translateName().replace(" ", "_")));
-					}
 				}
 			} else if (args.length == 3) {
 				if (args[0].equalsIgnoreCase("create")) {
 					TimePeriod[] values = TimePeriod.values();
-					for (int i = 0; i < values.length; i++) {
-						if (values[i].translateName().replace(" ", "_").toLowerCase().startsWith(args[2].toLowerCase()))
-							items.add(ChatColor.stripColor(values[i].translateName().replace(" ", "_")));
-					}
+					for (int i = 0; i < values.length; i++)
+						items.add(ChatColor.stripColor(values[i].translateName().replace(" ", "_")));
 				}
+			}
+		}
 
+		if (!args[args.length - 1].trim().isEmpty()) {
+			String match = args[args.length - 1].trim().toLowerCase();
+			Iterator<String> it = items.iterator();
+			while (it.hasNext()) {
+				String name = it.next();
+				if (!name.toLowerCase().startsWith(match))
+					it.remove();
 			}
 		}
 		return items;

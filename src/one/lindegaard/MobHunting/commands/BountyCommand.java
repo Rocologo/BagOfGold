@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -234,12 +235,7 @@ public class BountyCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		ArrayList<String> items = new ArrayList<String>();
-		if (args.length == 0) {
-			items.add(" remove");
-			items.add(" top");
-			items.add(" gui");
-		} else if (args.length == 1) {
-			// Messages.debug("arg[0]=(%s)", args[0]);
+		if (args.length == 1) {
 			if (items.isEmpty()) {
 				items.add("remove");
 				items.add("top");
@@ -251,11 +247,20 @@ public class BountyCommand implements ICommand {
 					items.add(player.getName());
 			}
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-			// Messages.debug("arg[0,1]=(%s,%s)", args[0], args[1]);
 			String partial = args[1].toLowerCase();
 			for (OfflinePlayer wantedPlayer : MobHunting.getBountyManager().getWantedPlayers()) {
 				if (wantedPlayer.getName().toLowerCase().startsWith(partial))
 					items.add(wantedPlayer.getName());
+			}
+		}
+		
+		if (!args[args.length - 1].trim().isEmpty()) {
+			String match = args[args.length - 1].trim().toLowerCase();
+			Iterator<String> it = items.iterator();
+			while (it.hasNext()) {
+				String name = it.next();
+				if (!name.toLowerCase().startsWith(match))
+					it.remove();
 			}
 		}
 		return items;

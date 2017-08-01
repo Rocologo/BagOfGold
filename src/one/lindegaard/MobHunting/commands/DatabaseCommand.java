@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -63,20 +64,20 @@ public class DatabaseCommand implements ICommand, Listener {
 		if (args.length == 1) {
 			items.add("fixLeaderboard");
 			items.add("convert-to-utf8");
+			// items.add("reset-statictics");
 			// items.add("backup");
 			// items.add("restore");
 			// items.add("deletebackup");
 		}
-		// else if (args.length == 2) {
-		// if (args[0].equalsIgnoreCase("backupxxx")) {
-		// // TODO: set items do defaultname
-		// // items.add(today);
-		// } else if (args[0].equalsIgnoreCase("backupyyy")) {
-		// // TODO: list posible backups
-		// } else if (args[0].equalsIgnoreCase("deletebackup")) {
-		// // TODO: list posible backups
-		// }
-		// }
+		if (!args[args.length - 1].trim().isEmpty()) {
+			String match = args[args.length - 1].trim().toLowerCase();
+			Iterator<String> it = items.iterator();
+			while (it.hasNext()) {
+				String name = it.next();
+				if (!name.toLowerCase().startsWith(match))
+					it.remove();
+			}
+		}
 		return items;
 	}
 
