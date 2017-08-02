@@ -343,7 +343,7 @@ public class RewardListeners implements Listener {
 
 		} else if (isCursor.getType() == Material.AIR && (isCurrentSlot.getType() == Material.SKULL_ITEM
 				|| isCurrentSlot.getType() == Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem))
-				&& action == InventoryAction.PICKUP_HALF) {
+				&& action == InventoryAction.PICKUP_HALF && !event.isShiftClick()) {
 			if (Reward.isReward(isCurrentSlot)) {
 				Reward reward = Reward.getReward(isCurrentSlot);
 				if (reward.isBagOfGoldReward() || reward.isItemReward()) {

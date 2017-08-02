@@ -5,8 +5,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>5.0.2</version>
-	<!-- <version>5.0.2-SNAPSHOT-B${build.number}</version> -->
+	<version>5.0.3</version>
+	<!-- <version>5.0.3-SNAPSHOT-B${build.number}</version> -->
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -72,6 +72,7 @@
 		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
 		<MysteriousHalloween.version>1.3.2</MysteriousHalloween.version>
 		<SmartGiants.version>2.3.6</SmartGiants.version>
+		<Herobrine.version>1.7.1</Herobrine.version>
 		<towny.version>0.91.4.2</towny.version>
 		<residence.version>4.7.0.1</residence.version>
 		<bossshop.version>2.7.3</bossshop.version>
@@ -479,6 +480,13 @@
 			<groupId>me.jjm_223.smartgiants</groupId>
 			<artifactId>SmartGiants</artifactId>
 			<version>${SmartGiants.version}</version>
+		</dependency>
+
+		<!-- Herobrine -->
+		<dependency>
+			<groupId>net.theprogrammersworld.herobrine.Herobrine</groupId>
+			<artifactId>Herobrine</artifactId>
+			<version>${Herobrine.version}</version>
 		</dependency>
 
 		<!-- iDisguise -->

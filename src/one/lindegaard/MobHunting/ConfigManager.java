@@ -2240,6 +2240,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-extra-hard-mode", category = "plugins", comment = "Disable integration with ExtraHardmode."
 			+ "\nhttps://www.spigotmc.org/resources/extra-hard-mode.19673/")
 	public boolean disableIntegrationExtraHardMode = false;
+	
+	@ConfigField(name = "disable-integration-herobrine", category = "plugins", comment = "Disable integration with Herobrine."
+			+ "\nhttps://www.theprogrammersworld.net/Herobrine/")
+	public boolean disableIntegrationHerobrine = false;
 
 	// #####################################################################################
 	// Database
