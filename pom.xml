@@ -87,7 +87,7 @@
 		<InfernalMobs.version>5.3</InfernalMobs.version>
 		<minigameslib.version>1.14.15.jar</minigameslib.version>
 
-		<gringotts.version>Gringotts-2.10-SNAPSHOT</gringotts.version>
+		<gringotts.version>2.10-20170805.084200-1</gringotts.version>
 		<gringotts.jar.version>Gringotts-2.10-SNAPSHOT.jar</gringotts.jar.version>
 		<extrahardmode.version>3.12.1</extrahardmode.version>
 		<extrahardmode.jar.version>ExtraHardMode-3.12.1.jar</extrahardmode.jar.version>
@@ -562,12 +562,9 @@
 			<version>2.9</version> </dependency> -->
 		<!--<dependency> <groupId>org.gestern</groupId> <artifactId>gringotts</artifactId> 
 			<version>2.9</version> <scope>provided</scope> </dependency> -->
-		<!-- <dependency>
-			<groupId>org.gestern.gringotts.Gringotts</groupId>
-			<artifactId>Gringotts</artifactId>
-			<version>${gringotts.version}</version>
-		</dependency> -->
-		 
+		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
+			<version>${gringotts.version}</version> </dependency> -->
+
 		<dependency>
 			<groupId>org.gestern.gringotts</groupId>
 			<artifactId>Gringotts</artifactId>

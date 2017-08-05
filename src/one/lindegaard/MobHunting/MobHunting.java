@@ -32,7 +32,6 @@ import one.lindegaard.MobHunting.grinding.GrindingManager;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.rewards.BagOfGoldSign;
-import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
@@ -74,11 +73,7 @@ public class MobHunting extends JavaPlugin {
 	private static ConfigManager mConfig;
 	private static AdvancementManager mAdvancementManager;
 
-	private ProtocolLibCompat mProtocolLibCompat;
-	private CustomItems customItems;
-
 	private boolean mInitialized = false;
-	private static ProtocolLibHelper mProtocolLibHelper;
 
 	@Override
 	public void onLoad() {
@@ -284,7 +279,7 @@ public class MobHunting extends JavaPlugin {
 		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
 		if (!getServer().getName().toLowerCase().contains("glowstone")) {
-			mMetricsManager = new MetricsManager(this, mProtocolLibCompat);
+			mMetricsManager = new MetricsManager(this);
 			mMetricsManager.startMetrics();
 		}
 		mMetricsManager.startBStatsMetrics();

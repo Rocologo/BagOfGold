@@ -22,11 +22,11 @@ public class HappyHourCommand implements ICommand {
     private BukkitTask happyhourevent = null;
     private BukkitTask happyhoureventStop = null;
 
-    public HappyHourCommand(int minutesToRun, int minutesLeft, double multiplier) {
+    public HappyHourCommand(int minutesToRun){//, int minutesLeft, double multiplier) {
 
         this.minutesToRun = minutesToRun;
-        this.minutesLeft = minutesLeft;
-        this.multiplier = multiplier;
+        //this.minutesLeft = minutesLeft;
+        //this.multiplier = multiplier;
     }
 
     public HappyHourCommand() {
@@ -201,4 +201,5 @@ public class HappyHourCommand implements ICommand {
         }
         return items;
     }
+
 }

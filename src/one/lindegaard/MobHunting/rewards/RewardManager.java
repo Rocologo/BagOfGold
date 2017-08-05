@@ -125,7 +125,7 @@ public class RewardManager implements Listener {
 		return mEconomy.has(offlinePlayer, amount);
 	}
 
-	public static void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
+	public void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
 		money = Misc.ceil(money);
 		if (GringottsCompat.isSupported()) {

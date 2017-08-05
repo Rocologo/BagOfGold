@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
 
@@ -270,13 +269,13 @@ public class LeaderboardCommand implements ICommand, Listener {
 			items.add("edit");
 		} else if (args.length > 1) {
 			if (args[0].equalsIgnoreCase("create")) {
-				if (args.length == 2)
+				if (args.length == 2) {
 					for (StatType type : StatType.values())
 						if (type != null)
 							items.add(type.getDBColumn());
-						else if (args.length == 3)
-							for (TimePeriod period : TimePeriod.values())
-								items.add(period.translateName().replaceAll(" ", "_"));
+				} else if (args.length == 3)
+					for (TimePeriod period : TimePeriod.values())
+						items.add(period.translateName().replaceAll(" ", "_"));
 			} else if (args[0].equalsIgnoreCase("edit")) {
 				if (args.length == 2) {
 					items.add("type");

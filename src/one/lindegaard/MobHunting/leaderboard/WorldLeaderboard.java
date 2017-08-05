@@ -23,7 +23,6 @@ import org.bukkit.util.Vector;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
-import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;

@@ -2,8 +2,10 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,7 +49,6 @@ public class SelectCommand implements ICommand {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		if (args.length != 1)
@@ -66,8 +67,8 @@ public class SelectCommand implements ICommand {
 			return true;
 		}
 
-		HashSet<Byte> transparent = new HashSet<Byte>();
-		transparent.add((byte) 0);
+		Set<Material> transparent = new HashSet<Material>();
+		transparent.add(Material.AIR);
 
 		Block target = player.getTargetBlock(transparent, 10);
 		if (target == null) {
