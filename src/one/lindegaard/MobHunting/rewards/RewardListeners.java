@@ -60,7 +60,7 @@ public class RewardListeners implements Listener {
 						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 				RewardManager.getDroppedMoney().put(item.getEntityId(), money);
 				if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency)
-					RewardManager.getEconomy().withdrawPlayer(player, money);
+					MobHunting.getRewardManager().getEconomy().withdrawPlayer(player, money);
 				Messages.debug("%s dropped %s money. (# of rewards left=%s)", player.getName(),
 						MobHunting.getRewardManager().format(money), RewardManager.getDroppedMoney().size());
 				Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneydrop", "money",
@@ -343,7 +343,7 @@ public class RewardListeners implements Listener {
 
 		} else if (isCursor.getType() == Material.AIR && (isCurrentSlot.getType() == Material.SKULL_ITEM
 				|| isCurrentSlot.getType() == Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem))
-				&& action == InventoryAction.PICKUP_HALF && !event.isShiftClick()) {
+				&& action == InventoryAction.PICKUP_HALF) {
 			if (Reward.isReward(isCurrentSlot)) {
 				Reward reward = Reward.getReward(isCurrentSlot);
 				if (reward.isBagOfGoldReward() || reward.isItemReward()) {

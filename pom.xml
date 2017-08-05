@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>5.0.3</version>
-	<!-- <version>5.0.3-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>5.0.4</version> -->
+	<version>5.0.4-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
+
 	<scm>
 		<connection>scm:svn:https://github.com/Rocologo/MobHunting.git</connection>
 		<developerConnection>scm:svn:https://github.com/Rocologo/MobHunting.git</developerConnection>
@@ -20,11 +22,12 @@
 		<url>https://fractal.lindegaard.one</url>
 	</organization>
 
-
 	<!-- ********************************************************************** -->
 	<!-- ***************************** Properties ***************************** -->
 	<!-- ********************************************************************** -->
 	<properties>
+
+		<build.number>1337</build.number>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
@@ -47,7 +50,7 @@
 		<worldedit.version>6.1.5</worldedit.version>
 		<worldguard.version>6.2</worldguard.version>
 		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
-		<libsdisguises.version>9.4.0</libsdisguises.version>
+		<libsdisguises.version>9.4.0-SNAPSHOT</libsdisguises.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
@@ -67,7 +70,7 @@
 		<crackshot.version>0.98.5</crackshot.version>
 		<placeholderapi.version>2.0.8</placeholderapi.version>
 		<PvpArena.version>1.3</PvpArena.version>
-		<TitleAPI.version>1.7.3</TitleAPI.version>
+		<TitleAPI.version>1.7.5</TitleAPI.version>
 		<TARDISWeepingAngels.version>2.4</TARDISWeepingAngels.version>
 		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
 		<MysteriousHalloween.version>1.3.2</MysteriousHalloween.version>
@@ -82,11 +85,12 @@
 		<mythiclib.version>0.0.1-20170628.172950-1</mythiclib.version>
 		<StackMob.version>1.6.4</StackMob.version>
 		<InfernalMobs.version>5.3</InfernalMobs.version>
+		<minigameslib.version>1.14.15.jar</minigameslib.version>
 
-		<minigameslib.jar.version>MinigamesLib-1.14.15-SNAPSHOT.jar</minigameslib.jar.version>
-		<minigameslib.version>1.14.15-20170123.094017</minigameslib.version>
-		<Gringotts.jar.version>Gringotts-2.9.jar</Gringotts.jar.version>
-		<extrahardmode.jar.version>ExtraHardMode-3.11.jar</extrahardmode.jar.version>
+		<gringotts.version>Gringotts-2.10-SNAPSHOT</gringotts.version>
+		<gringotts.jar.version>Gringotts-2.10-SNAPSHOT.jar</gringotts.jar.version>
+		<extrahardmode.version>3.12.1</extrahardmode.version>
+		<extrahardmode.jar.version>ExtraHardMode-3.12.1.jar</extrahardmode.jar.version>
 
 	</properties>
 
@@ -139,12 +143,8 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.jfrog.buildinfo</groupId>
-				<artifactId>artifactory-maven-plugin</artifactId>
-				<version>2.6.1</version>
-				<inherited>false</inherited>
-			</plugin>
+			<!--<plugin> <groupId>org.jfrog.buildinfo</groupId> <artifactId>artifactory-maven-plugin</artifactId> 
+				<version>2.6.1</version> <inherited>false</inherited> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -189,7 +189,27 @@
 	<!-- **************************** Repositories **************************** -->
 	<!-- ********************************************************************** -->
 	<repositories>
+
+
+		<repository>
+			<id>MinigamesAPI-Repo</id>
+			<name>MinigamesAPI Repository</name>
+			<url>http://nexus.xworlds.eu/nexus/content/repositories/mce/</url>
+		</repository>
+
+
 		<!-- MobHunhting repository -->
+
+		<repository>
+			<id>fractal-ext-rel</id>
+			<url>https://fractal.lindegaard.one:8187/artifactory/ext-release-local/</url>
+		</repository>
+
+		<repository>
+			<id>fractal-ext-snap</id>
+			<url>https://fractal.lindegaard.one:8187/artifactory/ext-snapshot-local/</url>
+		</repository>
+
 		<repository>
 			<id>fractal</id>
 			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
@@ -299,6 +319,11 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 
+
+
+
+
+
 		<!-- BossShop <repository> <id>confuser-repo</id> <url>http://ci.frostcast.net/plugin/repository/everything/</url> 
 			</repository> -->
 
@@ -314,21 +339,6 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- CraftBukkit Dependency for experimental features -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkit.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>${craftbukkit.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -511,17 +521,13 @@
 		</dependency>
 
 		<!-- MinigamesLib -->
-		<!-- <dependency> <groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId> 
-			<artifactId>MinigamesLib</artifactId> <version>1.14.16-20170514.144611</version> 
-			<type>pom</type> </dependency> -->
 		<dependency>
-			<groupId>com.comze_instancelabs.minigamesapi.MinigamesAPI</groupId>
+			<groupId>com.github.MCE-Plugins</groupId>
 			<artifactId>MinigamesLib</artifactId>
-			<version>${minigameslib.jar.version}</version>
-			<scope>system</scope>
-			<type>jar</type>
-			<systemPath>${project.basedir}/lib/${minigameslib.jar.version}</systemPath>
+			<version>1.14.18-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
+
 
 		<!-- TitleAPI -->
 		<dependency>
@@ -554,14 +560,21 @@
 		<!-- Gringotts -->
 		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
 			<version>2.9</version> </dependency> -->
+		<!--<dependency> <groupId>org.gestern</groupId> <artifactId>gringotts</artifactId> 
+			<version>2.9</version> <scope>provided</scope> </dependency> -->
+		<!-- <dependency>
+			<groupId>org.gestern.gringotts.Gringotts</groupId>
+			<artifactId>Gringotts</artifactId>
+			<version>${gringotts.version}</version>
+		</dependency> -->
+		 
 		<dependency>
-			<groupId>org.gestern</groupId>
-			<artifactId>gringotts</artifactId>
-			<version>2.9</version>
+			<groupId>org.gestern.gringotts</groupId>
+			<artifactId>Gringotts</artifactId>
+			<version>${gringotts.jar.version}</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/Gringotts-2.9.jar</systemPath>
+			<systemPath>${project.basedir}/lib/${gringotts.jar.version}</systemPath>
 		</dependency>
-
 
 		<!-- MythicMobs Old -->
 		<dependency>
@@ -576,6 +589,7 @@
 			<artifactId>MythicMobs</artifactId>
 			<version>${mythicmobs.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>MythicLib</groupId>
 			<artifactId>MythicLib</artifactId>
@@ -687,6 +701,15 @@
 			<version>${bossshop.version}</version>
 		</dependency>
 
+
+		<!-- CrackShot -->
+		<dependency>
+			<groupId>CrackShot</groupId>
+			<artifactId>CrackShot</artifactId>
+			<version>${crackshot.version}</version>
+		</dependency>
+
+
 		<!-- ExtraHardMode -->
 		<dependency>
 			<groupId>com.extrahardmode.ExtraHardMode</groupId>
@@ -695,13 +718,16 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/${extrahardmode.jar.version}</systemPath>
 		</dependency>
+		<!-- <dependency> <groupId>com.extrahardmode</groupId> <artifactId>ExtraHardMode</artifactId> 
+			<version>3.12.1</version> <scope>provided</scope> </dependency> -->
 
-		<!-- CrackShot -->
-		<dependency>
-			<groupId>CrackShot</groupId>
-			<artifactId>CrackShot</artifactId>
-			<version>${crackshot.version}</version>
-		</dependency>
+
+
+
+		<!-- <dependency> <groupId>org.jfrog.buildinfo</groupId> <artifactId>artifactory-maven-plugin</artifactId> 
+			<version>2.6.1</version> <type>pom</type> </dependency> -->
+
+
 
 	</dependencies>
 
@@ -740,4 +766,6 @@
 	<issueManagement>
 		<url>https://github.com/Rocologo/MobHunting/issues</url>
 	</issueManagement>
+
+
 </project>

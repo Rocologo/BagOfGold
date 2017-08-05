@@ -27,52 +27,12 @@ import one.lindegaard.MobHunting.commands.TopCommand;
 import one.lindegaard.MobHunting.commands.UpdateCommand;
 import one.lindegaard.MobHunting.commands.VersionCommand;
 import one.lindegaard.MobHunting.commands.WhitelistAreaCommand;
-import one.lindegaard.MobHunting.compatibility.ActionAnnouncerCompat;
-import one.lindegaard.MobHunting.compatibility.ActionBarAPICompat;
-import one.lindegaard.MobHunting.compatibility.ActionbarCompat;
-import one.lindegaard.MobHunting.compatibility.BarAPICompat;
-import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
-import one.lindegaard.MobHunting.compatibility.BossBarAPICompat;
-import one.lindegaard.MobHunting.compatibility.BossShopCompat;
-import one.lindegaard.MobHunting.compatibility.CitizensCompat;
-import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
-import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
-import one.lindegaard.MobHunting.compatibility.CrackShotCompat;
-import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
-import one.lindegaard.MobHunting.compatibility.DisguiseCraftCompat;
-import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
-import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
-import one.lindegaard.MobHunting.compatibility.FactionsCompat;
-import one.lindegaard.MobHunting.compatibility.GringottsCompat;
-import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
-import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
-import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
-import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
-import one.lindegaard.MobHunting.compatibility.McMMOCompat;
-import one.lindegaard.MobHunting.compatibility.MinigamesCompat;
-import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
-import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
-import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
-import one.lindegaard.MobHunting.compatibility.MyPetCompat;
-import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
-import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
-import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
-import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
-import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
-import one.lindegaard.MobHunting.compatibility.StackMobCompat;
-import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
-import one.lindegaard.MobHunting.compatibility.TitleAPICompat;
-import one.lindegaard.MobHunting.compatibility.TitleManagerCompat;
-import one.lindegaard.MobHunting.compatibility.TownyCompat;
-import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
-import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
-import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
+import one.lindegaard.MobHunting.compatibility.*;
 import one.lindegaard.MobHunting.grinding.GrindingManager;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.rewards.BagOfGoldSign;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
@@ -114,7 +74,11 @@ public class MobHunting extends JavaPlugin {
 	private static ConfigManager mConfig;
 	private static AdvancementManager mAdvancementManager;
 
+	private ProtocolLibCompat mProtocolLibCompat;
+	private CustomItems customItems;
+
 	private boolean mInitialized = false;
+	private static ProtocolLibHelper mProtocolLibHelper;
 
 	@Override
 	public void onLoad() {
@@ -128,6 +92,8 @@ public class MobHunting extends JavaPlugin {
 		Messages.exportDefaultLanguages(this);
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
+
+
 
 		if (mConfig.loadConfig()) {
 			if (mConfig.dropMoneyOnGroundTextColor.equals("&0"))
@@ -179,8 +145,8 @@ public class MobHunting extends JavaPlugin {
 		mWorldGroupManager = new WorldGroup();
 		mWorldGroupManager.load();
 
-		mRewardManager = new RewardManager(this);
-		if (RewardManager.getEconomy() == null)
+		mRewardManager=new RewardManager(this);
+        if (mRewardManager.getEconomy() == null)
 			return;
 
 		mAreaManager = new GrindingManager(this);
@@ -301,7 +267,7 @@ public class MobHunting extends JavaPlugin {
 		if (!mConfig.disablePlayerBounties)
 			cmd.registerCommand(new BountyCommand());
 		cmd.registerCommand(new HappyHourCommand());
-		cmd.registerCommand(new MoneyCommand());
+		cmd.registerCommand(new MoneyCommand(mRewardManager));
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
@@ -318,7 +284,7 @@ public class MobHunting extends JavaPlugin {
 		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
 		if (!getServer().getName().toLowerCase().contains("glowstone")) {
-			mMetricsManager = new MetricsManager(this);
+			mMetricsManager = new MetricsManager(this, mProtocolLibCompat);
 			mMetricsManager.startMetrics();
 		}
 		mMetricsManager.startBStatsMetrics();
@@ -343,10 +309,10 @@ public class MobHunting extends JavaPlugin {
 		}
 
 		if (getConfigManager().dropMoneyOnGroundUseAsCurrency)
-			new BagOfGoldSign();
+			new BagOfGoldSign(mRewardManager);
 
 		Messages.debug("Updating advancements");
-		if (!MobHunting.getConfigManager().disableMobHuntingAdvancements && Misc.isMC112OrNewer()) {
+		if (!getConfigManager().disableMobHuntingAdvancements && Misc.isMC112OrNewer()) {
 			mAdvancementManager = new AdvancementManager();
 			mAdvancementManager.getAdvancementsFromAchivements();
 		}
@@ -357,7 +323,7 @@ public class MobHunting extends JavaPlugin {
 
 	}
 
-	public static void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
+	public  void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
 		try {
 			CompatibilityManager.register(c, pluginName);
 		} catch (Exception e) {
@@ -412,7 +378,7 @@ public class MobHunting extends JavaPlugin {
 		return instance;
 	}
 
-	public static ConfigManager getConfigManager() {
+	public static  ConfigManager getConfigManager() {
 		return mConfig;
 	}
 
@@ -493,7 +459,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static PlayerSettingsManager getPlayerSettingsmanager() {
+	public static  PlayerSettingsManager getPlayerSettingsmanager() {
 		return mPlayerSettingsManager;
 	}
 

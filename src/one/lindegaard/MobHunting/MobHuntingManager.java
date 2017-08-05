@@ -1,49 +1,26 @@
 package one.lindegaard.MobHunting;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.World;
+import com.gmail.nossr50.datatypes.skills.SkillType;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import one.lindegaard.MobHunting.bounty.Bounty;
+import one.lindegaard.MobHunting.bounty.BountyManager;
+import one.lindegaard.MobHunting.bounty.BountyStatus;
+import one.lindegaard.MobHunting.compatibility.*;
+import one.lindegaard.MobHunting.events.BountyKillEvent;
+import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
+import one.lindegaard.MobHunting.events.MobHuntKillEvent;
+import one.lindegaard.MobHunting.grinding.Area;
+import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.modifier.*;
+import one.lindegaard.MobHunting.update.Updater;
+import one.lindegaard.MobHunting.util.Misc;
+import org.bukkit.*;
 import org.bukkit.command.CommandException;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Blaze;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.MagmaCube;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.ThrownPotion;
-import org.bukkit.entity.Wither;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -56,92 +33,32 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.gmail.nossr50.datatypes.skills.SkillType;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-
-import one.lindegaard.MobHunting.bounty.Bounty;
-import one.lindegaard.MobHunting.bounty.BountyManager;
-import one.lindegaard.MobHunting.bounty.BountyStatus;
-import one.lindegaard.MobHunting.compatibility.BattleArenaCompat;
-import one.lindegaard.MobHunting.compatibility.CitizensCompat;
-import one.lindegaard.MobHunting.compatibility.ConquestiaMobsCompat;
-import one.lindegaard.MobHunting.compatibility.CrackShotCompat;
-import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
-import one.lindegaard.MobHunting.compatibility.DisguisesHelper;
-import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
-import one.lindegaard.MobHunting.compatibility.FactionsCompat;
-import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
-import one.lindegaard.MobHunting.compatibility.McMMOCompat;
-import one.lindegaard.MobHunting.compatibility.MinigamesLibCompat;
-import one.lindegaard.MobHunting.compatibility.MobArenaCompat;
-import one.lindegaard.MobHunting.compatibility.MobStackerCompat;
-import one.lindegaard.MobHunting.compatibility.MyPetCompat;
-import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
-import one.lindegaard.MobHunting.compatibility.ProtocolLibHelper;
-import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
-import one.lindegaard.MobHunting.compatibility.StackMobCompat;
-import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
-import one.lindegaard.MobHunting.compatibility.TownyCompat;
-import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
-import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
-import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
-import one.lindegaard.MobHunting.events.BountyKillEvent;
-import one.lindegaard.MobHunting.events.MobHuntEnableCheckEvent;
-import one.lindegaard.MobHunting.events.MobHuntKillEvent;
-import one.lindegaard.MobHunting.grinding.Area;
-import one.lindegaard.MobHunting.mobs.ExtendedMob;
-import one.lindegaard.MobHunting.modifier.BonusMobBonus;
-import one.lindegaard.MobHunting.modifier.BrawlerBonus;
-import one.lindegaard.MobHunting.modifier.ConquestiaBonus;
-import one.lindegaard.MobHunting.modifier.CoverBlown;
-import one.lindegaard.MobHunting.modifier.CrackShotPenalty;
-import one.lindegaard.MobHunting.modifier.CriticalModifier;
-import one.lindegaard.MobHunting.modifier.DifficultyBonus;
-import one.lindegaard.MobHunting.modifier.FactionWarZoneBonus;
-import one.lindegaard.MobHunting.modifier.FlyingPenalty;
-import one.lindegaard.MobHunting.modifier.FriendleFireBonus;
-import one.lindegaard.MobHunting.modifier.GrindingPenalty;
-import one.lindegaard.MobHunting.modifier.HappyHourBonus;
-import one.lindegaard.MobHunting.modifier.IModifier;
-import one.lindegaard.MobHunting.modifier.InfernalMobBonus;
-import one.lindegaard.MobHunting.modifier.MountedBonus;
-import one.lindegaard.MobHunting.modifier.ProSniperBonus;
-import one.lindegaard.MobHunting.modifier.RankBonus;
-import one.lindegaard.MobHunting.modifier.ReturnToSenderBonus;
-import one.lindegaard.MobHunting.modifier.ShoveBonus;
-import one.lindegaard.MobHunting.modifier.SneakyBonus;
-import one.lindegaard.MobHunting.modifier.SniperBonus;
-import one.lindegaard.MobHunting.modifier.StackedMobBonus;
-import one.lindegaard.MobHunting.modifier.Undercover;
-import one.lindegaard.MobHunting.rewards.RewardManager;
-import one.lindegaard.MobHunting.update.Updater;
-import one.lindegaard.MobHunting.util.Misc;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class MobHuntingManager implements Listener {
 
-	private MobHunting instance;
+	private MobHunting plugin;
 	public Random mRand = new Random();
 	private final String SPAWNER_BLOCKED = "MH:SpawnerBlocked";
 
-	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<LivingEntity, DamageInformation>();
-	private Set<IModifier> mHuntingModifiers = new HashSet<IModifier>();
+	private static WeakHashMap<LivingEntity, DamageInformation> mDamageHistory = new WeakHashMap<>();
+	private Set<IModifier> mHuntingModifiers = new HashSet<>();
 
 	/**
 	 * Constructor for MobHuntingManager
-	 * 
+	 *
 	 * @param instance
 	 */
 	public MobHuntingManager(MobHunting instance) {
-		this.instance = instance;
+		this.plugin = instance;
 		registerHuntingModifiers();
 		Bukkit.getServer().getPluginManager().registerEvents(this, instance);
 	}
 
 	/**
 	 * Gets the DamageInformation for a LivingEntity
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 */
@@ -159,7 +76,7 @@ public class MobHuntingManager implements Listener {
 				public void run() {
 					Updater.pluginUpdateCheck(player, true, true);
 				}
-			}.runTaskLater(instance, 20L);
+			}.runTaskLater(plugin, 20L);
 		}
 	}
 
@@ -177,18 +94,18 @@ public class MobHuntingManager implements Listener {
 
 	/**
 	 * Set if MobHunting is allowed for the player
-	 * 
+	 *
 	 * @param player
 	 * @param enabled
 	 *            = true : means the MobHunting is allowed
 	 */
 	public void setHuntEnabled(Player player, boolean enabled) {
-		player.setMetadata("MH:enabled", new FixedMetadataValue(instance, enabled));
+		player.setMetadata("MH:enabled", new FixedMetadataValue(plugin, enabled));
 	}
 
 	/**
 	 * Gets the online player (backwards compatibility)
-	 * 
+	 *
 	 * @return number of players online
 	 */
 	public int getOnlinePlayersAmount() {
@@ -200,14 +117,14 @@ public class MobHuntingManager implements Listener {
 				return ((Player[]) method.invoke(Bukkit.getServer())).length;
 			}
 		} catch (Exception ex) {
-			Messages.debug(ex.getMessage().toString());
+			Messages.debug(ex.getMessage());
 		}
 		return 0;
 	}
 
 	/**
 	 * Gets the online player (for backwards compatibility)
-	 * 
+	 *
 	 * @return all online players as a Java Collection, if return type of
 	 *         Bukkit.getOnlinePlayers() is Player[] it will be converted to a
 	 *         Collection.
@@ -232,7 +149,7 @@ public class MobHuntingManager implements Listener {
 
 	/**
 	 * Checks if MobHunting is enabled for the player
-	 * 
+	 *
 	 * @param player
 	 * @return true if MobHunting is enabled for the player, false if not.
 	 */
@@ -304,7 +221,7 @@ public class MobHuntingManager implements Listener {
 
 	/**
 	 * Check if MobHunting is allowed in world
-	 * 
+	 *
 	 * @param world
 	 * @return true if MobHunting is allowed.
 	 */
@@ -320,7 +237,7 @@ public class MobHuntingManager implements Listener {
 
 	/**
 	 * Checks if the player has permission to kill the mob
-	 * 
+	 *
 	 * @param player
 	 * @param mob
 	 * @return true if the player has permission to kill the mob
@@ -1304,7 +1221,7 @@ public class MobHuntingManager implements Listener {
 											&& !MobStackerCompat.isGrindingStackedMobsAllowed())) {
 										data.setDampenedKills(data.getDampenedKills() + 1);
 										Messages.debug("DampendKills=%s", data.getDampenedKills());
-										if (data.getDampenedKills() >= MobHunting
+										if (data.getDampenedKills() >= plugin
 												.getConfigManager().grindingDetectionNumberOfDeath / 2) {
 											Messages.debug(
 													"Warning: Grinding detected. Killings too close, adding 1 to DampenedKills.");
@@ -1496,7 +1413,7 @@ public class MobHuntingManager implements Listener {
 			if (info.getAssister() == null || MobHunting.getConfigManager().enableAssists == false) {
 				if (cash >= MobHunting.getConfigManager().minimumReward) {
 					if (MobHunting.getConfigManager().dropMoneyOnGroup) {
-						RewardManager.dropMoneyOnGround(killer, killed, killed.getLocation(), cash);
+						MobHunting.getRewardManager().dropMoneyOnGround(killer, killed, killed.getLocation(), cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(killer, cash);
 						// Messages.debug("RecordCash: %s killed a %s (%s)
@@ -1524,25 +1441,18 @@ public class MobHuntingManager implements Listener {
 						Messages.debug("%s was assisted by %s. Reward/Penalty is only ½ (%s)",
 								getPlayer(killer, killed).getName(), getKillerName(killer, killed),
 								MobHunting.getRewardManager().format(cash));
-						RewardManager.dropMoneyOnGround(getPlayer(killer, killed), killed, killed.getLocation(), cash);
+						MobHunting.getRewardManager().dropMoneyOnGround(getPlayer(killer, killed), killed,
+								killed.getLocation(), cash);
 					} else {
 						MobHunting.getRewardManager().depositPlayer(info.getAssister(), cash);
-						// Messages.debug("RecordCash: %s killed a %s (%s)
-						// Cash=%s", killer.getName(), mob.getName(),
-						// mob.getMobPlugin().name(), cash);
-						// MobHunting.getDataStoreManager().recordCash(killer,
-						// mob, killed.hasMetadata("MH:hasBonus"), cash);
+
 						onAssist(getPlayer(killer, killed), killer, killed, info.getLastAssistTime());
 						Messages.debug("%s was assisted by %s. Reward/Penalty is only ½ (%s)", killer.getName(),
 								getKillerName(killer, killed), MobHunting.getRewardManager().format(cash));
 					}
 				} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
 					MobHunting.getRewardManager().withdrawPlayer(getPlayer(killer, killed), -cash);
-					// Messages.debug("RecordCash: %s Assisted killed a %s (%s)
-					// Cash=%s", killer.getName(), mob.getName(),
-					// mob.getMobPlugin().name(), cash);
-					// MobHunting.getDataStoreManager().recordCash(killer, mob,
-					// killed.hasMetadata("MH:hasBonus"), cash);
+
 					onAssist(info.getAssister(), killer, killed, info.getLastAssistTime());
 					Messages.debug("%s was assisted by %s. Reward/Penalty is only ½ (%s)",
 							getPlayer(killer, killed).getName(), getKillerName(killer, killed),
@@ -1671,7 +1581,7 @@ public class MobHuntingManager implements Listener {
 											+ " was killed by " + getPlayer(killer, killed).getName());
 							Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str.substring(0, n));
 						}
-						str = str.substring(n + 1, str.length()).toString();
+						str = str.substring(n + 1, str.length());
 					}
 				} while (str.contains("|"));
 				try {
@@ -1708,7 +1618,7 @@ public class MobHuntingManager implements Listener {
 
 	/**
 	 * Get the Player or the MyPet owner (Player)
-	 * 
+	 *
 	 * @param killer
 	 *            - the player who killed the mob
 	 * @param killed
@@ -1834,7 +1744,7 @@ public class MobHuntingManager implements Listener {
 						.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 3));
 			else
 				event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
-			event.getEntity().setMetadata("MH:hasBonus", new FixedMetadataValue(MobHunting.getInstance(), true));
+			event.getEntity().setMetadata("MH:hasBonus", new FixedMetadataValue(plugin, true));
 		}
 	}
 
@@ -1853,8 +1763,7 @@ public class MobHuntingManager implements Listener {
 				|| event.getSpawnReason() == SpawnReason.DISPENSE_EGG) {
 			if (MobHunting.getConfigManager().disableMoneyRewardsFromMobSpawnersEggsAndDispensers)
 				if (!MobHunting.getGrindingManager().isWhitelisted(event.getEntity().getLocation()))
-					event.getEntity().setMetadata(SPAWNER_BLOCKED,
-							new FixedMetadataValue(MobHunting.getInstance(), true));
+					event.getEntity().setMetadata(SPAWNER_BLOCKED, new FixedMetadataValue(plugin, true));
 		}
 	}
 
@@ -1874,7 +1783,7 @@ public class MobHuntingManager implements Listener {
 						&& MobHunting.getConfigManager().getKillConsoleCmd(mob).equals(""))
 			return;
 
-		event.getEntity().setMetadata("MH:reinforcement", new FixedMetadataValue(MobHunting.getInstance(), true));
+		event.getEntity().setMetadata("MH:reinforcement", new FixedMetadataValue(plugin, true));
 
 	}
 
@@ -1885,5 +1794,4 @@ public class MobHuntingManager implements Listener {
 	public WeakHashMap<LivingEntity, DamageInformation> getDamageHistory() {
 		return mDamageHistory;
 	}
-
 }

@@ -82,10 +82,12 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 
 @SuppressWarnings("deprecation")
 public class ConfigManager extends AutoConfig {
+	
 
 	public ConfigManager(File file) {
+		
 		super(file);
-
+		
 		setCategoryComment("mobs", "########################################################################"
 				+ "\nRewards for killing mobs."
 				+ "\n########################################################################"

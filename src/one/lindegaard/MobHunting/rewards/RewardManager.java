@@ -54,6 +54,7 @@ public class RewardManager implements Listener {
 	private static YamlConfiguration config = new YamlConfiguration();
 
 	private static Economy mEconomy;
+	private PickupRewards pickupRewards;
 
 	private static HashMap<Integer, Double> droppedMoney = new HashMap<Integer, Double>();
 	private static HashMap<UUID, Reward> placedMoney_Reward = new HashMap<UUID, Reward>();
@@ -66,21 +67,23 @@ public class RewardManager implements Listener {
 			Bukkit.getPluginManager().disablePlugin(instance);
 			return;
 		}
+		
 		mEconomy = economyProvider.getProvider();
+		pickupRewards = new PickupRewards();
 
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(), instance);
 		if (Misc.isMC18OrNewer())
 			Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(), MobHunting.getInstance());
 
 		if (Misc.isMC112OrNewer())
-			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(), MobHunting.getInstance());
+			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), MobHunting.getInstance());
 		else
-			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(), MobHunting.getInstance());
+			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), MobHunting.getInstance());
 		
 		loadAllStoredRewards();
 	}
 
-	public static Economy getEconomy() {
+	public Economy getEconomy() {
 		return mEconomy;
 	}
 

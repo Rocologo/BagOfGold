@@ -15,6 +15,10 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class MoneyMergeEventListener implements Listener {
 
+	public MoneyMergeEventListener() {
+	}
+
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=false)
 	public void onMoneyMergeEvent(ItemMergeEvent event) {
 		// OBS: ItemMergeEvent does only exist in MC1.8 and newer
@@ -49,7 +53,7 @@ public class MoneyMergeEventListener implements Listener {
 							MobHunting.getRewardManager().format(reward2.getMoney()));
 				}
 				if (RewardManager.getDroppedMoney().containsKey(item1.getEntityId()))
-					RewardManager.getDroppedMoney().remove(item1.getEntityId());
+                    RewardManager.getDroppedMoney().remove(item1.getEntityId());
 			}
 		}
 	}
