@@ -10,14 +10,12 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class ProtocolLibCompat {
 
-	private  Plugin mPlugin;
-	private static  boolean supported = false;
-	private ProtocolLibHelper protocolLibHelper;
+	private static Plugin mPlugin;
+	private static boolean supported = false;
 
 	// https://www.spigotmc.org/resources/protocollib.1997/
 
-	public ProtocolLibCompat(ProtocolLibHelper protocolLibHelper) {
-		this.protocolLibHelper = protocolLibHelper;
+	public ProtocolLibCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with ProtocolLib is disabled in config.yml");
 		} else {
@@ -30,7 +28,7 @@ public class ProtocolLibCompat {
 			} else {
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with ProtocolLib ("
 						+ mPlugin.getDescription().getVersion() + ").");
-				this.protocolLibHelper.enableProtocolLib();
+				ProtocolLibHelper.enableProtocolLib();
 				supported = true;
 			}
 		}
@@ -44,7 +42,7 @@ public class ProtocolLibCompat {
 		return mPlugin;
 	}
 
-	public static  boolean isSupported() {
+	public static boolean isSupported() {
 		return supported;
 	}
 
