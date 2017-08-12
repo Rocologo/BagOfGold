@@ -67,7 +67,7 @@ public class RewardManager implements Listener {
 			Bukkit.getPluginManager().disablePlugin(instance);
 			return;
 		}
-		
+
 		mEconomy = economyProvider.getProvider();
 		pickupRewards = new PickupRewards();
 
@@ -75,12 +75,24 @@ public class RewardManager implements Listener {
 		if (Misc.isMC18OrNewer())
 			Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(), MobHunting.getInstance());
 
-		if (Misc.isMC112OrNewer())
-			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), MobHunting.getInstance());
+		if (Misc.isMC112OrNewer() && eventDoesExists())
+			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards),
+					MobHunting.getInstance());
 		else
-			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), MobHunting.getInstance());
-		
+			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards),
+					MobHunting.getInstance());
 		loadAllStoredRewards();
+	}
+
+	private boolean eventDoesExists() {
+		try {
+			@SuppressWarnings({ "rawtypes", "unused" })
+			Class cls = Class.forName("org.bukkit.event.entity.EntityPickupItemEvent");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+
 	}
 
 	public Economy getEconomy() {
@@ -279,5 +291,5 @@ public class RewardManager implements Listener {
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
-	
+
 }

@@ -1,3 +1,5 @@
+V5.0.5
+* Added test to check if "org.bukkit.event.entity.EntityPickupItemEvent" does exits. It seems like the first MC 1.12 servers does not have this evnet.
 V5.0.4
 * Fixed NPE bug, when a MyPet killed a mob, while checking for grinding.
 V5.0.3

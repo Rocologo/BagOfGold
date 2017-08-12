@@ -56,7 +56,7 @@ public class MobHunting extends JavaPlugin {
 
 	private static MobHunting instance;
 
-	private static RewardManager mRewardManager;
+	private RewardManager mRewardManager;
 	private static MobHuntingManager mMobHuntingManager;
 	private static FishingManager mFishingManager;
 	private static GrindingManager mAreaManager;
@@ -463,7 +463,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static RewardManager getRewardManager() {
+	public RewardManager getRewardManager() {
 		return mRewardManager;
 	}
 
