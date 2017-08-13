@@ -112,8 +112,8 @@ public class RewardManager implements Listener {
 	public static final String MH_REWARD_KILLER_UUID = "d81f1076-c91c-44c0-98c3-02a2ee88aa97";
 
 	private MobHunting plugin;
-	private File file;
-	private YamlConfiguration config = new YamlConfiguration();
+	private static File file;
+	private static YamlConfiguration config = new YamlConfiguration();
 
 	private Economy mEconomy;
 	private PickupRewards pickupRewards;

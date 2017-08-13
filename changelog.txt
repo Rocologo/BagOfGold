@@ -1,3 +1,5 @@
+V5.0.6
+* Changed to static file and config access in the RewardManager
 V5.0.5
 * Added test to check if "org.bukkit.event.entity.EntityPickupItemEvent" does exits. It seems like the first MC 1.12 servers does not have this event.
 * Fixed NPE error thrown when a MyPet kills a mob. (I have fixed this error once before, but after a rollback I had to do, I forgot to fix this problem). Sorry.

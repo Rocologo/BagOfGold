@@ -1619,7 +1619,6 @@ public class MobHuntingManager implements Listener {
 			return damageInformation.getAttacker();
 
 		return null;
-		// return killer != null ? killer : MyPetCompat.getMyPetOwner(killed);
 
 	}
 
