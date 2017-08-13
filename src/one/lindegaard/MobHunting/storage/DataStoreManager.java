@@ -375,9 +375,6 @@ public class DataStoreManager {
 		public void run() {
 			try {
 				while (true) {
-					if (MobHunting.getConfigManager().debugSQL && mQueue.size() > 20) {
-						Messages.debug("TaskThread: mQueue.size()=%s", mQueue.size());
-					}
 					if (mQueue.isEmpty())
 						synchronized (mSignal) {
 							mSignal.notifyAll();

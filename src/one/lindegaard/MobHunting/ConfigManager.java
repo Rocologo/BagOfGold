@@ -2,85 +2,10 @@ package one.lindegaard.MobHunting;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
-
-import one.lindegaard.MobHunting.compatibility.CitizensCompat;
-import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
-import one.lindegaard.MobHunting.compatibility.MyPetCompat;
-import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
-import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
-import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
-import one.lindegaard.MobHunting.compatibility.TARDISWeepingAngelsCompat;
-import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
-import one.lindegaard.MobHunting.rewards.RewardData;
 import one.lindegaard.MobHunting.util.AutoConfig;
 import one.lindegaard.MobHunting.util.ConfigField;
-import one.lindegaard.MobHunting.util.Misc;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.entity.Bat;
-import org.bukkit.entity.Blaze;
-import org.bukkit.entity.CaveSpider;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Donkey;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Endermite;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Evoker;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Giant;
-import org.bukkit.entity.Guardian;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Husk;
-import org.bukkit.entity.Illusioner;
-import org.bukkit.entity.IronGolem;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Llama;
-import org.bukkit.entity.MagmaCube;
-import org.bukkit.entity.Mule;
-import org.bukkit.entity.MushroomCow;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Parrot;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.PolarBear;
-import org.bukkit.entity.Rabbit;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Shulker;
-import org.bukkit.entity.Silverfish;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Snowman;
-import org.bukkit.entity.Spider;
-import org.bukkit.entity.Squid;
-import org.bukkit.entity.Stray;
-import org.bukkit.entity.Vex;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Witch;
-import org.bukkit.entity.Wither;
-import org.bukkit.entity.Wolf;
-import org.bukkit.entity.Zombie;
-import org.bukkit.entity.ZombieHorse;
-import org.bukkit.entity.ZombieVillager;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Skeleton.SkeletonType;
-import org.bukkit.entity.SkeletonHorse;
-import org.bukkit.entity.Villager.Profession;
-import org.bukkit.entity.Vindicator;
-import org.bukkit.metadata.MetadataValue;
 
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
-
-@SuppressWarnings("deprecation")
 public class ConfigManager extends AutoConfig {
 	
 
@@ -285,7 +210,7 @@ public class ConfigManager extends AutoConfig {
 						+ "\nand the chance to get the xp.");
 
 		setCategoryComment("crackshot",
-				"########################################################################" + "\nIntegration to McMMO"
+				"########################################################################" + "\nIntegration to CrackShot"
 						+ "\n########################################################################"
 						+ "\nThis section only relevant if you use CrackShot."
 						+ "\nHere you configure if the player will get a multiplier for using a CrackShot weapon");
@@ -1740,7 +1665,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-on-ground-skull-texture-value", category = "dropmoneyonground", comment = "This is the Custom Texture Value generated at http://mineskin.org")
 	public String dropMoneyOnGroundSkullTextureValue = "eyJ0aW1lc3RhbXAiOjE0ODU5MTIwNjk3OTgsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM5NmNlMTNmZjYxNTVmZGYzMjM1ZDhkMjIxNzRjNWRlNGJmNTUxMmYxYWRlZGExYWZhM2ZjMjgxODBmM2Y3In19fQ==";
 
-	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http:\\\\mineskin.org")
+	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http://mineskin.org")
 	public String dropMoneyOnGroundSkullTextureSignature = "m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=";
 
 	@ConfigField(name = "deny-hoppers-to-pickup-money-on-ground", category = "dropmoneyonground", comment = "Dark room mobspawners usually collect items in a HOPPER. This is allowed by default."
@@ -2264,9 +2189,6 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "database", category = "database")
 	public String databaseName = "mobhunting";
-
-	@ConfigField(name = "debug_sql", category = "database", comment = "sql_debug is only meant to be used by the developer. Setting this to to true can produre a a big log file!")
-	public boolean debugSQL = false;
 
 	@ConfigField(name = "database_version", category = "database", comment = "FOR INTERNAL USE ONLY. DONT CHANGE THIS VALUE!")
 	public int databaseVersion = 0;

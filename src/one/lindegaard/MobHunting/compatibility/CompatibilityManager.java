@@ -16,8 +16,8 @@ public class CompatibilityManager {
 	 * @param pluginName
 	 *            The name of the plugin to check
 	 */
-	public static void register(Class<?> compatibilityHandler, String pluginName) {
-		if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
+	public static void register(Class<?> compatibilityHandler, CompatPlugin pluginName) {
+		if (Bukkit.getPluginManager().isPluginEnabled(pluginName.getName())) {
 			try {
 				mCompatClasses.add(compatibilityHandler.newInstance());
 			} catch (Exception e) {

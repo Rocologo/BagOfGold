@@ -98,6 +98,7 @@ import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.util.Misc;
 
+@SuppressWarnings("deprecation")
 public class RewardManager implements Listener {
 
 	// public static final String MH_MONEY = "MH:Money";

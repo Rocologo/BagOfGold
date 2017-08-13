@@ -170,63 +170,63 @@ public class MobHunting extends JavaPlugin {
 		mPlayerSettingsManager = new PlayerSettingsManager(this);
 
 		// Handle compatibility stuff
-		registerPlugin(EssentialsCompat.class, "Essentials");
-		registerPlugin(GringottsCompat.class, "Gringotts");
+		registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
+		registerPlugin(GringottsCompat.class, CompatPlugin.Gringotts);
 
 		// Protection plugins
-		registerPlugin(WorldEditCompat.class, "WorldEdit");
-		registerPlugin(WorldGuardCompat.class, "WorldGuard");
-		registerPlugin(FactionsCompat.class, "Factions");
-		registerPlugin(TownyCompat.class, "Towny");
-		registerPlugin(ResidenceCompat.class, "Residence");
+		registerPlugin(WorldEditCompat.class, CompatPlugin.WorldEdit);
+		registerPlugin(WorldGuardCompat.class, CompatPlugin.WorldGuard);
+		registerPlugin(FactionsCompat.class, CompatPlugin.Factions);
+		registerPlugin(TownyCompat.class, CompatPlugin.Towny);
+		registerPlugin(ResidenceCompat.class, CompatPlugin.Residence);
 
 		// Other plugins
-		registerPlugin(McMMOCompat.class, "mcMMO");
-		registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
-		registerPlugin(MyPetCompat.class, "MyPet");
-		registerPlugin(BossShopCompat.class, "BossShop");
+		registerPlugin(McMMOCompat.class, CompatPlugin.mcMMO);
+		registerPlugin(ProtocolLibCompat.class, CompatPlugin.ProtocolLib);
+		registerPlugin(MyPetCompat.class, CompatPlugin.MyPet);
+		registerPlugin(BossShopCompat.class, CompatPlugin.BossShop);
 
 		// Minigame plugins
-		registerPlugin(MinigamesCompat.class, "Minigames");
-		registerPlugin(MinigamesLibCompat.class, "MinigamesLib");
-		registerPlugin(MobArenaCompat.class, "MobArena");
-		registerPlugin(PVPArenaCompat.class, "PVPArena");
-		registerPlugin(BattleArenaCompat.class, "BattleArena");
+		registerPlugin(MinigamesCompat.class, CompatPlugin.Minigames);
+		registerPlugin(MinigamesLibCompat.class, CompatPlugin.MinigamesLib);
+		registerPlugin(MobArenaCompat.class, CompatPlugin.MobArena);
+		registerPlugin(PVPArenaCompat.class, CompatPlugin.PVPArena);
+		registerPlugin(BattleArenaCompat.class, CompatPlugin.BattleArena);
 
 		// Disguise and Vanish plugins
-		registerPlugin(LibsDisguisesCompat.class, "LibsDisguises");
-		registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
-		registerPlugin(IDisguiseCompat.class, "iDisguise");
-		registerPlugin(VanishNoPacketCompat.class, "VanishNoPacket");
+		registerPlugin(LibsDisguisesCompat.class, CompatPlugin.LibsDisguises);
+		registerPlugin(DisguiseCraftCompat.class, CompatPlugin.DisguiseCraft);
+		registerPlugin(IDisguiseCompat.class, CompatPlugin.iDisguise);
+		registerPlugin(VanishNoPacketCompat.class, CompatPlugin.VanishNoPacket);
 
 		// Plugins used for presentation information in the BossBar, ActionBar,
 		// Title or Subtitle
-		registerPlugin(BossBarAPICompat.class, "BossBarAPI");
-		registerPlugin(TitleAPICompat.class, "TitleAPI");
-		registerPlugin(BarAPICompat.class, "BarAPI");
-		registerPlugin(TitleManagerCompat.class, "TitleManager");
-		registerPlugin(ActionbarCompat.class, "Actionbar");
-		registerPlugin(ActionBarAPICompat.class, "ActionBarAPI");
-		registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
-		registerPlugin(PlaceholderAPICompat.class, "PlaceholderAPI");
+		registerPlugin(BossBarAPICompat.class, CompatPlugin.BossBarApi);
+		registerPlugin(TitleAPICompat.class, CompatPlugin.TitleAPI);
+		registerPlugin(BarAPICompat.class, CompatPlugin.BarApi);
+		registerPlugin(TitleManagerCompat.class, CompatPlugin.TitleManager);
+		registerPlugin(ActionbarCompat.class, CompatPlugin.Actionbar);
+		registerPlugin(ActionBarAPICompat.class, CompatPlugin.ActionBarApi);
+		registerPlugin(ActionAnnouncerCompat.class, CompatPlugin.ActionAnnouncer);
+		registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
 
 		// Plugins where the reward is a multiplier
-		registerPlugin(StackMobCompat.class, "StackMob");
-		registerPlugin(MobStackerCompat.class, "MobStacker");
-		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
+		registerPlugin(StackMobCompat.class, CompatPlugin.StackMob);
+		registerPlugin(MobStackerCompat.class, CompatPlugin.MobStacker);
+		registerPlugin(ConquestiaMobsCompat.class, CompatPlugin.ConquestiaMobs);
 
 		// ExtendedMob Plugins where special mobs are created
-		registerPlugin(MythicMobsCompat.class, "MythicMobs");
-		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
-		registerPlugin(CustomMobsCompat.class, "CustomMobs");
-		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
-		registerPlugin(CitizensCompat.class, "Citizens");
-		registerPlugin(SmartGiantsCompat.class, "SmartGiants");
-		registerPlugin(InfernalMobsCompat.class, "InfernalMobs");
-		registerPlugin(HerobrineCompat.class, "Herobrine");
+		registerPlugin(MythicMobsCompat.class, CompatPlugin.MythicMobs);
+		registerPlugin(TARDISWeepingAngelsCompat.class, CompatPlugin.TARDISWeepingAngels);
+		registerPlugin(CustomMobsCompat.class, CompatPlugin.CustomMobs);
+		registerPlugin(MysteriousHalloweenCompat.class, CompatPlugin.MysteriousHalloween);
+		registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
+		registerPlugin(SmartGiantsCompat.class, CompatPlugin.SmartGiants);
+		registerPlugin(InfernalMobsCompat.class, CompatPlugin.InfernalMobs);
+		registerPlugin(HerobrineCompat.class, CompatPlugin.Herobrine);
 
-		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
-		registerPlugin(CrackShotCompat.class, "CrackShot");
+		registerPlugin(ExtraHardModeCompat.class, CompatPlugin.ExtraHardMode);
+		registerPlugin(CrackShotCompat.class, CompatPlugin.CrackShot);
 
 		mExtendedMobManager = new ExtendedMobManager(this);
 
@@ -316,7 +316,7 @@ public class MobHunting extends JavaPlugin {
 
 	}
 
-	public void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
+	public void registerPlugin(@SuppressWarnings("rawtypes") Class c, CompatPlugin pluginName) {
 		try {
 			CompatibilityManager.register(c, pluginName);
 		} catch (Exception e) {
