@@ -12,12 +12,14 @@ import org.bukkit.entity.Player;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.bounty.Bounty;
-import one.lindegaard.MobHunting.bounty.BountyManager;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
 
 public class BountyCommand implements ICommand {
 
-	public BountyCommand() {
+	private MobHunting plugin;
+
+	public BountyCommand(MobHunting plugin) {
+		this.plugin = plugin;
 	}
 
 	// Used case
@@ -88,7 +90,8 @@ public class BountyCommand implements ICommand {
 
 			// /mh bounty
 			// Show list of Bounties on all wantedPlayers
-			BountyManager.showMostWanted(sender, worldGroupName, MobHunting.getConfigManager().useGuiForBounties);
+			plugin.getBountyManager().showMostWanted(sender, worldGroupName,
+					MobHunting.getConfigManager().useGuiForBounties);
 			return true;
 
 		} else if (args.length == 1) {
@@ -100,7 +103,7 @@ public class BountyCommand implements ICommand {
 
 			// /mh bounty [gui|nogui]
 			if (args[0].equalsIgnoreCase("gui") || args[0].equalsIgnoreCase("nogui")) {
-				BountyManager.showMostWanted(sender, worldGroupName, args[0].equalsIgnoreCase("gui"));
+				plugin.getBountyManager().showMostWanted(sender, worldGroupName, args[0].equalsIgnoreCase("gui"));
 				return true;
 			}
 
@@ -110,7 +113,7 @@ public class BountyCommand implements ICommand {
 			@SuppressWarnings("deprecation")
 			OfflinePlayer wantedPlayer = Bukkit.getOfflinePlayer(args[0]);
 			if (wantedPlayer != null) {
-				BountyManager.showOpenBounties(sender, worldGroupName, wantedPlayer,
+				plugin.getBountyManager().showOpenBounties(sender, worldGroupName, wantedPlayer,
 						MobHunting.getConfigManager().useGuiForBounties);
 				return true;
 			} else {
@@ -127,7 +130,8 @@ public class BountyCommand implements ICommand {
 			@SuppressWarnings("deprecation")
 			OfflinePlayer wantedPlayer = Bukkit.getOfflinePlayer(args[0]);
 			if (wantedPlayer != null) {
-				BountyManager.showOpenBounties(sender, worldGroupName, wantedPlayer, args[1].equalsIgnoreCase("gui"));
+				plugin.getBountyManager().showOpenBounties(sender, worldGroupName, wantedPlayer,
+						args[1].equalsIgnoreCase("gui"));
 				return true;
 			} else {
 				sender.sendMessage(
@@ -141,13 +145,12 @@ public class BountyCommand implements ICommand {
 			@SuppressWarnings("deprecation")
 			OfflinePlayer wantedPlayer = Bukkit.getOfflinePlayer(args[1]);
 			if (wantedPlayer != null) {
-				if (MobHunting.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
-					Bounty bounty = MobHunting.getBountyManager().getOpenBounty(worldGroupName, wantedPlayer,
-							bountyOwner);
-					//bounty.setStatus(BountyStatus.canceled);
-					MobHunting.getBountyManager().cancel(bounty);
+				if (plugin.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
+					Bounty bounty = plugin.getBountyManager().getOpenBounty(worldGroupName, wantedPlayer, bountyOwner);
+					// bounty.setStatus(BountyStatus.canceled);
+					plugin.getBountyManager().cancel(bounty);
 					int pct = MobHunting.getConfigManager().bountyReturnPct;
-					MobHunting.getRewardManager().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
+					plugin.getRewardManager().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounty-removed", "wantedplayer",
 							wantedPlayer.getName(), "money", String.format("%.2f", bounty.getPrize() * pct / 100)));
 					return true;
@@ -194,7 +197,7 @@ public class BountyCommand implements ICommand {
 				// return true;
 				// }
 				double prize = Double.valueOf(args[1]);
-				if (!MobHunting.getRewardManager().has(bountyOwner, prize)) {
+				if (!plugin.getRewardManager().has(bountyOwner, prize)) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-money", "money", prize));
 					return true;
 				}
@@ -207,8 +210,8 @@ public class BountyCommand implements ICommand {
 				// Messages.debug("args[0]=%s,args[1]=%s,args[2-]=%s",
 				// args[0], args[1], message);
 				Bounty bounty;
-				bounty = new Bounty(worldGroupName, bountyOwner, wantedPlayer, prize, message);
-				if (MobHunting.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
+				bounty = new Bounty(plugin, worldGroupName, bountyOwner, wantedPlayer, prize, message);
+				if (plugin.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounty-added", "wantedplayer",
 							wantedPlayer.getName()));
 				} else {
@@ -216,8 +219,8 @@ public class BountyCommand implements ICommand {
 							"wantedplayer", wantedPlayer.getName()));
 				}
 
-				MobHunting.getBountyManager().save(bounty);
-				MobHunting.getRewardManager().withdrawPlayer(bountyOwner, prize);
+				plugin.getBountyManager().save(bounty);
+				plugin.getRewardManager().withdrawPlayer(bountyOwner, prize);
 				sender.sendMessage(Messages.getString("mobhunting.commands.bounty.money-withdrawn", "money", prize));
 
 				Messages.debug("%s has put %s on %s with the message %s", bountyOwner.getName(), prize,
@@ -247,12 +250,12 @@ public class BountyCommand implements ICommand {
 			}
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 			String partial = args[1].toLowerCase();
-			for (OfflinePlayer wantedPlayer : MobHunting.getBountyManager().getWantedPlayers()) {
+			for (OfflinePlayer wantedPlayer : plugin.getBountyManager().getWantedPlayers()) {
 				if (wantedPlayer.getName().toLowerCase().startsWith(partial))
 					items.add(wantedPlayer.getName());
 			}
 		}
-		
+
 		if (!args[args.length - 1].trim().isEmpty()) {
 			String match = args[args.length - 1].trim().toLowerCase();
 			items.removeIf(name -> !name.toLowerCase().startsWith(match));

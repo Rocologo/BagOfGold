@@ -18,6 +18,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class RecordHungry implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public RecordHungry(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.recordhungry.name");
@@ -42,7 +48,7 @@ public class RecordHungry implements Achievement, Listener {
 	public void onDeath(MobHuntKillEvent event) {
 		if (!(event.getKilledEntity() instanceof Creeper)
 				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
-				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0))
+				|| (plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) <= 0))
 			return;
 
 		Creeper killed = (Creeper) event.getKilledEntity();

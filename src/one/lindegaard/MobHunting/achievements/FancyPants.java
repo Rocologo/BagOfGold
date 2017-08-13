@@ -11,6 +11,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class FancyPants implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public FancyPants(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.fancypants.name");
@@ -47,7 +53,7 @@ public class FancyPants implements Achievement, Listener {
 				&& event.getPlayer().getInventory().getBoots() != null
 				&& event.getPlayer().getInventory().getBoots().getType() == Material.DIAMOND_BOOTS
 				&& !event.getPlayer().getInventory().getBoots().getEnchantments().isEmpty()
-				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
+				&& plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) > 0)
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}

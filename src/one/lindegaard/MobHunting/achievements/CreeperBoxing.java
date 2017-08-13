@@ -9,6 +9,12 @@ import org.bukkit.event.Listener;
 
 public class CreeperBoxing extends AbstractSkullAchievement implements Listener {
 
+	private MobHunting plugin;
+
+	public CreeperBoxing(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.creeperboxing.name");
@@ -32,7 +38,7 @@ public class CreeperBoxing extends AbstractSkullAchievement implements Listener 
 	@EventHandler
 	public void onKill(MobHuntKillEvent event) {
 		if (event.getKilledEntity() instanceof Creeper && !event.getDamageInfo().hasUsedWeapon()
-				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
+				&& plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) > 0)
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}

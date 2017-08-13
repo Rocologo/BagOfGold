@@ -62,7 +62,7 @@ public class MobHunting extends JavaPlugin {
 	private static GrindingManager mAreaManager;
 	private static LeaderboardManager mLeaderboardManager;
 	private static AchievementManager mAchievementManager;
-	private static BountyManager mBountyManager;
+	private BountyManager mBountyManager;
 	private static ParticleManager mParticleManager = new ParticleManager();
 	private static MetricsManager mMetricsManager;
 	private static PlayerSettingsManager mPlayerSettingsManager;
@@ -87,8 +87,6 @@ public class MobHunting extends JavaPlugin {
 		Messages.exportDefaultLanguages(this);
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
-
-
 
 		if (mConfig.loadConfig()) {
 			if (mConfig.dropMoneyOnGroundTextColor.equals("&0"))
@@ -137,19 +135,19 @@ public class MobHunting extends JavaPlugin {
 			}
 		}
 
-		mWorldGroupManager = new WorldGroup();
+		mWorldGroupManager = new WorldGroup(this);
 		mWorldGroupManager.load();
 
-		mRewardManager=new RewardManager(this);
-        if (mRewardManager.getEconomy() == null)
+		mRewardManager = new RewardManager(this);
+		if (mRewardManager.getEconomy() == null)
 			return;
 
 		mAreaManager = new GrindingManager(this);
 
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
-			mStore = new MySQLDataStore();
+			mStore = new MySQLDataStore(this);
 		else
-			mStore = new SQLiteDataStore();
+			mStore = new SQLiteDataStore(this);
 
 		try {
 			mStore.initialize();
@@ -167,9 +165,9 @@ public class MobHunting extends JavaPlugin {
 
 		Updater.setCurrentJarFile(this.getFile().getName());
 
-		mStoreManager = new DataStoreManager(mStore);
+		mStoreManager = new DataStoreManager(this, mStore);
 
-		mPlayerSettingsManager = new PlayerSettingsManager();
+		mPlayerSettingsManager = new PlayerSettingsManager(this);
 
 		// Handle compatibility stuff
 		registerPlugin(EssentialsCompat.class, "Essentials");
@@ -230,7 +228,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
 		registerPlugin(CrackShotCompat.class, "CrackShot");
 
-		mExtendedMobManager = new ExtendedMobManager();
+		mExtendedMobManager = new ExtendedMobManager(this);
 
 		// Register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
@@ -249,7 +247,7 @@ public class MobHunting extends JavaPlugin {
 		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class) && CitizensCompat.isSupported()) {
 			cmd.registerCommand(new NpcCommand(this));
 		}
-		cmd.registerCommand(new ReloadCommand());
+		cmd.registerCommand(new ReloadCommand(this));
 		if (WorldGuardCompat.isSupported())
 			cmd.registerCommand(new RegionCommand());
 		if (CompatibilityManager.isPluginLoaded(WorldEditCompat.class) && WorldEditCompat.isSupported())
@@ -260,17 +258,17 @@ public class MobHunting extends JavaPlugin {
 		cmd.registerCommand(new VersionCommand());
 		cmd.registerCommand(new DebugCommand());
 		if (!mConfig.disablePlayerBounties)
-			cmd.registerCommand(new BountyCommand());
+			cmd.registerCommand(new BountyCommand(this));
 		cmd.registerCommand(new HappyHourCommand());
-		cmd.registerCommand(new MoneyCommand(mRewardManager));
+		cmd.registerCommand(new MoneyCommand(this));
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
-		mAchievementManager = new AchievementManager();
+		mAchievementManager = new AchievementManager(this);
 
 		mMobHuntingManager = new MobHuntingManager(this);
 		if (!mConfig.disableFishingRewards)
-			mFishingManager = new FishingManager();
+			mFishingManager = new FishingManager(this);
 
 		if (!mConfig.disablePlayerBounties)
 			mBountyManager = new BountyManager(this);
@@ -304,11 +302,11 @@ public class MobHunting extends JavaPlugin {
 		}
 
 		if (getConfigManager().dropMoneyOnGroundUseAsCurrency)
-			new BagOfGoldSign(mRewardManager);
+			new BagOfGoldSign(this);
 
 		Messages.debug("Updating advancements");
 		if (!getConfigManager().disableMobHuntingAdvancements && Misc.isMC112OrNewer()) {
-			mAdvancementManager = new AdvancementManager();
+			mAdvancementManager = new AdvancementManager(this);
 			mAdvancementManager.getAdvancementsFromAchivements();
 		}
 		// for (int i = 0; i < 2; i++)
@@ -318,7 +316,7 @@ public class MobHunting extends JavaPlugin {
 
 	}
 
-	public  void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
+	public void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
 		try {
 			CompatibilityManager.register(c, pluginName);
 		} catch (Exception e) {
@@ -373,7 +371,7 @@ public class MobHunting extends JavaPlugin {
 		return instance;
 	}
 
-	public static  ConfigManager getConfigManager() {
+	public static ConfigManager getConfigManager() {
 		return mConfig;
 	}
 
@@ -427,7 +425,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static BountyManager getBountyManager() {
+	public BountyManager getBountyManager() {
 		return mBountyManager;
 	}
 
@@ -454,7 +452,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static  PlayerSettingsManager getPlayerSettingsmanager() {
+	public static PlayerSettingsManager getPlayerSettingsmanager() {
 		return mPlayerSettingsManager;
 	}
 

@@ -11,6 +11,13 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class TheHuntBegins implements Achievement, Listener {
+	
+	private MobHunting plugin;
+
+	public TheHuntBegins(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.huntbegins.name");
@@ -34,8 +41,8 @@ public class TheHuntBegins implements Achievement, Listener {
 	@EventHandler
 	public void onKill(MobHuntKillEvent event) {
 		Entity killedEntity = event.getKilledEntity();
-		if (MobHunting.getConfigManager().getBaseKillPrize(killedEntity) != 0
-				|| !MobHunting.getConfigManager().getKillConsoleCmd(killedEntity).isEmpty())
+		if (plugin.getRewardManager().getBaseKillPrize(killedEntity) != 0
+				|| !plugin.getRewardManager().getKillConsoleCmd(killedEntity).isEmpty())
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(killedEntity));
 	}

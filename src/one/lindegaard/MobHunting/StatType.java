@@ -164,8 +164,8 @@ public class StatType {
 
 	public static StatType parseStat(String typeName) {
 		for (StatType type : mValues) {
-			if (typeName.equalsIgnoreCase(type.getDBColumn())
-					|| typeName.equalsIgnoreCase(type.translateName().replace(" ", "_")))
+			if (type != null && (typeName.equalsIgnoreCase(type.getDBColumn())
+					|| typeName.equalsIgnoreCase(type.translateName().replace(" ", "_"))))
 				return type;
 		}
 

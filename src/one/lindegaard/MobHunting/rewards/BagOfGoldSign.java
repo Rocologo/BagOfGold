@@ -25,10 +25,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class BagOfGoldSign implements Listener {
 
-	private RewardManager rewardManager;
+	private MobHunting plugin;
 
-	public BagOfGoldSign(RewardManager rewardManager) {
-		this.rewardManager = rewardManager;
+	public BagOfGoldSign(MobHunting plugin) {
+		this.plugin = plugin;
 		Bukkit.getServer().getPluginManager().registerEvents(this, MobHunting.getInstance());
 	}
 
@@ -75,7 +75,7 @@ public class BagOfGoldSign implements Listener {
 								return;
 							}
 						}
-						rewardManager.getEconomy().depositPlayer(player, money);
+						plugin.getRewardManager().getEconomy().depositPlayer(player, money);
 						if (moneyInHand <= moneyOnSign) {
 							event.getItem().setAmount(0);
 							event.getItem().setType(Material.AIR);
@@ -84,18 +84,18 @@ public class BagOfGoldSign implements Listener {
 							ItemMeta im = event.getItem().getItemMeta();
 							im.setLore(hrd.getHiddenLore());
 							String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
-									.equalsIgnoreCase("ITEM") ? MobHunting.getRewardManager().format(hrd.getMoney())
+									.equalsIgnoreCase("ITEM") ? plugin.getRewardManager().format(hrd.getMoney())
 											: hrd.getDisplayname() + "("
-													+ MobHunting.getRewardManager().format(hrd.getMoney()) + ")";
+													+ plugin.getRewardManager().format(hrd.getMoney()) + ")";
 							im.setDisplayName(
 									ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 											+ displayName);
 							event.getItem().setItemMeta(im);
 						}
 						Messages.debug("%s sold his bag of gold for %s", player.getName(),
-								rewardManager.getEconomy().format(money));
+								plugin.getRewardManager().getEconomy().format(money));
 						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.sold", "money",
-								rewardManager.getEconomy().format(money), "rewardname",
+								plugin.getRewardManager().getEconomy().format(money), "rewardname",
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 										+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
 					} else {
@@ -116,7 +116,7 @@ public class BagOfGoldSign implements Listener {
 								Messages.getString("mobhunting.bagofgoldsign.line3.everything")));
 						return;
 					}
-					if (rewardManager.getEconomy().getBalance(player) >= moneyOnSign) {
+					if (plugin.getRewardManager().getEconomy().getBalance(player) >= moneyOnSign) {
 
 						boolean found = false;
 						for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
@@ -131,10 +131,9 @@ public class BagOfGoldSign implements Listener {
 									im.setLore(newReward.getHiddenLore());
 									String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
 											.equalsIgnoreCase("ITEM")
-													? MobHunting.getRewardManager()
-															.format(newReward.getMoney())
-													: newReward.getDisplayname() + "(" + MobHunting
-															.getRewardManager().format(newReward.getMoney())
+													? plugin.getRewardManager().format(newReward.getMoney())
+													: newReward.getDisplayname() + "("
+															+ plugin.getRewardManager().format(newReward.getMoney())
 															+ ")";
 									im.setDisplayName(
 											ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
@@ -143,8 +142,8 @@ public class BagOfGoldSign implements Listener {
 									is.setAmount(1);
 									event.setCancelled(true);
 									Messages.debug("Added %s to item in slot %s, new value is %s",
-											MobHunting.getRewardManager().format(hrd.getMoney()), slot,
-											MobHunting.getRewardManager().format(newReward.getMoney()));
+											plugin.getRewardManager().format(hrd.getMoney()), slot,
+											plugin.getRewardManager().format(newReward.getMoney()));
 									found = true;
 									break;
 								}
@@ -154,10 +153,10 @@ public class BagOfGoldSign implements Listener {
 						if (!found) {
 
 							if (player.getInventory().firstEmpty() == -1)
-								rewardManager.dropMoneyOnGround(player, null, player.getLocation(),
+								plugin.getRewardManager().dropMoneyOnGround(player, null, player.getLocation(),
 										Misc.ceil(moneyOnSign));
 							else {
-								ItemStack is = CustomItems.getCustomtexture(
+								ItemStack is = new CustomItems(plugin).getCustomtexture(
 										UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID),
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
@@ -171,9 +170,9 @@ public class BagOfGoldSign implements Listener {
 
 						// IF okay the withdraw money
 						if (found) {
-							rewardManager.getEconomy().withdrawPlayer(player, moneyOnSign);
+							plugin.getRewardManager().getEconomy().withdrawPlayer(player, moneyOnSign);
 							player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.bought", "money",
-									rewardManager.getEconomy().format(moneyOnSign), "rewardname",
+									plugin.getRewardManager().getEconomy().format(moneyOnSign), "rewardname",
 									ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 											+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName));
 						}

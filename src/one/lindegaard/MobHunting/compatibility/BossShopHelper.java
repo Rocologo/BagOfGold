@@ -16,7 +16,7 @@ import one.lindegaard.MobHunting.rewards.RewardManager;
 
 public class BossShopHelper {
 
-	public static boolean openShop(Player p, String shop_name) {
+	public static boolean openShop(MobHunting plugin, Player p, String shop_name) {
 
 		BSShop shop = BossShopCompat.getBossShop().getAPI().getShop(shop_name);
 
@@ -33,7 +33,8 @@ public class BossShopHelper {
 		BossShopCompat.getBossShop().getAPI().openShop(p, shop);
 
 		UUID uuid = UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID);
-		ItemStack is = CustomItems.getCustomtexture(uuid,
+		
+		ItemStack is = new CustomItems(plugin).getCustomtexture(uuid,
 				MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 				MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, 10, UUID.randomUUID());

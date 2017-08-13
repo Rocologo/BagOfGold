@@ -28,6 +28,13 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public abstract class DatabaseDataStore implements IDataStore {
+	
+	private MobHunting plugin;
+	
+	public DatabaseDataStore(MobHunting plugin){
+		this.plugin=plugin;
+	}
+	
 	/**
 	 * Connection to the Database
 	 */
@@ -142,7 +149,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 
 			Connection mConnection = setupConnection();
-			// mConnection.setAutoCommit(false);
 
 			// Find current database version
 			if (MobHunting.getConfigManager().databaseVersion == 0) {
@@ -893,7 +899,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			ResultSet set = mGetBounties.executeQuery();
 
 			while (set.next()) {
-				Bounty b = new Bounty();
+				Bounty b = new Bounty(plugin);
 				b.setBountyOwnerId(set.getInt(1));
 				b.setBountyOwner(getPlayerByPlayerId(set.getInt(1)));
 				b.setMobtype(set.getString(2));

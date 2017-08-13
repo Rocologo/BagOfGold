@@ -12,6 +12,12 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class AxeMurderer implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public AxeMurderer(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.axemurderer.name");
@@ -35,7 +41,7 @@ public class AxeMurderer implements Achievement, Listener {
 	@EventHandler
 	public void onKill(MobHuntKillEvent event) {
 		if (Misc.isAxe(event.getDamageInfo().getWeapon())
-				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
+				&& plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) > 0)
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}

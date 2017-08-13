@@ -29,6 +29,9 @@ import one.lindegaard.MobHunting.storage.asynch.AchievementRetrieverTask.Mode;
 import one.lindegaard.MobHunting.storage.asynch.BountyRetrieverTask;
 
 public class DataStoreManager {
+
+	private MobHunting plugin;
+
 	// Accessed on multiple threads
 	private final HashSet<Object> mWaiting = new HashSet<Object>();
 
@@ -42,7 +45,8 @@ public class DataStoreManager {
 	// Accessed only from retrieve thread
 	private TaskThread mTaskThread;
 
-	public DataStoreManager(IDataStore store) {
+	public DataStoreManager(MobHunting plugin, IDataStore store) {
+		this.plugin = plugin;
 		mStore = store;
 		mTaskThread = new TaskThread();
 		int savePeriod = MobHunting.getConfigManager().savePeriod;
@@ -134,12 +138,12 @@ public class DataStoreManager {
 	// *****************************************************************************
 	public void updateBounty(Bounty bounty) {
 		synchronized (mWaiting) {
-			mWaiting.add(new Bounty(bounty));
+			mWaiting.add(new Bounty(plugin, bounty));
 		}
 	}
 
 	public void requestBounties(BountyStatus mode, OfflinePlayer player, IDataCallback<Set<Bounty>> callback) {
-		mTaskThread.addTask(new BountyRetrieverTask(mode, player, mWaiting), callback);
+		mTaskThread.addTask(new BountyRetrieverTask(plugin, mode, player, mWaiting), callback);
 	}
 
 	// *****************************************************************************
@@ -296,7 +300,7 @@ public class DataStoreManager {
 		}
 	}
 
-	private static class Task {
+	private class Task {
 		public Task(IDataStoreTask<?> task, IDataCallback<?> callback) {
 			this.task = task;
 			this.callback = callback;
@@ -307,7 +311,7 @@ public class DataStoreManager {
 		public IDataCallback<?> callback;
 	}
 
-	private static class CallbackCaller implements Runnable {
+	private class CallbackCaller implements Runnable {
 		private IDataCallback<Object> mCallback;
 		private Object mObj;
 		private boolean mSuccess;

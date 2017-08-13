@@ -13,9 +13,11 @@ import one.lindegaard.MobHunting.achievements.ProgressAchievement;
 
 public class AdvancementManager {
 
+	private MobHunting plugin;
 	private static ArrayList<AdvancementAPI> knowAdvancements = new ArrayList<AdvancementAPI>();
 
-	public AdvancementManager() {
+	public AdvancementManager(MobHunting plugin) {
+		this.plugin=plugin;
 	}
 
 	public void getAdvancementsFromAchivements() {

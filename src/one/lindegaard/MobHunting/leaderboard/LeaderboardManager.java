@@ -46,16 +46,14 @@ import one.lindegaard.MobHunting.storage.TimePeriod;
 
 public class LeaderboardManager implements Listener {
 
+	private MobHunting plugin;
 	private Set<LegacyLeaderboard> mLegacyLeaderboards = new HashSet<LegacyLeaderboard>();
 	private HashMultimap<World, WorldLeaderboard> mLeaderboards = HashMultimap.create();
 	private HashMap<String, LegacyLeaderboard> mLegacyNameMap = new HashMap<String, LegacyLeaderboard>();
 	private BukkitTask mUpdater = null;
 
 	public LeaderboardManager(MobHunting instance) {
-		initialize();
-	}
-
-	private void initialize() {
+		this.plugin=instance;
 		int leaderboardUpdatePeriod = MobHunting.getConfigManager().leaderboardUpdatePeriod;
 		if (leaderboardUpdatePeriod < 1200) {
 			leaderboardUpdatePeriod = 1200;
@@ -97,7 +95,7 @@ public class LeaderboardManager implements Listener {
 	// *******************************************************************
 	public void createLeaderboard(Location location, BlockFace facing, StatType[] type, TimePeriod[] period,
 			boolean horizontal, int width, int height) throws IllegalArgumentException {
-		WorldLeaderboard board = new WorldLeaderboard(location, facing, width, height, horizontal, type, period);
+		WorldLeaderboard board = new WorldLeaderboard(plugin, location, facing, width, height, horizontal, type, period);
 		if (!board.isSpaceAvailable())
 			throw new IllegalArgumentException("There is not enough room for the signs.");
 
@@ -210,7 +208,7 @@ public class LeaderboardManager implements Listener {
 		while (keys.hasNext()) {
 			String key = keys.next();
 			ConfigurationSection section = config.getConfigurationSection(key);
-			WorldLeaderboard board = new WorldLeaderboard();
+			WorldLeaderboard board = new WorldLeaderboard(plugin);
 			try {
 				board.read(section);
 				board.update();

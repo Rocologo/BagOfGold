@@ -24,17 +24,17 @@ import java.util.*;
 
 public class BountyManager implements Listener {
 
-    private MobHunting instance;
+    private MobHunting plugin;
 
     // mBounties contains all bounties on the OfflinePlayer and the Bounties put
     // on other players
-    private static Set<Bounty> mOpenBounties = new HashSet<Bounty>();
+    private Set<Bounty> mOpenBounties = new HashSet<Bounty>();
 
-    public BountyManager(MobHunting instance) {
-        this.instance = instance;
+    public BountyManager(MobHunting plugin) {
+        this.plugin = plugin;
         if (MobHunting.getConfigManager().enableRandomBounty) {
-            Bukkit.getPluginManager().registerEvents(this, instance);
-            Bukkit.getScheduler().runTaskTimer(instance, this::createRandomBounty, MobHunting.getConfigManager().timeBetweenRandomBounties * 20 * 60,
+            Bukkit.getPluginManager().registerEvents(this, plugin);
+            Bukkit.getScheduler().runTaskTimer(plugin, this::createRandomBounty, MobHunting.getConfigManager().timeBetweenRandomBounties * 20 * 60,
                     MobHunting.getConfigManager().timeBetweenRandomBounties * 20 * 60);
             Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), () -> {
                 for (Bounty bounty : mOpenBounties) {
@@ -164,7 +164,7 @@ public class BountyManager implements Listener {
         return false;
     }
 
-    public static boolean hasOpenBounties(OfflinePlayer wantedPlayer) {
+    public boolean hasOpenBounties(OfflinePlayer wantedPlayer) {
         for (Bounty bounty : mOpenBounties) {
             if (bounty.isOpen() && bounty.getWantedPlayer().equals(wantedPlayer))
                 return true;
@@ -181,7 +181,7 @@ public class BountyManager implements Listener {
         if (MobHunting.getConfigManager().disablePlayerBounties)
             return;
 
-        Bukkit.getScheduler().runTaskLater(instance, new Runnable() {
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
                 load(event.getPlayer());
@@ -317,16 +317,17 @@ public class BountyManager implements Listener {
     // *************************************************************************************
 
     // private static Inventory inventory;
-    private static HashMap<CommandSender, Inventory> inventoryMap = new HashMap<CommandSender, Inventory>();
+    private HashMap<CommandSender, Inventory> inventoryMap = new HashMap<CommandSender, Inventory>();
 
-    public static void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
+    public void showOpenBounties(CommandSender sender, String worldGroupName, OfflinePlayer wantedPlayer,
                                         boolean useGui) {
-        if (sender instanceof Player) {
+    	if (sender instanceof Player) {
 
             if (hasOpenBounties(wantedPlayer)) {
-                Set<Bounty> bountiesOnWantedPlayer = MobHunting.getBountyManager().getOpenBounties(worldGroupName,
+                Set<Bounty> bountiesOnWantedPlayer = getOpenBounties(worldGroupName,
                         wantedPlayer);
                 if (useGui) {
+                	CustomItems customItems = new CustomItems(plugin);
                     final Inventory inventory = Bukkit.createInventory(null, 54,
                             ChatColor.BLUE + "" + ChatColor.BOLD + "Wanted:" + wantedPlayer.getName());
                     int n = 0;
@@ -334,21 +335,21 @@ public class BountyManager implements Listener {
                         if (bounty.isOpen()) {
                             if (bounty.getBountyOwner() != null)
                                 AchievementManager.addInventoryDetails(
-                                        CustomItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
+                                        customItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
                                         n, ChatColor.GREEN + wantedPlayer.getName(),
                                         new String[]{ChatColor.WHITE + "", Messages.getString(
                                                 "mobhunting.commands.bounty.bounties", "bountyowner",
                                                 bounty.getBountyOwner().getName(), "prize",
-                                                MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+                                                plugin.getRewardManager().format(bounty.getPrize()), "wantedplayer",
                                                 bounty.getWantedPlayer().getName(), "daysleft",
                                                 (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L))});
                             else
                                 AchievementManager.addInventoryDetails(
-                                        CustomItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
+                                        customItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
                                         n, ChatColor.GREEN + wantedPlayer.getName(),
                                         new String[]{ChatColor.WHITE + "", Messages.getString(
                                                 "mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
-                                                "prize", MobHunting.getRewardManager().format(bounty.getPrize()),
+                                                "prize", plugin.getRewardManager().format(bounty.getPrize()),
                                                 "wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
                                                 (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L))});
                             if (n < 53)
@@ -366,13 +367,13 @@ public class BountyManager implements Listener {
                             if (bounty.getBountyOwner() != null)
                                 sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties",
                                         "bountyowner", bounty.getBountyOwner().getName(), "prize",
-                                        MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+                                        plugin.getRewardManager().format(bounty.getPrize()), "wantedplayer",
                                         bounty.getWantedPlayer().getName(), "daysleft",
                                         (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
                             else
                                 sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties",
                                         "bountyowner", "Random Bounty", "prize",
-                                        MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+                                        plugin.getRewardManager().format(bounty.getPrize()), "wantedplayer",
                                         bounty.getWantedPlayer().getName(), "daysleft",
                                         (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
                     }
@@ -386,31 +387,32 @@ public class BountyManager implements Listener {
         }
     }
 
-    public static void showMostWanted(CommandSender sender, String worldGroupName, boolean useGui) {
+    public void showMostWanted(CommandSender sender, String worldGroupName, boolean useGui) {
         if (sender instanceof Player) {
             if (!mOpenBounties.isEmpty()) {
                 if (useGui) {
+                	CustomItems customItems = new CustomItems(plugin);
                     Inventory inventory = Bukkit.createInventory(null, 54,
                             ChatColor.BLUE + "" + ChatColor.BOLD + "MostWanted:");
                     int n = 0;
                     for (Bounty bounty : mOpenBounties) {
                         if (bounty.getBountyOwner() != null)
                             AchievementManager.addInventoryDetails(
-                                    CustomItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+                                    customItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
                                     inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
                                     new String[]{ChatColor.WHITE + "", Messages.getString(
                                             "mobhunting.commands.bounty.bounties", "bountyowner",
                                             bounty.getBountyOwner().getName(), "prize",
-                                            MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+                                            plugin.getRewardManager().format(bounty.getPrize()), "wantedplayer",
                                             bounty.getWantedPlayer().getName(), "daysleft",
                                             (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L))});
                         else
                             AchievementManager.addInventoryDetails(
-                                    CustomItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+                                    customItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
                                     inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
                                     new String[]{ChatColor.WHITE + "", Messages.getString(
                                             "mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
-                                            "prize", MobHunting.getRewardManager().format(bounty.getPrize()),
+                                            "prize", plugin.getRewardManager().format(bounty.getPrize()),
                                             "wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
                                             (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L))});
                         if (n < 53)
@@ -425,12 +427,12 @@ public class BountyManager implements Listener {
                         if (bounty.getBountyOwner() != null)
                             sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
                                     bounty.getBountyOwner().getName(), "prize",
-                                    MobHunting.getRewardManager().format(bounty.getPrize()), "wantedplayer",
+                                    plugin.getRewardManager().format(bounty.getPrize()), "wantedplayer",
                                     bounty.getWantedPlayer().getName(), "daysleft",
                                     (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
                         else
                             sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounties", "bountyowner",
-                                    "Random Bounty", "prize", MobHunting.getRewardManager().format(bounty.getPrize()),
+                                    "Random Bounty", "prize", plugin.getRewardManager().format(bounty.getPrize()),
                                     "wantedplayer", bounty.getWantedPlayer().getName(), "daysleft",
                                     (bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)));
                     }
@@ -466,19 +468,19 @@ public class BountyManager implements Listener {
                 }
                 if (randomPlayer != null) {
                     String worldGroup = MobHunting.getWorldGroupManager().getCurrentWorldGroup(randomPlayer);
-                    Bounty randomBounty = new Bounty(worldGroup, randomPlayer, Misc.round(
-                            MobHunting.getConfigManager().getRandomPrice(MobHunting.getConfigManager().randomBounty)),
+                    Bounty randomBounty = new Bounty(plugin, worldGroup, randomPlayer, Misc.round(
+                            plugin.getRewardManager().getRandomPrice(MobHunting.getConfigManager().randomBounty)),
                             "Random Bounty");
                     save(randomBounty);
                     for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
                         if (player.getName().equals(randomPlayer.getName()))
                             Messages.playerActionBarMessage(player,
                                     Messages.getString("mobhunting.bounty.randombounty.self", "prize",
-                                            MobHunting.getRewardManager().format(randomBounty.getPrize())));
+                                            plugin.getRewardManager().format(randomBounty.getPrize())));
                         else
                             Messages.playerActionBarMessage(player,
                                     Messages.getString("mobhunting.bounty.randombounty", "prize",
-                                            MobHunting.getRewardManager().format(randomBounty.getPrize()), "playername",
+                                            plugin.getRewardManager().format(randomBounty.getPrize()), "playername",
                                             randomPlayer.getName()));
                     }
                 }

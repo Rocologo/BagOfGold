@@ -15,6 +15,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class Creepercide extends AbstractSkullAchievement implements Listener {
 
+	private MobHunting plugin;
+
+	public Creepercide(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.creepercide.name");
@@ -41,7 +47,7 @@ public class Creepercide extends AbstractSkullAchievement implements Listener {
 				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld()))
 			return;
 
-		if (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0)
+		if (plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) <= 0)
 			return;
 
 		Creeper killed = (Creeper) event.getKilledEntity();

@@ -15,7 +15,9 @@ import java.util.HashMap;
 
 public class PickupRewards {
 
-    public PickupRewards() {
+	private MobHunting plugin;
+    public PickupRewards(MobHunting plugin) {
+    	this.plugin=plugin;
     }
 
 
@@ -26,13 +28,13 @@ public class PickupRewards {
             // If not Gringotts
             if (reward.getMoney() != 0)
                 if (!MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency) {
-                    MobHunting.getRewardManager().depositPlayer(player, reward.getMoney());
+                    plugin.getRewardManager().depositPlayer(player, reward.getMoney());
                     if (ProtocolLibCompat.isSupported())
                         ProtocolLibHelper.pickupMoney(player, item);
                     item.remove();
                     callBack.setCancelled(true);
                     Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup", "money",
-                            MobHunting.getRewardManager().format(reward.getMoney())));
+                            plugin.getRewardManager().format(reward.getMoney())));
                 } else {
                     boolean found = false;
                     HashMap<Integer, ? extends ItemStack> slots = player.getInventory()
@@ -49,9 +51,9 @@ public class PickupRewards {
                                 im.setLore(newReward.getHiddenLore());
                                 String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
                                         .equalsIgnoreCase("ITEM")
-                                        ? MobHunting.getRewardManager().format(newReward.getMoney())
+                                        ? plugin.getRewardManager().format(newReward.getMoney())
                                         : newReward.getDisplayname() + " ("
-                                        + MobHunting.getRewardManager().format(newReward.getMoney())
+                                        + plugin.getRewardManager().format(newReward.getMoney())
                                         + ")";
                                 im.setDisplayName(
                                         ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
@@ -63,8 +65,8 @@ public class PickupRewards {
                                     ProtocolLibHelper.pickupMoney(player, item);
                                 item.remove();
                                 Messages.debug("Added %s to item in slot %s, new value is %s",
-                                        MobHunting.getRewardManager().format(reward.getMoney()), slot,
-                                        MobHunting.getRewardManager().format(newReward.getMoney()));
+                                        plugin.getRewardManager().format(reward.getMoney()), slot,
+                                        plugin.getRewardManager().format(newReward.getMoney()));
                                 found = true;
                                 break;
                             }
@@ -75,9 +77,9 @@ public class PickupRewards {
                         ItemStack is = item.getItemStack();
                         ItemMeta im = is.getItemMeta();
                         String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
-                                .equalsIgnoreCase("ITEM") ? MobHunting.getRewardManager().format(reward.getMoney())
+                                .equalsIgnoreCase("ITEM") ? plugin.getRewardManager().format(reward.getMoney())
                                 : reward.getDisplayname() + " ("
-                                + MobHunting.getRewardManager().format(reward.getMoney()) + ")";
+                                + plugin.getRewardManager().format(reward.getMoney()) + ")";
                         im.setDisplayName(
                                 ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
                                         + displayName);
@@ -88,15 +90,15 @@ public class PickupRewards {
                                 new FixedMetadataValue(MobHunting.getInstance(), new Reward(reward)));
                     }
                 }
-            if (RewardManager.getDroppedMoney().containsKey(item.getEntityId()))
-                RewardManager.getDroppedMoney().remove(item.getEntityId());
+            if (plugin.getRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
+                plugin.getRewardManager().getDroppedMoney().remove(item.getEntityId());
             if (reward.getMoney() == 0)
                 Messages.debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
-                        reward.getDisplayname(), RewardManager.getDroppedMoney().size());
+                        reward.getDisplayname(), plugin.getRewardManager().getDroppedMoney().size());
             else
                 Messages.debug("%s picked up a %s with a value:%s (# of rewards left=%s)", player.getName(),
-                        reward.getDisplayname(), MobHunting.getRewardManager().format(reward.getMoney()),
-                        RewardManager.getDroppedMoney().size());
+                        reward.getDisplayname(), plugin.getRewardManager().format(reward.getMoney()),
+                        plugin.getRewardManager().getDroppedMoney().size());
 
         }
     }

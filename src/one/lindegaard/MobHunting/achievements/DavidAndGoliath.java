@@ -12,6 +12,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class DavidAndGoliath implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public DavidAndGoliath(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.davidandgoliath.name");
@@ -36,8 +42,8 @@ public class DavidAndGoliath implements Achievement, Listener {
 	public void onKill(MobHuntKillEvent event) {
 		if (SmartGiantsCompat.isSmartGiants(event.getKilledEntity())
 				&& event.getDamageInfo().getWeapon().getType() == Material.STONE_BUTTON
-				&& !(MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) == 0
-						&& MobHunting.getConfigManager().getKillConsoleCmd(event.getKilledEntity()).isEmpty()))
+				&& !(plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) == 0
+						&& plugin.getRewardManager().getKillConsoleCmd(event.getKilledEntity()).isEmpty()))
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}

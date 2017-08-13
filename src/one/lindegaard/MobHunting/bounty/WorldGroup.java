@@ -21,11 +21,13 @@ import one.lindegaard.MobHunting.MobHunting;
  */
 public class WorldGroup {
 
-	private static File file = new File(MobHunting.getInstance().getDataFolder(), "worldGroups.yml");
-	private static YamlConfiguration config = new YamlConfiguration();
-	private static HashMap<String, List<String>> worldGroups = new HashMap<String, List<String>>();
+	private MobHunting plugin;
+	private File file = new File(MobHunting.getInstance().getDataFolder(), "worldGroups.yml");
+	private YamlConfiguration config = new YamlConfiguration();
+	private HashMap<String, List<String>> worldGroups = new HashMap<String, List<String>>();
 
-	public WorldGroup() {
+	public WorldGroup(MobHunting plugin) {
+		this.plugin=plugin;
 		if (worldGroups.isEmpty()) {
 			worldGroups.put("DefaultGroup", Arrays.asList("world", "world_nether", "world_the_end"));
 			worldGroups.put("CreativeGroup", Collections.singletonList("creative"));
@@ -55,7 +57,7 @@ public class WorldGroup {
 		return worldGroups.get(worldGroup);
 	}
 
-	public static String getWorldGroup(String world) {
+	public String getWorldGroup(String world) {
 		for (String worldGroup : worldGroups.keySet()) {
 			if (worldGroup.contains(world))
 				return worldGroup;

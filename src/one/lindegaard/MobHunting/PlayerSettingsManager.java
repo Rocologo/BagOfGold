@@ -20,11 +20,13 @@ public class PlayerSettingsManager implements Listener {
 
 	private static HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
 
+	private MobHunting plugin;
 	/**
 	 * Constructor for the PlayerSettingsmanager
 	 */
-	PlayerSettingsManager() {
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
+	PlayerSettingsManager(MobHunting plugin) {
+		this.plugin = plugin;
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 
 	/**

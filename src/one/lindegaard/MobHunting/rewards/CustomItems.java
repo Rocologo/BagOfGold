@@ -15,10 +15,14 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class CustomItems {
 
-    public CustomItems() {
+	private MobHunting plugin;
+	
+    public CustomItems(MobHunting plugin) {
+    	this.plugin=plugin;
     }
 
     /**
@@ -28,7 +32,7 @@ public class CustomItems {
      * @param money
      * @return
      */
-    public static ItemStack getPlayerHead(String name, double money) {
+    public ItemStack getPlayerHead(String name, double money) {
         ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
         skull.setDurability((short) 3);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
@@ -36,7 +40,7 @@ public class CustomItems {
         if (money == 0)
             skullMeta.setDisplayName(name);
         else
-            skullMeta.setDisplayName(name + " (" + MobHunting.getRewardManager().getEconomy().format(money) + ")");
+            skullMeta.setDisplayName(name + " (" + plugin.getRewardManager().getEconomy().format(money) + ")");
         skull.setItemMeta(skullMeta);
         return skull;
     }
@@ -52,7 +56,7 @@ public class CustomItems {
      * @param money
      * @return ItemStack with custom texture.
      */
-    public static ItemStack getCustomtexture(UUID mPlayerUUID, String mDisplayName, String mTextureValue,
+    public ItemStack getCustomtexture(UUID mPlayerUUID, String mDisplayName, String mTextureValue,
                                       String mTextureSignature, double money, UUID uniqueRewardUuid) {
         ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 
@@ -88,10 +92,60 @@ public class CustomItems {
                     ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
         else
             skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-                    + mDisplayName + " (" + MobHunting.getRewardManager().format(money) + " )");
+                    + mDisplayName + " (" + plugin.getRewardManager().format(money) + " )");
 
         skull.setItemMeta(skullMeta);
         return skull;
     }
+
+	public ItemStack getCustomHead(MinecraftMob minecraftMob, String name, int amount, double money) {
+		ItemStack skull;
+		switch (minecraftMob) {
+		case Skeleton:
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 0);
+			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, minecraftMob.getFriendlyName(), money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+			break;
+
+		case WitherSkeleton:
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 1);
+			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, minecraftMob.getFriendlyName(), money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+			break;
+
+		case Zombie:
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 2);
+			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, minecraftMob.getFriendlyName(), money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+			break;
+
+		case PvpPlayer:
+			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta sm = (SkullMeta) skull.getItemMeta();
+			sm.setOwner(name);
+			skull.setItemMeta(sm);
+			break;
+
+		case Creeper:
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 4);
+			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, minecraftMob.getFriendlyName(), money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+			break;
+
+		case EnderDragon:
+			skull = new ItemStack(Material.SKULL_ITEM, amount, (short) 5);
+			skull = plugin.getRewardManager().setDisplayNameAndHiddenLores(skull, minecraftMob.getFriendlyName(), money,
+					UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID));
+			break;
+
+		default:
+			ItemStack is = new ItemStack(
+					getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID),
+							minecraftMob.getFriendlyName(), minecraftMob.getTextureValue(), minecraftMob.getTextureSignature(), money, UUID.randomUUID()));
+			is.setAmount(amount);
+			return is;
+		}
+		return skull;
+	}
 
 }

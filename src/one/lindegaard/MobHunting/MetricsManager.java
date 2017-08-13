@@ -53,16 +53,16 @@ public class MetricsManager {
 	private Metrics metrics;
 	private Graph automaticUpdatesGraph, databaseGraph, integrationsGraph, titleManagerGraph, usageGraph,
 			mobPluginIntegrationsGraph, protectionPluginsGraph, minigamesGraph, disguiseGraph;
-	private MobHunting instance;
+	private MobHunting plugin;
 
 	private org.bstats.Metrics bStatsMetrics;
 
-	public MetricsManager(MobHunting instance) {
-		this.instance = instance;
+	public MetricsManager(MobHunting plugin) {
+		this.plugin = plugin;
 	}
 
 	public void startBStatsMetrics() {
-		bStatsMetrics = new org.bstats.Metrics(instance);
+		bStatsMetrics = new org.bstats.Metrics(plugin);
 
 		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("database_used_for_mobhunting") {
 			@Override
@@ -178,7 +178,7 @@ public class MetricsManager {
 				valueMap.put("Leaderboards", MobHunting.getLeaderboardManager().getWorldLeaderBoards().size());
 				valueMap.put("MasterMobHunters", MasterMobHunterManager.getMasterMobHunterManager().size());
 				valueMap.put("PlayerBounties", MobHunting.getConfigManager().disablePlayerBounties ? 0
-						: MobHunting.getBountyManager().getAllBounties().size());
+						: plugin.getBountyManager().getAllBounties().size());
 				return valueMap;
 			}
 		});
@@ -186,7 +186,7 @@ public class MetricsManager {
 
 	public void startMetrics() {
 		try {
-			metrics = new Metrics(instance);
+			metrics = new Metrics(plugin);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -514,7 +514,7 @@ public class MetricsManager {
 				if (MobHunting.getConfigManager().disablePlayerBounties)
 					return 0;
 				else
-					return MobHunting.getBountyManager().getAllBounties().size();
+					return plugin.getBountyManager().getAllBounties().size();
 			}
 		});
 		metrics.addGraph(usageGraph);
