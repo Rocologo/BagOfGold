@@ -14,7 +14,13 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class HappyHourCommand implements ICommand {
 
-    private int minutesToRun = 0;
+private MobHunting plugin;
+	
+	public HappyHourCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
+	private int minutesToRun = 0;
     public static int minutesLeft = 0;
     public static double multiplier = 1;
     private long starttime;

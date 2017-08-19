@@ -11,6 +11,13 @@ import one.lindegaard.MobHunting.update.Updater;
 import one.lindegaard.MobHunting.update.UpdateStatus;
 
 public class VersionCommand implements ICommand {
+
+	private MobHunting plugin;
+	
+	public VersionCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "version";

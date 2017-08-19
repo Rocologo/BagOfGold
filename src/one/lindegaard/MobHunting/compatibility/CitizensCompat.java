@@ -9,12 +9,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.CitizensPlugin;
 import net.citizensnpcs.api.event.CitizensDisableEvent;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
-import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
-import net.citizensnpcs.api.event.NPCDamageEvent;
-import net.citizensnpcs.api.event.NPCDeathEvent;
-import net.citizensnpcs.api.event.NPCDespawnEvent;
-import net.citizensnpcs.api.event.NPCSpawnEvent;
-import net.citizensnpcs.api.event.PlayerCreateNPCEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -23,6 +17,7 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 import one.lindegaard.MobHunting.npc.MasterMobHunter;
 import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
+import one.lindegaard.MobHunting.npc.MasterMobHunterSign;
 import one.lindegaard.MobHunting.npc.MasterMobHunterTrait;
 import one.lindegaard.MobHunting.rewards.RewardData;
 import one.lindegaard.MobHunting.util.Misc;
@@ -36,23 +31,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitTask;
 
 public class CitizensCompat implements Listener {
 
 	private static boolean supported = false;
 	private static CitizensPlugin citizensAPI;
 	private static HashMap<String, RewardData> mMobRewardData = new HashMap<String, RewardData>();
+	private static MasterMobHunterManager mMasterMobHunterManager;
 	private static File fileMobRewardData = new File(MobHunting.getInstance().getDataFolder(), "citizens-rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_CITIZENS = "MH:CITIZENS";
 
-	private static MasterMobHunterManager masterMobHunterManager = new MasterMobHunterManager();
-
 	public CitizensCompat() {
-		initialize();
-	}
-
-	private void initialize() {
 		if (isDisabledInConfig()) {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with Citizens2 is disabled in config.yml");
@@ -63,24 +54,10 @@ public class CitizensCompat implements Listener {
 
 			TraitInfo trait = TraitInfo.create(MasterMobHunterTrait.class).withName("MasterMobHunter");
 			citizensAPI.getTraitFactory().registerTrait(trait);
-
-			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with Citizens ("
+			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with Citizens2 ("
 					+ getCitizensPlugin().getDescription().getVersion() + ")");
 
-			supported = true;
-
-			// wait x seconds or until Citizens is fully loaded.
-			Bukkit.getScheduler().runTaskLaterAsynchronously(MobHunting.getInstance(), new Runnable() {
-				public void run() {
-					loadCitizensData();
-					saveCitizensData();
-
-					masterMobHunterManager.initialize();
-					findMissingNPCs();
-					MobHunting.getExtendedMobManager().updateExtendedMobs();
-					Messages.injectMissingMobNamesToLangFiles();
-				}
-			}, 20 * 5); // 20ticks/sec * 3 sec.
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
 		}
 	}
@@ -92,23 +69,23 @@ public class CitizensCompat implements Listener {
 		try {
 			if (!fileMobRewardData.exists())
 				return;
-			Messages.debug("Loading extra MobRewards for Citizens NPC.");
 
 			config.load(fileMobRewardData);
 			int n = 0;
 			for (String key : config.getKeys(false)) {
 				if (isNPC(Integer.valueOf(key))) {
 					ConfigurationSection section = config.getConfigurationSection(key);
-					RewardData mrd = new RewardData();
-					mrd.read(section);
-					mMobRewardData.put(key, mrd);
+					RewardData rewardData = new RewardData();
+					rewardData.read(section);
+					mMobRewardData.put(key, rewardData);
 					MobHunting.getStoreManager().insertCitizensMobs(key);
 					n++;
 				} else {
 					Messages.debug("The mob=%s can't be found in Citizens saves.yml file", key);
 				}
 			}
-			Messages.debug("Loaded %s extra MobRewards.", n);
+			if (n > 0)
+				Messages.debug("Loaded %s MobRewards Citizens2.", n);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
@@ -130,8 +107,8 @@ public class CitizensCompat implements Listener {
 					n++;
 				}
 
-				if (n != 0) {
-					Messages.debug("Saving %s MobRewards to file.", mMobRewardData.size());
+				if (n > 0) {
+					Messages.debug("Saving %s MobRewards for Citizens2 to file.", mMobRewardData.size());
 					config.save(fileMobRewardData);
 				}
 			}
@@ -145,7 +122,7 @@ public class CitizensCompat implements Listener {
 			if (mMobRewardData.containsKey(key)) {
 				ConfigurationSection section = config.createSection(key);
 				mMobRewardData.get(key).save(section);
-				Messages.debug("Saving Sentry/Sentinel Trait Reward data for ID=%s.", key);
+				Messages.debug("Saving MobRewardData for Citizens2: ID=%s.", key);
 				config.save(fileMobRewardData);
 			} else {
 				Messages.debug("ERROR! Sentry/Sentinel ID (%s) is not found in mMobRewardData", key);
@@ -160,7 +137,6 @@ public class CitizensCompat implements Listener {
 	// **************************************************************************
 	public static void shutdown() {
 		if (supported) {
-			masterMobHunterManager.shutdown();
 			TraitInfo trait = TraitInfo.create(MasterMobHunterTrait.class).withName("MasterMobHunter");
 			if (Misc.isMC18OrNewer())
 				citizensAPI.getTraitFactory().deregisterTrait(trait);
@@ -176,10 +152,6 @@ public class CitizensCompat implements Listener {
 			return supported;
 		else
 			return false;
-	}
-
-	public static MasterMobHunterManager getManager() {
-		return masterMobHunterManager;
 	}
 
 	public static boolean isNPC(Entity entity) {
@@ -206,18 +178,6 @@ public class CitizensCompat implements Listener {
 		return CitizensAPI.getNPCRegistry().getNPC(entity);
 	}
 
-	public static boolean isSentryOrSentinelOrSentries(String mobtype) {
-		if (isNPC(Integer.valueOf(mobtype)))
-			return CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
-					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
-					|| CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
-							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"))
-					|| CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
-							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentries"));
-		else
-			return false;
-	}
-
 	public static boolean isSentryOrSentinelOrSentries(Entity entity) {
 		if (isNPC(entity))
 			return CitizensAPI.getNPCRegistry().getNPC(entity)
@@ -227,6 +187,18 @@ public class CitizensCompat implements Listener {
 					|| CitizensAPI.getNPCRegistry().getNPC(entity)
 							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentries"));
 		return false;
+	}
+
+	public static boolean isSentryOrSentinelOrSentries(String mobtype) {
+		if (CitizensCompat.isNPC(Integer.valueOf(mobtype)))
+			return CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
+					.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentry"))
+					|| CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentinel"))
+					|| CitizensAPI.getNPCRegistry().getById(Integer.valueOf(mobtype))
+							.hasTrait(CitizensAPI.getTraitFactory().getTraitClass("Sentries"));
+		else
+			return false;
 	}
 
 	public static HashMap<String, RewardData> getMobRewardData() {
@@ -241,7 +213,22 @@ public class CitizensCompat implements Listener {
 		return !MobHunting.getConfigManager().disableIntegrationCitizens;
 	}
 
-	private void findMissingNPCs() {
+	public static int getProgressAchievementLevel1(String mobtype) {
+		return mMobRewardData.get(mobtype).getAchivementLevel1();
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onCitizensEnableEvent(CitizensEnableEvent event) {
+		Messages.debug("Citizens2 was enabled");
+
+		supported = true;
+
+		loadCitizensData();
+		saveCitizensData();
+
+		mMasterMobHunterManager = new MasterMobHunterManager(MobHunting.getInstance());
+
+		int counter = 0;
 		NPCRegistry n = CitizensAPI.getNPCRegistry();
 		for (Iterator<NPC> npcList = n.iterator(); npcList.hasNext();) {
 			NPC npc = npcList.next();
@@ -254,30 +241,27 @@ public class CitizensCompat implements Listener {
 					saveCitizensData(String.valueOf(npc.getId()));
 				}
 			}
+			if (CitizensCompat.getMasterMobHunterManager().isMasterMobHunter(npc.getEntity())) {
+				if (!CitizensCompat.getMasterMobHunterManager().contains(npc.getId())) {
+					MasterMobHunter masterMobHunter = new MasterMobHunter(MobHunting.getInstance(), npc);
+					CitizensCompat.getMasterMobHunterManager().put(npc.getId(), masterMobHunter);
+					RewardData rewardData = new RewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
+							"give {player} iron_sword 1", "You got an Iron sword.", 0, 1, 0.02);
+					CitizensCompat.getMobRewardData().put(String.valueOf(npc.getId()), rewardData);
+					npc.getEntity().setMetadata(CitizensCompat.MH_CITIZENS,
+							new FixedMetadataValue(MobHunting.getInstance(), rewardData));
+					MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
+					counter++;
+				}
+			}
 		}
-	}
+		if (counter > 0) {
+			MobHunting.getExtendedMobManager().updateExtendedMobs();
+			Messages.injectMissingMobNamesToLangFiles();
+		}
 
-	// **************************************************************************
-	// EVENTS
-	// **************************************************************************
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onNPCDeathEvent(NPCDeathEvent event) {
-
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onNPCDamageEvent(NPCDamageEvent event) {
-
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onNPCDamageByEntityEvent(NPCDamageByEntityEvent event) {
-
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onCitizensEnableEvent(CitizensEnableEvent event) {
-		Messages.debug("onCitizensEnableEvent:%s", event.getEventName());
+		Bukkit.getPluginManager().registerEvents(new MasterMobHunterSign(MobHunting.getInstance()),
+				MobHunting.getInstance());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -285,50 +269,13 @@ public class CitizensCompat implements Listener {
 		// Messages.debug("CitizensDisableEvent - saving");
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onNPCSpawnEvent(NPCSpawnEvent event) {
-		NPC npc = event.getNPC();
-		if (npc.getId() == event.getNPC().getId()) {
-			Messages.debug("NPCSpawnEvent: %s spawned", npc.getName());
-			if (isSentryOrSentinelOrSentries(npc.getEntity())) {
-				if (mMobRewardData != null && !mMobRewardData.containsKey(String.valueOf(npc.getId()))) {
-					Messages.debug("A new Sentinel or Sentry NPC was found. ID=%s,%s", npc.getId(), npc.getName());
-					// Update Reward data in memory
-					mMobRewardData.put(String.valueOf(npc.getId()),
-							new RewardData(MobPlugin.Citizens, "npc", npc.getFullName(), "0",
-									"give {player} iron_sword 1", "You got an Iron sword.", 0, 1, 0.02));
-					// Save Reward Data to disk
-					saveCitizensData(String.valueOf(npc.getId()));
-					// Insert new mob to Database
-					MobHunting.getStoreManager().insertCitizensMobs(String.valueOf(npc.getId()));
-					// Update mob loaded into memory
-					MobHunting.getExtendedMobManager().updateExtendedMobs();
-					Messages.injectMissingMobNamesToLangFiles();
-				}
-				npc.getEntity().setMetadata(MH_CITIZENS, new FixedMetadataValue(MobHunting.getInstance(),
-						mMobRewardData.get(String.valueOf(npc.getId()))));
-			}
-			if (masterMobHunterManager.isMasterMobHunter(npc.getEntity())) {
-				if (!masterMobHunterManager.contains(npc.getId())) {
-					Messages.debug("A New MasterMobHunter NPC was found. ID=%s,%s", npc.getId(), npc.getName());
-					masterMobHunterManager.put(npc.getId(), new MasterMobHunter(npc));
-				}
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onNPCDespawnEvent(NPCDespawnEvent event) {
-		// Messages.debug("NPCDespawnEvent");
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onPlayerCreateNPCEvent(PlayerCreateNPCEvent event) {
-		// Messages.debug("NPCCreateNPCEvent");
-	}
-
-	public static int getProgressAchievementLevel1(String mobtype) {
-		return mMobRewardData.get(mobtype).getAchivementLevel1();
+	/**
+	 * Get the MasterMobHunterManager
+	 * 
+	 * @return
+	 */
+	public static MasterMobHunterManager getMasterMobHunterManager() {
+		return mMasterMobHunterManager;
 	}
 
 }

@@ -14,6 +14,13 @@ import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;
 
 public class TopCommand implements ICommand {
+
+	private MobHunting plugin;
+	
+	public TopCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	public TopCommand() {
 	}
 

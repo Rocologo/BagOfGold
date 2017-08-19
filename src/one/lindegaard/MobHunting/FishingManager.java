@@ -89,7 +89,7 @@ public class FishingManager implements Listener {
 			// When a player has successfully caught an entity
 			if (player.getGameMode() != GameMode.SURVIVAL) {
 				Messages.debug("FishingBlocked: %s is not in survival mode", player.getName());
-				Messages.learn(player, Messages.getString("mobhunting.learn.survival"));
+				plugin.getMessages().learn(player, Messages.getString("mobhunting.learn.survival"));
 				return;
 			}
 
@@ -190,8 +190,8 @@ public class FishingManager implements Listener {
 
 				// Handle Muted mode
 				boolean fisherman_muted = false;
-				if (MobHunting.getPlayerSettingsmanager().containsKey(player))
-					fisherman_muted = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
+				if (plugin.getPlayerSettingsmanager().containsKey(player))
+					fisherman_muted = plugin.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
 
 				// Tell the player that he got the reward/penalty,
 				// unless
@@ -199,12 +199,12 @@ public class FishingManager implements Listener {
 				if (!fisherman_muted)
 					if (extraString.trim().isEmpty()) {
 						if (cash >= MobHunting.getConfigManager().minimumReward) {
-							Messages.playerActionBarMessage(player,
+							plugin.getMessages().playerActionBarMessage(player,
 									ChatColor.GREEN + "" + ChatColor.ITALIC
 											+ Messages.getString("mobhunting.fishcaught.reward", "prize",
 													plugin.getRewardManager().format(cash)));
 						} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-							Messages.playerActionBarMessage(player,
+							plugin.getMessages().playerActionBarMessage(player,
 									ChatColor.RED + "" + ChatColor.ITALIC
 											+ Messages.getString("mobhunting.fishcaught.penalty", "prize",
 													plugin.getRewardManager().format(cash)));
@@ -216,12 +216,12 @@ public class FishingManager implements Listener {
 									+ Messages.getString("mobhunting.fishcaught.reward.bonuses", "prize",
 											plugin.getRewardManager().format(cash), "bonuses", extraString.trim(),
 											"multipliers", plugin.getRewardManager().format(multipliers)));
-							Messages.playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
+							plugin.getMessages().playerActionBarMessage(player, ChatColor.GREEN + "" + ChatColor.ITALIC
 									+ Messages.getString("mobhunting.fishcaught.reward.bonuses", "prize",
 											plugin.getRewardManager().format(cash), "bonuses", extraString.trim(),
 											"multipliers", plugin.getRewardManager().format(multipliers)));
 						} else if (cash <= -MobHunting.getConfigManager().minimumReward) {
-							Messages.playerActionBarMessage(player, ChatColor.RED + "" + ChatColor.ITALIC
+							plugin.getMessages().playerActionBarMessage(player, ChatColor.RED + "" + ChatColor.ITALIC
 									+ Messages.getString("mobhunting.fishcaught.penalty.bonuses", "prize",
 											plugin.getRewardManager().format(cash), "bonuses", extraString.trim(),
 											"multipliers", plugin.getRewardManager().format(multipliers)));

@@ -247,8 +247,8 @@ public class BountyManager implements Listener {
                     sort();
                 Messages.debug("%s bounties for %s was loaded.", n, player.getName());
                 if (n > 0 && hasOpenBounties(player)) {
-                    Messages.playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
-                    Messages.broadcast(
+                	plugin.getMessages().playerActionBarMessage(player, Messages.getString("mobhunting.bounty.youarewanted"));
+                	plugin.getMessages().broadcast(
                             Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()),
                             player);
                 }
@@ -474,11 +474,11 @@ public class BountyManager implements Listener {
                     save(randomBounty);
                     for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
                         if (player.getName().equals(randomPlayer.getName()))
-                            Messages.playerActionBarMessage(player,
+                        	plugin.getMessages().playerActionBarMessage(player,
                                     Messages.getString("mobhunting.bounty.randombounty.self", "prize",
                                             plugin.getRewardManager().format(randomBounty.getPrize())));
                         else
-                            Messages.playerActionBarMessage(player,
+                        	plugin.getMessages().playerActionBarMessage(player,
                                     Messages.getString("mobhunting.bounty.randombounty", "prize",
                                             plugin.getRewardManager().format(randomBounty.getPrize()), "playername",
                                             randomPlayer.getName()));

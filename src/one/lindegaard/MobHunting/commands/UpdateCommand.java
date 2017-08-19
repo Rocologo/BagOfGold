@@ -6,10 +6,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.update.Updater;
 import one.lindegaard.MobHunting.update.UpdateStatus;
 
 public class UpdateCommand implements ICommand {
+	
+private MobHunting plugin;
+	
+	public UpdateCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "update";

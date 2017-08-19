@@ -26,8 +26,10 @@ import one.lindegaard.MobHunting.storage.TimePeriod;
 public class LeaderboardCommand implements ICommand, Listener {
 	private WeakHashMap<Player, BoardState> mWaitingStates = new WeakHashMap<Player, BoardState>();
 
-	public LeaderboardCommand(MobHunting instance) {
-		Bukkit.getPluginManager().registerEvents(this, instance);
+	private MobHunting plugin;
+	public LeaderboardCommand(MobHunting plugin) {
+		this.plugin=plugin;
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 
 	@Override

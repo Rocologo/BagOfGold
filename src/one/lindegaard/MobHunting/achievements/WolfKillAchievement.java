@@ -83,7 +83,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 					Messages.debug("AchiveBlocked: FangMaster was achieved while %s was playing MobArena.",
 							owner.getName());
-					Messages.learn(owner, Messages.getString("mobhunting.learn.mobarena"));
+					plugin.getMessages().learn(owner, Messages.getString("mobhunting.learn.mobarena"));
 				} else
 					MobHunting.getAchievementManager().awardAchievementProgress(this, owner,
 							MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()), 1);

@@ -15,6 +15,12 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class ClearGrindingCommand implements ICommand {
 
+private MobHunting plugin;
+	
+	public ClearGrindingCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "cleargrinding";

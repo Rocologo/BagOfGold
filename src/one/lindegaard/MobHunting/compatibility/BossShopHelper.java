@@ -35,7 +35,7 @@ public class BossShopHelper {
 		UUID uuid = UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID);
 		
 		ItemStack is = new CustomItems(plugin).getCustomtexture(uuid,
-				MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+				MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 				MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 				MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, 10, UUID.randomUUID());
 

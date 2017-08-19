@@ -11,9 +11,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.SelectionHelper;
 
 public class SelectCommand implements ICommand {
+	
+	private MobHunting plugin;
+
+	public SelectCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "select";
@@ -60,10 +68,8 @@ public class SelectCommand implements ICommand {
 		if (args[0].equalsIgnoreCase("1"))
 			pointA = true;
 		else if (!args[0].equalsIgnoreCase("2")) {
-			sender.sendMessage(ChatColor.RED
-					+ Messages.getString(
-							"mobhunting.commands.select.unknown-point",
-							"point", args[0]));
+			sender.sendMessage(
+					ChatColor.RED + Messages.getString("mobhunting.commands.select.unknown-point", "point", args[0]));
 			return true;
 		}
 
@@ -72,8 +78,7 @@ public class SelectCommand implements ICommand {
 
 		Block target = player.getTargetBlock(transparent, 10);
 		if (target == null) {
-			sender.sendMessage(ChatColor.RED
-					+ Messages.getString("mobhunting.commands.select.too-far"));
+			sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.select.too-far"));
 			return true;
 		}
 
@@ -82,20 +87,13 @@ public class SelectCommand implements ICommand {
 		else
 			SelectionHelper.setPointB(player, target.getLocation());
 
-		sender.sendMessage(ChatColor.GREEN
-				+ Messages.getString(
-						"mobhunting.commands.select.done",
-						"point",
-						args[0],
-						"coords",
-						String.format("%d, %d, %d", target.getX(),
-								target.getY(), target.getZ())));
+		sender.sendMessage(ChatColor.GREEN + Messages.getString("mobhunting.commands.select.done", "point", args[0],
+				"coords", String.format("%d, %d, %d", target.getX(), target.getY(), target.getZ())));
 		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, String label,
-			String[] args) {
+	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		return null;
 	}
 

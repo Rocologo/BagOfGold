@@ -113,8 +113,8 @@ public class RewardManager implements Listener {
 	public static final String MH_REWARD_KILLER_UUID = "d81f1076-c91c-44c0-98c3-02a2ee88aa97";
 
 	private MobHunting plugin;
-	private static File file;
-	private static YamlConfiguration config = new YamlConfiguration();
+	private File file;
+	private YamlConfiguration config = new YamlConfiguration();
 
 	private Economy mEconomy;
 	private PickupRewards pickupRewards;
@@ -125,7 +125,7 @@ public class RewardManager implements Listener {
 
 	public RewardManager(MobHunting plugin) {
 		this.plugin = plugin;
-		 file = new File(plugin.getDataFolder(), "rewards.yml");
+		file = new File(plugin.getDataFolder(), "rewards.yml");
 		RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
 		if (economyProvider == null) {
 			Bukkit.getLogger().severe(Messages.getString(plugin.getName().toLowerCase() + ".hook.econ"));
@@ -138,15 +138,17 @@ public class RewardManager implements Listener {
 
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
 		if (Misc.isMC18OrNewer())
-			Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), MobHunting.getInstance());
+			Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
 
 		if (Misc.isMC112OrNewer() && eventDoesExists())
-			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards),
-					MobHunting.getInstance());
+			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), plugin);
 		else
-			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards),
-					MobHunting.getInstance());
+			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
 		loadAllStoredRewards();
+
+		if (MobHunting.getConfigManager().dropMoneyOnGroundUseAsCurrency)
+			new BagOfGoldSign(plugin);
+
 	}
 
 	private boolean eventDoesExists() {
@@ -226,7 +228,7 @@ public class RewardManager implements Listener {
 					is = new CustomItems(plugin).getCustomHead(mob, mob.getFriendlyName(), 1, money);
 				else // https://mineskin.org/6875
 					is = new CustomItems(plugin).getCustomtexture(uuid,
-							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 							"eyJ0aW1lc3RhbXAiOjE0ODU5MTIwNjk3OTgsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM5NmNlMTNmZjYxNTVmZGYzMjM1ZDhkMjIxNzRjNWRlNGJmNTUxMmYxYWRlZGExYWZhM2ZjMjgxODBmM2Y3In19fQ==",
 							"m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=",
 							money, UUID.randomUUID());
@@ -234,7 +236,7 @@ public class RewardManager implements Listener {
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 				uuid = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
 				is = new CustomItems(plugin).getCustomtexture(uuid,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName,
+						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money, UUID.randomUUID());
 
@@ -256,8 +258,11 @@ public class RewardManager implements Listener {
 											? "" : Reward.getReward(is).getDisplayname(),
 									money, uuid, UUID.randomUUID())));
 			if (Misc.isMC18OrNewer()) {
-				item.setCustomName(
-						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + format(money));
+				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+						+ (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+								? plugin.getRewardManager().format(money)
+								: Reward.getReward(is).getDisplayname() + " (" + plugin.getRewardManager().format(money)
+										+ ")"));
 				item.setCustomNameVisible(true);
 			}
 		}

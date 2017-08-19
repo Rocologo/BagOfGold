@@ -45,7 +45,6 @@ import one.lindegaard.MobHunting.compatibility.TownyCompat;
 import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.compatibility.WorldEditCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
-import one.lindegaard.MobHunting.npc.MasterMobHunterManager;
 
 public class MetricsManager {
 
@@ -176,7 +175,7 @@ public class MetricsManager {
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
 				valueMap.put("Leaderboards", MobHunting.getLeaderboardManager().getWorldLeaderBoards().size());
-				valueMap.put("MasterMobHunters", MasterMobHunterManager.getMasterMobHunterManager().size());
+				valueMap.put("MasterMobHunters", CitizensCompat.getMasterMobHunterManager().getAll().size());
 				valueMap.put("PlayerBounties", MobHunting.getConfigManager().disablePlayerBounties ? 0
 						: plugin.getBountyManager().getAllBounties().size());
 				return valueMap;
@@ -505,7 +504,9 @@ public class MetricsManager {
 		usageGraph.addPlotter(new Metrics.Plotter("# of MasterMobHunters") {
 			@Override
 			public int getValue() {
-				return MasterMobHunterManager.getMasterMobHunterManager().size();
+				if (CitizensCompat.getMasterMobHunterManager()!=null)
+				return CitizensCompat.getMasterMobHunterManager().getAll().size();
+				else return 0;
 			}
 		});
 		usageGraph.addPlotter(new Metrics.Plotter("# of Bounties") {

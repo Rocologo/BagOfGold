@@ -18,7 +18,7 @@ import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class PlayerSettingsManager implements Listener {
 
-	private static HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
+	private HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
 
 	private MobHunting plugin;
 	/**

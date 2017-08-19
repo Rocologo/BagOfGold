@@ -10,7 +10,10 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class DebugCommand implements ICommand {
 
-	public DebugCommand() {
+private MobHunting plugin;
+	
+	public DebugCommand(MobHunting plugin) {
+		this.plugin=plugin;
 	}
 
 	// Used case

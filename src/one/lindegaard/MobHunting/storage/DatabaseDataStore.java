@@ -28,13 +28,13 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public abstract class DatabaseDataStore implements IDataStore {
-	
+
 	private MobHunting plugin;
-	
-	public DatabaseDataStore(MobHunting plugin){
-		this.plugin=plugin;
+
+	public DatabaseDataStore(MobHunting plugin) {
+		this.plugin = plugin;
 	}
-	
+
 	/**
 	 * Connection to the Database
 	 */
@@ -858,7 +858,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 	}
-	
+
 	@Override
 	public void insertInfernalMobs() {
 		Connection connection;
@@ -882,7 +882,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
-	
 	// ******************************************************************
 	// Bounties
 	// ******************************************************************
@@ -1035,9 +1034,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mConnection.close();
 
 				for (PlayerSettings playerData : playerDataSet) {
-					if (MobHunting.getPlayerSettingsmanager().containsKey(playerData.getPlayer())
+					if (plugin.getPlayerSettingsmanager().containsKey(playerData.getPlayer())
 							&& !playerData.getPlayer().isOnline())
-						MobHunting.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
+						plugin.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
 				}
 
 			} catch (SQLException e) {
@@ -1062,7 +1061,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		if (offlinePlayer == null)
 			return 0;
 		int playerId = 0;
-		PlayerSettings ps = MobHunting.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
 		if (ps != null)
 			playerId = ps.getPlayerId();
 		if (playerId == 0) {

@@ -120,104 +120,104 @@ public class AchievementManager implements Listener {
 
 		for (MinecraftMob type : MinecraftMob.values()) {
 			ExtendedMob extendedMob = new ExtendedMob(MobPlugin.Minecraft, type.name());
-			registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-			registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-			registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-			registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-			registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-			registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-			registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-			registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+			registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+			registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+			registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+			registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+			registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+			registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+			registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+			registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 		}
 
 		if (MythicMobsCompat.isSupported())
 			for (String type : MythicMobsCompat.getMobRewardData().keySet()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MythicMobs, type);
-				registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-				registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-				registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+				registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+				registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+				registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 			}
 
 		if (CitizensCompat.isSupported())
 			for (String type : CitizensCompat.getMobRewardData().keySet()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.Citizens, type);
-				registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-				registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-				registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+				registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+				registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+				registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 			}
 
 		if (MysteriousHalloweenCompat.isSupported())
 			for (String type : MysteriousHalloweenCompat.getMobRewardData().keySet()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.MysteriousHalloween, type);
-				registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-				registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-				registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+				registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+				registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+				registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 			}
 
 		if (CustomMobsCompat.isSupported())
 			for (String type : CustomMobsCompat.getMobRewardData().keySet()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.CustomMobs, type);
-				registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-				registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-				registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+				registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+				registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+				registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 			}
 
 		if (TARDISWeepingAngelsCompat.isSupported())
 			for (String type : TARDISWeepingAngelsCompat.getMobRewardData().keySet()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.TARDISWeepingAngels, type);
-				registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-				registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-				registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+				registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+				registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+				registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 			}
 
 		if (SmartGiantsCompat.isSupported()) {
 			ExtendedMob extendedMob = new ExtendedMob(MobPlugin.SmartGiants, SmartGiantsCompat.MONSTER_NAME);
-			registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-			registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-			registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-			registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-			registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-			registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-			registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-			registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+			registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+			registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+			registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+			registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+			registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+			registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+			registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+			registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 		}
 
 		if (InfernalMobsCompat.isSupported()) {
 			for (MinecraftMob type : MinecraftMob.values()) {
 				ExtendedMob extendedMob = new ExtendedMob(MobPlugin.InfernalMobs, type.name());
-				registerAchievement(new BasicHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SecondHuntAchievement(plugin,extendedMob));
-				registerAchievement(new ThirdHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FourthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new FifthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SixthHuntAchievement(plugin,extendedMob));
-				registerAchievement(new SeventhHuntAchievement(plugin,extendedMob));
-				registerAchievement(new EighthHuntAchievement(plugin,extendedMob));
+				registerAchievement(new BasicHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SecondHuntAchievement(plugin, extendedMob));
+				registerAchievement(new ThirdHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FourthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new FifthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SixthHuntAchievement(plugin, extendedMob));
+				registerAchievement(new SeventhHuntAchievement(plugin, extendedMob));
+				registerAchievement(new EighthHuntAchievement(plugin, extendedMob));
 			}
 		}
 	}
@@ -310,7 +310,8 @@ public class AchievementManager implements Listener {
 						Achievement achievement = mAchievements.get(stored.id);
 						achievements.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(achievement,
 								stored.progress));
-						if (achievement instanceof ProgressAchievement && ((ProgressAchievement) achievement).inheritFrom() != null)
+						if (achievement instanceof ProgressAchievement
+								&& ((ProgressAchievement) achievement).inheritFrom() != null)
 							toRemove.add(new AbstractMap.SimpleImmutableEntry<Achievement, Integer>(
 									getAchievement(((ProgressAchievement) achievement).inheritFrom().toLowerCase()),
 									-1));
@@ -396,7 +397,7 @@ public class AchievementManager implements Listener {
 			}
 
 		if (!MobHunting.getConfigManager().disableMobHuntingAdvancements && Misc.isMC112OrNewer())
-			MobHunting.getAdvancementManager().grantAdvancement(player, achievement);
+			plugin.getAdvancementManager().grantAdvancement(player, achievement);
 
 		PlayerStorage storage = mStorage.get(player.getUniqueId());
 		if (storage == null) {
@@ -420,7 +421,7 @@ public class AchievementManager implements Listener {
 
 		if (MobHunting.getConfigManager().broadcastAchievement
 				&& (!(achievement instanceof TheHuntBegins) || MobHunting.getConfigManager().broadcastFirstAchievement))
-			Messages.broadcast(
+			plugin.getMessages().broadcast(
 					ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player",
 							player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()),
 					player);
@@ -649,7 +650,7 @@ public class AchievementManager implements Listener {
 
 								if (!MobHunting.getConfigManager().disableMobHuntingAdvancements
 										&& Misc.isMC112OrNewer())
-									MobHunting.getAdvancementManager().updatePlayerAdvancements(player);
+									plugin.getAdvancementManager().updatePlayerAdvancements(player);
 
 							}
 						});

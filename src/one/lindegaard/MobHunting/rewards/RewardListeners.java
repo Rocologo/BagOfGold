@@ -69,7 +69,7 @@ public class RewardListeners implements Listener {
 					plugin.getRewardManager().getEconomy().withdrawPlayer(player, money);
 				Messages.debug("%s dropped %s money. (# of rewards left=%s)", player.getName(),
 						plugin.getRewardManager().format(money), plugin.getRewardManager().getDroppedMoney().size());
-				Messages.playerActionBarMessage(player,
+				plugin.getMessages().playerActionBarMessage(player,
 						Messages.getString("mobhunting.moneydrop", "money", plugin.getRewardManager().format(money)));
 			}
 			item.setCustomNameVisible(true);
@@ -145,7 +145,7 @@ public class RewardListeners implements Listener {
 							Messages.debug("%s picked up the %s money. (# of rewards left=%s)", player.getName(),
 									plugin.getRewardManager().format(rewardOnGround.getMoney()),
 									plugin.getRewardManager().getDroppedMoney().size());
-							Messages.playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
+							plugin.getMessages().playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
 									"money", plugin.getRewardManager().format(rewardOnGround.getMoney())));
 						} else {
 
@@ -240,7 +240,7 @@ public class RewardListeners implements Listener {
 			Reward reward = Reward.getReward(is);
 			if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) {
 				reward.setMoney(0);
-				Messages.learn(event.getPlayer(), Messages.getString("mobhunting.learn.no-duplication"));
+				plugin.getMessages().learn(event.getPlayer(), Messages.getString("mobhunting.learn.no-duplication"));
 			}
 			if (reward.getMoney() == 0)
 				reward.setUniqueId(UUID.randomUUID());

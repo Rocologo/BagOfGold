@@ -77,7 +77,7 @@ public class ReloadCommand implements ICommand {
 				Messages.debug("Reloading %s online playerSettings from the database", n);
 				// reload player settings
 				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers())
-					MobHunting.getPlayerSettingsmanager().load(player);
+					plugin.getPlayerSettingsmanager().load(player);
 				// reload bounties
 				if (!MobHunting.getConfigManager().disablePlayerBounties)
 					for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers())

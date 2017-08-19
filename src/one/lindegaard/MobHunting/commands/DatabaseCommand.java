@@ -13,11 +13,10 @@ import one.lindegaard.MobHunting.storage.DataStoreException;
 
 public class DatabaseCommand implements ICommand, Listener {
 
-	// private IDataStore mStore;
+	private MobHunting plugin;
 
-	// private DataStoreManager mStoreManager;
-
-	public DatabaseCommand() {
+	public DatabaseCommand(MobHunting plugin) {
+		this.plugin = plugin;
 	}
 
 	@Override
@@ -38,7 +37,7 @@ public class DatabaseCommand implements ICommand, Listener {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " fixLeaderboard",
-				ChatColor.GOLD + label + ChatColor.GREEN + " convert-to-utf8"};
+				ChatColor.GOLD + label + ChatColor.GREEN + " convert-to-utf8" };
 	}
 
 	@Override

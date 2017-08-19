@@ -17,6 +17,12 @@ import one.lindegaard.MobHunting.grinding.Area;
 
 public class CheckGrindingCommand implements ICommand {
 
+private MobHunting plugin;
+	
+	public CheckGrindingCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "checkgrinding";

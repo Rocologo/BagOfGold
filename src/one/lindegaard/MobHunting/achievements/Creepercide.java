@@ -80,7 +80,7 @@ public class Creepercide extends AbstractSkullAchievement implements Listener {
 						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 					Messages.debug("AchiveBlocked: CreeperCide was achieved while %s was playing MobArena.",
 							initiator.getName());
-					Messages.learn(initiator, Messages.getString("mobhunting.learn.mobarena"));
+					plugin.getMessages().learn(initiator, Messages.getString("mobhunting.learn.mobarena"));
 				} else
 					MobHunting.getAchievementManager().awardAchievement("creepercide", initiator,
 							MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));

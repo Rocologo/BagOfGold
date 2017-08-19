@@ -60,7 +60,7 @@ public class LeaderboardManager implements Listener {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
 					+ "[MobHunting][Warning] leaderboard-update-period: in your config.yml is too low. Please raise it to 1200 or higher. Reccommended is 6000. ");
 		}
-		mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Updater(), 1L,
+		mUpdater = Bukkit.getScheduler().runTaskTimer(MobHunting.getInstance(), new Updater(), 120L,
 				leaderboardUpdatePeriod);
 		loadLegacy();
 

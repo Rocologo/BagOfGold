@@ -16,6 +16,12 @@ import one.lindegaard.MobHunting.grinding.Area;
 
 public class BlacklistAreaCommand implements ICommand {
 
+private MobHunting plugin;
+	
+	public BlacklistAreaCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "blacklistarea";
