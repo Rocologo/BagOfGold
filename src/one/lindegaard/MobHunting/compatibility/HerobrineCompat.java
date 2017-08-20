@@ -34,7 +34,7 @@ public class HerobrineCompat implements Listener {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with Herobrine is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("Herobrine");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Herobrine.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

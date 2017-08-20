@@ -35,7 +35,7 @@ public class SmartGiantsCompat implements Listener {
 	private static File file = new File(MobHunting.getInstance().getDataFolder(), "smartgiants-rewards.yml");
 	private static YamlConfiguration config = new YamlConfiguration();
 	public static final String MH_SMARTGIANTS = "MH:SMARTGIANTS";
-	public static final String MONSTER_NAME = "SmartGiant"; 
+	public static final String MONSTER_NAME = "SmartGiant";
 
 	// https://www.spigotmc.org/threads/smartgiants.55208/
 
@@ -43,7 +43,7 @@ public class SmartGiantsCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with SmartGiants is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("SmartGiants");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.SmartGiants.getName());
 
 			if (mPlugin.getDescription().getVersion().compareTo("2.3.3") >= 0) {
 
@@ -214,10 +214,8 @@ public class SmartGiantsCompat implements Listener {
 		Entity entity = event.getEntity();
 
 		if (isSmartGiants(entity)) {
-			Messages.debug("A SmartGiant was spawned at %s,%s,%s in %s", 
-					event.getEntity().getLocation().getBlockX(),
-					event.getEntity().getLocation().getBlockY(),
-					event.getEntity().getLocation().getBlockZ(),
+			Messages.debug("A SmartGiant was spawned at %s,%s,%s in %s", event.getEntity().getLocation().getBlockX(),
+					event.getEntity().getLocation().getBlockY(), event.getEntity().getLocation().getBlockZ(),
 					event.getEntity().getLocation().getWorld().getName());
 			String mobtype = MONSTER_NAME;
 			if (mMobRewardData != null && !mMobRewardData.containsKey(mobtype)) {

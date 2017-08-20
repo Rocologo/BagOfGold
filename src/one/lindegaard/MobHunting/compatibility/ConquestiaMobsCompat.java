@@ -29,7 +29,7 @@ public class ConquestiaMobsCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with ConquestiaMobs is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("ConquestiaMobs");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.ConquestiaMobs.getName());
 
 			if (mPlugin.getDescription().getVersion().compareTo("3.3.3") >= 0) {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());

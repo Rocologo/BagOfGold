@@ -21,7 +21,7 @@ public class StackMobCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with StackMob is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("StackMob");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.StackMob.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

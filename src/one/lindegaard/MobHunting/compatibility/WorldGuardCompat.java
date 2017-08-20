@@ -16,7 +16,7 @@ public class WorldGuardCompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with WorldGuard is disabled in config.yml");
 		} else {
-			mPlugin = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
+			mPlugin = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin(CompatPlugin.WorldGuard.getName());
 
 			if (mPlugin.getDescription().getVersion().compareTo("6.0") < 0) {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();

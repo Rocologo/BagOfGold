@@ -1,3 +1,8 @@
+V5.0.7
+* Added new features. Ticket 287 (https://github.com/Rocologo/MobHunting/issues/287)
+* Vanished players is exempt from Random Bounties
+* Players with permission "mobhunting.bounty.randombounty.exempt" is exempt from Random Bounties.
+* Players with permission "mobhunting.bounty.admin" can delete random bounties
 V5.0.6
 * Changed to static file and config access in the RewardManager
 * Fixed NPE error. Ticket 286. (https://github.com/Rocologo/MobHunting/issues/286)

@@ -17,7 +17,7 @@ public class EssentialsCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with Essentials is disabled in config.yml");
 		} else {
-			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin(CompatPlugin.Essentials.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

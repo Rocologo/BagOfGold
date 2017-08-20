@@ -113,7 +113,7 @@ public class IDisguiseCompat implements Listener {
 		if (MobHunting.getConfigManager().disableIntegrationIDisguise) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with iDisguise is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getServer().getPluginManager().getPlugin("iDisguise");
+			mPlugin = Bukkit.getServer().getPluginManager().getPlugin(CompatPlugin.iDisguise.getName());
 			api = Bukkit.getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());

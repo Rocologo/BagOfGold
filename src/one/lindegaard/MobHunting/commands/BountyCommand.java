@@ -147,7 +147,6 @@ public class BountyCommand implements ICommand {
 			if (wantedPlayer != null) {
 				if (plugin.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
 					Bounty bounty = plugin.getBountyManager().getOpenBounty(worldGroupName, wantedPlayer, bountyOwner);
-					// bounty.setStatus(BountyStatus.canceled);
 					plugin.getBountyManager().cancel(bounty);
 					int pct = MobHunting.getConfigManager().bountyReturnPct;
 					plugin.getRewardManager().depositPlayer(bountyOwner, bounty.getPrize() * pct / 100);
@@ -155,9 +154,24 @@ public class BountyCommand implements ICommand {
 							wantedPlayer.getName(), "money", String.format("%.2f", bounty.getPrize() * pct / 100)));
 					return true;
 				} else {
-					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties-player",
-							"wantedplayer", wantedPlayer.getName()));
-					return true;
+					if (sender.hasPermission("mobhunting.bounty.admin")
+							&& plugin.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, null)) {
+						Bounty bounty = plugin.getBountyManager().getOpenBounty(worldGroupName, wantedPlayer, null);
+						plugin.getBountyManager().cancel(bounty);
+						sender.sendMessage(Messages.getString("mobhunting.bounty.randombounty.removed.admin",
+								"playername", sender.getName()));
+						if (wantedPlayer.isOnline() && !wantedPlayer.equals(bountyOwner))
+							((Player) bountyOwner)
+									.sendMessage(Messages.getString("mobhunting.bounty.randombounty.removed.player",
+											"adminname", wantedPlayer.getName()));
+						Messages.debug("%s removed the Random Bounty from %s", sender.getName(),
+								wantedPlayer.getName());
+						return true;
+					} else {
+						sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounties-player",
+								"wantedplayer", wantedPlayer.getName()));
+						return true;
+					}
 				}
 			} else {
 				sender.sendMessage(
@@ -191,11 +205,6 @@ public class BountyCommand implements ICommand {
 				return true;
 			}
 			if (wantedPlayer != null && playerId != 0) {
-				// TODO: allow this agin
-				// if (bountyOwner.equals(wantedPlayer)) {
-				// sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-bounty-on-yourself"));
-				// return true;
-				// }
 				double prize = Double.valueOf(args[1]);
 				if (!plugin.getRewardManager().has(bountyOwner, prize)) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.no-money", "money", prize));
@@ -207,11 +216,9 @@ public class BountyCommand implements ICommand {
 				for (int i = 2; i < args.length; i++) {
 					message = message + args[i] + " ";
 				}
-				// Messages.debug("args[0]=%s,args[1]=%s,args[2-]=%s",
-				// args[0], args[1], message);
 				Bounty bounty;
 				bounty = new Bounty(plugin, worldGroupName, bountyOwner, wantedPlayer, prize, message);
-				if (plugin.getBountyManager().hasOpenBounty(worldGroupName, wantedPlayer, bountyOwner)) {
+				if (plugin.getBountyManager().hasOpenBounty(bounty)) {
 					sender.sendMessage(Messages.getString("mobhunting.commands.bounty.bounty-added", "wantedplayer",
 							wantedPlayer.getName()));
 				} else {
@@ -229,6 +236,7 @@ public class BountyCommand implements ICommand {
 			} else {
 				sender.sendMessage(
 						Messages.getString("mobhunting.commands.bounty.unknown-player", "wantedplayer", args[0]));
+				return true;
 			}
 		}
 		return false;

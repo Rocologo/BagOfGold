@@ -31,7 +31,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitTask;
 
 public class CitizensCompat implements Listener {
 
@@ -48,7 +47,7 @@ public class CitizensCompat implements Listener {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with Citizens2 is disabled in config.yml");
 		} else {
-			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin("Citizens");
+			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(CompatPlugin.Citizens.getName());
 			if (citizensAPI == null)
 				return;
 

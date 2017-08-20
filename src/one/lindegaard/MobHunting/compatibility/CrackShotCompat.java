@@ -27,7 +27,7 @@ public class CrackShotCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with CrackShot is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("CrackShot");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.CrackShot.getName());
 
 			if (mPlugin.getDescription().getVersion().compareTo("0.98.5") >= 0) {
 

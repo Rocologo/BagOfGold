@@ -19,7 +19,7 @@ public class BossShopCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getConsoleSender().sendMessage("[MobHunting] Compatibility with BossShop is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("BossShop");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.BossShop.getName());
 
 			bs = (BossShop) mPlugin;
 

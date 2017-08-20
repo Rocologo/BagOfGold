@@ -31,7 +31,7 @@ public class MinigamesLibCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MinigamesLib is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("MinigamesLib");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.MinigamesLib.getName());
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with MinigamesLib (v"
 					+ mPlugin.getDescription().getVersion() + ")");

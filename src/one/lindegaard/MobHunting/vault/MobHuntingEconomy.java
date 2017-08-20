@@ -2,14 +2,18 @@ package one.lindegaard.MobHunting.vault;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import one.lindegaard.MobHunting.MobHunting;
 
 public class MobHuntingEconomy implements Economy {
 
-	public MobHuntingEconomy() {
-		// TODO Auto-generated constructor stub
+	private MobHunting plugin;
+	public MobHuntingEconomy(MobHunting plugin) {
+		this.plugin=plugin;
 	}
 
 	@Override
@@ -48,9 +52,10 @@ public class MobHuntingEconomy implements Economy {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public boolean createPlayerAccount(String arg0) {
-		// TODO Auto-generated method stub
+	public boolean createPlayerAccount(String name) {
+		createPlayerAccount(Bukkit.getServer().getOfflinePlayer(name));
 		return false;
 	}
 
@@ -74,14 +79,12 @@ public class MobHuntingEconomy implements Economy {
 
 	@Override
 	public String currencyNamePlural() {
-		// TODO Auto-generated method stub
-		return null;
+		return MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
 	}
 
 	@Override
 	public String currencyNameSingular() {
-		// TODO Auto-generated method stub
-		return null;
+		return MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName;
 	}
 
 	@Override
@@ -98,7 +101,7 @@ public class MobHuntingEconomy implements Economy {
 
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer player, double arg1) {
-		
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -115,9 +118,14 @@ public class MobHuntingEconomy implements Economy {
 	}
 
 	@Override
-	public String format(double arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String format(double money) {
+		return 
+		
+		ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+		+ (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+				? plugin.getRewardManager().format(money)
+				: MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " (" + plugin.getRewardManager().format(money)
+						+ ")");
 	}
 
 	@Override

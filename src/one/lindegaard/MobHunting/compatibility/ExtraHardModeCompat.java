@@ -22,7 +22,7 @@ public class ExtraHardModeCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with ExtraHardMode is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("ExtraHardMode");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.ExtraHardMode.getName());
 
 			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with ExtraHardMode ("
 					+ mPlugin.getDescription().getVersion() + ").");

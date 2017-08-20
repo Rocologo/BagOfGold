@@ -126,9 +126,6 @@ public class Bounty {
 
 		Bounty other = (Bounty) obj;
 
-		if (status != other.getStatus())
-			return false;
-
 		if (bountyOwner == null)
 			if (other.bountyOwner == null)
 				return wantedPlayer.equals(other.wantedPlayer) && worldGroup.equalsIgnoreCase(other.worldGroup);

@@ -26,7 +26,7 @@ public class FactionsCompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with Factions in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("Factions");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Factions.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("1.6.9.6") < 0) {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 				console.sendMessage(ChatColor.RED + "[MobHunting] Your version of Factions ("

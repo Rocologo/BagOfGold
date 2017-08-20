@@ -137,7 +137,7 @@ public class LibsDisguisesCompat implements Listener {
 		if (MobHunting.getConfigManager().disableIntegrationLibsDisguises) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with LibsDisguises is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getServer().getPluginManager().getPlugin("LibsDisguises");
+			mPlugin = Bukkit.getServer().getPluginManager().getPlugin(CompatPlugin.LibsDisguises.getName());
 
 			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with LibsDisguises ("
 					+ getLibsDisguises().getDescription().getVersion() + ")");

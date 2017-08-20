@@ -17,7 +17,7 @@ public class VanishNoPacketCompat implements Listener {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with VanishNoPacket is disabled in config.yml");
 		} else {
 
-			mPlugin = (VanishPlugin) Bukkit.getServer().getPluginManager().getPlugin("VanishNoPacket");
+			mPlugin = (VanishPlugin) Bukkit.getServer().getPluginManager().getPlugin(CompatPlugin.VanishNoPacket.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 
