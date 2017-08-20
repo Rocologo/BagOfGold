@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.MobHunting;
 import uk.antiperson.stackmob.StackMob;
-import uk.antiperson.stackmob.api.StackMobAPI;
+import uk.antiperson.stackmob.extras.GlobalValues;
 
 public class StackMobCompat implements Listener {
 
@@ -15,7 +15,7 @@ public class StackMobCompat implements Listener {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
-	private final static String STACKMOB_STACK_SIZE = "stackmob:stack-size";
+	private final static String STACKMOB_STACK_SIZE = GlobalValues.metaTag;
 
 	public StackMobCompat() {
 		if (isDisabledInConfig()) {
@@ -34,9 +34,6 @@ public class StackMobCompat implements Listener {
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
-	public static StackMobAPI getStackMobAPI() {
-		return ((StackMob) mPlugin).getAPI();
-	}
 
 	public static boolean isSupported() {
 		return supported;
@@ -54,8 +51,6 @@ public class StackMobCompat implements Listener {
 	public static boolean isStackedMob(Entity entity) {
 		if (isSupported()) {
 			return entity.hasMetadata(STACKMOB_STACK_SIZE);
-			// return
-			// getStackMobAPI().getEntityManager().isStackedEntity(entity);
 		}
 		return false;
 	}
@@ -65,8 +60,6 @@ public class StackMobCompat implements Listener {
 			return (Integer) entity.getMetadata(STACKMOB_STACK_SIZE).get(0).value();
 		}
 		return 1;
-		// return
-		// getStackMobAPI().getEntityManager().getStackedEntity(entity).getStackAmount();
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {
