@@ -4,6 +4,7 @@ import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.achievements.AchievementManager;
 import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
+import one.lindegaard.MobHunting.compatibility.VanishNoPacketCompat;
 import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.UserNotFoundException;
@@ -250,7 +251,7 @@ public class BountyManager implements Listener {
 				if (n > 0 && hasOpenBounties(player)) {
 					plugin.getMessages().playerActionBarMessage(player,
 							Messages.getString("mobhunting.bounty.youarewanted"));
-					if (!EssentialsCompat.isVanishedModeEnabled(player))
+					if (!EssentialsCompat.isVanishedModeEnabled(player)  && !VanishNoPacketCompat.isVanishedModeEnabled(player))
 						plugin.getMessages().broadcast(
 								Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()),
 								player);
@@ -455,7 +456,7 @@ public class BountyManager implements Listener {
 			int noOfPlayers = MobHunting.getMobHuntingManager().getOnlinePlayersAmount();
 			int noOfPlayersNotVanished = noOfPlayers;
 			for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
-				if (EssentialsCompat.isVanishedModeEnabled(player)
+				if (EssentialsCompat.isVanishedModeEnabled(player) || VanishNoPacketCompat.isVanishedModeEnabled(player)
 						|| player.hasPermission("mobhunting.bounty.randombounty.exempt"))
 					noOfPlayersNotVanished--;
 			}
@@ -465,7 +466,7 @@ public class BountyManager implements Listener {
 				int random = MobHunting.getMobHuntingManager().mRand.nextInt(noOfPlayersNotVanished);
 				int n = 0;
 				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
-					if (n == random && !EssentialsCompat.isVanishedModeEnabled(player)
+					if (n == random && !EssentialsCompat.isVanishedModeEnabled(player) && !VanishNoPacketCompat.isVanishedModeEnabled(player)
 							&& !player.hasPermission("mobhunting.bounty.randombounty.exempt")) {
 						randomPlayer = player;
 						break;
