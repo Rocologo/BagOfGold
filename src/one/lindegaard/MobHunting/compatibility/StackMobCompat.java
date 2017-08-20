@@ -6,8 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.MobHunting;
-import uk.antiperson.stackmob.StackMob;
-import uk.antiperson.stackmob.extras.GlobalValues;
+import uk.antiperson.stackmob.tools.extras.*;
 
 public class StackMobCompat implements Listener {
 

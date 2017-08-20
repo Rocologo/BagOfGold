@@ -23,6 +23,7 @@ import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
+import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
@@ -153,6 +154,7 @@ public class MetricsManager {
 				valueMap.put("MysteriousHalloween", MysteriousHalloweenCompat.isSupported() ? 1 : 0);
 				valueMap.put("SmartGiants", SmartGiantsCompat.isSupported() ? 1 : 0);
 				valueMap.put("InfernalMobs", InfernalMobsCompat.isSupported() ? 1 : 0);
+				valueMap.put("Herobrine", HerobrineCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -396,6 +398,12 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return InfernalMobsCompat.isSupported() ? 1 : 0;
+			}
+		});
+		mobPluginIntegrationsGraph.addPlotter(new Metrics.Plotter("Herobrine") {
+			@Override
+			public int getValue() {
+				return HerobrineCompat.isSupported() ? 1 : 0;
 			}
 		});
 		metrics.addGraph(mobPluginIntegrationsGraph);
