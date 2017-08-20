@@ -14,7 +14,10 @@ import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class LearnCommand implements ICommand {
 
-	public LearnCommand() {
+	private MobHunting plugin;
+	
+	public LearnCommand(MobHunting plugin) {
+		this.plugin=plugin;
 	}
 
 	// Used case
@@ -89,13 +92,13 @@ public class LearnCommand implements ICommand {
 
 	private void togglePlayerLearningMode(Player player) {
 		DataStoreManager ds = MobHunting.getDataStoreManager();
-		boolean mm = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
-		if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode()) {
+		boolean mm = plugin.getPlayerSettingsmanager().getPlayerSettings(player).isMuted();
+		if (plugin.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode()) {
 			ds.updatePlayerSettings(player, false, mm);
-			MobHunting.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, false, mm));
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, false, mm));
 			player.sendMessage(Messages.getString("mobhunting.commands.learn.disabled", "player", player.getName()));
 		} else {
-			MobHunting.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, true, mm));
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, true, mm));
 			player.sendMessage(Messages.getString("mobhunting.commands.learn.enabled", "player", player.getName()));
 		}
 	}

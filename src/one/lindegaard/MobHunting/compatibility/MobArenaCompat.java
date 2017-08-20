@@ -34,7 +34,7 @@ public class MobArenaCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MobArena is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("MobArena");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.MobArena.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

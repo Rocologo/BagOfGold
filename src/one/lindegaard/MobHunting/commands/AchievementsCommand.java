@@ -14,6 +14,12 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class AchievementsCommand implements ICommand {
 
+private MobHunting plugin;
+	
+	public AchievementsCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "achievements";

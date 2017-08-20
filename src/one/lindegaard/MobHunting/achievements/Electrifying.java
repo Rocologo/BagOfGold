@@ -13,6 +13,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class Electrifying implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public Electrifying(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.electrifying.name");
@@ -36,7 +42,7 @@ public class Electrifying implements Achievement, Listener {
 	@EventHandler
 	public void onKill(MobHuntKillEvent event) {
 		if (event.getKilledEntity() instanceof Creeper && ((Creeper) event.getKilledEntity()).isPowered()
-				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0)
+				&& plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) > 0)
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}

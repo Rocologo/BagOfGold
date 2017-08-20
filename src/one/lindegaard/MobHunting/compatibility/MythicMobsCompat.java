@@ -40,7 +40,7 @@ public class MythicMobsCompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MythicMobs is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("MythicMobs");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.MythicMobs.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("4.0.0") >= 0) {
 
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with MythicMobs ("

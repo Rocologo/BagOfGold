@@ -18,15 +18,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
-import one.lindegaard.MobHunting.rewards.RewardManager;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class HeadCommand implements ICommand, Listener {
 
+	private MobHunting plugin;
 	public static final String MH_HEAD = "MH:Head";
 	public static final String MH_REWARD = "MobHunting Reward";
 
-	public HeadCommand(MobHunting instance) {
+	public HeadCommand(MobHunting plugin) {
+		this.plugin=plugin;
 	}
 
 	// Used case
@@ -86,6 +88,7 @@ public class HeadCommand implements ICommand, Listener {
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		// /mh head give [toPlayername] [mobname|playername] [displayname]
 		// [amount] [silent]
+		CustomItems customItems = new CustomItems(plugin);
 		if (args.length >= 2 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("spawn"))) {
 			if (args.length >= 3) {
 				OfflinePlayer offlinePlayer = null, toPlayer = null;
@@ -138,7 +141,7 @@ public class HeadCommand implements ICommand, Listener {
 				}
 				if (Misc.isMC18OrNewer()) {
                     // Use GameProfile
-                    ItemStack head = mob.getCustomHead(displayName, amount, mob.getHeadPrize());
+                    ItemStack head = customItems.getCustomHead(mob,displayName, amount, mob.getHeadPrize());
                     // ItemStack head = mob.getHead(displayName, 1,
                     // mob.getHeadPrize());
                     ((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(), head);
@@ -204,19 +207,19 @@ public class HeadCommand implements ICommand, Listener {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
 						if (mob == MinecraftMob.PvpPlayer)
-							player.getWorld().dropItem(location, mob.getCustomHead(args[1], 1, money));
+							player.getWorld().dropItem(location, customItems.getCustomHead(mob,args[1], 1, money));
 						else
-							player.getWorld().dropItem(location, mob.getCustomHead(mob.getFriendlyName(), 1, money));
+							player.getWorld().dropItem(location, customItems.getCustomHead(mob,mob.getFriendlyName(), 1, money));
 
 					} else if (args.length == 3) {
 						if (Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
 							Location location = Misc.getTargetBlock(player, 3).getLocation();
 							if (mob == MinecraftMob.PvpPlayer)
-								player.getWorld().dropItem(location, mob.getCustomHead(args[1], 1, money));
+								player.getWorld().dropItem(location, customItems.getCustomHead(mob, args[1], 1, money));
 							else
 								player.getWorld().dropItem(location,
-										mob.getCustomHead(mob.getFriendlyName(), 1, money));
+										customItems.getCustomHead(mob, mob.getFriendlyName(), 1, money));
 
 						} else {
 							sender.sendMessage(ChatColor.RED + Messages
@@ -237,12 +240,12 @@ public class HeadCommand implements ICommand, Listener {
 						Location location = new Location(world, xpos, ypos, zpos);
 						if (mob == MinecraftMob.PvpPlayer) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
-							ItemStack head = mob.getCustomHead(args[1], 1, money);
-							RewardManager.setDisplayNameAndHiddenLores(head, args[1], money, player.getUniqueId());
+							ItemStack head = customItems.getCustomHead(mob,args[1], 1, money);
+							plugin.getRewardManager().setDisplayNameAndHiddenLores(head, args[1], money, player.getUniqueId());
 							world.dropItem(location, head);
 						} else {
-							ItemStack head = mob.getCustomHead(mob.getFriendlyName(), 1, money);
-							RewardManager.setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
+							ItemStack head = customItems.getCustomHead(mob,mob.getFriendlyName(), 1, money);
+							plugin.getRewardManager().setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
 									UUID.fromString(mob.getPlayerUUID().toString()));
 							world.dropItem(location, head);
 						}

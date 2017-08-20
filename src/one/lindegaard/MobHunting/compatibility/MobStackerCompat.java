@@ -23,7 +23,7 @@ public class MobStackerCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MobStacker is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("MobStacker");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.MobStacker.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

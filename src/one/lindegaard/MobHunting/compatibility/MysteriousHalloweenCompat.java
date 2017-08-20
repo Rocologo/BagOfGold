@@ -40,7 +40,7 @@ public class MysteriousHalloweenCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with MysteriousHalloween is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("MysteriousHalloween");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.MysteriousHalloween.getName());
 
 			if (mPlugin.getDescription().getVersion().compareTo("1.3.2") >= 0) {
 

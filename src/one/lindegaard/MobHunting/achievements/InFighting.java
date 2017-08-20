@@ -17,6 +17,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class InFighting implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public InFighting(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.infighting.name");
@@ -41,7 +47,7 @@ public class InFighting implements Achievement, Listener {
 	public void onKill(MobHuntKillEvent event) {
 		if (!(event.getKilledEntity() instanceof Skeleton)
 				|| !MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
-				|| MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0)
+				|| plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) <= 0)
 			return;
 
 		Skeleton killed = (Skeleton) event.getKilledEntity();
@@ -52,6 +58,7 @@ public class InFighting implements Achievement, Listener {
 		EntityDamageByEntityEvent damage = (EntityDamageByEntityEvent) killed.getLastDamageCause();
 
 		if (damage.getDamager() instanceof Arrow && ((Arrow) damage.getDamager()).getShooter() instanceof Skeleton) {
+			
 			Skeleton skele = (Skeleton) ((Arrow) damage.getDamager()).getShooter();
 
 			if (killed.getTarget() == skele && skele.getTarget() == killed) {

@@ -15,11 +15,13 @@ import one.lindegaard.MobHunting.MobHunting;
 
 public class MoneyMergeEventListener implements Listener {
 
-	public MoneyMergeEventListener() {
+	private MobHunting plugin;
+
+	public MoneyMergeEventListener(MobHunting plugin) {
+		this.plugin = plugin;
 	}
 
-
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=false)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void onMoneyMergeEvent(ItemMergeEvent event) {
 		// OBS: ItemMergeEvent does only exist in MC1.8 and newer
 
@@ -41,19 +43,19 @@ public class MoneyMergeEventListener implements Listener {
 					is2.setAmount(0);
 					item2.setItemStack(is2);
 					String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
-							.equalsIgnoreCase("ITEM") ? MobHunting.getRewardManager().format(reward2.getMoney())
-									: reward2.getDisplayname() + "("
-											+ MobHunting.getRewardManager().format(reward2.getMoney()) + ")";
+							.equalsIgnoreCase("ITEM") ? plugin.getRewardManager().format(reward2.getMoney())
+									: reward2.getDisplayname() + " ("
+											+ plugin.getRewardManager().format(reward2.getMoney()) + ")";
 					item2.setCustomName(
 							ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 					item2.setCustomNameVisible(true);
 					item2.setMetadata(RewardManager.MH_REWARD_DATA,
 							new FixedMetadataValue(MobHunting.getInstance(), new Reward(reward2)));
 					Messages.debug("Rewards merged - new value=%s",
-							MobHunting.getRewardManager().format(reward2.getMoney()));
+							plugin.getRewardManager().format(reward2.getMoney()));
 				}
-				if (RewardManager.getDroppedMoney().containsKey(item1.getEntityId()))
-                    RewardManager.getDroppedMoney().remove(item1.getEntityId());
+				if (plugin.getRewardManager().getDroppedMoney().containsKey(item1.getEntityId()))
+					plugin.getRewardManager().getDroppedMoney().remove(item1.getEntityId());
 			}
 		}
 	}

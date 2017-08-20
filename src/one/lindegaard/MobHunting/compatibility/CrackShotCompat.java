@@ -27,7 +27,7 @@ public class CrackShotCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with CrackShot is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("CrackShot");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.CrackShot.getName());
 
 			if (mPlugin.getDescription().getVersion().compareTo("0.98.5") >= 0) {
 
@@ -101,7 +101,9 @@ public class CrackShotCompat implements Listener {
 
 	public static boolean isCrackShotUsed(Entity entity) {
 		if (MobHunting.getMobHuntingManager().getDamageHistory().containsKey(entity))
-			return !MobHunting.getMobHuntingManager().getDamageHistory().get(entity).getCrackShotWeaponUsed().isEmpty();
+			return MobHunting.getMobHuntingManager().getDamageHistory().get(entity).getCrackShotWeaponUsed() != null 
+					&& !MobHunting.getMobHuntingManager().getDamageHistory().get(entity).getCrackShotWeaponUsed()
+							.isEmpty();
 		return false;
 	}
 
@@ -115,8 +117,9 @@ public class CrackShotCompat implements Listener {
 			DamageInformation info = MobHunting.getMobHuntingManager().getDamageHistory().get(event.getVictim());
 			if (info == null)
 				info = new DamageInformation();
-			//Messages.debug("onWeaponDamageEntityEvent: Victim=%s damaged with a %s", event.getVictim().getType(),
-			//		getCrackShotWeapon(event.getPlayer().getItemInHand()));
+			// Messages.debug("onWeaponDamageEntityEvent: Victim=%s damaged with
+			// a %s", event.getVictim().getType(),
+			// getCrackShotWeapon(event.getPlayer().getItemInHand()));
 			info.setTime(System.currentTimeMillis());
 			info.setAttacker(event.getPlayer());
 			info.setAttackerPosition(event.getPlayer().getLocation().clone());

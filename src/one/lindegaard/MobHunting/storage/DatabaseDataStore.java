@@ -28,6 +28,13 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public abstract class DatabaseDataStore implements IDataStore {
+
+	private MobHunting plugin;
+
+	public DatabaseDataStore(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	/**
 	 * Connection to the Database
 	 */
@@ -142,7 +149,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 
 			Connection mConnection = setupConnection();
-			// mConnection.setAutoCommit(false);
 
 			// Find current database version
 			if (MobHunting.getConfigManager().databaseVersion == 0) {
@@ -852,7 +858,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 	}
-	
+
 	@Override
 	public void insertInfernalMobs() {
 		Connection connection;
@@ -876,7 +882,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
-	
 	// ******************************************************************
 	// Bounties
 	// ******************************************************************
@@ -893,7 +898,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			ResultSet set = mGetBounties.executeQuery();
 
 			while (set.next()) {
-				Bounty b = new Bounty();
+				Bounty b = new Bounty(plugin);
 				b.setBountyOwnerId(set.getInt(1));
 				b.setBountyOwner(getPlayerByPlayerId(set.getInt(1)));
 				b.setMobtype(set.getString(2));
@@ -1029,9 +1034,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mConnection.close();
 
 				for (PlayerSettings playerData : playerDataSet) {
-					if (MobHunting.getPlayerSettingsmanager().containsKey(playerData.getPlayer())
+					if (plugin.getPlayerSettingsmanager().containsKey(playerData.getPlayer())
 							&& !playerData.getPlayer().isOnline())
-						MobHunting.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
+						plugin.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
 				}
 
 			} catch (SQLException e) {
@@ -1056,7 +1061,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		if (offlinePlayer == null)
 			return 0;
 		int playerId = 0;
-		PlayerSettings ps = MobHunting.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
 		if (ps != null)
 			playerId = ps.getPlayerId();
 		if (playerId == 0) {

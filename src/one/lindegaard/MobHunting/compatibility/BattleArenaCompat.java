@@ -28,7 +28,7 @@ public class BattleArenaCompat implements Listener {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with BattleArena is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("BattleArena");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.BattleArena.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

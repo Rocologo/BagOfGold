@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -22,11 +21,11 @@ public class MasterMobHunterTrait extends Trait implements Listener {
 	// The Trait class also implements Listener so you can add EventHandlers
 	// directly to your trait.
 
-	MobHunting plugin = null;
+	private MobHunting plugin;
 
 	public MasterMobHunterTrait() {
 		super("mastermobhunter");
-		plugin = MobHunting.getInstance();
+		this.plugin = MobHunting.getInstance();
 	}
 
 	// see the 'Persistence API' section
@@ -104,5 +103,6 @@ public class MasterMobHunterTrait extends Trait implements Listener {
 	@Override
 	public void onRemove() {
 	}
+
 
 }

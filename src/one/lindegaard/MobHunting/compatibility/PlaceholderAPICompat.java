@@ -20,7 +20,7 @@ public class PlaceholderAPICompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with PlaceholderAPI is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.PlaceholderAPI.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("2.0.6") >= 0 && Misc.isMC18OrNewer()) {
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with PlaceholderAPI ("
 						+ mPlugin.getDescription().getVersion() + ").");

@@ -1,3 +1,20 @@
+V5.0.7
+* Added new features. Ticket 287 (https://github.com/Rocologo/MobHunting/issues/287)
+* Vanished players is exempt from Random Bounties
+* Players with permission "mobhunting.bounty.randombounty.exempt" is exempt from Random Bounties.
+* Players with permission "mobhunting.bounty.admin" can delete random bounties
+* Support for StackMob 2.0.7 Added
+V5.0.6
+* Changed to static file and config access in the RewardManager
+* Fixed NPE error. Ticket 286. (https://github.com/Rocologo/MobHunting/issues/286)
+* Optimized Citizens2 compat.
+* Fixed Bag of gold problem where the reward name in config.yml contained a Whitespace. This might be related to the bug where the Bag of gold could not be sold. Ticket 276 (https://github.com/Rocologo/MobHunting/issues/276)
+* Ticket 278 is also fixed in this release. (https://github.com/Rocologo/MobHunting/issues/278)
+V5.0.5
+* Added test to check if "org.bukkit.event.entity.EntityPickupItemEvent" does exits. It seems like the first MC 1.12 servers does not have this event.
+* Fixed NPE error thrown when a MyPet kills a mob. (I have fixed this error once before, but after a rollback I had to do, I forgot to fix this problem). Sorry.
+* Fixed bug in console/in game if a player tried to issue "/mh top Zombie alltime" OBS the correct syntax is "/mh top zombie_kills alltime"
+* Fixed bug when player issued command "/mh achievements otherplayer", while the "otherplayer" is offline .
 V5.0.4
 * Fixed NPE bug, when a MyPet killed a mob, while checking for grinding.
 V5.0.3

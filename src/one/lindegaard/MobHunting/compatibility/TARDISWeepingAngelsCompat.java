@@ -37,7 +37,7 @@ public class TARDISWeepingAngelsCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with TARDISWeepingAngels is disabled in config.yml");
 		} else {
-			mPlugin = (TARDISWeepingAngels) Bukkit.getPluginManager().getPlugin("TARDISWeepingAngels");
+			mPlugin = (TARDISWeepingAngels) Bukkit.getPluginManager().getPlugin(CompatPlugin.TARDISWeepingAngels.getName());
 
 			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TARDISWeepingAngelsAPI ("
 					+ mPlugin.getDescription().getVersion() + ")");

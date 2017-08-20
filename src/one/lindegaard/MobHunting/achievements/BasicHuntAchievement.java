@@ -8,9 +8,12 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class BasicHuntAchievement implements ProgressAchievement {
+
+	private MobHunting plugin;
 	private ExtendedMob mExtendedMob;
 
-	public BasicHuntAchievement(ExtendedMob extendedMob) {
+	public BasicHuntAchievement(MobHunting plugin, ExtendedMob extendedMob) {
+		this.plugin = plugin;
 		mExtendedMob = extendedMob;
 	}
 
@@ -24,7 +27,8 @@ public class BasicHuntAchievement implements ProgressAchievement {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
 			return "hunting-level1-" + mExtendedMob.getMobName().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level1-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level1-"
+					+ mExtendedMob.getMobtype().toLowerCase();
 
 	}
 
@@ -69,7 +73,7 @@ public class BasicHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return mExtendedMob.getCustomHead(mExtendedMob.getMobName(), 1, 0);
+		return mExtendedMob.getCustomHead(plugin, mExtendedMob.getMobName(), 1, 0);
 	}
 
 	@Override

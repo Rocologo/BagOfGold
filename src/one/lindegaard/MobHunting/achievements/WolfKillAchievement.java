@@ -20,6 +20,12 @@ import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class WolfKillAchievement implements ProgressAchievement, Listener {
 
+	private MobHunting plugin;
+
+	public WolfKillAchievement(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.fangmaster.name");
@@ -59,7 +65,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 	public void onWolfKillMob(MobHuntKillEvent event) {
 		if (!MobHunting.getMobHuntingManager().isHuntEnabledInWorld(event.getKilledEntity().getWorld())
 				|| !(event.getKilledEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
-				|| (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) <= 0))
+				|| (plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) <= 0))
 			return;
 
 		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) event.getKilledEntity().getLastDamageCause();
@@ -77,7 +83,7 @@ public class WolfKillAchievement implements ProgressAchievement, Listener {
 						&& !MobHunting.getConfigManager().mobarenaGetRewards) {
 					Messages.debug("AchiveBlocked: FangMaster was achieved while %s was playing MobArena.",
 							owner.getName());
-					Messages.learn(owner, Messages.getString("mobhunting.learn.mobarena"));
+					plugin.getMessages().learn(owner, Messages.getString("mobhunting.learn.mobarena"));
 				} else
 					MobHunting.getAchievementManager().awardAchievementProgress(this, owner,
 							MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()), 1);

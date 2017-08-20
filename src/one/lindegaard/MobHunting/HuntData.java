@@ -263,7 +263,7 @@ public class HuntData{
 		putHuntDataToPlayer(player);
 	}
 
-	public double handleKillstreak(Player player) {
+	public double handleKillstreak(MobHunting plugin, Player player) {
 		int lastKillstreakLevel = getKillstreakLevel();
 		killStreak++;
 		putHuntDataToPlayer(player);
@@ -275,25 +275,25 @@ public class HuntData{
 			if (getKillstreakLevel() != lastKillstreakLevel) {
 				switch (getKillstreakLevel()) {
 				case 1:
-					Messages.playerBossbarMessage(player,
+					plugin.getMessages().playerBossbarMessage(player,
 							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.1") + " " + ChatColor.GRAY
 									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
 											String.format("%.1f", multiplier)));
 					break;
 				case 2:
-					Messages.playerBossbarMessage(player,
+					plugin.getMessages().playerBossbarMessage(player,
 							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.2") + " " + ChatColor.GRAY
 									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
 											String.format("%.1f", multiplier)));
 					break;
 				case 3:
-					Messages.playerBossbarMessage(player,
+					plugin.getMessages().playerBossbarMessage(player,
 							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.3") + " " + ChatColor.GRAY
 									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
 											String.format("%.1f", multiplier)));
 					break;
 				default:
-					Messages.playerBossbarMessage(player,
+					plugin.getMessages().playerBossbarMessage(player,
 							ChatColor.BLUE + Messages.getString("mobhunting.killstreak.level.4") + " " + ChatColor.GRAY
 									+ Messages.getString("mobhunting.killstreak.activated", "multiplier",
 											String.format("%.1f", multiplier)));

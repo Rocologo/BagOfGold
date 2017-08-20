@@ -19,7 +19,7 @@ public class TownyCompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with Towny in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("Towny");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Towny.getName());
 
 			try {
 				@SuppressWarnings({ "rawtypes", "unused" })

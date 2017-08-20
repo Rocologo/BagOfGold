@@ -5,12 +5,17 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 
 public class ThirdHuntAchievement implements ProgressAchievement {
+
+	private MobHunting plugin;
 	private ExtendedMob mExtendedMob;
 
-	public ThirdHuntAchievement(ExtendedMob extendedMob) {
+	public ThirdHuntAchievement(MobHunting plugin, ExtendedMob extendedMob) {
+		this.plugin = plugin;
 		mExtendedMob = extendedMob;
 	}
 
@@ -24,7 +29,8 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
 			return "hunting-level3-" + mExtendedMob.getMobName().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level3-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level3-"
+					+ mExtendedMob.getMobtype().toLowerCase();
 
 	}
 
@@ -49,7 +55,8 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
 			return "hunting-level2-" + mExtendedMob.getMobtype().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level2-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level2-"
+					+ mExtendedMob.getMobtype().toLowerCase();
 	}
 
 	@Override
@@ -57,7 +64,8 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 		if (mExtendedMob.getMobPlugin() == MobPlugin.Minecraft)
 			return "hunting-level4-" + mExtendedMob.getMobtype().toLowerCase();
 		else
-			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level4-" + mExtendedMob.getMobtype().toLowerCase();
+			return mExtendedMob.getMobPlugin().name().toLowerCase() + "-hunting-level4-"
+					+ mExtendedMob.getMobtype().toLowerCase();
 	}
 
 	@Override
@@ -72,7 +80,7 @@ public class ThirdHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return mExtendedMob.getCustomHead(mExtendedMob.getMobName(), 3, 0);
+		return mExtendedMob.getCustomHead(plugin, mExtendedMob.getMobName(), 3, 0);
 	}
 
 	@Override

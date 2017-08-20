@@ -151,18 +151,19 @@ public class ExtendedMob {
 		return 0;
 	}
 
-	public ItemStack getCustomHead(String name, int amount, int money) {
-		switch (mobPlugin) {
-		case Minecraft:
-			return MinecraftMob.getMinecraftMobType(name).getCustomHead(name, amount, money);
-		default:
-			return new ItemStack(Material.IRON_INGOT, amount);
-		}
-	}
-
 	public boolean matches(Entity entity) {
 		ExtendedMob mob = MobHunting.getExtendedMobManager().getExtendedMobFromEntity(entity);
 		return mobtype.equalsIgnoreCase(mob.mobtype);
+	}
+	
+	public ItemStack getCustomHead(MobHunting plugin, String name, int amount, int money) {
+		switch (mobPlugin) {
+		case Minecraft:
+			MinecraftMob mob = MinecraftMob.getMinecraftMobType(name);
+			return mob.getCustomHead(plugin, name, amount, money);
+		default:
+			return new ItemStack(Material.IRON_INGOT, amount);
+		}
 	}
 
 }

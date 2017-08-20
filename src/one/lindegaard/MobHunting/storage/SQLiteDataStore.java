@@ -26,6 +26,13 @@ import one.lindegaard.MobHunting.util.Misc;
 import one.lindegaard.MobHunting.util.UUIDHelper;
 
 public class SQLiteDataStore extends DatabaseDataStore {
+	
+	private MobHunting plugin;
+	
+	public SQLiteDataStore(MobHunting plugin) {
+		super(plugin);
+		this.plugin=plugin;
+	}
 
 	// *******************************************************************************
 	// SETUP / INITIALIZE
@@ -144,7 +151,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			break;
 		}
 
-		MobPlugin plugin = MobPlugin.Minecraft;
+		MobPlugin mobPlugin = MobPlugin.Minecraft;
 		String mobType = type.getDBColumn().substring(0, type.getDBColumn().lastIndexOf("_"));
 		ArrayList<String> plugins_kill = new ArrayList<String>();
 		ArrayList<String> plugins_assist = new ArrayList<String>();
@@ -154,7 +161,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			plugins_assist.add(p.name() + "_assist");
 			plugins_cash.add(p.name() + "_cash");
 			if (p.name().equalsIgnoreCase(type.getDBColumn().substring(0, type.getDBColumn().indexOf("_")))) {
-				plugin = p;
+				mobPlugin = p;
 				if (type.getDBColumn().indexOf("_") != type.getDBColumn().lastIndexOf("_"))
 					mobType = type.getDBColumn().substring(type.getDBColumn().indexOf("_") + 1,
 							type.getDBColumn().lastIndexOf("_"));
@@ -189,14 +196,14 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				|| type.getDBColumn().equalsIgnoreCase("total_cash")) {
 			wherepart = (id != null ? " AND ID=" + id : "");
 		} else if (plugins_kill.contains(type.getDBColumn()) || plugins_assist.contains(type.getDBColumn())) {
-			wherepart = (id != null ? " AND ID=" + id + " AND mh_Mobs.PLUGIN_ID=" + plugin.getId()
-					: " AND mh_Mobs.PLUGIN_ID=" + plugin.getId());
+			wherepart = (id != null ? " AND ID=" + id + " AND mh_Mobs.PLUGIN_ID=" + mobPlugin.getId()
+					: " AND mh_Mobs.PLUGIN_ID=" + mobPlugin.getId());
 		} else {
 			wherepart = (id != null
 					? " AND ID=" + id + " and mh_Mobs.MOB_ID="
-							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, plugin)
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, mobPlugin)
 					: " AND mh_Mobs.MOB_ID="
-							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, plugin));
+							+ MobHunting.getExtendedMobManager().getMobIdFromMobTypeAndPluginID(mobType, mobPlugin));
 		}
 
 		try {

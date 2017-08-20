@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>5.0.4</version>
-	<!-- <version>5.0.4-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>5.0.7</version> -->
+	<version>5.0.7-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -83,7 +83,7 @@
 		<mythicmobsold.version>2.5.1</mythicmobsold.version>
 		<mythicmobs.version>4.1.0-SNAPSHOT</mythicmobs.version>
 		<mythiclib.version>0.0.1-20170628.172950-1</mythiclib.version>
-		<StackMob.version>1.6.4</StackMob.version>
+		<StackMob.version>2.0.7</StackMob.version>
 		<InfernalMobs.version>5.3</InfernalMobs.version>
 		<minigameslib.version>1.14.15.jar</minigameslib.version>
 
@@ -473,8 +473,8 @@
 
 		<!-- MobStack -->
 		<dependency>
-			<groupId>StackMob</groupId>
-			<artifactId>uk.antiperson.stackmob</artifactId>
+			<groupId>uk.antiperson.stackmob</groupId>
+			<artifactId>StackMob</artifactId>
 			<version>${StackMob.version}</version>
 		</dependency>
 

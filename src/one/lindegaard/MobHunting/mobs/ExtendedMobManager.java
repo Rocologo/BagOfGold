@@ -25,9 +25,12 @@ import one.lindegaard.MobHunting.util.Misc;
 
 public class ExtendedMobManager {
 
-	private static HashMap<Integer, ExtendedMob> mobs = new HashMap<Integer, ExtendedMob>();
+	private MobHunting plugin;
+	
+	private HashMap<Integer, ExtendedMob> mobs = new HashMap<Integer, ExtendedMob>();
 
-	public ExtendedMobManager() {
+	public ExtendedMobManager(MobHunting plugin) {
+		this.plugin=plugin;
 		updateExtendedMobs();
 	}
 

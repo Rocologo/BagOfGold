@@ -16,7 +16,7 @@ public class TitleAPICompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with TitelAPI is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("TitleAPI");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.TitleAPI.getName());
 
 			Bukkit.getLogger().info("[MobHunting] Enabling compatibility with TitleAPI ("
 					+ getTitleAPI().getDescription().getVersion() + ")");

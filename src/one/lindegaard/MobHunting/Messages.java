@@ -37,6 +37,12 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class Messages {
+	
+	private MobHunting plugin;
+	public Messages(MobHunting plugin){
+		this.plugin=plugin;
+	}
+	
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 	private static final String PREFIX = "[MobHunting]";
@@ -406,13 +412,13 @@ public class Messages {
 	 * @param message
 	 * @param except
 	 */
-	public static void broadcast(String message, Player except) {
+	public void broadcast(String message, Player except) {
 		if (isEmpty(message))
 			return;
 		Iterator<Player> players = MobHunting.getMobHuntingManager().getOnlinePlayers().iterator();
 		while (players.hasNext()) {
 			Player player = players.next();
-			if (player.equals(except) || MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted())
+			if (player.equals(except) || plugin.getPlayerSettingsmanager().getPlayerSettings(player).isMuted())
 				continue;
 			if (MobHunting.getConfigManager().useActionBarforBroadcasts)
 				playerActionBarMessage(player, message);
@@ -439,9 +445,9 @@ public class Messages {
 	 * @param text
 	 * @param args
 	 */
-	public static void learn(Player player, String text, Object... args) {
+	public void learn(Player player, String text, Object... args) {
 		if (player != null && !CitizensCompat.isNPC(player)
-				&& MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode() && !isEmpty(text))
+				&& plugin.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode() && !isEmpty(text))
 			playerBossbarMessage(player, text, args);
 	}
 
@@ -453,7 +459,7 @@ public class Messages {
 	 * @param text
 	 * @param args
 	 */
-	public static void playerBossbarMessage(Player player, String text, Object... args) {
+	public void playerBossbarMessage(Player player, String text, Object... args) {
 		if (isEmpty(text))
 			return;
 		if (BossBarAPICompat.isSupported()) {
@@ -472,7 +478,7 @@ public class Messages {
 	 * @param player
 	 * @param message
 	 */
-	public static void playerActionBarMessage(final Player player, final String message) {
+	public void playerActionBarMessage(final Player player, final String message) {
 		if (isEmpty(message))
 			return;
 		if (TitleManagerCompat.isSupported()) {

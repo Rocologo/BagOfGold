@@ -15,11 +15,18 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CompatibilityManager;
 import one.lindegaard.MobHunting.compatibility.WorldGuardCompat;
 import one.lindegaard.MobHunting.compatibility.WorldGuardHelper;
 
 public class RegionCommand implements ICommand {
+
+private MobHunting plugin;
+	
+	public RegionCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
 
 	public RegionCommand() {
 	}

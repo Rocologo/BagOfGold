@@ -12,6 +12,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class MasterSniper implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public MasterSniper(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.master-sniper.name");
@@ -37,7 +43,7 @@ public class MasterSniper implements Achievement, Listener {
 		if (event.getPlayer().isInsideVehicle() && event.getDamageInfo().getWeapon().getType() == Material.BOW
 				&& !event.getDamageInfo().isMeleWeapenUsed()
 				&& event.getPlayer().getVehicle().getVelocity().length() > 0.2
-				&& MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0) {
+				&& plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) > 0) {
 			double dist = event.getDamageInfo().getAttackerPosition().distance(event.getKilledEntity().getLocation());
 			if (dist >= 40) {
 				MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),

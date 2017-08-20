@@ -9,9 +9,11 @@ import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class FifthHuntAchievement implements ProgressAchievement {
 
+	private MobHunting plugin;
 	private ExtendedMob mExtendedMob;
 
-	public FifthHuntAchievement(ExtendedMob entity) {
+	public FifthHuntAchievement(MobHunting plugin, ExtendedMob entity) {
+		this.plugin=plugin;
 		mExtendedMob = entity;
 	}
 
@@ -73,7 +75,7 @@ public class FifthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return mExtendedMob.getCustomHead(mExtendedMob.getMobName(), 5, 0);
+		return mExtendedMob.getCustomHead(plugin, mExtendedMob.getMobName(), 5, 0);
 	}
 
 	@Override

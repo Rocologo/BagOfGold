@@ -31,7 +31,7 @@ public class DisguiseCraftCompat implements Listener {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with DisguiseCraft is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getServer().getPluginManager().getPlugin("DisguiseCraft");
+			mPlugin = Bukkit.getServer().getPluginManager().getPlugin(CompatPlugin.DisguiseCraft.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("5.0") >= 0) {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

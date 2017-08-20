@@ -16,6 +16,12 @@ import one.lindegaard.MobHunting.grinding.Area;
 
 public class WhitelistAreaCommand implements ICommand {
 
+	private MobHunting plugin;
+
+	public WhitelistAreaCommand(MobHunting plugin) {
+		this.plugin=plugin;
+	}
+
 	@Override
 	public String getName() {
 		return "whitelistarea";
@@ -93,7 +99,7 @@ public class WhitelistAreaCommand implements ICommand {
 				items.add("");
 			}
 		}
-		
+
 		if (!args[args.length - 1].trim().isEmpty()) {
 			String match = args[args.length - 1].trim().toLowerCase();
 

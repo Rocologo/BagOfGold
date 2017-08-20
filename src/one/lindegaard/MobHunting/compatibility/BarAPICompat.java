@@ -19,7 +19,7 @@ public class BarAPICompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getConsoleSender().sendMessage("[MobHunting] Compatibility with BarAPI is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("BarAPI");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.BarApi.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("3.0") < 0) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[MobHunting] Your current version of BarAPI ("
 						+ mPlugin.getDescription().getVersion()

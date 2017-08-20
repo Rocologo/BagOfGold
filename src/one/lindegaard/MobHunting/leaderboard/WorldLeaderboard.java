@@ -29,6 +29,8 @@ import one.lindegaard.MobHunting.storage.TimePeriod;
 import one.lindegaard.MobHunting.util.Misc;
 
 public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
+
+	private MobHunting plugin;
 	private static String EMPTY_STRING = "";
 	private Location mLocation;
 	private BlockFace mFacing;
@@ -45,8 +47,9 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 
 	private List<StatStore> mData;
 
-	public WorldLeaderboard(Location location, BlockFace facing, int width, int height, boolean horizontal,
-							StatType[] stat, TimePeriod[] period) {
+	public WorldLeaderboard(MobHunting plugin, Location location, BlockFace facing, int width, int height,
+			boolean horizontal, StatType[] stat, TimePeriod[] period) {
+		this.plugin = plugin;
 		Validate.isTrue(facing == BlockFace.NORTH || facing == BlockFace.EAST || facing == BlockFace.SOUTH
 				|| facing == BlockFace.WEST);
 
@@ -62,7 +65,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		mTypeIndex = 0;
 	}
 
-	WorldLeaderboard() {
+	WorldLeaderboard(MobHunting plugin) {
+		this.plugin = plugin;
 	}
 
 	public List<StatStore> getCurrentStats() {
@@ -258,8 +262,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 							name1 = name1.substring(0, 12).trim();
 					sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + " " + ChatColor.BLACK + name1);
 					if (getStatType().getDBColumn().endsWith("_cash"))
-						sign.setLine(1,
-								ChatColor.BLUE + MobHunting.getRewardManager().getEconomy().format(Misc.round(stat1.getCash())));
+						sign.setLine(1, ChatColor.BLUE
+								+ plugin.getRewardManager().getEconomy().format(Misc.round(stat1.getCash())));
 					else
 						sign.setLine(1, ChatColor.BLUE + String.valueOf(stat1.getAmount()));
 				} else {
@@ -278,8 +282,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 							name2 = name2.substring(0, 12).trim();
 					sign.setLine(2, ChatColor.GREEN + String.valueOf(place + 1) + " " + ChatColor.BLACK + name2);
 					if (getStatType().getDBColumn().endsWith("_cash"))
-						sign.setLine(3,
-								ChatColor.BLUE + MobHunting.getRewardManager().getEconomy().format(Misc.round(stat2.getCash())));
+						sign.setLine(3, ChatColor.BLUE
+								+ plugin.getRewardManager().getEconomy().format(Misc.round(stat2.getCash())));
 					else
 						sign.setLine(3, ChatColor.BLUE + String.valueOf(stat2.getAmount()));
 				} else {
@@ -513,8 +517,8 @@ public class WorldLeaderboard implements IDataCallback<List<StatStore>> {
 		for (int i = 0; i < stats.size(); ++i) {
 			mType[i] = StatType.fromColumnName(stats.get(i));
 			if (mType[i] == null)
-				throw new InvalidConfigurationException("Error on Leaderboard " + section.getName()
-						+ ":Invalid stat type " + stats.get(i));
+				throw new InvalidConfigurationException(
+						"Error on Leaderboard " + section.getName() + ":Invalid stat type " + stats.get(i));
 		}
 
 		if (!Misc.isSign(mLocation.getBlock())) {

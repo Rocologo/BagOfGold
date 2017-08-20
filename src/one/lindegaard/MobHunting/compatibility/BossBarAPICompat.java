@@ -16,7 +16,7 @@ public class BossBarAPICompat {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with BossBarAPI is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("BossBarAPI");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.BossBarApi.getName());
 
 			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with BossBarAPI ("
 					+ getBossBarAPI().getDescription().getVersion() + ")");

@@ -11,6 +11,12 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 
 public class ByTheBook implements Achievement, Listener {
 
+	private MobHunting plugin;
+
+	public ByTheBook(MobHunting plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
 	public String getName() {
 		return Messages.getString("achievements.bythebook.name");
@@ -36,7 +42,7 @@ public class ByTheBook implements Achievement, Listener {
 		if ((event.getDamageInfo().getWeapon().getType() == Material.BOOK
 				|| event.getDamageInfo().getWeapon().getType() == Material.WRITTEN_BOOK
 				|| event.getDamageInfo().getWeapon().getType() == Material.BOOK_AND_QUILL)
-				&& (MobHunting.getConfigManager().getBaseKillPrize(event.getKilledEntity()) > 0))
+				&& (plugin.getRewardManager().getBaseKillPrize(event.getKilledEntity()) > 0))
 			MobHunting.getAchievementManager().awardAchievement(this, event.getPlayer(),
 					MobHunting.getExtendedMobManager().getExtendedMobFromEntity(event.getKilledEntity()));
 	}

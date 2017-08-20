@@ -25,6 +25,8 @@ mobhunting.bounty.youarewanted=Be careful, somebody has put a bounty on your hea
 mobhunting.bounty.playeriswanted=There is a bounty on ${playername}, go get him!
 mobhunting.bounty.randombounty=A Random Bounty (${prize}) was put on ${playername}, go get him!
 mobhunting.bounty.randombounty.self=A Random Bounty (${prize}) was put on your head!
+mobhunting.bounty.randombounty.removed.admin=You removed the Random Bounty on ${playername}'s head.
+mobhunting.bounty.randombounty.removed.player=${adminname} removed the Random Bounty on your head.
 mobhunting.grinding.detected=Grinding detected. You are not allowed to grind mobs.
 mobhunting.npc.notamastermobhuner=Id=${id} is not a MasterMobHuner.
 mobhunting.npc.clickednpc=&4${killer}&2 is a MasterMobHunter(&4${npcid}&2) - Rank &4${rank}&2 for &4${numberofkills}&2 ${stattype} ${period}

@@ -20,7 +20,7 @@ public class ActionbarCompat {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with Actionbar is disabled in config.yml ");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("Actionbar");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Actionbar.getName());
 
 			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with Actionbar ("
 					+ getActionbar().getDescription().getVersion() + ")");

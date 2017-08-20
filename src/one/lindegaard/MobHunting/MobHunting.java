@@ -31,7 +31,6 @@ import one.lindegaard.MobHunting.compatibility.*;
 import one.lindegaard.MobHunting.grinding.GrindingManager;
 import one.lindegaard.MobHunting.leaderboard.LeaderboardManager;
 import one.lindegaard.MobHunting.mobs.ExtendedMobManager;
-import one.lindegaard.MobHunting.rewards.BagOfGoldSign;
 import one.lindegaard.MobHunting.rewards.RewardManager;
 import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.DataStoreManager;
@@ -56,23 +55,24 @@ public class MobHunting extends JavaPlugin {
 
 	private static MobHunting instance;
 
-	private static RewardManager mRewardManager;
+	private Messages mMessages;
+	private RewardManager mRewardManager;
 	private static MobHuntingManager mMobHuntingManager;
-	private static FishingManager mFishingManager;
+	private FishingManager mFishingManager;
 	private static GrindingManager mAreaManager;
 	private static LeaderboardManager mLeaderboardManager;
 	private static AchievementManager mAchievementManager;
-	private static BountyManager mBountyManager;
-	private static ParticleManager mParticleManager = new ParticleManager();
-	private static MetricsManager mMetricsManager;
-	private static PlayerSettingsManager mPlayerSettingsManager;
+	private BountyManager mBountyManager;
+	private ParticleManager mParticleManager = new ParticleManager();
+	private MetricsManager mMetricsManager;
+	private PlayerSettingsManager mPlayerSettingsManager;
 	private static WorldGroup mWorldGroupManager;
 	private static ExtendedMobManager mExtendedMobManager;
 	private static IDataStore mStore;
 	private static DataStoreManager mStoreManager;
 	private static ConfigManager mConfig;
-	private static AdvancementManager mAdvancementManager;
-
+	private AdvancementManager mAdvancementManager;
+	
 	private boolean mInitialized = false;
 
 	@Override
@@ -84,11 +84,11 @@ public class MobHunting extends JavaPlugin {
 
 		instance = this;
 
+		mMessages = new Messages(this);
+		
 		Messages.exportDefaultLanguages(this);
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
-
-
 
 		if (mConfig.loadConfig()) {
 			if (mConfig.dropMoneyOnGroundTextColor.equals("&0"))
@@ -137,25 +137,24 @@ public class MobHunting extends JavaPlugin {
 			}
 		}
 
-		mWorldGroupManager = new WorldGroup();
+		mWorldGroupManager = new WorldGroup(this);
 		mWorldGroupManager.load();
 
-		mRewardManager=new RewardManager(this);
-        if (mRewardManager.getEconomy() == null)
+		mRewardManager = new RewardManager(this);
+		if (mRewardManager.getEconomy() == null)
 			return;
 
 		mAreaManager = new GrindingManager(this);
 
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
-			mStore = new MySQLDataStore();
+			mStore = new MySQLDataStore(this);
 		else
-			mStore = new SQLiteDataStore();
+			mStore = new SQLiteDataStore(this);
 
 		try {
 			mStore.initialize();
 		} catch (DataStoreException e) {
 			e.printStackTrace();
-
 			try {
 				mStore.shutdown();
 			} catch (DataStoreException e1) {
@@ -167,110 +166,109 @@ public class MobHunting extends JavaPlugin {
 
 		Updater.setCurrentJarFile(this.getFile().getName());
 
-		mStoreManager = new DataStoreManager(mStore);
+		mStoreManager = new DataStoreManager(this, mStore);
 
-		mPlayerSettingsManager = new PlayerSettingsManager();
+		mPlayerSettingsManager = new PlayerSettingsManager(this);
 
 		// Handle compatibility stuff
-		registerPlugin(EssentialsCompat.class, "Essentials");
-		registerPlugin(GringottsCompat.class, "Gringotts");
+		registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
+		registerPlugin(GringottsCompat.class, CompatPlugin.Gringotts);
 
 		// Protection plugins
-		registerPlugin(WorldEditCompat.class, "WorldEdit");
-		registerPlugin(WorldGuardCompat.class, "WorldGuard");
-		registerPlugin(FactionsCompat.class, "Factions");
-		registerPlugin(TownyCompat.class, "Towny");
-		registerPlugin(ResidenceCompat.class, "Residence");
+		registerPlugin(WorldEditCompat.class, CompatPlugin.WorldEdit);
+		registerPlugin(WorldGuardCompat.class, CompatPlugin.WorldGuard);
+		registerPlugin(FactionsCompat.class, CompatPlugin.Factions);
+		registerPlugin(TownyCompat.class, CompatPlugin.Towny);
+		registerPlugin(ResidenceCompat.class, CompatPlugin.Residence);
 
 		// Other plugins
-		registerPlugin(McMMOCompat.class, "mcMMO");
-		registerPlugin(ProtocolLibCompat.class, "ProtocolLib");
-		registerPlugin(MyPetCompat.class, "MyPet");
-		registerPlugin(BossShopCompat.class, "BossShop");
+		registerPlugin(McMMOCompat.class, CompatPlugin.mcMMO);
+		registerPlugin(ProtocolLibCompat.class, CompatPlugin.ProtocolLib);
+		registerPlugin(MyPetCompat.class, CompatPlugin.MyPet);
+		registerPlugin(BossShopCompat.class, CompatPlugin.BossShop);
 
 		// Minigame plugins
-		registerPlugin(MinigamesCompat.class, "Minigames");
-		registerPlugin(MinigamesLibCompat.class, "MinigamesLib");
-		registerPlugin(MobArenaCompat.class, "MobArena");
-		registerPlugin(PVPArenaCompat.class, "PVPArena");
-		registerPlugin(BattleArenaCompat.class, "BattleArena");
+		registerPlugin(MinigamesCompat.class, CompatPlugin.Minigames);
+		registerPlugin(MinigamesLibCompat.class, CompatPlugin.MinigamesLib);
+		registerPlugin(MobArenaCompat.class, CompatPlugin.MobArena);
+		registerPlugin(PVPArenaCompat.class, CompatPlugin.PVPArena);
+		registerPlugin(BattleArenaCompat.class, CompatPlugin.BattleArena);
 
 		// Disguise and Vanish plugins
-		registerPlugin(LibsDisguisesCompat.class, "LibsDisguises");
-		registerPlugin(DisguiseCraftCompat.class, "DisguiseCraft");
-		registerPlugin(IDisguiseCompat.class, "iDisguise");
-		registerPlugin(VanishNoPacketCompat.class, "VanishNoPacket");
+		registerPlugin(LibsDisguisesCompat.class, CompatPlugin.LibsDisguises);
+		registerPlugin(DisguiseCraftCompat.class, CompatPlugin.DisguiseCraft);
+		registerPlugin(IDisguiseCompat.class, CompatPlugin.iDisguise);
+		registerPlugin(VanishNoPacketCompat.class, CompatPlugin.VanishNoPacket);
 
 		// Plugins used for presentation information in the BossBar, ActionBar,
 		// Title or Subtitle
-		registerPlugin(BossBarAPICompat.class, "BossBarAPI");
-		registerPlugin(TitleAPICompat.class, "TitleAPI");
-		registerPlugin(BarAPICompat.class, "BarAPI");
-		registerPlugin(TitleManagerCompat.class, "TitleManager");
-		registerPlugin(ActionbarCompat.class, "Actionbar");
-		registerPlugin(ActionBarAPICompat.class, "ActionBarAPI");
-		registerPlugin(ActionAnnouncerCompat.class, "ActionAnnouncer");
-		registerPlugin(PlaceholderAPICompat.class, "PlaceholderAPI");
+		registerPlugin(BossBarAPICompat.class, CompatPlugin.BossBarApi);
+		registerPlugin(TitleAPICompat.class, CompatPlugin.TitleAPI);
+		registerPlugin(BarAPICompat.class, CompatPlugin.BarApi);
+		registerPlugin(TitleManagerCompat.class, CompatPlugin.TitleManager);
+		registerPlugin(ActionbarCompat.class, CompatPlugin.Actionbar);
+		registerPlugin(ActionBarAPICompat.class, CompatPlugin.ActionBarApi);
+		registerPlugin(ActionAnnouncerCompat.class, CompatPlugin.ActionAnnouncer);
+		registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
 
 		// Plugins where the reward is a multiplier
-		registerPlugin(StackMobCompat.class, "StackMob");
-		registerPlugin(MobStackerCompat.class, "MobStacker");
-		registerPlugin(ConquestiaMobsCompat.class, "ConquestiaMobs");
+		registerPlugin(StackMobCompat.class, CompatPlugin.StackMob);
+		registerPlugin(MobStackerCompat.class, CompatPlugin.MobStacker);
+		registerPlugin(ConquestiaMobsCompat.class, CompatPlugin.ConquestiaMobs);
 
 		// ExtendedMob Plugins where special mobs are created
-		registerPlugin(MythicMobsCompat.class, "MythicMobs");
-		registerPlugin(TARDISWeepingAngelsCompat.class, "TARDISWeepingAngels");
-		registerPlugin(CustomMobsCompat.class, "CustomMobs");
-		registerPlugin(MysteriousHalloweenCompat.class, "MysteriousHalloween");
-		registerPlugin(CitizensCompat.class, "Citizens");
-		registerPlugin(SmartGiantsCompat.class, "SmartGiants");
-		registerPlugin(InfernalMobsCompat.class, "InfernalMobs");
-		registerPlugin(HerobrineCompat.class, "Herobrine");
+		registerPlugin(MythicMobsCompat.class, CompatPlugin.MythicMobs);
+		registerPlugin(TARDISWeepingAngelsCompat.class, CompatPlugin.TARDISWeepingAngels);
+		registerPlugin(CustomMobsCompat.class, CompatPlugin.CustomMobs);
+		registerPlugin(MysteriousHalloweenCompat.class, CompatPlugin.MysteriousHalloween);
+		registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
+		registerPlugin(SmartGiantsCompat.class, CompatPlugin.SmartGiants);
+		registerPlugin(InfernalMobsCompat.class, CompatPlugin.InfernalMobs);
+		registerPlugin(HerobrineCompat.class, CompatPlugin.Herobrine);
 
-		registerPlugin(ExtraHardModeCompat.class, "ExtraHardMode");
-		registerPlugin(CrackShotCompat.class, "CrackShot");
+		registerPlugin(ExtraHardModeCompat.class, CompatPlugin.ExtraHardMode);
+		registerPlugin(CrackShotCompat.class, CompatPlugin.CrackShot);
 
-		mExtendedMobManager = new ExtendedMobManager();
+		mExtendedMobManager = new ExtendedMobManager(this);
 
 		// Register commands
 		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
 				Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
 		getCommand("mobhunt").setExecutor(cmd);
 		getCommand("mobhunt").setTabCompleter(cmd);
-		cmd.registerCommand(new AchievementsCommand());
-		cmd.registerCommand(new BlacklistAreaCommand());
-		cmd.registerCommand(new CheckGrindingCommand());
-		cmd.registerCommand(new ClearGrindingCommand());
-		cmd.registerCommand(new DatabaseCommand());
+		cmd.registerCommand(new AchievementsCommand(this));
+		cmd.registerCommand(new BlacklistAreaCommand(this));
+		cmd.registerCommand(new CheckGrindingCommand(this));
+		cmd.registerCommand(new ClearGrindingCommand(this));
+		cmd.registerCommand(new DatabaseCommand(this));
 		cmd.registerCommand(new HeadCommand(this));
 		cmd.registerCommand(new LeaderboardCommand(this));
-		cmd.registerCommand(new LearnCommand());
-		cmd.registerCommand(new MuteCommand());
-		if (CompatibilityManager.isPluginLoaded(CitizensCompat.class) && CitizensCompat.isSupported()) {
+		cmd.registerCommand(new LearnCommand(this));
+		cmd.registerCommand(new MuteCommand(this));
+		if (CitizensCompat.isSupported())
 			cmd.registerCommand(new NpcCommand(this));
-		}
-		cmd.registerCommand(new ReloadCommand());
+		cmd.registerCommand(new ReloadCommand(this));
 		if (WorldGuardCompat.isSupported())
 			cmd.registerCommand(new RegionCommand());
-		if (CompatibilityManager.isPluginLoaded(WorldEditCompat.class) && WorldEditCompat.isSupported())
-			cmd.registerCommand(new SelectCommand());
+		if (WorldEditCompat.isSupported())
+			cmd.registerCommand(new SelectCommand(this));
 		cmd.registerCommand(new TopCommand());
-		cmd.registerCommand(new WhitelistAreaCommand());
-		cmd.registerCommand(new UpdateCommand());
-		cmd.registerCommand(new VersionCommand());
-		cmd.registerCommand(new DebugCommand());
+		cmd.registerCommand(new WhitelistAreaCommand(this));
+		cmd.registerCommand(new UpdateCommand(this));
+		cmd.registerCommand(new VersionCommand(this));
+		cmd.registerCommand(new DebugCommand(this));
 		if (!mConfig.disablePlayerBounties)
-			cmd.registerCommand(new BountyCommand());
+			cmd.registerCommand(new BountyCommand(this));
 		cmd.registerCommand(new HappyHourCommand());
-		cmd.registerCommand(new MoneyCommand(mRewardManager));
+		cmd.registerCommand(new MoneyCommand(this));
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
-		mAchievementManager = new AchievementManager();
+		mAchievementManager = new AchievementManager(this);
 
 		mMobHuntingManager = new MobHuntingManager(this);
 		if (!mConfig.disableFishingRewards)
-			mFishingManager = new FishingManager();
+			mFishingManager = new FishingManager(this);
 
 		if (!mConfig.disablePlayerBounties)
 			mBountyManager = new BountyManager(this);
@@ -303,14 +301,12 @@ public class MobHunting extends JavaPlugin {
 			}
 		}
 
-		if (getConfigManager().dropMoneyOnGroundUseAsCurrency)
-			new BagOfGoldSign(mRewardManager);
-
 		Messages.debug("Updating advancements");
 		if (!getConfigManager().disableMobHuntingAdvancements && Misc.isMC112OrNewer()) {
-			mAdvancementManager = new AdvancementManager();
+			mAdvancementManager = new AdvancementManager(this);
 			mAdvancementManager.getAdvancementsFromAchivements();
 		}
+		
 		// for (int i = 0; i < 2; i++)
 		// Messages.debug("Random uuid = %s", UUID.randomUUID());
 
@@ -318,7 +314,7 @@ public class MobHunting extends JavaPlugin {
 
 	}
 
-	public  void registerPlugin(@SuppressWarnings("rawtypes") Class c, String pluginName) {
+	public void registerPlugin(@SuppressWarnings("rawtypes") Class c, CompatPlugin pluginName) {
 		try {
 			CompatibilityManager.register(c, pluginName);
 		} catch (Exception e) {
@@ -373,7 +369,7 @@ public class MobHunting extends JavaPlugin {
 		return instance;
 	}
 
-	public static  ConfigManager getConfigManager() {
+	public static ConfigManager getConfigManager() {
 		return mConfig;
 	}
 
@@ -427,7 +423,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static BountyManager getBountyManager() {
+	public BountyManager getBountyManager() {
 		return mBountyManager;
 	}
 
@@ -454,7 +450,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static  PlayerSettingsManager getPlayerSettingsmanager() {
+	public PlayerSettingsManager getPlayerSettingsmanager() {
 		return mPlayerSettingsManager;
 	}
 
@@ -463,7 +459,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static RewardManager getRewardManager() {
+	public RewardManager getRewardManager() {
 		return mRewardManager;
 	}
 
@@ -472,7 +468,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static ParticleManager getParticleManager() {
+	public ParticleManager getParticleManager() {
 		return mParticleManager;
 	}
 
@@ -490,7 +486,7 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static FishingManager getFishingManager() {
+	public FishingManager getFishingManager() {
 		return mFishingManager;
 	}
 
@@ -499,8 +495,16 @@ public class MobHunting extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static AdvancementManager getAdvancementManager() {
+	public AdvancementManager getAdvancementManager() {
 		return mAdvancementManager;
 	}
 
+	/**
+	 * Get the MessagesManager
+	 * @return
+	 */
+	public Messages getMessages() {
+		return mMessages;
+	}
+	
 }

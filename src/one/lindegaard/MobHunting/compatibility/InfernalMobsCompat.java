@@ -31,7 +31,7 @@ public class InfernalMobsCompat implements Listener {
 			Bukkit.getConsoleSender()
 					.sendMessage("[MobHunting] Compatibility with InfernalMobs is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("InfernalMobs");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.InfernalMobs.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

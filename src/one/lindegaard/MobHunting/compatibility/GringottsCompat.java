@@ -17,10 +17,10 @@ public class GringottsCompat {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with Gringotts is disabled in config.yml");
 		} else {
-			mPlugin = (Gringotts) Bukkit.getPluginManager().getPlugin("Gringotts");
+			mPlugin = (Gringotts) Bukkit.getPluginManager().getPlugin(CompatPlugin.Gringotts.getName());
 
-			Bukkit.getLogger().info(
-					"[MobHunting] Enabling Compatibility with Gringotts (" + getGringotts().getDescription().getVersion() + ")");
+			Bukkit.getLogger().info("[MobHunting] Enabling Compatibility with Gringotts ("
+					+ getGringotts().getDescription().getVersion() + ")");
 			supported = true;
 		}
 	}

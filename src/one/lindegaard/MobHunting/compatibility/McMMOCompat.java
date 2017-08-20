@@ -30,7 +30,7 @@ public class McMMOCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with McMMO is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("mcMMO");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.mcMMO.getName());
 
 			if (mPlugin.getDescription().getVersion().compareTo("1.5.00") >= 0) {
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());

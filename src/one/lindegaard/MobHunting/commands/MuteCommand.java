@@ -14,7 +14,10 @@ import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class MuteCommand implements ICommand {
 
-	public MuteCommand() {
+	private MobHunting plugin;
+	
+	public MuteCommand(MobHunting plugin) {
+		this.plugin=plugin;
 	}
 
 	// Used case
@@ -90,14 +93,14 @@ public class MuteCommand implements ICommand {
 
 	private void togglePlayerMuteMode(Player player) {
 		DataStoreManager ds = MobHunting.getDataStoreManager();
-		boolean lm = MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode();
-		if (MobHunting.getPlayerSettingsmanager().getPlayerSettings(player).isMuted()) {
+		boolean lm = plugin.getPlayerSettingsmanager().getPlayerSettings(player).isLearningMode();
+		if (plugin.getPlayerSettingsmanager().getPlayerSettings(player).isMuted()) {
 			ds.updatePlayerSettings(player, lm, false);
-			MobHunting.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, false));
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, false));
 			player.sendMessage(Messages.getString("mobhunting.commands.mute.unmuted", "player", player.getName()));
 		} else {
 			ds.updatePlayerSettings(player, lm, true);
-			MobHunting.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, true));
+			plugin.getPlayerSettingsmanager().setPlayerSettings(player, new PlayerSettings(player, lm, true));
 			player.sendMessage(Messages.getString("mobhunting.commands.mute.muted", "player", player.getName()));
 		}
 	}

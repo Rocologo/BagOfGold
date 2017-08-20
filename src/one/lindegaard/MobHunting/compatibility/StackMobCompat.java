@@ -6,8 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.MobHunting;
-import uk.antiperson.stackmob.StackMob;
-import uk.antiperson.stackmob.extras.GlobalValues;
+import uk.antiperson.stackmob.tools.extras.*;
 
 public class StackMobCompat implements Listener {
 
@@ -21,7 +20,7 @@ public class StackMobCompat implements Listener {
 		if (isDisabledInConfig()) {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with StackMob is disabled in config.yml");
 		} else {
-			mPlugin = Bukkit.getPluginManager().getPlugin("StackMob");
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.StackMob.getName());
 
 			Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
 

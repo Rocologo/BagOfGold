@@ -10,6 +10,7 @@ import net.citizensnpcs.api.npc.NPC;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
+import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;
@@ -25,13 +26,17 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 
+	private MobHunting plugin;
 	private NPC npc;
 	private List<StatStore> stats;
 
-	public MasterMobHunter() {
+	public MasterMobHunter(MobHunting plugin) {
+		this.plugin = plugin;
 	}
 
-	public MasterMobHunter(int id, StatType statType, TimePeriod period, int numberOfKills, int rank) {
+	public MasterMobHunter(MobHunting plugin, int id, StatType statType, TimePeriod period, int numberOfKills,
+			int rank) {
+		this.plugin = plugin;
 		npc = CitizensAPI.getNPCRegistry().getById(id);
 		npc.getTrait(MasterMobHunterTrait.class).stattype = statType.getDBColumn();
 		npc.getTrait(MasterMobHunterTrait.class).period = period.getDBColumn();
@@ -40,16 +45,17 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 		npc.getTrait(MasterMobHunterTrait.class).signLocations = new ArrayList<Location>();
 	}
 
-	public MasterMobHunter(NPC npc) {
+	public MasterMobHunter(MobHunting plugin, NPC npc) {
+		this.plugin = plugin;
 		this.npc = npc;
 		if (StatType.fromColumnName(npc.getTrait(MasterMobHunterTrait.class).stattype) == null) {
-			MobHunting.getInstance().getLogger().warning("NPC ID=" + npc.getId()
-					+ " has an invalid StatType. Resetting to " + StatType.KillsTotal.getDBColumn());
+			plugin.getLogger().warning("NPC ID=" + npc.getId() + " has an invalid StatType. Resetting to "
+					+ StatType.KillsTotal.getDBColumn());
 			setStatType(StatType.KillsTotal);
 		}
 		if (TimePeriod.fromColumnName(npc.getTrait(MasterMobHunterTrait.class).period) == null) {
-			MobHunting.getInstance().getLogger().warning("NPC ID=" + npc.getId()
-					+ " has an invalid TimePeriod. Resetting to " + TimePeriod.AllTime.getDBColumn());
+			plugin.getLogger().warning("NPC ID=" + npc.getId() + " has an invalid TimePeriod. Resetting to "
+					+ TimePeriod.AllTime.getDBColumn());
 			setPeriod(TimePeriod.AllTime);
 		}
 		if (npc.getTrait(MasterMobHunterTrait.class).signLocations == null)
@@ -182,18 +188,15 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 					if (MasterMobHunterSign.isMHSign(sb)) {
 						org.bukkit.block.Sign s = (org.bukkit.block.Sign) sb.getState();
 						if (MasterMobHunterSign.isMHSign(s.getLine(0))) {
-							sb.setMetadata(MasterMobHunterSign.MH_SIGN,
-									new FixedMetadataValue(MobHunting.getInstance(), s.getLine(0)));
-							s.setMetadata(MasterMobHunterSign.MH_SIGN,
-									new FixedMetadataValue(MobHunting.getInstance(), s.getLine(0)));
+							sb.setMetadata(MasterMobHunterSign.MH_SIGN, new FixedMetadataValue(plugin, s.getLine(0)));
+							s.setMetadata(MasterMobHunterSign.MH_SIGN, new FixedMetadataValue(plugin, s.getLine(0)));
 							int id = MasterMobHunterSign.getNPCIdOnSign(sb);
 							NPC npc = CitizensAPI.getNPCRegistry().getById(id);
 							if (npc != null) {
-								if (MasterMobHunterManager.isMasterMobHunter(npc)) {
-									MasterMobHunter mmh = MasterMobHunterManager.getMasterMobHunterManager()
-											.get(npc.getId());
+								if (CitizensCompat.getMasterMobHunterManager().contains(npc.getId())) {
+									MasterMobHunter mmh = CitizensCompat.getMasterMobHunterManager().get(npc.getId());
 									mmh.putSignLocation(sb.getLocation());
-									MasterMobHunterManager.getMasterMobHunterManager().put(id, mmh);
+									CitizensCompat.getMasterMobHunterManager().put(id, mmh);
 								}
 							}
 						}
@@ -208,7 +211,7 @@ public class MasterMobHunter implements IDataCallback<List<StatStore>> {
 							else
 								MasterMobHunterSign.removePower(sb);
 						}
-					} 
+					}
 				}
 			}
 		}

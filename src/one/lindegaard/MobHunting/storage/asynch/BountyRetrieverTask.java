@@ -13,11 +13,13 @@ import one.lindegaard.MobHunting.storage.DataStoreException;
 import one.lindegaard.MobHunting.storage.IDataStore;
 
 public class BountyRetrieverTask implements IDataStoreTask<Set<Bounty>> {
+	private MobHunting plugin;
 	private BountyStatus mMode;
 	private OfflinePlayer mPlayer;
 	private HashSet<Object> mWaiting;
 
-	public BountyRetrieverTask(BountyStatus mode, OfflinePlayer player, HashSet<Object> waiting) {
+	public BountyRetrieverTask(MobHunting plugin, BountyStatus mode, OfflinePlayer player, HashSet<Object> waiting) {
+		this.plugin=plugin;
 		mMode = mode;
 		mPlayer = player;
 		mWaiting = waiting;
@@ -27,7 +29,7 @@ public class BountyRetrieverTask implements IDataStoreTask<Set<Bounty>> {
 		for (Object obj : mWaiting) {
 			if (obj instanceof Bounty) {
 				Bounty cached = (Bounty) obj;
-				if (MobHunting.getBountyManager().hasOpenBounty(cached)) {
+				if (plugin.getBountyManager().hasOpenBounty(cached)) {
 					continue;
 				}
 

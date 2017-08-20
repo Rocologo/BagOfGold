@@ -5,12 +5,17 @@ import org.bukkit.inventory.ItemStack;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
+import one.lindegaard.MobHunting.mobs.MinecraftMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
+import one.lindegaard.MobHunting.rewards.CustomItems;
 
 public class FourthHuntAchievement implements ProgressAchievement {
+	
+	private MobHunting plugin;
 	private ExtendedMob mExtendedMob;
 
-	public FourthHuntAchievement(ExtendedMob entity) {
+	public FourthHuntAchievement(MobHunting plugin, ExtendedMob entity) {
+		this.plugin=plugin;
 		mExtendedMob = entity;
 	}
 
@@ -72,7 +77,7 @@ public class FourthHuntAchievement implements ProgressAchievement {
 
 	@Override
 	public ItemStack getSymbol() {
-		return mExtendedMob.getCustomHead(mExtendedMob.getMobName(), 4, 0);
+		return mExtendedMob.getCustomHead(plugin, mExtendedMob.getMobName(), 4, 0);
 	}
 
 	@Override

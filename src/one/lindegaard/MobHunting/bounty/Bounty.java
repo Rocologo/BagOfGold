@@ -5,6 +5,8 @@ import org.bukkit.OfflinePlayer;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class Bounty {
+	
+	private MobHunting plugin;
 
 	private int bountyOwnerId;
 	private OfflinePlayer bountyOwner;
@@ -20,7 +22,8 @@ public class Bounty {
 	private String message;
 	private BountyStatus status;
 
-	public Bounty() {
+	public Bounty(MobHunting plugin) {
+		this.plugin=plugin;
 	}
 
 	/**
@@ -33,8 +36,9 @@ public class Bounty {
 	 * @param message
 	 *            - the message to the wanted owner
 	 */
-	public Bounty(String worldGroup, OfflinePlayer bountyOwner, OfflinePlayer wantedPlayer, double prize,
+	public Bounty(MobHunting plugin, String worldGroup, OfflinePlayer bountyOwner, OfflinePlayer wantedPlayer, double prize,
 			String message) {
+		this.plugin=plugin;
 		// Bounty on a Player
 		this.worldGroup = worldGroup;
 		this.bountyOwner = bountyOwner;
@@ -47,7 +51,8 @@ public class Bounty {
 		this.status = BountyStatus.open;
 	}
 
-	public Bounty(String worldGroup, OfflinePlayer randomPlayer, double prize, String message) {
+	public Bounty(MobHunting plugin, String worldGroup, OfflinePlayer randomPlayer, double prize, String message) {
+		this.plugin=plugin;
 		// Random Bounty on a Player
 		this.worldGroup = worldGroup;
 		this.bountyOwner = null;
@@ -60,7 +65,8 @@ public class Bounty {
 		this.status = BountyStatus.open;
 	}
 
-	public Bounty(String worldGroup, OfflinePlayer bountyOwner, int npcId, double prize, String message) {
+	public Bounty(MobHunting plugin, String worldGroup, OfflinePlayer bountyOwner, int npcId, double prize, String message) {
+		this.plugin=plugin;
 		// Bounty on a NPC
 		this.worldGroup = worldGroup;
 		this.bountyOwner = bountyOwner;
@@ -73,7 +79,8 @@ public class Bounty {
 		this.status = BountyStatus.open;
 	}
 
-	public Bounty(String worldGroup, OfflinePlayer bountyOwner, String mobId, double prize, String message) {
+	public Bounty(MobHunting plugin, String worldGroup, OfflinePlayer bountyOwner, String mobId, double prize, String message) {
+		this.plugin=plugin;
 		// Bounty on a Mob
 		this.worldGroup = worldGroup;
 		this.bountyOwner = bountyOwner;
@@ -86,7 +93,8 @@ public class Bounty {
 		this.status = BountyStatus.open;
 	}
 
-	public Bounty(Bounty bounty) {
+	public Bounty(MobHunting plugin, Bounty bounty) {
+		this.plugin=plugin;
 		bountyOwnerId = bounty.getBountyOwnerId();
 		// bountyId = bounty.getBountyId();
 		bountyOwner = bounty.getBountyOwner();
@@ -118,9 +126,6 @@ public class Bounty {
 
 		Bounty other = (Bounty) obj;
 
-		if (status != other.getStatus())
-			return false;
-
 		if (bountyOwner == null)
 			if (other.bountyOwner == null)
 				return wantedPlayer.equals(other.wantedPlayer) && worldGroup.equalsIgnoreCase(other.worldGroup);
@@ -136,7 +141,7 @@ public class Bounty {
 		return String.format(
 				"Bounty:{WorldGroup:%s,WantedPlayer:%s,BountyOwner:%s,NpcId:%s,MobId:%s,Prize:%s,Status:%s}",
 				worldGroup, wantedPlayer.getName(), bountyOwner != null ? bountyOwner.getName() : "Random Bounty",
-				npcId, mobId, MobHunting.getRewardManager().format(prize), status);
+				npcId, mobId, plugin.getRewardManager().format(prize), status);
 	}
 
 	/**
