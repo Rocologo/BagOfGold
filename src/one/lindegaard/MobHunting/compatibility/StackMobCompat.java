@@ -63,7 +63,7 @@ public class StackMobCompat implements Listener {
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {
-		return mPlugin.getConfig().getBoolean("creature.kill-all.enabled");
+		return mPlugin.getConfig().getBoolean("kill-all.enabled");
 	}
 
 	public static boolean isGrindingStackedMobsAllowed() {
