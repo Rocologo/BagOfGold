@@ -122,6 +122,13 @@ mobhunting.commands.bounty.no-money=You dont have ${money} in your pocket.
 mobhunting.commands.bounty.bounty-added=You have already put a prize on ${wantedplayer}s head. Prize will be added.
 mobhunting.commands.bounty.money-withdrawn=${money} was withdrawn your account.
 mobhunting.commands.bounty.bounty=You have put ${money} on ${wantedplayer}s head. 
+mobhunting.commands.bounty.no-randombounty=There is no random bounty on ${playername}.
+mobhunting.commands.bounty.no-permission=You need permission ${perm} to remove a Random Bounty.
+mobhunting.commands.bounty.unknown-bountyowner=BountyOwner ${bountyowner} is not known on this server.
+mobhunting.commands.bounty.bounty-removed-admin=The bounty created by ${bountyowner} on ${wantedplayer} was removed.
+mobhunting.commands.bounty.no-bounties-player-admin=There is no bounty on ${wantedplayer} created by ${bountyowner}
+mobhunting.commands.bounty.no-permission2=You need permission ${perm} to remove a bounty created by ${bountyowner}
+
 mobhunting.commands.blacklistarea.description=Adds or removes an area to the grinding blacklist.
 mobhunting.commands.blacklistarea.done=Area is now blacklisted
 mobhunting.commands.blacklistarea.remove.done=Area is no longer blacklisted

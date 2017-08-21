@@ -14,7 +14,6 @@ public class StackMobCompat implements Listener {
 
 	private static boolean supported = false;
 	private static Plugin mPlugin;
-	private final static String STACKMOB_STACK_SIZE = GlobalValues.metaTag;
 
 	public StackMobCompat() {
 		if (isDisabledInConfig()) {
@@ -49,14 +48,14 @@ public class StackMobCompat implements Listener {
 
 	public static boolean isStackedMob(Entity entity) {
 		if (isSupported()) {
-			return entity.hasMetadata(STACKMOB_STACK_SIZE);
+			return entity.hasMetadata(getTag());
 		}
 		return false;
 	}
 
 	public static int getStackSize(Entity entity) {
-		if (entity.hasMetadata(STACKMOB_STACK_SIZE)) {
-			return (Integer) entity.getMetadata(STACKMOB_STACK_SIZE).get(0).value();
+		if (entity.hasMetadata(getTag())) {
+			return (Integer) entity.getMetadata(getTag()).get(0).value();
 		}
 		return 1;
 	}
@@ -67,6 +66,10 @@ public class StackMobCompat implements Listener {
 
 	public static boolean isGrindingStackedMobsAllowed() {
 		return MobHunting.getConfigManager().isGrindingStackedMobsAllowed;
+	}
+
+	private static String getTag() {
+		return GlobalValues.metaTag;
 	}
 
 }

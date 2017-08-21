@@ -557,14 +557,6 @@
 			<version>${MobStacker.version}</version>
 		</dependency>
 
-		<!-- Gringotts -->
-		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
-			<version>2.9</version> </dependency> -->
-		<!--<dependency> <groupId>org.gestern</groupId> <artifactId>gringotts</artifactId> 
-			<version>2.9</version> <scope>provided</scope> </dependency> -->
-		<!-- <dependency> <groupId>org.gestern.gringotts.Gringotts</groupId> <artifactId>Gringotts</artifactId> 
-			<version>${gringotts.version}</version> </dependency> -->
-
 		<dependency>
 			<groupId>org.gestern.gringotts</groupId>
 			<artifactId>Gringotts</artifactId>

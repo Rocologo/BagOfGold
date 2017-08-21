@@ -58,23 +58,6 @@ public class HerobrineCompat implements Listener {
 			// Messages.debug("Herobrine Support=%s ", api.getSupport());
 			//Messages.debug("Herobrine Herobrine = %s", Herobrine.herobrineNPC.getBukkitEntity());
 			
-			for (int i=0;i<100;i++)
-			try {
-				Messages.debug("Herobrine EntityManager=%s (id=%s)", api.
-						getNPCCore().
-						getHumanNPC(i).
-						getName(),
-						api.
-						getNPCCore().
-						getHumanNPC(i).
-					    getNMSEntity().
-					    displayName
-						);
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				//e1.printStackTrace();
-			}
-
 			supported = true;
 		}
 	}
