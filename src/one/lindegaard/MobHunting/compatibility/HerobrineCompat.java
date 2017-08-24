@@ -13,6 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import net.theprogrammersworld.herobrine.Herobrine;
+import net.theprogrammersworld.herobrine.nms.NPC.NPCCore;
 import net.theprogrammersworld.herobrine.nms.entity.EntityManager;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
@@ -26,7 +27,7 @@ public class HerobrineCompat implements Listener {
 	private static Plugin mPlugin;
 	private static HashMap<String, Double> mMobRewardData = new HashMap<String, Double>();
 	private static Herobrine api;
-	private static EntityManager entityManager = new EntityManager();
+	private static EntityManager entityManager;
 	public static final String MH_HEROBRINEMOBS = "MH:Herobrine";
 
 	public HerobrineCompat() {
@@ -42,7 +43,9 @@ public class HerobrineCompat implements Listener {
 					+ mPlugin.getDescription().getVersion() + ")");
 
 			api = (Herobrine) mPlugin;
-			
+			entityManager = new EntityManager();
+			entityManager = api.getEntityManager();
+			NPCCore npcCore=api.getNPCCore();
 			// loadInfernalMobsData();
 			// MobHunting.getStoreManager().insertInfernalMobs();
 			// Messages.injectMissingMobNamesToLangFiles();
@@ -53,7 +56,8 @@ public class HerobrineCompat implements Listener {
 			// api.getConfigDB().UseNPC_Guardian);
 			// Messages.debug("Herobrine Warrior=%s ",
 			// api.getConfigDB().UseNPC_Warrior);
-			//Messages.debug("Herobrine EntityManager=%s ", api.getEntityManager().isCustomMob(0));
+			//Messages.debug("Herobrine EntityManager=%s ", entityManager.isCustomMob(0));
+			//Messages.debug("Herobrine EntityManager=%s ", entityManager.isCustomMob(1));
 			//Messages.debug("Herobrine NPCCore=%s ", api.getNPCCore());
 			// Messages.debug("Herobrine Support=%s ", api.getSupport());
 			//Messages.debug("Herobrine Herobrine = %s", Herobrine.herobrineNPC.getBukkitEntity());
@@ -78,7 +82,7 @@ public class HerobrineCompat implements Listener {
 			return entity.hasMetadata(MH_HEROBRINEMOBS) ||
 					entityManager.isCustomMob(entity.getEntityId())
 					|| entity.getEntityId()== Herobrine.herobrineNPC.getBukkitEntity().getEntityId()
-					|| api.getEntityManager().isCustomMob(entity.getEntityId());
+					|| entityManager.isCustomMob(entity.getEntityId());
 		}
 		return false;
 	}

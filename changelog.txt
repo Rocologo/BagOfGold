@@ -1,3 +1,5 @@
+V5.0.8
+* Fixed NoClassDefFoundError bug. (https://www.spigotmc.org/threads/mobhunting.46937/page-136#post-2629696)
 V5.0.7
 * Admins can now delete bounties on other players. Ticket 287 (https://github.com/Rocologo/MobHunting/issues/287)
 * Vanished players is exempt from Random Bounties
