@@ -19,7 +19,6 @@ import one.lindegaard.MobHunting.commands.MoneyCommand;
 import one.lindegaard.MobHunting.commands.AchievementsCommand;
 import one.lindegaard.MobHunting.commands.BlacklistAreaCommand;
 import one.lindegaard.MobHunting.commands.MuteCommand;
-import one.lindegaard.MobHunting.commands.NpcCommand;
 import one.lindegaard.MobHunting.commands.RegionCommand;
 import one.lindegaard.MobHunting.commands.ReloadCommand;
 import one.lindegaard.MobHunting.commands.SelectCommand;
@@ -72,6 +71,7 @@ public class MobHunting extends JavaPlugin {
 	private static DataStoreManager mStoreManager;
 	private static ConfigManager mConfig;
 	private AdvancementManager mAdvancementManager;
+	private CommandDispatcher mCommandDispatcher;
 	
 	private boolean mInitialized = false;
 
@@ -232,35 +232,34 @@ public class MobHunting extends JavaPlugin {
 		mExtendedMobManager = new ExtendedMobManager(this);
 
 		// Register commands
-		CommandDispatcher cmd = new CommandDispatcher("mobhunt",
+		mCommandDispatcher = new CommandDispatcher("mobhunt",
 				Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
-		getCommand("mobhunt").setExecutor(cmd);
-		getCommand("mobhunt").setTabCompleter(cmd);
-		cmd.registerCommand(new AchievementsCommand(this));
-		cmd.registerCommand(new BlacklistAreaCommand(this));
-		cmd.registerCommand(new CheckGrindingCommand(this));
-		cmd.registerCommand(new ClearGrindingCommand(this));
-		cmd.registerCommand(new DatabaseCommand(this));
-		cmd.registerCommand(new HeadCommand(this));
-		cmd.registerCommand(new LeaderboardCommand(this));
-		cmd.registerCommand(new LearnCommand(this));
-		cmd.registerCommand(new MuteCommand(this));
-		if (CitizensCompat.isSupported())
-			cmd.registerCommand(new NpcCommand(this));
-		cmd.registerCommand(new ReloadCommand(this));
+		getCommand("mobhunt").setExecutor(mCommandDispatcher);
+		getCommand("mobhunt").setTabCompleter(mCommandDispatcher);
+		mCommandDispatcher.registerCommand(new AchievementsCommand(this));
+		mCommandDispatcher.registerCommand(new BlacklistAreaCommand(this));
+		mCommandDispatcher.registerCommand(new CheckGrindingCommand(this));
+		mCommandDispatcher.registerCommand(new ClearGrindingCommand(this));
+		mCommandDispatcher.registerCommand(new DatabaseCommand(this));
+		mCommandDispatcher.registerCommand(new HeadCommand(this));
+		mCommandDispatcher.registerCommand(new LeaderboardCommand(this));
+		mCommandDispatcher.registerCommand(new LearnCommand(this));
+		mCommandDispatcher.registerCommand(new MuteCommand(this));
+		//mCommandDispatcher.registerCommand(new NpcCommand(this));
+		mCommandDispatcher.registerCommand(new ReloadCommand(this));
 		if (WorldGuardCompat.isSupported())
-			cmd.registerCommand(new RegionCommand());
+			mCommandDispatcher.registerCommand(new RegionCommand());
 		if (WorldEditCompat.isSupported())
-			cmd.registerCommand(new SelectCommand(this));
-		cmd.registerCommand(new TopCommand());
-		cmd.registerCommand(new WhitelistAreaCommand(this));
-		cmd.registerCommand(new UpdateCommand(this));
-		cmd.registerCommand(new VersionCommand(this));
-		cmd.registerCommand(new DebugCommand(this));
+			mCommandDispatcher.registerCommand(new SelectCommand(this));
+		mCommandDispatcher.registerCommand(new TopCommand());
+		mCommandDispatcher.registerCommand(new WhitelistAreaCommand(this));
+		mCommandDispatcher.registerCommand(new UpdateCommand(this));
+		mCommandDispatcher.registerCommand(new VersionCommand(this));
+		mCommandDispatcher.registerCommand(new DebugCommand(this));
 		if (!mConfig.disablePlayerBounties)
-			cmd.registerCommand(new BountyCommand(this));
-		cmd.registerCommand(new HappyHourCommand());
-		cmd.registerCommand(new MoneyCommand(this));
+			mCommandDispatcher.registerCommand(new BountyCommand(this));
+		mCommandDispatcher.registerCommand(new HappyHourCommand());
+		mCommandDispatcher.registerCommand(new MoneyCommand(this));
 
 		mLeaderboardManager = new LeaderboardManager(this);
 
@@ -505,6 +504,10 @@ public class MobHunting extends JavaPlugin {
 	 */
 	public Messages getMessages() {
 		return mMessages;
+	}
+	
+	public CommandDispatcher getCommandDispatcher(){
+		return mCommandDispatcher;
 	}
 	
 }

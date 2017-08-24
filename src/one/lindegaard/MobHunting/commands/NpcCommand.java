@@ -125,6 +125,7 @@ public class NpcCommand implements ICommand, Listener {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
+		
 		if (args.length == 0)
 			return false;
 		Player p = (Player) sender;

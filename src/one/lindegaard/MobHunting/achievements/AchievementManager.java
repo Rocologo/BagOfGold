@@ -421,10 +421,10 @@ public class AchievementManager implements Listener {
 
 		if (MobHunting.getConfigManager().broadcastAchievement
 				&& (!(achievement instanceof TheHuntBegins) || MobHunting.getConfigManager().broadcastFirstAchievement))
-			plugin.getMessages().broadcast(
-					ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player",
+			plugin.getMessages()
+					.broadcast(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded.broadcast", "player",
 							player.getName(), "name", "" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()),
-					player);
+							player);
 
 		// Run console commands as a reward
 		String playername = player.getName();
@@ -805,8 +805,14 @@ public class AchievementManager implements Listener {
 								Messages.debug("No room for more Achievements");
 								break for_loop;
 							}
-					} else
-						inProgress = true;
+					} else {
+						if (achievement.getKey() instanceof ProgressAchievement && hasAchievement(
+								(((ProgressAchievement) achievement.getKey()).nextLevelId()), player)) {
+							Messages.debug("Error in DB %s is not done, but %s is... skipping", achievement.getKey(),
+									((ProgressAchievement) achievement.getKey()).nextLevelId());
+						} else
+							inProgress = true;
+					}
 				}
 
 				n = 0;
