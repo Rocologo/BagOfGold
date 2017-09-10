@@ -186,13 +186,13 @@ public class NpcCommand implements ICommand, Listener {
 				StatType statType = StatType.parseStat(args[1]);
 				if (statType == null) {
 					sender.sendMessage(ChatColor.RED
-							+ Messages.getString("mobhunting.commands.npc.unknown_stattype", "stattype", args[1]));
+							+ Messages.getString("mobhunting.commands.base.unknown_stattype", "stattype", args[1]));
 					return true;
 				}
 				TimePeriod period = TimePeriod.parsePeriod(args[2]);
 				if (period == null) {
 					sender.sendMessage(ChatColor.RED
-							+ Messages.getString("mobhunting.commands.npc.unknown_timeperiod", "period", args[2]));
+							+ Messages.getString("mobhunting.commands.base.unknown_timeperiod", "period", args[2]));
 					return true;
 				}
 				int rank = Integer.valueOf(args[3]);

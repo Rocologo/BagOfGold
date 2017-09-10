@@ -145,8 +145,9 @@ public class RewardListeners implements Listener {
 							Messages.debug("%s picked up the %s money. (# of rewards left=%s)", player.getName(),
 									plugin.getRewardManager().format(rewardOnGround.getMoney()),
 									plugin.getRewardManager().getDroppedMoney().size());
-							plugin.getMessages().playerActionBarMessage(player, Messages.getString("mobhunting.moneypickup",
-									"money", plugin.getRewardManager().format(rewardOnGround.getMoney())));
+							plugin.getMessages().playerActionBarMessage(player,
+									Messages.getString("mobhunting.moneypickup", "money",
+											plugin.getRewardManager().format(rewardOnGround.getMoney())));
 						} else {
 
 							boolean found = false;
@@ -202,7 +203,7 @@ public class RewardListeners implements Listener {
 								is.setItemMeta(im);
 								item.setItemStack(is);
 								item.setMetadata(RewardManager.MH_REWARD_DATA,
-										new FixedMetadataValue(MobHunting.getInstance(), new Reward(rewardOnGround)));
+										new FixedMetadataValue(plugin, new Reward(rewardOnGround)));
 							}
 
 						}
@@ -245,7 +246,7 @@ public class RewardListeners implements Listener {
 			if (reward.getMoney() == 0)
 				reward.setUniqueId(UUID.randomUUID());
 			Messages.debug("Placed Reward Block:%s", reward.toString());
-			block.setMetadata(RewardManager.MH_REWARD_DATA, new FixedMetadataValue(MobHunting.getInstance(), reward));
+			block.setMetadata(RewardManager.MH_REWARD_DATA, new FixedMetadataValue(plugin, reward));
 			plugin.getRewardManager().getLocations().put(reward.getUniqueUUID(), reward);
 			plugin.getRewardManager().getReward().put(reward.getUniqueUUID(), block.getLocation());
 			plugin.getRewardManager().saveReward(reward.getUniqueUUID());
@@ -264,7 +265,7 @@ public class RewardListeners implements Listener {
 			Reward reward = Reward.getReward(block);
 			block.getDrops().clear();
 			block.setType(Material.AIR);
-			block.removeMetadata(RewardManager.MH_REWARD_DATA, MobHunting.getInstance());
+			block.removeMetadata(RewardManager.MH_REWARD_DATA, plugin);
 			ItemStack is;
 			if (reward.isBagOfGoldReward()) {
 				is = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
@@ -285,9 +286,16 @@ public class RewardListeners implements Listener {
 					is = new ItemStack(Material.SKULL_ITEM, 1, (short) 5);
 				} else {
 					MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getDisplayname());
-					is = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
-							mob.getTextureValue(), mob.getTextureSignature(), reward.getMoney(),
-							reward.getUniqueUUID());
+					if (mob != null) {
+						is = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
+								mob.getTextureValue(),
+								mob.getTextureSignature(),
+								reward.getMoney(),
+								reward.getUniqueUUID());
+					} else {
+						plugin.getLogger().warning("[MobHunting] The mobtype could not be detected from displayname:"+reward.getDisplayname());
+						is = new ItemStack(Material.SKULL_ITEM, 1);
+					}
 				}
 				is = plugin.getRewardManager().setDisplayNameAndHiddenLores(is, reward.getDisplayname(),
 						reward.getMoney(), reward.getRewardUUID());
@@ -307,7 +315,7 @@ public class RewardListeners implements Listener {
 			}
 			item.setCustomNameVisible(true);
 			item.setMetadata(RewardManager.MH_REWARD_DATA,
-					new FixedMetadataValue(MobHunting.getInstance(), new Reward(reward.getHiddenLore())));
+					new FixedMetadataValue(plugin, new Reward(reward.getHiddenLore())));
 			if (plugin.getRewardManager().getLocations().containsKey(reward.getUniqueUUID()))
 				plugin.getRewardManager().getLocations().remove(reward.getUniqueUUID());
 			if (plugin.getRewardManager().getReward().containsKey(reward.getUniqueUUID()))

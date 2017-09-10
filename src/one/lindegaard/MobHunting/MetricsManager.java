@@ -24,6 +24,8 @@ import one.lindegaard.MobHunting.compatibility.ExtraHardModeCompat;
 import one.lindegaard.MobHunting.compatibility.FactionsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
 import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
+import one.lindegaard.MobHunting.compatibility.HologramsCompat;
+import one.lindegaard.MobHunting.compatibility.HolographicDisplaysCompat;
 import one.lindegaard.MobHunting.compatibility.IDisguiseCompat;
 import one.lindegaard.MobHunting.compatibility.InfernalMobsCompat;
 import one.lindegaard.MobHunting.compatibility.LibsDisguisesCompat;
@@ -169,6 +171,8 @@ public class MetricsManager {
 				valueMap.put("ActionBar", ActionbarCompat.isSupported() ? 1 : 0);
 				valueMap.put("ActionBarAPI", ActionBarAPICompat.isSupported() ? 1 : 0);
 				valueMap.put("ActionAnnouncer", ActionAnnouncerCompat.isSupported() ? 1 : 0);
+				valueMap.put("Holograms", HologramsCompat.isSupported() ? 1 : 0);
+				valueMap.put("Holographic Display", HolographicDisplaysCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -491,6 +495,18 @@ public class MetricsManager {
 				return ActionAnnouncerCompat.isSupported() ? 1 : 0;
 			}
 		});
+		titleManagerGraph.addPlotter(new Metrics.Plotter("Holograms") {
+			@Override
+			public int getValue() {
+				return HologramsCompat.isSupported() ? 1 : 0;
+			}
+		});
+		titleManagerGraph.addPlotter(new Metrics.Plotter("Holographic Display") {
+			@Override
+			public int getValue() {
+				return HolographicDisplaysCompat.isSupported() ? 1 : 0;
+			}
+		});
 		metrics.addGraph(titleManagerGraph);
 
 		automaticUpdatesGraph = metrics.createGraph("# of installations with automatic update");
@@ -507,6 +523,13 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return MobHunting.getLeaderboardManager().getWorldLeaderBoards().size();
+			}
+		});
+		usageGraph = metrics.createGraph("Usage");
+		usageGraph.addPlotter(new Metrics.Plotter("# of Holographic Leaderboards") {
+			@Override
+			public int getValue() {
+				return MobHunting.getLeaderboardManager().getHologramManager().getHolograms().size();
 			}
 		});
 		usageGraph.addPlotter(new Metrics.Plotter("# of MasterMobHunters") {

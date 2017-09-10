@@ -7,12 +7,11 @@ import one.lindegaard.MobHunting.util.ConfigField;
 import org.bukkit.configuration.InvalidConfigurationException;
 
 public class ConfigManager extends AutoConfig {
-	
 
 	public ConfigManager(File file) {
-		
+
 		super(file);
-		
+
 		setCategoryComment("mobs", "########################################################################"
 				+ "\nRewards for killing mobs."
 				+ "\n########################################################################"
@@ -210,7 +209,8 @@ public class ConfigManager extends AutoConfig {
 						+ "\nand the chance to get the xp.");
 
 		setCategoryComment("crackshot",
-				"########################################################################" + "\nIntegration to CrackShot"
+				"########################################################################"
+						+ "\nIntegration to CrackShot"
 						+ "\n########################################################################"
 						+ "\nThis section only relevant if you use CrackShot."
 						+ "\nHere you configure if the player will get a multiplier for using a CrackShot weapon");
@@ -2170,10 +2170,18 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-extra-hard-mode", category = "plugins", comment = "Disable integration with ExtraHardmode."
 			+ "\nhttps://www.spigotmc.org/resources/extra-hard-mode.19673/")
 	public boolean disableIntegrationExtraHardMode = false;
-	
+
 	@ConfigField(name = "disable-integration-herobrine", category = "plugins", comment = "Disable integration with Herobrine."
 			+ "\nhttps://www.theprogrammersworld.net/Herobrine/")
 	public boolean disableIntegrationHerobrine = false;
+
+	@ConfigField(name = "disable-integration-holograms", category = "plugins", comment = "Disable integration with Holograms."
+			+ "\nhttps://www.spigotmc.org/resources/holograms.4924/")
+	public boolean disableIntegrationHolograms = false;
+
+	@ConfigField(name = "disable-integration-holographic-displays", category = "plugins", comment = "Disable integration with Holograms."
+			+ "\nhttps://dev.bukkit.org/projects/holographic-displays")
+	public boolean disableIntegrationHolographicDisplays = false;
 
 	// #####################################################################################
 	// Database

@@ -1,3 +1,6 @@
+V5.0.9
+* Added support for Holograms (https://www.spigotmc.org/resources/holograms.4924/)
+* Added support for HolographicDisplays (https://dev.bukkit.org/projects/holographic-displays)
 V5.0.8
 * Fixed NoClassDefFoundError bug. (https://www.spigotmc.org/threads/mobhunting.46937/page-136#post-2629696)
 V5.0.7

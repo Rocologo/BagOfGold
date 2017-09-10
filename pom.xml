@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>5.0.8</version>
-	<!-- <version>5.0.8-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>5.0.9</version> -->
+	<version>5.0.9-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -86,6 +86,8 @@
 		<StackMob.version>2.0.7</StackMob.version>
 		<InfernalMobs.version>5.3</InfernalMobs.version>
 		<minigameslib.version>1.14.15.jar</minigameslib.version>
+		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
+		<hologramdisplays.version>2.2.6</hologramdisplays.version>
 
 		<gringotts.version>2.10-20170805.084200-1</gringotts.version>
 		<gringotts.jar.version>Gringotts-2.10-SNAPSHOT.jar</gringotts.jar.version>
@@ -319,7 +321,9 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 
-
+		<!-- Holograms API -->
+		<!-- <repository> <id>maven.sainttx.com</id> <url>http://maven.sainttx.com/nexus/content/groups/public/</url> 
+			</repository> -->
 
 
 
@@ -621,6 +625,21 @@
 			<version>${ActionAnnouncer.version}</version>
 		</dependency>
 
+		<!-- Holograms -->
+		<!-- <dependency> <groupId>com.sainttx.holograms</groupId> <artifactId>holograms-api</artifactId> 
+			<version>${holograms.version}</version> <scope>provided</scope> </dependency> -->
+		<dependency>
+			<groupId>com.sainttx.holograms</groupId>
+			<artifactId>holograms</artifactId>
+			<version>${holograms.version}</version>
+		</dependency>
+
+		<!-- HologramDisplays -->
+		<dependency>
+			<groupId>com.gmail.filoghost.holographicdisplays.HolographicDisplays</groupId>
+			<artifactId>HolographicDisplays</artifactId>
+			<version>${hologramdisplays.version}</version>
+		</dependency>
 
 		<!-- Minigames -->
 		<dependency>
