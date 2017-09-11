@@ -268,8 +268,6 @@ public class MobHunting extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new MoneyCommand(this));
 
 		mLeaderboardManager = new LeaderboardManager(this);
-	//	if (HolographicDisplaysCompat.isSupported() || HologramsCompat.isSupported())
-	//		mHologramManager = new HologramManager(this);
 
 		mAchievementManager = new AchievementManager(this);
 

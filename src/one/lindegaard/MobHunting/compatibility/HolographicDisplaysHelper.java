@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.compatibility;
 
-import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
@@ -10,9 +9,8 @@ import one.lindegaard.MobHunting.leaderboard.HologramLeaderboard;
 
 public class HolographicDisplaysHelper {
 
-	public static void createHologram(HologramLeaderboard board, Location location) {
-		HologramsAPI.createHologram(MobHunting.getInstance(), location);
-		board.update();
+	public static void createHologram(HologramLeaderboard board) {
+		HologramsAPI.createHologram(MobHunting.getInstance(), board.getLocation());
 	}
 
 	public static void addTextLine(Hologram hologram, String text) {

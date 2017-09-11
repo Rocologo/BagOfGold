@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.compatibility;
 
-import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import com.sainttx.holograms.api.Hologram;
 import com.sainttx.holograms.api.line.ItemLine;
@@ -10,8 +9,8 @@ import one.lindegaard.MobHunting.leaderboard.HologramLeaderboard;
 
 public class HologramsHelper {
 
-	public static void createHologram(HologramLeaderboard board, Location location) {
-		HologramsCompat.getHologramManager().addActiveHologram(new Hologram(board.getHologramName(), location)); 
+	public static void createHologram(HologramLeaderboard board) {
+		HologramsCompat.getHologramManager().addActiveHologram(new Hologram(board.getHologramName(), board.getLocation())); 
 	}
 
 	public static void addTextLine(Hologram hologram, String text) {

@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.leaderboard;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +18,7 @@ import com.sainttx.holograms.api.Hologram;
 import com.sainttx.holograms.api.line.HologramLine;
 import com.sainttx.holograms.api.line.TextualHologramLine;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.compatibility.HologramsCompat;
@@ -103,52 +103,73 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 		if (HologramsCompat.isSupported()) {
 			Hologram hologram = HologramsCompat.getHologramManager().getHologram(mHologramName);
 			if (hologram.getLines().size() == 0)
-				HologramsHelper.editTextLine(hologram,ChatColor.GOLD+""+ChatColor.BOLD+
-						mType[mTypeIndex].longTranslateName() + " - " + mPeriod[mPeriodIndex].translateNameFriendly(),
+				HologramsHelper.editTextLine(hologram, ChatColor.GOLD + "" + ChatColor.BOLD
+						+ mType[mTypeIndex].longTranslateName() + " - " + mPeriod[mPeriodIndex].translateNameFriendly(),
 						0);
 			for (int n = 0; n < mHeight && n < mData.size(); n++) {
 				if (getStatType().getDBColumn().endsWith("_cash")) {
 					HologramLine line = hologram.getLine(n + 1);
 					if (line != null)
 						((TextualHologramLine) line)
-								.setText(String.format(ChatColor.WHITE+"%2d "+ChatColor.GREEN+"%-15s "+ChatColor.WHITE+": %12s", n + 1, mData.get(n).getPlayer().getName(),
+								.setText(String.format(
+										ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
+												+ ": %12s",
+										n + 1, mData.get(n).getPlayer().getName(),
 										plugin.getRewardManager().format(mData.get(n).getCash())));
 					else
 						HologramsHelper.editTextLine(hologram,
-								String.format(ChatColor.WHITE+"%2d "+ChatColor.GREEN+"%-15s "+ChatColor.WHITE+": %12s", n + 1, mData.get(n).getPlayer().getName(),
+								String.format(
+										ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
+												+ ": %12s",
+										n + 1, mData.get(n).getPlayer().getName(),
 										plugin.getRewardManager().format(mData.get(n).getCash())),
 								n + 1);
 				} else {
 					HologramLine line = hologram.getLine(n + 1);
 					if (line != null)
-						((TextualHologramLine) line).setText(String.format(ChatColor.WHITE+"%2d "+ChatColor.GREEN+"%-15s "+ChatColor.WHITE+": %6d", n + 1,
-								mData.get(n).getPlayer().getName(), mData.get(n).getAmount()));
+						((TextualHologramLine) line).setText(String.format(
+								ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE + ": %6d",
+								n + 1, mData.get(n).getPlayer().getName(), mData.get(n).getAmount()));
 					else
-						HologramsHelper.editTextLine(hologram, String.format(ChatColor.WHITE+"%2d "+ChatColor.GREEN+"%-15s "+ChatColor.WHITE+": %6d", n + 1,
-								mData.get(n).getPlayer().getName(), mData.get(n).getAmount()), n + 1);
+						HologramsHelper.editTextLine(hologram,
+								String.format(
+										ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
+												+ ": %6d",
+										n + 1, mData.get(n).getPlayer().getName(), mData.get(n).getAmount()),
+								n + 1);
 				}
 				hologram.setDirty(true);
 			}
 		} else if (HolographicDisplaysCompat.isSupported()) {
 			for (com.gmail.filoghost.holographicdisplays.api.Hologram hologram : HologramsAPI.getHolograms(plugin)) {
-				if (hologram.getLocation().equals(plugin.getLeaderboardManager().getHologramManager().getHolograms()
+				if (hologram.getLocation().equals(MobHunting.getLeaderboardManager().getHologramManager().getHolograms()
 						.get(mHologramName).getLocation())) {
 					hologram.clearLines();
 					if (hologram.getHeight() == 0)
-						hologram.insertTextLine(0, ChatColor.GOLD+""+ChatColor.BOLD+mType[mTypeIndex].longTranslateName() + " - "
-								+ mPeriod[mPeriodIndex].translateNameFriendly());
+						hologram.insertTextLine(0,
+								ChatColor.GOLD + "" + ChatColor.BOLD + mType[mTypeIndex].longTranslateName() + " - "
+										+ mPeriod[mPeriodIndex].translateNameFriendly());
 					for (int n = 0; n < mHeight && n < mData.size(); n++) {
 						if (getStatType().getDBColumn().endsWith("_cash"))
 							HolographicDisplaysHelper.editTextLine(hologram,
-									String.format(ChatColor.WHITE+"%2d "+ChatColor.GREEN+"%-15s "+ChatColor.WHITE+": %12s", n + 1, mData.get(n).getPlayer().getName(),
+									String.format(
+											ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
+													+ ": %12s",
+											n + 1, mData.get(n).getPlayer().getName(),
 											plugin.getRewardManager().format(mData.get(n).getCash())),
 									n + 1);
 						else
-							HolographicDisplaysHelper.editTextLine(hologram, String.format(ChatColor.WHITE+"%2d "+ChatColor.GREEN+"%-15s "+ChatColor.WHITE+": %6d", n + 1,
-									mData.get(n).getPlayer().getName(), mData.get(n).getAmount()), n + 1);
+							HolographicDisplaysHelper.editTextLine(hologram,
+									String.format(
+											ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
+													+ ": %6d",
+											n + 1, mData.get(n).getPlayer().getName(), mData.get(n).getAmount()),
+									n + 1);
 
 					}
 					break;
+				} else {
+					
 				}
 			}
 		}
@@ -201,7 +222,6 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 				altData.add(stat);
 			}
 		}
-
 		mData = altData;
 		refresh();
 	}

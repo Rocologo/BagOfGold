@@ -2,10 +2,6 @@ package one.lindegaard.MobHunting;
 
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.sainttx.holograms.api.Hologram;
 
@@ -17,33 +13,25 @@ import one.lindegaard.MobHunting.leaderboard.HologramLeaderboard;
 
 public class HologramManager {
 
-	MobHunting plugin;
+	private MobHunting plugin;
 
 	private HashMap<String, HologramLeaderboard> holograms = new HashMap<>();
 
 	public HologramManager(MobHunting plugin) {
-		this.plugin = plugin;
-		int leaderboardUpdatePeriod = MobHunting.getConfigManager().leaderboardUpdatePeriod;
-		if (leaderboardUpdatePeriod < 1200) {
-			leaderboardUpdatePeriod = 1200;
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
-					+ "[MobHunting][Warning] leaderboard-update-period: in your config.yml is too low. Please raise it to 1200 or higher. Reccommended is 6000. ");
-		}
+		this.plugin=plugin;
 	}
 
 	public HashMap<String, HologramLeaderboard> getHolograms() {
 		return holograms;
 	}
 
-	public void createHolographicLeaderboard(HologramLeaderboard hologramLeaderboard, Location location) {
-		if (HologramsCompat.isSupported()) {
-			HologramsHelper.createHologram(hologramLeaderboard, location);
-			hologramLeaderboard.update();
-		} else if (HolographicDisplaysCompat.isSupported()) {
-			HolographicDisplaysHelper.createHologram(hologramLeaderboard, location);
-			hologramLeaderboard.update();
-		}
+	public void createHolographicLeaderboard(HologramLeaderboard hologramLeaderboard) {
 		holograms.put(hologramLeaderboard.getHologramName(), hologramLeaderboard);
+		if (HologramsCompat.isSupported())
+			HologramsHelper.createHologram(hologramLeaderboard);
+		else if (HolographicDisplaysCompat.isSupported())
+			HolographicDisplaysHelper.createHologram(hologramLeaderboard);
+		hologramLeaderboard.update();
 	}
 
 	public void deleteHolographicLeaderboard(String hologramName) {
@@ -63,7 +51,7 @@ public class HologramManager {
 
 	public String listHolographicLeaderboard() {
 		String str = "";
-		if (HologramsCompat.isSupported()||HolographicDisplaysCompat.isSupported()) {
+		if (HologramsCompat.isSupported() || HolographicDisplaysCompat.isSupported()) {
 			if (holograms.size() == 0) {
 				str = Messages.getString("mobhunting.holograms.no-holograms");
 			} else {
