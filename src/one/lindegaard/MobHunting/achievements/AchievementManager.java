@@ -77,6 +77,9 @@ public class AchievementManager implements Listener {
 	}
 
 	public Achievement getAchievement(String id) {
+		if (id==null)
+			return null;
+		
 		if (!mAchievements.containsKey(id.toLowerCase()))
 			throw new IllegalArgumentException("There is no achievement by the id: " + id);
 		return mAchievements.get(id.toLowerCase());
