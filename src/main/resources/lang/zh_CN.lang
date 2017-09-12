@@ -163,6 +163,7 @@ mobhunting.commands.hologram.created=The hologram '${hologramid}' was created
 mobhunting.commands.hologram.unknown=The hologram '${hologramid}' does not exist.
 mobhunting.commands.hologram.deleted=The hologram '${hologramid}' was deleted.
 mobhunting.commands.hologram.hologram_exists=The hologram '${hologramid}' already exists, please use another name!
+mobhunting.commands.hologram.updating=The hologram '${hologramid} was updated.
 mobhunting.commands.leaderboard.description=Creates, edits and deletes leaderboards
 mobhunting.commands.leaderboard.list.header= &7----- ${count} &aLeaderboards: &7-----
 mobhunting.commands.leaderboard.list.format= ${leaderboard}&7: ${type} &7for ${period}

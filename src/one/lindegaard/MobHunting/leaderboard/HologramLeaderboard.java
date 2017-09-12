@@ -18,7 +18,6 @@ import com.sainttx.holograms.api.Hologram;
 import com.sainttx.holograms.api.line.HologramLine;
 import com.sainttx.holograms.api.line.TextualHologramLine;
 
-import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.compatibility.HologramsCompat;
@@ -40,8 +39,17 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 	private int mPeriodIndex = 0;
 	private StatType[] mType = new StatType[] {};
 	private int mTypeIndex = 0;
+	private String mFormat_title;
+	private String mRow_format_integer;
+	private String mRow_format_money;
 
 	private List<StatStore> mData;
+
+	private final String FORMAT_TITLE = ChatColor.GOLD + "" + ChatColor.BOLD + "[StatType] - [Period]";
+	private final String FORMAT_MONEY = ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
+			+ ": %12s";
+	private final String FORMAT_INTEGER = ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
+			+ ": %6d";
 
 	public HologramLeaderboard(MobHunting plugin, String hologramName, StatType[] stat, TimePeriod[] period, int height,
 			Location location) {
@@ -53,10 +61,16 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 		mPeriod = period;
 		mPeriodIndex = 0;
 		mTypeIndex = 0;
+		mFormat_title = FORMAT_TITLE;
+		mRow_format_money = FORMAT_MONEY;
+		mRow_format_integer = FORMAT_INTEGER;
 	}
 
-	HologramLeaderboard(MobHunting plugin) {
+	public HologramLeaderboard(MobHunting plugin) {
 		this.plugin = plugin;
+		mFormat_title = FORMAT_TITLE;
+		mRow_format_money = FORMAT_MONEY;
+		mRow_format_integer = FORMAT_INTEGER;
 	}
 
 	public HologramLeaderboard(MobHunting plugin, String hologramName, StatType statType, TimePeriod period, int height,
@@ -75,6 +89,9 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 			mPeriod[mPeriod.length] = period;
 		mPeriodIndex++;
 		mTypeIndex++;
+		mFormat_title = FORMAT_TITLE;
+		mRow_format_money = FORMAT_MONEY;
+		mRow_format_integer = FORMAT_INTEGER;
 	}
 
 	public List<StatStore> getCurrentStats() {
@@ -103,40 +120,30 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 		if (HologramsCompat.isSupported()) {
 			Hologram hologram = HologramsCompat.getHologramManager().getHologram(mHologramName);
 			if (hologram.getLines().size() == 0)
-				HologramsHelper.editTextLine(hologram, ChatColor.GOLD + "" + ChatColor.BOLD
-						+ mType[mTypeIndex].longTranslateName() + " - " + mPeriod[mPeriodIndex].translateNameFriendly(),
+				HologramsHelper.editTextLine(hologram,
+						mFormat_title.replace("[StatType]", mType[mTypeIndex].longTranslateName()).replace("[Period]",
+								mPeriod[mPeriodIndex].translateNameFriendly()),
 						0);
 			for (int n = 0; n < mHeight && n < mData.size(); n++) {
 				if (getStatType().getDBColumn().endsWith("_cash")) {
 					HologramLine line = hologram.getLine(n + 1);
 					if (line != null)
 						((TextualHologramLine) line)
-								.setText(String.format(
-										ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
-												+ ": %12s",
-										n + 1, mData.get(n).getPlayer().getName(),
+								.setText(String.format(mRow_format_money, n + 1, mData.get(n).getPlayer().getName(),
 										plugin.getRewardManager().format(mData.get(n).getCash())));
 					else
 						HologramsHelper.editTextLine(hologram,
-								String.format(
-										ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
-												+ ": %12s",
-										n + 1, mData.get(n).getPlayer().getName(),
+								String.format(mRow_format_integer, n + 1, mData.get(n).getPlayer().getName(),
 										plugin.getRewardManager().format(mData.get(n).getCash())),
 								n + 1);
 				} else {
 					HologramLine line = hologram.getLine(n + 1);
 					if (line != null)
-						((TextualHologramLine) line).setText(String.format(
-								ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE + ": %6d",
-								n + 1, mData.get(n).getPlayer().getName(), mData.get(n).getAmount()));
+						((TextualHologramLine) line).setText(String.format(mRow_format_money, n + 1,
+								mData.get(n).getPlayer().getName(), mData.get(n).getAmount()));
 					else
-						HologramsHelper.editTextLine(hologram,
-								String.format(
-										ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
-												+ ": %6d",
-										n + 1, mData.get(n).getPlayer().getName(), mData.get(n).getAmount()),
-								n + 1);
+						HologramsHelper.editTextLine(hologram, String.format(mRow_format_integer, n + 1,
+								mData.get(n).getPlayer().getName(), mData.get(n).getAmount()), n + 1);
 				}
 				hologram.setDirty(true);
 			}
@@ -147,29 +154,22 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 					hologram.clearLines();
 					if (hologram.getHeight() == 0)
 						hologram.insertTextLine(0,
-								ChatColor.GOLD + "" + ChatColor.BOLD + mType[mTypeIndex].longTranslateName() + " - "
-										+ mPeriod[mPeriodIndex].translateNameFriendly());
+								mFormat_title.replace("[StatType]", mType[mTypeIndex].longTranslateName())
+										.replace("[Period]", mPeriod[mPeriodIndex].translateNameFriendly()));
 					for (int n = 0; n < mHeight && n < mData.size(); n++) {
 						if (getStatType().getDBColumn().endsWith("_cash"))
 							HolographicDisplaysHelper.editTextLine(hologram,
-									String.format(
-											ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
-													+ ": %12s",
-											n + 1, mData.get(n).getPlayer().getName(),
+									String.format(mRow_format_money, n + 1, mData.get(n).getPlayer().getName(),
 											plugin.getRewardManager().format(mData.get(n).getCash())),
 									n + 1);
 						else
-							HolographicDisplaysHelper.editTextLine(hologram,
-									String.format(
-											ChatColor.WHITE + "%2d " + ChatColor.GREEN + "%-15s " + ChatColor.WHITE
-													+ ": %6d",
-											n + 1, mData.get(n).getPlayer().getName(), mData.get(n).getAmount()),
-									n + 1);
+							HolographicDisplaysHelper.editTextLine(hologram, String.format(mRow_format_integer, n + 1,
+									mData.get(n).getPlayer().getName(), mData.get(n).getAmount()), n + 1);
 
 					}
 					break;
 				} else {
-					
+
 				}
 			}
 		}
@@ -252,6 +252,9 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 
 		section.set("stats", stats);
 		section.set("height", mHeight);
+		section.set("format_title", mFormat_title);
+		section.set("format_integer", mRow_format_integer);
+		section.set("format_money", mRow_format_money);
 	}
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException {
@@ -299,7 +302,9 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 				throw new InvalidConfigurationException(
 						"Error on Hologram Leaderboard " + section.getName() + ":Invalid stat type " + stats.get(i));
 		}
-
+		mFormat_title = section.getString("format_title", FORMAT_TITLE);
+		mRow_format_integer = section.getString("format_integer", FORMAT_INTEGER);
+		mRow_format_money = section.getString("format_money", FORMAT_MONEY);
 	}
 
 }
