@@ -133,13 +133,13 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 										plugin.getRewardManager().format(mData.get(n).getCash())));
 					else
 						HologramsHelper.editTextLine(hologram,
-								String.format(mRow_format_integer, n + 1, mData.get(n).getPlayer().getName(),
+								String.format(mRow_format_money, n + 1, mData.get(n).getPlayer().getName(),
 										plugin.getRewardManager().format(mData.get(n).getCash())),
 								n + 1);
 				} else {
 					HologramLine line = hologram.getLine(n + 1);
 					if (line != null)
-						((TextualHologramLine) line).setText(String.format(mRow_format_money, n + 1,
+						((TextualHologramLine) line).setText(String.format(mRow_format_integer, n + 1,
 								mData.get(n).getPlayer().getName(), mData.get(n).getAmount()));
 					else
 						HologramsHelper.editTextLine(hologram, String.format(mRow_format_integer, n + 1,
