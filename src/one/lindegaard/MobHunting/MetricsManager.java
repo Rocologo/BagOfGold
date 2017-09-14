@@ -181,6 +181,8 @@ public class MetricsManager {
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
 				valueMap.put("Leaderboards", MobHunting.getLeaderboardManager().getWorldLeaderBoards().size());
+				valueMap.put("Holographic Leaderboards",
+						MobHunting.getLeaderboardManager().getHologramManager().getHolograms().size());
 				valueMap.put("MasterMobHunters", CitizensCompat.getMasterMobHunterManager().getAll().size());
 				valueMap.put("PlayerBounties", MobHunting.getConfigManager().disablePlayerBounties ? 0
 						: plugin.getBountyManager().getAllBounties().size());
@@ -535,9 +537,10 @@ public class MetricsManager {
 		usageGraph.addPlotter(new Metrics.Plotter("# of MasterMobHunters") {
 			@Override
 			public int getValue() {
-				if (CitizensCompat.getMasterMobHunterManager()!=null)
-				return CitizensCompat.getMasterMobHunterManager().getAll().size();
-				else return 0;
+				if (CitizensCompat.getMasterMobHunterManager() != null)
+					return CitizensCompat.getMasterMobHunterManager().getAll().size();
+				else
+					return 0;
 			}
 		});
 		usageGraph.addPlotter(new Metrics.Plotter("# of Bounties") {
