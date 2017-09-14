@@ -274,7 +274,8 @@ public class LeaderboardCommand implements ICommand, Listener {
 				if (args.length == 2) {
 					for (StatType type : StatType.values())
 						if (type != null)
-							items.add(type.getDBColumn());
+							items.add(ChatColor.stripColor(type.translateName().replaceAll(" ", "_")));
+							//items.add(type.getDBColumn());
 				} else if (args.length == 3)
 					for (TimePeriod period : TimePeriod.values())
 						items.add(period.translateName().replaceAll(" ", "_"));

@@ -188,14 +188,14 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		else
 			column = "sum(total_kill) amount ";
 
-		column = column + ", sum(total_cash) cash ";
+		column = column + ", sum(total_cash) CASH";
 
 		String wherepart = "";
 		if (type.getDBColumn().equalsIgnoreCase("total_kill") || type.getDBColumn().equalsIgnoreCase("total_assist")
 				|| type.getDBColumn().equalsIgnoreCase("achievement_count")
 				|| type.getDBColumn().equalsIgnoreCase("total_cash")) {
 			wherepart = (id != null ? " AND ID=" + id : "");
-		} else if (plugins_kill.contains(type.getDBColumn()) || plugins_assist.contains(type.getDBColumn())) {
+		} else if (plugins_kill.contains(type.getDBColumn()) || plugins_assist.contains(type.getDBColumn()) || plugins_cash.contains(type.getDBColumn())) {
 			wherepart = (id != null ? " AND ID=" + id + " AND mh_Mobs.PLUGIN_ID=" + mobPlugin.getId()
 					: " AND mh_Mobs.PLUGIN_ID=" + mobPlugin.getId());
 		} else {
@@ -214,9 +214,9 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					+ period.getTable() + " inner join mh_Players using (PLAYER_ID)"
 					+ " inner join mh_Mobs using (MOB_ID) WHERE PLAYER_ID!=0 AND NAME IS NOT NULL " + wherepart
 					+ " GROUP BY PLAYER_ID ORDER BY "
-					+ (type.getDBColumn().equalsIgnoreCase("total_cash") ? "sum(total_cash)" : "AMOUNT")
+					+ ((type.getDBColumn().equalsIgnoreCase("total_cash") || plugins_cash.contains(type.getDBColumn())) ? "CASH" : "AMOUNT")
 					+ " DESC LIMIT " + count;
-			// Messages.debug("Load str=%s",exestr);
+			//Messages.debug("Load str=%s",exestr);
 			ResultSet results = statement.executeQuery(exestr);
 			while (results.next()) {
 				OfflinePlayer offlinePlayer = null;

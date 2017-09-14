@@ -18,6 +18,7 @@ import com.sainttx.holograms.api.Hologram;
 import com.sainttx.holograms.api.line.HologramLine;
 import com.sainttx.holograms.api.line.TextualHologramLine;
 
+import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.StatType;
 import one.lindegaard.MobHunting.compatibility.HologramsCompat;
@@ -124,6 +125,7 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 						mFormat_title.replace("[StatType]", mType[mTypeIndex].longTranslateName()).replace("[Period]",
 								mPeriod[mPeriodIndex].translateNameFriendly()),
 						0);
+			Messages.debug("%s : mData.size=%s" , mHologramName, mData.size());
 			for (int n = 0; n < mHeight && n < mData.size(); n++) {
 				if (getStatType().getDBColumn().endsWith("_cash")) {
 					HologramLine line = hologram.getLine(n + 1);
