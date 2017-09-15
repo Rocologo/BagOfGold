@@ -73,7 +73,7 @@ public class MobHunting extends JavaPlugin {
 	private static ConfigManager mConfig;
 	private AdvancementManager mAdvancementManager;
 	private CommandDispatcher mCommandDispatcher;
-//	private HologramManager mHologramManager;
+	// private HologramManager mHologramManager;
 
 	private boolean mInitialized = false;
 

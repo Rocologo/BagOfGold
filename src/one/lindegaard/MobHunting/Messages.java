@@ -37,12 +37,13 @@ import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.mobs.MobPlugin;
 
 public class Messages {
-	
+
 	private MobHunting plugin;
-	public Messages(MobHunting plugin){
-		this.plugin=plugin;
+
+	public Messages(MobHunting plugin) {
+		this.plugin = plugin;
 	}
-	
+
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 	private static final String PREFIX = "[MobHunting]";
@@ -213,7 +214,7 @@ public class Messages {
 				if (!dest.containsKey(k)) {
 					Bukkit.getLogger()
 							.info(PREFIX + " Creating missing key (" + k + ") in language file " + onDisk.getName());
-					newEntries.put(k, p.name() + " [$]");
+					newEntries.put(k, p.name() + " cash");
 				}
 			}
 

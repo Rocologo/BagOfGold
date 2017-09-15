@@ -143,7 +143,8 @@ public class HologramCommand implements ICommand, Listener {
 				MobHunting.getLeaderboardManager().getHologramManager().deleteHolographicLeaderboard(hologramName);
 				MobHunting.getLeaderboardManager().getHologramManager().loadHologramLeaderboard(hologramName);
 				MobHunting.getLeaderboardManager().getHologramManager().updateHolographicLeaderboard(hologramName);
-				sender.sendMessage(Messages.getString("mobhunting.commands.hologram.updating", "hologramid", hologramName));
+				sender.sendMessage(
+						Messages.getString("mobhunting.commands.hologram.updating", "hologramid", hologramName));
 			} else
 				sender.sendMessage(ChatColor.RED
 						+ Messages.getString("mobhunting.commands.hologram.unknown", "hologramid", args[1]));
@@ -160,13 +161,13 @@ public class HologramCommand implements ICommand, Listener {
 		} else if (args.length == 5 && args[0].equalsIgnoreCase("create")) {
 			String hologramName = args[1];
 			if (!MobHunting.getLeaderboardManager().getHologramManager().getHolograms().containsKey(hologramName)) {
-				
+
 				StatType[] types;
 				try {
 					types = parseTypes(args[2]);
 				} catch (IllegalArgumentException e) {
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat", "stat",
-							ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
+					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat",
+							"stat", ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 					return true;
 				}
 
@@ -174,8 +175,8 @@ public class HologramCommand implements ICommand, Listener {
 				try {
 					periods = parsePeriods(args[3]);
 				} catch (IllegalArgumentException e) {
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period", "period",
-							ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
+					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period",
+							"period", ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 					return true;
 				}
 
@@ -190,14 +191,14 @@ public class HologramCommand implements ICommand, Listener {
 				Location location = ((Player) sender).getLocation();
 				location.setPitch(0);
 				location.setYaw(0);
-				HologramLeaderboard hologramLeaderboard = new HologramLeaderboard(plugin, hologramName, types,
-						periods, no_of_lines, location.add(0, 2, 0));
+				HologramLeaderboard hologramLeaderboard = new HologramLeaderboard(plugin, hologramName, types, periods,
+						no_of_lines, location.add(0, 2, 0));
 				MobHunting.getLeaderboardManager().getHologramManager().createHologramLeaderboard(hologramLeaderboard);
 				MobHunting.getLeaderboardManager().getHologramManager().saveHologramLeaderboard(hologramName);
 				sender.sendMessage(ChatColor.GREEN
 						+ Messages.getString("mobhunting.commands.hologram.created", "hologramid", hologramName));
-				Messages.debug("Creating Hologram Leaderbard: id=%s,stat=%s,per=%s,rank=%s", hologramName,
-						args[2], args[3], no_of_lines);
+				Messages.debug("Creating Hologram Leaderbard: id=%s,stat=%s,per=%s,rank=%s", hologramName, args[2],
+						args[3], no_of_lines);
 				return true;
 			} else {
 				sender.sendMessage(
@@ -208,7 +209,7 @@ public class HologramCommand implements ICommand, Listener {
 
 		return false;
 	}
-	
+
 	private StatType[] parseTypes(String typeString) throws IllegalArgumentException {
 		String[] parts = typeString.split(",");
 		StatType[] types = new StatType[parts.length];

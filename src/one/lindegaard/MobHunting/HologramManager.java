@@ -27,7 +27,7 @@ public class HologramManager {
 	private HashMap<String, HologramLeaderboard> holograms = new HashMap<>();
 
 	public HologramManager(MobHunting plugin) {
-		this.plugin=plugin;
+		this.plugin = plugin;
 	}
 
 	public HashMap<String, HologramLeaderboard> getHolograms() {
@@ -80,7 +80,7 @@ public class HologramManager {
 		}
 	}
 
-	//*******************************************************************
+	// *******************************************************************
 	// HOLOGRAM LEADERBOARDS
 	// *******************************************************************
 	private YamlConfiguration hologramConfig = new YamlConfiguration();
@@ -193,6 +193,5 @@ public class HologramManager {
 		Messages.debug("The Holographic Leaderboard '%s' was loaded from file.", hologramName);
 
 	}
-
 
 }
