@@ -44,7 +44,8 @@ public enum CompatPlugin {
 	WorldEdit("WorldEdit", 42), //
 	WorldGuard("WorldGuard", 43), //
 	Holograms("Holograms",44), //
-	HolographicDisplays("HolographicDisplays",45);
+	HolographicDisplays("HolographicDisplays",45), 
+	PreciousStones ("PreciousStones",46);
 
 	private final String name;
 	private final Integer id;

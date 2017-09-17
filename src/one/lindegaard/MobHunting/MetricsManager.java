@@ -37,6 +37,7 @@ import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.PVPArenaCompat;
+import one.lindegaard.MobHunting.compatibility.PreciousStonesCompat;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
 import one.lindegaard.MobHunting.compatibility.ResidenceCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -87,6 +88,7 @@ public class MetricsManager {
 				valueMap.put("Factions", FactionsCompat.isSupported() ? 1 : 0);
 				valueMap.put("Towny", TownyCompat.isSupported() ? 1 : 0);
 				valueMap.put("Residence", ResidenceCompat.isSupported() ? 1 : 0);
+				valueMap.put("PreciousStones", PreciousStonesCompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		});
@@ -313,6 +315,13 @@ public class MetricsManager {
 			@Override
 			public int getValue() {
 				return ResidenceCompat.isSupported() ? 1 : 0;
+
+			}
+		});
+		protectionPluginsGraph.addPlotter(new Metrics.Plotter("PreciousStones") {
+			@Override
+			public int getValue() {
+				return PreciousStonesCompat.isSupported() ? 1 : 0;
 
 			}
 		});

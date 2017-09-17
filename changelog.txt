@@ -1,3 +1,5 @@
+V5.1.0
+* Added support for PreciousStones (https://www.spigotmc.org/resources/preciousstones.5270/)
 V5.0.9
 * Added support for Holograms (https://www.spigotmc.org/resources/holograms.4924/)
 * Added support for HolographicDisplays (https://dev.bukkit.org/projects/holographic-displays)

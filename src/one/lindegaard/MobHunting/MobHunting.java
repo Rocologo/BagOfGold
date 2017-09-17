@@ -184,6 +184,7 @@ public class MobHunting extends JavaPlugin {
 		registerPlugin(FactionsCompat.class, CompatPlugin.Factions);
 		registerPlugin(TownyCompat.class, CompatPlugin.Towny);
 		registerPlugin(ResidenceCompat.class, CompatPlugin.Residence);
+		registerPlugin(PreciousStonesCompat.class, CompatPlugin.PreciousStones);
 
 		// Other plugins
 		registerPlugin(McMMOCompat.class, CompatPlugin.mcMMO);

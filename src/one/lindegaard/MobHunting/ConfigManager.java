@@ -2183,6 +2183,10 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://dev.bukkit.org/projects/holographic-displays")
 	public boolean disableIntegrationHolographicDisplays = false;
 
+	@ConfigField(name = "disable-integration-preciousstones", category = "plugins", comment = "Disable integration with PreciousStones."
+			+ "\nhttps://www.spigotmc.org/resources/preciousstones.5270/")
+	public boolean disableIntegrationPreciousStones = false;
+
 	// #####################################################################################
 	// Database
 	// #####################################################################################

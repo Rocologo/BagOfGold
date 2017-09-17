@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>5.0.9</version>
-	<!-- <version>5.0.9-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>5.1.0</version> -->
+	<version>5.1.0-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -49,6 +49,7 @@
 		<mypet.version>2.2.9</mypet.version>
 		<worldedit.version>6.1.5</worldedit.version>
 		<worldguard.version>6.2</worldguard.version>
+		<PreciousStones.version>10.7.2</PreciousStones.version>
 		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
 		<libsdisguises.version>9.4.0-SNAPSHOT</libsdisguises.version>
 		<battleArena.version>3.9.10.6.2</battleArena.version>
@@ -405,6 +406,12 @@
 			<artifactId>worldguard-legacy</artifactId>
 			<version>${worldguard.version}</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sacredlabyrinth.Phaed</groupId>
+			<artifactId>PreciousStones</artifactId>
+			<version>${PreciousStones.version}</version>
 		</dependency>
 
 		<!-- Citizens -->

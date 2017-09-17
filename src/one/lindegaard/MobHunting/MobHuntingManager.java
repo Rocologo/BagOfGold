@@ -469,9 +469,6 @@ public class MobHuntingManager implements Listener {
 
 		// check if damager or damaged is Sentry / Sentinel. Only Sentry gives a
 		// reward.
-		if (CitizensCompat.isNPC(damager) && !CitizensCompat.isSentryOrSentinelOrSentries(damager))
-			return;
-
 		if (CitizensCompat.isNPC(damaged) && !CitizensCompat.isSentryOrSentinelOrSentries(damaged))
 			return;
 
@@ -479,6 +476,10 @@ public class MobHuntingManager implements Listener {
 				&& !WorldGuardHelper.isAllowedByWorldGuard(damager, damaged, DefaultFlag.MOB_DAMAGE, true)) {
 			return;
 		}
+
+		if (damager instanceof Player && (PreciousStonesCompat.isMobDamageProtected((Player) damager)
+				|| PreciousStonesCompat.isPVPProtected((Player) damager)))
+			return;
 
 		if (CrackShotCompat.isSupported() && CrackShotCompat.isCrackShotUsed(damaged)) {
 			return;
@@ -786,6 +787,17 @@ public class MobHuntingManager implements Listener {
 			}
 		}
 
+		if (PreciousStonesCompat.isMobDamageProtected(getPlayer(killer, killed))) {
+			Player player = getPlayer(killer, killed);
+			Messages.debug("KillBlocked: %s is hiding in PreciousStone Field with prevent-mob-damage flag",
+					player.getName());
+			plugin.getMessages().learn(player, Messages.getString("mobhunting.learn.prevent-mob-damage-flag"));
+			cancelDrops(event, MobHunting.getConfigManager().disableNaturalItemDrops,
+					MobHunting.getConfigManager().disableNatualXPDrops);
+			Messages.debug("======================= kill ended (5.5)======================");
+			return;
+		}
+
 		// Factions Compatibility - no reward when player are in SafeZone
 		if (FactionsCompat.isSupported()) {
 			if ((killer != null || MyPetCompat.isMyPet(killer)) && !CitizensCompat.isNPC(killer)) {
@@ -918,6 +930,13 @@ public class MobHuntingManager implements Listener {
 				return;
 
 				//
+			} else if (PreciousStonesCompat.isPVPProtected(getPlayer(killer, killed))) {
+				Player player = getPlayer(killer, killed);
+				Messages.debug("KillBlocked: %s is hiding in PreciousStone Field with prevent-pvp flag",
+						player.getName());
+				plugin.getMessages().learn(player, Messages.getString("mobhunting.learn.prevent-pvp-flag"));
+				Messages.debug("======================= kill ended (16.5)======================");
+				return;
 			} else if (killer != null) {
 				if (killed.equals(killer)) {
 					// Suicide
