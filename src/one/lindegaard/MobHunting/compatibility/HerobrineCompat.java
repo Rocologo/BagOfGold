@@ -42,25 +42,8 @@ public class HerobrineCompat implements Listener {
 					+ mPlugin.getDescription().getVersion() + ")");
 
 			api = (Herobrine) mPlugin;
-			entityManager = new EntityManager();
-			entityManager = api.getEntityManager();
-			//NPCCore npcCore=api.getNPCCore();
-			// loadInfernalMobsData();
-			// MobHunting.getStoreManager().insertInfernalMobs();
-			// Messages.injectMissingMobNamesToLangFiles();
-			// Messages.debug("Herobrine AICore%s ", api.getAICore());
-			// Messages.debug("Herobrine Deamon=%s ",
-			// api.getConfigDB().UseNPC_Demon);
-			// Messages.debug("Herobrine Guardian=%s ",
-			// api.getConfigDB().UseNPC_Guardian);
-			// Messages.debug("Herobrine Warrior=%s ",
-			// api.getConfigDB().UseNPC_Warrior);
-			//Messages.debug("Herobrine EntityManager=%s ", entityManager.isCustomMob(0));
-			//Messages.debug("Herobrine EntityManager=%s ", entityManager.isCustomMob(1));
-			//Messages.debug("Herobrine NPCCore=%s ", api.getNPCCore());
-			// Messages.debug("Herobrine Support=%s ", api.getSupport());
-			//Messages.debug("Herobrine Herobrine = %s", Herobrine.herobrineNPC.getBukkitEntity());
-			
+			//entityManager = new EntityManager();
+			//entityManager = api.getEntityManager();
 			supported = true;
 		}
 	}
@@ -78,9 +61,9 @@ public class HerobrineCompat implements Listener {
 
 	public static boolean isHerobrineMob(Entity entity) {
 		if (isSupported()) {
-			return entity.hasMetadata(MH_HEROBRINEMOBS) ||
-					entityManager.isCustomMob(entity.getEntityId())
-					|| entity.getEntityId()== Herobrine.herobrineNPC.getBukkitEntity().getEntityId()
+			return entity.hasMetadata(MH_HEROBRINEMOBS) || entity.hasMetadata("NPC")
+					|| entityManager.isCustomMob(entity.getEntityId())
+					|| entity.getEntityId() == Herobrine.herobrineEntityID
 					|| entityManager.isCustomMob(entity.getEntityId());
 		}
 		return false;
@@ -113,7 +96,6 @@ public class HerobrineCompat implements Listener {
 	private void onHerobrineMobDeathEvent(EntityDeathEvent event) {
 		Entity entity = event.getEntity();
 		if (isHerobrineMob(entity)) {
-			// if (api.findMobAbilities(entity.getUniqueId()) != null)
 			entity.setMetadata(MH_HEROBRINEMOBS, new FixedMetadataValue(MobHunting.getInstance(), true));
 		}
 	}
@@ -123,31 +105,14 @@ public class HerobrineCompat implements Listener {
 
 		if (isSupported()) {
 			Entity entity = event.getEntity();
-
 			if (isHerobrineMob(entity)) {
 				Messages.debug("A Herobrine Mob was spawned at %s,%s,%s in %s",
 						event.getEntity().getLocation().getBlockX(), event.getEntity().getLocation().getBlockY(),
 						event.getEntity().getLocation().getBlockZ(),
 						event.getEntity().getLocation().getWorld().getName());
-				Messages.debug("Herobrine MobType=%s",api.getEntityManager().getMobType(entity.getEntityId()));
-				// String mobtype = MONSTER_NAME;
-				// if (mMobRewardData != null &&
-				// !mMobRewardData.containsKey(mobtype)) {
-				// Messages.debug("New SmartGiants mob found=%s (%s)", mobtype,
-				// mobtype.toString());
-				// mMobRewardData.put(mobtype, new
-				// RewardData(MobPlugin.SmartGiants, mobtype, mobtype,
-				// "100:200",
-				// "minecraft:give {player} iron_sword 1", "You got an Iron
-				// sword.", 1, 1, 0.02));
-				// saveSmartGiantsData(mobtype);
-				// MobHunting.getStoreManager().insertSmartGiants(mobtype);
-				/// // Update mob loaded into memory
-				// MobHunting.getExtendedMobManager().updateExtendedMobs();
-				// Messages.injectMissingMobNamesToLangFiles();
-				// }
+				Messages.debug("Herobrine MobType=%s", api.getEntityManager().getMobType(entity.getEntityId()).getMobType());
 				event.getEntity().setMetadata(MH_HEROBRINEMOBS, new FixedMetadataValue(mPlugin, true));
-			} 
+			}
 		}
 	}
 
