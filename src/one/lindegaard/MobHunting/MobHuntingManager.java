@@ -1157,7 +1157,7 @@ public class MobHuntingManager implements Listener {
 				if (data.getKillstreakLevel() != 0 && data.getKillstreakMultiplier() != 1)
 					plugin.getMessages().playerActionBarMessage(getPlayer(killer, killed),
 							ChatColor.RED + "" + ChatColor.ITALIC + Messages.getString("mobhunting.killstreak.ended"));
-				data.resetKillStreak(killer);
+				data.resetKillStreak(getPlayer(killer, killed));
 			}
 		} else {
 			Messages.debug("======================= kill ended (31)=====================");

@@ -1,6 +1,7 @@
 V5.1.0
 * Added support for PreciousStones (https://www.spigotmc.org/resources/preciousstones.5270/)
 * Fixed bug where /mh money sell could leave a BagOfGold with a value 0.
+* Fixed NPE bug (https://github.com/Rocologo/MobHunting/issues/305)
 V5.0.9
 * Added support for Holograms (https://www.spigotmc.org/resources/holograms.4924/)
 * Added support for HolographicDisplays (https://dev.bukkit.org/projects/holographic-displays)
