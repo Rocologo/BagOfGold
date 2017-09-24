@@ -28,6 +28,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import com.gmail.nossr50.datatypes.skills.ItemType;
+
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.ProtocolLibCompat;
@@ -288,12 +291,11 @@ public class RewardListeners implements Listener {
 					MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getDisplayname());
 					if (mob != null) {
 						is = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
-								mob.getTextureValue(),
-								mob.getTextureSignature(),
-								reward.getMoney(),
+								mob.getTextureValue(), mob.getTextureSignature(), reward.getMoney(),
 								reward.getUniqueUUID());
 					} else {
-						plugin.getLogger().warning("[MobHunting] The mobtype could not be detected from displayname:"+reward.getDisplayname());
+						plugin.getLogger().warning("[MobHunting] The mobtype could not be detected from displayname:"
+								+ reward.getDisplayname());
 						is = new ItemStack(Material.SKULL_ITEM, 1);
 					}
 				}
@@ -336,6 +338,7 @@ public class RewardListeners implements Listener {
 		ItemStack isCurrentSlot = event.getCurrentItem();
 		if (isCurrentSlot == null)
 			return;
+
 		ItemStack isCursor = event.getCursor();
 		Player player = (Player) event.getWhoClicked();
 		if ((isCurrentSlot.getType() == Material.SKULL_ITEM
@@ -368,42 +371,60 @@ public class RewardListeners implements Listener {
 			if (Reward.isReward(isCurrentSlot)) {
 				Reward reward = Reward.getReward(isCurrentSlot);
 				if (reward.isBagOfGoldReward() || reward.isItemReward()) {
-					double money = reward.getMoney() / 2;
-					if (Misc.floor(money) >= MobHunting.getConfigManager().minimumReward) {
+					double money1 = Misc.floor(reward.getMoney() / 2);
+					double money2 = Misc.round(reward.getMoney() - money1);
+					if (money1 >= MobHunting.getConfigManager().minimumReward) {
 						event.setCancelled(true);
 						if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")) {
 							isCurrentSlot = plugin.getRewardManager().setDisplayNameAndHiddenLores(
-									isCurrentSlot.clone(), reward.getDisplayname(), Misc.ceil(money),
-									reward.getRewardUUID());
+									isCurrentSlot.clone(), reward.getDisplayname(), money1, reward.getRewardUUID());
 						} else {
 							isCurrentSlot = new CustomItems(plugin).getCustomtexture(reward.getRewardUUID(),
 									reward.getDisplayname(),
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-									Misc.ceil(money), UUID.randomUUID());
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money1,
+									UUID.randomUUID());
 						}
 
 						event.setCurrentItem(isCurrentSlot);
 
 						if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")) {
 							isCursor = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
-									reward.getDisplayname(), Misc.floor(money), reward.getRewardUUID());
+									reward.getDisplayname(), money2, reward.getRewardUUID());
 						} else {
 							isCursor = new CustomItems(plugin).getCustomtexture(reward.getRewardUUID(),
 									reward.getDisplayname(),
 									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-									Misc.floor(money), UUID.randomUUID());
+									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money2,
+									UUID.randomUUID());
 						}
 						event.setCursor(isCursor);
 
 						Messages.debug("%s halfed a reward in two (%s,%s)", player.getName(),
-								plugin.getRewardManager().format(Misc.floor(money)),
-								plugin.getRewardManager().format(Misc.ceil(money)));
+								plugin.getRewardManager().format(money1), plugin.getRewardManager().format(money2));
 					}
 				}
 			}
+		} else if (action == InventoryAction.COLLECT_TO_CURSOR && Reward.isReward(isCursor)) {
+			event.setCancelled(true);
+			Reward cursor = Reward.getReward(isCursor);
+			double saldo = Misc.floor(cursor.getMoney());
+			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+				ItemStack is = player.getInventory().getItem(slot);
+				if (Reward.isReward(is)) {
+					Reward reward = Reward.getReward(is);
+					saldo = saldo + reward.getMoney();
+					player.getInventory().clear(slot);
+				}
+			}
+			isCursor = new CustomItems(plugin).getCustomtexture(cursor.getRewardUUID(), cursor.getDisplayname(),
+					MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+					MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.floor(saldo),
+					UUID.randomUUID());
+			event.setCursor(isCursor);
 		}
+		// else
+		// Messages.debug("RewardListeners: action=%s", action);
 	}
 
 }
