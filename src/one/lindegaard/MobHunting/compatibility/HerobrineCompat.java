@@ -13,7 +13,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import net.theprogrammersworld.herobrine.Herobrine;
-import net.theprogrammersworld.herobrine.nms.entity.EntityManager;
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
