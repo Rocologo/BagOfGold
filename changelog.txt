@@ -1,3 +1,5 @@
+V5.1.1
+* Fixed NPE bug on servers using the Herobrine plugin.
 V5.1.0
 * Added support for PreciousStones (https://www.spigotmc.org/resources/preciousstones.5270/)
 * Added "Collect_To_Cursor". Double click on one BagOfGold to collect them all un the player inventory.

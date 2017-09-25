@@ -26,7 +26,6 @@ public class HerobrineCompat implements Listener {
 	private static Plugin mPlugin;
 	private static HashMap<String, Double> mMobRewardData = new HashMap<String, Double>();
 	private static Herobrine api;
-	private static EntityManager entityManager;
 	public static final String MH_HEROBRINEMOBS = "MH:Herobrine";
 
 	public HerobrineCompat() {
@@ -42,8 +41,6 @@ public class HerobrineCompat implements Listener {
 					+ mPlugin.getDescription().getVersion() + ")");
 
 			api = (Herobrine) mPlugin;
-			//entityManager = new EntityManager();
-			//entityManager = api.getEntityManager();
 			supported = true;
 		}
 	}
@@ -62,9 +59,9 @@ public class HerobrineCompat implements Listener {
 	public static boolean isHerobrineMob(Entity entity) {
 		if (isSupported()) {
 			return entity.hasMetadata(MH_HEROBRINEMOBS) || entity.hasMetadata("NPC")
-					|| entityManager.isCustomMob(entity.getEntityId())
+					|| api.getEntityManager().isCustomMob(entity.getEntityId())
 					|| entity.getEntityId() == Herobrine.herobrineEntityID
-					|| entityManager.isCustomMob(entity.getEntityId());
+					|| api.getEntityManager().isCustomMob(entity.getEntityId());
 		}
 		return false;
 	}
