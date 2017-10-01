@@ -18,6 +18,7 @@ import one.lindegaard.MobHunting.bounty.Bounty;
 import one.lindegaard.MobHunting.bounty.BountyStatus;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
+import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
 import one.lindegaard.MobHunting.compatibility.SmartGiantsCompat;
@@ -882,6 +883,44 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
+	@Override
+	public void insertHerobrineMobs() {
+		int n = 0;
+		try {
+			Connection mConnection = setupConnection();
+			Statement statement = mConnection.createStatement();
+			for (String mob : HerobrineCompat.getMobRewardData().keySet())
+				if (HerobrineCompat.isHerobrineMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.Herobrine) == 0) {
+					statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (8,'" + mob + "')");
+					n++;
+				}
+			if (n > 0)
+				Bukkit.getLogger().info("[MobHunting] " + n + " Herobrine Mobs was inserted to mh_Mobs");
+			statement.close();
+			mConnection.commit();
+			mConnection.close();
+		} catch (SQLException | DataStoreException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void insertMissingHerobrineMobs(String mob) {
+		if (HerobrineCompat.isHerobrineMob(mob) && getMobIdFromExtendedMobType(mob, MobPlugin.Herobrine) == 0)
+			try {
+				Connection mConnection = setupConnection();
+				Statement statement = mConnection.createStatement();
+				statement.executeUpdate("INSERT INTO mh_Mobs (PLUGIN_ID, MOBTYPE) VALUES (8,'" + mob + "')");
+				Bukkit.getLogger().info("[MobHunting] Herobrine Mobs MobType " + mob + " was inserted to mh_Mobs");
+				statement.close();
+				mConnection.commit();
+				mConnection.close();
+			} catch (SQLException | DataStoreException e) {
+				e.printStackTrace();
+			}
+	}
+
+	
 	// ******************************************************************
 	// Bounties
 	// ******************************************************************
@@ -1331,6 +1370,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 					break;
 				case SmartGiants:
 					if (!SmartGiantsCompat.isSupported() || SmartGiantsCompat.isDisabledInConfig())
+						continue;
+					break;
+				case Herobrine:
+					if (!HerobrineCompat.isSupported() || HerobrineCompat.isDisabledInConfig())
 						continue;
 					break;
 				case Minecraft:

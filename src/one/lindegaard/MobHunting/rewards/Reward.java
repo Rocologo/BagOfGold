@@ -1,5 +1,6 @@
 package one.lindegaard.MobHunting.rewards;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +13,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+
+import one.lindegaard.MobHunting.Messages;
 
 public class Reward {
 
@@ -43,15 +46,24 @@ public class Reward {
 	}
 
 	Reward(List<String> lore) {
-		this.description = lore.get(0).startsWith("Hidden:") ? lore.get(0).substring(7) : lore.get(0);
-		this.money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
-		this.uuid = (lore.get(2).startsWith("Hidden:")) ? UUID.fromString(lore.get(2).substring(7))
-				: UUID.fromString(lore.get(2));
+		int offset = 0;
+		for (int i = 0; i < lore.size(); i++) {
+			if (lore.get(i).startsWith("Hidden:"))
+				break;
+			else
+				offset++;
+		}
+
+		this.description = lore.get(offset).startsWith("Hidden:") ? lore.get(offset).substring(7) : lore.get(offset);
+		this.money = Double.valueOf(
+				lore.get(offset + 1).startsWith("Hidden:") ? lore.get(offset + 1).substring(7) : lore.get(offset + 1));
+		this.uuid = (lore.get(offset + 2).startsWith("Hidden:")) ? UUID.fromString(lore.get(offset + 2).substring(7))
+				: UUID.fromString(lore.get(offset + 2));
 		if (this.money == 0)
 			this.uniqueId = UUID.randomUUID();
 		else
-			this.uniqueId = (lore.get(3).startsWith("Hidden:")) ? UUID.fromString(lore.get(3).substring(7))
-					: UUID.fromString(lore.get(3));
+			this.uniqueId = (lore.get(offset + 3).startsWith("Hidden:"))
+					? UUID.fromString(lore.get(offset + 3).substring(7)) : UUID.fromString(lore.get(offset + 3));
 	}
 
 	public void setReward(List<String> lore) {
@@ -74,7 +86,8 @@ public class Reward {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + String.valueOf(money),
+		DecimalFormat df = new DecimalFormat("#.#####");
+		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + df.format(money),
 				"Hidden:" + uuid.toString(), money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString()));
 	}
 
@@ -139,13 +152,15 @@ public class Reward {
 	}
 
 	public String toString() {
-		return "{Description=" + description + ", money=" + money + ", UUID=" + uuid.toString() + ", UniqueID="
-				+ uniqueId.toString() + "}";
+		DecimalFormat df = new DecimalFormat("#.#####");
+		return "{Description=" + description + ", money=" + df.format(money) + ", UUID=" + uuid.toString()
+				+ ", UniqueID=" + uniqueId.toString() + "}";
 	}
 
 	public void save(ConfigurationSection section) {
+		DecimalFormat df = new DecimalFormat("#.#####");
 		section.set("description", description);
-		section.set("money", money);
+		section.set("money", df.format(money));
 		section.set("uuid", uuid.toString());
 		section.set("uniqueid", uniqueId.toString());
 	}
@@ -185,16 +200,22 @@ public class Reward {
 	}
 
 	public static boolean isReward(ItemStack itemStack) {
-		return itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
-				&& itemStack.getItemMeta().getLore().size() == NUMBER_OF_DATA
-				&& (itemStack.getItemMeta().getLore().get(2)
+		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
+				&& itemStack.getItemMeta().getLore().size() >= NUMBER_OF_DATA) {
+			for (int i = 0; i < itemStack.getItemMeta().getLore().size(); i++) {
+				if (itemStack.getItemMeta().getLore().get(i)
 						.equals("Hidden:" + RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)
-						|| itemStack.getItemMeta().getLore().get(2)
+						|| itemStack.getItemMeta().getLore().get(i)
 								.equals("Hidden:" + RewardManager.MH_REWARD_KILLED_UUID)
-						|| itemStack.getItemMeta().getLore().get(2)
+						|| itemStack.getItemMeta().getLore().get(i)
 								.equals("Hidden:" + RewardManager.MH_REWARD_KILLER_UUID)
-						|| itemStack.getItemMeta().getLore().get(2)
-								.equals("Hidden:" + RewardManager.MH_REWARD_ITEM_UUID));
+						|| itemStack.getItemMeta().getLore().get(i)
+								.equals("Hidden:" + RewardManager.MH_REWARD_ITEM_UUID)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static Reward getReward(ItemStack itemStack) {
@@ -210,7 +231,7 @@ public class Reward {
 	}
 
 	public static boolean isReward(Entity entity) {
-		return entity.hasMetadata(RewardManager.MH_REWARD_DATA); 
+		return entity.hasMetadata(RewardManager.MH_REWARD_DATA);
 	}
 
 	public static Reward getReward(Entity entity) {

@@ -1,6 +1,7 @@
 package one.lindegaard.MobHunting.rewards;
 
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
@@ -16,87 +17,89 @@ import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.MobHunting.util.Misc;
 
 public class CustomItems {
 
 	private MobHunting plugin;
-	
-    public CustomItems(MobHunting plugin) {
-    	this.plugin=plugin;
-    }
 
-    /**
-     * Return an ItemStack with the Players head texture.
-     *
-     * @param name
-     * @param money
-     * @return
-     */
-    public ItemStack getPlayerHead(String name, double money) {
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
-        skull.setDurability((short) 3);
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skullMeta.setOwner(name);
-        if (money == 0)
-            skullMeta.setDisplayName(name);
-        else
-            skullMeta.setDisplayName(name + " (" + plugin.getRewardManager().getEconomy().format(money) + ")");
-        skull.setItemMeta(skullMeta);
-        return skull;
-    }
+	public CustomItems(MobHunting plugin) {
+		this.plugin = plugin;
+	}
 
-    /**
-     * Return an ItemStack with a custom texture. If Mojang changes the way they
-     * calculate Signatures this method will stop working.
-     *
-     * @param mPlayerUUID
-     * @param mDisplayName
-     * @param mTextureValue
-     * @param mTextureSignature
-     * @param money
-     * @return ItemStack with custom texture.
-     */
-    public ItemStack getCustomtexture(UUID mPlayerUUID, String mDisplayName, String mTextureValue,
-                                      String mTextureSignature, double money, UUID uniqueRewardUuid) {
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+	/**
+	 * Return an ItemStack with the Players head texture.
+	 *
+	 * @param name
+	 * @param money
+	 * @return
+	 */
+	public ItemStack getPlayerHead(String name, double money) {
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+		skull.setDurability((short) 3);
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		skullMeta.setOwner(name);
+		if (money == 0)
+			skullMeta.setDisplayName(name);
+		else
+			skullMeta.setDisplayName(name + " (" + plugin.getRewardManager().getEconomy().format(money) + ")");
+		skull.setItemMeta(skullMeta);
+		return skull;
+	}
 
-        if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
-            return skull;
+	/**
+	 * Return an ItemStack with a custom texture. If Mojang changes the way they
+	 * calculate Signatures this method will stop working.
+	 *
+	 * @param mPlayerUUID
+	 * @param mDisplayName
+	 * @param mTextureValue
+	 * @param mTextureSignature
+	 * @param money
+	 * @return ItemStack with custom texture.
+	 */
+	public ItemStack getCustomtexture(UUID mPlayerUUID, String mDisplayName, String mTextureValue,
+			String mTextureSignature, double money, UUID uniqueRewardUuid) {
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 
-        ItemMeta skullMeta = skull.getItemMeta();
+		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
+			return skull;
 
-        GameProfile profile = new GameProfile(mPlayerUUID, mDisplayName);
-        profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
-        Field profileField = null;
+		ItemMeta skullMeta = skull.getItemMeta();
 
-        try {
-            profileField = skullMeta.getClass().getDeclaredField("profile");
-        } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
-            return skull;
-        }
+		GameProfile profile = new GameProfile(mPlayerUUID, mDisplayName);
+		profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
+		Field profileField = null;
 
-        profileField.setAccessible(true);
+		try {
+			profileField = skullMeta.getClass().getDeclaredField("profile");
+		} catch (NoSuchFieldException | SecurityException e) {
+			e.printStackTrace();
+			return skull;
+		}
 
-        try {
-            profileField.set(skullMeta, profile);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+		profileField.setAccessible(true);
 
-        skullMeta.setLore(new ArrayList<String>(
-                Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.valueOf(money),
-                        "Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid)));
-        if (money == 0)
-            skullMeta.setDisplayName(
-                    ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
-        else
-            skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-                    + mDisplayName + " (" + plugin.getRewardManager().format(money) + " )");
+		try {
+			profileField.set(skullMeta, profile);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 
-        skull.setItemMeta(skullMeta);
-        return skull;
-    }
+		DecimalFormat df = new DecimalFormat("#.#####");
+		skullMeta.setLore(new ArrayList<String>(
+				Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + df.format(money),
+						"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid)));
+		if (money == 0)
+			skullMeta.setDisplayName(
+					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
+		else
+			skullMeta.setDisplayName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+					+ mDisplayName + " (" + plugin.getRewardManager().format(money) + ")");
+
+		skull.setItemMeta(skullMeta);
+		return skull;
+	}
 
 	public ItemStack getCustomHead(MinecraftMob minecraftMob, String name, int amount, double money) {
 		ItemStack skull;
@@ -139,9 +142,9 @@ public class CustomItems {
 			break;
 
 		default:
-			ItemStack is = new ItemStack(
-					getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID),
-							minecraftMob.getFriendlyName(), minecraftMob.getTextureValue(), minecraftMob.getTextureSignature(), money, UUID.randomUUID()));
+			ItemStack is = new ItemStack(getCustomtexture(UUID.fromString(RewardManager.MH_REWARD_KILLED_UUID),
+					minecraftMob.getFriendlyName(), minecraftMob.getTextureValue(), minecraftMob.getTextureSignature(),
+					money, UUID.randomUUID()));
 			is.setAmount(amount);
 			return is;
 		}

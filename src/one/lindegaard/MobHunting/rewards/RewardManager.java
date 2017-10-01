@@ -89,6 +89,7 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.compatibility.CitizensCompat;
 import one.lindegaard.MobHunting.compatibility.CustomMobsCompat;
 import one.lindegaard.MobHunting.compatibility.GringottsCompat;
+import one.lindegaard.MobHunting.compatibility.HerobrineCompat;
 import one.lindegaard.MobHunting.compatibility.MyPetCompat;
 import one.lindegaard.MobHunting.compatibility.MysteriousHalloweenCompat;
 import one.lindegaard.MobHunting.compatibility.MythicMobsCompat;
@@ -461,6 +462,13 @@ public class RewardManager implements Listener {
 					MyPetCompat.getMyPetOwner(mob));
 			return getPrice(mob, MobHunting.getConfigManager().wolfPrize);
 
+		} else if (HerobrineCompat.isHerobrineMob(mob)) {
+			if (HerobrineCompat.getMobRewardData().containsKey(HerobrineCompat.getHerobrineMobType(mob)))
+				return getPrice(mob, HerobrineCompat.getMobRewardData().get(HerobrineCompat.getHerobrineMobType(mob))
+						.getRewardPrize());
+			Messages.debug("Herobrine mob %s has no reward data", HerobrineCompat.getHerobrineMobType(mob));
+			return 0;
+
 		} else {
 			if (Misc.isMC112OrNewer())
 				if (mob instanceof Parrot)
@@ -717,6 +725,12 @@ public class RewardManager implements Listener {
 						.getConsoleRunCommand();
 			return "";
 
+		} else if (HerobrineCompat.isHerobrineMob(mob)) {
+			if (HerobrineCompat.getMobRewardData().containsKey(HerobrineCompat.getHerobrineMobType(mob)))
+				return HerobrineCompat.getMobRewardData().get(HerobrineCompat.getHerobrineMobType(mob))
+						.getConsoleRunCommand();
+			return "";
+
 		} else if (MyPetCompat.isMyPet(mob)) {
 			return MobHunting.getConfigManager().wolfCmd;
 
@@ -925,6 +939,12 @@ public class RewardManager implements Listener {
 						.getRewardDescription();
 			return "";
 
+		} else if (HerobrineCompat.isHerobrineMob(mob)) {
+			if (HerobrineCompat.getMobRewardData().containsKey(HerobrineCompat.getHerobrineMobType(mob)))
+				return HerobrineCompat.getMobRewardData().get(HerobrineCompat.getHerobrineMobType(mob))
+						.getRewardDescription();
+			return "";
+
 		} else if (MyPetCompat.isMyPet(mob)) {
 			return MobHunting.getConfigManager().wolfCmdDesc;
 
@@ -1123,6 +1143,11 @@ public class RewardManager implements Listener {
 			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(killed)))
 				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(killed))
 						.getChance();
+			return 0;
+
+		} else if (HerobrineCompat.isHerobrineMob(killed)) {
+			if (HerobrineCompat.getMobRewardData().containsKey(HerobrineCompat.getHerobrineMobType(killed)))
+				return HerobrineCompat.getMobRewardData().get(HerobrineCompat.getHerobrineMobType(killed)).getChance();
 			return 0;
 
 		} else if (MyPetCompat.isMyPet(killed)) {
@@ -1326,6 +1351,12 @@ public class RewardManager implements Listener {
 		} else if (SmartGiantsCompat.isSmartGiants(killed)) {
 			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(killed)))
 				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(killed))
+						.getMcMMOSkillRewardChance();
+			return 0;
+
+		} else if (HerobrineCompat.isHerobrineMob(killed)) {
+			if (HerobrineCompat.getMobRewardData().containsKey(HerobrineCompat.getHerobrineMobType(killed)))
+				return HerobrineCompat.getMobRewardData().get(HerobrineCompat.getHerobrineMobType(killed))
 						.getMcMMOSkillRewardChance();
 			return 0;
 
@@ -1555,6 +1586,12 @@ public class RewardManager implements Listener {
 		} else if (SmartGiantsCompat.isSmartGiants(killed)) {
 			if (SmartGiantsCompat.getMobRewardData().containsKey(SmartGiantsCompat.getSmartGiantsMobType(killed)))
 				return SmartGiantsCompat.getMobRewardData().get(SmartGiantsCompat.getSmartGiantsMobType(killed))
+						.getMcMMOSkillRewardAmount();
+			return 0;
+
+		} else if (HerobrineCompat.isHerobrineMob(killed)) {
+			if (HerobrineCompat.getMobRewardData().containsKey(HerobrineCompat.getHerobrineMobType(killed)))
+				return HerobrineCompat.getMobRewardData().get(HerobrineCompat.getHerobrineMobType(killed))
 						.getMcMMOSkillRewardAmount();
 			return 0;
 
