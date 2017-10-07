@@ -1,5 +1,5 @@
 V5.1.2
-* Important fix. BagOgGold was destroyed when the Bag was kept in the inventory while it was opened! A workaround is implemented. The BagOfGold cant be moved when the player is in creativemode. 
+* Important fix. BagOfGold was destroyed when the Bag was kept in the inventory while it was opened! A workaround is implemented. The BagOfGold cant be moved when the player is in creative mode. 
 V5.1.1
 * Fixed NPE bug on servers using the Herobrine plugin.
 V5.1.0
