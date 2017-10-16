@@ -77,9 +77,13 @@ public class BagOfGoldSign implements Listener {
 						}
 						plugin.getRewardManager().getEconomy().depositPlayer(player, money);
 						if (moneyInHand <= moneyOnSign) {
-							event.getItem().setAmount(0);
-							event.getItem().setItemMeta(null);
-							event.getItem().setType(Material.AIR);
+							if (Misc.isMC19OrNewer()) {
+								event.getItem().setAmount(0);
+								event.getItem().setItemMeta(null);
+								event.getItem().setType(Material.AIR);
+							} else {
+								event.getPlayer().setItemInHand(new ItemStack(0));
+							}
 						} else {
 							reward.setMoney(moneyInHand - moneyOnSign);
 							ItemMeta im = event.getItem().getItemMeta();
@@ -93,7 +97,7 @@ public class BagOfGoldSign implements Listener {
 											+ displayName);
 							event.getItem().setItemMeta(im);
 						}
-						Messages.debug("%s sold his %s for %s", player.getName(), reward.getDisplayname(), 
+						Messages.debug("%s sold his %s for %s", player.getName(), reward.getDisplayname(),
 								plugin.getRewardManager().getEconomy().format(money));
 						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.sold", "money",
 								plugin.getRewardManager().getEconomy().format(money), "rewardname",

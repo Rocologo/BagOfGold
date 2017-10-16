@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>MobHunting</artifactId>
 	<packaging>jar</packaging>
-	<version>5.1.3</version>
-	<!-- <version>5.1.3-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>5.1.4</version> -->
+	<version>5.1.4-SNAPSHOT-B${build.number}</version>
 	<name>MobHunting</name>
 	<url>http://dev.bukkit.org/server-mods/mobhunting/</url>
 	<description>MobHunting adds a new level of fun to hunting monsters. Now you can get money from kills, get bonuses for skilled and creative kills, and get special achievements!</description>
@@ -74,7 +74,7 @@
 		<TitleAPI.version>1.7.5</TitleAPI.version>
 		<TARDISWeepingAngels.version>2.4</TARDISWeepingAngels.version>
 		<ConquestiaMobs.version>3.3.3</ConquestiaMobs.version>
-		<MysteriousHalloween.version>1.3.2</MysteriousHalloween.version>
+		<MysteriousHalloween.version>1.3.5</MysteriousHalloween.version>
 		<SmartGiants.version>2.3.6</SmartGiants.version>
 		<Herobrine.version>1.7.1</Herobrine.version>
 		<towny.version>0.91.4.2</towny.version>
@@ -491,7 +491,7 @@
 
 		<!-- MysteriousHalloween -->
 		<dependency>
-			<groupId>MysteriousHalloween</groupId>
+			<groupId>me.F_o_F_1092.MysteriousHalloween</groupId>
 			<artifactId>MysteriousHalloween</artifactId>
 			<version>${MysteriousHalloween.version}</version>
 		</dependency>

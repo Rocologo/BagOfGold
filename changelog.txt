@@ -1,3 +1,5 @@
+V5.1.4
+* Fixed bug on MC 1.8 servers, where BagOfGold signs dit not clear the slot if the bag was completely sold
 V5.1.3
 * You can right click MobHunting rewards to get the name and value. (BagOfGold, mob name or player name).
 * Moved "You ware wanted" Bounty message from ActionBar to Player chat.

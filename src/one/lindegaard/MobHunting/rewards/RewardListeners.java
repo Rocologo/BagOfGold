@@ -472,7 +472,7 @@ public class RewardListeners implements Listener {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
 			return;
 
-		if (event.getHand() != EquipmentSlot.HAND)
+		if (Misc.isMC19OrNewer() && event.getHand() != EquipmentSlot.HAND)
 			return;
 
 		Player player = event.getPlayer();
