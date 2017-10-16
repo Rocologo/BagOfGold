@@ -496,12 +496,12 @@ public class Messages {
 		}
 	}
 
-	public static void playerSendMessage(final Player player, final String message) {
+	public void playerSendMessage(final Player player, final String message) {
 		if (!isEmpty(message))
 			player.sendMessage(message);
 	}
 
-	public static void playerSendTitlesMessage(Player player, String title, String subtitle, int fadein, int stay,
+	public void playerSendTitlesMessage(Player player, String title, String subtitle, int fadein, int stay,
 			int fadeout) {
 		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.sendTitles(player, title, subtitle, fadein, stay, fadeout);

@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.mojang.authlib.GameProfile;
@@ -17,7 +18,6 @@ import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
-import one.lindegaard.MobHunting.util.Misc;
 
 public class CustomItems {
 
@@ -38,6 +38,13 @@ public class CustomItems {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
 		skull.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+
+		UUID uuid = Bukkit.getOfflinePlayer(name).getUniqueId();
+		DecimalFormat df = new DecimalFormat("#.#####");
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name, "Hidden:" + df.format(money),
+				"Hidden:" + RewardManager.MH_REWARD_KILLER_UUID,
+				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID())));
+
 		skullMeta.setOwner(name);
 		if (money == 0)
 			skullMeta.setDisplayName(name);
@@ -87,9 +94,8 @@ public class CustomItems {
 		}
 
 		DecimalFormat df = new DecimalFormat("#.#####");
-		skullMeta.setLore(new ArrayList<String>(
-				Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + df.format(money),
-						"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid)));
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + df.format(money),
+				"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid)));
 		if (money == 0)
 			skullMeta.setDisplayName(
 					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
@@ -123,10 +129,7 @@ public class CustomItems {
 			break;
 
 		case PvpPlayer:
-			skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-			SkullMeta sm = (SkullMeta) skull.getItemMeta();
-			sm.setOwner(name);
-			skull.setItemMeta(sm);
+			skull = getPlayerHead(name, money);
 			break;
 
 		case Creeper:

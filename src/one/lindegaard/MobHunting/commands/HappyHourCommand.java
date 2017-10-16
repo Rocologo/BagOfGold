@@ -95,7 +95,7 @@ private MobHunting plugin;
                 minutesLeft = minutesToRun - ((int) (System.currentTimeMillis() - starttime) / (1000 * 60));
                 Messages.debug("The happy hour ends in %s minutes", minutesLeft);
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Messages.playerSendTitlesMessage(player,
+                    plugin.getMessages().playerSendTitlesMessage(player,
                             Messages.getString("mobhunting.commands.happyhour.ongoing_title"),
                             Messages.getString("mobhunting.commands.happyhour.ongoing_subtitle", "multiplier",
                                     multiplier, "minutes", minutesLeft),
@@ -124,7 +124,7 @@ private MobHunting plugin;
                     multiplier = 1;
                     Messages.debug("Happy hour was cancelled");
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        Messages.playerSendTitlesMessage(player,
+                    	plugin.getMessages().playerSendTitlesMessage(player,
                                 Messages.getString("mobhunting.commands.happyhour.cancelled_title"),
                                 Messages.getString("mobhunting.commands.happyhour.cancelled_subtitle"), 20, 100, 20);
                     }
@@ -155,7 +155,7 @@ private MobHunting plugin;
             }
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                Messages.playerSendTitlesMessage(player,
+            	plugin.getMessages().playerSendTitlesMessage(player,
                         Messages.getString("mobhunting.commands.happyhour.started_title"),
                         Messages.getString("mobhunting.commands.happyhour.started_subtitle", "multiplier", multiplier,
                                 "minutes", minutesToRun),
@@ -174,7 +174,7 @@ private MobHunting plugin;
                 happyhourevent.cancel();
                 Messages.debug("Happy hour ended");
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Messages.playerSendTitlesMessage(player,
+                	plugin.getMessages().playerSendTitlesMessage(player,
                             Messages.getString("mobhunting.commands.happyhour.ended_title"),
                             Messages.getString("mobhunting.commands.happyhour.ended_subtitle"), 20, 100, 20);
                 }

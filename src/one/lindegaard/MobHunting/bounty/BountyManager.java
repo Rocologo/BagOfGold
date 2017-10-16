@@ -249,9 +249,10 @@ public class BountyManager implements Listener {
 					sort();
 				Messages.debug("%s bounties for %s was loaded.", n, player.getName());
 				if (n > 0 && hasOpenBounties(player)) {
-					plugin.getMessages().playerActionBarMessage(player,
+					plugin.getMessages().playerSendMessage(player,
 							Messages.getString("mobhunting.bounty.youarewanted"));
-					if (!EssentialsCompat.isVanishedModeEnabled(player)  && !VanishNoPacketCompat.isVanishedModeEnabled(player))
+					if (!EssentialsCompat.isVanishedModeEnabled(player)
+							&& !VanishNoPacketCompat.isVanishedModeEnabled(player))
 						plugin.getMessages().broadcast(
 								Messages.getString("mobhunting.bounty.playeriswanted", "playername", player.getName()),
 								player);
@@ -283,14 +284,14 @@ public class BountyManager implements Listener {
 	 */
 	public void save(Bounty bounty) {
 		if (hasOpenBounty(bounty)) {
-			Messages.debug("adding bounty %s+%s",getOpenBounty(bounty).getPrize(),bounty.getPrize());
+			Messages.debug("adding bounty %s+%s", getOpenBounty(bounty).getPrize(), bounty.getPrize());
 			getOpenBounty(bounty).setPrize(getOpenBounty(bounty).getPrize() + bounty.getPrize());
 			getOpenBounty(bounty).setMessage(bounty.getMessage());
 			MobHunting.getDataStoreManager().updateBounty(getOpenBounty(bounty));
 		} else {
 			mOpenBounties.add(bounty);
 			MobHunting.getDataStoreManager().updateBounty(bounty);
-			Messages.debug("adding bounty %s",getOpenBounty(bounty).getPrize());
+			Messages.debug("adding bounty %s", getOpenBounty(bounty).getPrize());
 		}
 	}
 
@@ -466,7 +467,8 @@ public class BountyManager implements Listener {
 				int random = MobHunting.getMobHuntingManager().mRand.nextInt(noOfPlayersNotVanished);
 				int n = 0;
 				for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
-					if (n == random && !EssentialsCompat.isVanishedModeEnabled(player) && !VanishNoPacketCompat.isVanishedModeEnabled(player)
+					if (n == random && !EssentialsCompat.isVanishedModeEnabled(player)
+							&& !VanishNoPacketCompat.isVanishedModeEnabled(player)
 							&& !player.hasPermission("mobhunting.bounty.randombounty.exempt")) {
 						randomPlayer = player;
 						break;
@@ -481,11 +483,11 @@ public class BountyManager implements Listener {
 					save(randomBounty);
 					for (Player player : MobHunting.getMobHuntingManager().getOnlinePlayers()) {
 						if (player.getName().equals(randomPlayer.getName()))
-							plugin.getMessages().playerActionBarMessage(player,
+							plugin.getMessages().playerSendMessage(player,
 									Messages.getString("mobhunting.bounty.randombounty.self", "prize",
 											plugin.getRewardManager().format(randomBounty.getPrize())));
 						else
-							plugin.getMessages().playerActionBarMessage(player,
+							plugin.getMessages().playerSendMessage(player,
 									Messages.getString("mobhunting.bounty.randombounty", "prize",
 											plugin.getRewardManager().format(randomBounty.getPrize()), "playername",
 											randomPlayer.getName()));

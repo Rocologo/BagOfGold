@@ -14,8 +14,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
-import one.lindegaard.MobHunting.Messages;
-
 public class Reward {
 
 	private String description = "";;
@@ -167,7 +165,7 @@ public class Reward {
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException {
 		description = section.getString("description");
-		money = section.getDouble("money");
+		money = Double.valueOf(section.getString("money"));
 		uuid = UUID.fromString(section.getString("uuid"));
 		uniqueId = UUID.fromString(section.getString("uniqueid"));
 	}

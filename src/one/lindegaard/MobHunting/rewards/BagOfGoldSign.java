@@ -57,8 +57,8 @@ public class BagOfGoldSign implements Listener {
 				if (signType.equalsIgnoreCase(Messages.getString("mobhunting.bagofgoldsign.line2.sell"))) {
 					if (player.getItemInHand().getType().equals(Material.SKULL_ITEM)
 							&& Reward.isReward(player.getItemInHand())) {
-						Reward hrd = Reward.getReward(player.getItemInHand());
-						moneyInHand = hrd.getMoney();
+						Reward reward = Reward.getReward(player.getItemInHand());
+						moneyInHand = reward.getMoney();
 						if (sign.getLine(2).isEmpty() || sign.getLine(2)
 								.equalsIgnoreCase(Messages.getString("mobhunting.bagofgoldsign.line3.everything"))) {
 							money = moneyInHand;
@@ -78,26 +78,27 @@ public class BagOfGoldSign implements Listener {
 						plugin.getRewardManager().getEconomy().depositPlayer(player, money);
 						if (moneyInHand <= moneyOnSign) {
 							event.getItem().setAmount(0);
+							event.getItem().setItemMeta(null);
 							event.getItem().setType(Material.AIR);
 						} else {
-							hrd.setMoney(moneyInHand - moneyOnSign);
+							reward.setMoney(moneyInHand - moneyOnSign);
 							ItemMeta im = event.getItem().getItemMeta();
-							im.setLore(hrd.getHiddenLore());
+							im.setLore(reward.getHiddenLore());
 							String displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype
-									.equalsIgnoreCase("ITEM") ? plugin.getRewardManager().format(hrd.getMoney())
-											: hrd.getDisplayname() + " ("
-													+ plugin.getRewardManager().format(hrd.getMoney()) + ")";
+									.equalsIgnoreCase("ITEM") ? plugin.getRewardManager().format(reward.getMoney())
+											: reward.getDisplayname() + " ("
+													+ plugin.getRewardManager().format(reward.getMoney()) + ")";
 							im.setDisplayName(
 									ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 											+ displayName);
 							event.getItem().setItemMeta(im);
 						}
-						Messages.debug("%s sold his bag of gold for %s", player.getName(),
+						Messages.debug("%s sold his %s for %s", player.getName(), reward.getDisplayname(), 
 								plugin.getRewardManager().getEconomy().format(money));
 						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.sold", "money",
 								plugin.getRewardManager().getEconomy().format(money), "rewardname",
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-										+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+										+ reward.getDisplayname().trim()));
 					} else {
 						Messages.debug("Player does not hold a bag of gold in his hand");
 						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.hold_bag_in_hand", "rewardname",
