@@ -4,6 +4,7 @@ package one.lindegaard.MobHunting.rewards;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -84,7 +85,7 @@ public class Reward {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + String.format("%.5f", money),
+		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + String.format(Locale.ENGLISH,"%.5f", money),
 				"Hidden:" + uuid.toString(), money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString()));
 	}
 
@@ -149,13 +150,13 @@ public class Reward {
 	}
 
 	public String toString() {
-		return "{Description=" + description + ", money=" + String.format("%.5f", money) + ", UUID=" + uuid.toString()
+		return "{Description=" + description + ", money=" + String.format(Locale.ENGLISH,"%.5f", money) + ", UUID=" + uuid.toString()
 				+ ", UniqueID=" + uniqueId.toString() + "}";
 	}
 
 	public void save(ConfigurationSection section) {
 		section.set("description", description);
-		section.set("money", String.format("%.5f", money));
+		section.set("money", String.format(Locale.ENGLISH,"%.5f", money));
 		section.set("uuid", uuid.toString());
 		section.set("uniqueid", uniqueId.toString());
 	}

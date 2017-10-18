@@ -3,6 +3,7 @@ package one.lindegaard.MobHunting.rewards;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -40,7 +41,7 @@ public class CustomItems {
 
 		UUID uuid = Bukkit.getOfflinePlayer(name).getUniqueId();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
-				"Hidden:" + String.format("%.5f", money), "Hidden:" + RewardManager.MH_REWARD_KILLER_UUID,
+				"Hidden:" + String.format(Locale.ENGLISH,"%.5f", money), "Hidden:" + RewardManager.MH_REWARD_KILLER_UUID,
 				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID())));
 
 		skullMeta.setOwner(name);
@@ -92,7 +93,7 @@ public class CustomItems {
 		}
 
 		skullMeta.setLore(
-				new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.format("%.4f", money),
+				new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.format(Locale.ENGLISH,"%.5f", money),
 						"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid)));
 		if (money == 0)
 			skullMeta.setDisplayName(
