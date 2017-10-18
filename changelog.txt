@@ -1,6 +1,7 @@
 V5.1.5
 * Fixed Ticket 307. (https://github.com/Rocologo/MobHunting/issues/307)
 * Fixed NPE bug, when using command /mh happyhour
+* Fix bug on servers using a Java version where STring.format uses a "," instead of a "." when formatting numbers. 
 V5.1.4
 * Fixed bug on MC 1.8 servers, where BagOfGold signs dit not clear the slot if the bag was completely sold.
 V5.1.3

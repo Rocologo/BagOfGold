@@ -1,6 +1,6 @@
 package one.lindegaard.MobHunting.rewards;
 
-import java.text.DecimalFormat;
+//import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,8 +84,7 @@ public class Reward {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		DecimalFormat df = new DecimalFormat("#.#####");
-		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + df.format(money),
+		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + String.format("%.5f", money),
 				"Hidden:" + uuid.toString(), money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString()));
 	}
 
@@ -150,15 +149,13 @@ public class Reward {
 	}
 
 	public String toString() {
-		DecimalFormat df = new DecimalFormat("#.#####");
-		return "{Description=" + description + ", money=" + df.format(money) + ", UUID=" + uuid.toString()
+		return "{Description=" + description + ", money=" + String.format("%.5f", money) + ", UUID=" + uuid.toString()
 				+ ", UniqueID=" + uniqueId.toString() + "}";
 	}
 
 	public void save(ConfigurationSection section) {
-		DecimalFormat df = new DecimalFormat("#.#####");
 		section.set("description", description);
-		section.set("money", df.format(money));
+		section.set("money", String.format("%.5f", money));
 		section.set("uuid", uuid.toString());
 		section.set("uniqueid", uniqueId.toString());
 	}
