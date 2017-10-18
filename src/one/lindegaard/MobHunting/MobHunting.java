@@ -87,8 +87,7 @@ public class MobHunting extends JavaPlugin {
 		instance = this;
 
 		mMessages = new Messages(this);
-
-		Messages.exportDefaultLanguages(this);
+		mMessages.exportDefaultLanguages(this);
 
 		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
 
@@ -265,7 +264,7 @@ public class MobHunting extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
 		if (!mConfig.disablePlayerBounties)
 			mCommandDispatcher.registerCommand(new BountyCommand(this));
-		mCommandDispatcher.registerCommand(new HappyHourCommand());
+		mCommandDispatcher.registerCommand(new HappyHourCommand(this));
 		mCommandDispatcher.registerCommand(new MoneyCommand(this));
 
 		mLeaderboardManager = new LeaderboardManager(this);

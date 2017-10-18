@@ -290,8 +290,6 @@ public class AchievementManager implements Listener {
 				}
 			}
 
-			// achievements.removeAll(toRemove);
-
 			callback.onCompleted(achievements);
 			return;
 		}
@@ -320,8 +318,6 @@ public class AchievementManager implements Listener {
 									-1));
 					}
 				}
-
-				// achievements.removeAll(toRemove);
 
 				callback.onCompleted(achievements);
 			}
@@ -435,8 +431,11 @@ public class AchievementManager implements Listener {
 		String playerpos = player.getLocation().getBlockX() + " " + player.getLocation().getBlockY() + " "
 				+ player.getLocation().getBlockZ();
 		String prizeCommand = achievement.getPrizeCmd().replaceAll("\\{player\\}", playername)
-				.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", playerpos);
+				.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", playerpos)
+				.replaceAll("\\{monstertype\\}", mob.getMobName());
+
 		if (!achievement.getPrizeCmd().equals("")) {
+			Messages.debug("Command to be run:" + prizeCommand);
 			String str = prizeCommand;
 			do {
 				if (str.contains("|")) {
@@ -448,8 +447,9 @@ public class AchievementManager implements Listener {
 			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
 		}
 		if (!achievement.getPrizeCmdDescription().equals("")) {
-			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC + achievement.getPrizeCmdDescription()
-					.replaceAll("\\{player\\}", playername).replaceAll("\\{world\\}", worldname));
+			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC
+					+ achievement.getPrizeCmdDescription().replaceAll("\\{player\\}", playername)
+							.replaceAll("\\{world\\}", worldname).replaceAll("\\{monstertype\\}", mob.getMobName()));
 		}
 
 		if (Misc.isMC19OrNewer())

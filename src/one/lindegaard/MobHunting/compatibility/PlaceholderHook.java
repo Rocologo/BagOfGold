@@ -43,8 +43,8 @@ public class PlaceholderHook extends EZPlaceholderHook implements Listener, IDat
 			return "";
 		}
 
-		// placeholder: %mobhunting_total_kills_alltime_rank%
-		if (identifier.equals("total_kills_alltime_rank")) {
+		// placeholder: %mh_total_kills%
+		if (identifier.equals("mh_total_kills")) {
 			if (rank.containsKey(player.getUniqueId()))
 				return String.valueOf(rank.get(player.getUniqueId()));
 			else
@@ -60,7 +60,7 @@ public class PlaceholderHook extends EZPlaceholderHook implements Listener, IDat
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	private void onPlayerJoin(PlayerJoinEvent event) {
-		//final Player player = event.getPlayer();
+		// final Player player = event.getPlayer();
 		MobHunting.getDataStoreManager().requestStats(StatType.KillsTotal, TimePeriod.AllTime, 2000, this);
 	}
 
@@ -75,9 +75,12 @@ public class PlaceholderHook extends EZPlaceholderHook implements Listener, IDat
 	public void onCompleted(List<StatStore> data) {
 		int n = 0;
 		for (StatStore res : data) {
+			n++;
 			if (res.getPlayer().isOnline()) {
-				Messages.debug("PlacerholderHook: added %s to rank", res.getPlayer().getName());
-				rank.put(res.getPlayer().getUniqueId(), n++);
+				rank.put(res.getPlayer().getUniqueId(), res.getAmount());
+				Messages.debug("PlacerholderHook: added %s to rank, his rank is %s for %s kills",
+						res.getPlayer().getName(), n, rank.get(res.getPlayer().getUniqueId()));
+
 			}
 		}
 	}

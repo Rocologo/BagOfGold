@@ -50,7 +50,7 @@ public class Messages {
 	private static String[] sources = new String[] { "en_US.lang", "zh_CN.lang" };
 	private static MobHunting mPlugin;
 
-	public static void exportDefaultLanguages(MobHunting plugin) {
+	public void exportDefaultLanguages(MobHunting plugin) {
 		mPlugin = plugin;
 		File folder = new File(plugin.getDataFolder(), "lang");
 		if (!folder.exists())
