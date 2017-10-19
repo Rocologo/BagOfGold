@@ -10,6 +10,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.Skull;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -492,6 +493,64 @@ public class RewardListeners implements Listener {
 										? plugin.getRewardManager().format(reward.getMoney())
 										: reward.getDisplayname() + " ("
 												+ plugin.getRewardManager().format(reward.getMoney()) + ")"));
+		} else if (block != null && block.getType() == Material.SKULL) {
+			Skull skullState = (Skull) block.getState();
+			switch (skullState.getSkullType()) {
+			case PLAYER:
+				if (Misc.isMC19OrNewer()) {
+					OfflinePlayer owner = skullState.getOwningPlayer();
+					if (owner != null && owner.getName() != null) {
+						plugin.getMessages().playerActionBarMessage(player,
+								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+										+ owner.getName());
+						skullState.update();
+					} else
+						plugin.getMessages().playerActionBarMessage(player,
+								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+										+ Messages.getString("mobhunting.reward.customtexture"));
+				} else if (skullState.hasOwner()) {
+					String owner = skullState.getOwner();
+					if (!owner.equalsIgnoreCase("")) {
+						plugin.getMessages().playerActionBarMessage(player,
+								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + owner);
+						skullState.update();
+					} else
+						plugin.getMessages().playerActionBarMessage(player,
+								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+										+ Messages.getString("mobhunting.reward.customtexture"));
+				} else
+					plugin.getMessages().playerActionBarMessage(player,
+							ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+									+ Messages.getString("mobhunting.reward.steve"));
+				break;
+			case CREEPER:
+				plugin.getMessages().playerActionBarMessage(player,
+						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+								+ Messages.getString("mobs.Creeper.name"));
+				break;
+			case SKELETON:
+				plugin.getMessages().playerActionBarMessage(player,
+						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+								+ Messages.getString("mobs.Skeleton.name"));
+				break;
+			case WITHER:
+				plugin.getMessages().playerActionBarMessage(player,
+						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+								+ Messages.getString("mobs.Wither.name"));
+				break;
+			case ZOMBIE:
+				plugin.getMessages().playerActionBarMessage(player,
+						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+								+ Messages.getString("mobs.Zombie.name"));
+				break;
+			case DRAGON:
+				plugin.getMessages().playerActionBarMessage(player,
+						ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+								+ Messages.getString("mobs.EnderDragon.name"));
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

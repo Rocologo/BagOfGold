@@ -85,8 +85,9 @@ public class Reward {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		return new ArrayList<String>(Arrays.asList("Hidden:" + description, "Hidden:" + String.format(Locale.ENGLISH,"%.5f", money),
-				"Hidden:" + uuid.toString(), money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString()));
+		return new ArrayList<String>(
+				Arrays.asList("Hidden:" + description, "Hidden:" + String.format(Locale.ENGLISH, "%.5f", money),
+						"Hidden:" + uuid.toString(), money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString()));
 	}
 
 	/**
@@ -150,20 +151,20 @@ public class Reward {
 	}
 
 	public String toString() {
-		return "{Description=" + description + ", money=" + String.format(Locale.ENGLISH,"%.5f", money) + ", UUID=" + uuid.toString()
-				+ ", UniqueID=" + uniqueId.toString() + "}";
+		return "{Description=" + description + ", money=" + String.format(Locale.ENGLISH, "%.5f", money) + ", UUID="
+				+ uuid.toString() + ", UniqueID=" + uniqueId.toString() + "}";
 	}
 
 	public void save(ConfigurationSection section) {
 		section.set("description", description);
-		section.set("money", String.format(Locale.ENGLISH,"%.5f", money));
+		section.set("money", String.format(Locale.ENGLISH, "%.5f", money));
 		section.set("uuid", uuid.toString());
 		section.set("uniqueid", uniqueId.toString());
 	}
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException {
 		description = section.getString("description");
-		money = Double.valueOf(section.getString("money"));
+		money = Double.valueOf(section.getString("money").replace(",", "."));
 		uuid = UUID.fromString(section.getString("uuid"));
 		uniqueId = UUID.fromString(section.getString("uniqueid"));
 	}

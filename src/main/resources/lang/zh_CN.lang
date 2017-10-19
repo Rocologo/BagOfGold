@@ -312,6 +312,8 @@ mobhunting.npc.clickednpcsignpowered=&2这是一个 &4力量 &2MasterMobHunter �
 mobhunting.npc.notamastermobhuner=Id=one.lindegaard:MobHunting:jar:5.1.2 is not a MasterMobHuner.
 mobhunting.reward.name=MobHunting 奖励
 mobhunting.reward.bagofgold=A ${rewardname} with ${rewardvalue}
+mobhunting.reward.customtexture=Custom head - no owner
+mobhunting.reward.steve=Steve
 mobhunting.reward.item=${rewardname} (${rewardvalue})
 mobhunting.reward.killed=This is ${rewardname}'s head (${rewardvalue})
 mobhunting.reward.killer=This is ${rewardname}'s head (${rewardvalue})

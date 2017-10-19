@@ -34,17 +34,39 @@ public class CustomItems {
 	 * @param money
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public ItemStack getPlayerHead(String name, double money) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
 		skull.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-
-		UUID uuid = Bukkit.getOfflinePlayer(name).getUniqueId();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
 				"Hidden:" + String.format(Locale.ENGLISH,"%.5f", money), "Hidden:" + RewardManager.MH_REWARD_KILLER_UUID,
 				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID())));
-
 		skullMeta.setOwner(name);
+		if (money == 0)
+			skullMeta.setDisplayName(name);
+		else
+			skullMeta.setDisplayName(name + " (" + plugin.getRewardManager().getEconomy().format(money) + ")");
+		skull.setItemMeta(skullMeta);
+		return skull;
+	}
+
+	/**
+	 * Return an ItemStack with the Players head texture.
+	 *
+	 * @param player uuid
+	 * @param money
+	 * @return
+	 */
+	public ItemStack getPlayerHead(UUID uuid, double money) {
+		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+		skull.setDurability((short) 3);
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		String name = Bukkit.getOfflinePlayer(uuid).getName();
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
+				"Hidden:" + String.format(Locale.ENGLISH,"%.5f", money), "Hidden:" + RewardManager.MH_REWARD_KILLER_UUID,
+				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID())));
+		skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 		if (money == 0)
 			skullMeta.setDisplayName(name);
 		else
