@@ -253,7 +253,7 @@ public class RewardManager implements Listener {
 			item = location.getWorld().dropItem(location, is);
 			getDroppedMoney().put(item.getEntityId(), money);
 			item.setMetadata(MH_REWARD_DATA,
-					new FixedMetadataValue(MobHunting.getInstance(),
+					new FixedMetadataValue(plugin,
 							new Reward(
 									MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 											? "" : Reward.getReward(is).getDisplayname(),

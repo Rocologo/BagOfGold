@@ -137,9 +137,9 @@ public class RewardListeners implements Listener {
 					continue;
 				Item item = (Item) entity;
 				ItemStack isOnground = item.getItemStack();
-				if (Reward.isReward(isOnground)
+				if ((Reward.isReward(isOnground)||Reward.isReward(entity))
 						&& plugin.getRewardManager().getDroppedMoney().containsKey(entity.getEntityId())) {
-					Reward rewardOnGround = Reward.getReward(isOnground);
+					Reward rewardOnGround = Reward.getReward(item);
 					double moneyOnGround = rewardOnGround.getMoney();
 					// If not Gringotts
 					if (rewardOnGround.getMoney() != 0) {
@@ -324,14 +324,21 @@ public class RewardListeners implements Listener {
 
 		InventoryAction action = event.getAction();
 		ItemStack isCurrentSlot = event.getCurrentItem();
-
 		ItemStack isCursor = event.getCursor();
 		Player player = (Player) event.getWhoClicked();
+
+		if (player.getGameMode() == GameMode.CREATIVE
+				&& (Reward.isReward(isCursor) || Reward.isReward(isCurrentSlot))) {
+			plugin.getMessages().learn(player, Messages.getString("mobhunting.learn.rewards.creative"));
+			event.setCancelled(true);
+			return;
+		}
 
 		if (action == InventoryAction.SWAP_WITH_CURSOR && (isCurrentSlot.getType() == Material.SKULL_ITEM
 				|| isCurrentSlot.getType() == Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem))
 				&& isCurrentSlot.getType() == isCursor.getType()) {
 			if (Reward.isReward(isCurrentSlot) && Reward.isReward(isCursor)) {
+				event.setCancelled(true);
 				ItemMeta imCurrent = isCurrentSlot.getItemMeta();
 				ItemMeta imCursor = isCursor.getItemMeta();
 				Reward reward1 = new Reward(imCurrent.getLore());
@@ -362,29 +369,13 @@ public class RewardListeners implements Listener {
 					double cursorMoney = Misc.round(reward.getMoney() - currentSlotMoney);
 					if (currentSlotMoney >= MobHunting.getConfigManager().minimumReward) {
 						event.setCancelled(true);
-						if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")) {
-							isCurrentSlot = plugin.getRewardManager().setDisplayNameAndHiddenLores(
-									isCurrentSlot.clone(), reward.getDisplayname(), currentSlotMoney,
-									reward.getRewardUUID());
-						} else {
-							isCurrentSlot = new CustomItems(plugin).getCustomtexture(reward.getRewardUUID(),
-									reward.getDisplayname(),
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-									currentSlotMoney, UUID.randomUUID());
-						}
+
+						isCurrentSlot = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
+								reward.getDisplayname(), currentSlotMoney, reward.getRewardUUID());
 						event.setCurrentItem(isCurrentSlot);
 
-						if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")) {
-							isCursor = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
-									reward.getDisplayname(), cursorMoney, reward.getRewardUUID());
-						} else {
-							isCursor = new CustomItems(plugin).getCustomtexture(reward.getRewardUUID(),
-									reward.getDisplayname(),
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-									MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, cursorMoney,
-									UUID.randomUUID());
-						}
+						isCursor = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
+								reward.getDisplayname(), cursorMoney, reward.getRewardUUID());
 						event.setCursor(isCursor);
 
 						Messages.debug("%s halfed a reward in two (%s,%s)", player.getName(),
@@ -394,58 +385,34 @@ public class RewardListeners implements Listener {
 				}
 			}
 		} else if (action == InventoryAction.COLLECT_TO_CURSOR && Reward.isReward(isCursor)) {
-			event.setCancelled(true);
 			Reward cursor = Reward.getReward(isCursor);
-			double saldo = Misc.floor(cursor.getMoney());
-			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-				ItemStack is = player.getInventory().getItem(slot);
-				if (Reward.isReward(is)) {
-					Reward reward = Reward.getReward(is);
-					saldo = saldo + reward.getMoney();
-					player.getInventory().clear(slot);
+			if (cursor.getMoney() > 0 && cursor.isBagOfGoldReward()) {
+				double saldo = Misc.floor(cursor.getMoney());
+				for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+					ItemStack is = player.getInventory().getItem(slot);
+					if (Reward.isReward(is)) {
+						Reward reward = Reward.getReward(is);
+						if (cursor.getRewardUUID().equals(reward.getRewardUUID()) && reward.getMoney() > 0) {
+							saldo = saldo + reward.getMoney();
+							player.getInventory().clear(slot);
+						}
+					}
 				}
+				isCursor = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCursor.clone(),
+						cursor.getDisplayname(), saldo, cursor.getRewardUUID());
+				event.setCursor(isCursor);
 			}
-			isCursor = new CustomItems(plugin).getCustomtexture(cursor.getRewardUUID(), cursor.getDisplayname(),
-					MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-					MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.floor(saldo),
-					UUID.randomUUID());
-			event.setCursor(isCursor);
 		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryCreativeEvent(InventoryCreativeEvent event) {
+
 		if (event.isCancelled())
 			return;
 
-		InventoryAction action = event.getAction();
-		ItemStack isCurrentSlot = event.getCurrentItem();
+		Messages.debug("InventoryCreativeEvent");
 
-		ItemStack isCursor = event.getCursor();
-		Player player = (Player) event.getWhoClicked();
-
-		if (action == InventoryAction.PLACE_ALL && player.getGameMode() == GameMode.CREATIVE) {
-			if (Reward.isReward(isCursor)) {
-				Reward reward = Reward.getReward(isCursor);
-				double cursorMoney = Misc.floor(reward.getMoney());
-				isCursor = new CustomItems(plugin).getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.floor(cursorMoney),
-						UUID.randomUUID());
-				event.setCursor(isCursor);
-			}
-			if (Reward.isReward(isCurrentSlot)) {
-				event.setCancelled(true);
-				Messages.debug("%s tried to move a Reward, but this is not allowed in Creative", player.getName());
-				Reward reward = Reward.getReward(isCurrentSlot);
-				double currentSlotMoney = Misc.floor(reward.getMoney());
-				isCurrentSlot = new CustomItems(plugin).getCustomtexture(reward.getRewardUUID(),
-						reward.getDisplayname(), MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, currentSlotMoney,
-						UUID.randomUUID());
-				event.setCurrentItem(isCurrentSlot);
-			}
-		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -503,7 +470,7 @@ public class RewardListeners implements Listener {
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 										+ owner.getName());
-						skullState.update();
+						// skullState.update();
 					} else
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
@@ -513,7 +480,7 @@ public class RewardListeners implements Listener {
 					if (!owner.equalsIgnoreCase("")) {
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + owner);
-						skullState.update();
+						// skullState.update();
 					} else
 						plugin.getMessages().playerActionBarMessage(player,
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)

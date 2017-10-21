@@ -266,6 +266,7 @@ mobhunting.killstreak.level.4=界限突破!
 mobhunting.killstreak.lost=Killstreak 丢失
 mobhunting.learn.assisted-kill-is-disabled=管理员被禁止辅助杀死
 mobhunting.learn.battlearena=你没有得到奖励而去玩BattleArena
+mobhunting.learn.rewards.creative=You are not allowed to use MobHunting Rewards in Creative mode
 mobhunting.learn.creative=当你在创作模式时，没有MobHunting奖励
 mobhunting.learn.disabled=MobHunting 在这个世界上管理员被禁用.
 mobhunting.learn.factions-no-rewards-in-safezone=没有奖励，当你在一个安全区域内

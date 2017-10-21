@@ -1,6 +1,5 @@
 package one.lindegaard.MobHunting.rewards;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -197,9 +196,12 @@ public class Reward {
 	}
 
 	public static boolean isReward(ItemStack itemStack) {
-		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
+		if (itemStack != null && itemStack.hasItemMeta() 
+				&& itemStack.getItemMeta().hasLore()
 				&& itemStack.getItemMeta().getLore().size() >= NUMBER_OF_DATA) {
+			
 			for (int i = 0; i < itemStack.getItemMeta().getLore().size(); i++) {
+			
 				if (itemStack.getItemMeta().getLore().get(i)
 						.equals("Hidden:" + RewardManager.MH_REWARD_BAG_OF_GOLD_UUID)
 						|| itemStack.getItemMeta().getLore().get(i)

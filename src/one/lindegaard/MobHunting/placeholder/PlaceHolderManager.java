@@ -80,7 +80,7 @@ public class PlaceHolderManager implements Listener, IDataCallback<List<StatStor
 				placeHolders.put(statStore.getPlayer().getUniqueId(), placeholder);
 			}
 		}
-		if (n > 0)
+		if (!placeHolders.isEmpty())
 			Messages.debug("Refreshed %s ranks.", placeHolders.size());
 	}
 
