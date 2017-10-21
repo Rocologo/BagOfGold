@@ -1,3 +1,6 @@
+V5.1.6
+* Added support for PlaceHolderAPI.
+* Placedholders added: %mobhunting_rank% (Only updated when leaderboards is updated), %mobhunting_total_kills%, %mobhunting_total_cash%, %mobhunting_droped_money%, %mobhunting_dropped_rewards%
 V5.1.5
 * Fixed Ticket 307. (https://github.com/Rocologo/MobHunting/issues/307)
 * Fixed NPE bug, when using command /mh happyhour

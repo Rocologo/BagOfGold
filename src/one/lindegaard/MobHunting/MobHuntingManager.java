@@ -11,6 +11,7 @@ import one.lindegaard.MobHunting.events.MobHuntKillEvent;
 import one.lindegaard.MobHunting.grinding.Area;
 import one.lindegaard.MobHunting.mobs.ExtendedMob;
 import one.lindegaard.MobHunting.modifier.*;
+import one.lindegaard.MobHunting.placeholder.PlaceHolderData;
 import one.lindegaard.MobHunting.update.Updater;
 import one.lindegaard.MobHunting.util.Misc;
 import org.bukkit.*;
@@ -1613,6 +1614,22 @@ public class MobHuntingManager implements Listener {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Command:" + str);
 				}
 			}
+
+			// Update PlaceHolderData
+			if (PlaceholderAPICompat.isSupported()) {
+				if (info.getAssister() == null) {
+					PlaceHolderData p = PlaceholderAPICompat.getPlaceHolders()
+							.get(getPlayer(killer, killed).getUniqueId());
+					p.setTotal_kills(p.getTotal_kills()+1);
+					PlaceholderAPICompat.getPlaceHolders().put(getPlayer(killer, killed).getUniqueId(), p);
+				} else {
+					PlaceHolderData p = PlaceholderAPICompat.getPlaceHolders()
+							.get(getPlayer(killer, killed).getUniqueId());
+					p.setTotal_assists(p.getTotal_assists()+1);
+					PlaceholderAPICompat.getPlaceHolders().put(getPlayer(killer, killed).getUniqueId(), p);
+				}
+			}
+
 			// send a message to the player
 			if (!plugin.getRewardManager().getKillRewardDescription(killed).equals("") && !killer_muted) {
 				String message = ChatColor.GREEN + "" + ChatColor.ITALIC

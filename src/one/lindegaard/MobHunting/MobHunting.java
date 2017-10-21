@@ -284,7 +284,7 @@ public class MobHunting extends JavaPlugin {
 		if (!getServer().getName().toLowerCase().contains("glowstone")) {
 			mMetricsManager = new MetricsManager(this);
 			mMetricsManager.startMetrics();
-			
+
 			mMetricsManager.startBStatsMetrics();
 		}
 
@@ -342,6 +342,10 @@ public class MobHunting extends JavaPlugin {
 		mLeaderboardManager.shutdown();
 		Messages.debug("Shutdown AreaManager");
 		mAreaManager.saveData();
+		if (PlaceholderAPICompat.isSupported()) {
+			Messages.debug("Shutdown PlaceHolderManager");
+			PlaceholderAPICompat.shutdown();
+		}
 		getMobHuntingManager().getHuntingModifiers().clear();
 		if (!mConfig.disableFishingRewards)
 			getFishingManager().getFishingModifiers().clear();
