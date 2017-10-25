@@ -8,7 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.MobHunting.MobHunting;
-import uk.antiperson.stackmob.tools.extras.*;
+import uk.antiperson.stackmob.StackMob;
+import uk.antiperson.stackmob.api.EntityManager;
 
 public class StackMobCompat implements Listener {
 
@@ -22,7 +23,7 @@ public class StackMobCompat implements Listener {
 			Bukkit.getLogger().info("[MobHunting] Compatibility with StackMob is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.StackMob.getName());
-			if (mPlugin.getDescription().getVersion().compareTo("2.0.0") >= 0) {
+			if (mPlugin.getDescription().getVersion().compareTo("2.0.9") >= 0) {
 				Bukkit.getLogger().info("[MobHunting] Enabling compatibility with StackMob ("
 						+ mPlugin.getDescription().getVersion() + ").");
 				Bukkit.getPluginManager().registerEvents(this, MobHunting.getInstance());
@@ -31,7 +32,7 @@ public class StackMobCompat implements Listener {
 				ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 				console.sendMessage(ChatColor.RED + "[MobHunting] Your current version of StackMob ("
 						+ mPlugin.getDescription().getVersion()
-						+ ") is not supported by MobHunting, please upgrade to 2.0.7 or newer.");
+						+ ") is not supported by MobHunting, please upgrade to 2.0.9 or newer.");
 			}
 		}
 	}
@@ -53,18 +54,19 @@ public class StackMobCompat implements Listener {
 		return !MobHunting.getConfigManager().disableIntegrationStackMob;
 	}
 
+	public static EntityManager getEntityManager() {
+		return new EntityManager((StackMob) mPlugin);
+	}
+
 	public static boolean isStackedMob(Entity entity) {
 		if (isSupported()) {
-			return entity.hasMetadata(getTag());
+			return getEntityManager().isStackedEntity(entity);
 		}
 		return false;
 	}
 
 	public static int getStackSize(Entity entity) {
-		if (entity.hasMetadata(getTag())) {
-			return (Integer) entity.getMetadata(getTag()).get(0).value();
-		}
-		return 1;
+		return getEntityManager().getStackedEntity(entity).getSize();
 	}
 
 	public static boolean killHoleStackOnDeath(Entity entity) {
@@ -73,10 +75,6 @@ public class StackMobCompat implements Listener {
 
 	public static boolean isGrindingStackedMobsAllowed() {
 		return MobHunting.getConfigManager().isGrindingStackedMobsAllowed;
-	}
-
-	private static String getTag() {
-		return GlobalValues.metaTag;
 	}
 
 }
