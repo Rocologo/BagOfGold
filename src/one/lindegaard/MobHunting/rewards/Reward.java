@@ -15,6 +15,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 
 import one.lindegaard.MobHunting.Messages;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
@@ -234,9 +235,11 @@ public class Reward {
 
 	public static Reward getReward(Item item) {
 		if (item.hasMetadata(RewardManager.MH_REWARD_DATA))
-			return (Reward) item.getMetadata(RewardManager.MH_REWARD_DATA).get(0).value();
-		else
-			return getReward(item.getItemStack());
+			for (MetadataValue mv : item.getMetadata(RewardManager.MH_REWARD_DATA)) {
+				if (mv.value() instanceof Reward)
+					return (Reward) item.getMetadata(RewardManager.MH_REWARD_DATA).get(0).value();
+			}
+		return getReward(item.getItemStack());
 	}
 
 	public static boolean isReward(ItemStack itemStack) {
