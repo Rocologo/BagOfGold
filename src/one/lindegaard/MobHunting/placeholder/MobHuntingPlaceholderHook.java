@@ -18,6 +18,9 @@ public class MobHuntingPlaceholderHook extends EZPlaceholderHook implements List
 	@Override
 	public String onPlaceholderRequest(Player player, String identifier) {
 
+		// Remember to update the documentation when adding new placeholders
+		// https://www.spigotmc.org/wiki/mobhunting-placeholders/
+		
 		// placeholder: %mobhunting_ping%
 		if (identifier.equals("ping")) {
 			return "pong";
@@ -56,6 +59,11 @@ public class MobHuntingPlaceholderHook extends EZPlaceholderHook implements List
 		// placeholder: %mobhunting_rank%
 		if (identifier.equals("rank")) {
 			return String.valueOf(PlaceholderAPICompat.getPlaceHolders().get(player.getUniqueId()).getRank());
+		}
+
+		// placeholder: %mobhunting_balance%
+		if (identifier.equals("balance")) {
+			return String.valueOf(MobHunting.getInstance().getPlayerSettingsmanager().getBalance(player));
 		}
 
 		// anything else someone types is invalid because we never defined

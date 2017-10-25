@@ -221,32 +221,30 @@ public class RewardManager implements Listener {
 			}
 		} else {
 			ItemStack is;
-			UUID uuid = null;
+			UUID uuid = null, skinuuid = null;
 			if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED")) {
 				MinecraftMob mob = MinecraftMob.getMinecraftMobType(killedEntity);
 				uuid = UUID.fromString(MH_REWARD_KILLED_UUID);
-				if (mob != null)
-					is = new CustomItems(plugin).getCustomHead(mob, mob.getFriendlyName(), 1, money);
-				else // https://mineskin.org/6875
-					is = new CustomItems(plugin).getCustomtexture(uuid,
-							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-							"eyJ0aW1lc3RhbXAiOjE0ODU5MTIwNjk3OTgsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM5NmNlMTNmZjYxNTVmZGYzMjM1ZDhkMjIxNzRjNWRlNGJmNTUxMmYxYWRlZGExYWZhM2ZjMjgxODBmM2Y3In19fQ==",
-							"m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=",
-							money, UUID.randomUUID());
+				skinuuid = mob.getPlayerUUID();
+				is = new CustomItems(plugin).getCustomHead(mob, mob.getFriendlyName(), 1, money, skinuuid);
 
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 				uuid = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
+				skinuuid = uuid;
 				is = new CustomItems(plugin).getCustomtexture(uuid,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money, UUID.randomUUID());
+						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money, UUID.randomUUID(),
+						skinuuid);
 
 			} else if (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLER")) {
 				uuid = UUID.fromString(MH_REWARD_KILLER_UUID);
-				is = new CustomItems(plugin).getPlayerHead(player.getName(), money);
+				skinuuid = player.getUniqueId();
+				is = new CustomItems(plugin).getPlayerHead(player.getUniqueId(), 1, money);
 
 			} else { // ITEM
 				uuid = UUID.fromString(MH_REWARD_ITEM_UUID);
+				skinuuid = null;
 				is = new ItemStack(Material.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundItem), 1);
 			}
 
@@ -257,7 +255,7 @@ public class RewardManager implements Listener {
 							new Reward(
 									MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 											? "" : Reward.getReward(is).getDisplayname(),
-									money, uuid, UUID.randomUUID())));
+									money, uuid, UUID.randomUUID(), skinuuid)));
 			if (Misc.isMC18OrNewer()) {
 				item.setCustomName(ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 						+ (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
@@ -346,10 +344,11 @@ public class RewardManager implements Listener {
 		}
 	}
 
-	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, String mDisplayName, double money, UUID uuid) {
+	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, String mDisplayName, double money, UUID uuid,
+			UUID skinuuid) {
 		ItemMeta skullMeta = skull.getItemMeta();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + money,
-				"Hidden:" + uuid, money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID())));
+				"Hidden:" + uuid, money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:" + skinuuid)));
 		if (money == 0)
 			skullMeta.setDisplayName(
 					ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
@@ -359,6 +358,39 @@ public class RewardManager implements Listener {
 							: mDisplayName + " (" + format(money) + ")"));
 		skull.setItemMeta(skullMeta);
 		return skull;
+	}
+
+	public double adjustBagOfGoldInPlayerInventory(Player player, double amount) {
+		double taken = 0;
+		double toBeTaken = -Misc.floor(amount);
+		CustomItems customItems = new CustomItems(plugin);
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward reward = Reward.getReward(is);
+				double saldo = Misc.floor(reward.getMoney());
+				if (saldo > toBeTaken) {
+					reward.setMoney(saldo - toBeTaken);
+					is = customItems.getCustomtexture(reward.getRewardUUID(),
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+							MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, saldo - toBeTaken,
+							UUID.randomUUID(), reward.getSkinUUID());
+					player.getInventory().setItem(slot, is);
+					taken = taken + toBeTaken;
+					toBeTaken = 0;
+					break;
+				} else {
+					is.setItemMeta(null);
+					is.setType(Material.AIR);
+					is.setAmount(0);
+					player.getInventory().setItem(slot, is);
+					taken = taken + saldo;
+					toBeTaken = toBeTaken - saldo;
+				}
+			}
+		}
+		return taken;
 	}
 
 	public double getPlayerKilledByMobPenalty(Player playerToBeRobbed) {

@@ -2,7 +2,6 @@ package one.lindegaard.MobHunting.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -104,7 +103,8 @@ public class HeadCommand implements ICommand, Listener {
 				// get toPlayerName
 				toPlayer = Bukkit.getOfflinePlayer(args[1]);
 				if (toPlayer == null || !toPlayer.isOnline()) {
-					sender.sendMessage(Messages.getString("mobhunting.commands.head.online", "playername", args[1]));
+					plugin.getMessages().senderSendMessage(sender,
+							Messages.getString("mobhunting.commands.head.online", "playername", args[1]));
 					return true;
 				}
 
@@ -115,7 +115,7 @@ public class HeadCommand implements ICommand, Listener {
 					if (offlinePlayer != null) {
 						mob = MinecraftMob.PvpPlayer;
 					} else {
-						sender.sendMessage(
+						plugin.getMessages().senderSendMessage(sender,
 								Messages.getString("mobhunting.commands.head.unknown_name", "playername", args[2]));
 						return true;
 					}
@@ -134,7 +134,7 @@ public class HeadCommand implements ICommand, Listener {
 					try {
 						amount = Integer.valueOf(args[4]);
 					} catch (NumberFormatException e) {
-						sender.sendMessage(
+						plugin.getMessages().senderSendMessage(sender,
 								Messages.getString("mobhunting.commands.base.not_a_number", "number", args[4]));
 						return false;
 					}
@@ -147,13 +147,19 @@ public class HeadCommand implements ICommand, Listener {
 				}
 				if (Misc.isMC18OrNewer()) {
 					// Use GameProfile
-					ItemStack head = customItems.getCustomHead(mob, displayName, amount, mob.getHeadPrize());
+					ItemStack head;
+					if (mob == MinecraftMob.PvpPlayer)
+						head = customItems.getPlayerHead(offlinePlayer.getUniqueId(), amount, mob.getHeadPrize());
+					else
+						head = customItems.getCustomHead(mob, displayName, amount, mob.getHeadPrize(),
+								mob.getPlayerUUID());
 					((Player) toPlayer).getWorld().dropItem(((Player) toPlayer).getLocation(), head);
 
 				} else {
 					String cmdString = mob.getCommandString().replace("{player}", toPlayer.getName())
 							.replace("{displayname}", displayName).replace("{lore}", MH_REWARD)
-							.replace("{playerid}", mob.getPlayerUUID()).replace("{texturevalue}", mob.getTextureValue())
+							.replace("{playerid}", mob.getPlayerUUID().toString())
+							.replace("{texturevalue}", mob.getTextureValue())
 							.replace("{amount}", String.valueOf(amount)).replace("{playername}",
 									offlinePlayer != null ? offlinePlayer.getName() : mob.getPlayerProfile());
 					Messages.debug("%s Cmd=%s", mob.getFriendlyName(), cmdString);
@@ -182,7 +188,7 @@ public class HeadCommand implements ICommand, Listener {
 							else
 								displayName = displayName + args[i];
 						}
-						reward.setDescription(displayName);
+						reward.setDisplayname(displayName);
 						displayName = MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 								? plugin.getRewardManager().format(reward.getMoney())
 								: (reward.getMoney() == 0 ? reward.getDisplayname()
@@ -194,14 +200,16 @@ public class HeadCommand implements ICommand, Listener {
 						im.setLore(reward.getHiddenLore());
 						itemInHand.setItemMeta(im);
 					} else {
-						sender.sendMessage(Messages.getString("mobhunting.commands.head.headmustbeinhand"));
+						plugin.getMessages().senderSendMessage(sender,
+								Messages.getString("mobhunting.commands.head.headmustbeinhand"));
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission",
-							"perm", "mobhunting.head.rename", "command", "head"));
+					plugin.getMessages().senderSendMessage(sender,
+							ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "perm",
+									"mobhunting.head.rename", "command", "head"));
 				}
 			} else {
-				sender.sendMessage("You can only rename heads ingame.");
+				plugin.getMessages().senderSendMessage(sender, "You can only rename heads ingame.");
 			}
 			return true;
 		} else if (args.length == 2 && (args[0].equalsIgnoreCase("value"))) {
@@ -219,7 +227,7 @@ public class HeadCommand implements ICommand, Listener {
 						try {
 							money = Double.valueOf(args[1]);
 						} catch (NumberFormatException e) {
-							sender.sendMessage(
+							plugin.getMessages().senderSendMessage(sender,
 									Messages.getString("mobhunting.commands.base.not_a_number", "number", args[1]));
 							return false;
 						}
@@ -236,14 +244,16 @@ public class HeadCommand implements ICommand, Listener {
 						im.setLore(reward.getHiddenLore());
 						itemInHand.setItemMeta(im);
 					} else {
-						sender.sendMessage(Messages.getString("mobhunting.commands.head.headmustbeinhand"));
+						plugin.getMessages().senderSendMessage(sender,
+								Messages.getString("mobhunting.commands.head.headmustbeinhand"));
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission",
-							"perm", "mobhunting.head.value", "command", "head"));
+					plugin.getMessages().senderSendMessage(sender,
+							ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "perm",
+									"mobhunting.head.value", "command", "head"));
 				}
 			} else {
-				sender.sendMessage("You can only give a head a new value ingame.");
+				plugin.getMessages().senderSendMessage(sender, "You can only give a head a new value ingame.");
 			}
 			return true;
 
@@ -265,24 +275,28 @@ public class HeadCommand implements ICommand, Listener {
 					if (args.length == 2) {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
-						if (mob == MinecraftMob.PvpPlayer)
-							player.getWorld().dropItem(location, customItems.getCustomHead(mob, args[1], 1, money));
-						else
+						if (mob == MinecraftMob.PvpPlayer) {
+							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
 							player.getWorld().dropItem(location,
-									customItems.getCustomHead(mob, mob.getFriendlyName(), 1, money));
+									customItems.getCustomHead(mob, args[1], 1, money, offlinePlayer.getUniqueId()));
+						} else
+							player.getWorld().dropItem(location, customItems.getCustomHead(mob, mob.getFriendlyName(),
+									1, money, mob.getPlayerUUID()));
 
 					} else if (args.length == 3) {
 						if (Bukkit.getServer().getOfflinePlayer(args[2]).isOnline()) {
+							OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[2]));
 							Location location = Misc.getTargetBlock(player, 3).getLocation();
 							if (mob == MinecraftMob.PvpPlayer)
-								player.getWorld().dropItem(location, customItems.getCustomHead(mob, args[1], 1, money));
-							else
 								player.getWorld().dropItem(location,
-										customItems.getCustomHead(mob, mob.getFriendlyName(), 1, money));
+										customItems.getCustomHead(mob, args[1], 1, money, offlinePlayer.getUniqueId()));
+							else
+								player.getWorld().dropItem(location, customItems.getCustomHead(mob,
+										mob.getFriendlyName(), 1, money, offlinePlayer.getUniqueId()));
 
 						} else {
-							sender.sendMessage(ChatColor.RED + Messages
+							plugin.getMessages().senderSendMessage(sender, ChatColor.RED + Messages
 									.getString("mobhunting.commands.base.playername-missing", "player", args[2]));
 						}
 					} else if ((args.length == 5 || args.length == 6) && args[2].matches("-?\\d+(\\d+)?")
@@ -300,25 +314,27 @@ public class HeadCommand implements ICommand, Listener {
 						Location location = new Location(world, xpos, ypos, zpos);
 						if (mob == MinecraftMob.PvpPlayer) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
-							ItemStack head = customItems.getCustomHead(mob, args[1], 1, money);
+							ItemStack head = customItems.getCustomHead(mob, args[1], 1, money, player.getUniqueId());
 							plugin.getRewardManager().setDisplayNameAndHiddenLores(head, args[1], money,
-									player.getUniqueId());
+									player.getUniqueId(), player.getUniqueId());
 							world.dropItem(location, head);
 						} else {
-							ItemStack head = customItems.getCustomHead(mob, mob.getFriendlyName(), 1, money);
+							ItemStack head = customItems.getCustomHead(mob, mob.getFriendlyName(), 1, money,
+									mob.getPlayerUUID());
 							plugin.getRewardManager().setDisplayNameAndHiddenLores(head, mob.getFriendlyName(), money,
-									UUID.fromString(mob.getPlayerUUID().toString()));
+									mob.getPlayerUUID(), mob.getPlayerUUID());
 							world.dropItem(location, head);
 						}
 					}
 				} else {
-					sender.sendMessage(
+					plugin.getMessages().senderSendMessage(sender,
 							Messages.getString("mobhunting.commands.head.unknown_name", "playername", args[1]));
 				}
 
 			} else {
-				sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "perm",
-						"mobhunting.head", "command", "head"));
+				plugin.getMessages().senderSendMessage(sender,
+						ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "perm",
+								"mobhunting.head.drop", "command", "head"));
 			}
 			return true;
 		}

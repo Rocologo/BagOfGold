@@ -137,7 +137,7 @@ public class RewardListeners implements Listener {
 					continue;
 				Item item = (Item) entity;
 				ItemStack isOnground = item.getItemStack();
-				if ((Reward.isReward(isOnground)||Reward.isReward(entity))
+				if ((Reward.isReward(isOnground) || Reward.isReward(entity))
 						&& plugin.getRewardManager().getDroppedMoney().containsKey(entity.getEntityId())) {
 					Reward rewardOnGround = Reward.getReward(item);
 					double moneyOnGround = rewardOnGround.getMoney();
@@ -279,15 +279,18 @@ public class RewardListeners implements Listener {
 				is = customItems.getCustomtexture(reward.getRewardUUID(), reward.getDisplayname(),
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature, reward.getMoney(),
-						reward.getUniqueUUID());
+						reward.getUniqueUUID(), reward.getSkinUUID());
 			} else {
-				MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getDisplayname());
+				MinecraftMob mob = (reward.getSkinUUID() != null)
+						? MinecraftMob.getMinecraftMobType(reward.getSkinUUID())
+						: MinecraftMob.getMinecraftMobType(reward.getDisplayname());
 				if (mob != null) {
-					is = customItems.getCustomHead(mob, reward.getDisplayname(), 1, reward.getMoney());
+					is = customItems.getCustomHead(mob, reward.getDisplayname(), 1, reward.getMoney(),
+							reward.getSkinUUID());
 				} else {
 					OfflinePlayer player = Bukkit.getOfflinePlayer(reward.getDisplayname());
 					if (player != null) {
-						is = customItems.getPlayerHead(reward.getDisplayname(), reward.getMoney());
+						is = customItems.getPlayerHead(player.getUniqueId(), 1, reward.getMoney());
 					} else {
 						plugin.getLogger().warning("[MobHunting] The mobtype could not be detected from displayname:"
 								+ reward.getDisplayname());
@@ -371,11 +374,12 @@ public class RewardListeners implements Listener {
 						event.setCancelled(true);
 
 						isCurrentSlot = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
-								reward.getDisplayname(), currentSlotMoney, reward.getRewardUUID());
+								reward.getDisplayname(), currentSlotMoney, reward.getRewardUUID(),
+								reward.getSkinUUID());
 						event.setCurrentItem(isCurrentSlot);
 
 						isCursor = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCurrentSlot.clone(),
-								reward.getDisplayname(), cursorMoney, reward.getRewardUUID());
+								reward.getDisplayname(), cursorMoney, reward.getRewardUUID(), reward.getSkinUUID());
 						event.setCursor(isCursor);
 
 						Messages.debug("%s halfed a reward in two (%s,%s)", player.getName(),
@@ -399,7 +403,7 @@ public class RewardListeners implements Listener {
 					}
 				}
 				isCursor = plugin.getRewardManager().setDisplayNameAndHiddenLores(isCursor.clone(),
-						cursor.getDisplayname(), saldo, cursor.getRewardUUID());
+						cursor.getDisplayname(), saldo, cursor.getRewardUUID(), cursor.getSkinUUID());
 				event.setCursor(isCursor);
 			}
 		}

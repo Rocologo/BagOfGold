@@ -130,10 +130,10 @@ public class HologramCommand implements ICommand, Listener {
 			String hologramName = args[1];
 			if (MobHunting.getLeaderboardManager().getHologramManager().getHolograms().containsKey(hologramName)) {
 				MobHunting.getLeaderboardManager().getHologramManager().deleteHologramLeaderboard(hologramName);
-				sender.sendMessage(
+				plugin.getMessages().senderSendMessage(sender,
 						Messages.getString("mobhunting.commands.hologram.deleted", "hologramid", hologramName));
 			} else
-				sender.sendMessage(ChatColor.RED
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED
 						+ Messages.getString("mobhunting.commands.hologram.unknown", "hologramid", args[1]));
 			return true;
 
@@ -143,20 +143,20 @@ public class HologramCommand implements ICommand, Listener {
 				MobHunting.getLeaderboardManager().getHologramManager().deleteHolographicLeaderboard(hologramName);
 				MobHunting.getLeaderboardManager().getHologramManager().loadHologramLeaderboard(hologramName);
 				MobHunting.getLeaderboardManager().getHologramManager().updateHolographicLeaderboard(hologramName);
-				sender.sendMessage(
+				plugin.getMessages().senderSendMessage(sender,
 						Messages.getString("mobhunting.commands.hologram.updating", "hologramid", hologramName));
 			} else
-				sender.sendMessage(ChatColor.RED
+				plugin.getMessages().senderSendMessage(sender,ChatColor.RED
 						+ Messages.getString("mobhunting.commands.hologram.unknown", "hologramid", args[1]));
 			return true;
 
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
-			sender.sendMessage(Messages.getString("mobhunting.commands.hologram.selected", "hologramid", args[1]));
+			plugin.getMessages().senderSendMessage(sender,Messages.getString("mobhunting.commands.hologram.selected", "hologramid", args[1]));
 			return true;
 
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
 			String res = MobHunting.getLeaderboardManager().getHologramManager().listHolographicLeaderboard();
-			sender.sendMessage(res);
+			plugin.getMessages().senderSendMessage(sender,res);
 			return true;
 		} else if (args.length == 5 && args[0].equalsIgnoreCase("create")) {
 			String hologramName = args[1];
@@ -166,7 +166,7 @@ public class HologramCommand implements ICommand, Listener {
 				try {
 					types = parseTypes(args[2]);
 				} catch (IllegalArgumentException e) {
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat",
+					plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-stat",
 							"stat", ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 					return true;
 				}
@@ -175,14 +175,14 @@ public class HologramCommand implements ICommand, Listener {
 				try {
 					periods = parsePeriods(args[3]);
 				} catch (IllegalArgumentException e) {
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period",
+					plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.top.unknown-period",
 							"period", ChatColor.YELLOW + e.getMessage() + ChatColor.RED));
 					return true;
 				}
 
 				int no_of_lines = Integer.valueOf(args[4]);
 				if (no_of_lines < 1 || no_of_lines > 25) {
-					sender.sendMessage(ChatColor.RED + Messages.getString("mobhunting.commands.hologram.too_many_lines",
+					plugin.getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.hologram.too_many_lines",
 							"no_of_lines", args[4]));
 					return true;
 				}
@@ -195,13 +195,13 @@ public class HologramCommand implements ICommand, Listener {
 						no_of_lines, location.add(0, 2, 0));
 				MobHunting.getLeaderboardManager().getHologramManager().createHologramLeaderboard(hologramLeaderboard);
 				MobHunting.getLeaderboardManager().getHologramManager().saveHologramLeaderboard(hologramName);
-				sender.sendMessage(ChatColor.GREEN
+				plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN
 						+ Messages.getString("mobhunting.commands.hologram.created", "hologramid", hologramName));
 				Messages.debug("Creating Hologram Leaderbard: id=%s,stat=%s,per=%s,rank=%s", hologramName, args[2],
 						args[3], no_of_lines);
 				return true;
 			} else {
-				sender.sendMessage(
+				plugin.getMessages().senderSendMessage(sender,
 						Messages.getString("mobhunting.commands.hologram.hologram_exists", "hologramid", hologramName));
 				return true;
 			}

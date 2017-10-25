@@ -409,10 +409,10 @@ public class AchievementManager implements Listener {
 		storage.gainedAchievements.add(achievement.getID());
 		mStorage.put(player.getUniqueId(), storage);
 
-		player.sendMessage(ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name",
+		plugin.getMessages().playerSendMessage(player, ChatColor.GOLD + Messages.getString("mobhunting.achievement.awarded", "name",
 				"" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()));
-		player.sendMessage(ChatColor.BLUE + "" + ChatColor.ITALIC + achievement.getDescription());
-		player.sendMessage(
+		plugin.getMessages().playerSendMessage(player, ChatColor.BLUE + "" + ChatColor.ITALIC + achievement.getDescription());
+		plugin.getMessages().playerSendMessage(player, 
 				ChatColor.WHITE + "" + ChatColor.ITALIC + Messages.getString("mobhunting.achievement.awarded.prize",
 						"prize", plugin.getRewardManager().format(achievement.getPrize())));
 
@@ -447,7 +447,7 @@ public class AchievementManager implements Listener {
 			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
 		}
 		if (!achievement.getPrizeCmdDescription().equals("")) {
-			player.sendMessage(ChatColor.WHITE + "" + ChatColor.ITALIC
+			plugin.getMessages().playerSendMessage(player, ChatColor.WHITE + "" + ChatColor.ITALIC
 					+ achievement.getPrizeCmdDescription().replaceAll("\\{player\\}", playername)
 							.replaceAll("\\{world\\}", worldname).replaceAll("\\{monstertype\\}", mob.getMobName()));
 		}
@@ -528,9 +528,9 @@ public class AchievementManager implements Listener {
 			int segment = Math.min(25, maxProgress / 2);
 
 			if (curProgress / segment < nextProgress / segment || curProgress == 0 && nextProgress > 0) {
-				player.sendMessage(ChatColor.BLUE + Messages.getString("mobhunting.achievement.progress", "name",
+				plugin.getMessages().playerSendMessage(player, ChatColor.BLUE + Messages.getString("mobhunting.achievement.progress", "name",
 						"" + ChatColor.WHITE + ChatColor.ITALIC + achievement.getName()));
-				player.sendMessage(ChatColor.GRAY + "" + nextProgress + " / " + maxProgress);
+				plugin.getMessages().playerSendMessage(player, ChatColor.GRAY + "" + nextProgress + " / " + maxProgress);
 			}
 		}
 		mStorage.put(player.getUniqueId(), storage);

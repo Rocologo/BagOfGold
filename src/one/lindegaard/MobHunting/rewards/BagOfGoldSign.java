@@ -69,9 +69,10 @@ public class BagOfGoldSign implements Listener {
 								money = moneyInHand <= moneyOnSign ? moneyInHand : moneyOnSign;
 							} catch (NumberFormatException e) {
 								Messages.debug("Line no. 3 is not a number");
-								player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.line3.not_a_number",
-										"number", sign.getLine(2), "everything",
-										Messages.getString("mobhunting.bagofgoldsign.line3.everything")));
+								plugin.getMessages().playerSendMessage(player,
+										Messages.getString("mobhunting.bagofgoldsign.line3.not_a_number", "number",
+												sign.getLine(2), "everything", Messages
+														.getString("mobhunting.bagofgoldsign.line3.everything")));
 								return;
 							}
 						}
@@ -99,13 +100,15 @@ public class BagOfGoldSign implements Listener {
 						}
 						Messages.debug("%s sold his %s for %s", player.getName(), reward.getDisplayname(),
 								plugin.getRewardManager().getEconomy().format(money));
-						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.sold", "money",
-								plugin.getRewardManager().getEconomy().format(money), "rewardname",
-								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-										+ reward.getDisplayname().trim()));
+						plugin.getMessages().playerSendMessage(player,
+								Messages.getString("mobhunting.bagofgoldsign.sold", "money",
+										plugin.getRewardManager().getEconomy().format(money), "rewardname", ChatColor
+												.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
+												+ reward.getDisplayname().trim()));
 					} else {
 						Messages.debug("Player does not hold a bag of gold in his hand");
-						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.hold_bag_in_hand", "rewardname",
+						plugin.getMessages().playerSendMessage(player, Messages.getString(
+								"mobhunting.bagofgoldsign.hold_bag_in_hand", "rewardname",
 								ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 										+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 					}
@@ -116,9 +119,10 @@ public class BagOfGoldSign implements Listener {
 						moneyOnSign = Double.valueOf(sign.getLine(2));
 					} catch (NumberFormatException e) {
 						Messages.debug("Line no. 3 is not a number");
-						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.line3.not_a_number", "number",
-								sign.getLine(2), "everything",
-								Messages.getString("mobhunting.bagofgoldsign.line3.everything")));
+						plugin.getMessages().playerSendMessage(player,
+								Messages.getString("mobhunting.bagofgoldsign.line3.not_a_number", "number",
+										sign.getLine(2), "everything",
+										Messages.getString("mobhunting.bagofgoldsign.line3.everything")));
 						return;
 					}
 					if (plugin.getRewardManager().getEconomy().getBalance(player) >= moneyOnSign) {
@@ -166,7 +170,8 @@ public class BagOfGoldSign implements Listener {
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 										MobHunting.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
-										Misc.ceil(moneyOnSign), UUID.randomUUID());
+										Misc.ceil(moneyOnSign), UUID.randomUUID(),
+										UUID.fromString(RewardManager.MH_REWARD_BAG_OF_GOLD_UUID));
 								player.getInventory().addItem(is);
 								found = true;
 							}
@@ -176,18 +181,20 @@ public class BagOfGoldSign implements Listener {
 						// IF okay the withdraw money
 						if (found) {
 							plugin.getRewardManager().getEconomy().withdrawPlayer(player, moneyOnSign);
-							player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.bought", "money",
+							plugin.getMessages().playerSendMessage(player, Messages.getString(
+									"mobhunting.bagofgoldsign.bought", "money",
 									plugin.getRewardManager().getEconomy().format(moneyOnSign), "rewardname",
 									ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
 											+ MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 						}
 					} else {
-						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.not_enough_money"));
+						plugin.getMessages().playerSendMessage(player,
+								Messages.getString("mobhunting.bagofgoldsign.not_enough_money"));
 					}
 				}
 			} else {
-				player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.no_permission_to_use", "perm",
-						"mobhunting.bagofgoldsign.use"));
+				plugin.getMessages().playerSendMessage(player, Messages.getString(
+						"mobhunting.bagofgoldsign.no_permission_to_use", "perm", "mobhunting.bagofgoldsign.use"));
 			}
 		}
 	}
@@ -210,7 +217,8 @@ public class BagOfGoldSign implements Listener {
 						ChatColor.stripColor(Messages.getString("mobhunting.bagofgoldsign.line2.buy")))) {
 					event.setLine(1, Messages.getString("mobhunting.bagofgoldsign.line2.buy"));
 				} else {
-					player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.line2.mustbe_sell_or_buy"));
+					plugin.getMessages().playerSendMessage(player,
+							Messages.getString("mobhunting.bagofgoldsign.line2.mustbe_sell_or_buy"));
 					event.setLine(3, Messages.getString("mobhunting.bagofgoldsign.line4.error_on_sign", "line", "2"));
 					return;
 				}
@@ -226,9 +234,10 @@ public class BagOfGoldSign implements Listener {
 						}
 					} catch (NumberFormatException e) {
 						Messages.debug("Line no. 3 is not positive a number");
-						player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.line3.not_a_number", "number",
-								event.getLine(2), "everything",
-								Messages.getString("mobhunting.bagofgoldsign.line3.everything")));
+						plugin.getMessages().playerSendMessage(player,
+								Messages.getString("mobhunting.bagofgoldsign.line3.not_a_number", "number",
+										event.getLine(2), "everything",
+										Messages.getString("mobhunting.bagofgoldsign.line3.everything")));
 						event.setLine(3,
 								Messages.getString("mobhunting.bagofgoldsign.line4.error_on_sign", "line", "3"));
 						return;
@@ -240,8 +249,8 @@ public class BagOfGoldSign implements Listener {
 				event.setLine(3, Messages.getString("mobhunting.bagofgoldsign.line4.ok"));
 
 			} else {
-				player.sendMessage(Messages.getString("mobhunting.bagofgoldsign.no_permission", "perm",
-						"mobhunting.bagofgoldsign.create"));
+				plugin.getMessages().playerSendMessage(player, Messages.getString(
+						"mobhunting.bagofgoldsign.no_permission", "perm", "mobhunting.bagofgoldsign.create"));
 				event.setCancelled(true);
 			}
 		}

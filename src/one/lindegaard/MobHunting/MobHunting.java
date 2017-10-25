@@ -236,7 +236,7 @@ public class MobHunting extends JavaPlugin {
 		mExtendedMobManager = new ExtendedMobManager(this);
 
 		// Register commands
-		mCommandDispatcher = new CommandDispatcher("mobhunt",
+		mCommandDispatcher = new CommandDispatcher(this, "mobhunt",
 				Messages.getString("mobhunting.command.base.description") + getDescription().getVersion());
 		getCommand("mobhunt").setExecutor(mCommandDispatcher);
 		getCommand("mobhunt").setTabCompleter(mCommandDispatcher);

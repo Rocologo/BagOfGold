@@ -234,8 +234,11 @@ public class ConfigManager extends AutoConfig {
 		setCategoryComment("updates", "########################################################################"
 				+ "\nUpdate settings" + "\n########################################################################");
 
+		setCategoryComment("economy", "########################################################################"
+				+ "\nEconomy Settings" + "\n########################################################################");
+
 		setCategoryComment("general", "########################################################################"
-				+ "\nGeneral Setting." + "\n########################################################################");
+				+ "\nGeneral Settings" + "\n########################################################################");
 
 	}
 
@@ -2224,6 +2227,12 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "autoupdate", category = "updates", comment = "Set 'autoupdate: true' if you want new updates downloaded and installed."
 			+ "\nYou will still have to reboot the server manually.")
 	public boolean autoupdate = false;
+
+	// #####################################################################################
+	// Economy settings
+	// #####################################################################################
+	@ConfigField(name = "starting_balance", category = "economy", comment = "Set initial balance for new players.")
+	public double startingBalance = 3000;
 
 	// #####################################################################################
 	// Generel settings

@@ -238,7 +238,7 @@ public class FishingManager implements Listener {
 					if (chance < plugin.getRewardManager().getMcMMOChance(fish)) {
 						McMMOCompat.addLevel(player, SkillType.FISHING.getName(), level);
 						Messages.debug("%s was rewarded with %s McMMO level for Fishing", player.getName(), level);
-						player.sendMessage(Messages.getString("mobhunting.mcmmo.fishing_level", "mcmmo_level", level));
+						plugin.getMessages().playerSendMessage(player, Messages.getString("mobhunting.mcmmo.fishing_level", "mcmmo_level", level));
 					}
 				}
 
@@ -274,7 +274,7 @@ public class FishingManager implements Listener {
 								.replaceAll("\\{world\\}", worldname).replaceAll("\\{killerpos\\}", fishermanPos);
 
 						Messages.debug("Description to be send:" + message);
-						player.sendMessage(message);
+						plugin.getMessages().playerSendMessage(player, message);
 					}
 				}
 			}

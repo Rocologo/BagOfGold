@@ -24,6 +24,7 @@ import one.lindegaard.MobHunting.compatibility.HologramsCompat;
 import one.lindegaard.MobHunting.compatibility.HologramsHelper;
 import one.lindegaard.MobHunting.compatibility.HolographicDisplaysCompat;
 import one.lindegaard.MobHunting.compatibility.HolographicDisplaysHelper;
+import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
 import one.lindegaard.MobHunting.storage.IDataCallback;
 import one.lindegaard.MobHunting.storage.StatStore;
 import one.lindegaard.MobHunting.storage.TimePeriod;
@@ -129,7 +130,7 @@ public class HologramLeaderboard implements IDataCallback<List<StatStore>> {
 					HologramLine line = hologram.getLine(n + 1);
 					if (line != null)
 						((TextualHologramLine) line)
-								.setText(String.format(mRow_format_money, n + 1, mData.get(n).getPlayer().getName(),
+								.setText(String.format(PlaceholderAPICompat.setPlaceholders(null, mRow_format_money), n + 1, mData.get(n).getPlayer().getName(),
 										plugin.getRewardManager().format(mData.get(n).getCash())));
 					else
 						HologramsHelper.editTextLine(hologram,

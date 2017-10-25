@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -21,6 +22,7 @@ public class PlaceholderAPICompat {
 	private static boolean supported = false;
 	private static PlaceHolderManager mPlaceHolderManager;
 
+	// https://www.spigotmc.org/resources/placeholderapi.6245/
 	// https://www.spigotmc.org/wiki/hooking-into-placeholderapi/
 
 	public PlaceholderAPICompat() {
@@ -62,13 +64,19 @@ public class PlaceholderAPICompat {
 	public static boolean isEnabledInConfig() {
 		return !MobHunting.getConfigManager().disableIntegrationPlaceholderAPI;
 	}
-	
-	public static HashMap<UUID, PlaceHolderData> getPlaceHolders(){
+
+	public static HashMap<UUID, PlaceHolderData> getPlaceHolders() {
 		return mPlaceHolderManager.getPlaceHolders();
 	}
-	
+
 	public static void shutdown() {
 		mPlaceHolderManager.shutdown();
+	}
+
+	public static String setPlaceholders(Player player, String messages_with_placeholders) {
+		if (isSupported())
+			return PlaceholderAPI.setPlaceholders(player, messages_with_placeholders);
+		return messages_with_placeholders;
 	}
 
 }

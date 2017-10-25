@@ -336,8 +336,8 @@ public class BountyManager implements Listener {
 						if (bounty.isOpen()) {
 							if (bounty.getBountyOwner() != null)
 								AchievementManager.addInventoryDetails(
-										customItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
-										n, ChatColor.GREEN + wantedPlayer.getName(),
+										customItems.getPlayerHead(wantedPlayer.getUniqueId(), 1, bounty.getPrize()),
+										inventory, n, ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner",
 												bounty.getBountyOwner().getName(), "prize",
@@ -346,8 +346,8 @@ public class BountyManager implements Listener {
 												(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 							else
 								AchievementManager.addInventoryDetails(
-										customItems.getPlayerHead(wantedPlayer.getName(), bounty.getPrize()), inventory,
-										n, ChatColor.GREEN + wantedPlayer.getName(),
+										customItems.getPlayerHead(wantedPlayer.getUniqueId(), 1, bounty.getPrize()),
+										inventory, n, ChatColor.GREEN + wantedPlayer.getName(),
 										new String[] { ChatColor.WHITE + "", Messages.getString(
 												"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
 												"prize", plugin.getRewardManager().format(bounty.getPrize()),
@@ -399,7 +399,8 @@ public class BountyManager implements Listener {
 					for (Bounty bounty : mOpenBounties) {
 						if (bounty.getBountyOwner() != null)
 							AchievementManager.addInventoryDetails(
-									customItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+									customItems.getPlayerHead(bounty.getWantedPlayer().getUniqueId(), 1,
+											bounty.getPrize()),
 									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner",
@@ -409,7 +410,8 @@ public class BountyManager implements Listener {
 											(bounty.getEndDate() - System.currentTimeMillis()) / (86400000L)) });
 						else
 							AchievementManager.addInventoryDetails(
-									customItems.getPlayerHead(bounty.getWantedPlayer().getName(), bounty.getPrize()),
+									customItems.getPlayerHead(bounty.getWantedPlayer().getUniqueId(), 1,
+											bounty.getPrize()),
 									inventory, n, ChatColor.GREEN + bounty.getWantedPlayer().getName(),
 									new String[] { ChatColor.WHITE + "", Messages.getString(
 											"mobhunting.commands.bounty.bounties", "bountyowner", "Random Bounty",
