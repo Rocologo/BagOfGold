@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.vault;
+package one.lindegaard.MobHunting.economy;
 
 import one.lindegaard.MobHunting.MobHunting;
 

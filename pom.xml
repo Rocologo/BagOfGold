@@ -31,9 +31,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.12.1-R0.1-SNAPSHOT</bukkit.version>
-		<craftbukkit.version>1.12.1-R0.1-SNAPSHOT</craftbukkit.version>
-		<spigotmc.version>1.12.1-R0.1-SNAPSHOT</spigotmc.version>
+		<bukkit.version>1.12.2-R0.1-SNAPSHOT</bukkit.version>
+		<craftbukkit.version>1.12.2-R0.1-SNAPSHOT</craftbukkit.version>
+		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.8</javacompiler.version>
 		<mavenCompilerPlugin.version>3.6.1</mavenCompilerPlugin.version>
@@ -46,7 +46,7 @@
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
 		<minigames.version>1.9.0-SNAPSHOT</minigames.version>
 		<minigameslib.version>1.14.14</minigameslib.version>
-		<mypet.version>2.2.9</mypet.version>
+		<mypet.version>2.3.2</mypet.version>
 		<worldedit.version>6.1.5</worldedit.version>
 		<worldguard.version>6.2</worldguard.version>
 		<PreciousStones.version>10.7.2</PreciousStones.version>
@@ -193,26 +193,21 @@
 	<!-- ********************************************************************** -->
 	<repositories>
 
-
 		<repository>
 			<id>MinigamesAPI-Repo</id>
 			<name>MinigamesAPI Repository</name>
 			<url>http://nexus.xworlds.eu/nexus/content/repositories/mce/</url>
 		</repository>
 
-
 		<!-- MobHunhting repository -->
-
 		<repository>
 			<id>fractal-ext-rel</id>
 			<url>https://fractal.lindegaard.one:8187/artifactory/ext-release-local/</url>
 		</repository>
-
 		<repository>
 			<id>fractal-ext-snap</id>
 			<url>https://fractal.lindegaard.one:8187/artifactory/ext-snapshot-local/</url>
 		</repository>
-
 		<repository>
 			<id>fractal</id>
 			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release/</url>
@@ -221,7 +216,6 @@
 			<id>fractal-snapshots</id>
 			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshots/</url>
 		</repository>
-
 
 		<!-- SpigotMC Repository -->
 		<repository>

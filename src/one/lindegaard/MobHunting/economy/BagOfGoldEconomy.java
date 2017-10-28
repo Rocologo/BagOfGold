@@ -1,4 +1,4 @@
-package one.lindegaard.MobHunting.vault;
+package one.lindegaard.MobHunting.economy;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -16,11 +16,11 @@ import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.storage.PlayerSettings;
 import one.lindegaard.MobHunting.util.Misc;
 
-public class BackOfGoldEconomy implements Economy {
+public class BagOfGoldEconomy implements Economy {
 
 	private MobHunting plugin;
 
-	public BackOfGoldEconomy(MobHunting plugin) {
+	public BagOfGoldEconomy(MobHunting plugin) {
 		this.plugin = plugin;
 	}
 

@@ -5,6 +5,7 @@ V5.1.7
 * PlaceHolders from PlacerHolderAPI can be used in the language files now. 
 * Added Hidden data to store Skin UUID for player and mobs for better skin persistence.
 * Fixed bug (https://www.spigotmc.org/threads/mobhunting.46937/page-143#post-2722870)
+* Re-added support for StackMob 2.0.9+ after compatibility was broken.
 V5.1.6
 * Added support for PlaceHolderAPI. (https://www.spigotmc.org/resources/placeholderapi.6245/)
 * Placedholders added: %mobhunting_rank% (Only updated when leaderboards is updated), %mobhunting_total_kills%, %mobhunting_total_cash%, %mobhunting_droped_money%, %mobhunting_dropped_rewards%
