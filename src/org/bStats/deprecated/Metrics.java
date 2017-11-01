@@ -7,7 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import one.lindegaard.MobHunting.Messages;
+import one.lindegaard.BagOfGold.Messages;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
