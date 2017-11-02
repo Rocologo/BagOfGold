@@ -31,7 +31,7 @@ public class VersionCommand implements ICommand {
 
 	@Override
 	public String getPermission() {
-		return "mobhunting.version";
+		return "bagofgold.version";
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class VersionCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("mobhunting.commands.version.description");
+		return Messages.getString("bagofgold.commands.version.description");
 	}
 
 	@Override
@@ -60,14 +60,14 @@ public class VersionCommand implements ICommand {
 
 		MobHunting.getInstance().getMessages().senderSendMessage(sender,ChatColor.GREEN
 				+ Messages.getString(
-						"mobhunting.commands.version.currentversion","currentversion",
+						"bagofgold.commands.version.currentversion","currentversion",
 						BagOfGold.getInstance().getDescription().getVersion()));
 		if (Updater.getUpdateAvailable() == UpdateStatus.AVAILABLE)
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,ChatColor.GREEN
 					+ Messages.getString(
-							"mobhunting.commands.version.newversion","newversion",
+							"bagofgold.commands.version.newversion","newversion",
 							Updater.getBukkitUpdate().getVersionName()));
-		if (sender.hasPermission("mobhunting.update")) {
+		if (sender.hasPermission("bagofgold.update")) {
 			Updater.pluginUpdateCheck(sender, true, true);
 		}
 		return true;

@@ -28,17 +28,17 @@ public class ReloadCommand implements ICommand {
 
 	@Override
 	public String getPermission() {
-		return "mobhunting.reload";
+		return "bagofgold.reload";
 	}
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to reload MobHunting configuration." };
+		return new String[] { ChatColor.GOLD + label + ChatColor.WHITE + " - to reload BagOfGold configuration." };
 	}
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("mobhunting.commands.reload.description");
+		return Messages.getString("bagofgold.commands.reload.description");
 	}
 
 	@Override
@@ -54,8 +54,8 @@ public class ReloadCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 
-		
-		MobHunting.getInstance().getMessages().senderSendMessage(sender,ChatColor.RED + Messages.getString("mobhunting.commands.reload.reload-error"));
+		MobHunting.getInstance().getMessages().senderSendMessage(sender,
+				ChatColor.RED + Messages.getString("bagofgold.commands.reload.reload-error"));
 
 		return true;
 	}

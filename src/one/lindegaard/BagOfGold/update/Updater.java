@@ -54,7 +54,7 @@ public class Updater {
 		long seconds = BagOfGold.getConfigManager().checkEvery;
 		if (seconds < 900) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
-					+ "[MobHunting][Warning] check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
+					+ "[BagOfGold][Warning] check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
 			seconds = 900;
 		}
 		if (updateCheck) {
@@ -71,7 +71,7 @@ public class Updater {
 		if (updateCheck) {
 			if (!silent) {
 				BagOfGold.getInstance().getServer().getConsoleSender().sendMessage(
-						ChatColor.GOLD + "[MobHunting] " + Messages.getString("mobhunting.commands.update.check"));
+						ChatColor.GOLD + "[BagOfGold] " + Messages.getString("bagofgold.commands.update.check"));
 			}
 			if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
 				// Check for updates asynchronously in background
@@ -83,7 +83,7 @@ public class Updater {
 								try {
 									url = new URL("https://api.curseforge.com");
 									if (HttpTools.isHomePageReachable(url)) {
-										bukkitUpdate = new BukkitUpdate(63718); // MobHunting
+										bukkitUpdate = new BukkitUpdate(281033); // BagOFGold
 										if (!bukkitUpdate.isSuccess()) {
 											bukkitUpdate = null;
 										}
@@ -104,7 +104,7 @@ public class Updater {
 						if (count++ > 10) {
 							if (!silent)
 								sender.sendMessage(ChatColor.RED
-										+ "[MobHunting] No updates found. (No response from server after 10s)");
+										+ "[BagOfGold] No updates found. (No response from server after 10s)");
 							this.cancel();
 						} else {
 							// Wait for the response
@@ -112,21 +112,21 @@ public class Updater {
 								if (bukkitUpdate.isSuccess()) {
 									updateAvailable = isUpdateNewerVersion();
 									if (updateAvailable == UpdateStatus.AVAILABLE) {
-										sender.sendMessage(ChatColor.GREEN + "[MobHunting] "
-												+ Messages.getString("mobhunting.commands.update.version-found"));
+										sender.sendMessage(ChatColor.GREEN + "[BagOfGold] "
+												+ Messages.getString("bagofgold.commands.update.version-found"));
 										if (BagOfGold.getConfigManager().autoupdate) {
 											downloadAndUpdateJar();
-											sender.sendMessage(ChatColor.GREEN + "[MobHunting] "
-													+ Messages.getString("mobhunting.commands.update.complete"));
+											sender.sendMessage(ChatColor.GREEN + "[BagOfGold] "
+													+ Messages.getString("bagofgold.commands.update.complete"));
 										} else {
-											sender.sendMessage(ChatColor.GREEN + "[MobHunting] "
-													+ Messages.getString("mobhunting.commands.update.help"));
+											sender.sendMessage(ChatColor.GREEN + "[BagOfGold] "
+													+ Messages.getString("bagofgold.commands.update.help"));
 										}
 
 									} else {
 										if (!silent) {
-											sender.sendMessage(ChatColor.GOLD + "[MobHunting] "
-													+ Messages.getString("mobhunting.commands.update.no-update"));
+											sender.sendMessage(ChatColor.GOLD + "[BagOfGold] "
+													+ Messages.getString("bagofgold.commands.update.no-update"));
 										}
 									}
 								}
@@ -140,7 +140,7 @@ public class Updater {
 				// every second
 			} else {
 				sender.sendMessage(
-						ChatColor.GREEN + "[MobHunting] " + Messages.getString("mobhunting.commands.update.complete"));
+						ChatColor.GREEN + "[BagOfGold] " + Messages.getString("bagofgold.commands.update.complete"));
 			}
 		}
 	}
@@ -153,7 +153,7 @@ public class Updater {
 				succes = downloadFile(getBukkitUpdate().getVersionLink(), "plugins/update/");
 				if (succes) {
 					File downloadedJar = new File("plugins/update/" + Updater.getBukkitUpdate().getVersionFileName());
-					File newJar = new File("plugins/update/MobHunting.jar");
+					File newJar = new File("plugins/update/BagOfGold.jar");
 					if (newJar.exists())
 						newJar.delete();
 					downloadedJar.renameTo(newJar);
@@ -165,7 +165,7 @@ public class Updater {
 		} else {
 			try {
 				if (updateAvailable != UpdateStatus.RESTART_NEEDED)
-					succes = downloadFile(getBukkitUpdate().getVersionLink(), "plugins/MobHunting/update/");
+					succes = downloadFile(getBukkitUpdate().getVersionLink(), "plugins/BagOfGold/update/");
 				if (succes) {
 					File currentJar = new File("plugins/" + getCurrentJarFile());
 					File disabledJar = new File("plugins/" + getCurrentJarFile() + ".old");
@@ -177,7 +177,7 @@ public class Updater {
 						currentJar.renameTo(disabledJar);
 
 						File downloadedJar = new File(
-								"plugins/MobHunting/update/" + Updater.getBukkitUpdate().getVersionFileName());
+								"plugins/BagOfGold/update/" + Updater.getBukkitUpdate().getVersionFileName());
 						File newJar = new File("plugins/" + Updater.getBukkitUpdate().getVersionFileName());
 						downloadedJar.renameTo(newJar);
 						updateAvailable = UpdateStatus.RESTART_NEEDED;
@@ -194,7 +194,7 @@ public class Updater {
 	}
 
 	public static UpdateStatus isUpdateNewerVersion() {
-		// Version format on Bukkit.org: "MobHunting Vn.n.n"
+		// Version format on Bukkit.org: "BagOfGold Vn.n.n"
 		// Version format in jar file: "n.n.n" | "n.n.n-SNAPSHOT-Bn"
 
 		int updateCheck = 0, pluginCheck = 0;
@@ -272,7 +272,7 @@ public class Updater {
 		httpConn.setRequestProperty("Referer", "google.com");
 		int responseCode = httpConn.getResponseCode();
 
-		System.out.println("[MobHunting] File to be downloaded:" + fileURL);
+		System.out.println("[BagOfGold] File to be downloaded:" + fileURL);
 
 		// Create savedir if needed
 		if (!new File(saveDir).exists())
@@ -289,7 +289,7 @@ public class Updater {
 				httpConn.setRequestProperty("Accept-Language", "en-US,en);q=0.8");
 				httpConn.setRequestProperty("User-Agent", "Mozilla");
 				httpConn.setRequestProperty("Referer", "google.com");
-				System.out.println("[MobHunting] Redirected file to be downloaded:" + newUrl);
+				System.out.println("[BagOfGold] Redirected file to be downloaded:" + newUrl);
 				responseCode = httpConn.getResponseCode();
 			}
 		}
@@ -312,10 +312,10 @@ public class Updater {
 				fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1, fileURL.length());
 			}
 
-			System.out.println("[MobHunting] Content-Type = " + contentType);
-			System.out.println("[MobHunting] Content-Disposition = " + disposition);
-			System.out.println("[MobHunting] Content-Length = " + contentLength);
-			System.out.println("[MobHunting] fileName = " + fileName);
+			System.out.println("[BagOfGold] Content-Type = " + contentType);
+			System.out.println("[BagOfGold] Content-Disposition = " + disposition);
+			System.out.println("[BagOfGold] Content-Length = " + contentLength);
+			System.out.println("[BagOfGold] fileName = " + fileName);
 
 			// opens input stream from the HTTP connection
 			InputStream inputStream = httpConn.getInputStream();
@@ -336,7 +336,7 @@ public class Updater {
 
 			succes = true;
 		} else {
-			System.out.println("[MobHunting] No file to download. Server replied HTTP code: " + responseCode);
+			System.out.println("[BagOfGold] No file to download. Server replied HTTP code: " + responseCode);
 		}
 		httpConn.disconnect();
 		return succes;

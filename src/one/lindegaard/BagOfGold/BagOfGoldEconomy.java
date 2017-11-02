@@ -33,7 +33,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean isEnabled() {
-		return BagOfGold.getConfigManager().enableBagOfGoldAsEconomyPlugin;
+		return true;
 	}
 
 	/**

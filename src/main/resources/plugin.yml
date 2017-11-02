@@ -1,7 +1,7 @@
 name: BagOfGold
 main: one.lindegaard.BagOfGold.BagOfGold
 version: ${version}
-description: Use Bags of gold as an Economy plugin
+description: Use BagOfGold as an Economy plugin
 dev-url: http://dev.bukkit.org/server-mods/bagofgold/
 author: Rocologo
 depend: [Vault]

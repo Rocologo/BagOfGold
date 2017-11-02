@@ -1,2 +1,4 @@
 V0.5.0
-* First release of BagOfGold
+* First beta release of BagOfGold
+* Bukkit ProjectID added
+* bStats updated to V1.2

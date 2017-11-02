@@ -31,7 +31,7 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public String getPermission() {
-		return "mobhunting.update";
+		return "bagofgold.update";
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("mobhunting.commands.update.description");
+		return Messages.getString("bagofgold.commands.update.description");
 	}
 
 	@Override
@@ -59,14 +59,14 @@ public class UpdateCommand implements ICommand {
 		if (Updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
 			if (Updater.downloadAndUpdateJar()) {
 				MobHunting.getInstance().getMessages().senderSendMessage(sender,
-						ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
+						ChatColor.GREEN + Messages.getString("bagofgold.commands.update.complete"));
 			} else {
 				MobHunting.getInstance().getMessages().senderSendMessage(sender,
-						ChatColor.GREEN + Messages.getString("mobhunting.commands.update.could-not-update"));
+						ChatColor.GREEN + Messages.getString("bagofgold.commands.update.could-not-update"));
 			}
 		} else if (Updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.GREEN + Messages.getString("mobhunting.commands.update.complete"));
+					ChatColor.GREEN + Messages.getString("bagofgold.commands.update.complete"));
 		} else {
 			Updater.pluginUpdateCheck(sender, true, false);
 		}

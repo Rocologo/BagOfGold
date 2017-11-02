@@ -79,19 +79,19 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		if (!com.canBeConsole()
 				&& (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender)) {
 			MobHunting.getInstance().getMessages().senderSendMessage(sender, ChatColor.RED + Messages
-					.getString("mobhunting.commands.base.noconsole", "command", "/" + label + " " + subCommand));
+					.getString("bagofgold.commands.base.noconsole", "command", "/" + label + " " + subCommand));
 			return true;
 		}
 		if (!com.canBeCommandBlock() && sender instanceof BlockCommandSender) {
 			MobHunting.getInstance().getMessages().senderSendMessage(sender, ChatColor.RED + Messages
-					.getString("mobhunting.commands.base.nocommandblock", "command", "/" + label + " " + subCommand));
+					.getString("bagofgold.commands.base.nocommandblock", "command", "/" + label + " " + subCommand));
 			return true;
 		}
 
 		// Check that they have permission
 		if (com.getPermission() != null && !sender.hasPermission(com.getPermission())) {
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.RED + Messages.getString("mobhunting.commands.base.nopermission", "command",
+					ChatColor.RED + Messages.getString("bagofgold.commands.base.nopermission", "command",
 							"/" + label + " " + subCommand, "perm", com.getPermission()));
 			return true;
 		}
@@ -107,7 +107,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 				usageString += ChatColor.GRAY + "/" + label + " " + line;
 			}
 
-			usageString = ChatColor.RED + Messages.getString("mobhunting.commands.base.usage", "usage", usageString);
+			usageString = ChatColor.RED + Messages.getString("bagofgold.commands.base.usage", "usage", usageString);
 			MobHunting.getInstance().getMessages().senderSendMessage(sender, usageString);
 		}
 
@@ -119,16 +119,16 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
 		if (subcommand != null) {
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.RED + Messages.getString("mobhunting.commands.base.unknowncommand", "command",
+					ChatColor.RED + Messages.getString("bagofgold.commands.base.unknowncommand", "command",
 							ChatColor.RESET + "/" + label + " " + ChatColor.GOLD + subcommand));
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					Messages.getString("mobhunting.commands.base.validcommands"));
+					Messages.getString("bagofgold.commands.base.validcommands"));
 		} else {
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.RED + Messages.getString("mobhunting.commands.base.nocommand", "command",
+					ChatColor.RED + Messages.getString("bagofgold.commands.base.nocommand", "command",
 							ChatColor.RESET + "/" + label + ChatColor.GOLD + " <command>"));
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					Messages.getString("mobhunting.commands.base.validcommands"));
+					Messages.getString("bagofgold.commands.base.validcommands"));
 		}
 
 		boolean first = true;
@@ -152,7 +152,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		MobHunting.getInstance().getMessages().senderSendMessage(sender, usage);
 
 		if (subcommand == null) {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender, Messages.getString("mobhunting.commands.base.morehelp"));
+			MobHunting.getInstance().getMessages().senderSendMessage(sender, Messages.getString("bagofgold.commands.base.morehelp"));
 		}
 
 	}
@@ -240,7 +240,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
 		@Override
 		public String getDescription() {
-			return Messages.getString("mobhunting.commands.base.help.description");
+			return Messages.getString("bagofgold.commands.base.help.description");
 		}
 
 		@Override
@@ -260,7 +260,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
 			MobHunting.getInstance().getMessages().senderSendMessage(sender, ChatColor.GOLD + mRootCommandDescription);
 			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.GOLD + Messages.getString("mobhunting.commands.base.help.commands"));
+					ChatColor.GOLD + Messages.getString("bagofgold.commands.base.help.commands"));
 
 			for (ICommand command : mCommands.values()) {
 				// Dont show commands that are irrelevant

@@ -14,21 +14,16 @@ public class MetricsManager {
 	private Graph automaticUpdatesGraph;
 	private BagOfGold plugin;
 
-	private org.bstats.Metrics bStatsMetrics;
+	private org.bstats.bukkit.Metrics bStatsMetrics;
 
 	public MetricsManager(BagOfGold plugin) {
 		this.plugin = plugin;
 	}
 
 	public void startBStatsMetrics() {
-		bStatsMetrics = new org.bstats.Metrics(plugin);
-
-		bStatsMetrics.addCustomChart(new org.bstats.Metrics.SimplePie("language") {
-			@Override
-			public String getValue() {
-				return BagOfGold.getConfigManager().language;
-			}
-		});
+		bStatsMetrics = new org.bstats.bukkit.Metrics(plugin);
+		
+		bStatsMetrics.addCustomChart(new org.bstats.bukkit.Metrics.SimplePie("language", () -> BagOfGold.getConfigManager().language ));
 
 	}
 

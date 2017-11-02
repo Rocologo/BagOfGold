@@ -32,7 +32,7 @@ private BagOfGold plugin;
 
 	@Override
 	public String getPermission() {
-		return "mobhunting.debug";
+		return "bagofgold.debug";
 	}
 
 	@Override
@@ -42,7 +42,7 @@ private BagOfGold plugin;
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("mobhunting.commands.debug.description");
+		return Messages.getString("bagofgold.commands.debug.description");
 	}
 
 	@Override
@@ -73,11 +73,11 @@ private BagOfGold plugin;
 		boolean debug = BagOfGold.getConfigManager().killDebug;
 		if (debug) {
 			BagOfGold.getConfigManager().killDebug = false;
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("mobhunting.commands.debug.disabled"));
+			MobHunting.getInstance().getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("bagofgold.commands.debug.disabled"));
 			BagOfGold.getConfigManager().saveConfig();
 		} else {
 			BagOfGold.getConfigManager().killDebug = true;
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("mobhunting.commands.debug.enabled"));
+			MobHunting.getInstance().getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("bagofgold.commands.debug.enabled"));
 			BagOfGold.getConfigManager().saveConfig();
 		}
 

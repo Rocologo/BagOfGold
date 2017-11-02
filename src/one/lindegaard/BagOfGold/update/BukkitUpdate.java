@@ -118,13 +118,12 @@ public class BukkitUpdate {
 			}
 
 			// Add the user-agent to identify the program
-			conn.addRequestProperty("User-Agent", "Mobhunting Update Checker");
+			conn.addRequestProperty("User-Agent", "BagOfGold Update Checker");
 
 			// Read the response of the query
 			// The response will be in a JSON format, so only reading one line
 			// is necessary.
-			final BufferedReader reader = new BufferedReader(
-					new InputStreamReader(conn.getInputStream()));
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String response = reader.readLine();
 
 			// Parse the array of files from the query's response
@@ -147,8 +146,7 @@ public class BukkitUpdate {
 				versionFileName = (String) latest.get(API_FILE_NAME_VALUE);
 
 				// Get the version's game version
-				versionGameVersion = (String) latest
-						.get(API_GAME_VERSION_VALUE);
+				versionGameVersion = (String) latest.get(API_GAME_VERSION_VALUE);
 
 				return true;
 			} else {
@@ -157,10 +155,12 @@ public class BukkitUpdate {
 			}
 		} catch (IOException e) {
 			// There was an error reading the query
-			if (e.getMessage().contains("Server returned HTTP response code: 504 for URL: https://api.curseforge.com/servermods/files?ProjectIds=63718")){
-				BagOfGold.getInstance().getLogger().warning("[MobHunting] MobHunting could not communicate with Https://api.curseforge.com. HTTP response code: 504. A new attempt will be initialted later. This is only a warning.");
+			if (e.getMessage().contains(
+					"Server returned HTTP response code: 504 for URL: https://api.curseforge.com/servermods/files?ProjectIds=281033")) {
+				BagOfGold.getInstance().getLogger().warning(
+						"[BagOfGold] BagOfGold could not communicate with Https://api.curseforge.com. HTTP response code: 504. A new attempt will be initialted later. This is only a warning.");
 			} else
-			e.printStackTrace();
+				e.printStackTrace();
 			return false;
 		}
 	}

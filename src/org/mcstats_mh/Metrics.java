@@ -132,7 +132,7 @@ public class Metrics {
 		configuration = YamlConfiguration.loadConfiguration(configurationFile);
 
 		// add some defaults
-		configuration.addDefault("opt-out-mobhunting", false);
+		configuration.addDefault("opt-out-bagofgold", false);
 		configuration.addDefault("guid", UUID.randomUUID().toString());
 		configuration.addDefault("debug", false);
 
@@ -140,7 +140,7 @@ public class Metrics {
 		if (configuration.get("guid", null) == null) {
 			configuration.options()
 					.header("------------------------------------------------"
-							+ "\nStatistics collected on http://mcstats.org" + "\nThis file is only used by MobHunting."
+							+ "\nStatistics collected on http://mcstats.org" + "\nThis file is only used by BagOfGold."
 							+ "\n------------------------------------------------")
 					.copyDefaults(true);
 			configuration.save(configurationFile);
@@ -222,7 +222,7 @@ public class Metrics {
 						// the disable method.
 						synchronized (optOutLock) {
 							// Disable Task, if it is running and the server
-							// owner decided to opt-out-mobhunting
+							// owner decided to opt-out-bagofgold
 							if (isOptOut() && task != null) {
 								task.cancel();
 								task = null;
@@ -262,7 +262,7 @@ public class Metrics {
 	 * @return true if metrics should be opted out of it
 	 */
 	public boolean isOptOut() {
-		// force MobHunting to send statistics
+		// force BagOfGold to send statistics
 		return false;
 					
 		//synchronized (optOutLock) {
@@ -280,14 +280,14 @@ public class Metrics {
 		//		}
 		//		return true;
 		//	}
-		//	// force MobHunting to send statistics
+		//	// force BagOfGold to send statistics
 		//	return false;
-			// return configuration.getBoolean("opt-out-mobhunting", false);
+			// return configuration.getBoolean("opt-out-bagofgold", false);
 		//}
 	}
 
 	/**
-	 * Enables metrics for the server by setting "opt-out-mobhunting" to false
+	 * Enables metrics for the server by setting "opt-out-bagofgold" to false
 	 * in the config file and starting the metrics task.
 	 *
 	 * @throws java.io.IOException
@@ -296,10 +296,10 @@ public class Metrics {
 		// This has to be synchronized or it can collide with the check in the
 		// task.
 		synchronized (optOutLock) {
-			// Check if the server owner has already set opt-out-mobhunting, if
+			// Check if the server owner has already set opt-out-bagofgold, if
 			// not, set it.
 			if (isOptOut()) {
-				configuration.set("opt-out-mobhunting", false);
+				configuration.set("opt-out-bagofgold", false);
 				configuration.save(configurationFile);
 			}
 
@@ -323,7 +323,7 @@ public class Metrics {
 			// Check if the server owner has already set opt-out, if not, set
 			// it.
 			if (!isOptOut()) {
-				configuration.set("opt-out-mobhunting", true);
+				configuration.set("opt-out-bagofgold", true);
 				configuration.save(configurationFile);
 			}
 
@@ -351,7 +351,7 @@ public class Metrics {
 		File pluginsFolder = plugin.getDataFolder().getParentFile();
 
 		// return => base/plugins/PluginMetrics/config.yml
-		return new File(new File(pluginsFolder, "PluginMetrics"), "config-mobhunting.yml");
+		return new File(new File(pluginsFolder, "PluginMetrics"), "config-bagofgold.yml");
 	}
 
 	/**
@@ -750,7 +750,7 @@ public class Metrics {
 		}
 
 		/**
-		 * Called when the server owner decides to opt-out-mobhunting of
+		 * Called when the server owner decides to opt-out-bagofgold of
 		 * BukkitMetrics while the server is running.
 		 */
 		protected void onOptOut() {

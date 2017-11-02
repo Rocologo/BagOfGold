@@ -54,7 +54,7 @@ public class BagOfGold extends JavaPlugin {
 					.sendMessage(ChatColor.RED + "The statistics collection is disabled. As developer I need the");
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.RED + "statistics from bStats.org. The statistics is 100% anonymous.");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "https://bstats.org/plugin/bukkit/BagOfGold");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "https://bstats.org/plugin/bukkit/bagofgold");
 			Bukkit.getConsoleSender().sendMessage(
 					ChatColor.RED + "Please enable this in /plugins/bStats/config.yml and get rid of this");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "message. Loading will continue in 15 sec.");
@@ -72,11 +72,10 @@ public class BagOfGold extends JavaPlugin {
 		Updater.setCurrentJarFile(this.getFile().getName());
 
 		// Register commands
-		mCommandDispatcher = new CommandDispatcher(this, "mobhunt",
-				Messages.getString("BagOfGold.command.base.description") + getDescription().getVersion());
-		getCommand("mobhunt").setExecutor(mCommandDispatcher);
-		getCommand("mobhunt").setTabCompleter(mCommandDispatcher);
-		// mCommandDispatcher.registerCommand(new NpcCommand(this));
+		mCommandDispatcher = new CommandDispatcher(this, "bagofgold",
+				Messages.getString("bagofgold.command.base.description") + getDescription().getVersion());
+		getCommand("bagofgold").setExecutor(mCommandDispatcher);
+		getCommand("bagofgold").setTabCompleter(mCommandDispatcher);
 		mCommandDispatcher.registerCommand(new ReloadCommand(this));
 		mCommandDispatcher.registerCommand(new UpdateCommand(this));
 		mCommandDispatcher.registerCommand(new VersionCommand(this));
@@ -92,12 +91,6 @@ public class BagOfGold extends JavaPlugin {
 			mMetricsManager.startBStatsMetrics();
 		}
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			public void run() {
-				Messages.injectMissingMobNamesToLangFiles();
-			}
-		}, 20 * 5);
-
 		mInitialized = true;
 
 	}
@@ -106,7 +99,6 @@ public class BagOfGold extends JavaPlugin {
 	public void onDisable() {
 		if (!mInitialized)
 			return;
-
 		Messages.debug("BagOfGold disabled.");
 	}
 

@@ -13,14 +13,14 @@ public class ConfigManager extends AutoConfig {
 
 		super(file);
 
-		setCategoryComment("updates", "########################################################################"
-				+ "\nUpdate settings" + "\n########################################################################");
-
 		setCategoryComment("economy", "########################################################################"
 				+ "\nEconomy Settings" + "\n########################################################################");
 
 		setCategoryComment("general", "########################################################################"
 				+ "\nGeneral Settings" + "\n########################################################################");
+		
+		setCategoryComment("updates", "########################################################################"
+				+ "\nUpdate settings" + "\n########################################################################");
 
 	}
 
@@ -44,13 +44,17 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "enable-bagofgold-as-economy-plugin", category = "economy", comment = "Set this to true if you want to use BagOfGold as an Economy plugin like Essentials.\n"
 			+ "If Essentials is installed on your server BagOfGold will take precedence.")
 	public boolean enableBagOfGoldAsEconomyPlugin = false;
+	
 	@ConfigField(name = "starting_balance", category = "economy", comment = "Set initial balance for new players.")
 	public double startingBalance = 3000;
+
+	@ConfigField(name = "number-format", category = "economy", comment = "Here you can changenage the way the numbers is formatted when you use BagOfGold as an EconomyPlugin.")
+	public String numberFormat = "#.#####";
 
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
-	
+
 	@ConfigField(name = "language", category = "general", comment = "The language (file) to use. You can put the name of the language file as the language code "
 			+ "\n(eg. en_US, de_DE, fr_FR, ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
