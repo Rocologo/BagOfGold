@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -72,11 +71,7 @@ public class BagOfGoldEconomy implements Economy {
 		String pattern = "#.#####";
 		DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 		decimalFormat.applyPattern(pattern);
-		return ChatColor.valueOf(MobHunting.getConfigManager().dropMoneyOnGroundTextColor)
-				+ (MobHunting.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-						? decimalFormat.format(money)
-						: MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName + " ("
-								+ decimalFormat.format(money) + ")");
+		return decimalFormat.format(money);
 	}
 
 	/**
@@ -232,7 +227,7 @@ public class BagOfGoldEconomy implements Economy {
 			PlayerSettings ps = MobHunting.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBalance(Misc.round(ps.getBalance() + amount));
-				MobHunting.getInstance().getRewardManager().adjustBagOfGoldInPlayerInventory((Player) offlinePlayer, amount);
+				MobHunting.getInstance().getRewardManager().depositBagOfGoldPlayer((Player) offlinePlayer, amount);
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 			}
@@ -393,7 +388,7 @@ public class BagOfGoldEconomy implements Economy {
 			if (balance >= amount) {
 				ps.setBalance(ps.getBalance() - amount);
 				if (offlinePlayer.isOnline())
-					MobHunting.getInstance().getRewardManager().adjustBagOfGoldInPlayerInventory((Player) offlinePlayer, -amount);
+					MobHunting.getInstance().getRewardManager().withdrawBagOfGoldPlayer((Player) offlinePlayer, amount);
 				else
 					ps.setBalanceChanges(ps.getBalanceChanges() - amount);
 				MobHunting.getInstance().getPlayerSettingsmanager().save(offlinePlayer);

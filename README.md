@@ -9,5 +9,4 @@ Websites - more info
 
 ## Features
 * [Supports Minecraft 1.7.9 - 1.12.1]
-* Heavily customizable
 * Language support

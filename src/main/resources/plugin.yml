@@ -8,7 +8,7 @@ depend: [Vault]
 softdepend: []
 
 commands:
-  mobhunt:
+  bagofgold:
     description: Allows you to configure mobhunt
     permission: bagofgold.cmd
     aliases: [bag,bog,money,gold]
