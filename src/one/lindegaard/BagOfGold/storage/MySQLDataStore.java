@@ -75,7 +75,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		case INSERT_PLAYER_DATA:
 			mInsertPlayerData = connection.prepareStatement(
 					"INSERT INTO mh_Players (UUID,NAME,LEARNING_MODE,MUTE_MODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
-							+ "VALUES(?,?,?,?,?,?);");
+							+ "VALUES(?,?,?,?,?,?,?,?);");
 			break;
 		case GET_PLAYER_BY_PLAYER_ID:
 			mGetPlayerByPlayerId = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE PLAYER_ID=?;");

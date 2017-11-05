@@ -2,19 +2,10 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
@@ -63,7 +54,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			break;
 		case INSERT_PLAYER_DATA:
 			mInsertPlayerData = connection.prepareStatement(
-					"INSERT INTO mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHNAGES) "
+					"INSERT INTO mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
 							+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?,?,?,?,?);");
 			break;
 		case UPDATE_PLAYER_SETTINGS:

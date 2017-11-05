@@ -33,7 +33,7 @@ public class BagOfGold extends JavaPlugin {
 	private static ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
 	private ServicesManager sm;
-	private PlayerSettingsManager mPlayerSettingsManager;
+	private static PlayerSettingsManager mPlayerSettingsManager;
 	private static IDataStore mStore;
 	private static DataStoreManager mStoreManager;
 	private static EconomyManager mEconomyManager;
@@ -244,7 +244,7 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public PlayerSettingsManager getPlayerSettingsmanager() {
+	public static PlayerSettingsManager getPlayerSettingsmanager() {
 		return mPlayerSettingsManager;
 	}
 
@@ -253,9 +253,8 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public EconomyManager getEconomyManager() {
+	public static EconomyManager getEconomyManager() {
 		return mEconomyManager;
 	}
-
 
 }
