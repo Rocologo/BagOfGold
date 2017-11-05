@@ -54,7 +54,6 @@
 		<ActionAnnouncer.version>1.10.0</ActionAnnouncer.version>
 		<EssentialsX.version>2.0.1</EssentialsX.version>
 		<placeholderapi.version>2.0.8</placeholderapi.version>
-		<TitleAPI.version>1.7.5</TitleAPI.version>
 		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
 		<hologramdisplays.version>2.2.6</hologramdisplays.version>
 
@@ -363,13 +362,6 @@
 			<artifactId>TitleManager</artifactId>
 			<version>${titlemanager.version}</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<!-- TitleAPI -->
-		<dependency>
-			<groupId>com.connorlinfoot</groupId>
-			<artifactId>TitleAPI</artifactId>
-			<version>${TitleAPI.version}</version>
 		</dependency>
 
 		<!-- Essentials -->
