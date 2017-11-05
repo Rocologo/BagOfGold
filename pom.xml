@@ -6,9 +6,9 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>0.5.0</version>
-	<!-- <version>0.5.0-SNAPSHOT-B${build.number}</version> -->
-	<name>MobHunting</name>
+	<version>0.6.0</version>
+	<!-- <version>0.6.0-SNAPSHOT-B${build.number}</version> -->
+	<name>BagOfGold</name>
 	<url>http://dev.bukkit.org/server-mods/bagofgold/</url>
 	<description>BagOfGold makes money on your server something you can see, take and loose...</description>
 
@@ -31,7 +31,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
+		<bukkit.version>1.12.2-R0.1-SNAPSHOT</bukkit.version>
 		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
+		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.8</javacompiler.version>
 		<mavenCompilerPlugin.version>3.6.1</mavenCompilerPlugin.version>
 		<mavenJarPlugin.version>3.0.2</mavenJarPlugin.version>
@@ -41,6 +43,20 @@
 		<vault.version>1.6.6</vault.version>
 		<mobhunting.version>5.1.7</mobhunting.version>
 		<bstats.version>1.2</bstats.version>
+		
+		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
+		<libsdisguises.version>9.4.0-SNAPSHOT</libsdisguises.version>
+		<bossbarapi.version>2.4.1</bossbarapi.version>
+		<barapi.version>3.4</barapi.version>
+		<titlemanager.version>2.0.0</titlemanager.version>
+		<placeholderapi.version>2.0.6</placeholderapi.version>
+		<ActionBarAPI.version>1.5.2</ActionBarAPI.version>
+		<ActionAnnouncer.version>1.10.0</ActionAnnouncer.version>
+		<EssentialsX.version>2.0.1</EssentialsX.version>
+		<placeholderapi.version>2.0.8</placeholderapi.version>
+		<TitleAPI.version>1.7.5</TitleAPI.version>
+		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
+		<hologramdisplays.version>2.2.6</hologramdisplays.version>
 
 	</properties>
 
@@ -129,7 +145,13 @@
 	<!-- ********************************************************************** -->
 	<repositories>
 
-		<!-- Rocologos repository -->
+		<repository>
+			<id>MinigamesAPI-Repo</id>
+			<name>MinigamesAPI Repository</name>
+			<url>http://nexus.xworlds.eu/nexus/content/repositories/mce/</url>
+		</repository>
+
+		<!-- MobHunhting repository -->
 		<repository>
 			<id>fractal-ext-rel</id>
 			<url>https://fractal.lindegaard.one:8187/artifactory/ext-release-local/</url>
@@ -153,10 +175,77 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 
+		<!-- Sponge -->
+		<repository>
+			<id>sponge</id>
+			<url>http://repo.spongepowered.org/maven</url>
+		</repository>
+
 		<!-- Vault -->
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
+		</repository>
+
+		<!-- sk89q WorldGuard WorldEdit repositories -->
+		<repository>
+			<id>sk89q-repo</id>
+			<url>http://maven.sk89q.com/repo/</url>
+		</repository>
+
+		<!-- dmulloy2 repository / ProtocolLib -->
+		<repository>
+			<id>dmulloy2-repo</id>
+			<url>http://repo.dmulloy2.net/content/groups/public/</url>
+		</repository>
+
+		<!-- mypet repository -->
+		<repository>
+			<id>mypet-repo1</id>
+			<url>http://repo.keyle.de/</url>
+		</repository>
+
+		<!-- BattleArena -->
+		<repository>
+			<id>battleplugins-net</id>
+			<name>BattlePlugins</name>
+			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
+		</repository>
+
+		<!-- MiniGamesLib / MinigamesAPI repo -->
+		<repository>
+			<id>minigameslib-repo</id>
+			<url>http://nexus.xworlds.eu/nexus/content/repositories/</url>
+		</repository>
+
+		<!-- BossBarAPI -->
+		<repository>
+			<id>inventive-repo</id>
+			<url>http://repo.inventivetalent.org/content/groups/public/</url>
+		</repository>
+
+		<!-- BarAPI -->
+		<repository>
+			<id>confuser-repo</id>
+			<url>http://ci.frostcast.net/plugin/repository/everything/</url>
+		</repository>
+
+		<!-- TitleManager -->
+		<repository>
+			<id>puha-repo</id>
+			<url>http://repo.puha.io/nexus/content/repositories/releases/</url>
+		</repository>
+
+		<!-- citizens repository -->
+		<repository>
+			<id>citizens-repo</id>
+			<url>http://repo.citizensnpcs.co/</url>
+		</repository>
+
+		<!-- Minigames / Addstar repo -->
+		<repository>
+			<id>addstar-snapshot-repo</id>
+			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url>
 		</repository>
 
 		<!-- md5 repository -->
@@ -173,6 +262,11 @@
 			<url>http://repo.bstats.org/content/repositories/releases/</url>
 		</repository>
 
+		<!-- PlaceholderAPI -->
+		<repository>
+			<id>placeholderapi</id>
+			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+		</repository>
 	</repositories>
 
 
@@ -185,6 +279,19 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkit.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- SpongeAPI -->
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>${spongeapi.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -210,6 +317,102 @@
 			<artifactId>bstats-bukkit</artifactId>
 			<version>${bstats.version}</version>
 			<scope>compile</scope>
+		</dependency>
+		
+		<!-- ProtocolLib -->
+		<dependency>
+			<groupId>com.comphenix.protocol</groupId>
+			<artifactId>ProtocolLib-API</artifactId>
+			<version>${protocollib.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- LibsDisguises -->
+		<dependency>
+			<groupId>LibsDisguises</groupId>
+			<artifactId>LibsDisguises</artifactId>
+			<version>${libsdisguises.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- BossBarAPI -->
+		<dependency>
+			<groupId>org.inventivetalent</groupId>
+			<artifactId>bossbarapi</artifactId>
+			<version>${bossbarapi.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>metrics-lite</artifactId>
+					<groupId>org.mcstats.bukkit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- BarAPI -->
+		<dependency>
+			<groupId>me.confuser</groupId>
+			<artifactId>BarAPI</artifactId>
+			<version>${barapi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- TitleManager -->
+		<dependency>
+			<groupId>io.puharesource.mc</groupId>
+			<artifactId>TitleManager</artifactId>
+			<version>${titlemanager.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- TitleAPI -->
+		<dependency>
+			<groupId>com.connorlinfoot</groupId>
+			<artifactId>TitleAPI</artifactId>
+			<version>${TitleAPI.version}</version>
+		</dependency>
+
+		<!-- Essentials -->
+		<dependency>
+			<groupId>net.ess3</groupId>
+			<artifactId>EssentialsX</artifactId>
+			<version>${EssentialsX.version}</version>
+		</dependency>
+
+		<!-- ActionBarAPI -->
+		<dependency>
+			<groupId>ActionBarAPI</groupId>
+			<artifactId>ActionBarAPI</artifactId>
+			<version>${ActionBarAPI.version}</version>
+		</dependency>
+
+		<!-- ActionAnnouncer -->
+		<dependency>
+			<groupId>me.clip.actionannouncer.ActionAnnouncer</groupId>
+			<artifactId>ActionAnnouncer</artifactId>
+			<version>${ActionAnnouncer.version}</version>
+		</dependency>
+
+		<!-- Holograms -->
+		<dependency>
+			<groupId>com.sainttx.holograms</groupId>
+			<artifactId>holograms</artifactId>
+			<version>${holograms.version}</version>
+		</dependency>
+
+		<!-- HologramDisplays -->
+		<dependency>
+			<groupId>com.gmail.filoghost.holographicdisplays.HolographicDisplays</groupId>
+			<artifactId>HolographicDisplays</artifactId>
+			<version>${hologramdisplays.version}</version>
+		</dependency>
+
+		<!-- PlacholdeAPI -->
+		<dependency>
+			<groupId>me.clip</groupId>
+			<artifactId>placeholderapi</artifactId>
+			<version>${placeholderapi.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
@@ -247,7 +450,7 @@
 	</distributionManagement>
 
 	<issueManagement>
-		<url>https://github.com/Rocologo/MobHunting/issues</url>
+		<url>https://github.com/Rocologo/BagOfGold/issues</url>
 	</issueManagement>
 
 

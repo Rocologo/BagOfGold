@@ -4,13 +4,6 @@ bagofgold.hook.econ=Unable to hook into an economy! Make sure you have one avail
 bagofgold.moneypickup=You found ${money}
 bagofgold.moneydrop=You dropped ${money}
 bagofgold.moneylost=You lost ${prize}!
-bagofgold.reward.name=BagOfGold Reward
-bagofgold.reward.bagofgold=A ${rewardname} with ${rewardvalue}
-bagofgold.reward.customtexture=Custom head - no owner
-bagofgold.reward.steve=Steve
-bagofgold.reward.item=${rewardname} (${rewardvalue})
-bagofgold.reward.killed=This is ${rewardname}'s head (${rewardvalue})
-bagofgold.reward.killer=This is ${rewardname}'s head (${rewardvalue})
 
 bagofgold.commands.base.help.commands=Commands:
 bagofgold.commands.base.help.description=Displays this screen.

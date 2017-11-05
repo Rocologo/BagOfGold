@@ -22,6 +22,10 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
 
 public class Messages {
 
@@ -305,6 +309,21 @@ public class Messages {
 		if (BagOfGold.getConfigManager().killDebug) {
 			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + "[Debug] " + String.format(message, args));
 		}
+	}
+
+	public void playerSendMessage(final Player player, String message) {
+		if (isEmpty(message))
+			return;
+		player.sendMessage(PlaceholderAPICompat.setPlaceholders(player, message));
+	}
+
+	public void senderSendMessage(final CommandSender sender, String message) {
+		if (isEmpty(message))
+			return;
+		if (sender instanceof Player)
+			((Player) sender).sendMessage(PlaceholderAPICompat.setPlaceholders((Player) sender, message));
+		else
+			sender.sendMessage(message);
 	}
 
 	private static Map<String, String> sortByKeys(Map<String, String> map) {

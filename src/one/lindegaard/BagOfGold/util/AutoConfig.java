@@ -20,7 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import one.lindegaard.MobHunting.util.ConfigField;
+import one.lindegaard.BagOfGold.Messages;
 
 public abstract class AutoConfig {
 	private File mFile;
@@ -352,11 +352,9 @@ public abstract class AutoConfig {
 			output = "";
 			for (String line : lines)
 				output += line + "\n";
-
-			//FileWriter writer = new FileWriter(mFile);
-			//writer.write(output);
-			//writer.close();
 			
+			Messages.debug("Saving config.yml");
+
 			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(mFile), StandardCharsets.UTF_8);
 			writer.write(output);
 			writer.close();

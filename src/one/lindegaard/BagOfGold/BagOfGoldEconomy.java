@@ -13,14 +13,13 @@ import org.bukkit.entity.Player;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.util.Misc;
-import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.storage.PlayerSettings;
 
-public class BagOfGoldEconomy implements Economy {
+public class BagOfGoldEconomy implements Economy{
 
 	private BagOfGold plugin;
-
+	
 	public BagOfGoldEconomy(BagOfGold plugin) {
 		this.plugin = plugin;
 	}
@@ -93,7 +92,7 @@ public class BagOfGoldEconomy implements Economy {
 	@Override
 	public double getBalance(OfflinePlayer offlinePlayer) {
 		if (offlinePlayer != null)
-			return MobHunting.getInstance().getRewardManager().getBalance(offlinePlayer);
+			return plugin.getEconomyManager().getBalance(offlinePlayer);
 		return 0;
 	}
 
@@ -188,7 +187,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public String currencyNamePlural() {
-		return MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
+		return BagOfGold.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
 	}
 
 	/**
@@ -200,7 +199,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public String currencyNameSingular() {
-		return MobHunting.getConfigManager().dropMoneyOnGroundSkullRewardName;
+		return BagOfGold.getConfigManager().dropMoneyOnGroundSkullRewardName;
 	}
 
 	/**
@@ -224,14 +223,14 @@ public class BagOfGoldEconomy implements Economy {
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		if (offlinePlayer != null) {
-			PlayerSettings ps = MobHunting.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+			PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBalance(Misc.round(ps.getBalance() + amount));
-				MobHunting.getInstance().getRewardManager().depositBagOfGoldPlayer((Player) offlinePlayer, amount);
+				plugin.getEconomyManager().depositBagOfGoldPlayer((Player) offlinePlayer, amount);
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 			}
-			MobHunting.getInstance().getPlayerSettingsmanager().save(offlinePlayer);
+			plugin.getPlayerSettingsmanager().save(offlinePlayer);
 		}
 		return null;
 	}
@@ -286,7 +285,7 @@ public class BagOfGoldEconomy implements Economy {
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
 		if (offlinePlayer == null)
 			return false;
-		return MobHunting.getInstance().getRewardManager().getBalance(offlinePlayer) >= amount;
+		return plugin.getEconomyManager().getBalance(offlinePlayer) >= amount;
 	}
 
 	/**
@@ -323,8 +322,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasAccount(String playername) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/**
@@ -339,8 +337,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasAccount(OfflinePlayer player) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/**
@@ -357,14 +354,12 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasAccount(String playername, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean hasAccount(OfflinePlayer offlinePlayer, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/**
@@ -383,15 +378,15 @@ public class BagOfGoldEconomy implements Economy {
 
 		double balance = 0;
 		if (offlinePlayer != null) {
-			PlayerSettings ps = MobHunting.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
-			balance = MobHunting.getInstance().getRewardManager().getBalance(offlinePlayer);
+			PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+			balance = plugin.getEconomyManager().getBalance(offlinePlayer);
 			if (balance >= amount) {
 				ps.setBalance(ps.getBalance() - amount);
 				if (offlinePlayer.isOnline())
-					MobHunting.getInstance().getRewardManager().withdrawBagOfGoldPlayer((Player) offlinePlayer, amount);
+					plugin.getEconomyManager().withdrawBagOfGoldPlayer((Player) offlinePlayer, amount);
 				else
 					ps.setBalanceChanges(ps.getBalanceChanges() - amount);
-				MobHunting.getInstance().getPlayerSettingsmanager().save(offlinePlayer);
+				plugin.getPlayerSettingsmanager().save(offlinePlayer);
 				return new EconomyResponse(0, ps.getBalance(), ResponseType.SUCCESS, null);
 			} else
 				return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, "Insufficient funds");

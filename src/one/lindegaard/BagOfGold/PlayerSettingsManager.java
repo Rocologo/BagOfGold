@@ -1,0 +1,158 @@
+package one.lindegaard.BagOfGold;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import one.lindegaard.BagOfGold.storage.DataStoreException;
+import one.lindegaard.BagOfGold.storage.IDataCallback;
+import one.lindegaard.BagOfGold.storage.PlayerSettings;
+
+public class PlayerSettingsManager implements Listener {
+
+	private HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
+
+	private BagOfGold plugin;
+
+	/**
+	 * Constructor for the PlayerSettingsmanager
+	 */
+	PlayerSettingsManager(BagOfGold plugin) {
+		this.plugin = plugin;
+		Bukkit.getPluginManager().registerEvents(this, plugin);
+	}
+
+	/**
+	 * Get playerSettings from memory
+	 * 
+	 * @param offlinePlayer
+	 * @return PlayerSettings
+	 */
+	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) {
+		if (mPlayerSettings.containsKey(offlinePlayer.getUniqueId()))
+			return mPlayerSettings.get(offlinePlayer.getUniqueId());
+		else {
+			PlayerSettings ps;
+			try {
+				ps = BagOfGold.getStoreManager().loadPlayerSettings(offlinePlayer);
+			} catch (DataStoreException | SQLException e) {
+				Messages.debug("%s is not known on this server", offlinePlayer.getName());
+				return new PlayerSettings(offlinePlayer, 0);
+			}
+			Messages.debug("%s is offline, fetching PlayerData from database", offlinePlayer.getName());
+			return ps;
+		}
+
+	}
+
+	/**
+	 * Store playerSettings in memory
+	 * 
+	 * @param playerSettings
+	 */
+	public void setPlayerSettings(OfflinePlayer player, PlayerSettings playerSettings) {
+		mPlayerSettings.put(player.getUniqueId(), playerSettings);
+	}
+
+	/**
+	 * Remove PlayerSettings from Memory
+	 * 
+	 * @param player
+	 */
+	public void removePlayerSettings(OfflinePlayer player) {
+		Messages.debug("Removing %s from player settings cache", player.getName());
+		mPlayerSettings.remove(player.getUniqueId());
+	}
+
+	/**
+	 * Read PlayerSettings From database into Memory when player joins
+	 * 
+	 * @param event
+	 */
+	@EventHandler(priority = EventPriority.NORMAL)
+	private void onPlayerJoin(PlayerJoinEvent event) {
+		final Player player = event.getPlayer();
+		if (containsKey(player))
+			Messages.debug("Using cached playersettings for %s. Balance=%s", player.getName(),
+					plugin.getEconomyManager().getBalance(player));
+		else {
+			load(player);
+		}
+	}
+
+	/**
+	 * Write PlayerSettings to Database when Player Quit and remove
+	 * PlayerSettings from memory
+	 * 
+	 * @param event
+	 */
+	@EventHandler(priority = EventPriority.NORMAL)
+	private void onPlayerQuit(PlayerQuitEvent event) {
+		final Player player = event.getPlayer();
+		save(player);
+	}
+
+	/**
+	 * Load PlayerSettings asynchronously from Database
+	 * 
+	 * @param player
+	 */
+	public void load(final OfflinePlayer player) {
+		BagOfGold.getDataStoreManager().requestPlayerSettings(player, new IDataCallback<PlayerSettings>() {
+
+			@Override
+			public void onCompleted(PlayerSettings ps) {
+				if (ps.isMuted())
+					Messages.debug("%s isMuted()", player.getName());
+				if (ps.isLearningMode())
+					Messages.debug("%s is in LearningMode()", player.getName());
+				mPlayerSettings.put(player.getUniqueId(), ps);
+				// get Balance to check if balance in DB is the same as in
+				// player inventory
+				double balance = plugin.getEconomyManager().getBalance(player);
+				Messages.debug("%s balance=%s", player.getName(), balance);
+			}
+
+			@Override
+			public void onError(Throwable error) {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[BagOfGold][ERROR] " + player.getName()
+						+ " is new, creating user in database.");
+				mPlayerSettings.put(player.getUniqueId(),
+						new PlayerSettings(player, BagOfGold.getConfigManager().startingBalance));
+			}
+		});
+	}
+
+	/**
+	 * Write PlayerSettings to Database
+	 * 
+	 * @param player
+	 */
+	public void save(final OfflinePlayer player) {
+		BagOfGold.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player).isLearningMode(),
+				getPlayerSettings(player).isMuted(), getPlayerSettings(player).getBalance(),
+				getPlayerSettings(player).getBalanceChanges(), getPlayerSettings(player).getBankBalance(),
+				getPlayerSettings(player).getBankBalanceChanges());
+	}
+
+	/**
+	 * Test if PlayerSettings contains data for Player
+	 * 
+	 * @param player
+	 * @return true if player exists in PlayerSettings in Memory
+	 */
+	public boolean containsKey(final OfflinePlayer player) {
+		return mPlayerSettings.containsKey(player.getUniqueId());
+	}
+
+}

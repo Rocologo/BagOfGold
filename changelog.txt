@@ -1,3 +1,8 @@
+V0.6.0
+* Database added
+* PlayerSettings added
+* EconomyManager added
+* Reward added
 V0.5.0
 * First beta release of BagOfGold
 * Bukkit ProjectID added
