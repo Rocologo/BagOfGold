@@ -244,7 +244,7 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static PlayerSettingsManager getPlayerSettingsmanager() {
+	public static PlayerSettingsManager getPlayerSettingsManager() {
 		return mPlayerSettingsManager;
 	}
 

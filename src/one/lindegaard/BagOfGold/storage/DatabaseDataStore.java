@@ -276,9 +276,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mConnection.close();
 
 				for (PlayerSettings playerData : playerDataSet) {
-					if (plugin.getPlayerSettingsmanager().containsKey(playerData.getPlayer())
+					if (plugin.getPlayerSettingsManager().containsKey(playerData.getPlayer())
 							&& !playerData.getPlayer().isOnline())
-						plugin.getPlayerSettingsmanager().removePlayerSettings((Player) playerData.getPlayer());
+						plugin.getPlayerSettingsManager().removePlayerSettings((Player) playerData.getPlayer());
 				}
 
 				Messages.debug("PlayerSettings saved.");
@@ -305,7 +305,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		if (offlinePlayer == null)
 			return 0;
 		int playerId = 0;
-		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (ps != null)
 			playerId = ps.getPlayerId();
 		if (playerId == 0) {

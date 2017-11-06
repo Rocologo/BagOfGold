@@ -32,7 +32,7 @@ public class EconomyManager {
 	}
 
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (offlinePlayer.isOnline()) {
 			depositBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
 			ps.setBalanceChanges(0);
@@ -40,13 +40,13 @@ public class EconomyManager {
 			ps.setBalanceChanges(ps.getBalanceChanges() + amount);
 		}
 		ps.setBalance(ps.getBalance() + amount);
-		plugin.getPlayerSettingsmanager().setPlayerSettings(offlinePlayer, ps);
+		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 		BagOfGold.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 		return new EconomyResponse(amount, ps.getBalance(), ResponseType.SUCCESS, null);
 	}
 
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (has(offlinePlayer, amount)) {
 			if (offlinePlayer.isOnline()) {
 				withdrawBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() - amount);
@@ -55,7 +55,7 @@ public class EconomyManager {
 				ps.setBalanceChanges(ps.getBalanceChanges() - amount);
 			}
 			ps.setBalance(ps.getBalance() - amount);
-			plugin.getPlayerSettingsmanager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 			BagOfGold.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 			return new EconomyResponse(amount, ps.getBalance(), ResponseType.SUCCESS, null);
 		} else
@@ -73,7 +73,7 @@ public class EconomyManager {
 
 	public double getBalance(OfflinePlayer offlinePlayer) {
 
-		PlayerSettings ps = plugin.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 
 		if (offlinePlayer.isOnline()) {
 			Player player = (Player) offlinePlayer;
@@ -92,7 +92,7 @@ public class EconomyManager {
 							offlinePlayer.getName(), ps.getBalance(), sum, sum);
 					ps.setBalance(sum);
 					ps.setBankBalanceChanges(0);
-					plugin.getPlayerSettingsmanager().setPlayerSettings(player, ps);
+					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
 					BagOfGold.getDataStoreManager().updatePlayerSettings(player, ps.isLearningMode(), ps.isMuted(),
 							ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges());
 				} else {
@@ -107,7 +107,7 @@ public class EconomyManager {
 						withdrawBagOfGoldPlayer(player, ps.getBalanceChanges());
 					ps.setBalanceChanges(ps.getBalanceChanges() + taken);
 					ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
-					plugin.getPlayerSettingsmanager().setPlayerSettings(player, ps);
+					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
 					BagOfGold.getDataStoreManager().updatePlayerSettings(player, ps.isLearningMode(), ps.isMuted(),
 							ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges());
 				}
@@ -201,7 +201,7 @@ public class EconomyManager {
 	}
 
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		return plugin.getPlayerSettingsmanager().getPlayerSettings(offlinePlayer).getBalance() >= amount;
+		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance() >= amount;
 	}
 
 	public void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {

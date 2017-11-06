@@ -223,14 +223,14 @@ public class BagOfGoldEconomy implements Economy{
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		if (offlinePlayer != null) {
-			PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+			PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBalance(Misc.round(ps.getBalance() + amount));
 				plugin.getEconomyManager().depositBagOfGoldPlayer((Player) offlinePlayer, amount);
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 			}
-			plugin.getPlayerSettingsmanager().save(offlinePlayer);
+			plugin.getPlayerSettingsManager().save(offlinePlayer);
 		}
 		return null;
 	}
@@ -378,7 +378,7 @@ public class BagOfGoldEconomy implements Economy{
 
 		double balance = 0;
 		if (offlinePlayer != null) {
-			PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+			PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 			balance = plugin.getEconomyManager().getBalance(offlinePlayer);
 			if (balance >= amount) {
 				ps.setBalance(ps.getBalance() - amount);
@@ -386,7 +386,7 @@ public class BagOfGoldEconomy implements Economy{
 					plugin.getEconomyManager().withdrawBagOfGoldPlayer((Player) offlinePlayer, amount);
 				else
 					ps.setBalanceChanges(ps.getBalanceChanges() - amount);
-				plugin.getPlayerSettingsmanager().save(offlinePlayer);
+				plugin.getPlayerSettingsManager().save(offlinePlayer);
 				return new EconomyResponse(0, ps.getBalance(), ResponseType.SUCCESS, null);
 			} else
 				return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, "Insufficient funds");
