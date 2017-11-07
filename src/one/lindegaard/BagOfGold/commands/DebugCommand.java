@@ -6,8 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Messages;
-import one.lindegaard.MobHunting.MobHunting;
 
 public class DebugCommand implements ICommand {
 
@@ -42,7 +40,7 @@ private BagOfGold plugin;
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("bagofgold.commands.debug.description");
+		return plugin.getMessages().getString("bagofgold.commands.debug.description");
 	}
 
 	@Override
@@ -70,15 +68,15 @@ private BagOfGold plugin;
 	}
 
 	private void toggledebugMode(CommandSender sender) {
-		boolean debug = BagOfGold.getConfigManager().killDebug;
+		boolean debug = plugin.getConfigManager().killDebug;
 		if (debug) {
-			BagOfGold.getConfigManager().killDebug = false;
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("bagofgold.commands.debug.disabled"));
-			BagOfGold.getConfigManager().saveConfig();
+			plugin.getConfigManager().killDebug = false;
+			plugin.getMessages().senderSendMessage(sender,"[BagOfGold] " + plugin.getMessages().getString("bagofgold.commands.debug.disabled"));
+			plugin.getConfigManager().saveConfig();
 		} else {
-			BagOfGold.getConfigManager().killDebug = true;
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,"[MobHunting] " + Messages.getString("bagofgold.commands.debug.enabled"));
-			BagOfGold.getConfigManager().saveConfig();
+			plugin.getConfigManager().killDebug = true;
+			plugin.getMessages().senderSendMessage(sender,"[BagOfGold] " + plugin.getMessages().getString("bagofgold.commands.debug.enabled"));
+			plugin.getConfigManager().saveConfig();
 		}
 
 	}

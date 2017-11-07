@@ -23,7 +23,7 @@ public class MetricsManager {
 	public void startBStatsMetrics() {
 		bStatsMetrics = new org.bstats.bukkit.Metrics(plugin);
 		
-		bStatsMetrics.addCustomChart(new org.bstats.bukkit.Metrics.SimplePie("language", () -> BagOfGold.getConfigManager().language ));
+		bStatsMetrics.addCustomChart(new org.bstats.bukkit.Metrics.SimplePie("language", () -> plugin.getConfigManager().language ));
 
 	}
 
@@ -38,14 +38,14 @@ public class MetricsManager {
 		automaticUpdatesGraph.addPlotter(new Metrics.Plotter("Amount") {
 			@Override
 			public int getValue() {
-				return BagOfGold.getConfigManager().autoupdate ? 1 : 0;
+				return plugin.getConfigManager().autoupdate ? 1 : 0;
 			}
 		});
 		metrics.addGraph(automaticUpdatesGraph);
 
 		metrics.start();
-		Messages.debug("Metrics started");
-		Bukkit.getScheduler().runTaskTimerAsynchronously(BagOfGold.getInstance(), new Runnable() {
+		plugin.getMessages().debug("Metrics started");
+		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
 			public void run() {
 				try {
 					// make a URL to MCStats.org
@@ -54,7 +54,7 @@ public class MetricsManager {
 						metrics.enable();
 					} else {
 						metrics.disable();
-						Messages.debug("Http://mcstats.org seems to be down");
+						plugin.getMessages().debug("Http://mcstats.org seems to be down");
 					}
 				} catch (IOException e) {
 					e.printStackTrace();

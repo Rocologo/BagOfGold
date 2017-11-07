@@ -16,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.HttpTools;
-import one.lindegaard.BagOfGold.Messages;
 
 public class Updater {
 
@@ -24,6 +23,12 @@ public class Updater {
 	// UPDATECHECK - Check if there is a new version available at
 	// https://api.curseforge.com/servermods/files?projectIds=63718
 	// ***************************************************************************
+	
+	BagOfGold plugin;
+	
+	public Updater(BagOfGold plugin){
+		this.plugin=plugin;
+	}
 
 	// Update object
 	private static BukkitUpdate bukkitUpdate = null;
@@ -34,7 +39,7 @@ public class Updater {
 		return bukkitUpdate;
 	}
 
-	public static UpdateStatus getUpdateAvailable() {
+	public UpdateStatus getUpdateAvailable() {
 		return updateAvailable;
 	}
 
@@ -50,8 +55,8 @@ public class Updater {
 		currentJarFile = name;
 	}
 
-	public static void hourlyUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
-		long seconds = BagOfGold.getConfigManager().checkEvery;
+	public void hourlyUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
+		long seconds = plugin.getConfigManager().checkEvery;
 		if (seconds < 900) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
 					+ "[BagOfGold][Warning] check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
@@ -67,11 +72,11 @@ public class Updater {
 		}
 	}
 
-	public static void pluginUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
+	public void pluginUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
 		if (updateCheck) {
 			if (!silent) {
 				BagOfGold.getInstance().getServer().getConsoleSender().sendMessage(
-						ChatColor.GOLD + "[BagOfGold] " + Messages.getString("bagofgold.commands.update.check"));
+						ChatColor.GOLD + "[BagOfGold] " + plugin.getMessages().getString("bagofgold.commands.update.check"));
 			}
 			if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
 				// Check for updates asynchronously in background
@@ -88,7 +93,7 @@ public class Updater {
 											bukkitUpdate = null;
 										}
 									} else {
-										Messages.debug("Homepage %s seems to be down", url.toString());
+										plugin.getMessages().debug("Homepage %s seems to be down", url.toString());
 									}
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
@@ -113,20 +118,20 @@ public class Updater {
 									updateAvailable = isUpdateNewerVersion();
 									if (updateAvailable == UpdateStatus.AVAILABLE) {
 										sender.sendMessage(ChatColor.GREEN + "[BagOfGold] "
-												+ Messages.getString("bagofgold.commands.update.version-found"));
-										if (BagOfGold.getConfigManager().autoupdate) {
+												+ plugin.getMessages().getString("bagofgold.commands.update.version-found"));
+										if (plugin.getConfigManager().autoupdate) {
 											downloadAndUpdateJar();
 											sender.sendMessage(ChatColor.GREEN + "[BagOfGold] "
-													+ Messages.getString("bagofgold.commands.update.complete"));
+													+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 										} else {
 											sender.sendMessage(ChatColor.GREEN + "[BagOfGold] "
-													+ Messages.getString("bagofgold.commands.update.help"));
+													+ plugin.getMessages().getString("bagofgold.commands.update.help"));
 										}
 
 									} else {
 										if (!silent) {
 											sender.sendMessage(ChatColor.GOLD + "[BagOfGold] "
-													+ Messages.getString("bagofgold.commands.update.no-update"));
+													+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
 										}
 									}
 								}
@@ -140,7 +145,7 @@ public class Updater {
 				// every second
 			} else {
 				sender.sendMessage(
-						ChatColor.GREEN + "[BagOfGold] " + Messages.getString("bagofgold.commands.update.complete"));
+						ChatColor.GREEN + "[BagOfGold] " + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 			}
 		}
 	}
@@ -193,7 +198,7 @@ public class Updater {
 		return false;
 	}
 
-	public static UpdateStatus isUpdateNewerVersion() {
+	public UpdateStatus isUpdateNewerVersion() {
 		// Version format on Bukkit.org: "BagOfGold Vn.n.n"
 		// Version format in jar file: "n.n.n" | "n.n.n-SNAPSHOT-Bn"
 
@@ -210,7 +215,7 @@ public class Updater {
 			if (pluginVerSNAPSHOT.length > 1)
 				snapshot = pluginVerSNAPSHOT[1].equals("SNAPSHOT");
 			if (snapshot)
-				Messages.debug("You are using a development version (%s)",
+				plugin.getMessages().debug("You are using a development version (%s)",
 						BagOfGold.getInstance().getDescription().getVersion());
 			String[] pluginVer = pluginVerSNAPSHOT[0].split("\\.");
 			// Run through major, minor, sub

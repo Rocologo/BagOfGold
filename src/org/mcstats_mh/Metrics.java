@@ -29,7 +29,6 @@ package org.mcstats_mh;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

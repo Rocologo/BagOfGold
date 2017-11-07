@@ -44,12 +44,12 @@ public class PlayerSettingsManager implements Listener {
 		else {
 			PlayerSettings ps;
 			try {
-				ps = BagOfGold.getStoreManager().loadPlayerSettings(offlinePlayer);
+				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
 			} catch (DataStoreException | SQLException e) {
-				Messages.debug("%s is not known on this server", offlinePlayer.getName());
-				return new PlayerSettings(offlinePlayer, 0);
+				plugin.getMessages().debug("%s is not known on this server", offlinePlayer.getName());
+				return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
 			}
-			Messages.debug("%s is offline, fetching PlayerData from database", offlinePlayer.getName());
+			plugin.getMessages().debug("%s is offline, fetching PlayerData from database", offlinePlayer.getName());
 			return ps;
 		}
 
@@ -70,7 +70,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @param player
 	 */
 	public void removePlayerSettings(OfflinePlayer player) {
-		Messages.debug("Removing %s from player settings cache", player.getName());
+		plugin.getMessages().debug("Removing %s from player settings cache", player.getName());
 		mPlayerSettings.remove(player.getUniqueId());
 	}
 
@@ -82,10 +82,10 @@ public class PlayerSettingsManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
-		if (containsKey(player))
-			Messages.debug("Using cached playersettings for %s. Balance=%s", player.getName(),
-					plugin.getEconomyManager().getBalance(player));
-		else {
+		if (containsKey(player)) {
+			//plugin.getMessages().debug("Using cached playersettings for %s. Balance=%s", player.getName(),
+			//		plugin.getEconomyManager().getBalance(player));
+		} else {
 			load(player);
 		}
 	}
@@ -108,19 +108,15 @@ public class PlayerSettingsManager implements Listener {
 	 * @param player
 	 */
 	public void load(final OfflinePlayer player) {
-		BagOfGold.getDataStoreManager().requestPlayerSettings(player, new IDataCallback<PlayerSettings>() {
+		plugin.getDataStoreManager().requestPlayerSettings(player, new IDataCallback<PlayerSettings>() {
 
 			@Override
 			public void onCompleted(PlayerSettings ps) {
 				if (ps.isMuted())
-					Messages.debug("%s isMuted()", player.getName());
+					plugin.getMessages().debug("%s isMuted()", player.getName());
 				if (ps.isLearningMode())
-					Messages.debug("%s is in LearningMode()", player.getName());
+					plugin.getMessages().debug("%s is in LearningMode()", player.getName());
 				mPlayerSettings.put(player.getUniqueId(), ps);
-				// get Balance to check if balance in DB is the same as in
-				// player inventory
-				double balance = plugin.getEconomyManager().getBalance(player);
-				Messages.debug("%s balance=%s", player.getName(), balance);
 			}
 
 			@Override
@@ -128,7 +124,7 @@ public class PlayerSettingsManager implements Listener {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[BagOfGold][ERROR] " + player.getName()
 						+ " is new, creating user in database.");
 				mPlayerSettings.put(player.getUniqueId(),
-						new PlayerSettings(player, BagOfGold.getConfigManager().startingBalance));
+						new PlayerSettings(player, plugin.getConfigManager().startingBalance));
 			}
 		});
 	}
@@ -139,7 +135,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @param player
 	 */
 	public void save(final OfflinePlayer player) {
-		BagOfGold.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player).isLearningMode(),
+		plugin.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player).isLearningMode(),
 				getPlayerSettings(player).isMuted(), getPlayerSettings(player).getBalance(),
 				getPlayerSettings(player).getBalanceChanges(), getPlayerSettings(player).getBankBalance(),
 				getPlayerSettings(player).getBankBalanceChanges());

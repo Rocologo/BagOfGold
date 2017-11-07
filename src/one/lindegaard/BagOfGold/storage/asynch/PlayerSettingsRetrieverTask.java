@@ -6,7 +6,6 @@ import java.util.HashSet;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Messages;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
@@ -27,9 +26,9 @@ public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSetting
 			try {
 				return store.loadPlayerSettings(mPlayer);
 			} catch (UserNotFoundException e) {
-				Messages.debug("Saving new PlayerSettings for %s to database.", mPlayer.getName());
-				PlayerSettings ps = new PlayerSettings(mPlayer, BagOfGold.getConfigManager().learningMode, false,
-						BagOfGold.getConfigManager().startingBalance, 0, 0, 0);
+				BagOfGold.getInstance().getMessages().debug("Insert new PlayerSettings for %s to database.", mPlayer.getName());
+				PlayerSettings ps = new PlayerSettings(mPlayer, BagOfGold.getInstance().getConfigManager().learningMode, false,
+						BagOfGold.getInstance().getConfigManager().startingBalance, 0, 0, 0);
 				try {
 					store.insertPlayerSettings(ps);
 				} catch (DataStoreException e1) {

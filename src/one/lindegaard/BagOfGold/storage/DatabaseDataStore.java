@@ -8,10 +8,9 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Messages;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public abstract class DatabaseDataStore implements IDataStore {
 
@@ -112,33 +111,26 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 */
 	@Override
 	public void initialize() throws DataStoreException {
+		plugin.getMessages().debug("Initialize database");
 		try {
 
 			Connection mConnection = setupConnection();
 
 			// Find current database version
-			if (BagOfGold.getConfigManager().databaseVersion == 0) {
-				Statement statement = mConnection.createStatement();
-				try {
-					ResultSet rs = statement.executeQuery("SELECT BALANCE FROM mh_Players LIMIT 0");
-					rs.close();
-					BagOfGold.getConfigManager().databaseVersion = 1;
-					BagOfGold.getConfigManager().saveConfig();
-				} catch (SQLException e5) {
-
-				}
-				statement.close();
+			if (plugin.getConfigManager().databaseVersion == 0) {
+				plugin.getConfigManager().databaseVersion = 1;
+				plugin.getConfigManager().saveConfig();
 			}
 
-			switch (BagOfGold.getConfigManager().databaseVersion) {
+			switch (plugin.getConfigManager().databaseVersion) {
 			case 1:
-				Bukkit.getLogger().info("[MobHunting] Database version " + BagOfGold.getConfigManager().databaseVersion
-						+ " detected.");
+				Bukkit.getLogger().info(
+						"[BagOfGold] Database version " + plugin.getConfigManager().databaseVersion + " detected.");
 				setupV1Tables(mConnection);
 			}
 
 			// Enable FOREIGN KEY for Sqlite database
-			if (!BagOfGold.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
+			if (!plugin.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
 				Statement statement = mConnection.createStatement();
 				statement.execute("PRAGMA foreign_keys = ON");
 				statement.close();
@@ -177,11 +169,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 				e.printStackTrace();
 			}
 			n++;
-		} while (BagOfGold.getDataStoreManager().isRunning() && n < 40);
+		} while (plugin.getDataStoreManager().isRunning() && n < 40);
 		System.out.println("[BagOfGold] Closing database connection.");
 	}
 
-		// ******************************************************************
+	// ******************************************************************
 	// Player Settings
 	// ******************************************************************
 
@@ -209,7 +201,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			if (id != 0)
 				ps.setPlayerId(id);
 			result.close();
-			Messages.debug("Reading Playersettings from Database: %s", ps.toString());
+			plugin.getMessages().debug("Reading Playersettings from Database: %s", ps.toString());
 			mGetPlayerData.close();
 			mConnection.close();
 			return ps;
@@ -263,10 +255,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				for (PlayerSettings playerData : playerDataSet) {
 					mUpdatePlayerSettings.setInt(1, playerData.isLearningMode() ? 1 : 0);
 					mUpdatePlayerSettings.setInt(2, playerData.isMuted() ? 1 : 0);
-					mUpdatePlayerSettings.setDouble(3, playerData.getBalance());
-					mUpdatePlayerSettings.setDouble(4, playerData.getBalanceChanges());
-					mUpdatePlayerSettings.setDouble(5, playerData.getBankBalance());
-					mUpdatePlayerSettings.setDouble(6, playerData.getBankBalanceChanges());
+					mUpdatePlayerSettings.setDouble(3, Misc.floor(playerData.getBalance()));
+					mUpdatePlayerSettings.setDouble(4, Misc.floor(playerData.getBalanceChanges()));
+					mUpdatePlayerSettings.setDouble(5, Misc.floor(playerData.getBankBalance()));
+					mUpdatePlayerSettings.setDouble(6, Misc.floor(playerData.getBankBalanceChanges()));
 					mUpdatePlayerSettings.setString(7, playerData.getPlayer().getUniqueId().toString());
 					mUpdatePlayerSettings.addBatch();
 				}
@@ -278,10 +270,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				for (PlayerSettings playerData : playerDataSet) {
 					if (plugin.getPlayerSettingsManager().containsKey(playerData.getPlayer())
 							&& !playerData.getPlayer().isOnline())
-						plugin.getPlayerSettingsManager().removePlayerSettings((Player) playerData.getPlayer());
+						plugin.getPlayerSettingsManager().removePlayerSettings(playerData.getPlayer());
 				}
 
-				Messages.debug("PlayerSettings saved.");
+				plugin.getMessages().debug("PlayerSettings saved.");
 
 			} catch (SQLException e) {
 				rollback(mConnection);
@@ -322,7 +314,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 					UUID uuid = UUID.fromString(result.getString(1));
 					if (name != null && uuid != null)
 						if (offlinePlayer.getUniqueId().equals(uuid) && !offlinePlayer.getName().equals(name)) {
-							BagOfGold.getInstance().getLogger()
+							plugin.getLogger()
 									.warning("[BagOfGold] Name change detected(2): " + name + " -> "
 											+ offlinePlayer.getName() + " UUID="
 											+ offlinePlayer.getUniqueId().toString());
@@ -339,7 +331,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				Iterator<OfflinePlayer> itr = changedNames.iterator();
 				while (itr.hasNext()) {
 					OfflinePlayer p = itr.next();
-					Messages.debug("Updating playername in database and in memory (%s)", p.getName());
+					plugin.getMessages().debug("Updating playername in database and in memory (%s)", p.getName());
 					updatePlayerName(p.getPlayer());
 				}
 			} catch (SQLException e) {

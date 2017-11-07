@@ -1,8 +1,5 @@
 package one.lindegaard.BagOfGold;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -34,14 +31,14 @@ public class EconomyManager {
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (offlinePlayer.isOnline()) {
-			depositBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
+			addBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
 			ps.setBalanceChanges(0);
 		} else {
-			ps.setBalanceChanges(ps.getBalanceChanges() + amount);
+			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 		}
-		ps.setBalance(ps.getBalance() + amount);
+		ps.setBalance(Misc.round(ps.getBalance() + amount));
 		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-		BagOfGold.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+		plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 		return new EconomyResponse(amount, ps.getBalance(), ResponseType.SUCCESS, null);
 	}
 
@@ -49,79 +46,25 @@ public class EconomyManager {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (has(offlinePlayer, amount)) {
 			if (offlinePlayer.isOnline()) {
-				withdrawBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() - amount);
+				removeBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() - amount);
 			} else {
-
-				ps.setBalanceChanges(ps.getBalanceChanges() - amount);
+				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 			}
-			ps.setBalance(ps.getBalance() - amount);
+			ps.setBalance(Misc.round(ps.getBalance() - amount));
 			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-			BagOfGold.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 			return new EconomyResponse(amount, ps.getBalance(), ResponseType.SUCCESS, null);
 		} else
-			return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE,
-					Messages.getString("mobhunting.commands.money.not-enough-money", "money", ps.getBalance()));
+			return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, plugin.getMessages()
+					.getString("bagofgold.commands.money.not-enough-money", "money", ps.getBalance()));
 	}
 
-	public String format(double amount) {
-		Locale locale = new Locale("en", "UK");
-		String pattern = "#.#####";
-		DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
-		decimalFormat.applyPattern(pattern);
-		return decimalFormat.format(amount);
-	}
-
-	public double getBalance(OfflinePlayer offlinePlayer) {
-
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-
-		if (offlinePlayer.isOnline()) {
-			Player player = (Player) offlinePlayer;
-			double sum = 0;
-			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-				ItemStack is = player.getInventory().getItem(slot);
-				if (Reward.isReward(is)) {
-					Reward reward = Reward.getReward(is);
-					if (reward.isBagOfGoldReward())
-						sum = sum + reward.getMoney();
-				}
-			}
-			if (ps.getBalance() + ps.getBalanceChanges() != sum) {
-				if (ps.getBalanceChanges() == 0) {
-					Messages.debug("Warning %s has a player balance problem (%s,%s). Adjusting balance to %s",
-							offlinePlayer.getName(), ps.getBalance(), sum, sum);
-					ps.setBalance(sum);
-					ps.setBankBalanceChanges(0);
-					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
-					BagOfGold.getDataStoreManager().updatePlayerSettings(player, ps.isLearningMode(), ps.isMuted(),
-							ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges());
-				} else {
-					Messages.debug(
-							"Warning %s has a player balance changes while offline (%s+%s). Adjusting balance to %s",
-							offlinePlayer.getName(), ps.getBalance(), ps.getBalanceChanges(),
-							ps.getBalance() + ps.getBalanceChanges());
-					double taken = 0;
-					if (ps.getBalanceChanges() > 0)
-						depositBagOfGoldPlayer(player, ps.getBalanceChanges());
-					else
-						withdrawBagOfGoldPlayer(player, ps.getBalanceChanges());
-					ps.setBalanceChanges(ps.getBalanceChanges() + taken);
-					ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
-					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
-					BagOfGold.getDataStoreManager().updatePlayerSettings(player, ps.isLearningMode(), ps.isMuted(),
-							ps.getBalance(), ps.getBalanceChanges(), ps.getBankBalance(), ps.getBankBalanceChanges());
-				}
-			}
-		}
-		return ps.getBalance() + ps.getBalanceChanges();
-	}
-
-	public void depositBagOfGoldPlayer(OfflinePlayer offlinePlayer, double amount) {
+	public void addBagOfGoldPlayer(OfflinePlayer offlinePlayer, double amount) {
 		CustomItems customItems = new CustomItems(plugin);
 		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
 		boolean found = false;
 		if (player.getInventory().firstEmpty() == -1)
-			dropMoneyOnGround(player, null, player.getLocation(), Misc.floor(amount));
+			dropMoneyOnGround(player, null, player.getLocation(), Misc.round(amount));
 		else {
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 				ItemStack is = player.getInventory().getItem(slot);
@@ -131,17 +74,17 @@ public class EconomyManager {
 						rewardInSlot.setMoney(rewardInSlot.getMoney() + amount);
 						ItemMeta im = is.getItemMeta();
 						im.setLore(rewardInSlot.getHiddenLore());
-						String displayName = BagOfGold.getConfigManager().dropMoneyOnGroundItemtype
-								.equalsIgnoreCase("ITEM") ? plugin.getEconomyManager().format(rewardInSlot.getMoney())
+						String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
+								.equalsIgnoreCase("ITEM") ? Misc.format(Misc.round(rewardInSlot.getMoney()))
 										: rewardInSlot.getDisplayname() + " ("
-												+ plugin.getEconomyManager().format(rewardInSlot.getMoney()) + ")";
-						im.setDisplayName(ChatColor.valueOf(BagOfGold.getConfigManager().dropMoneyOnGroundTextColor)
-								+ displayName);
+												+ Misc.format(Misc.round(rewardInSlot.getMoney())) + ")";
+						im.setDisplayName(
+								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 						is.setItemMeta(im);
 						is.setAmount(1);
-						Messages.debug("Added %s to item in slot %s, new value is %s",
-								plugin.getEconomyManager().format(amount), slot,
-								plugin.getEconomyManager().format(rewardInSlot.getMoney()));
+						plugin.getMessages().debug("Added %s to item in slot %s, new value is %s",
+								Misc.format(Misc.round(amount)), slot,
+								Misc.format(Misc.round(rewardInSlot.getMoney())));
 						found = true;
 						break;
 					}
@@ -149,40 +92,36 @@ public class EconomyManager {
 			}
 			if (!found) {
 				ItemStack is = customItems.getCustomtexture(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
-						BagOfGold.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-						BagOfGold.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						BagOfGold.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.floor(amount),
+						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(amount),
 						UUID.randomUUID(), UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
 				player.getInventory().addItem(is);
 			}
 		}
-		plugin.getMessages().playerSendMessage(player,
-				Messages.getString("mobhunting.commands.money.give", "rewardname",
-						BagOfGold.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), "money",
-						plugin.getEconomyManager().format(Misc.floor(amount))));
 	}
 
-	public double withdrawBagOfGoldPlayer(Player player, double amount) {
+	public double removeBagOfGoldPlayer(Player player, double amount) {
 		double taken = 0;
-		double toBeTaken = Misc.floor(amount);
+		double toBeTaken = Misc.round(amount);
 		CustomItems customItems = new CustomItems(plugin);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward reward = Reward.getReward(is);
 				if (reward.isBagOfGoldReward()) {
-					double saldo = Misc.floor(reward.getMoney());
+					double saldo = Misc.round(reward.getMoney());
 					if (saldo > toBeTaken) {
-						reward.setMoney(saldo - toBeTaken);
+						reward.setMoney(Misc.round(saldo - toBeTaken));
 						is = customItems.getCustomtexture(reward.getRewardUUID(),
-								BagOfGold.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-								BagOfGold.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-								BagOfGold.getConfigManager().dropMoneyOnGroundSkullTextureSignature, saldo - toBeTaken,
-								UUID.randomUUID(), reward.getSkinUUID());
+								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+								Misc.round(saldo - toBeTaken), UUID.randomUUID(), reward.getSkinUUID());
 						player.getInventory().setItem(slot, is);
 						taken = taken + toBeTaken;
 						toBeTaken = 0;
-						return taken;
+						return Misc.round(taken);
 					} else {
 						is.setItemMeta(null);
 						is.setType(Material.AIR);
@@ -190,7 +129,7 @@ public class EconomyManager {
 						player.getInventory().setItem(slot, is);
 						taken = taken + saldo;
 						toBeTaken = toBeTaken - saldo;
-						return taken;
+						return Misc.round(taken);
 					}
 				}
 			}
@@ -211,7 +150,7 @@ public class EconomyManager {
 		ItemStack is;
 		UUID uuid = null, skinuuid = null;
 		// if
-		// (BagOfGold.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED"))
+		// (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED"))
 		// {
 		// MinecraftMob mob = MinecraftMob.getMinecraftMobType(killedEntity);
 		// uuid = UUID.fromString(Reward.MH_REWARD_KILLED_UUID);
@@ -219,45 +158,43 @@ public class EconomyManager {
 		// is = new CustomItems(plugin).getCustomHead(mob,
 		// mob.getFriendlyName(), 1, money, skinuuid);
 		// } else
-		if (BagOfGold.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
+		if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 			uuid = UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID);
 			skinuuid = uuid;
 			is = new CustomItems(plugin).getCustomtexture(uuid,
-					BagOfGold.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-					BagOfGold.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-					BagOfGold.getConfigManager().dropMoneyOnGroundSkullTextureSignature, money, UUID.randomUUID(),
-					skinuuid);
+					plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+					plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+					plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(money),
+					UUID.randomUUID(), skinuuid);
 
-		} else if (BagOfGold.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLER")) {
+		} else if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLER")) {
 			uuid = UUID.fromString(Reward.MH_REWARD_KILLER_UUID);
 			skinuuid = player.getUniqueId();
-			is = new CustomItems(plugin).getPlayerHead(player.getUniqueId(), 1, money);
+			is = new CustomItems(plugin).getPlayerHead(player.getUniqueId(), 1, Misc.round(money));
 
 		} else { // ITEM
 			uuid = UUID.fromString(Reward.MH_REWARD_ITEM_UUID);
 			skinuuid = null;
-			is = new ItemStack(Material.valueOf(BagOfGold.getConfigManager().dropMoneyOnGroundItem), 1);
+			is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
 		}
 
 		item = location.getWorld().dropItem(location, is);
-		MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
+		MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(), Misc.round(money));
 		item.setMetadata(Reward.MH_REWARD_DATA,
 				new FixedMetadataValue(plugin,
 						new Reward(
-								BagOfGold.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
+								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
 										: Reward.getReward(is).getDisplayname(),
 								money, uuid, UUID.randomUUID(), skinuuid)));
 		if (Misc.isMC18OrNewer()) {
-			item.setCustomName(ChatColor.valueOf(BagOfGold.getConfigManager().dropMoneyOnGroundTextColor)
-					+ (BagOfGold.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-							? plugin.getEconomyManager().format(money)
-							: Reward.getReward(is).getDisplayname() + " (" + plugin.getEconomyManager().format(money)
-									+ ")"));
+			item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+					+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? Misc.format(money)
+							: Reward.getReward(is).getDisplayname() + " (" + Misc.format(Misc.round(money)) + ")"));
 			item.setCustomNameVisible(true);
 		}
 		if (item != null)
-			Messages.debug("%s was dropped on the ground as item %s (# of rewards=%s)", format(money),
-					BagOfGold.getConfigManager().dropMoneyOnGroundItemtype,
+			plugin.getMessages().debug("%s was dropped on the ground as item %s (# of rewards=%s)",
+					Misc.format(Misc.round(money)), plugin.getConfigManager().dropMoneyOnGroundItemtype,
 					MobHunting.getInstance().getRewardManager().getDroppedMoney().size());
 	}
 

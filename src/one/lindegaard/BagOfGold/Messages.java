@@ -114,20 +114,20 @@ public class Messages {
 		}
 	}
 
-	public static void injectMissingMobNamesToLangFiles() {
-		File folder = new File(BagOfGold.getInstance().getDataFolder(), "lang");
+	public void injectMissingMobNamesToLangFiles() {
+		File folder = new File(plugin.getDataFolder(), "lang");
 		if (!folder.exists())
 			folder.mkdirs();
 
 		boolean customLanguage = true;
 		for (String source : sources) {
-			if (source.equalsIgnoreCase(BagOfGold.getConfigManager().language))
+			if (source.equalsIgnoreCase(plugin.getConfigManager().language))
 				customLanguage = false;
-			File dest = new File(folder, source);
+			new File(folder, source);
 		}
 
 		if (customLanguage) {
-			File dest = new File(folder, BagOfGold.getConfigManager().language + ".lang");
+			File dest = new File(folder, plugin.getConfigManager().language + ".lang");
 			sortFileOnDisk(dest);
 		}
 
@@ -205,8 +205,8 @@ public class Messages {
 		return map;
 	}
 
-	public static void setLanguage(String lang) {
-		File file = new File(BagOfGold.getInstance().getDataFolder(), "lang/" + lang);
+	public void setLanguage(String lang) {
+		File file = new File(plugin.getDataFolder(), "lang/" + lang);
 		if (!file.exists()) {
 			Bukkit.getLogger().severe(PREFIX
 					+ " Language file does not exist. Creating a new file based on en_US. You need to translate the file yourself.");
@@ -255,7 +255,7 @@ public class Messages {
 	 *            these are key-value pairs, they should be like: {key1, value1,
 	 *            key2, value2,..., keyN,valueN}. keys must be strings
 	 */
-	public static String getString(String key, Object... values) {
+	public String getString(String key, Object... values) {
 		try {
 			if (mPattern == null)
 				mPattern = Pattern.compile("\\$\\{([\\w\\.\\-]+)\\}");
@@ -291,7 +291,7 @@ public class Messages {
 		}
 	}
 
-	public static String getString(String key) {
+	public String getString(String key) {
 		try {
 			return ChatColor.translateAlternateColorCodes('&', getStringInternal(key));
 		} catch (MissingResourceException e) {
@@ -305,8 +305,8 @@ public class Messages {
 	 * @param message
 	 * @param args
 	 */
-	public static void debug(String message, Object... args) {
-		if (BagOfGold.getConfigManager().killDebug) {
+	public void debug(String message, Object... args) {
+		if (plugin.getConfigManager().killDebug) {
 			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + "[Debug] " + String.format(message, args));
 		}
 	}

@@ -210,6 +210,7 @@ public class Reward {
 			if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
 				this.skinUUID = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
 			else if (uuid.equals(UUID.fromString(MH_REWARD_KILLER_UUID))) {
+				@SuppressWarnings("deprecation")
 				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(displayname);
 				if (offlinePlayer != null)
 					skinUUID = offlinePlayer.getUniqueId();

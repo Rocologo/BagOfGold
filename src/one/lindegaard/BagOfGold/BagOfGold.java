@@ -32,7 +32,7 @@ public class BagOfGold extends JavaPlugin {
 	private MetricsManager mMetricsManager;
 	private static ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
-	private ServicesManager sm;
+	private ServicesManager mServiceManager;
 	private static PlayerSettingsManager mPlayerSettingsManager;
 	private static IDataStore mStore;
 	private static DataStoreManager mStoreManager;
@@ -49,20 +49,20 @@ public class BagOfGold extends JavaPlugin {
 
 		instance = this;
 
-		sm = Bukkit.getServicesManager();
+		mServiceManager = Bukkit.getServicesManager();
 
 		mMessages = new Messages(this);
 		mMessages.exportDefaultLanguages(this);
 
-		mConfig = new ConfigManager(new File(getDataFolder(), "config.yml"));
+		mConfig = new ConfigManager(this,new File(getDataFolder(), "config.yml"));
 
 		if (mConfig.loadConfig())
 			mConfig.saveConfig();
 		else
-			throw new RuntimeException(Messages.getString("bagofgold.config.fail"));
+			throw new RuntimeException(instance.getMessages().getString("bagofgold.config.fail"));
 
 		if (isbStatsEnabled())
-			Messages.debug("bStat is enabled");
+			instance.getMessages().debug("bStat is enabled");
 		else {
 			Bukkit.getConsoleSender().sendMessage(
 					ChatColor.RED + "[BagOfGold]=====================WARNING=============================");
@@ -89,7 +89,7 @@ public class BagOfGold extends JavaPlugin {
 
 		// Register commands
 		mCommandDispatcher = new CommandDispatcher(this, "bagofgold",
-				Messages.getString("bagofgold.command.base.description") + getDescription().getVersion());
+				instance.getMessages().getString("bagofgold.command.base.description") + getDescription().getVersion());
 		getCommand("bagofgold").setExecutor(mCommandDispatcher);
 		getCommand("bagofgold").setTabCompleter(mCommandDispatcher);
 		mCommandDispatcher.registerCommand(new ReloadCommand(this));
@@ -98,9 +98,8 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
 
 		// Check for new MobHuntig updates
-		Updater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
+		new Updater(this).hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
-		
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
 			mStore = new MySQLDataStore(this);
 		else
@@ -127,7 +126,7 @@ public class BagOfGold extends JavaPlugin {
 		mPlayerSettingsManager = new PlayerSettingsManager(this);
 
 		mEconomyManager = new EconomyManager(this);
-		
+
 		if (!getServer().getName().toLowerCase().contains("glowstone")) {
 			mMetricsManager = new MetricsManager(this);
 			mMetricsManager.startMetrics();
@@ -138,8 +137,6 @@ public class BagOfGold extends JavaPlugin {
 		// Try to load BagOfGold
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 
-		// mConfig.saveConfig();
-
 		mInitialized = true;
 
 	}
@@ -148,7 +145,7 @@ public class BagOfGold extends JavaPlugin {
 	public void onDisable() {
 		if (!mInitialized)
 			return;
-		Messages.debug("BagOfGold disabled.");
+		instance.getMessages().debug("BagOfGold disabled.");
 	}
 
 	private boolean isbStatsEnabled() {
@@ -165,10 +162,11 @@ public class BagOfGold extends JavaPlugin {
 	private void hookEconomy(Class<? extends Economy> hookClass, ServicePriority priority, String... packages) {
 		try {
 			if (packagesExists(packages)) {
-				Economy econ = hookClass.getConstructor(Plugin.class).newInstance(this);
-				sm.register(Economy.class, econ, Bukkit.getPluginManager().getPlugin("Vault"), ServicePriority.Normal);
+				Economy economy = hookClass.getConstructor(Plugin.class).newInstance(this);
+				mServiceManager.register(Economy.class, economy, Bukkit.getPluginManager().getPlugin("Vault"),
+						ServicePriority.Normal);
 				Bukkit.getLogger().info(String.format("[BagOfGold][Economy] BagOfGold found: %s",
-						econ.isEnabled() ? "Loaded" : "Waiting"));
+						economy.isEnabled() ? "Loaded" : "Waiting"));
 			}
 		} catch (Exception e) {
 			Bukkit.getLogger().severe(String.format(
@@ -204,7 +202,7 @@ public class BagOfGold extends JavaPlugin {
 		return instance;
 	}
 
-	public static ConfigManager getConfigManager() {
+	public ConfigManager getConfigManager() {
 		return mConfig;
 	}
 
@@ -220,13 +218,13 @@ public class BagOfGold extends JavaPlugin {
 	public CommandDispatcher getCommandDispatcher() {
 		return mCommandDispatcher;
 	}
-	
+
 	/**
 	 * Gets the Store Manager
 	 * 
 	 * @return
 	 */
-	public static IDataStore getStoreManager() {
+	public IDataStore getStoreManager() {
 		return mStore;
 	}
 
@@ -235,7 +233,7 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static DataStoreManager getDataStoreManager() {
+	public DataStoreManager getDataStoreManager() {
 		return mStoreManager;
 	}
 
@@ -244,7 +242,7 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static PlayerSettingsManager getPlayerSettingsManager() {
+	public PlayerSettingsManager getPlayerSettingsManager() {
 		return mPlayerSettingsManager;
 	}
 
@@ -253,8 +251,12 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public static EconomyManager getEconomyManager() {
+	public EconomyManager getEconomyManager() {
 		return mEconomyManager;
+	}
+
+	public static BagOfGold getApi() {
+		return instance;
 	}
 
 }

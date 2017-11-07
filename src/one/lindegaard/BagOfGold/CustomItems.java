@@ -16,6 +16,8 @@ import org.bukkit.ChatColor;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
+import one.lindegaard.BagOfGold.util.Misc;
+
 public class CustomItems {
 
 	private BagOfGold plugin;
@@ -37,13 +39,13 @@ public class CustomItems {
 		skull.setDurability((short) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
-				"Hidden:" + String.format(Locale.ENGLISH,"%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
-				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:"+skinUUID)));
+				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
+				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:" + skinUUID)));
 		skullMeta.setOwner(name);
 		if (money == 0)
 			skullMeta.setDisplayName(name);
 		else
-			skullMeta.setDisplayName(name + " (" + plugin.getEconomyManager().format(money) + ")");
+			skullMeta.setDisplayName(name + " (" + Misc.format(money) + ")");
 		skull.setAmount(amount);
 		skull.setItemMeta(skullMeta);
 		return skull;
@@ -52,7 +54,8 @@ public class CustomItems {
 	/**
 	 * Return an ItemStack with the Players head texture.
 	 *
-	 * @param player uuid
+	 * @param player
+	 *            uuid
 	 * @param money
 	 * @return
 	 */
@@ -62,13 +65,13 @@ public class CustomItems {
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		String name = Bukkit.getOfflinePlayer(uuid).getName();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
-				"Hidden:" + String.format(Locale.ENGLISH,"%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
-				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:"+uuid)));
+				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
+				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:" + uuid)));
 		skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 		if (money == 0)
 			skullMeta.setDisplayName(name);
 		else
-			skullMeta.setDisplayName(name + " (" + plugin.getEconomyManager().format(money) + ")");
+			skullMeta.setDisplayName(name + " (" + Misc.format(money) + ")");
 		skull.setAmount(amount);
 		skull.setItemMeta(skullMeta);
 		return skull;
@@ -113,15 +116,15 @@ public class CustomItems {
 			e.printStackTrace();
 		}
 
-		skullMeta.setLore(
-				new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.format(Locale.ENGLISH,"%.5f", money),
-						"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid, "Hidden:"+skinUuid)));
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
+				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + mPlayerUUID,
+				money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid, "Hidden:" + skinUuid)));
 		if (money == 0)
 			skullMeta.setDisplayName(
-					ChatColor.valueOf(BagOfGold.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
+					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
 		else
-			skullMeta.setDisplayName(ChatColor.valueOf(BagOfGold.getConfigManager().dropMoneyOnGroundTextColor)
-					+ mDisplayName + " (" + plugin.getEconomyManager().format(money) + ")");
+			skullMeta.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+					+ mDisplayName + " (" + Misc.format(money) + ")");
 
 		skull.setItemMeta(skullMeta);
 		return skull;

@@ -5,8 +5,6 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Messages;
-import one.lindegaard.MobHunting.MobHunting;
 
 public class ReloadCommand implements ICommand {
 
@@ -38,7 +36,7 @@ public class ReloadCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("bagofgold.commands.reload.description");
+		return plugin.getMessages().getString("bagofgold.commands.reload.description");
 	}
 
 	@Override
@@ -54,8 +52,8 @@ public class ReloadCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 
-		MobHunting.getInstance().getMessages().senderSendMessage(sender,
-				ChatColor.RED + Messages.getString("bagofgold.commands.reload.reload-error"));
+		plugin.getMessages().senderSendMessage(sender,
+				ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.reload.reload-error"));
 
 		return true;
 	}

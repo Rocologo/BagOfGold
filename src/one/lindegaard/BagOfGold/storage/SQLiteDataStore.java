@@ -27,11 +27,11 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	protected Connection setupConnection() throws DataStoreException {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			Connection c = DriverManager
-					.getConnection("jdbc:sqlite:" + BagOfGold.getInstance().getDataFolder().getPath() + "/"
-							+ BagOfGold.getConfigManager().databaseName + ".db");
-			c.setAutoCommit(false);
-			return c;
+			Connection connection = DriverManager
+					.getConnection("jdbc:sqlite:" + plugin.getDataFolder().getPath() + "/"
+							+ plugin.getConfigManager().databaseName + ".db");
+			connection.setAutoCommit(false);
+			return connection;
 		} catch (ClassNotFoundException classNotFoundEx) {
 			throw new DataStoreException("SQLite not present on the classpath", classNotFoundEx);
 		} catch (SQLException sqlEx) {
@@ -72,7 +72,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	@Override
 	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-		console.sendMessage(ChatColor.RED + "[MobHunting] this command is only for MySQL");
+		console.sendMessage(ChatColor.RED + "[BagOfGold] this command is only for MySQL");
 	}
 
 	// *******************************************************************************
@@ -84,7 +84,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		Statement create = connection.createStatement();
 
 		// Create new empty tables if they do not exist
-		String lm = BagOfGold.getConfigManager().learningMode ? "1" : "0";
+		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players" //
 				+ "(UUID TEXT," //
 				+ " NAME TEXT, " //

@@ -8,10 +8,14 @@ import one.lindegaard.BagOfGold.util.AutoConfig;
 import one.lindegaard.BagOfGold.util.ConfigField;
 
 public class ConfigManager extends AutoConfig {
+	
+	BagOfGold plugin;
 
-	public ConfigManager(File file) {
-
-		super(file);
+	public ConfigManager(BagOfGold plugin, File file) {
+		
+		super(plugin,file);
+		
+		this.plugin=plugin;
 
 		setCategoryComment("economy", "########################################################################"
 				+ "\nEconomy Settings" + "\n########################################################################");
@@ -140,7 +144,7 @@ public class ConfigManager extends AutoConfig {
 	public String databaseHost = "localhost:3306";
 
 	@ConfigField(name = "database", category = "database")
-	public String databaseName = "mobhunting";
+	public String databaseName = "bagofgold";
 
 	@ConfigField(name = "database_version", category = "database", comment = "FOR INTERNAL USE ONLY. DONT CHANGE THIS VALUE!")
 	public int databaseVersion = 0;
@@ -161,7 +165,7 @@ public class ConfigManager extends AutoConfig {
 
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
-		Messages.setLanguage(language + ".lang");
+		plugin.getMessages().setLanguage(language + ".lang");
 	}
 
 }

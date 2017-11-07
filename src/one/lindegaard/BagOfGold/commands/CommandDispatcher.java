@@ -16,8 +16,6 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Messages;
-import one.lindegaard.MobHunting.MobHunting;
 
 /**
  * This allows sub commands to be handled in a clean easily expandable way. Just
@@ -78,20 +76,18 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		// Check that the sender is correct
 		if (!com.canBeConsole()
 				&& (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender)) {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender, ChatColor.RED + Messages
-					.getString("bagofgold.commands.base.noconsole", "command", "/" + label + " " + subCommand));
+			plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.noconsole", "command", "/" + label + " " + subCommand));
 			return true;
 		}
 		if (!com.canBeCommandBlock() && sender instanceof BlockCommandSender) {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender, ChatColor.RED + Messages
-					.getString("bagofgold.commands.base.nocommandblock", "command", "/" + label + " " + subCommand));
+			plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nocommandblock", "command", "/" + label + " " + subCommand));
 			return true;
 		}
 
 		// Check that they have permission
 		if (com.getPermission() != null && !sender.hasPermission(com.getPermission())) {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.RED + Messages.getString("bagofgold.commands.base.nopermission", "command",
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "command",
 							"/" + label + " " + subCommand, "perm", com.getPermission()));
 			return true;
 		}
@@ -107,8 +103,8 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 				usageString += ChatColor.GRAY + "/" + label + " " + line;
 			}
 
-			usageString = ChatColor.RED + Messages.getString("bagofgold.commands.base.usage", "usage", usageString);
-			MobHunting.getInstance().getMessages().senderSendMessage(sender, usageString);
+			usageString = ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.usage", "usage", usageString);
+			plugin.getMessages().senderSendMessage(sender, usageString);
 		}
 
 		return true;
@@ -118,17 +114,17 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 		String usage = "";
 
 		if (subcommand != null) {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.RED + Messages.getString("bagofgold.commands.base.unknowncommand", "command",
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.unknowncommand", "command",
 							ChatColor.RESET + "/" + label + " " + ChatColor.GOLD + subcommand));
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					Messages.getString("bagofgold.commands.base.validcommands"));
+			plugin.getMessages().senderSendMessage(sender,
+					plugin.getMessages().getString("bagofgold.commands.base.validcommands"));
 		} else {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.RED + Messages.getString("bagofgold.commands.base.nocommand", "command",
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nocommand", "command",
 							ChatColor.RESET + "/" + label + ChatColor.GOLD + " <command>"));
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					Messages.getString("bagofgold.commands.base.validcommands"));
+			plugin.getMessages().senderSendMessage(sender,
+					plugin.getMessages().getString("bagofgold.commands.base.validcommands"));
 		}
 
 		boolean first = true;
@@ -149,10 +145,10 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 			first = false;
 		}
 
-		MobHunting.getInstance().getMessages().senderSendMessage(sender, usage);
+		plugin.getMessages().senderSendMessage(sender, usage);
 
 		if (subcommand == null) {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender, Messages.getString("bagofgold.commands.base.morehelp"));
+			plugin.getMessages().senderSendMessage(sender, plugin.getMessages().getString("bagofgold.commands.base.morehelp"));
 		}
 
 	}
@@ -240,7 +236,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 
 		@Override
 		public String getDescription() {
-			return Messages.getString("bagofgold.commands.base.help.description");
+			return plugin.getMessages().getString("bagofgold.commands.base.help.description");
 		}
 
 		@Override
@@ -258,9 +254,9 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 			if (args.length != 0)
 				return false;
 
-			MobHunting.getInstance().getMessages().senderSendMessage(sender, ChatColor.GOLD + mRootCommandDescription);
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.GOLD + Messages.getString("bagofgold.commands.base.help.commands"));
+			plugin.getMessages().senderSendMessage(sender, ChatColor.GOLD + mRootCommandDescription);
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.GOLD + plugin.getMessages().getString("bagofgold.commands.base.help.commands"));
 
 			for (ICommand command : mCommands.values()) {
 				// Dont show commands that are irrelevant
@@ -284,7 +280,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
 					usageString += ChatColor.GOLD + "/" + mRootCommandName + " " + line;
 				}
 
-				MobHunting.getInstance().getMessages().senderSendMessage(sender,
+				plugin.getMessages().senderSendMessage(sender,
 						usageString + "\n  " + ChatColor.WHITE + command.getDescription());
 			}
 			return true;

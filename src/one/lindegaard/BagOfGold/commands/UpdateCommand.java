@@ -6,17 +6,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Messages;
 import one.lindegaard.BagOfGold.update.UpdateStatus;
 import one.lindegaard.BagOfGold.update.Updater;
-import one.lindegaard.MobHunting.MobHunting;
 
 public class UpdateCommand implements ICommand {
 
 	private BagOfGold plugin;
+	private Updater updater;
 
 	public UpdateCommand(BagOfGold plugin) {
 		this.plugin = plugin;
+		updater = new Updater(plugin);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return Messages.getString("bagofgold.commands.update.description");
+		return plugin.getMessages().getString("bagofgold.commands.update.description");
 	}
 
 	@Override
@@ -56,19 +56,19 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-		if (Updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
+		if (updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
 			if (Updater.downloadAndUpdateJar()) {
-				MobHunting.getInstance().getMessages().senderSendMessage(sender,
-						ChatColor.GREEN + Messages.getString("bagofgold.commands.update.complete"));
+				BagOfGold.getInstance().getMessages().senderSendMessage(sender,
+						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 			} else {
-				MobHunting.getInstance().getMessages().senderSendMessage(sender,
-						ChatColor.GREEN + Messages.getString("bagofgold.commands.update.could-not-update"));
+				BagOfGold.getInstance().getMessages().senderSendMessage(sender,
+						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.could-not-update"));
 			}
-		} else if (Updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
-			MobHunting.getInstance().getMessages().senderSendMessage(sender,
-					ChatColor.GREEN + Messages.getString("bagofgold.commands.update.complete"));
+		} else if (updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
+			BagOfGold.getInstance().getMessages().senderSendMessage(sender,
+					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 		} else {
-			Updater.pluginUpdateCheck(sender, true, false);
+			updater.pluginUpdateCheck(sender, true, false);
 		}
 		return true;
 	}

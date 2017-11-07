@@ -16,7 +16,7 @@ public class PlayerSettings {
 
 	public PlayerSettings(OfflinePlayer player, double balance) {
 		this.player = player;
-		this.setLearningMode(BagOfGold.getConfigManager().learningMode);
+		this.setLearningMode(BagOfGold.getInstance().getConfigManager().learningMode);
 		this.setMuteMode(false);
 		this.setBalance(balance);
 		this.setBalanceChanges(0);
@@ -96,7 +96,7 @@ public class PlayerSettings {
 	@Override
 	public String toString() {
 		return String.format(
-				"PlayerStore: {player: Id:%s Name:%s, Learning: %s, Muted: %s, Balance: %s(-%s), Bank balance: %s(-%s)}",
+				"PlayerSettings: {player: Id:%s Name:%s, Learning: %s, Muted: %s, Balance: %s(+%s), Bank balance: %s(%s)}",
 				playerId, player.getName(), learning_mode, mute, balance, balanceChanges, bankBalance,
 				bankBalanceChanges);
 	}

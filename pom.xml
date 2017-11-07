@@ -6,7 +6,7 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6.1</version>
+	<version>0.6.2</version>
 	<!-- <version>0.6.0-SNAPSHOT-B${build.number}</version> -->
 	<name>BagOfGold</name>
 	<url>http://dev.bukkit.org/server-mods/bagofgold/</url>

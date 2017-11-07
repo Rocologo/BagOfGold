@@ -32,15 +32,15 @@ public class MySQLDataStore extends DatabaseDataStore {
 			Locale.setDefault(new Locale("us", "US"));
 			Class.forName("com.mysql.jdbc.Driver");
 			MysqlDataSource dataSource = new MysqlDataSource();
-			dataSource.setUser(BagOfGold.getConfigManager().databaseUsername);
-			dataSource.setPassword(BagOfGold.getConfigManager().databasePassword);
-			if (BagOfGold.getConfigManager().databaseHost.contains(":")) {
-				dataSource.setServerName(BagOfGold.getConfigManager().databaseHost.split(":")[0]);
-				dataSource.setPort(Integer.valueOf(BagOfGold.getConfigManager().databaseHost.split(":")[1]));
+			dataSource.setUser(plugin.getConfigManager().databaseUsername);
+			dataSource.setPassword(plugin.getConfigManager().databasePassword);
+			if (plugin.getConfigManager().databaseHost.contains(":")) {
+				dataSource.setServerName(plugin.getConfigManager().databaseHost.split(":")[0]);
+				dataSource.setPort(Integer.valueOf(plugin.getConfigManager().databaseHost.split(":")[1]));
 			} else {
-				dataSource.setServerName(BagOfGold.getConfigManager().databaseHost);
+				dataSource.setServerName(plugin.getConfigManager().databaseHost);
 			}
-			dataSource.setDatabaseName(BagOfGold.getConfigManager().databaseName + "?autoReconnect=true");
+			dataSource.setDatabaseName(plugin.getConfigManager().databaseName + "?autoReconnect=true");
 			Connection c = dataSource.getConnection();
 			Statement statement = c.createStatement();
 			statement.executeUpdate("SET NAMES 'utf8'");
@@ -129,7 +129,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		Statement create = connection.createStatement();
 
 		// Create new empty tables if they do not exist
-		String lm = BagOfGold.getConfigManager().learningMode ? "1" : "0";
+		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players "//
 				+ "(UUID CHAR(40) ,"//
 				+ " NAME VARCHAR(20),"//

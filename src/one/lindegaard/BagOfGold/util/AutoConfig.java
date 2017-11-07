@@ -20,15 +20,18 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import one.lindegaard.BagOfGold.Messages;
+import one.lindegaard.BagOfGold.BagOfGold;
 
 public abstract class AutoConfig {
+	
+	private BagOfGold plugin;
 	private File mFile;
 	private HashMap<String, String> mCategoryComments;
 	private List<String> mCategories;
 	private HashMap<String, String> mCategoryNodes;
 
-	protected AutoConfig(File file) {
+	protected AutoConfig(BagOfGold plugin, File file) {
+		this.plugin=plugin;
 		mFile = file;
 		mCategories = new ArrayList<String>();
 		mCategoryComments = new HashMap<String, String>();
@@ -353,7 +356,7 @@ public abstract class AutoConfig {
 			for (String line : lines)
 				output += line + "\n";
 			
-			Messages.debug("Saving config.yml");
+			plugin.getMessages().debug("Saving config.yml");
 
 			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(mFile), StandardCharsets.UTF_8);
 			writer.write(output);

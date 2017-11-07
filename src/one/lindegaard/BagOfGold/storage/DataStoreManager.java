@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Messages;
 import one.lindegaard.BagOfGold.storage.asynch.IDataStoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerSettingsRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.StoreTask;
@@ -35,7 +34,7 @@ public class DataStoreManager {
 		this.plugin = plugin;
 		mStore = store;
 		mTaskThread = new TaskThread();
-		int savePeriod = BagOfGold.getConfigManager().savePeriod;
+		int savePeriod = plugin.getConfigManager().savePeriod;
 		if (savePeriod < 1200) {
 			savePeriod = 1200;
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
@@ -115,7 +114,7 @@ public class DataStoreManager {
 		try {
 			return mStore.getPlayerId(offlinePlayer);
 		} catch (DataStoreException e) {
-			if (BagOfGold.getConfigManager().killDebug)
+			if (plugin.getConfigManager().killDebug)
 				e.printStackTrace();
 		}
 		throw new UserNotFoundException(
@@ -130,7 +129,7 @@ public class DataStoreManager {
 	 */
 	public void flush() {
 		if (mWaiting.size() != 0) {
-			Messages.debug("Flushing waiting %s data to database...", mWaiting.size());
+			plugin.getMessages().debug("Flushing waiting %s data to database...", mWaiting.size());
 			mTaskThread.addTask(new StoreTask(mWaiting), null);
 		}
 	}
@@ -149,19 +148,19 @@ public class DataStoreManager {
 				Thread.sleep(500);
 				n++;
 			}
-			Messages.debug("mTaskThread.state=%s", mTaskThread.getState());
+			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() == Thread.State.RUNNABLE) {
-				Messages.debug("Interupting mTaskThread");
+				plugin.getMessages().debug("Interupting mTaskThread");
 				mTaskThread.interrupt();
 			}
-			Messages.debug("mStoreThread.state=%s", mStoreThread.getState());
-			Messages.debug("Interupting mStoreThread");
+			plugin.getMessages().debug("mStoreThread.state=%s", mStoreThread.getState());
+			plugin.getMessages().debug("Interupting mStoreThread");
 			mStoreThread.interrupt();
-			Messages.debug("mTaskThread.state=%s", mTaskThread.getState());
+			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() != Thread.State.WAITING) {
 				mTaskThread.waitForEmptyQueue();
 			} else {
-				Messages.debug("Interupting mTaskThread");
+				plugin.getMessages().debug("Interupting mTaskThread");
 				mTaskThread.interrupt();
 			}
 
@@ -211,7 +210,7 @@ public class DataStoreManager {
 					Thread.sleep(mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {
-				Messages.debug("StoreThread was interrupted");
+				plugin.getMessages().debug("StoreThread was interrupted");
 			}
 		}
 	}
@@ -267,7 +266,7 @@ public class DataStoreManager {
 				return;
 
 			synchronized (mSignal) {
-				Messages.debug("waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
+				plugin.getMessages().debug("waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
 						mQueue.size(), mWaiting.size());
 				while (!mQueue.isEmpty())
 					mSignal.wait();
@@ -307,13 +306,13 @@ public class DataStoreManager {
 						Object result = task.task.run(mStore);
 
 						if (task.callback != null && !mExit)
-							Bukkit.getScheduler().runTask(BagOfGold.getInstance(),
+							Bukkit.getScheduler().runTask(plugin,
 									new CallbackCaller((IDataCallback<Object>) task.callback, result, true));
 
 					} catch (DataStoreException e) {
-						Messages.debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
+						plugin.getMessages().debug("DataStoreManager: TaskThread.run() failed!!!!!!!");
 						if (task.callback != null)
-							Bukkit.getScheduler().runTask(BagOfGold.getInstance(),
+							Bukkit.getScheduler().runTask(plugin,
 									new CallbackCaller((IDataCallback<Object>) task.callback, e, false));
 						else
 							e.printStackTrace();
@@ -321,7 +320,7 @@ public class DataStoreManager {
 				}
 
 			} catch (InterruptedException e) {
-				Messages.debug(" TaskThread was interrupted");
+				plugin.getMessages().debug(" TaskThread was interrupted");
 			}
 		}
 	}

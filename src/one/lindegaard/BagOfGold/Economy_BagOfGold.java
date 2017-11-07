@@ -84,7 +84,6 @@ public class Economy_BagOfGold extends AbstractEconomy implements Listener {
 
 	@Override
 	public String format(double amount) {
-		Messages.debug("Economy name=%s", getName());
 		return economy.format(amount);
 	}
 
