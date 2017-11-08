@@ -30,13 +30,13 @@ public class BagOfGold extends JavaPlugin {
 
 	private Messages mMessages;
 	private MetricsManager mMetricsManager;
-	private static ConfigManager mConfig;
+	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
 	private ServicesManager mServiceManager;
-	private static PlayerSettingsManager mPlayerSettingsManager;
-	private static IDataStore mStore;
-	private static DataStoreManager mStoreManager;
-	private static EconomyManager mEconomyManager;
+	private PlayerSettingsManager mPlayerSettingsManager;
+	private IDataStore mStore;
+	private DataStoreManager mStoreManager;
+	private EconomyManager mEconomyManager;
 
 	private boolean mInitialized = false;
 

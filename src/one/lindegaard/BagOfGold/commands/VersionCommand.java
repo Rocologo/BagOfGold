@@ -60,7 +60,7 @@ public class VersionCommand implements ICommand {
 
 		plugin.getMessages().senderSendMessage(sender,
 				ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.currentversion", "currentversion",
-						BagOfGold.getInstance().getDescription().getVersion()));
+						plugin.getDescription().getVersion()));
 		if (updater.getUpdateAvailable() == UpdateStatus.AVAILABLE)
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.newversion", "newversion",

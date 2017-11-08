@@ -31,7 +31,7 @@ public class EconomyManager {
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (offlinePlayer.isOnline()) {
-			addBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
+			addBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, ps.getBalanceChanges() + amount);
 			ps.setBalanceChanges(0);
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
@@ -46,7 +46,7 @@ public class EconomyManager {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (has(offlinePlayer, amount)) {
 			if (offlinePlayer.isOnline()) {
-				removeBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() - amount);
+				removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, ps.getBalanceChanges() - amount);
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 			}
@@ -59,39 +59,43 @@ public class EconomyManager {
 					.getString("bagofgold.commands.money.not-enough-money", "money", ps.getBalance()));
 	}
 
-	public void addBagOfGoldPlayer(OfflinePlayer offlinePlayer, double amount) {
-		CustomItems customItems = new CustomItems(plugin);
+	public boolean has(OfflinePlayer offlinePlayer, double amount) {
+		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance() >= amount;
+	}
+
+	public void addBagOfGoldPlayer_EconomyManager(OfflinePlayer offlinePlayer, double amount) {
 		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
 		boolean found = false;
-		if (player.getInventory().firstEmpty() == -1)
-			dropMoneyOnGround(player, null, player.getLocation(), Misc.round(amount));
-		else {
-			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-				ItemStack is = player.getInventory().getItem(slot);
-				if (Reward.isReward(is)) {
-					Reward rewardInSlot = Reward.getReward(is);
-					if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
-						rewardInSlot.setMoney(rewardInSlot.getMoney() + amount);
-						ItemMeta im = is.getItemMeta();
-						im.setLore(rewardInSlot.getHiddenLore());
-						String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
-								.equalsIgnoreCase("ITEM") ? Misc.format(Misc.round(rewardInSlot.getMoney()))
-										: rewardInSlot.getDisplayname() + " ("
-												+ Misc.format(Misc.round(rewardInSlot.getMoney())) + ")";
-						im.setDisplayName(
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
-						is.setItemMeta(im);
-						is.setAmount(1);
-						plugin.getMessages().debug("Added %s to item in slot %s, new value is %s",
-								Misc.format(Misc.round(amount)), slot,
-								Misc.format(Misc.round(rewardInSlot.getMoney())));
-						found = true;
-						break;
-					}
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward rewardInSlot = Reward.getReward(is);
+				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
+					rewardInSlot.setMoney(rewardInSlot.getMoney() + amount);
+					ItemMeta im = is.getItemMeta();
+					im.setLore(rewardInSlot.getHiddenLore());
+					String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+							? Misc.format(Misc.round(rewardInSlot.getMoney()))
+							: rewardInSlot.getDisplayname() + " (" + Misc.format(Misc.round(rewardInSlot.getMoney()))
+									+ ")";
+					im.setDisplayName(
+							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
+					is.setItemMeta(im);
+					is.setAmount(1);
+					plugin.getMessages().debug(
+							"Added %s to item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
+							Misc.format(Misc.round(amount)), slot, Misc.format(Misc.round(rewardInSlot.getMoney())));
+					found = true;
+					break;
 				}
 			}
-			if (!found) {
-				ItemStack is = customItems.getCustomtexture(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
+		}
+		if (!found) {
+			if (player.getInventory().firstEmpty() == -1)
+				dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), Misc.round(amount));
+			else {
+				ItemStack is = new CustomItems(plugin).getCustomtexture(
+						UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
 						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(amount),
@@ -99,9 +103,13 @@ public class EconomyManager {
 				player.getInventory().addItem(is);
 			}
 		}
+		plugin.getMessages().playerSendMessage(player,
+				plugin.getMessages().getString("bagofgold.commands.money.give", "rewardname",
+						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), "money",
+						Misc.format(Misc.floor(amount))));
 	}
 
-	public double removeBagOfGoldPlayer(Player player, double amount) {
+	public double removeBagOfGoldPlayer_EconomyManager(Player player, double amount) {
 		double taken = 0;
 		double toBeTaken = Misc.round(amount);
 		CustomItems customItems = new CustomItems(plugin);
@@ -139,11 +147,7 @@ public class EconomyManager {
 
 	}
 
-	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance() >= amount;
-	}
-
-	public void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
+	public void dropMoneyOnGround_EconomyManager(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
 		money = Misc.ceil(money);
 

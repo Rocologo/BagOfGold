@@ -58,14 +58,14 @@ public class UpdateCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		if (updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
 			if (Updater.downloadAndUpdateJar()) {
-				BagOfGold.getInstance().getMessages().senderSendMessage(sender,
+				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 			} else {
-				BagOfGold.getInstance().getMessages().senderSendMessage(sender,
+				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.could-not-update"));
 			}
 		} else if (updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
-			BagOfGold.getInstance().getMessages().senderSendMessage(sender,
+			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 		} else {
 			updater.pluginUpdateCheck(sender, true, false);

@@ -26,9 +26,10 @@ public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSetting
 			try {
 				return store.loadPlayerSettings(mPlayer);
 			} catch (UserNotFoundException e) {
-				BagOfGold.getInstance().getMessages().debug("Insert new PlayerSettings for %s to database.", mPlayer.getName());
-				PlayerSettings ps = new PlayerSettings(mPlayer, BagOfGold.getInstance().getConfigManager().learningMode, false,
-						BagOfGold.getInstance().getConfigManager().startingBalance, 0, 0, 0);
+				BagOfGold.getInstance().getMessages().debug("Insert new PlayerSettings for %s to database.",
+						mPlayer.getName());
+				PlayerSettings ps = new PlayerSettings(mPlayer, BagOfGold.getInstance().getConfigManager().learningMode,
+						false, BagOfGold.getInstance().getConfigManager().startingBalance, 0, 0, 0);
 				try {
 					store.insertPlayerSettings(ps);
 				} catch (DataStoreException e1) {

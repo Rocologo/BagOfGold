@@ -46,8 +46,12 @@ public class PlayerSettingsManager implements Listener {
 			try {
 				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
 			} catch (DataStoreException | SQLException e) {
-				plugin.getMessages().debug("%s is not known on this server", offlinePlayer.getName());
-				return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
+				plugin.getMessages().debug("%s is not in the database (has played before=%s)",
+						offlinePlayer.getName(), offlinePlayer.hasPlayedBefore());
+				if (offlinePlayer != null && offlinePlayer.hasPlayedBefore())
+					return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
+				else
+					return new PlayerSettings(offlinePlayer, 0);
 			}
 			plugin.getMessages().debug("%s is offline, fetching PlayerData from database", offlinePlayer.getName());
 			return ps;
@@ -82,12 +86,8 @@ public class PlayerSettingsManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
-		if (containsKey(player)) {
-			//plugin.getMessages().debug("Using cached playersettings for %s. Balance=%s", player.getName(),
-			//		plugin.getEconomyManager().getBalance(player));
-		} else {
+		if (!containsKey(player))
 			load(player);
-		}
 	}
 
 	/**
@@ -98,8 +98,7 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerQuit(PlayerQuitEvent event) {
-		final Player player = event.getPlayer();
-		save(player);
+		save(event.getPlayer());
 	}
 
 	/**
