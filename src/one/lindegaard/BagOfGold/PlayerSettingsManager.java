@@ -46,9 +46,9 @@ public class PlayerSettingsManager implements Listener {
 			try {
 				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
 			} catch (DataStoreException | SQLException e) {
-				plugin.getMessages().debug("%s is not in the database (has played before=%s)",
-						offlinePlayer.getName(), offlinePlayer.hasPlayedBefore());
-				if (offlinePlayer != null && offlinePlayer.hasPlayedBefore())
+				plugin.getMessages().debug("%s is not in the database (has played before=%s)", offlinePlayer.getName(),
+						offlinePlayer.hasPlayedBefore());
+				if (offlinePlayer.hasPlayedBefore())
 					return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
 				else
 					return new PlayerSettings(offlinePlayer, 0);

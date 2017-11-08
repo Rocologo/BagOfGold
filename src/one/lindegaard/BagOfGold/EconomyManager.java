@@ -183,23 +183,25 @@ public class EconomyManager {
 		}
 
 		item = location.getWorld().dropItem(location, is);
-		MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(), Misc.round(money));
-		item.setMetadata(Reward.MH_REWARD_DATA,
-				new FixedMetadataValue(plugin,
-						new Reward(
-								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
-										: Reward.getReward(is).getDisplayname(),
-								money, uuid, UUID.randomUUID(), skinuuid)));
-		if (Misc.isMC18OrNewer()) {
-			item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-					+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? Misc.format(money)
-							: Reward.getReward(is).getDisplayname() + " (" + Misc.format(Misc.round(money)) + ")"));
-			item.setCustomNameVisible(true);
-		}
-		if (item != null)
+		if (item != null) {
+			MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(), Misc.round(money));
+			item.setMetadata(Reward.MH_REWARD_DATA,
+					new FixedMetadataValue(plugin,
+							new Reward(
+									plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
+											: Reward.getReward(is).getDisplayname(),
+									money, uuid, UUID.randomUUID(), skinuuid)));
+			if (Misc.isMC18OrNewer()) {
+				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+						+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+								? Misc.format(money)
+								: Reward.getReward(is).getDisplayname() + " (" + Misc.format(Misc.round(money)) + ")"));
+				item.setCustomNameVisible(true);
+			}
 			plugin.getMessages().debug("%s was dropped on the ground as item %s (# of rewards=%s)",
 					Misc.format(Misc.round(money)), plugin.getConfigManager().dropMoneyOnGroundItemtype,
 					MobHunting.getInstance().getRewardManager().getDroppedMoney().size());
+		}
 	}
 
 }

@@ -1,3 +1,5 @@
+V0.7.0
+* First release
 V0.6.0
 * Database added
 * PlayerSettings added
