@@ -5,6 +5,8 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 
@@ -95,6 +97,20 @@ public class Misc {
 		DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 		decimalFormat.applyPattern(pattern);
 		return decimalFormat.format(money);
+	}
+
+	public static boolean isSign(Block block) {
+		if (block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.WALL_SIGN))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isSign(Material material) {
+		if (material.equals(Material.SIGN_POST) || material.equals(Material.WALL_SIGN))
+			return true;
+		else
+			return false;
 	}
 
 	

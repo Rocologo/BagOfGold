@@ -2,7 +2,9 @@ package one.lindegaard.BagOfGold;
 
 import java.io.File;
 
+import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.CommandDispatcher;
+import one.lindegaard.BagOfGold.commands.ConvertCommand;
 import one.lindegaard.BagOfGold.commands.DebugCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
@@ -54,7 +56,7 @@ public class BagOfGold extends JavaPlugin {
 		mMessages = new Messages(this);
 		mMessages.exportDefaultLanguages(this);
 
-		mConfig = new ConfigManager(this,new File(getDataFolder(), "config.yml"));
+		mConfig = new ConfigManager(this, new File(getDataFolder(), "config.yml"));
 
 		if (mConfig.loadConfig())
 			mConfig.saveConfig();
@@ -96,6 +98,7 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new UpdateCommand(this));
 		mCommandDispatcher.registerCommand(new VersionCommand(this));
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
+		mCommandDispatcher.registerCommand(new ConvertCommand(this));
 
 		// Check for new MobHuntig updates
 		new Updater(this).hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
@@ -133,6 +136,9 @@ public class BagOfGold extends JavaPlugin {
 
 			mMetricsManager.startBStatsMetrics();
 		}
+
+		// Initialize BagOfGold Bank Signs
+		new BankSign(this);
 
 		// Try to load BagOfGold
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");

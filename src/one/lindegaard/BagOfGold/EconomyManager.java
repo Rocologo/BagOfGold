@@ -46,7 +46,7 @@ public class EconomyManager {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (has(offlinePlayer, amount)) {
 			if (offlinePlayer.isOnline()) {
-				removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, ps.getBalanceChanges() - amount);
+				removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, amount);
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 			}
@@ -112,7 +112,6 @@ public class EconomyManager {
 	public double removeBagOfGoldPlayer_EconomyManager(Player player, double amount) {
 		double taken = 0;
 		double toBeTaken = Misc.round(amount);
-		CustomItems customItems = new CustomItems(plugin);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
@@ -120,8 +119,9 @@ public class EconomyManager {
 				if (reward.isBagOfGoldReward()) {
 					double saldo = Misc.round(reward.getMoney());
 					if (saldo > toBeTaken) {
+						plugin.getMessages().debug("remove=%s", saldo-toBeTaken);
 						reward.setMoney(Misc.round(saldo - toBeTaken));
-						is = customItems.getCustomtexture(reward.getRewardUUID(),
+						is = new CustomItems(plugin).getCustomtexture(reward.getRewardUUID(),
 								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
@@ -137,13 +137,13 @@ public class EconomyManager {
 						player.getInventory().setItem(slot, is);
 						taken = taken + saldo;
 						toBeTaken = toBeTaken - saldo;
-						return Misc.round(taken);
+						//return Misc.round(taken);
 					}
 				}
 			}
 		}
 
-		return amount;
+		return taken;
 
 	}
 
@@ -202,6 +202,59 @@ public class EconomyManager {
 					Misc.format(Misc.round(money)), plugin.getConfigManager().dropMoneyOnGroundItemtype,
 					MobHunting.getInstance().getRewardManager().getDroppedMoney().size());
 		}
+	}
+
+	public EconomyResponse bankDeposit(String account, double amount) {
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			if (offlinePlayer.isOnline()) {
+				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() + amount));
+				ps.setBankBalanceChanges(0);
+			} else {
+				ps.setBankBalanceChanges(ps.getBankBalanceChanges() + amount);
+			}
+			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
+					null);
+		}
+		return new EconomyResponse(0, 0, ResponseType.FAILURE, "Player has no bank account");
+	}
+
+	public EconomyResponse bankWithdraw(String account, double amount) {
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			if (offlinePlayer.isOnline()) {
+				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() - amount));
+				ps.setBankBalanceChanges(0);
+			} else {
+				ps.setBankBalanceChanges(ps.getBankBalanceChanges() - amount);
+			}
+			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
+					null);
+		}
+		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
+
+	}
+
+	public EconomyResponse bankBalance(String account) {
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			if (offlinePlayer.isOnline()) {
+				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
+				ps.setBankBalanceChanges(0);
+			}
+			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+			return new EconomyResponse(0, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
+		}
+		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
+
 	}
 
 }

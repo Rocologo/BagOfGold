@@ -2,6 +2,8 @@ package one.lindegaard.BagOfGold;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -145,7 +147,7 @@ public class BagOfGoldEconomy implements Economy {
 						plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 					}
 				}
-			} else //player is known but not online
+			} else // player is known but not online
 				return ps.getBalance() + ps.getBalanceChanges();
 		}
 		return 0;
@@ -500,7 +502,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasBankSupport() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -509,7 +511,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse isBankMember(String account, String playername) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		return isBankMember(account, Bukkit.getOfflinePlayer(playername));
 	}
 
 	/**
@@ -523,7 +525,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse isBankMember(String account, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		if (account.equalsIgnoreCase(player.getUniqueId().toString()))
+			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+		else
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
 	}
 
 	/**
@@ -532,7 +537,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse isBankOwner(String account, String playername) {
-		return isBankMember(account, Bukkit.getOfflinePlayer(playername));
+		return isBankOwner(account, Bukkit.getOfflinePlayer(playername));
 	}
 
 	/**
@@ -546,7 +551,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse isBankOwner(String account, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
 	}
 
 	/**
@@ -558,7 +563,20 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankBalance(String account) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			if (offlinePlayer.isOnline()) {
+				if (ps.getBankBalanceChanges() != 0) {
+					ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
+					ps.setBankBalanceChanges(0);
+					plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+					plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+				}
+			}
+			return new EconomyResponse(0, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
+		}
+		return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
 	}
 
 	/**
@@ -572,7 +590,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankDeposit(String account, double amount) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		return plugin.getEconomyManager().bankDeposit(account, amount);
 	}
 
 	/**
@@ -587,7 +605,11 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankHas(String account, double amount) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		double bal = bankBalance(account).amount;
+		if (bal > amount)
+			return new EconomyResponse(amount, bal, ResponseType.SUCCESS, null);
+		else
+			return new EconomyResponse(amount, bal, ResponseType.FAILURE, null);
 	}
 
 	/**
@@ -601,7 +623,8 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankWithdraw(String account, double amount) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		return plugin.getEconomyManager().bankWithdraw(account, amount);
+
 	}
 
 	/**
@@ -610,7 +633,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse createBank(String account, String playername) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
 	}
 
 	/**
@@ -625,7 +648,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse createBank(String account, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
 	}
 
 	/**
@@ -637,7 +660,16 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse deleteBank(String account) {
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BagOfGold does not support bank accounts!");
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			ps.setBankBalance(0);
+			ps.setBankBalanceChanges(0);
+			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+			return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Bank account deleted");
+		}
+		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
 	}
 
 }
