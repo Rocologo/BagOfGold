@@ -95,14 +95,18 @@ public class BagOfGoldEconomy implements Economy {
 					ItemStack is = player.getInventory().getItem(slot);
 					if (Reward.isReward(is)) {
 						Reward reward = Reward.getReward(is);
-						if (reward.isBagOfGoldReward()
-								&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
+						if (reward.isBagOfGoldReward()||reward.isItemReward())
 							amountInInventory = amountInInventory + reward.getMoney();
-						else if (reward.isBagOfGoldReward()
-								&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM"))
-							amountInInventory = amountInInventory + reward.getMoney();
+						
+						//if (reward.isBagOfGoldReward() 
+						//		&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
+						//	amountInInventory = amountInInventory + reward.getMoney();
+						//else if (reward.isItemReward()
+						//		&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM"))
+						//	amountInInventory = amountInInventory + reward.getMoney();
 					}
 				}
+				plugin.getMessages().debug("amountInInevtory=%s",amountInInventory);
 				if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
 					if (ps.getBalanceChanges() == 0) {
 						plugin.getMessages().debug("Warning %s has a balance problem (%s,%s). Adjusting balance to %s",
@@ -142,6 +146,7 @@ public class BagOfGoldEconomy implements Economy {
 					plugin.getDataStoreManager().updatePlayerSettings(player, ps);
 
 				} else {
+					//player is online
 					if (ps.getBalanceChanges() != 0) {
 						plugin.getMessages().debug("Updating balance %s with changes %s", Misc.round(ps.getBalance()),
 								Misc.round(ps.getBalanceChanges()));
@@ -150,6 +155,7 @@ public class BagOfGoldEconomy implements Economy {
 						plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 						plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 					}
+					return ps.getBalance() + ps.getBalanceChanges();
 				}
 			} else // player is known but not online
 				return ps.getBalance() + ps.getBalanceChanges();

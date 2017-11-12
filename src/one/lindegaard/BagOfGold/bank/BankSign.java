@@ -3,7 +3,6 @@ package one.lindegaard.BagOfGold.bank;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -51,11 +50,13 @@ public class BankSign implements Listener {
 					double money = 0;
 					double moneyInHand = 0;
 					double moneyOnSign = 0;
+
 					// deposit BankSign
 					// -----------------------------------------------------------------------
 					if (signType.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line2.deposit"))) {
-						if (player.getItemInHand().getType().equals(Material.SKULL_ITEM)
-								&& Reward.isReward(player.getItemInHand())) {
+						if (Reward.isReward(player.getItemInHand())
+								&& (Reward.getReward(player.getItemInHand()).isBagOfGoldReward()
+										|| Reward.getReward(player.getItemInHand()).isItemReward())) {
 							Reward reward = Reward.getReward(player.getItemInHand());
 
 							moneyInHand = reward.getMoney();
@@ -147,8 +148,8 @@ public class BankSign implements Listener {
 												+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 					}
 				} else {
-					plugin.getMessages().playerSendMessage(player, plugin.getMessages()
-							.getString("bagofgold.banksign.only_survival"));
+					plugin.getMessages().playerSendMessage(player,
+							plugin.getMessages().getString("bagofgold.banksign.only_survival"));
 				}
 			} else {
 				plugin.getMessages().playerSendMessage(player, plugin.getMessages()
@@ -194,7 +195,7 @@ public class BankSign implements Listener {
 						ChatColor.stripColor(plugin.getMessages().getString("bagofgold.banksign.line3.everything")))) {
 					event.setLine(2, plugin.getMessages().getString("bagofgold.banksign.line3.everything"));
 				} else {
-				
+
 					try {
 						if (Double.valueOf(event.getLine(2)) > 0) {
 							plugin.getMessages().debug("%s created a Bag of gold Sign", event.getPlayer().getName());
