@@ -95,7 +95,11 @@ public class BagOfGoldEconomy implements Economy {
 					ItemStack is = player.getInventory().getItem(slot);
 					if (Reward.isReward(is)) {
 						Reward reward = Reward.getReward(is);
-						if (reward.isBagOfGoldReward())
+						if (reward.isBagOfGoldReward()
+								&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
+							amountInInventory = amountInInventory + reward.getMoney();
+						else if (reward.isBagOfGoldReward()
+								&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM"))
 							amountInInventory = amountInInventory + reward.getMoney();
 					}
 				}

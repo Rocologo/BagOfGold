@@ -1,19 +1,25 @@
 package one.lindegaard.BagOfGold.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 
 import com.earth2me.essentials.Essentials;
 
+import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.Economy_BagOfGold;
 import one.lindegaard.MobHunting.Messages;
 
 public class ConvertCommand implements ICommand {
@@ -102,17 +108,28 @@ public class ConvertCommand implements ICommand {
 				return true;
 			}
 
+			HashMap<UUID, Double> balances = new HashMap<UUID,Double>(); 
 			Essentials ess = null;
 			if (from_economy.getName().equalsIgnoreCase("Essentials Economy")) {
-				plugin.getMessages().debug("Hooking into Essentials");
-				ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+				BagOfGold bPlugin = (BagOfGold) Bukkit.getServer().getPluginManager().getPlugin("BagOfGold");
+				Essentials ePlugin = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+				Bukkit.getServer().getPluginManager().disablePlugin(bPlugin);
+				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+					Messages.debug("balance=%s", from_economy.getBalance(offlinePlayer));
+					balances.put(offlinePlayer.getUniqueId(), from_economy.getBalance(offlinePlayer));
+				}
+				Bukkit.getServer().getPluginManager().enablePlugin(bPlugin);
+				BagOfGold.hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
+			} else {
+				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+					Messages.debug("balance=%s", from_economy.getBalance(offlinePlayer));
+					balances.put(offlinePlayer.getUniqueId(), from_economy.getBalance(offlinePlayer));
+				}
 			}
-			for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-				if (ess != null)
-					plugin.getMessages().senderSendMessage(sender, offlinePlayer.getName() + " ess balance:"
-							+ String.valueOf(ess.getUser(offlinePlayer.getUniqueId()).getMoney()));
 
-				double from_balance = from_economy.getBalance(offlinePlayer);
+			for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+
+				double from_balance = balances.get(offlinePlayer.getUniqueId());
 				double to_balance = from_economy.getBalance(offlinePlayer);
 				plugin.getMessages().debug("%s: %s=%s and %s=%s", offlinePlayer.getName(), from_economy.getName(),
 						from_balance, to_economy.getName(), to_balance);
@@ -124,6 +141,7 @@ public class ConvertCommand implements ICommand {
 						offlinePlayer.getName() + ": " + String.valueOf(to_balance - from_balance));
 			}
 			plugin.getMessages().senderSendMessage(sender, Bukkit.getOfflinePlayers().length + " accounts converted");
+
 		} else {
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.RED + Messages.getString("bagofgold.commands.base.nopermission", "perm",

@@ -34,7 +34,7 @@ public class BagOfGold extends JavaPlugin {
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
-	private ServicesManager mServiceManager;
+	private static ServicesManager mServiceManager;
 	private PlayerSettingsManager mPlayerSettingsManager;
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
@@ -165,10 +165,10 @@ public class BagOfGold extends JavaPlugin {
 	// Hook into Vault / Economy
 	// ************************************************************************************
 
-	private void hookEconomy(Class<? extends Economy> hookClass, ServicePriority priority, String... packages) {
+	public static void hookEconomy(Class<? extends Economy> hookClass, ServicePriority priority, String... packages) {
 		try {
 			if (packagesExists(packages)) {
-				Economy economy = hookClass.getConstructor(Plugin.class).newInstance(this);
+				Economy economy = hookClass.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
 				mServiceManager.register(Economy.class, economy, Bukkit.getPluginManager().getPlugin("Vault"),
 						ServicePriority.Normal);
 				Bukkit.getLogger().info(String.format("[BagOfGold][Economy] BagOfGold found: %s",

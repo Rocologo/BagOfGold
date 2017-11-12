@@ -7,7 +7,7 @@
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
 	<!-- <version>0.8.5</version> -->
-	<version>0.8.5-SNAPSHOT-B${build.number}</version>
+	<version>0.8.6-SNAPSHOT-B${build.number}</version>
 	<name>BagOfGold</name>
 	<url>http://dev.bukkit.org/server-mods/bagofgold/</url>
 	<description>BagOfGold makes money on your server something you can see, take and loose...</description>
