@@ -106,7 +106,7 @@ public class BagOfGoldEconomy implements Economy {
 						//	amountInInventory = amountInInventory + reward.getMoney();
 					}
 				}
-				plugin.getMessages().debug("amountInInevtory=%s",amountInInventory);
+				plugin.getMessages().debug("amountInInventory=%s",amountInInventory);
 				if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
 					if (ps.getBalanceChanges() == 0) {
 						plugin.getMessages().debug("Warning %s has a balance problem (%s,%s). Adjusting balance to %s",

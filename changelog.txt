@@ -1,3 +1,7 @@
+V0.8.7
+* Automatic migration from Essentials Balance to BagOfGold Balance first time the player logs on.
+V0.8.6
+* The BagOfGold can be Minecraft Items (Igots/Emeralds and more). 
 V0.8.0
 * BankSigns added.
 V0.7.0

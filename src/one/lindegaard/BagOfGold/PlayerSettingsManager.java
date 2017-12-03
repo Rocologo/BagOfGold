@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
+import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 
 public class PlayerSettingsManager implements Listener {
 
@@ -49,9 +50,14 @@ public class PlayerSettingsManager implements Listener {
 				plugin.getMessages().debug("%s is not in the database (has played before=%s)", offlinePlayer.getName(),
 						offlinePlayer.hasPlayedBefore());
 				if (offlinePlayer.hasPlayedBefore())
-					return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
+					if (EssentialsCompat.isSupported()) {
+						double bal = EssentialsCompat.getEssentialsBalance(offlinePlayer);
+						return new PlayerSettings(offlinePlayer, bal);
+					} else
+						return new PlayerSettings(offlinePlayer, 0);
 				else
-					return new PlayerSettings(offlinePlayer, 0);
+					return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
+
 			}
 			plugin.getMessages().debug("%s is offline, fetching PlayerData from database", offlinePlayer.getName());
 			return ps;
@@ -98,7 +104,20 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerQuit(PlayerQuitEvent event) {
-		save(event.getPlayer());
+		final Player player = event.getPlayer();
+		final double balance = getPlayerSettings(player).getBalance();
+		save(player);
+		if (EssentialsCompat.isSupported()) {
+			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					EssentialsCompat.setEssentialsBalance(player,balance);
+					
+				}
+			}, 100L);
+			
+		}
 	}
 
 	/**
@@ -135,9 +154,9 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	public void save(final OfflinePlayer player) {
 		plugin.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player).isLearningMode(),
-				getPlayerSettings(player).isMuted(), getPlayerSettings(player).getBalance(),
-				getPlayerSettings(player).getBalanceChanges(), getPlayerSettings(player).getBankBalance(),
-				getPlayerSettings(player).getBankBalanceChanges());
+				getPlayerSettings(player).isMuted(), getPlayerSettings(player).getBalance()+
+				getPlayerSettings(player).getBalanceChanges(), 0, getPlayerSettings(player).getBankBalance()+
+				getPlayerSettings(player).getBankBalanceChanges(),0);
 	}
 
 	/**

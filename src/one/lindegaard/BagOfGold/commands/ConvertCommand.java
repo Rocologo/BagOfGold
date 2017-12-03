@@ -10,17 +10,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
-import com.earth2me.essentials.Essentials;
-
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Economy_BagOfGold;
-import one.lindegaard.MobHunting.Messages;
 
 public class ConvertCommand implements ICommand {
 
@@ -109,20 +104,18 @@ public class ConvertCommand implements ICommand {
 			}
 
 			HashMap<UUID, Double> balances = new HashMap<UUID,Double>(); 
-			Essentials ess = null;
 			if (from_economy.getName().equalsIgnoreCase("Essentials Economy")) {
 				BagOfGold bPlugin = (BagOfGold) Bukkit.getServer().getPluginManager().getPlugin("BagOfGold");
-				Essentials ePlugin = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
 				Bukkit.getServer().getPluginManager().disablePlugin(bPlugin);
 				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-					Messages.debug("balance=%s", from_economy.getBalance(offlinePlayer));
+					plugin.getMessages().debug("balance=%s", from_economy.getBalance(offlinePlayer));
 					balances.put(offlinePlayer.getUniqueId(), from_economy.getBalance(offlinePlayer));
 				}
 				Bukkit.getServer().getPluginManager().enablePlugin(bPlugin);
 				BagOfGold.hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 			} else {
 				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-					Messages.debug("balance=%s", from_economy.getBalance(offlinePlayer));
+					plugin.getMessages().debug("balance=%s", from_economy.getBalance(offlinePlayer));
 					balances.put(offlinePlayer.getUniqueId(), from_economy.getBalance(offlinePlayer));
 				}
 			}
@@ -144,7 +137,7 @@ public class ConvertCommand implements ICommand {
 
 		} else {
 			plugin.getMessages().senderSendMessage(sender,
-					ChatColor.RED + Messages.getString("bagofgold.commands.base.nopermission", "perm",
+					ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
 							"bagofgold.convert", "command", "convert"));
 		}
 

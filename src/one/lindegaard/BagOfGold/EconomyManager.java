@@ -20,7 +20,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.util.Misc;
-import one.lindegaard.MobHunting.Messages;
+//import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.MobHunting;
 
 public class EconomyManager {
@@ -39,10 +39,10 @@ public class EconomyManager {
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 		}
-		ps.setBalance(Misc.round(ps.getBalance() + amount));
+		ps.setBalance(Misc.round(ps.getBalance()+ps.getBalanceChanges() + amount));
 		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 		plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-		return new EconomyResponse(amount, ps.getBalance(), ResponseType.SUCCESS, null);
+		return new EconomyResponse(amount, ps.getBalance()+ps.getBalanceChanges(), ResponseType.SUCCESS, null);
 	}
 
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
@@ -50,13 +50,14 @@ public class EconomyManager {
 		if (has(offlinePlayer, amount)) {
 			if (offlinePlayer.isOnline()) {
 				removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, amount);
+				ps.setBalanceChanges(0);
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 			}
-			ps.setBalance(Misc.round(ps.getBalance() - amount));
+			ps.setBalance(Misc.round(ps.getBalance()+ps.getBalanceChanges() - amount));
 			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-			return new EconomyResponse(amount, ps.getBalance(), ResponseType.SUCCESS, null);
+			return new EconomyResponse(amount, ps.getBalance()+ps.getBalanceChanges(), ResponseType.SUCCESS, null);
 		} else
 			return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, plugin.getMessages()
 					.getString("bagofgold.commands.money.not-enough-money", "money", ps.getBalance()));
@@ -118,7 +119,6 @@ public class EconomyManager {
 				if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 					double saldo = Misc.round(reward.getMoney());
 					if (saldo > toBeTaken) {
-						plugin.getMessages().debug("remove=%s", saldo - toBeTaken);
 						reward.setMoney(Misc.round(saldo - toBeTaken));
 						is = setDisplayNameAndHiddenLores(is, reward);
 						player.getInventory().setItem(slot, is);
@@ -255,7 +255,7 @@ public class EconomyManager {
 
 	public void removeMoneyFromBalance(OfflinePlayer player, double amount) {
 		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(player);
-		Messages.debug("removing %s from balance %s", Misc.floor(amount),
+		plugin.getMessages().debug("removing %s from balance %s", Misc.floor(amount),
 				Misc.floor(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.floor(ps.getBalance() + ps.getBalanceChanges() - amount));
 		BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(player, ps);
@@ -264,7 +264,7 @@ public class EconomyManager {
 
 	public void addMoneyToBalance(OfflinePlayer player, double amount) {
 		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(player);
-		Messages.debug("adding %s to balance %s", Misc.floor(amount),
+		plugin.getMessages().debug("adding %s to balance %s", Misc.floor(amount),
 				Misc.floor(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.floor(ps.getBalance() + ps.getBalanceChanges() + amount));
 		BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(player, ps);

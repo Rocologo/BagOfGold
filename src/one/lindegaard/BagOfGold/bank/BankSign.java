@@ -84,8 +84,8 @@ public class BankSign implements Listener {
 								}
 							}
 
-							plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), money);
 							plugin.getEconomyManager().withdrawPlayer(player, money);
+							plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), money);
 
 							plugin.getMessages().debug("%s deposit %s %s into Bank", player.getName(),
 									Misc.format(money), reward.getDisplayname());
@@ -126,6 +126,9 @@ public class BankSign implements Listener {
 							plugin.getEconomyManager().bankWithdraw(player.getUniqueId().toString(), moneyOnSign);
 							plugin.getEconomyManager().depositPlayer(player, moneyOnSign);
 
+							plugin.getMessages().debug("%s withdraw %s %s from Bank", player.getName(),
+									Misc.format(money),
+									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
 							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
 									"bagofgold.banksign.withdraw", "money", Misc.format(moneyOnSign), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
@@ -198,7 +201,7 @@ public class BankSign implements Listener {
 
 					try {
 						if (Double.valueOf(event.getLine(2)) > 0) {
-							plugin.getMessages().debug("%s created a Bag of gold Sign", event.getPlayer().getName());
+							plugin.getMessages().debug("%s created a BagOfGold Bank Sign", event.getPlayer().getName());
 						}
 					} catch (NumberFormatException e) {
 						plugin.getMessages().playerSendMessage(player,
@@ -231,9 +234,9 @@ public class BankSign implements Listener {
 		Block b = event.getBlock();
 		if (isBankSign(b)) {
 			if (event.getPlayer().hasPermission("bagofgold.banksign.destroy")) {
-				plugin.getMessages().debug("%s destroyed a BagOfGold sign", event.getPlayer().getName());
+				plugin.getMessages().debug("%s destroyed a BagOfGold Bank Sign", event.getPlayer().getName());
 			} else {
-				plugin.getMessages().debug("%s tried to destroy a BagOfGold sign without permission",
+				plugin.getMessages().debug("%s tried to destroy a BagOfGold Bank Sign without permission",
 						event.getPlayer().getName());
 				event.getPlayer().sendMessage(plugin.getMessages().getString("bagofgold.banksign.no_permission", "perm",
 						"bagofgold.banksign.destroy"));

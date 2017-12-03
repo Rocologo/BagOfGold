@@ -10,6 +10,7 @@ import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
+import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 
 public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSettings> {
 
@@ -28,8 +29,15 @@ public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSetting
 			} catch (UserNotFoundException e) {
 				BagOfGold.getInstance().getMessages().debug("Insert new PlayerSettings for %s to database.",
 						mPlayer.getName());
+
+				double balance = BagOfGold.getInstance().getConfigManager().startingBalance;
+				if (mPlayer.hasPlayedBefore())
+					if (EssentialsCompat.isSupported()) {
+						balance = EssentialsCompat.getEssentialsBalance(mPlayer);
+					} else
+						balance = 0;
 				PlayerSettings ps = new PlayerSettings(mPlayer, BagOfGold.getInstance().getConfigManager().learningMode,
-						false, BagOfGold.getInstance().getConfigManager().startingBalance, 0, 0, 0);
+						false, balance, 0, 0, 0);
 				try {
 					store.insertPlayerSettings(ps);
 				} catch (DataStoreException e1) {
