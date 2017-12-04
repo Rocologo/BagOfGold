@@ -39,10 +39,10 @@ public class EconomyManager {
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 		}
-		ps.setBalance(Misc.round(ps.getBalance()+ps.getBalanceChanges() + amount));
+		ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 		plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-		return new EconomyResponse(amount, ps.getBalance()+ps.getBalanceChanges(), ResponseType.SUCCESS, null);
+		return new EconomyResponse(amount, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
 	}
 
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
@@ -54,10 +54,10 @@ public class EconomyManager {
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 			}
-			ps.setBalance(Misc.round(ps.getBalance()+ps.getBalanceChanges() - amount));
+			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-			return new EconomyResponse(amount, ps.getBalance()+ps.getBalanceChanges(), ResponseType.SUCCESS, null);
+			return new EconomyResponse(amount, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
 		} else
 			return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, plugin.getMessages()
 					.getString("bagofgold.commands.money.not-enough-money", "money", ps.getBalance()));
@@ -98,12 +98,13 @@ public class EconomyManager {
 							plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 							plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(amount),
 							UUID.randomUUID(), UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
-				else
+				else {
 					is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
-				setDisplayNameAndHiddenLores(is,
-						new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-								Misc.round(amount), UUID.fromString(Reward.MH_REWARD_ITEM_UUID), UUID.randomUUID(),
-								null));
+					setDisplayNameAndHiddenLores(is,
+							new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+									Misc.round(amount), UUID.fromString(Reward.MH_REWARD_ITEM_UUID), UUID.randomUUID(),
+									null));
+				}
 				player.getInventory().addItem(is);
 			}
 		}
@@ -133,7 +134,7 @@ public class EconomyManager {
 						taken = taken + saldo;
 						toBeTaken = toBeTaken - saldo;
 					}
-				} 
+				}
 			}
 		}
 

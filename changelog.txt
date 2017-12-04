@@ -1,3 +1,5 @@
+V0.8.8
+* Fixed bug where the BagOfGOld lost its skin, when placing the BagOfGold as a block
 V0.8.7
 * Automatic migration from Essentials Balance to BagOfGold Balance first time the player logs on.
 V0.8.6
