@@ -1,3 +1,7 @@
+V0.9.0
+* Citizens2 BankerTrait created. Deposit in the bank, withdraw from the bank, get the bank balance using an NPC.
+V0.8.9
+* Fixed bug where balance was set to 0 when player logged out. 
 V0.8.8
 * Fixed bug where the BagOfGOld lost its skin, when placing the BagOfGold as a block
 V0.8.7

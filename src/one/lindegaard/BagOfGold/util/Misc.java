@@ -11,7 +11,7 @@ import org.bukkit.block.Block;
 import one.lindegaard.BagOfGold.BagOfGold;
 
 public class Misc {
-	
+
 	public static double round(double d) {
 		return Math.round(d / BagOfGold.getInstance().getConfigManager().rewardRounding)
 				* BagOfGold.getInstance().getConfigManager().rewardRounding;
@@ -27,6 +27,9 @@ public class Misc {
 				* BagOfGold.getInstance().getConfigManager().rewardRounding;
 	}
 
+	// *******************************************************************
+	// Version detection
+	// *******************************************************************
 	public static boolean isMC112() {
 		return Bukkit.getBukkitVersion().contains("1.12");
 	}
@@ -90,7 +93,24 @@ public class Misc {
 			return false;
 		return true;
 	}
-	
+
+	// *******************************************************************
+	// Version detection
+	// *******************************************************************
+	public static boolean isGlowstoneServer() {
+		return Bukkit.getServer().getName().equalsIgnoreCase("Glowstone");
+	}
+
+	public static boolean isSpigotServer() {
+		return Bukkit.getServer().getName().equalsIgnoreCase("CraftBukkit")
+				&& Bukkit.getServer().getVersion().toLowerCase().contains("spigot");
+	}
+
+	public static boolean isCraftBukkitServer() {
+		return Bukkit.getServer().getName().equalsIgnoreCase("CraftBukkit")
+				&& Bukkit.getServer().getVersion().toLowerCase().contains("bukkit");
+	}
+
 	public static String format(double money) {
 		Locale locale = new Locale("en", "UK");
 		String pattern = "#.#####";
@@ -113,5 +133,4 @@ public class Misc {
 			return false;
 	}
 
-	
 }

@@ -5,7 +5,7 @@ description: Use BagOfGold as an Economy plugin
 dev-url: http://dev.bukkit.org/server-mods/bagofgold/
 author: Rocologo
 depend: [Vault]
-loadbefore: [Essentials]
+loadbefore: [Essentials, Citizens2]
 softdepend: []
 
 commands:

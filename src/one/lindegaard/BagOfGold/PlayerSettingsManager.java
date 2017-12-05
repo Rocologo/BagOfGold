@@ -106,7 +106,7 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		final double balance = getPlayerSettings(player).getBalance();
-		save(player);
+		//save(player);
 		if (EssentialsCompat.isSupported()) {
 			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 				

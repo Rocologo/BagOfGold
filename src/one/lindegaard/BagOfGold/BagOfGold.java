@@ -9,12 +9,16 @@ import one.lindegaard.BagOfGold.commands.DebugCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
 import one.lindegaard.BagOfGold.commands.VersionCommand;
+import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
+import one.lindegaard.BagOfGold.compatibility.CompatPlugin;
+import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.Updater;
+import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,6 +43,7 @@ public class BagOfGold extends JavaPlugin {
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private EconomyManager mEconomyManager;
+	private CompatibilityManager mCompatibilityManager;
 
 	private boolean mInitialized = false;
 
@@ -130,10 +135,15 @@ public class BagOfGold extends JavaPlugin {
 
 		mEconomyManager = new EconomyManager(this);
 
-		if (!getServer().getName().toLowerCase().contains("glowstone")) {
+		//mCompatibilityManager = new CompatibilityManager(this);
+
+		// Handle compatibility stuff
+		//if (Misc.isSpigotServer())
+		//	mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
+
+		if (!Misc.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
 			mMetricsManager.startMetrics();
-
 			mMetricsManager.startBStatsMetrics();
 		}
 

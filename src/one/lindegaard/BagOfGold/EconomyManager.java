@@ -127,10 +127,11 @@ public class EconomyManager {
 						toBeTaken = 0;
 						return Misc.round(taken);
 					} else {
-						is.setItemMeta(null);
-						is.setType(Material.AIR);
-						is.setAmount(0);
-						player.getInventory().setItem(slot, is);
+						//is.setItemMeta(null);
+						//is.setType(Material.AIR);
+						//is.setAmount(0);
+						//player.getInventory().setItem(slot, is);
+						player.getInventory().clear(slot);
 						taken = taken + saldo;
 						toBeTaken = toBeTaken - saldo;
 					}
