@@ -135,11 +135,11 @@ public class BagOfGold extends JavaPlugin {
 
 		mEconomyManager = new EconomyManager(this);
 
-		//mCompatibilityManager = new CompatibilityManager(this);
+		mCompatibilityManager = new CompatibilityManager(this);
 
 		// Handle compatibility stuff
-		//if (Misc.isSpigotServer())
-		//	mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
+		if (Misc.isSpigotServer())
+			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 
 		if (!Misc.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);

@@ -24,11 +24,11 @@ public class CitizensCompat implements Listener {
 	private CitizensPlugin citizensAPI;
 	//public static final String MH_CITIZENS = "BG:CITIZENS";
 
-	public CitizensCompat(BagOfGold plugin) {
-		this.plugin=plugin;
+	public CitizensCompat() {
+		this.plugin=BagOfGold.getInstance();
 		if (isDisabledInConfig()) {
 			Bukkit.getConsoleSender()
-					.sendMessage("[MobHunting] Compatibility with Citizens2 is disabled in config.yml");
+					.sendMessage("[BagOfGold] Compatibility with Citizens2 is disabled in config.yml");
 		} else {
 			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(CompatPlugin.Citizens.getName());
 			if (citizensAPI == null)
@@ -36,7 +36,7 @@ public class CitizensCompat implements Listener {
 
 			TraitInfo trait = TraitInfo.create(BagOfGoldBankerTrait.class).withName("BagOfGoldBanker");
 			citizensAPI.getTraitFactory().registerTrait(trait);
-			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with Citizens2 ("
+			Bukkit.getConsoleSender().sendMessage("[BagOfGold] Enabling compatibility with Citizens2 ("
 					+ getCitizensPlugin().getDescription().getVersion() + ")");
 
 			Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -47,11 +47,11 @@ public class CitizensCompat implements Listener {
 	// **************************************************************************
 	// LOAD & SAVE
 	// **************************************************************************
-	public static void loadCitizensData() {
+	public void loadCitizensData() {
 
 	}
 
-	public static void saveCitizensData() {
+	public void saveCitizensData() {
 
 	}
 

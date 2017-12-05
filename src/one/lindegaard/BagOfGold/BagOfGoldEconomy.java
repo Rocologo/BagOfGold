@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -97,15 +98,10 @@ public class BagOfGoldEconomy implements Economy {
 						Reward reward = Reward.getReward(is);
 						if (reward.isBagOfGoldReward()||reward.isItemReward())
 							amountInInventory = amountInInventory + reward.getMoney();
-						
-						//if (reward.isBagOfGoldReward() 
-						//		&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
-						//	amountInInventory = amountInInventory + reward.getMoney();
-						//else if (reward.isItemReward()
-						//		&& plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM"))
-						//	amountInInventory = amountInInventory + reward.getMoney();
 					}
 				}
+				if (player.getGameMode()!=GameMode.SURVIVAL)
+					return amountInInventory;
 				plugin.getMessages().debug("amountInInventory=%s",amountInInventory);
 				if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
 					if (ps.getBalanceChanges() == 0) {

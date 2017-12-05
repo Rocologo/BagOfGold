@@ -11,19 +11,18 @@ import one.lindegaard.BagOfGold.BagOfGold;
 public class CompatibilityManager {
 	
 	private BagOfGold plugin;
-	
-	public CompatibilityManager(BagOfGold bagOfGold){
-		this.plugin=bagOfGold;
+	private static HashSet<Object> mCompatClasses = new HashSet<Object>();
+
+	public CompatibilityManager(BagOfGold plugin){
+		this.plugin=plugin;
 	}
 	
-	private HashSet<Object> mCompatClasses = new HashSet<Object>();
-
 	public void registerPlugin(@SuppressWarnings("rawtypes") Class c, CompatPlugin pluginName) {
 		try {
 			register(c, pluginName);
 		} catch (Exception e) {
 			Bukkit.getServer().getConsoleSender()
-					.sendMessage(ChatColor.RED + "[MobHunting][ERROR] MobHunting could not register with [" + pluginName
+					.sendMessage(ChatColor.RED + "[BagOfGold][ERROR] MobHunting could not register with [" + pluginName
 							+ "] please check if [" + pluginName + "] is compatible with the server ["
 							+ Bukkit.getServer().getBukkitVersion() + "]");
 			if (plugin.getConfigManager().killDebug)
