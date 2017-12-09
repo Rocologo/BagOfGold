@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -39,9 +40,12 @@ public class EconomyManager {
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 		}
-		ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
-		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-		plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+		if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
+			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+			plugin.getMessages().debug("updating memory and database %s", ps.getBalance() + ps.getBalanceChanges());
+			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+		}
 		return new EconomyResponse(amount, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
 	}
 
@@ -54,9 +58,12 @@ public class EconomyManager {
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 			}
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+			if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
+				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+				plugin.getMessages().debug("updating memory and database %s", ps.getBalance() + ps.getBalanceChanges());
+				plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+				plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+			}
 			return new EconomyResponse(amount, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
 		} else
 			return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, plugin.getMessages()
@@ -127,10 +134,6 @@ public class EconomyManager {
 						toBeTaken = 0;
 						return Misc.round(taken);
 					} else {
-						//is.setItemMeta(null);
-						//is.setType(Material.AIR);
-						//is.setAmount(0);
-						//player.getInventory().setItem(slot, is);
 						player.getInventory().clear(slot);
 						taken = taken + saldo;
 						toBeTaken = toBeTaken - saldo;
@@ -255,21 +258,25 @@ public class EconomyManager {
 		return skull;
 	}
 
-	public void removeMoneyFromBalance(OfflinePlayer player, double amount) {
-		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(player);
+	public void removeMoneyFromBalance(OfflinePlayer offlinePlayer, double amount) {
+		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		plugin.getMessages().debug("removing %s from balance %s", Misc.floor(amount),
 				Misc.floor(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.floor(ps.getBalance() + ps.getBalanceChanges() - amount));
-		BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(player, ps);
-		BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(player, ps);
+		if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
+			BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+		}
 	}
 
-	public void addMoneyToBalance(OfflinePlayer player, double amount) {
-		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(player);
+	public void addMoneyToBalance(OfflinePlayer offlinePlayer, double amount) {
+		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		plugin.getMessages().debug("adding %s to balance %s", Misc.floor(amount),
 				Misc.floor(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.floor(ps.getBalance() + ps.getBalanceChanges() + amount));
-		BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(player, ps);
-		BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(player, ps);
+		if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
+			BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+		}
 	}
 }

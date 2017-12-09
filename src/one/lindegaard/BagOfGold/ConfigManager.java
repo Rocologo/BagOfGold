@@ -1,6 +1,7 @@
 package one.lindegaard.BagOfGold;
 
 import java.io.File;
+import java.util.HashMap;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 
@@ -24,6 +25,11 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################"
 						+ "\nDropMoneyOnGround Settings"
 						+ "\n########################################################################");
+
+		setCategoryComment("banker",
+				"########################################################################" + "\nBanker NPC settings"
+						+ "\n########################################################################"
+						+ "\nThe Banker is dependend on Citizens2 plugin.");
 
 		setCategoryComment("plugins",
 				"########################################################################"
@@ -113,6 +119,21 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http://mineskin.org")
 	public String dropMoneyOnGroundSkullTextureSignature = "m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=";
+
+	// #####################################################################################
+	// Banker Settings
+	// #####################################################################################
+	@ConfigField(name = "banker-npc", category = "banker", comment = "Banker")
+	public HashMap<String, String> actions = new HashMap<String, String>();
+	{
+		actions.put("balance.0", "0");
+		actions.put("deposit.10", "10");
+		actions.put("deposit.100", "100");
+		actions.put("deposit.all", "All");
+		actions.put("withdraw.10", "10");
+		actions.put("withdraw.100", "100");
+		actions.put("withdraw.all", "All");
+	}
 
 	// #####################################################################################
 	// Plugin integration

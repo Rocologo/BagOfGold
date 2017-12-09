@@ -100,10 +100,12 @@ public class BagOfGoldEconomy implements Economy {
 							amountInInventory = amountInInventory + reward.getMoney();
 					}
 				}
+				plugin.getMessages().debug("amountInInventory=%s",amountInInventory);
 				if (player.getGameMode()!=GameMode.SURVIVAL)
 					return amountInInventory;
-				plugin.getMessages().debug("amountInInventory=%s",amountInInventory);
+				
 				if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
+					plugin.getMessages().debug("inv=%s, bal=%s, changes=%s",amountInInventory,ps.getBalance(),ps.getBalanceChanges());
 					if (ps.getBalanceChanges() == 0) {
 						plugin.getMessages().debug("Warning %s has a balance problem (%s,%s). Adjusting balance to %s",
 								offlinePlayer.getName(), ps.getBalance(), amountInInventory,
@@ -285,21 +287,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-		if (offlinePlayer != null) {
-			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-			plugin.getMessages().debug("Adding %s to balance %s", amount, ps.getBalance() + ps.getBalanceChanges());
-			if (offlinePlayer.isOnline()) {
-				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
-				ps.setBalanceChanges(0);
-				plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, amount);
-			} else {
-				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
-			}
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-			plugin.getPlayerSettingsManager().save(offlinePlayer);
-			return new EconomyResponse(amount, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
-		}
-		return new EconomyResponse(0, 0, ResponseType.FAILURE, "unknown player");
+		return plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
 	}
 
 	/**
@@ -440,28 +428,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-		if (amount < 0)
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot withdraw negative funds");
-
-		if (offlinePlayer != null) {
-			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-			if (ps.getBalance() + ps.getBalanceChanges() >= amount) {
-				plugin.getMessages().debug("Removing %s from balance %s", amount,
-						ps.getBalance() + ps.getBalanceChanges());
-				if (offlinePlayer.isOnline()) {
-					ps.setBalance(ps.getBalance() + ps.getBalanceChanges() - amount);
-					ps.setBalanceChanges(0);
-					plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, amount);
-				} else {
-					ps.setBalanceChanges(ps.getBalanceChanges() - amount);
-				}
-				plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-				plugin.getPlayerSettingsManager().save(offlinePlayer);
-				return new EconomyResponse(0, ps.getBalance(), ResponseType.SUCCESS, null);
-			} else
-				return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, "Insufficient funds");
-		}
-		return new EconomyResponse(0, 0, ResponseType.FAILURE, "unknown player");
+		return plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
 	}
 
 	/**
@@ -569,20 +536,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankBalance(String account) {
-		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
-		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-			if (offlinePlayer.isOnline()) {
-				if (ps.getBankBalanceChanges() != 0) {
-					ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
-					ps.setBankBalanceChanges(0);
-					plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-					plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-				}
-			}
-			return new EconomyResponse(0, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
-		}
-		return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+		return plugin.getEconomyManager().bankBalance(account);
 	}
 
 	/**

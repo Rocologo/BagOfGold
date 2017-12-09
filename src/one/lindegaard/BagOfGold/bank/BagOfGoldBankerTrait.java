@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import com.mysql.jdbc.Messages;
+
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.BagOfGold.BagOfGold;
 
 public class BagOfGoldBankerTrait extends Trait implements Listener {
 	// http://wiki.citizensnpcs.co/API
@@ -21,11 +25,11 @@ public class BagOfGoldBankerTrait extends Trait implements Listener {
 	// The Trait class also implements Listener so you can add EventHandlers
 	// directly to your trait.
 
-	private MobHunting plugin;
+	private BagOfGold plugin;
 
 	public BagOfGoldBankerTrait() {
-		super("mastermobhunter");
-		this.plugin = MobHunting.getInstance();
+		super("banker");
+		this.plugin = BagOfGold.getInstance();
 	}
 
 	// see the 'Persistence API' section
@@ -70,6 +74,10 @@ public class BagOfGoldBankerTrait extends Trait implements Listener {
 		// Handle a click on a NPC. The event has a getNPC() method.
 		// Be sure to check event.getNPC() == this.getNPC() so you only handle
 		// clicks on this NPC!
+		if (event.getNPC()!=this.getNPC())
+			return;
+		Player player = event.getClicker();
+		plugin.getMessages().playerSendMessage(player, Messages.getString("bagofgold.banker.balance"));
 	}
 
 	// Called every tick
