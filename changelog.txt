@@ -1,4 +1,6 @@
-V0.9.
+V0.9.2
+*
+V0.9.1
 * Bug fixing on BagOfGold player balance
 V0.9.0
 * Citizens2 BankerTrait created. Deposit in the bank, withdraw from the bank, get the bank balance using an NPC.

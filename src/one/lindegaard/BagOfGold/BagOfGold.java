@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold;
 
 import java.io.File;
 
+import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.CommandDispatcher;
 import one.lindegaard.BagOfGold.commands.ConvertCommand;
@@ -44,6 +45,7 @@ public class BagOfGold extends JavaPlugin {
 	private DataStoreManager mStoreManager;
 	private EconomyManager mEconomyManager;
 	private CompatibilityManager mCompatibilityManager;
+	private BankManager mBankManager;
 
 	private boolean mInitialized = false;
 
@@ -136,6 +138,8 @@ public class BagOfGold extends JavaPlugin {
 		mEconomyManager = new EconomyManager(this);
 
 		mCompatibilityManager = new CompatibilityManager(this);
+		
+		mBankManager = new BankManager(this);
 
 		// Handle compatibility stuff
 		if (Misc.isSpigotServer())
@@ -269,6 +273,10 @@ public class BagOfGold extends JavaPlugin {
 	 */
 	public EconomyManager getEconomyManager() {
 		return mEconomyManager;
+	}
+
+	public BankManager getBankManager() {
+		return mBankManager;
 	}
 
 	public static BagOfGold getApi() {

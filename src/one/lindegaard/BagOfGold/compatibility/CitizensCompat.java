@@ -21,7 +21,7 @@ public class CitizensCompat implements Listener {
 	private BagOfGold plugin;
 
 	private boolean supported = false;
-	private CitizensPlugin citizensAPI;
+	private static CitizensPlugin citizensAPI;
 	//public static final String MH_CITIZENS = "BG:CITIZENS";
 
 	public CitizensCompat() {
@@ -70,7 +70,7 @@ public class CitizensCompat implements Listener {
 		}
 	}
 
-	public CitizensPlugin getCitizensPlugin() {
+	public static CitizensPlugin getCitizensPlugin() {
 		return citizensAPI;
 	}
 
@@ -148,6 +148,9 @@ public class CitizensCompat implements Listener {
 
 		loadCitizensData();
 		saveCitizensData();
+		
+		//Bukkit.getPluginManager().registerEvents(new BagOfGoldBankerTrait(), plugin);
+
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
