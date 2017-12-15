@@ -94,6 +94,19 @@ public class PlayerSettingsManager implements Listener {
 		final Player player = event.getPlayer();
 		if (!containsKey(player))
 			load(player);
+		else {
+			
+			if (getPlayerSettings(player).getBalanceChanges() != 0) {
+				plugin.getMessages().debug("Updating balances (%s,%s)", getPlayerSettings(player).getBalance(),getPlayerSettings(player).getBalanceChanges());
+				double change = getPlayerSettings(player).getBalanceChanges();
+				getPlayerSettings(player).setBalance(getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
+				getPlayerSettings(player).setBalanceChanges(0);
+				if (change > 0)
+					plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager(player, change);
+				else
+					plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager(player, change);
+			}
+		}
 	}
 
 	/**
@@ -106,43 +119,52 @@ public class PlayerSettingsManager implements Listener {
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		final double balance = getPlayerSettings(player).getBalance();
-		//save(player);
 		if (EssentialsCompat.isSupported()) {
 			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-				
+
 				@Override
 				public void run() {
-					EssentialsCompat.setEssentialsBalance(player,balance);
-					
+					EssentialsCompat.setEssentialsBalance(player, balance);
+
 				}
 			}, 100L);
-			
+
 		}
 	}
 
 	/**
 	 * Load PlayerSettings asynchronously from Database
 	 * 
-	 * @param player
+	 * @param offlinePlayer
 	 */
-	public void load(final OfflinePlayer player) {
-		plugin.getDataStoreManager().requestPlayerSettings(player, new IDataCallback<PlayerSettings>() {
+	public void load(final OfflinePlayer offlinePlayer) {
+		plugin.getDataStoreManager().requestPlayerSettings(offlinePlayer, new IDataCallback<PlayerSettings>() {
 
 			@Override
 			public void onCompleted(PlayerSettings ps) {
 				if (ps.isMuted())
-					plugin.getMessages().debug("%s isMuted()", player.getName());
+					plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
 				if (ps.isLearningMode())
-					plugin.getMessages().debug("%s is in LearningMode()", player.getName());
-				mPlayerSettings.put(player.getUniqueId(), ps);
+					plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
+				if (offlinePlayer.isOnline() && ps.getBalanceChanges() != 0) {
+					plugin.getMessages().debug("Updating balances (%s,%s)", ps.getBalance(),ps.getBalanceChanges());
+					double change = ps.getBalanceChanges();
+					ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
+					ps.setBalanceChanges(0);
+					if (change > 0)
+						plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, change);
+					else
+						plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, change);
+				}
+				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
 			}
 
 			@Override
 			public void onError(Throwable error) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[BagOfGold][ERROR] " + player.getName()
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[BagOfGold][ERROR] " + offlinePlayer.getName()
 						+ " is new, creating user in database.");
-				mPlayerSettings.put(player.getUniqueId(),
-						new PlayerSettings(player, plugin.getConfigManager().startingBalance));
+				mPlayerSettings.put(offlinePlayer.getUniqueId(),
+						new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance));
 			}
 		});
 	}
@@ -153,10 +175,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @param player
 	 */
 	public void save(final OfflinePlayer player) {
-		plugin.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player).isLearningMode(),
-				getPlayerSettings(player).isMuted(), getPlayerSettings(player).getBalance()+
-				getPlayerSettings(player).getBalanceChanges(), 0, getPlayerSettings(player).getBankBalance()+
-				getPlayerSettings(player).getBankBalanceChanges(),0);
+		plugin.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player));
 	}
 
 	/**

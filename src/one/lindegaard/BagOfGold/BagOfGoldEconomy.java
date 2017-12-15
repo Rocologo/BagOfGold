@@ -129,14 +129,16 @@ public class BagOfGoldEconomy implements Economy {
 								offlinePlayer.getName(), ps.getBalance(), ps.getBalanceChanges(),
 								ps.getBalance() + ps.getBalanceChanges());
 						double taken = 0;
-						if (ps.getBalanceChanges() > 0)
+						if (ps.getBalanceChanges() > 0){
 							plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager(player,
 									ps.getBalanceChanges());
-						else
+							ps.setBalanceChanges(0);
+						} else {
 							taken = plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager(player,
 									ps.getBalanceChanges());
+							ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - taken));
+						}
 						plugin.getMessages().debug("New Changes=%s", ps.getBalance() + ps.getBalanceChanges() - taken);
-						ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - taken));
 						plugin.getMessages().debug("New balance=%s", ps.getBalance() + ps.getBalanceChanges());
 						ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges()));
 					}

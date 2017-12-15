@@ -36,16 +36,16 @@ public class EconomyManager {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (offlinePlayer.isOnline()) {
 			addBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, ps.getBalanceChanges() + amount);
-			ps.setBalanceChanges(0);
+			if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
+				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+				ps.setBalanceChanges(0);
+			}
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 		}
-		if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
-			plugin.getMessages().debug("updating memory and database %s", ps.getBalance() + ps.getBalanceChanges());
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-		}
+		plugin.getMessages().debug("updating memory and database %s", ps.getBalance() + ps.getBalanceChanges());
+		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+		plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 		return new EconomyResponse(amount, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
 	}
 
@@ -54,12 +54,12 @@ public class EconomyManager {
 		if (has(offlinePlayer, amount)) {
 			if (offlinePlayer.isOnline()) {
 				removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, amount);
-				ps.setBalanceChanges(0);
-			} else {
-				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
-			}
-			if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
-				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+				if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
+					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+					ps.setBalanceChanges(0);
+				} else {
+					ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+				}
 				plugin.getMessages().debug("updating memory and database %s", ps.getBalance() + ps.getBalanceChanges());
 				plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 				plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
@@ -74,7 +74,7 @@ public class EconomyManager {
 		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance() >= amount;
 	}
 
-	public void addBagOfGoldPlayer_EconomyManager(OfflinePlayer offlinePlayer, double amount) {
+	public void addBagOfGoldPlayer_EconomyManager(Player offlinePlayer, double amount) {
 		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
 		boolean found = false;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {

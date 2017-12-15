@@ -96,7 +96,7 @@ public class PlayerSettings {
 	@Override
 	public String toString() {
 		return String.format(
-				"PlayerSettings: {player: Id:%s Name:%s, Learning: %s, Muted: %s, Balance: %s(+%s), Bank balance: %s(%s)}",
+				"PlayerSettings: {player: Id:%s Name:%s, Learning: %s, Muted: %s, Balance: %s(+%s), BankBalance: %s(%s)}",
 				playerId, player.getName(), learning_mode, mute, balance, balanceChanges, bankBalance,
 				bankBalanceChanges);
 	}

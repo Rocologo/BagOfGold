@@ -261,7 +261,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 					mUpdatePlayerSettings.setDouble(6, Misc.floor(playerData.getBankBalanceChanges()));
 					mUpdatePlayerSettings.setString(7, playerData.getPlayer().getUniqueId().toString());
 					mUpdatePlayerSettings.addBatch();
-					plugin.getMessages().debug("Player %s: Balance=%s+%s",playerData.getPlayer().getName(),playerData.getBalance(),playerData.getBankBalanceChanges());
 				}
 				mUpdatePlayerSettings.executeBatch();
 				mUpdatePlayerSettings.close();
