@@ -1,5 +1,7 @@
 translator: #汉化 - 海绵 修改 - WCZ
 
+bagofgold.banker.introduction=&2Hi, I am the &4BagOfGolf&2 Banker, please choose an action.. 
+
 bagofgold.banksign.line1=&2[${bankname}]
 bagofgold.banksign.line2.deposit=Deposit
 bagofgold.banksign.line2.withdraw=Withdraw

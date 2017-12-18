@@ -95,11 +95,14 @@ public class PlayerSettingsManager implements Listener {
 		if (!containsKey(player))
 			load(player);
 		else {
-			
+
 			if (getPlayerSettings(player).getBalanceChanges() != 0) {
-				plugin.getMessages().debug("Updating balances (%s,%s)", getPlayerSettings(player).getBalance(),getPlayerSettings(player).getBalanceChanges());
+				plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
+						player.getName(),
+						getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
 				double change = getPlayerSettings(player).getBalanceChanges();
-				getPlayerSettings(player).setBalance(getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
+				getPlayerSettings(player).setBalance(
+						getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
 				getPlayerSettings(player).setBalanceChanges(0);
 				if (change > 0)
 					plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager(player, change);
@@ -147,7 +150,8 @@ public class PlayerSettingsManager implements Listener {
 				if (ps.isLearningMode())
 					plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
 				if (offlinePlayer.isOnline() && ps.getBalanceChanges() != 0) {
-					plugin.getMessages().debug("Updating balances (%s,%s)", ps.getBalance(),ps.getBalanceChanges());
+					plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
+							offlinePlayer.getName(), ps.getBalance() + ps.getBalanceChanges());
 					double change = ps.getBalanceChanges();
 					ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
 					ps.setBalanceChanges(0);
