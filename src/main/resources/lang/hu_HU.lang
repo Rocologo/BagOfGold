@@ -5,7 +5,7 @@ bagofgold.moneypickup=Találtál ${money}
 bagofgold.moneydrop=Leesett ${money}
 bagofgold.moneylost=Veszítettél ${prize}!
 
-bagofgold.banker.introduction=&2Hi, I am the &4BagOfGolf&2 Banker, please choose an action.. 
+bagofgold.banker.introduction=&2Szia, én vagyok a &4BagOfGold&2 Banker, kérlek, válassz egy intézkedést.. 
 
 bagofgold.banksign.line1=&2[${bankname}]
 bagofgold.banksign.line2.deposit=Deposit
