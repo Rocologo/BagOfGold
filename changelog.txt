@@ -1,6 +1,6 @@
 V0.9.3
 * BagOfGold can not be used as a helmet anymore
-* Fixed Balance Problem when a player moved a BagOfGold from his inventory to a chest and then disconnected and connected again
+* Fixed Balance Problem when a player moved a BagOfGold from his inventory to another inventory.
 V0.9.2
 * Fixed bug when player balance was changed, while player was offline
 V0.9.1
