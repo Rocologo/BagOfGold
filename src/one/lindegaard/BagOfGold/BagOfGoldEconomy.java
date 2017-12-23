@@ -96,16 +96,17 @@ public class BagOfGoldEconomy implements Economy {
 					ItemStack is = player.getInventory().getItem(slot);
 					if (Reward.isReward(is)) {
 						Reward reward = Reward.getReward(is);
-						if (reward.isBagOfGoldReward()||reward.isItemReward())
+						if (reward.isBagOfGoldReward() || reward.isItemReward())
 							amountInInventory = amountInInventory + reward.getMoney();
 					}
 				}
-				plugin.getMessages().debug("amountInInventory=%s",amountInInventory);
-				if (player.getGameMode()!=GameMode.SURVIVAL)
+				plugin.getMessages().debug("amountInInventory=%s", amountInInventory);
+				if (player.getGameMode() != GameMode.SURVIVAL)
 					return amountInInventory;
-				
+
 				if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
-					plugin.getMessages().debug("inv=%s, bal=%s, changes=%s",amountInInventory,ps.getBalance(),ps.getBalanceChanges());
+					plugin.getMessages().debug("inv=%s, bal=%s, changes=%s", amountInInventory, ps.getBalance(),
+							ps.getBalanceChanges());
 					if (ps.getBalanceChanges() == 0) {
 						plugin.getMessages().debug("Warning %s has a balance problem (%s,%s). Adjusting balance to %s",
 								offlinePlayer.getName(), ps.getBalance(), amountInInventory,
@@ -121,7 +122,10 @@ public class BagOfGoldEconomy implements Economy {
 							plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager(player,
 									Misc.round(ps.getBalance() + ps.getBalanceChanges() - amountInInventory));
 						}
-						ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges()));
+						if (Misc.round(ps.getBalance() + ps.getBalanceChanges()) >= 0)
+							ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges()));
+						else
+							ps.setBalance(0);
 						ps.setBalanceChanges(0);
 					} else {
 						plugin.getMessages().debug(
@@ -129,7 +133,7 @@ public class BagOfGoldEconomy implements Economy {
 								offlinePlayer.getName(), ps.getBalance(), ps.getBalanceChanges(),
 								ps.getBalance() + ps.getBalanceChanges());
 						double taken = 0;
-						if (ps.getBalanceChanges() > 0){
+						if (ps.getBalanceChanges() > 0) {
 							plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager(player,
 									ps.getBalanceChanges());
 							ps.setBalanceChanges(0);
@@ -146,7 +150,7 @@ public class BagOfGoldEconomy implements Economy {
 					plugin.getDataStoreManager().updatePlayerSettings(player, ps);
 
 				} else {
-					//player is online
+					// player is online
 					if (ps.getBalanceChanges() != 0) {
 						plugin.getMessages().debug("Updating balance %s with changes %s", Misc.round(ps.getBalance()),
 								Misc.round(ps.getBalanceChanges()));

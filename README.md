@@ -8,5 +8,5 @@ Websites - more info
 - [SpigotMC](https://www.spigotmc.org/resources/mobhunting.3582/)
 
 ## Features
-* [Supports Minecraft 1.7.9 - 1.12.1]
+* [Supports Minecraft 1.8.0 - 1.12.2]
 * Language support
