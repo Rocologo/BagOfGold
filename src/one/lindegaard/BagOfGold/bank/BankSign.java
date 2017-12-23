@@ -15,6 +15,8 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
@@ -84,16 +86,16 @@ public class BankSign implements Listener {
 								}
 							}
 
-							plugin.getEconomyManager().withdrawPlayer(player, money);
-							plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), money);
-
-							plugin.getMessages().debug("%s deposit %s %s into Bank", player.getName(),
-									Misc.format(money), reward.getDisplayname());
-							plugin.getMessages().playerSendMessage(player,
-									plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
-											Misc.format(money), "rewardname",
-											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-													+ reward.getDisplayname().trim()));
+							if (plugin.getEconomyManager().withdrawPlayer(player, money).transactionSuccess()) {
+								plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), money);
+								plugin.getMessages().debug("%s deposit %s %s into Bank", player.getName(),
+										Misc.format(money), reward.getDisplayname());
+								plugin.getMessages().playerSendMessage(player,
+										plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
+												Misc.format(money), "rewardname",
+												ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+														+ reward.getDisplayname().trim()));
+							} 
 						} else {
 							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
 									"bagofgold.banksign.hold_bag_in_hand", "rewardname",

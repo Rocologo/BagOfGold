@@ -54,28 +54,33 @@ public class EconomyManager {
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (has(offlinePlayer, amount)) {
+			double removed=0;
 			if (offlinePlayer.isOnline()) {
-				removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, amount);
+				removed = removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, amount);
 				if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
-					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - removed));
 					ps.setBalanceChanges(0);
 				} else {
-					ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+					ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - removed));
 				}
-				plugin.getMessages().debug("withdraw %s, new balance is %s", amount,
+				plugin.getMessages().debug("withdraw %s, new balance is %s", removed,
 						Misc.round(ps.getBalance() + ps.getBalanceChanges()));
 				plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 				plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 			}
-			return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
+			return new EconomyResponse(removed, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 					ResponseType.SUCCESS, null);
-		} else
+		} else {
 			return new EconomyResponse(0, ps.getBalance(), ResponseType.FAILURE, plugin.getMessages()
 					.getString("bagofgold.commands.money.not-enough-money", "money", ps.getBalance()));
+		}
 	}
 
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance() >= amount;
+		plugin.getMessages().debug("has (%s=%s)",plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()+
+				plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges(),amount);
+		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()+
+				plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges() >= amount;
 	}
 
 	public void addBagOfGoldPlayer_EconomyManager(Player offlinePlayer, double amount) {
