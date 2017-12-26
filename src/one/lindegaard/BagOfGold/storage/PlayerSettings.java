@@ -13,6 +13,8 @@ public class PlayerSettings {
 	private double balanceChanges = 0;
 	private double bankBalance = 0;
 	private double bankBalanceChanges = 0;
+	private String texture;
+	private String signature;
 
 	public PlayerSettings(OfflinePlayer player, double balance) {
 		this.player = player;
@@ -159,6 +161,22 @@ public class PlayerSettings {
 
 	public void setBankBalanceChanges(double bankBalanceChanges) {
 		this.bankBalanceChanges = bankBalanceChanges;
+	}
+
+	public String getTexture() {
+		return texture;
+	}
+
+	public void setTexture(String texture) {
+		this.texture = texture;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
 	}
 
 }
