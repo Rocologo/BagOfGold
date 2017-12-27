@@ -7,6 +7,7 @@ import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.CommandDispatcher;
 import one.lindegaard.BagOfGold.commands.ConvertCommand;
 import one.lindegaard.BagOfGold.commands.DebugCommand;
+import one.lindegaard.BagOfGold.commands.NpcCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
 import one.lindegaard.BagOfGold.commands.VersionCommand;
@@ -102,6 +103,7 @@ public class BagOfGold extends JavaPlugin {
 		getCommand("bagofgold").setExecutor(mCommandDispatcher);
 		getCommand("bagofgold").setTabCompleter(mCommandDispatcher);
 		mCommandDispatcher.registerCommand(new ReloadCommand(this));
+		mCommandDispatcher.registerCommand(new NpcCommand(this));
 		mCommandDispatcher.registerCommand(new UpdateCommand(this));
 		mCommandDispatcher.registerCommand(new VersionCommand(this));
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
@@ -281,6 +283,10 @@ public class BagOfGold extends JavaPlugin {
 
 	public static BagOfGold getApi() {
 		return instance;
+	}
+
+	public CompatibilityManager getCompatibilityManager() {
+		return mCompatibilityManager;
 	}
 
 }

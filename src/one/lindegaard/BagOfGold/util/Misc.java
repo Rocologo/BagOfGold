@@ -7,6 +7,8 @@ import java.util.Locale;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.util.BlockIterator;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 
@@ -131,6 +133,19 @@ public class Misc {
 			return true;
 		else
 			return false;
+	}
+
+	public static final Block getTargetBlock(Player player, int range) {
+		BlockIterator iter = new BlockIterator(player, range);
+		Block lastBlock = iter.next();
+		while (iter.hasNext()) {
+			lastBlock = iter.next();
+			if (lastBlock.getType() == Material.AIR) {
+				continue;
+			}
+			break;
+		}
+		return lastBlock;
 	}
 
 }
