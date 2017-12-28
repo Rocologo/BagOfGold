@@ -1,3 +1,6 @@
+V0.9.6
+* Fixed bug in player balance when changing between Creative and Survival after giving BagOfGOld to the player
+* hu_HU.lang updated by @montlikadani - Thank you! 
 V0.9.5
 * Added new command to create a Banker NPC (Citizens2 required) /bag banker create.... Permission bagofgold.npc needed.
 * Trying to fix /mh head give...

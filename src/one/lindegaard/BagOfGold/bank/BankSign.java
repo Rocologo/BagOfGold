@@ -15,8 +15,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-import net.milkbowl.vault.economy.EconomyResponse;
-import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
