@@ -448,7 +448,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse isBankOwner(String account, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+		if (account.equalsIgnoreCase(player.getUniqueId().toString()))
+			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+		else
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
 	}
 
 	/**

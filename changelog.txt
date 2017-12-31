@@ -1,3 +1,5 @@
+V0.9.7
+* Bug fixing. The Player balance should be more stable now.
 V0.9.6
 * Fixed bug in player balance when changing between Creative and Survival after giving BagOfGOld to the player
 * hu_HU.lang updated by @montlikadani - Thank you! 
