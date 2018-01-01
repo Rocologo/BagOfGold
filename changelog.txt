@@ -1,3 +1,5 @@
+V0.9.8
+* Minor bug fixing. I recommend to update both MobHunting and BagOfGold though.
 V0.9.7
 * Bug fixing. The Player balance should be more stable now.
 V0.9.6

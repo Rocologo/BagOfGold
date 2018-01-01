@@ -386,28 +386,30 @@ public class EconomyManager implements Listener {
 		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		plugin.getMessages().debug("removing %s from balance %s", Misc.round(amount),
 				Misc.round(ps.getBalance() + ps.getBalanceChanges()));
-		
-		
-		if (offlinePlayer.isOnline()){
+
+		if (offlinePlayer.isOnline()) {
 			Player player = (Player) offlinePlayer;
-			if (player.getGameMode()==GameMode.SURVIVAL) {
+			if (player.getGameMode() == GameMode.SURVIVAL) {
 				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 				ps.setBalanceChanges(0);
 			} else {
-				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges()-amount));
+				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 			}
 		} else {
-			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges()-amount));
+			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 		}
 		BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 		BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-		
-		
-		//ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
-		//if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
-		//	BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-		//	BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-		//}
+
+		// ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() -
+		// amount));
+		// if (!offlinePlayer.isOnline() || (((Player)
+		// offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
+		// BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer,
+		// ps);
+		// BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer,
+		// ps);
+		// }
 	}
 
 	public void addMoneyToBalance(OfflinePlayer offlinePlayer, double amount) {
@@ -429,10 +431,7 @@ public class EconomyManager implements Listener {
 			return;
 
 		Player player = event.getPlayer();
-		//plugin.getMessages().debug("onPlayerGameModeChange:%s changed gamemode from %s to %s", player.getName(),
-		//		player.getGameMode(), event.getNewGameMode());
 		if (event.getNewGameMode() == GameMode.SURVIVAL) {
-			//plugin.getMessages().debug("onPlayerGameModeChange:%s balance=%s", player.getName(), getBalance(player));
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 			double amountInInventory = 0;
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
@@ -444,29 +443,15 @@ public class EconomyManager implements Listener {
 				}
 			}
 
-			//plugin.getMessages().debug("onPlayerGameModeChange:inv=%s, bal=%s, changes=%s", amountInInventory,
-			//		ps.getBalance(), ps.getBalanceChanges());
-			if (ps.getBalanceChanges() == 0) {
-				plugin.getMessages().debug(
-						"EconomyManager-onPlayerGameModeChange:Warning %s has a balance problem (%s,%s). Adjusting balance to %s",
-						player.getName(), ps.getBalance(), amountInInventory, ps.getBalance() + ps.getBalanceChanges());
-				if (amountInInventory > ps.getBalance() + ps.getBalanceChanges()) {
-					plugin.getMessages().debug("EconomyManager-onPlayerGameModeChange:removing %s from playerinventory",
-							Misc.round(amountInInventory - (ps.getBalance() + ps.getBalanceChanges())));
+			if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
+				plugin.getMessages().debug("onPlayerGameModeChange: Adjusting inventory balance to %s",
+						amountInInventory);
+				if (amountInInventory > ps.getBalance() + ps.getBalanceChanges())
 					MobHunting.getInstance().getRewardManager().removeBagOfGoldPlayer_RewardManager(player,
 							Misc.round(amountInInventory - (ps.getBalance() + ps.getBalanceChanges())));
-					// plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager(player,
-					// Misc.round(amountInInventory - (ps.getBalance() +
-					// ps.getBalanceChanges())));
-				} else {
-					plugin.getMessages().debug("EconomyManager-onPlayerGameModeChange:adding %s to playerinventory",
-							ps.getBalance() + ps.getBalanceChanges() - amountInInventory);
+				else
 					MobHunting.getInstance().getRewardManager().addBagOfGoldPlayer_RewardManager(player,
 							Misc.round(ps.getBalance() + ps.getBalanceChanges() - amountInInventory));
-					// plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager(player,
-					// Misc.round(ps.getBalance() + ps.getBalanceChanges() -
-					// amountInInventory));
-				}
 			}
 		}
 	}
