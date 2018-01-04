@@ -82,5 +82,5 @@ bagofgold.commands.update.check=Új frissítések ellenőrzése...
 bagofgold.commands.update.version-found=új verzió elérhető!
 bagofgold.commands.update.help=Kérjük, írd be '/bagofgold update' a frissítéshez. 
 bagofgold.commands.version.description=A BagOfGold verziószámának megjelenítése.
-bagofgold.commands.version.currentversion=Ez a kiszolgáló fut 'BagOfGold V${currentversion}'.
+bagofgold.commands.version.currentversion=Ez a kiszolgáló fut 'BagOfGold ${currentversion}'.
 bagofgold.commands.version.newversion=Verzió ${newversion} elérhető. Használd '/bagofgold update' a plugin frissítéséhez.

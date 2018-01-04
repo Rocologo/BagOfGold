@@ -20,12 +20,12 @@ public class SpigetUpdater {
 		this.plugin = plugin;
 	}
 
-	private static SpigetUpdate spigetUpdate = null;
-	private static UpdateStatus updateAvailable = UpdateStatus.UNKNOWN;
+	private SpigetUpdate spigetUpdate = null;
+	private UpdateStatus updateAvailable = UpdateStatus.UNKNOWN;
 	private static String currentJarFile = "";
-	private static String newDownloadVersion = "";
+	private String newDownloadVersion = "";
 
-	public static SpigetUpdate getSpigetUpdate() {
+	public SpigetUpdate getSpigetUpdate() {
 		return spigetUpdate;
 	}
 
@@ -33,7 +33,7 @@ public class SpigetUpdater {
 		return updateAvailable;
 	}
 
-	public static void setUpdateAvailable(UpdateStatus b) {
+	public void setUpdateAvailable(UpdateStatus b) {
 		updateAvailable = b;
 	}
 
@@ -50,7 +50,7 @@ public class SpigetUpdater {
 	}
 
 	public void setNewDownloadVersion(String newDownloadVersion) {
-		SpigetUpdater.newDownloadVersion = newDownloadVersion;
+		this.newDownloadVersion = newDownloadVersion;
 	}
 
 	public void hourlyUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
@@ -71,7 +71,7 @@ public class SpigetUpdater {
 		}
 	}
 
-	public static boolean downloadAndUpdateJar() {
+	public boolean downloadAndUpdateJar() {
 		boolean succes = false;
 		final String OS = System.getProperty("os.name");
 		if (OS.indexOf("Win") >= 0) {

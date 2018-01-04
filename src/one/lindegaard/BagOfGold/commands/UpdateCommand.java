@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
 import one.lindegaard.BagOfGold.update.UpdateStatus;
-//import one.lindegaard.BagOfGold.update.BukkitUpdater;
 
 public class UpdateCommand implements ICommand {
 
@@ -58,19 +57,18 @@ public class UpdateCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		if (updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
-			if (SpigetUpdater.downloadAndUpdateJar()) {
+			if (updater.downloadAndUpdateJar())
 				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
-			} else {
+			else
 				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.could-not-update"));
-			}
-		} else if (updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED) {
+
+		} else if (updater.getUpdateAvailable() == UpdateStatus.RESTART_NEEDED)
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
-		} else {
+		else
 			updater.checkForUpdate(sender, true, false);
-		}
 		return true;
 	}
 
