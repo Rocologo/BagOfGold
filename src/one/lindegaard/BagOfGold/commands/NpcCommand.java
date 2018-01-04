@@ -101,7 +101,8 @@ public class NpcCommand implements ICommand, Listener {
 				if (args[0].equalsIgnoreCase("remove")) {
 					// add all npc which has the BagOfGold Trait
 					// for (int i = 0; i < values.length; i++)
-					// items.add(ChatColor.stripColor(values[i].translateName().replace(" ", "_")));
+					// items.add(ChatColor.stripColor(values[i].translateName().replace("
+					// ", "_")));
 				}
 			}
 		}
@@ -160,8 +161,12 @@ public class NpcCommand implements ICommand, Listener {
 				return true;
 
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
-				plugin.getMessages().senderSendMessage(sender,
-						plugin.getMessages().getString("bagofgold.commands.npc.selected", npc.getName(), npc.getId()));
+				if (npc != null)
+					plugin.getMessages().senderSendMessage(sender, plugin.getMessages().getString(
+							"bagofgold.commands.npc.selected", "npcname", npc.getName(), "npcid", npc.getId()));
+				else
+					plugin.getMessages().senderSendMessage(sender,
+							plugin.getMessages().getString("bagofgold.commands.npc.not_selected"));
 				return true;
 
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("create")) {

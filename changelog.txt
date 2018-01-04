@@ -1,3 +1,6 @@
+V0.9.9
+* Updating system changed from BukkitUpdater to SpigetUpdater (http://spiget.org) Curse broke my updating system again again :-(  
+* Language files updated.
 V0.9.8
 * Minor bug fixing. I recommend to update both MobHunting and BagOfGold though.
 V0.9.7

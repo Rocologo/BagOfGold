@@ -6,17 +6,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.update.SpigetUpdater;
 import one.lindegaard.BagOfGold.update.UpdateStatus;
-import one.lindegaard.BagOfGold.update.Updater;
+//import one.lindegaard.BagOfGold.update.BukkitUpdater;
 
 public class UpdateCommand implements ICommand {
 
 	private BagOfGold plugin;
-	private Updater updater;
+	private SpigetUpdater updater;
 
 	public UpdateCommand(BagOfGold plugin) {
 		this.plugin = plugin;
-		updater = new Updater(plugin);
+		updater = new SpigetUpdater(plugin);
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class UpdateCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		if (updater.getUpdateAvailable() == UpdateStatus.AVAILABLE) {
-			if (Updater.downloadAndUpdateJar()) {
+			if (SpigetUpdater.downloadAndUpdateJar()) {
 				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 			} else {
@@ -68,7 +69,7 @@ public class UpdateCommand implements ICommand {
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 		} else {
-			updater.pluginUpdateCheck(sender, true, false);
+			updater.checkForUpdate(sender, true, false);
 		}
 		return true;
 	}

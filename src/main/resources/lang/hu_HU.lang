@@ -73,6 +73,7 @@ bagofgold.commands.npc.created=NPC (${npcid}) létrehozva.
 bagofgold.commands.npc.no_npc_selected=Nem választottad ki a BagOfGold Banker-t.
 bagofgold.commands.npc.home_set=Otthon beállítva.
 bagofgold.commands.npc.selected=NPC ${npcname} (${npcid}) kiválasztva.
+bagofgold.commands.npc.not_selected=NPC was not selected. Move closer and look at the npc.
 bagofgold.commands.update.description=A plugin frissítése
 bagofgold.commands.update.complete=A plugin frissítve. Indítsd újra a kiszolgálót a frissítés befejezéséhez.
 bagofgold.commands.update.could-not-update=A plugin nem frissíthető. Ezt manuálisan kell elvégeznie.

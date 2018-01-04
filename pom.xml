@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.8</version>
-	<!-- <version>0.9.8-SNAPSHOT-B${build.number}</version> -->
+	<version>0.9.9</version>
+	<!-- <version>0.9.9-SNAPSHOT-B${build.number}</version> -->
 	<name>BagOfGold</name>
 	<url>http://dev.bukkit.org/server-mods/bagofgold/</url>
 	<description>BagOfGold makes money on your server something you can see, take and loose...</description>
@@ -57,7 +57,7 @@
 		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
 		<hologramdisplays.version>2.2.6</hologramdisplays.version>
 		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
-
+		<spigetupdate.version>1.4.0</spigetupdate.version>
 	</properties>
 
 
@@ -118,6 +118,8 @@
 					<artifactSet>
 						<includes>
 							<include>org.bstats:*</include>
+							<!-- <include>org.inventivetalent:reflectionhelper**</include>  -->
+							<include>org.inventivetalent.spiget-update:bukkit**</include>
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -218,7 +220,7 @@
 			<url>http://nexus.xworlds.eu/nexus/content/repositories/</url>
 		</repository>
 
-		<!-- BossBarAPI -->
+		<!-- Inventive Repo / SpigetUpdater / BossBarAPI -->
 		<repository>
 			<id>inventive-repo</id>
 			<url>http://repo.inventivetalent.org/content/groups/public/</url>
@@ -417,6 +419,14 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- SpigetUpdate -->
+		<dependency>
+			<groupId>org.inventivetalent.spiget-update</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${spigetupdate.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
 	</dependencies>
 
 

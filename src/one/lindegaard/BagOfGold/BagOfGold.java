@@ -19,7 +19,7 @@ import one.lindegaard.BagOfGold.storage.DataStoreManager;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
-import one.lindegaard.BagOfGold.update.Updater;
+import one.lindegaard.BagOfGold.update.SpigetUpdater;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
@@ -95,7 +95,7 @@ public class BagOfGold extends JavaPlugin {
 			}
 		}
 
-		Updater.setCurrentJarFile(this.getFile().getName());
+		SpigetUpdater.setCurrentJarFile(this.getFile().getName());
 
 		// Register commands
 		mCommandDispatcher = new CommandDispatcher(this, "bagofgold",
@@ -110,7 +110,7 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new ConvertCommand(this));
 
 		// Check for new MobHuntig updates
-		new Updater(this).hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
+		new SpigetUpdater(this).hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
 			mStore = new MySQLDataStore(this);
@@ -129,9 +129,6 @@ public class BagOfGold extends JavaPlugin {
 			setEnabled(false);
 			return;
 		}
-
-		// Check for new BagOfGold updates
-		Updater.setCurrentJarFile(this.getFile().getName());
 
 		mStoreManager = new DataStoreManager(this, mStore);
 

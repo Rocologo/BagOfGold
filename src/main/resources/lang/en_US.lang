@@ -73,6 +73,7 @@ bagofgold.commands.npc.created=NPC (${npcid}) was created.
 bagofgold.commands.npc.no_npc_selected=You have not selected a BagOfGold Banker.
 bagofgold.commands.npc.home_set=Home set.
 bagofgold.commands.npc.selected=NPC ${npcname} (${npcid}) selected.
+bagofgold.commands.npc.not_selected=NPC was not selected. Move closer and look at the npc.
 bagofgold.commands.update.description=Update the plugin
 bagofgold.commands.update.complete=Plugin updated. Restart server to complete the update.
 bagofgold.commands.update.could-not-update=The plugin could not be updated. You must do it manually.
