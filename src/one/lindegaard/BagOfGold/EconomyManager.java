@@ -36,6 +36,15 @@ public class EconomyManager implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 
+	/**
+	 * getBalance : calculate the player balance and checks if the player balance is
+	 * equal with the amount of money in the inventory. If there is a difference it
+	 * checks if there has been changes while the player was offline if not the
+	 * balance / amount in inventory will be adjusted.
+	 * 
+	 * @param offlinePlayer
+	 * @return
+	 */
 	public double getBalance(OfflinePlayer offlinePlayer) {
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
@@ -98,7 +107,6 @@ public class EconomyManager implements Listener {
 					}
 					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
 					plugin.getDataStoreManager().updatePlayerSettings(player, ps);
-					plugin.getMessages().debug("returning balance=%s", ps.getBalance() + ps.getBalanceChanges());
 					return ps.getBalance() + ps.getBalanceChanges();
 				} else {
 					// player is online
@@ -118,6 +126,15 @@ public class EconomyManager implements Listener {
 		return 0;
 	}
 
+	/**
+	 * depositPlayer : deposit the amount to the players balance and add the mount
+	 * to the players inventory. Do not deposit negative amounts!
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 * @return EconomyResponce containing amount, balance and ResponseType
+	 *         (Success/failure)
+	 */
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (offlinePlayer.isOnline()) {
@@ -139,6 +156,15 @@ public class EconomyManager implements Listener {
 				null);
 	}
 
+	/**
+	 * withdrawPlayer : deposit the amount to the players balance and add the mount
+	 * to the players inventory. Do not withdraw negative amounts.
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 * @return EconomyResponse containing amount withdraw, balance and ResponseType
+	 *         (Success/Failure).
+	 */
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (has(offlinePlayer, amount)) {
@@ -164,24 +190,33 @@ public class EconomyManager implements Listener {
 		}
 	}
 
+	/**
+	 * has : checks if the player has amount of mount on his balance.
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 * @return true if the player has the amount on his money.
+	 */
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
 		if (offlinePlayer.isOnline() && ((Player) offlinePlayer).getGameMode() != GameMode.SURVIVAL)
 			return false;
-		plugin.getMessages().debug("has(%s>=%s)",
+		plugin.getMessages().debug("Check if %s has %s %s on his balance=%s)", offlinePlayer.getName(), amount,
+				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
-						+ plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges(),
-				amount);
+						+ plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges());
 		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
 				+ plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges() >= amount;
 	}
 
+	/**
+	 * addBagOfGoldPlayer_EconomyManager: add amount to the player inventory, but
+	 * NOT on player balance.
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 */
 	public void addBagOfGoldPlayer_EconomyManager(Player offlinePlayer, double amount) {
 		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
-		// if (player.getGameMode() != GameMode.SURVIVAL) {
-		// plugin.getMessages().debug("Player is not in Survival mode, adjusting
-		// amount to 0");
-		// amount = 0;
-		// }
 		boolean found = false;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
@@ -221,12 +256,15 @@ public class EconomyManager implements Listener {
 		}
 	}
 
+	/**
+	 * removeBagOfGoldPlayer_EconomyManager: remove the amount from the player
+	 * inventory but NOT from the player balance.
+	 * 
+	 * @param player
+	 * @param amount
+	 * @return
+	 */
 	public double removeBagOfGoldPlayer_EconomyManager(Player player, double amount) {
-		// if (player.getGameMode() != GameMode.SURVIVAL) {
-		// plugin.getMessages().debug("Player is not in Survival mode, adjusting
-		// amount to 0");
-		// amount = 0;
-		// }
 		double taken = 0;
 		if (player.getGameMode() != GameMode.SURVIVAL)
 			amount = 0;
@@ -257,6 +295,16 @@ public class EconomyManager implements Listener {
 
 	}
 
+	/**
+	 * dropMoneyOnGround_EconomyManager: drop the amount of money in the location
+	 * 
+	 * @param player
+	 *            - not used in EconomyManager
+	 * @param killedEntity
+	 *            - not used in EconomyManager
+	 * @param location
+	 * @param money
+	 */
 	public void dropMoneyOnGround_EconomyManager(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
 		money = Misc.ceil(money);
@@ -299,6 +347,15 @@ public class EconomyManager implements Listener {
 		}
 	}
 
+	/**
+	 * bankDeposit: deposit the amount on the account.
+	 * 
+	 * @param account
+	 *            - This is the player UUID as a String
+	 * @param amount
+	 * @return EconomyResponse containing amount, balance and ResponseType
+	 *         (Success/Failure).
+	 */
 	public EconomyResponse bankDeposit(String account, double amount) {
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
@@ -317,6 +374,15 @@ public class EconomyManager implements Listener {
 		return new EconomyResponse(0, 0, ResponseType.FAILURE, "Player has no bank account");
 	}
 
+	/**
+	 * bankWithdraw: withdraw the amount from the account.
+	 * 
+	 * @param account
+	 *            - This is the player UUID as a String
+	 * @param amount
+	 * @return EconomyResponse containing amount, balance and ResponseType
+	 *         (Success/Failure).
+	 */
 	public EconomyResponse bankWithdraw(String account, double amount) {
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
@@ -336,6 +402,14 @@ public class EconomyManager implements Listener {
 
 	}
 
+	/**
+	 * bankBalance: withdraw the amount from the account.
+	 * 
+	 * @param account
+	 *            - This is the player UUID as a String
+	 * @return EconomyResponse containing amount, bank balance and ResponseType
+	 *         (Success/Failure).
+	 */
 	public EconomyResponse bankBalance(String account) {
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
@@ -352,6 +426,13 @@ public class EconomyManager implements Listener {
 
 	}
 
+	/**
+	 * deleteBank: Reset the account and set the bank balance to 0.
+	 * 
+	 * @param account
+	 *            - this is the player UUID.
+	 * @return ResponseType (Success/Failure)
+	 */
 	public EconomyResponse deleteBank(String account) {
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
@@ -365,6 +446,16 @@ public class EconomyManager implements Listener {
 		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
 	}
 
+	/**
+	 * setDisplayNameAndHiddenLores: add the Display name and the (hidden) Lores.
+	 * The lores identifies the reward and contain secret information.
+	 * 
+	 * @param skull
+	 *            - The base itemStack without the information.
+	 * @param reward
+	 *            - The reward information is added to the ItemStack
+	 * @return the updated ItemStack.
+	 */
 	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
 		ItemMeta skullMeta = skull.getItemMeta();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + reward.getDisplayname(),
@@ -382,6 +473,13 @@ public class EconomyManager implements Listener {
 		return skull;
 	}
 
+	/**
+	 * removeMoneyFromBalance: remove the amount from the player balance without
+	 * removing amount from the player inventory
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 */
 	public void removeMoneyFromBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		plugin.getMessages().debug("removing %s from balance %s", Misc.round(amount),
@@ -400,18 +498,15 @@ public class EconomyManager implements Listener {
 		}
 		BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 		BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-
-		// ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() -
-		// amount));
-		// if (!offlinePlayer.isOnline() || (((Player)
-		// offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
-		// BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer,
-		// ps);
-		// BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer,
-		// ps);
-		// }
 	}
 
+	/**
+	 * addMoneyToBalance: add amount to player balance but NOT on in the player
+	 * inventory
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 */
 	public void addMoneyToBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		plugin.getMessages().debug("adding %s to balance %s", Misc.round(amount),
@@ -423,6 +518,13 @@ public class EconomyManager implements Listener {
 		}
 	}
 
+	/**
+	 * onPlayerGameModeChange: when called the player inventory will be checked if
+	 * the amount on the balance is equal with the amount in inventory. If there is
+	 * a difference the player inventory will be adjusted.
+	 * 
+	 * @param event
+	 */
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
 		// Called before the gamemode change (NOT after)

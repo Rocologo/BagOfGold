@@ -1,3 +1,5 @@
+V1.0.0
+* Fixed bug in the new Updating system
 V0.9.9
 * Updating system changed from BukkitUpdater to SpigetUpdater (http://spiget.org) Curse broke my updating system again again :-(  
 * Language files updated.

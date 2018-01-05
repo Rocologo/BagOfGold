@@ -47,6 +47,7 @@ public class BagOfGold extends JavaPlugin {
 	private EconomyManager mEconomyManager;
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
+	private SpigetUpdater mSpigetUpdater;
 
 	private boolean mInitialized = false;
 
@@ -95,7 +96,8 @@ public class BagOfGold extends JavaPlugin {
 			}
 		}
 
-		SpigetUpdater.setCurrentJarFile(this.getFile().getName());
+		mSpigetUpdater = new SpigetUpdater(this);
+		mSpigetUpdater.setCurrentJarFile(this.getFile().getName());
 
 		// Register commands
 		mCommandDispatcher = new CommandDispatcher(this, "bagofgold",
@@ -109,8 +111,8 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
 		mCommandDispatcher.registerCommand(new ConvertCommand(this));
 
-		// Check for new MobHuntig updates
-		new SpigetUpdater(this).hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
+		// Check for new BagOfGold updates
+		mSpigetUpdater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
 
 		if (mConfig.databaseType.equalsIgnoreCase("mysql"))
 			mStore = new MySQLDataStore(this);
@@ -284,6 +286,10 @@ public class BagOfGold extends JavaPlugin {
 
 	public CompatibilityManager getCompatibilityManager() {
 		return mCompatibilityManager;
+	}
+
+	public SpigetUpdater getSpigetUpdater() {
+		return mSpigetUpdater;
 	}
 
 }

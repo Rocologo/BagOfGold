@@ -4,19 +4,17 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.update.UpdateStatus;
-import one.lindegaard.BagOfGold.update.SpigetUpdater;
 
 public class VersionCommand implements ICommand {
 
 	private BagOfGold plugin;
-	private SpigetUpdater updater;
 
 	public VersionCommand(BagOfGold plugin) {
 		this.plugin = plugin;
-		updater = new SpigetUpdater(plugin);
 	}
 
 	@Override
@@ -58,14 +56,17 @@ public class VersionCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 
-		plugin.getMessages().senderSendMessage(sender,
-				ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.currentversion",
-						"currentversion", plugin.getDescription().getVersion()));
-		if (updater.getUpdateAvailable() == UpdateStatus.AVAILABLE)
-			plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN + plugin.getMessages()
-					.getString("bagofgold.commands.version.newversion", "newversion", updater.getNewDownloadVersion()));
-		if (sender.hasPermission("bagofgold.update"))
-			updater.checkForUpdate(sender, true, true);
+		if (sender instanceof Player) {
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.currentversion",
+							"currentversion", plugin.getDescription().getVersion()));
+			if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.AVAILABLE)
+				plugin.getMessages().senderSendMessage(sender,
+						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.newversion",
+								"newversion", plugin.getSpigetUpdater().getNewDownloadVersion()));
+			if (sender.hasPermission("bagofgold.update"))
+				plugin.getSpigetUpdater().checkForUpdate(sender, true, true);
+		}
 		return true;
 	}
 
