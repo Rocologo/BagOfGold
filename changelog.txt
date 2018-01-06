@@ -1,3 +1,7 @@
+V1.0.1
+* Fixed "/bag version"
+* Removed some debug information.
+* Saved waiting data to database when server is stopping.
 V1.0.0
 * Fixed bug in the new Updating system
 V0.9.9

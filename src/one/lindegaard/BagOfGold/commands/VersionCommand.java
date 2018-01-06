@@ -55,7 +55,6 @@ public class VersionCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-
 		if (sender instanceof Player) {
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.currentversion",
@@ -64,9 +63,9 @@ public class VersionCommand implements ICommand {
 				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.newversion",
 								"newversion", plugin.getSpigetUpdater().getNewDownloadVersion()));
-			if (sender.hasPermission("bagofgold.update"))
-				plugin.getSpigetUpdater().checkForUpdate(sender, true, true);
 		}
+		if (sender.hasPermission("bagofgold.update"))
+			plugin.getSpigetUpdater().checkForUpdate(sender, true, true);
 		return true;
 	}
 

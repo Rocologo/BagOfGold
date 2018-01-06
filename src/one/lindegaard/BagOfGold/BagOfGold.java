@@ -166,6 +166,16 @@ public class BagOfGold extends JavaPlugin {
 	public void onDisable() {
 		if (!mInitialized)
 			return;
+		
+		try {
+			getMessages().debug("Shutdown StoreManager");
+			mStoreManager.shutdown();
+			getMessages().debug("Shutdown Store");
+			mStore.shutdown();
+		} catch (DataStoreException e) {
+			e.printStackTrace();
+		}
+		
 		instance.getMessages().debug("BagOfGold disabled.");
 	}
 
