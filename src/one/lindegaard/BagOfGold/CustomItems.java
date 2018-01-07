@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -76,7 +75,7 @@ public class CustomItems {
 		if (skin[0].isEmpty() || skin[1].isEmpty())
 			return skull;
 
-		ItemMeta skullMeta = skull.getItemMeta();
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 
 		GameProfile profile = new GameProfile(uuid, name);
 		profile.getProperties().put("textures", new Property("textures", skin[0], skin[1]));
@@ -228,7 +227,7 @@ public class CustomItems {
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;
 
-		ItemMeta skullMeta = skull.getItemMeta();
+		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 
 		GameProfile profile = new GameProfile(mPlayerUUID, mDisplayName);
 		profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
