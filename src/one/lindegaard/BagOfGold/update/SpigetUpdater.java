@@ -91,30 +91,29 @@ public class SpigetUpdater {
 							if (newJar.exists())
 								newJar.delete();
 							downloadedJar.renameTo(newJar);
-						}
-					} else {
-						if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
-							File currentJar = new File("plugins/" + currentJarFile);
-							File disabledJar = new File("plugins/" + currentJarFile + ".old");
-							int count = 0;
-							while (disabledJar.exists() && count++ < 100) {
-								disabledJar = new File("plugins/" + currentJarFile + ".old" + count);
+						} else {
+							if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
+								File currentJar = new File("plugins/" + currentJarFile);
+								File disabledJar = new File("plugins/" + currentJarFile + ".old");
+								int count = 0;
+								while (disabledJar.exists() && count++ < 100) {
+									disabledJar = new File("plugins/" + currentJarFile + ".old" + count);
+								}
+								if (!disabledJar.exists()) {
+									currentJar.renameTo(disabledJar);
+									File downloadedJar = new File("plugins/update/" + currentJarFile);
+									File newJar = new File("plugins/BagOfGold-" + newDownloadVersion + ".jar");
+									downloadedJar.renameTo(newJar);
+									plugin.getMessages().debug("Moved plugins/update/" + currentJarFile
+											+ " to plugins/BagOfGold-" + newDownloadVersion + ".jar");
+									updateAvailable = UpdateStatus.RESTART_NEEDED;
+								}
 							}
-							if (!disabledJar.exists()) {
-								currentJar.renameTo(disabledJar);
-								File downloadedJar = new File("plugins/update/" + currentJarFile);
-								File newJar = new File("plugins/BagOfGold-" + newDownloadVersion + ".jar");
-								downloadedJar.renameTo(newJar);
-								plugin.getMessages().debug("Moved plugins/update/" + currentJarFile + " to plugins/BagOfGold-"
-										+ newDownloadVersion + ".jar");
-								updateAvailable = UpdateStatus.RESTART_NEEDED;
-							}
 						}
+						this.cancel();
 					}
-					this.cancel();
 				}
 			}
-
 		}.runTaskTimer(plugin, 20L, 20L);
 		return true;
 	}
@@ -123,10 +122,9 @@ public class SpigetUpdater {
 
 		if (updateCheck) {
 			if (!silent)
-				BagOfGold.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] "
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] "
 						+ plugin.getMessages().getString("bagofgold.commands.update.check"));
 			if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
-
 				spigetUpdate = new SpigetUpdate(plugin, 49332);
 				spigetUpdate.setVersionComparator(VersionComparator.SEM_VER);
 				spigetUpdate.setUserAgent("BagOfGold-" + plugin.getDescription().getVersion());
@@ -141,7 +139,7 @@ public class SpigetUpdater {
 						sender.sendMessage(ChatColor.GREEN + "[BagOfGold] " + plugin.getMessages()
 								.getString("bagofgold.commands.update.version-found", "newversion", newVersion));
 						if (plugin.getConfigManager().autoupdate) {
-							spigetUpdate.downloadUpdate();
+							downloadAndUpdateJar();
 							sender.sendMessage(ChatColor.GREEN + "[BagOfGold] "
 									+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 						} else

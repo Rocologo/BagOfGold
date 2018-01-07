@@ -24,8 +24,8 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.BagOfGold.util.Misc;
-import one.lindegaard.MobHunting.Messages;
-import one.lindegaard.MobHunting.rewards.Reward;
+import one.lindegaard.MobHunting.MobHunting;
+import one.lindegaard.MobHunting.storage.PlayerSettings;
 
 public class CustomItems {
 
@@ -48,12 +48,30 @@ public class CustomItems {
 	public ItemStack getPlayerHead(UUID uuid, int amount, double money) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 
-		String name = Bukkit.getOfflinePlayer(uuid).getName();
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+		String name = offlinePlayer.getName();
 
-		String[] skin = getFromName(uuid);
+		PlayerSettings ps = MobHunting.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		String[] skin = new String[2];
+
+		if (ps.getTexture() == null || ps.getSignature() == null 
+				|| ps.getTexture().isEmpty()
+				|| ps.getSignature().isEmpty()) {
+			plugin.getMessages().debug("Trying to fecth skin from Minecraft Servers");
+			skin = getSkinFromUUID(uuid);
+		} else {
+			skin[0] = ps.getTexture();
+			skin[1] = ps.getSignature();
+		}
 
 		if (skin == null)
 			return getPlayerHeadOwningPlayer(uuid, amount, money);
+		else {
+			ps.setTexture(skin[0]);
+			ps.setSignature(skin[1]);
+			MobHunting.getInstance().getPlayerSettingsmanager().setPlayerSettings(offlinePlayer, ps);
+			MobHunting.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+		}
 
 		if (skin[0].isEmpty() || skin[1].isEmpty())
 			return skull;
@@ -67,7 +85,7 @@ public class CustomItems {
 		try {
 			profileField = skullMeta.getClass().getDeclaredField("profile");
 		} catch (NoSuchFieldException | SecurityException e) {
-			 return getPlayerHeadGameProfile(uuid, amount, money);
+			return getPlayerHeadGameProfile(uuid, amount, money);
 		}
 
 		profileField.setAccessible(true);
@@ -88,11 +106,11 @@ public class CustomItems {
 					+ " (" + Misc.format(money) + ")");
 
 		skull.setItemMeta(skullMeta);
-		Messages.debug("CustomItems: got the skin from URL database (%s)", name);
+		plugin.getMessages().debug("CustomItems: got the skin from URL database (%s)", name);
 		return skull;
 	}
 
-	private String[] getFromName(UUID uuid) {
+	private String[] getSkinFromUUID(UUID uuid) {
 		try {
 			URL url_1 = new URL(
 					"https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
@@ -107,11 +125,13 @@ public class CustomItems {
 				String signature = textureProperty.get("signature").getAsString();
 
 				return new String[] { texture, signature };
-			} else return null;
+			} else {
+				plugin.getMessages().debug("(1) Could not get skin data from session servers!");
+				return null;
+			}
 
 		} catch (IOException e) {
-			Messages.debug("Could not get skin data from session servers!");
-			//e.printStackTrace();
+			plugin.getMessages().debug("(2)Could not get skin data from session servers!");
 			return null;
 		}
 	}
@@ -162,15 +182,13 @@ public class CustomItems {
 			skullMeta.setDisplayName(offlinePlayer.getName());
 			skull.setAmount(amount);
 		} else {
-			skullMeta.setDisplayName(
-					offlinePlayer.getName() + " (" + Misc.format(money) + ")");
+			skullMeta.setDisplayName(offlinePlayer.getName() + " (" + Misc.format(money) + ")");
 			skull.setAmount(1);
 		}
 		skull.setItemMeta(skullMeta);
-		Messages.debug("CustomItems: got the skin from GameProfile (%s)", offlinePlayer.getName());
+		plugin.getMessages().debug("CustomItems: got the skin from GameProfile (%s)", offlinePlayer.getName());
 		return skull;
 	}
-
 
 	public ItemStack getPlayerHeadOwningPlayer(UUID uuid, int amount, double money) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
@@ -188,7 +206,7 @@ public class CustomItems {
 			skull.setAmount(1);
 		}
 		skull.setItemMeta(skullMeta);
-		Messages.debug("CustomItems: got the skin using OwningPlayer (%s)", name);
+		plugin.getMessages().debug("CustomItems: got the skin using OwningPlayer (%s)", name);
 		return skull;
 	}
 
@@ -245,4 +263,4 @@ public class CustomItems {
 		return skull;
 	}
 
-	}
+}

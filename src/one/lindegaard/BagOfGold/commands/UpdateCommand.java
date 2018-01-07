@@ -60,7 +60,6 @@ public class UpdateCommand implements ICommand {
 			else
 				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.could-not-update"));
-
 		} else if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.RESTART_NEEDED)
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
