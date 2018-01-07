@@ -53,8 +53,7 @@ public class CustomItems {
 		PlayerSettings ps = MobHunting.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
 		String[] skin = new String[2];
 
-		if (ps.getTexture() == null || ps.getSignature() == null 
-				|| ps.getTexture().isEmpty()
+		if (ps.getTexture() == null || ps.getSignature() == null || ps.getTexture().isEmpty()
 				|| ps.getSignature().isEmpty()) {
 			plugin.getMessages().debug("Trying to fecth skin from Minecraft Servers");
 			skin = getSkinFromUUID(uuid);
@@ -105,7 +104,7 @@ public class CustomItems {
 					+ " (" + Misc.format(money) + ")");
 
 		skull.setItemMeta(skullMeta);
-		plugin.getMessages().debug("CustomItems: got the skin from URL database (%s)", name);
+		plugin.getMessages().debug("CustomItems: set the skin using Mojang database (%s,%s)", name, uuid.toString());
 		return skull;
 	}
 
@@ -185,7 +184,7 @@ public class CustomItems {
 			skull.setAmount(1);
 		}
 		skull.setItemMeta(skullMeta);
-		plugin.getMessages().debug("CustomItems: got the skin from GameProfile (%s)", offlinePlayer.getName());
+		plugin.getMessages().debug("CustomItems: set the skin using GameProfile (%s,%s)", offlinePlayer.getName(),uuid.toString());
 		return skull;
 	}
 
@@ -205,7 +204,7 @@ public class CustomItems {
 			skull.setAmount(1);
 		}
 		skull.setItemMeta(skullMeta);
-		plugin.getMessages().debug("CustomItems: got the skin using OwningPlayer (%s)", name);
+		plugin.getMessages().debug("CustomItems: set the skin using OwningPlayer (%s)", name);
 		return skull;
 	}
 
