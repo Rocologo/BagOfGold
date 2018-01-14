@@ -1,5 +1,8 @@
+V1.0.3
+* Better hook into EssentialsX added for delayed load. 
 V1.0.2
 * Using player skin cache in MobHunting
+* Fixed /bag version
 V1.0.1
 * Fixed "/bag version"
 * Removed some debug information.

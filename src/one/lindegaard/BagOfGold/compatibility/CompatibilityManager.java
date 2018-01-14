@@ -1,28 +1,34 @@
 package one.lindegaard.BagOfGold.compatibility;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 
-public class CompatibilityManager {
-	
+public class CompatibilityManager implements Listener {
+
 	private BagOfGold plugin;
 	private static HashSet<Object> mCompatClasses = new HashSet<Object>();
+	private static HashMap<CompatPlugin, Class<?>> mWaitingCompatClasses = new HashMap<CompatPlugin, Class<?>>();
 
-	public CompatibilityManager(BagOfGold plugin){
-		this.plugin=plugin;
+	public CompatibilityManager(BagOfGold plugin) {
+		this.plugin = plugin;
+		Bukkit.getPluginManager().registerEvents(this, BagOfGold.getInstance());
 	}
-	
+
 	public void registerPlugin(@SuppressWarnings("rawtypes") Class c, CompatPlugin pluginName) {
 		try {
 			register(c, pluginName);
 		} catch (Exception e) {
-			Bukkit.getServer().getConsoleSender()
-					.sendMessage(ChatColor.RED + "[BagOfGold][ERROR] MobHunting could not register with [" + pluginName
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED + "[ERROR] MobHunting could not register with [" + pluginName
 							+ "] please check if [" + pluginName + "] is compatible with the server ["
 							+ Bukkit.getServer().getBukkitVersion() + "]");
 			if (plugin.getConfigManager().killDebug)
@@ -45,7 +51,8 @@ public class CompatibilityManager {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-		}
+		} else
+			mWaitingCompatClasses.put(pluginName, compatibilityHandler);
 	}
 
 	/**
@@ -63,6 +70,15 @@ public class CompatibilityManager {
 				return true;
 		}
 		return false;
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	private void onPluginEnabled(PluginEnableEvent event) {
+		CompatPlugin compatPlugin = CompatPlugin.getCompatPlugin(event.getPlugin().getName());
+		if (mWaitingCompatClasses.containsKey(compatPlugin)) {
+			registerPlugin(mWaitingCompatClasses.get(compatPlugin), compatPlugin);
+			mWaitingCompatClasses.remove(compatPlugin);
+		}
 	}
 
 }

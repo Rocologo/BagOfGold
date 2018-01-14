@@ -26,7 +26,6 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.rewards.Reward;
 
 public class EconomyManager implements Listener {
 

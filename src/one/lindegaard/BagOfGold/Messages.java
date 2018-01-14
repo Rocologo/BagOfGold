@@ -37,7 +37,7 @@ public class Messages {
 
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
-	private static final String PREFIX = "[BagOfGold]";
+	private static final String PREFIX = ChatColor.GOLD + "[BagOfGold]" + ChatColor.RESET;
 	private static String[] sources = new String[] { "en_US.lang", "zh_CN.lang" };
 
 	public void exportDefaultLanguages(BagOfGold plugin) {
@@ -49,7 +49,7 @@ public class Messages {
 			File dest = new File(folder, source);
 			if (!dest.exists()) {
 				// if (plugin.getResource("lang/" + source) != null) {
-				Bukkit.getLogger().info(PREFIX + " Creating language file " + source + " from JAR.");
+				Bukkit.getConsoleSender().sendMessage(PREFIX + " Creating language file " + source + " from JAR.");
 				plugin.saveResource("lang/" + source, false);
 			} else {
 				if (!injectChanges(plugin.getResource("lang/" + source),
@@ -82,7 +82,8 @@ public class Messages {
 				for (Entry<String, String> entry : newEntries.entrySet())
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				writer.close();
-				Bukkit.getLogger().info(PREFIX + " Updated " + onDisk.getName() + " language file with missing keys");
+				Bukkit.getConsoleSender()
+						.sendMessage(PREFIX + " Updated " + onDisk.getName() + " language file with missing keys");
 			}
 
 			return true;
@@ -187,7 +188,8 @@ public class Messages {
 			String encoding = detectEncoding(file);
 			if (encoding == null) {
 				FileInputStream input = new FileInputStream(file);
-				Bukkit.getLogger().warning(PREFIX + " Could not detect encoding of lang file. Defaulting to UTF-8");
+				Bukkit.getConsoleSender()
+						.sendMessage(PREFIX + " Could not detect encoding of lang file. Defaulting to UTF-8");
 				map = loadLang(input, "UTF-8");
 				input.close();
 			}
@@ -206,7 +208,7 @@ public class Messages {
 	public void setLanguage(String lang) {
 		File file = new File(plugin.getDataFolder(), "lang/" + lang);
 		if (!file.exists()) {
-			Bukkit.getLogger().severe(PREFIX
+			Bukkit.getConsoleSender().sendMessage(PREFIX
 					+ " Language file does not exist. Creating a new file based on en_US. You need to translate the file yourself.");
 			try {
 				file.createNewFile();
@@ -222,12 +224,12 @@ public class Messages {
 			mTranslationTable = loadLang(file);
 			sortFileOnDisk(file);
 		} else {
-			Bukkit.getLogger().warning(PREFIX + " Could not read the language file:" + file.getName());
+			Bukkit.getConsoleSender().sendMessage(PREFIX + " Could not read the language file:" + file.getName());
 		}
 
 		if (mTranslationTable == null) {
 			mTranslationTable = new HashMap<String, String>();
-			Bukkit.getLogger().warning(PREFIX + " Creating new translation table.");
+			Bukkit.getConsoleSender().sendMessage(PREFIX + " Creating new translation table.");
 		}
 	}
 
@@ -235,7 +237,7 @@ public class Messages {
 		String value = mTranslationTable.get(key);
 
 		if (value == null) {
-			Bukkit.getLogger().warning(PREFIX + " mTranslationTable has not key: " + key.toString());
+			Bukkit.getConsoleSender().sendMessage(PREFIX + " mTranslationTable has not key: " + key.toString());
 			throw new MissingResourceException("", "", key);
 		}
 
@@ -284,7 +286,7 @@ public class Messages {
 
 			return ChatColor.translateAlternateColorCodes('&', output);
 		} catch (MissingResourceException e) {
-			Bukkit.getLogger().warning(PREFIX + " MobHunting could not find key: " + key.toString());
+			Bukkit.getConsoleSender().sendMessage(PREFIX + " MobHunting could not find key: " + key.toString());
 			return key;
 		}
 	}

@@ -14,10 +14,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
-import one.lindegaard.MobHunting.compatibility.EssentialsCompat;
 
 public class PlayerSettingsManager implements Listener {
 
@@ -49,13 +49,10 @@ public class PlayerSettingsManager implements Listener {
 			} catch (DataStoreException | SQLException e) {
 				plugin.getMessages().debug("%s is not in the database (has played before=%s)", offlinePlayer.getName(),
 						offlinePlayer.hasPlayedBefore());
-				if (offlinePlayer.hasPlayedBefore())
-					if (EssentialsCompat.isSupported()) {
-						double bal = EssentialsCompat.getEssentialsBalance(offlinePlayer);
-						return new PlayerSettings(offlinePlayer, bal);
-					} else
-						return new PlayerSettings(offlinePlayer, 0);
-				else
+				if (offlinePlayer.hasPlayedBefore() && EssentialsCompat.isSupported()) {
+					double bal = EssentialsCompat.getEssentialsBalance(offlinePlayer);
+					return new PlayerSettings(offlinePlayer, bal);
+				} else
 					return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
 
 			}
@@ -113,8 +110,8 @@ public class PlayerSettingsManager implements Listener {
 	}
 
 	/**
-	 * Write PlayerSettings to Database when Player Quit and remove
-	 * PlayerSettings from memory
+	 * Write PlayerSettings to Database when Player Quit and remove PlayerSettings
+	 * from memory
 	 * 
 	 * @param event
 	 */
@@ -127,6 +124,7 @@ public class PlayerSettingsManager implements Listener {
 
 				@Override
 				public void run() {
+					
 					EssentialsCompat.setEssentialsBalance(player, balance);
 
 				}

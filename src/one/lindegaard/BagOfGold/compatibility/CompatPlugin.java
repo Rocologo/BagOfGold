@@ -26,7 +26,8 @@ public enum CompatPlugin {
 	Minigames("Minigames", 22), //
 	MinigamesLib("MinigamesLib", 23), //
 	MobArena("MobArena", 24), //
-	MobDungeon("MobDungeon", 25), MobStacker("MobStacker", 26), //
+	MobDungeon("MobDungeon", 25), //
+	MobStacker("MobStacker", 26), //
 	MyPet("MyPet", 27), //
 	MysteriousHalloween("MysteriousHalloween", 28), //
 	MythicMobs("MythicMobs", 29), //
@@ -38,7 +39,8 @@ public enum CompatPlugin {
 	StackMob("StackMob", 35), //
 	TARDISWeepingAngels("TARDISWeepingAngels", 36), //
 	TitleAPI("TitleAPI", 37), //
-	TitleManager("TitleManager", 38), Towny("Towny", 39), //
+	TitleManager("TitleManager", 38), //
+	Towny("Towny", 39), //
 	VanishNoPacket("VanishNoPacket", 40), //
 	War("War", 41), //
 	WorldEdit("WorldEdit", 42), //
@@ -46,7 +48,8 @@ public enum CompatPlugin {
 	Holograms("Holograms", 44), //
 	HolographicDisplays("HolographicDisplays", 45), //
 	PreciousStones("PreciousStones", 46), //
-	BagOfGold("BagOfGold", 47);
+	BagOfGold("BagOfGold", 47), //
+	MobHunting("MobHunting", 48);
 
 	private final String name;
 	private final Integer id;
@@ -70,6 +73,13 @@ public enum CompatPlugin {
 
 	public CompatPlugin valueOf(int id) {
 		return CompatPlugin.values()[id];
+	}
+
+	public static CompatPlugin getCompatPlugin(String pluginname) {
+		for (CompatPlugin name : values())
+			if (name.getName().equalsIgnoreCase(pluginname))
+				return name;
+		return null;
 	}
 
 	public String getName() {

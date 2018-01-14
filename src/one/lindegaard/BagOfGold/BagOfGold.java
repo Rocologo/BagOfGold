@@ -14,6 +14,7 @@ import one.lindegaard.BagOfGold.commands.VersionCommand;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
+import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
 import one.lindegaard.BagOfGold.storage.IDataStore;
@@ -75,8 +76,8 @@ public class BagOfGold extends JavaPlugin {
 		if (isbStatsEnabled())
 			instance.getMessages().debug("bStat is enabled");
 		else {
-			Bukkit.getConsoleSender().sendMessage(
-					ChatColor.RED + "[BagOfGold]=====================WARNING=============================");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+					+ "=====================WARNING=============================");
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.RED + "The statistics collection is disabled. As developer I need the");
 			Bukkit.getConsoleSender()
@@ -85,8 +86,8 @@ public class BagOfGold extends JavaPlugin {
 			Bukkit.getConsoleSender().sendMessage(
 					ChatColor.RED + "Please enable this in /plugins/bStats/config.yml and get rid of this");
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "message. Loading will continue in 15 sec.");
-			Bukkit.getConsoleSender().sendMessage(
-					ChatColor.RED + "[BagOfGold]=========================================================");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+					+ "=========================================================");
 			long now = System.currentTimeMillis();
 			while (System.currentTimeMillis() < now + 15000L) {
 				try {
@@ -139,12 +140,13 @@ public class BagOfGold extends JavaPlugin {
 		mEconomyManager = new EconomyManager(this);
 
 		mCompatibilityManager = new CompatibilityManager(this);
-		
+
 		mBankManager = new BankManager(this);
 
 		// Handle compatibility stuff
 		if (Misc.isSpigotServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
+		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
 
 		if (!Misc.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
@@ -166,7 +168,7 @@ public class BagOfGold extends JavaPlugin {
 	public void onDisable() {
 		if (!mInitialized)
 			return;
-		
+
 		try {
 			getMessages().debug("Shutdown StoreManager");
 			mStoreManager.shutdown();
@@ -175,7 +177,7 @@ public class BagOfGold extends JavaPlugin {
 		} catch (DataStoreException e) {
 			e.printStackTrace();
 		}
-		
+
 		instance.getMessages().debug("BagOfGold disabled.");
 	}
 
@@ -196,20 +198,19 @@ public class BagOfGold extends JavaPlugin {
 				Economy economy = hookClass.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
 				mServiceManager.register(Economy.class, economy, Bukkit.getPluginManager().getPlugin("Vault"),
 						ServicePriority.Normal);
-				Bukkit.getLogger().info(String.format("[BagOfGold][Economy] BagOfGold found: %s",
-						economy.isEnabled() ? "Loaded" : "Waiting"));
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
+						"[BagOfGold][Economy] BagOfGold found: %s", economy.isEnabled() ? "Loaded" : "Waiting"));
 			}
 		} catch (Exception e) {
-			Bukkit.getLogger().severe(String.format(
-					"[BagOfGold][Economy] There was an error hooking BagOfGold - check to make sure you're using a compatible version!"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
+					"[Economy] There was an error hooking BagOfGold - check to make sure you're using a compatible version!"));
 		}
 	}
 
 	/**
-	 * Determines if all packages in a String array are within the Classpath
-	 * This is the best way to determine if a specific plugin exists and will be
-	 * loaded. If the plugin package isn't loaded, we shouldn't bother waiting
-	 * for it!
+	 * Determines if all packages in a String array are within the Classpath This is
+	 * the best way to determine if a specific plugin exists and will be loaded. If
+	 * the plugin package isn't loaded, we shouldn't bother waiting for it!
 	 * 
 	 * @param packages
 	 *            String Array of package names to check

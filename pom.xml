@@ -6,11 +6,11 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.2</version>
-	<!-- <version>1.0.2-SNAPSHOT-B${build.number}</version> -->
+	<version>1.0.3</version>
+	<!-- <version>1.0.3-SNAPSHOT-B${build.number}</version> -->
 	<name>BagOfGold</name>
-	<url>http://dev.bukkit.org/server-mods/bagofgold/</url>
-	<description>BagOfGold makes money on your server something you can see, take and loose...</description>
+	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
+	<description>BagOfGold is an Item based eConomy plugin, which replace Essentials Economy, CraftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. </description>
 
 	<scm>
 		<connection>scm:svn:https://github.com/Rocologo/BagOfGold.git</connection>
@@ -41,7 +41,7 @@
 
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<vault.version>1.6.6</vault.version>
-		<mobhunting.version>5.3.6-SNAPSHOT-B544</mobhunting.version>
+		<mobhunting.version>5.4.0</mobhunting.version>
 		<bstats.version>1.2</bstats.version>
 
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>

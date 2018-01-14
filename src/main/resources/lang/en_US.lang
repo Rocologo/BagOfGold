@@ -5,7 +5,7 @@ bagofgold.moneypickup=You found ${money}
 bagofgold.moneydrop=You dropped ${money}
 bagofgold.moneylost=You lost ${prize}!
 
-bagofgold.banker.introduction=&2Hi, I am the &4BagOfGolf&2 Banker, please choose an action.. 
+bagofgold.banker.introduction=&2Hi, I am the &4BagOfGold&2 Banker, please choose an action.. 
 
 bagofgold.banksign.line1=&2[${bankname}]
 bagofgold.banksign.line2.deposit=Deposit

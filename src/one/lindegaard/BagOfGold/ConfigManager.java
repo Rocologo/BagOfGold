@@ -141,6 +141,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "disable-integration-citizens", category = "plugins", comment = "Disable integration with Citizens2")
 	public boolean disableIntegrationCitizens = false;
 
+	@ConfigField(name = "disable-integration-essentials", category = "plugins", comment = "Disable integration with Essentials"
+			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
+	public boolean disableIntegrationEssentials = false;
+
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
@@ -179,7 +183,9 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "database", category = "database")
 	public String databaseName = "bagofgold";
 
-	@ConfigField(name = "database_version", category = "database", comment = "FOR INTERNAL USE ONLY. DONT CHANGE THIS VALUE!")
+	@ConfigField(name = "database_version", category = "database", comment = "This is the database layout version. Mostly for internal use and you should not need"
+			+ "\nto change this value. In case you decide to delete your database and let it recreate"
+			+ "\nor if you change database type sqlite/mysql you should set this value to 0 again.")
 	public int databaseVersion = 0;
 
 	// #####################################################################################

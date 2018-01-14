@@ -11,24 +11,25 @@ import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class CitizensCompat implements Listener {
-	
+
 	private BagOfGold plugin;
 
 	private boolean supported = false;
 	private static CitizensPlugin citizensAPI;
-	//public static final String MH_CITIZENS = "BG:CITIZENS";
+	// public static final String MH_CITIZENS = "BG:CITIZENS";
 
 	public CitizensCompat() {
-		this.plugin=BagOfGold.getInstance();
+		this.plugin = BagOfGold.getInstance();
 		if (isDisabledInConfig()) {
-			Bukkit.getConsoleSender()
-					.sendMessage("[BagOfGold] Compatibility with Citizens2 is disabled in config.yml");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
+					+ "Compatibility with Citizens2 is disabled in config.yml");
 		} else {
 			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(CompatPlugin.Citizens.getName());
 			if (citizensAPI == null)
@@ -36,27 +37,14 @@ public class CitizensCompat implements Listener {
 
 			TraitInfo trait = TraitInfo.create(BagOfGoldBankerTrait.class).withName("BagOfGoldBanker");
 			citizensAPI.getTraitFactory().registerTrait(trait);
-			Bukkit.getConsoleSender().sendMessage("[BagOfGold] Enabling compatibility with Citizens2 ("
-					+ getCitizensPlugin().getDescription().getVersion() + ")");
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
+							+ "Enabling compatibility with Citizens2 ("
+							+ getCitizensPlugin().getDescription().getVersion() + ")");
 
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 
 		}
-	}
-
-	// **************************************************************************
-	// LOAD & SAVE
-	// **************************************************************************
-	public void loadCitizensData() {
-
-	}
-
-	public void saveCitizensData() {
-
-	}
-
-	public void saveCitizensData(String key) {
-
 	}
 
 	// **************************************************************************
@@ -143,19 +131,13 @@ public class CitizensCompat implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensEnableEvent(CitizensEnableEvent event) {
 		plugin.getMessages().debug("Citizens2 was enabled");
-
 		supported = true;
-
-		loadCitizensData();
-		saveCitizensData();
-		
-		//Bukkit.getPluginManager().registerEvents(new BagOfGoldBankerTrait(), plugin);
-
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onCitizensDisableEvent(CitizensDisableEvent event) {
-
+		plugin.getMessages().debug("Citizens2 was disabled");
+		supported = false;
 	}
 
 }
