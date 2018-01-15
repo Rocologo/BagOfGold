@@ -1,5 +1,9 @@
+V1.0.4
+* Added MobHunting Skin Cache - support for MC 1.8R1, 1.8R2, 1.8R3, 1.9R1, 1.10R1, 1.11R1, 1.12R1
+* Fixed formating in the console
 V1.0.3
-* Better hook into EssentialsX added for delayed load. 
+* Better hook into EssentialsX added for delayed load.
+* Better hook into MobHunting added fro delayed load. 
 V1.0.2
 * Using player skin cache in MobHunting
 * Fixed /bag version

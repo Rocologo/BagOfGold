@@ -115,7 +115,7 @@ public class Misc {
 
 	public static String format(double money) {
 		Locale locale = new Locale("en", "UK");
-		String pattern = "#.#####";
+		String pattern = "0.#####";
 		DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 		decimalFormat.applyPattern(pattern);
 		return decimalFormat.format(money);

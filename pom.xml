@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.3</version>
-	<!-- <version>1.0.3-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>1.0.4</version> -->
+	<version>1.0.4-SNAPSHOT-B${build.number}</version>
 	<name>BagOfGold</name>
 	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
 	<description>BagOfGold is an Item based eConomy plugin, which replace Essentials Economy, CraftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. </description>
@@ -31,7 +31,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<bukkit.version>1.12.2-R0.1-SNAPSHOT</bukkit.version>
+		<spigotmc112.version>1.12.2-R0.1-SNAPSHOT</spigotmc112.version>
+		<bukkit112.version>1.12.2-R0.1-SNAPSHOT</bukkit112.version>
+		<bukkit111R1.version>1.11-R1</bukkit111R1.version>
+		<bukkit110R1.version>1.10-R1</bukkit110R1.version>
+		<bukkit19R1.version>1.9-R1</bukkit19R1.version>
+		<bukkit18R3.version>1.8-R3</bukkit18R3.version>
+		<bukkit18R2.version>1.8-R2</bukkit18R2.version>
+		<bukkit18R1.version>1.8-R1</bukkit18R1.version>
 		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.8</javacompiler.version>
@@ -118,7 +125,7 @@
 					<artifactSet>
 						<includes>
 							<include>org.bstats:*</include>
-							<!-- <include>org.inventivetalent:reflectionhelper**</include>  -->
+							<!-- <include>org.inventivetalent:reflectionhelper**</include> -->
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
 						</includes>
 					</artifactSet>
@@ -281,15 +288,72 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc.version}</version>
+			<version>${spigotmc111R1.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- CraftBukkit -->
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkit111R1.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.11.2.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>bukkit2</artifactId>
+			<version>${bukkit110R1.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.10.2-R0.1-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>bukkit3</artifactId>
+			<version>${bukkit19R1.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.9-R0.1-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>bukkit4</artifactId>
+			<version>${bukkit18R3.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.8.8-R0.1-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>bukkit5</artifactId>
+			<version>${bukkit18R2.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.8.3-R0.1-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>bukkit6</artifactId>
+			<version>${bukkit18R1.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.8-R0.1-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigotmc112.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>${bukkit.version}</version>
+			<version>${bukkit112.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<!-- SpongeAPI -->
 		<dependency>
 			<groupId>org.spongepowered</groupId>
@@ -426,7 +490,7 @@
 			<version>${spigetupdate.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 
