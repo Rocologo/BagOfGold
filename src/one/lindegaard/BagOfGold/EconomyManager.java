@@ -550,11 +550,13 @@ public class EconomyManager implements Listener {
 				plugin.getMessages().debug("onPlayerGameModeChange: %s adjusting inventory balance to %s",
 						player.getName(), Misc.format(amountInInventory));
 				if (amountInInventory > ps.getBalance() + ps.getBalanceChanges())
-					MobHunting.getInstance().getRewardManager().removeBagOfGoldPlayer_RewardManager(player,
-							Misc.round(amountInInventory - (ps.getBalance() + ps.getBalanceChanges())));
+					removeBagOfGoldPlayer_EconomyManager(player, Misc.round(amountInInventory - (ps.getBalance() + ps.getBalanceChanges())));
+					//MobHunting.getInstance().getRewardManager().removeBagOfGoldPlayer_RewardManager(player,
+					//		Misc.round(amountInInventory - (ps.getBalance() + ps.getBalanceChanges())));
 				else
-					MobHunting.getInstance().getRewardManager().addBagOfGoldPlayer_RewardManager(player,
-							Misc.round(ps.getBalance() + ps.getBalanceChanges() - amountInInventory));
+					addBagOfGoldPlayer_EconomyManager(player, Misc.round(ps.getBalance() + ps.getBalanceChanges() - amountInInventory));
+					//MobHunting.getInstance().getRewardManager().addBagOfGoldPlayer_RewardManager(player,
+					//		Misc.round(ps.getBalance() + ps.getBalanceChanges() - amountInInventory));
 			}
 		}
 	}
