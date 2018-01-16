@@ -102,41 +102,49 @@ public class Economy_BagOfGold extends AbstractEconomy implements Listener {
 		return economy.fractionalDigits();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean createPlayerAccount(String playername) {
 		return economy.createPlayerAccount(playername);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean createPlayerAccount(String playername, String world) {
 		return economy.createPlayerAccount(playername, playername);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public double getBalance(String playername) {
 		return economy.getBalance(playername);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public double getBalance(String playername, String world) {
 		return economy.getBalance(playername, world);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean has(String playername, double amount) {
 		return economy.has(playername, amount);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean has(String playername, String world, double amount) {
 		return economy.has(playername, world, amount);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse depositPlayer(String playername, double amount) {
 		return economy.depositPlayer(playername, amount);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse depositPlayer(String playername, String world, double amount) {
 		return economy.depositPlayer(playername, world, amount);
@@ -152,6 +160,7 @@ public class Economy_BagOfGold extends AbstractEconomy implements Listener {
 		return economy.getBanks();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse createBank(String account, String playername) {
 		return economy.createBank(account, playername);
@@ -167,6 +176,7 @@ public class Economy_BagOfGold extends AbstractEconomy implements Listener {
 		return economy.bankHas(account, amount);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean hasAccount(String playername) {
 		return economy.hasAccount(playername);
@@ -182,11 +192,13 @@ public class Economy_BagOfGold extends AbstractEconomy implements Listener {
 		return economy.bankBalance(playername);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse isBankOwner(String account, String playername) {
 		return economy.isBankOwner(account, playername);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse isBankMember(String account, String playername) {
 		return economy.isBankMember(account, playername);

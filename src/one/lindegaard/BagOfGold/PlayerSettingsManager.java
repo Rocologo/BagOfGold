@@ -18,6 +18,7 @@ import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public class PlayerSettingsManager implements Listener {
 
@@ -95,8 +96,8 @@ public class PlayerSettingsManager implements Listener {
 
 			if (getPlayerSettings(player).getBalanceChanges() != 0) {
 				plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
-						player.getName(),
-						getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
+						player.getName(), Misc.format(getPlayerSettings(player).getBalance()
+								+ getPlayerSettings(player).getBalanceChanges()));
 				double change = getPlayerSettings(player).getBalanceChanges();
 				getPlayerSettings(player).setBalance(
 						getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
@@ -124,7 +125,7 @@ public class PlayerSettingsManager implements Listener {
 
 				@Override
 				public void run() {
-					
+
 					EssentialsCompat.setEssentialsBalance(player, balance);
 
 				}

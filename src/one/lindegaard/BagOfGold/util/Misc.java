@@ -1,16 +1,22 @@
 package one.lindegaard.BagOfGold.util;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.MobHunting.Messages;
 
 public class Misc {
 
@@ -146,6 +152,50 @@ public class Misc {
 			break;
 		}
 		return lastBlock;
+	}
+
+	/**
+	 * Gets the online player (backwards compatibility)
+	 *
+	 * @return number of players online
+	 */
+	public static int getOnlinePlayersAmount() {
+		try {
+			Method method = Server.class.getMethod("getOnlinePlayers");
+			if (method.getReturnType().equals(Collection.class)) {
+				return ((Collection<?>) method.invoke(Bukkit.getServer())).size();
+			} else {
+				return ((Player[]) method.invoke(Bukkit.getServer())).length;
+			}
+		} catch (Exception ex) {
+			Messages.debug(ex.getMessage());
+		}
+		return 0;
+	}
+
+	/**
+	 * Gets the online player (for backwards compatibility)
+	 *
+	 * @return all online players as a Java Collection, if return type of
+	 *         Bukkit.getOnlinePlayers() is Player[] it will be converted to a
+	 *         Collection.
+	 */
+	@SuppressWarnings({ "unchecked" })
+	public static Collection<Player> getOnlinePlayers() {
+		Method method;
+		try {
+			method = Bukkit.class.getDeclaredMethod("getOnlinePlayers");
+			Object players = method.invoke(null);
+			Collection<Player> newPlayers;
+			if (players instanceof Player[])
+				newPlayers = Arrays.asList((Player[]) players);
+			else
+				newPlayers = (Collection<Player>) players;
+			return newPlayers;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 
 }
