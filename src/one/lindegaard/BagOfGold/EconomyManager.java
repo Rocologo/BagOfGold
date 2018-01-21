@@ -80,7 +80,7 @@ public class EconomyManager implements Listener {
 						ps.setBalanceChanges(0);
 					} else {
 						plugin.getMessages().debug(
-								"%s - the balance changed while offline (%s+%s). Adjusting balance to %s",
+								"%s's balance changed while offline (%s+%s). Adjusting balance to %s",
 								offlinePlayer.getName(), Misc.format(ps.getBalance()),
 								Misc.format(ps.getBalanceChanges()),
 								Misc.format(ps.getBalance() + ps.getBalanceChanges()));
@@ -102,7 +102,7 @@ public class EconomyManager implements Listener {
 				} else {
 					// player is online
 					if (ps.getBalanceChanges() != 0) {
-						plugin.getMessages().debug("%s updating balance %s with changes %s", offlinePlayer.getName(),
+						plugin.getMessages().debug("Updating %s's balance %s with changes %s", offlinePlayer.getName(),
 								Misc.format(ps.getBalance()), Misc.format(ps.getBalanceChanges()));
 						ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges()));
 						ps.setBalanceChanges(0);
@@ -139,8 +139,8 @@ public class EconomyManager implements Listener {
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 		}
-		plugin.getMessages().debug("%s deposit %s, new balance is %s", offlinePlayer.getName(), Misc.format(amount),
-				Misc.format(ps.getBalance() + ps.getBalanceChanges()));
+		plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", Misc.format(amount),
+				offlinePlayer.getName(), Misc.format(ps.getBalance() + ps.getBalanceChanges()));
 		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 		plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 		return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
@@ -169,8 +169,8 @@ public class EconomyManager implements Listener {
 				}
 			} else
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
-			plugin.getMessages().debug("%s withdraw %s, new balance is %s", offlinePlayer.getName(),
-					Misc.format(amount), Misc.format(ps.getBalance() + ps.getBalanceChanges()));
+			plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", Misc.format(amount),
+					offlinePlayer.getName(), Misc.format(ps.getBalance() + ps.getBalanceChanges()));
 			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 			plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 			return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
@@ -217,8 +217,8 @@ public class EconomyManager implements Listener {
 					rewardInSlot.setMoney(rewardInSlot.getMoney() + amount);
 					is = setDisplayNameAndHiddenLores(is, rewardInSlot);
 					plugin.getMessages().debug(
-							"%s added %s to item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
-							player.getName(), Misc.format(amount), slot, Misc.format(rewardInSlot.getMoney()));
+							"Added %s to %s's item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
+							Misc.format(amount), player.getName(), slot, Misc.format(rewardInSlot.getMoney()));
 					found = true;
 					break;
 				}
@@ -332,8 +332,8 @@ public class EconomyManager implements Listener {
 								: Reward.getReward(is).getDisplayname() + " (" + Misc.format(Misc.round(money)) + ")"));
 				item.setCustomNameVisible(true);
 			}
-			plugin.getMessages().debug("%s was dropped on the ground as item %s (# of rewards=%s)", Misc.format(money),
-					plugin.getConfigManager().dropMoneyOnGroundItemtype,
+			plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)", player.getName(),
+					Misc.format(money), plugin.getConfigManager().dropMoneyOnGroundItemtype,
 					MobHunting.getInstance().getRewardManager().getDroppedMoney().size());
 		}
 	}
@@ -492,7 +492,7 @@ public class EconomyManager implements Listener {
 	 */
 	public void removeMoneyFromBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-		plugin.getMessages().debug("%s: removing %s from balance %s", offlinePlayer.getName(), Misc.format(amount),
+		plugin.getMessages().debug("Removing %s from %s's balance %s", Misc.format(amount), offlinePlayer.getName(),
 				Misc.format(ps.getBalance() + ps.getBalanceChanges()));
 
 		if (offlinePlayer.isOnline()) {
@@ -519,7 +519,7 @@ public class EconomyManager implements Listener {
 	 */
 	public void addMoneyToBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = BagOfGold.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-		plugin.getMessages().debug("%s: adding %s to balance %s", offlinePlayer.getName(), Misc.format(amount),
+		plugin.getMessages().debug("Adding %s to %s's balance %s", Misc.format(amount), offlinePlayer.getName(),
 				Misc.format(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 		if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
@@ -532,6 +532,9 @@ public class EconomyManager implements Listener {
 	 * onPlayerGameModeChange: when called the player inventory will be checked if
 	 * the amount on the balance is equal with the amount in inventory. If there is
 	 * a difference the player inventory will be adjusted.
+	 * 
+	 * When the player changes to Survival GameMode rewards with 0 value will be
+	 * removed.
 	 * 
 	 * @param event
 	 */
@@ -547,7 +550,7 @@ public class EconomyManager implements Listener {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 			double amountInInventory = getAmountInInventory(player);
 			if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
-				plugin.getMessages().debug("onPlayerGameModeChange: %s adjusting inventory balance to %s",
+				plugin.getMessages().debug("onPlayerGameModeChange: Adjusting %s's inventory balance to %s",
 						player.getName(), Misc.format(amountInInventory));
 				if (amountInInventory > ps.getBalance() + ps.getBalanceChanges())
 					removeBagOfGoldPlayer_EconomyManager(player,
@@ -556,6 +559,19 @@ public class EconomyManager implements Listener {
 					addBagOfGoldPlayer_EconomyManager(player,
 							Misc.round(ps.getBalance() + ps.getBalanceChanges() - amountInInventory));
 			}
+
+			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+				ItemStack is = player.getInventory().getItem(slot);
+				if (Reward.isReward(is)) {
+					Reward reward = Reward.getReward(is);
+					if (reward.isBagOfGoldReward() || reward.isItemReward()) {
+						if (reward.getMoney() == 0) {
+							player.getInventory().clear(slot);
+						}
+					}
+				}
+			}
 		}
 	}
+
 }

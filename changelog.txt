@@ -1,3 +1,6 @@
+V1.0.5
+* Fixed duplication bug, when a player changed from Survival to Creative and back, while not having a PerWorldInventory plugin.
+* Fixed some debug information.
 V1.0.4
 * Fixed balance problem, when changing the balance and the shutdown and restart server
 * Added MobHunting Skin Cache - support for MC 1.8R1, 1.8R2, 1.8R3, 1.9R1, 1.10R1, 1.11R1, 1.12R1
