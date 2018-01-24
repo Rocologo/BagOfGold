@@ -18,6 +18,7 @@ import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
+import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.BagOfGold.util.Misc;
 
 public class PlayerSettingsManager implements Listener {
@@ -47,6 +48,27 @@ public class PlayerSettingsManager implements Listener {
 			PlayerSettings ps;
 			try {
 				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
+			} catch (UserNotFoundException e) {
+
+				BagOfGold.getInstance().getMessages().debug("Insert new PlayerSettings for %s to database.",
+						offlinePlayer.getName());
+					
+				double balance = 0;
+				if (offlinePlayer.hasPlayedBefore())
+					if (EssentialsCompat.isSupported()) {
+						balance = EssentialsCompat.getEssentialsBalance(offlinePlayer);
+					} else
+						balance = BagOfGold.getInstance().getConfigManager().startingBalance;
+				ps = new PlayerSettings(offlinePlayer, BagOfGold.getInstance().getConfigManager().learningMode, false,
+						balance, 0, 0, 0);
+				try {
+					plugin.getStoreManager().insertPlayerSettings(ps);
+					mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
+				} catch (DataStoreException e1) {
+					e1.printStackTrace();
+				}
+				return ps;
+
 			} catch (DataStoreException | SQLException e) {
 				plugin.getMessages().debug("%s is not in the database (has played before=%s)", offlinePlayer.getName(),
 						offlinePlayer.hasPlayedBefore());

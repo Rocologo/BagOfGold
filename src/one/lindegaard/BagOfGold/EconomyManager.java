@@ -46,7 +46,7 @@ public class EconomyManager implements Listener {
 	 * @return
 	 */
 	public double getBalance(OfflinePlayer offlinePlayer) {
-		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+		//if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				Player player = (Player) offlinePlayer;
@@ -113,8 +113,8 @@ public class EconomyManager implements Listener {
 				}
 			} else // player is known but not online
 				return ps.getBalance() + ps.getBalanceChanges();
-		}
-		return 0;
+		//}
+		//return 0;
 	}
 
 	/**

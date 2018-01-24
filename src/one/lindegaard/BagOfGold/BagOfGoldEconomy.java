@@ -262,8 +262,6 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		if (offlinePlayer == null)
-			return false;
 		return getBalance(offlinePlayer) >= amount;
 	}
 
