@@ -52,7 +52,7 @@ public class PlayerSettingsManager implements Listener {
 
 				BagOfGold.getInstance().getMessages().debug("Insert new PlayerSettings for %s to database.",
 						offlinePlayer.getName());
-					
+
 				double balance = 0;
 				if (offlinePlayer.hasPlayedBefore())
 					if (EssentialsCompat.isSupported()) {
@@ -70,15 +70,11 @@ public class PlayerSettingsManager implements Listener {
 				return ps;
 
 			} catch (DataStoreException | SQLException e) {
-				plugin.getMessages().debug("%s is not in the database (has played before=%s)", offlinePlayer.getName(),
+				plugin.getMessages().debug("Error reading %s's data from the database", offlinePlayer.getName(),
 						offlinePlayer.hasPlayedBefore());
-				if (offlinePlayer.hasPlayedBefore() && EssentialsCompat.isSupported()) {
-					double bal = EssentialsCompat.getEssentialsBalance(offlinePlayer);
-					return new PlayerSettings(offlinePlayer, bal);
-				} else
-					return new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance);
-
+				return new PlayerSettings(offlinePlayer, 0);
 			}
+			mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
 			plugin.getMessages().debug("%s is offline, fetching PlayerData from database", offlinePlayer.getName());
 			return ps;
 		}
@@ -115,7 +111,6 @@ public class PlayerSettingsManager implements Listener {
 		if (!containsKey(player))
 			load(player);
 		else {
-
 			if (getPlayerSettings(player).getBalanceChanges() != 0) {
 				plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
 						player.getName(), Misc.format(getPlayerSettings(player).getBalance()
@@ -129,6 +124,9 @@ public class PlayerSettingsManager implements Listener {
 				else
 					plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager(player, change);
 			}
+		}
+		if (!player.hasPlayedBefore()) {
+			plugin.getEconomyManager().depositPlayer(player, plugin.getConfigManager().startingBalance);
 		}
 	}
 

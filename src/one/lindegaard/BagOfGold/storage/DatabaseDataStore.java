@@ -106,8 +106,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * Initialize the connection. Must be called after Opening of initial
-	 * connection. Open Prepared statements for batch processing large
-	 * selections of players. Batches will be performed in batches of 10,5,2,1
+	 * connection. Open Prepared statements for batch processing large selections of
+	 * players. Batches will be performed in batches of 10,5,2,1
 	 */
 	@Override
 	public void initialize() throws DataStoreException {
@@ -242,7 +242,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -268,10 +267,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mConnection.close();
 
 				plugin.getMessages().debug("PlayerSettings saved.");
-				
+
 				for (PlayerSettings playerData : playerDataSet) {
 					if (plugin.getPlayerSettingsManager().containsKey(playerData.getPlayer())
-							&& !playerData.getPlayer().isOnline())
+							&& !playerData.getPlayer().isOnline() && playerData.getPlayer().hasPlayedBefore())
 						plugin.getPlayerSettingsManager().removePlayerSettings(playerData.getPlayer());
 				}
 
@@ -314,10 +313,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 					UUID uuid = UUID.fromString(result.getString(1));
 					if (name != null && uuid != null)
 						if (offlinePlayer.getUniqueId().equals(uuid) && !offlinePlayer.getName().equals(name)) {
-							plugin.getLogger()
-									.warning("[BagOfGold] Name change detected(2): " + name + " -> "
-											+ offlinePlayer.getName() + " UUID="
-											+ offlinePlayer.getUniqueId().toString());
+							plugin.getLogger().warning("[BagOfGold] Name change detected(2): " + name + " -> "
+									+ offlinePlayer.getName() + " UUID=" + offlinePlayer.getUniqueId().toString());
 							changedNames.add(offlinePlayer);
 						}
 					playerId = result.getInt(3);
