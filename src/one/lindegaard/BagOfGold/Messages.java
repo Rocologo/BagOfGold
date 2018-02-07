@@ -33,12 +33,13 @@ public class Messages {
 
 	public Messages(BagOfGold plugin) {
 		this.plugin = plugin;
+		exportDefaultLanguages(plugin);
 	}
 
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 	private static final String PREFIX = ChatColor.GOLD + "[BagOfGold]" + ChatColor.RESET;
-	private static String[] sources = new String[] { "en_US.lang", "zh_CN.lang" };
+	private static String[] sources = new String[] { "en_US.lang", "hu_HU.lang", "zh_CN.lang" };
 
 	public void exportDefaultLanguages(BagOfGold plugin) {
 		File folder = new File(plugin.getDataFolder(), "lang");

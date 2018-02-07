@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -524,8 +525,8 @@ public class EconomyManager implements Listener {
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 		}
-		BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-		BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+		plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 	}
 
 	/**
@@ -589,6 +590,18 @@ public class EconomyManager implements Listener {
 					}
 				}
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerDeathEvent(PlayerDeathEvent event) {
+		Player player = event.getEntity();
+		if (player.getGameMode()!=GameMode.SURVIVAL) {
+			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
+			ps.setBalance(0);
+			ps.setBalanceChanges(0);
+			plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
+			plugin.getDataStoreManager().updatePlayerSettings(player, ps);
 		}
 	}
 

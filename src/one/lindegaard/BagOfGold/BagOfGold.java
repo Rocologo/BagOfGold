@@ -64,7 +64,6 @@ public class BagOfGold extends JavaPlugin {
 		mServiceManager = Bukkit.getServicesManager();
 
 		mMessages = new Messages(this);
-		mMessages.exportDefaultLanguages(this);
 
 		mConfig = new ConfigManager(this, new File(getDataFolder(), "config.yml"));
 
@@ -247,6 +246,15 @@ public class BagOfGold extends JavaPlugin {
 		return mMessages;
 	}
 
+	/**
+	 * setMessages
+	 * @param messages
+	 */
+	public void setMessages(Messages messages) {
+		mMessages=messages;
+	}
+
+	
 	public CommandDispatcher getCommandDispatcher() {
 		return mCommandDispatcher;
 	}

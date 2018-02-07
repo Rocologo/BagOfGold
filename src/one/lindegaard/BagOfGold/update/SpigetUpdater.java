@@ -70,17 +70,20 @@ public class SpigetUpdater {
 		}
 	}
 
-	public boolean downloadAndUpdateJar() {
+	public boolean downloadAndUpdateJar(CommandSender sender) {
+		final String OS = System.getProperty("os.name");
+		boolean succes = spigetUpdate.downloadUpdate();
 		new BukkitRunnable() {
 			int count = 0;
-			boolean succes = spigetUpdate.downloadUpdate();
-			final String OS = System.getProperty("os.name");
 
 			@Override
 			public void run() {
-				if (count++ > 10) {
+				if (count++ > 20) {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
-							+ " No updates found. (No response from server after 10s)");
+							+ " No updates found. (No response from server after 20s)");
+					plugin.getMessages().senderSendMessage(sender,
+							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.could-not-update"));
+					plugin.getMessages().debug("Update error: %s", spigetUpdate.getFailReason().toString());
 					this.cancel();
 				} else {
 					// Wait for the response
@@ -91,6 +94,8 @@ public class SpigetUpdater {
 							if (newJar.exists())
 								newJar.delete();
 							downloadedJar.renameTo(newJar);
+							plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN
+									+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 						} else {
 							if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
 								File currentJar = new File("plugins/" + currentJarFile);
@@ -107,6 +112,8 @@ public class SpigetUpdater {
 									plugin.getMessages().debug("Moved plugins/update/" + currentJarFile
 											+ " to plugins/BagOfGold-" + newDownloadVersion + ".jar");
 									updateAvailable = UpdateStatus.RESTART_NEEDED;
+									plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN
+											+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 								}
 							}
 						}
@@ -114,6 +121,7 @@ public class SpigetUpdater {
 					}
 				}
 			}
+
 		}.runTaskTimer(plugin, 20L, 20L);
 		return true;
 	}
@@ -139,11 +147,11 @@ public class SpigetUpdater {
 						sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN + plugin.getMessages()
 								.getString("bagofgold.commands.update.version-found", "newversion", newVersion));
 						if (plugin.getConfigManager().autoupdate) {
-							downloadAndUpdateJar();
+							downloadAndUpdateJar(sender);
 							sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
 									+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 						} else
-							sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
+							sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
 									+ plugin.getMessages().getString("bagofgold.commands.update.help"));
 					}
 

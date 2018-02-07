@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.Messages;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public class ReloadCommand implements ICommand {
 
@@ -52,8 +56,33 @@ public class ReloadCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 
-		plugin.getMessages().senderSendMessage(sender,
-				ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.reload.reload-error"));
+		long starttime = System.currentTimeMillis();
+		int i = 1;
+		while (plugin.getDataStoreManager().isRunning() && (starttime + 10000 > System.currentTimeMillis())) {
+			if (((int) (System.currentTimeMillis() - starttime)) / 1000 == i) {
+				plugin.getMessages().debug("saving data (%s)");
+				i++;
+			}
+		}
+
+		plugin.setMessages(new Messages(plugin));
+		
+		if (plugin.getConfigManager().loadConfig()) {
+			int n = Misc.getOnlinePlayersAmount();
+			if (n > 0) {
+				plugin.getMessages().debug("Reloading %s online playerSettings from the database", n);
+				// reload player settings
+				for (Player player : Misc.getOnlinePlayers())
+					plugin.getPlayerSettingsManager().load(player);
+			}
+
+			//if (CitizensCompat.isSupported())
+			//	CitizensCompat.loadCitizensData();
+
+			plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.reload.reload-complete"));
+
+		} else
+			plugin.getMessages().senderSendMessage(sender,ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.reload.reload-error"));
 
 		return true;
 	}

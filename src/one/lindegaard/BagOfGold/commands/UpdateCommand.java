@@ -53,14 +53,9 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-		if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.AVAILABLE) {
-			if (plugin.getSpigetUpdater().downloadAndUpdateJar())
-				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
-			else
-				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.could-not-update"));
-		} else if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.RESTART_NEEDED)
+		if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.AVAILABLE)
+			plugin.getSpigetUpdater().downloadAndUpdateJar(sender);
+		else if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.RESTART_NEEDED)
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 		else

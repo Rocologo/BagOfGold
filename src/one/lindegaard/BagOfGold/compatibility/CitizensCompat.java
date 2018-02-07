@@ -21,7 +21,7 @@ public class CitizensCompat implements Listener {
 
 	private BagOfGold plugin;
 
-	private boolean supported = false;
+	private static boolean supported = false;
 	private static CitizensPlugin citizensAPI;
 	// public static final String MH_CITIZENS = "BG:CITIZENS";
 
@@ -62,7 +62,7 @@ public class CitizensCompat implements Listener {
 		return citizensAPI;
 	}
 
-	public boolean isSupported() {
+	public static boolean isSupported() {
 		if (supported && citizensAPI != null && CitizensAPI.hasImplementation())
 			return supported;
 		else
