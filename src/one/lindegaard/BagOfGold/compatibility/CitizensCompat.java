@@ -8,6 +8,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
+//import one.lindegaard.CustomItemsLib.Util.Misc;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;

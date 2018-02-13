@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Messages;
 import one.lindegaard.BagOfGold.util.Misc;
+//import one.lindegaard.CustomItemsLib.Util.Misc;
 
 public class ReloadCommand implements ICommand {
 
@@ -66,7 +67,7 @@ public class ReloadCommand implements ICommand {
 		}
 
 		plugin.setMessages(new Messages(plugin));
-		
+
 		if (plugin.getConfigManager().loadConfig()) {
 			int n = Misc.getOnlinePlayersAmount();
 			if (n > 0) {
@@ -76,13 +77,15 @@ public class ReloadCommand implements ICommand {
 					plugin.getPlayerSettingsManager().load(player);
 			}
 
-			//if (CitizensCompat.isSupported())
-			//	CitizensCompat.loadCitizensData();
+			// if (CitizensCompat.isSupported())
+			// CitizensCompat.loadCitizensData();
 
-			plugin.getMessages().senderSendMessage(sender,ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.reload.reload-complete"));
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.reload.reload-complete"));
 
 		} else
-			plugin.getMessages().senderSendMessage(sender,ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.reload.reload-error"));
+			plugin.getMessages().senderSendMessage(sender,
+					ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.reload.reload-error"));
 
 		return true;
 	}

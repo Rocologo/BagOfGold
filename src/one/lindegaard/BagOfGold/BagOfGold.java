@@ -1,6 +1,7 @@
 package one.lindegaard.BagOfGold;
 
 import java.io.File;
+import java.util.UUID;
 
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
@@ -21,6 +22,8 @@ import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
+//import one.lindegaard.CustomItemsLib.CustomItemsLib;
+//import one.lindegaard.CustomItemsLib.Util.Misc;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
@@ -49,6 +52,7 @@ public class BagOfGold extends JavaPlugin {
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
+	//private CustomItemsLib mCustomItemsLib;
 
 	private boolean mInitialized = false;
 
@@ -60,7 +64,7 @@ public class BagOfGold extends JavaPlugin {
 	public void onEnable() {
 
 		instance = this;
-
+		
 		mServiceManager = Bukkit.getServicesManager();
 
 		mMessages = new Messages(this);
@@ -71,6 +75,8 @@ public class BagOfGold extends JavaPlugin {
 			mConfig.saveConfig();
 		else
 			throw new RuntimeException(instance.getMessages().getString("bagofgold.config.fail"));
+
+		//getMessages().debug("Include Library: %s", CustomItemsLib.testLibTest(false));
 
 		if (isbStatsEnabled())
 			instance.getMessages().debug("bStat is enabled");
@@ -159,8 +165,12 @@ public class BagOfGold extends JavaPlugin {
 		// Try to load BagOfGold
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 
+		// Get random UUI>>>D's
+		for (int n=0;n<3;n++) {
+			getMessages().debug("UUID=%s", UUID.randomUUID().toString());
+		}
 		mInitialized = true;
-
+		
 	}
 
 	@Override
@@ -310,5 +320,9 @@ public class BagOfGold extends JavaPlugin {
 	public SpigetUpdater getSpigetUpdater() {
 		return mSpigetUpdater;
 	}
+	
+	//public CustomItemsLib getCustomItemsLib() {
+	//	return mCustomItemsLib;
+	//}
 
 }

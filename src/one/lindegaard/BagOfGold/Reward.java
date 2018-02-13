@@ -32,6 +32,10 @@ public class Reward {
 	// Unique random generated UUID for KILLER head rewards
 	public final static String MH_REWARD_KILLER_UUID = "d81f1076-c91c-44c0-98c3-02a2ee88aa97";
 
+	public final static String MH_REWARD_COINS_UUID = "cd05873a-b50e-4be2-9582-71770fab4034";
+	public final static String MH_REWARD_SACK_UUID = "a3cf92ff-af45-458a-a633-f71760adee6f";
+	public final static String MH_REWARD_DUST_UUID = "19e165cb-e47f-4f68-8e96-f13e28c07c08";
+
 	private String displayname = "";;
 	private double money = 0;
 	private UUID uuid = null;
@@ -101,12 +105,11 @@ public class Reward {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		return new ArrayList<String>(
-				Arrays.asList("Hidden:" + displayname, //displayname
-						"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), //value
-						"Hidden:" + uuid.toString(), //type
-						money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), //unique id
-						"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()))); //skin
+		return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
+				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
+				"Hidden:" + uuid.toString(), // type
+				money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique id
+				"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()))); // skin
 	}
 
 	/**
@@ -258,14 +261,10 @@ public class Reward {
 	public static boolean isReward(ItemStack itemStack) {
 		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
 			for (int i = 0; i < itemStack.getItemMeta().getLore().size(); i++) {
-				if (itemStack.getItemMeta().getLore().get(i)
-						.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
-						|| itemStack.getItemMeta().getLore().get(i)
-								.equals("Hidden:" + MH_REWARD_KILLED_UUID)
-						|| itemStack.getItemMeta().getLore().get(i)
-								.equals("Hidden:" + MH_REWARD_KILLER_UUID)
-						|| itemStack.getItemMeta().getLore().get(i)
-								.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
+				if (itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
+						|| itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_KILLED_UUID)
+						|| itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_KILLER_UUID)
+						|| itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
 					return true;
 				}
 			}

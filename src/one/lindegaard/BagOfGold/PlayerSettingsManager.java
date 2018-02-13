@@ -19,7 +19,6 @@ import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
-import one.lindegaard.BagOfGold.util.Misc;
 
 public class PlayerSettingsManager implements Listener {
 
@@ -113,7 +112,7 @@ public class PlayerSettingsManager implements Listener {
 		else {
 			if (getPlayerSettings(player).getBalanceChanges() != 0) {
 				plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
-						player.getName(), Misc.format(getPlayerSettings(player).getBalance()
+						player.getName(), plugin.getEconomyManager().format(getPlayerSettings(player).getBalance()
 								+ getPlayerSettings(player).getBalanceChanges()));
 				double change = getPlayerSettings(player).getBalanceChanges();
 				getPlayerSettings(player).setBalance(

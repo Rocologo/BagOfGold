@@ -18,6 +18,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
+//import one.lindegaard.CustomItemsLib.Util.Misc;
 
 public class BankSign implements Listener {
 
@@ -87,10 +88,10 @@ public class BankSign implements Listener {
 							if (plugin.getEconomyManager().withdrawPlayer(player, money).transactionSuccess()) {
 								plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), money);
 								plugin.getMessages().debug("%s deposit %s %s into Bank", player.getName(),
-										Misc.format(money), reward.getDisplayname());
+										plugin.getEconomyManager().format(money), reward.getDisplayname());
 								plugin.getMessages().playerSendMessage(player,
 										plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
-												Misc.format(money), "rewardname",
+												plugin.getEconomyManager().format(money), "rewardname",
 												ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 														+ reward.getDisplayname().trim()));
 							} 
@@ -127,10 +128,10 @@ public class BankSign implements Listener {
 							plugin.getEconomyManager().depositPlayer(player, moneyOnSign);
 
 							plugin.getMessages().debug("%s withdraw %s %s from Bank", player.getName(),
-									Misc.format(money),
+									plugin.getEconomyManager().format(money),
 									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
 							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
-									"bagofgold.banksign.withdraw", "money", Misc.format(moneyOnSign), "rewardname",
+									"bagofgold.banksign.withdraw", "money", plugin.getEconomyManager().format(moneyOnSign), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 						} else {
@@ -144,7 +145,7 @@ public class BankSign implements Listener {
 							.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line2.balance"))) {
 						plugin.getMessages().playerSendMessage(player,
 								plugin.getMessages().getString("bagofgold.banksign.balance", "money",
-										Misc.format(plugin.getEconomyManager()
+										plugin.getEconomyManager().format(plugin.getEconomyManager()
 												.bankBalance(player.getUniqueId().toString()).balance),
 										"rewardname",
 										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)

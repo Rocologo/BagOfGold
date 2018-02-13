@@ -10,6 +10,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
+//import one.lindegaard.CustomItemsLib.Util.Misc;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;

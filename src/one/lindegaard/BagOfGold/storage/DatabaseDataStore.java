@@ -11,6 +11,7 @@ import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.util.Misc;
+//import one.lindegaard.CustomItemsLib.Util.Misc;
 
 public abstract class DatabaseDataStore implements IDataStore {
 
@@ -254,10 +255,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 				for (PlayerSettings playerData : playerDataSet) {
 					mUpdatePlayerSettings.setInt(1, playerData.isLearningMode() ? 1 : 0);
 					mUpdatePlayerSettings.setInt(2, playerData.isMuted() ? 1 : 0);
-					mUpdatePlayerSettings.setDouble(3, Misc.floor(playerData.getBalance()));
-					mUpdatePlayerSettings.setDouble(4, Misc.floor(playerData.getBalanceChanges()));
-					mUpdatePlayerSettings.setDouble(5, Misc.floor(playerData.getBankBalance()));
-					mUpdatePlayerSettings.setDouble(6, Misc.floor(playerData.getBankBalanceChanges()));
+					mUpdatePlayerSettings.setDouble(3, Misc.round(playerData.getBalance()));
+					mUpdatePlayerSettings.setDouble(4, Misc.round(playerData.getBalanceChanges()));
+					mUpdatePlayerSettings.setDouble(5, Misc.round(playerData.getBankBalance()));
+					mUpdatePlayerSettings.setDouble(6, Misc.round(playerData.getBankBalanceChanges()));
 					mUpdatePlayerSettings.setString(7, playerData.getPlayer().getUniqueId().toString());
 					mUpdatePlayerSettings.addBatch();
 				}

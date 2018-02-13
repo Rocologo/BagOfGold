@@ -14,7 +14,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
-import one.lindegaard.BagOfGold.util.Misc;
 
 public class BankManager {
 
@@ -38,8 +37,8 @@ public class BankManager {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 
 		player.spigot()
-				.sendMessage(new ComponentBuilder("Balance: " + Misc.format(ps.getBalance() + ps.getBalanceChanges())
-						+ " BankBalance: " + Misc.format(ps.getBankBalance() + ps.getBankBalanceChanges()))
+				.sendMessage(new ComponentBuilder("Balance: " +plugin.getEconomyManager().format(ps.getBalance() + ps.getBalanceChanges())
+						+ " BankBalance: " + plugin.getEconomyManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
 								.color(ChatColor.GREEN).bold(true).create());
 		player.spigot()
 				.sendMessage(new ComponentBuilder("Deposit: ").color(ChatColor.GREEN).bold(true).append(" ").append("[10]").color(ChatColor.RED).bold(true)

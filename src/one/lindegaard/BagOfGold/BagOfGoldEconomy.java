@@ -10,6 +10,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.util.Misc;
+//import one.lindegaard.CustomItemsLib.Util.Misc;
 
 public class BagOfGoldEconomy implements Economy {
 
