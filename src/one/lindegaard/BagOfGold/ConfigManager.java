@@ -106,7 +106,7 @@ public class ConfigManager extends AutoConfig {
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE, GOLD")
-	public String dropMoneyOnGroundTextColor = "WHITE";
+	public String dropMoneyOnGroundTextColor = "GOLD";
 
 	@ConfigField(name = "drop-money-on-ground-skull-reward-name", category = "economy", comment = "This is the name of the reward")
 	public String dropMoneyOnGroundSkullRewardName = "Bag of gold";
