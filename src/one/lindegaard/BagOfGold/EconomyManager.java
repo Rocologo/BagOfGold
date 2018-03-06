@@ -366,7 +366,11 @@ public class EconomyManager implements Listener {
 	 *         (Success/Failure).
 	 */
 	public EconomyResponse bankDeposit(String account, double amount) {
-		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		OfflinePlayer offlinePlayer;
+		if (Misc.isUUID(account))
+			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		else
+			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
@@ -393,7 +397,11 @@ public class EconomyManager implements Listener {
 	 *         (Success/Failure).
 	 */
 	public EconomyResponse bankWithdraw(String account, double amount) {
-		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		OfflinePlayer offlinePlayer;
+		if (Misc.isUUID(account))
+			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		else
+			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
@@ -447,7 +455,11 @@ public class EconomyManager implements Listener {
 	 * @return ResponseType (Success/Failure)
 	 */
 	public EconomyResponse deleteBank(String account) {
-		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		OfflinePlayer offlinePlayer;
+		if (Misc.isUUID(account))
+			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		else
+			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 			ps.setBankBalance(0);

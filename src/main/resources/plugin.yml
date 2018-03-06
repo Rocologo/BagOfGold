@@ -4,8 +4,8 @@ version: ${version}
 description: BagOfGold is an Item based eConomy plugin, which replace Essentials Economy, craftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. 
 dev-url: http://dev.bukkit.org/server-mods/bagofgold/
 author: Rocologo
-depend: []
-loadbefore: [Vault]
+depend: [Vault]
+loadbefore: []
 softdepend: [Essentials, Citizens2]
 
 commands:
