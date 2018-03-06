@@ -1,9 +1,15 @@
 package one.lindegaard.BagOfGold;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import one.lindegaard.BagOfGold.util.AutoConfig;
 import one.lindegaard.BagOfGold.util.ConfigField;
@@ -205,6 +211,35 @@ public class ConfigManager extends AutoConfig {
 	@Override
 	protected void onPostLoad() throws InvalidConfigurationException {
 		plugin.getMessages().setLanguage(language + ".lang");
+	}
+	
+	public void backupConfig(File mFile) {
+		File backupFile = new File(mFile.toString());
+		int count = 0;
+		while (backupFile.exists() && count++ < 1000) {
+			backupFile = new File("plugins/MobHunting/backup/" + mFile.getName() + ".bak" + count);
+		}
+		if (mFile.exists())
+			try {
+				if (!backupFile.exists())
+					backupFile.mkdirs();
+				Files.copy(mFile.toPath(), backupFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES,
+						StandardCopyOption.REPLACE_EXISTING);
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting]" + ChatColor.RESET
+						+ " Config.yml was backed up to " + backupFile.getPath());
+			} catch (IOException e1) {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting]" + ChatColor.RED
+						+ "[ERROR] - Could not backup config.yml file to plugins/MobHunting/config.yml. Delete some old backups");
+				e1.printStackTrace();
+			}
+	}
+
+	public static int getConfigVersion(File file) {
+		if (!file.exists())
+			return -1;
+
+		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+		return config.getInt("general.config_version", config.contains("general.kill-debug") == true ? 0 : -1);
 	}
 
 }

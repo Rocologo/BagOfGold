@@ -39,6 +39,7 @@ import net.milkbowl.vault.economy.Economy;
 public class BagOfGold extends JavaPlugin {
 
 	private static BagOfGold instance;
+	private File mFile = new File(getDataFolder(), "config.yml");
 
 	private Messages mMessages;
 	private MetricsManager mMetricsManager;
@@ -52,7 +53,7 @@ public class BagOfGold extends JavaPlugin {
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
-	//private CustomItemsLib mCustomItemsLib;
+	// private CustomItemsLib mCustomItemsLib;
 
 	private boolean mInitialized = false;
 
@@ -64,19 +65,21 @@ public class BagOfGold extends JavaPlugin {
 	public void onEnable() {
 
 		instance = this;
-		
+
 		mServiceManager = Bukkit.getServicesManager();
 
 		mMessages = new Messages(this);
 
-		mConfig = new ConfigManager(this, new File(getDataFolder(), "config.yml"));
+		mConfig = new ConfigManager(this, mFile);
 
-		if (mConfig.loadConfig())
+		if (mConfig.loadConfig()) {
+			mConfig.backupConfig(mFile);
 			mConfig.saveConfig();
-		else
+		} else
 			throw new RuntimeException(instance.getMessages().getString("bagofgold.config.fail"));
 
-		//getMessages().debug("Include Library: %s", CustomItemsLib.testLibTest(false));
+		// getMessages().debug("Include Library: %s",
+		// CustomItemsLib.testLibTest(false));
 
 		if (isbStatsEnabled())
 			instance.getMessages().debug("bStat is enabled");
@@ -166,11 +169,11 @@ public class BagOfGold extends JavaPlugin {
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 
 		// Get random UUI>>>D's
-		for (int n=0;n<3;n++) {
+		for (int n = 0; n < 3; n++) {
 			getMessages().debug("UUID=%s", UUID.randomUUID().toString());
 		}
 		mInitialized = true;
-		
+
 	}
 
 	@Override
@@ -258,13 +261,13 @@ public class BagOfGold extends JavaPlugin {
 
 	/**
 	 * setMessages
+	 * 
 	 * @param messages
 	 */
 	public void setMessages(Messages messages) {
-		mMessages=messages;
+		mMessages = messages;
 	}
 
-	
 	public CommandDispatcher getCommandDispatcher() {
 		return mCommandDispatcher;
 	}
@@ -320,9 +323,9 @@ public class BagOfGold extends JavaPlugin {
 	public SpigetUpdater getSpigetUpdater() {
 		return mSpigetUpdater;
 	}
-	
-	//public CustomItemsLib getCustomItemsLib() {
-	//	return mCustomItemsLib;
-	//}
+
+	// public CustomItemsLib getCustomItemsLib() {
+	// return mCustomItemsLib;
+	// }
 
 }
