@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -139,6 +140,15 @@ public class Misc {
 			return true;
 		else
 			return false;
+	}
+	
+	public static boolean isUUID(String string) {
+	    try {
+	        UUID.fromString(string);
+	        return true;
+	    } catch (Exception ex) {
+	        return false;
+	    }
 	}
 
 	public static final Block getTargetBlock(Player player, int range) {

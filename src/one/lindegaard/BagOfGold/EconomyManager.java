@@ -58,8 +58,7 @@ public class EconomyManager implements Listener {
 
 			if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
 				plugin.getMessages().debug("%s: inventory=%s, balance=%s, balancechanges=%s", player.getName(),
-						format(amountInInventory), format(ps.getBalance()),
-						format(ps.getBalanceChanges()));
+						format(amountInInventory), format(ps.getBalance()), format(ps.getBalanceChanges()));
 				if (ps.getBalanceChanges() == 0) {
 					plugin.getMessages().debug("Warning %s has a balance problem (%s,%s). Adjusting balance to %s",
 							offlinePlayer.getName(), format(ps.getBalance()), format(amountInInventory),
@@ -211,8 +210,8 @@ public class EconomyManager implements Listener {
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
 		if (offlinePlayer.isOnline() && ((Player) offlinePlayer).getGameMode() != GameMode.SURVIVAL)
 			return false;
-		plugin.getMessages().debug("Check if %s has %s %s on his balance=%s)", offlinePlayer.getName(),
-				format(amount), plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
+		plugin.getMessages().debug("Check if %s has %s %s on his balance=%s)", offlinePlayer.getName(), format(amount),
+				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				format(plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
 						+ plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges()));
 		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
@@ -347,8 +346,7 @@ public class EconomyManager implements Listener {
 									money, uuid, UUID.randomUUID(), skinuuid)));
 			if (Misc.isMC18OrNewer()) {
 				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-						+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-								? format(money)
+						+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? format(money)
 								: Reward.getReward(is).getDisplayname() + " (" + format(Misc.round(money)) + ")"));
 				item.setCustomNameVisible(true);
 			}
@@ -422,7 +420,11 @@ public class EconomyManager implements Listener {
 	 *         (Success/Failure).
 	 */
 	public EconomyResponse bankBalance(String account) {
-		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		OfflinePlayer offlinePlayer;
+		if (Misc.isUUID(account))
+			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
+		else
+			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
@@ -456,9 +458,10 @@ public class EconomyManager implements Listener {
 		}
 		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
 	}
-	
+
 	/**
 	 * Format the number
+	 * 
 	 * @param money
 	 * @return
 	 */
@@ -602,11 +605,11 @@ public class EconomyManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDeathEvent(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		if (player.getGameMode()!=GameMode.SURVIVAL) {
+		if (player.getGameMode() != GameMode.SURVIVAL) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 			ps.setBalance(0);
 			ps.setBalanceChanges(0);

@@ -15,7 +15,7 @@ V1.0.4
 * Fixed formating in the console
 V1.0.3
 * Better hook into EssentialsX added for delayed load.
-* Better hook into MobHunting added fro delayed load. 
+* Better hook into MobHunting added for delayed load. 
 V1.0.2
 * Using player skin cache in MobHunting
 * Fixed /bag version
