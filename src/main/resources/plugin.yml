@@ -5,8 +5,8 @@ description: BagOfGold is an Item based eConomy plugin, which replace Essentials
 dev-url: http://dev.bukkit.org/server-mods/bagofgold/
 author: Rocologo
 depend: [Vault]
-loadbefore: []
-softdepend: [Essentials, Citizens2]
+loadbefore: [Essentials]
+softdepend: [Citizens2]
 
 commands:
   bagofgold:
