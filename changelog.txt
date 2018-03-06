@@ -1,6 +1,7 @@
 V1.0.7
 * Improved /bag update so it handles SNAPSHOT's too.
 * Config.yml is backed up to "plugins/BagOfGold/backup", before writing updates.
+* Added following plugins to load after BagOfGold: ChestCommands, MCGMineStore, BitcubesCore, BetonQuest, Stickers 
 V1.0.6
 * Fixed bug where Withdraw could result in a bag with a negative value. (Which does not make sense) 
 * Fixed reload command. Messages can now be changed while server is online and reloaded with /bag reload 
