@@ -59,6 +59,11 @@ public class BagOfGold extends JavaPlugin {
 
 	@Override
 	public void onLoad() {
+		
+		// Try to load BagOfGold
+		//		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
+
+				
 	}
 
 	@Override
