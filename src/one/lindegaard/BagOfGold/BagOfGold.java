@@ -16,6 +16,7 @@ import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
+import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
 import one.lindegaard.BagOfGold.storage.IDataStore;
@@ -53,17 +54,11 @@ public class BagOfGold extends JavaPlugin {
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
-	// private CustomItemsLib mCustomItemsLib;
 
 	private boolean mInitialized = false;
 
 	@Override
 	public void onLoad() {
-		
-		// Try to load BagOfGold
-		//		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
-
-				
 	}
 
 	@Override
@@ -78,13 +73,11 @@ public class BagOfGold extends JavaPlugin {
 		mConfig = new ConfigManager(this, mFile);
 
 		if (mConfig.loadConfig()) {
+			if(mConfig.backup)
 			mConfig.backupConfig(mFile);
 			mConfig.saveConfig();
 		} else
 			throw new RuntimeException(instance.getMessages().getString("bagofgold.config.fail"));
-
-		// getMessages().debug("Include Library: %s",
-		// CustomItemsLib.testLibTest(false));
 
 		if (isbStatsEnabled())
 			instance.getMessages().debug("bStat is enabled");
@@ -328,9 +321,5 @@ public class BagOfGold extends JavaPlugin {
 	public SpigetUpdater getSpigetUpdater() {
 		return mSpigetUpdater;
 	}
-
-	// public CustomItemsLib getCustomItemsLib() {
-	// return mCustomItemsLib;
-	// }
 
 }

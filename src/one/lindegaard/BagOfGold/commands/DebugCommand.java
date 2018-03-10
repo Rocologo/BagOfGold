@@ -68,13 +68,13 @@ private BagOfGold plugin;
 	}
 
 	private void toggledebugMode(CommandSender sender) {
-		boolean debug = plugin.getConfigManager().killDebug;
+		boolean debug = plugin.getConfigManager().debug;
 		if (debug) {
-			plugin.getConfigManager().killDebug = false;
+			plugin.getConfigManager().debug = false;
 			plugin.getMessages().senderSendMessage(sender,"[BagOfGold] " + plugin.getMessages().getString("bagofgold.commands.debug.disabled"));
 			plugin.getConfigManager().saveConfig();
 		} else {
-			plugin.getConfigManager().killDebug = true;
+			plugin.getConfigManager().debug = true;
 			plugin.getMessages().senderSendMessage(sender,"[BagOfGold] " + plugin.getMessages().getString("bagofgold.commands.debug.enabled"));
 			plugin.getConfigManager().saveConfig();
 		}

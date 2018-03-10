@@ -31,7 +31,7 @@ public class CompatibilityManager implements Listener {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED + "[ERROR] MobHunting could not register with [" + pluginName
 							+ "] please check if [" + pluginName + "] is compatible with the server ["
 							+ Bukkit.getServer().getBukkitVersion() + "]");
-			if (plugin.getConfigManager().killDebug)
+			if (plugin.getConfigManager().debug)
 				e.printStackTrace();
 		}
 	}

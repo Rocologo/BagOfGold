@@ -1,4 +1,4 @@
-package one.lindegaard.BagOfGold;
+package one.lindegaard.BagOfGold.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import one.lindegaard.BagOfGold.util.AutoConfig;
-import one.lindegaard.BagOfGold.util.ConfigField;
+import one.lindegaard.BagOfGold.BagOfGold;
 
 public class ConfigManager extends AutoConfig {
 
@@ -164,12 +163,15 @@ public class ConfigManager extends AutoConfig {
 	public int savePeriod = 6000;
 
 	@ConfigField(name = "debug", category = "general", comment = "If kills are not being registered in mob hunting. Enable this to see why they arent")
-	public boolean killDebug = false;
+	public boolean debug = false;
 
 	@ConfigField(name = "newplayer_learning_mode", category = "general", comment = "When a new playerjoins the server he will by default start"
 			+ "\nin 'LEARNING MODE' and get extra information about when he get rewards and not,"
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mobhunt learn'")
 	public boolean learningMode = false;
+	
+	@ConfigField(name = "backup", category = "general", comment = "Backup config on each server start / reload")
+	public boolean backup = true;
 
 	// #####################################################################################
 	// Database

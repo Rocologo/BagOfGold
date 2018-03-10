@@ -1,6 +1,5 @@
 V1.0.7
 * Improved /bag update so it handles SNAPSHOT's too.
-* Config.yml is backed up to "plugins/BagOfGold/backup", before writing updates.
 * Forced BagOfGold to be loaded before Vault, to create better compatibility with other plugins.
 V1.0.6
 * Fixed bug where Withdraw could result in a bag with a negative value. (Which does not make sense) 

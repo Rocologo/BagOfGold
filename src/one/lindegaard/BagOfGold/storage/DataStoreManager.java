@@ -114,7 +114,7 @@ public class DataStoreManager {
 		try {
 			return mStore.getPlayerId(offlinePlayer);
 		} catch (DataStoreException e) {
-			if (plugin.getConfigManager().killDebug)
+			if (plugin.getConfigManager().debug)
 				e.printStackTrace();
 		}
 		throw new UserNotFoundException(

@@ -1,4 +1,4 @@
-package one.lindegaard.BagOfGold.util;
+package one.lindegaard.BagOfGold.config;
 
 import java.io.File;
 import java.io.FileInputStream;

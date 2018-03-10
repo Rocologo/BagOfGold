@@ -307,7 +307,7 @@ public class Messages {
 	 * @param args
 	 */
 	public void debug(String message, Object... args) {
-		if (plugin.getConfigManager().killDebug) {
+		if (plugin.getConfigManager().debug) {
 			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + "[Debug] " + String.format(message, args));
 		}
 	}
