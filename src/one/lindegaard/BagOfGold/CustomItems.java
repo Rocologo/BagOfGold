@@ -96,7 +96,7 @@ public class CustomItems {
 
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
-		PlayerSettings ps = MobHunting.getInstance().getPlayerSettingsmanager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = MobHunting.getInstance().getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		String[] skinCache = new String[2];
 
 		if (ps.getTexture() == null || ps.getSignature() == null || ps.getTexture().isEmpty()
@@ -120,7 +120,7 @@ public class CustomItems {
 			if (skinCache != null && !skinCache[0].isEmpty() && !skinCache[1].isEmpty()) {
 				ps.setTexture(skinCache[0]);
 				ps.setSignature(skinCache[1]);
-				MobHunting.getInstance().getPlayerSettingsmanager().setPlayerSettings(offlinePlayer, ps);
+				MobHunting.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 				MobHunting.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 			} else {
 				plugin.getMessages().debug("Empty skin");
@@ -136,7 +136,7 @@ public class CustomItems {
 						plugin.getMessages().debug("%s has changed skin, updating MobHunting Skin cache");
 						ps.setTexture(skinOnline[0]);
 						ps.setSignature(skinOnline[1]);
-						MobHunting.getInstance().getPlayerSettingsmanager().setPlayerSettings(offlinePlayer, ps);
+						MobHunting.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 						MobHunting.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 					}
 				}

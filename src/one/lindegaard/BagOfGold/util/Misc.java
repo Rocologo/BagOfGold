@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.MobHunting.Messages;
 
 public class Misc {
 
@@ -178,7 +177,7 @@ public class Misc {
 				return ((Player[]) method.invoke(Bukkit.getServer())).length;
 			}
 		} catch (Exception ex) {
-			Messages.debug(ex.getMessage());
+			ex.printStackTrace();
 		}
 		return 0;
 	}
