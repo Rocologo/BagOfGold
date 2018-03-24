@@ -87,6 +87,7 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	public void setPlayerSettings(OfflinePlayer player, PlayerSettings playerSettings) {
 		mPlayerSettings.put(player.getUniqueId(), playerSettings);
+		plugin.getDataStoreManager().updatePlayerSettings2(player, getPlayerSettings(player));
 	}
 
 	/**
@@ -189,15 +190,6 @@ public class PlayerSettingsManager implements Listener {
 						new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance));
 			}
 		});
-	}
-
-	/**
-	 * Write PlayerSettings to Database
-	 * 
-	 * @param player
-	 */
-	public void save(final OfflinePlayer player) {
-		plugin.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player));
 	}
 
 	/**

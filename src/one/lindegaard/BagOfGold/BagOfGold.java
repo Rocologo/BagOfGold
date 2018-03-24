@@ -74,7 +74,7 @@ public class BagOfGold extends JavaPlugin {
 
 		if (mConfig.loadConfig()) {
 			if(mConfig.backup)
-			mConfig.backupConfig(mFile);
+				mConfig.backupConfig(mFile);
 			mConfig.saveConfig();
 		} else
 			throw new RuntimeException(instance.getMessages().getString("bagofgold.config.fail"));
@@ -156,7 +156,7 @@ public class BagOfGold extends JavaPlugin {
 
 		if (!Misc.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
-			mMetricsManager.startMetrics();
+			//mMetricsManager.startMetrics();
 			mMetricsManager.startBStatsMetrics();
 		}
 

@@ -1,6 +1,10 @@
+V1.0.8
+* Statistics for mcstarts.org is now disabled.
+* Saving balance and shutdown process updated 
 V1.0.7
 * Improved /bag update so it handles SNAPSHOT's too.
 * Forced BagOfGold to be loaded before Vault, to create better compatibility with other plugins.
+* Backup config on each start / load 
 V1.0.6
 * Fixed bug where Withdraw could result in a bag with a negative value. (Which does not make sense) 
 * Fixed reload command. Messages can now be changed while server is online and reloaded with /bag reload 

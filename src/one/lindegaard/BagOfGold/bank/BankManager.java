@@ -61,6 +61,7 @@ public class BankManager {
 						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mobhunt money withdraw 1000")).append(" ").append("[All]").color(ChatColor.GREEN).bold(true)
 						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to withdraw all.") }))
 						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mobhunt money withdraw all")).create());
+		
 	}
 
 }

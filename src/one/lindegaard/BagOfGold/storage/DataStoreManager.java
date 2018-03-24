@@ -82,7 +82,7 @@ public class DataStoreManager {
 	 * @param offlinePlayer
 	 * @param playerSetting
 	 */
-	public void updatePlayerSettings(OfflinePlayer offlinePlayer, PlayerSettings ps) {
+	public void updatePlayerSettings2(OfflinePlayer offlinePlayer, PlayerSettings ps) {
 		synchronized (mWaiting) {
 			mWaiting.add(new PlayerSettings(offlinePlayer, ps));
 		}
@@ -129,7 +129,7 @@ public class DataStoreManager {
 	 */
 	public void flush() {
 		if (mWaiting.size() != 0) {
-			plugin.getMessages().debug("Flushing waiting %s data to database...", mWaiting.size());
+			plugin.getMessages().debug("Force saving waiting %s data to database...", mWaiting.size());
 			mTaskThread.addTask(new StoreTask(mWaiting), null);
 		}
 	}
@@ -146,6 +146,7 @@ public class DataStoreManager {
 			while (mTaskThread.getState() != Thread.State.WAITING && mTaskThread.getState() != Thread.State.TERMINATED
 					&& n < 40) {
 				Thread.sleep(500);
+				plugin.getMessages().debug("Waiting %s",n);
 				n++;
 			}
 			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
@@ -154,14 +155,14 @@ public class DataStoreManager {
 				mTaskThread.interrupt();
 			}
 			plugin.getMessages().debug("mStoreThread.state=%s", mStoreThread.getState());
-			plugin.getMessages().debug("Interupting mStoreThread");
-			mStoreThread.interrupt();
+			//plugin.getMessages().debug("Interupting mStoreThread");
+			//mStoreThread.interrupt();
 			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() != Thread.State.WAITING) {
 				mTaskThread.waitForEmptyQueue();
 			} else {
-				plugin.getMessages().debug("Interupting mTaskThread");
-				mTaskThread.interrupt();
+				//plugin.getMessages().debug("Interupting mTaskThread");
+				//mTaskThread.interrupt();
 			}
 
 		} catch (InterruptedException e) {
