@@ -244,6 +244,10 @@ public class BagOfGold extends JavaPlugin {
 		return instance;
 	}
 
+	public static BagOfGold getAPI() {
+		return instance;
+	}
+
 	public ConfigManager getConfigManager() {
 		return mConfig;
 	}

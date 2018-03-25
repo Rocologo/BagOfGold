@@ -120,9 +120,9 @@ public class PlayerSettingsManager implements Listener {
 						getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
 				getPlayerSettings(player).setBalanceChanges(0);
 				if (change > 0)
-					plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager(player, change);
+					plugin.getEconomyManager().addBagOfGoldPlayer(player, change);
 				else
-					plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager(player, change);
+					plugin.getEconomyManager().removeBagOfGoldPlayer(player, change);
 			}
 		}
 		if (!player.hasPlayedBefore()) {
@@ -175,9 +175,9 @@ public class PlayerSettingsManager implements Listener {
 					ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
 					ps.setBalanceChanges(0);
 					if (change > 0)
-						plugin.getEconomyManager().addBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, change);
+						plugin.getEconomyManager().addBagOfGoldPlayer((Player) offlinePlayer, change);
 					else
-						plugin.getEconomyManager().removeBagOfGoldPlayer_EconomyManager((Player) offlinePlayer, change);
+						plugin.getEconomyManager().removeBagOfGoldPlayer((Player) offlinePlayer, change);
 				}
 				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
 			}

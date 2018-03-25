@@ -1,6 +1,6 @@
 V1.0.8
 * Statistics for mcstarts.org is now disabled.
-* Saving balance and shutdown process updated 
+* Saving balance and shutdown process updated. 
 V1.0.7
 * Improved /bag update so it handles SNAPSHOT's too.
 * Forced BagOfGold to be loaded before Vault, to create better compatibility with other plugins.
