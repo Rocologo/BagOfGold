@@ -87,7 +87,7 @@ public class PlayerSettingsManager implements Listener {
 	 */
 	public void setPlayerSettings(OfflinePlayer player, PlayerSettings playerSettings) {
 		mPlayerSettings.put(player.getUniqueId(), playerSettings);
-		plugin.getDataStoreManager().updatePlayerSettings2(player, getPlayerSettings(player));
+		plugin.getDataStoreManager().updatePlayerSettings(player, getPlayerSettings(player));
 	}
 
 	/**
