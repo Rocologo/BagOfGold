@@ -314,10 +314,6 @@ public class BagOfGold extends JavaPlugin {
 		return mBankManager;
 	}
 
-	public static BagOfGold getApi() {
-		return instance;
-	}
-
 	public CompatibilityManager getCompatibilityManager() {
 		return mCompatibilityManager;
 	}

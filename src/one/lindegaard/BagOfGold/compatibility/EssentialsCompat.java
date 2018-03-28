@@ -17,13 +17,15 @@ import one.lindegaard.BagOfGold.BagOfGold;
 
 public class EssentialsCompat {
 
+	BagOfGold plugin;
 	private static Essentials mPlugin;
 	private static boolean supported = false;
 
-	public EssentialsCompat() {
+	public EssentialsCompat(BagOfGold plugin) {
 		if (isDisabledInConfig()) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with Essentials is disabled in config.yml");
+			this.plugin=plugin;
 		} else {
 			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin(CompatPlugin.Essentials.getName());
 
@@ -111,7 +113,8 @@ public class EssentialsCompat {
 						config.load(configfile);
 						config.set("money", String.valueOf(amount));
 						config.save(configfile);
-						BagOfGold.getApi().getMessages().debug("updated essentials balance to %s", amount);
+						BagOfGold.getAPI().getMessages().debug("Updated %s essentials balance to %s",
+								offlinePlayer.getName(), BagOfGold.getAPI().getEconomyManager().format(amount));
 					} catch (IOException | InvalidConfigurationException e) {
 						e.printStackTrace();
 						return;
