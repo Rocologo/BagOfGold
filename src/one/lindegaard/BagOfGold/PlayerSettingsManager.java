@@ -49,7 +49,7 @@ public class PlayerSettingsManager implements Listener {
 				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
 			} catch (UserNotFoundException e) {
 
-				BagOfGold.getInstance().getMessages().debug("Insert new PlayerSettings for %s to database.",
+				plugin.getMessages().debug("Insert new PlayerSettings for %s to database.",
 						offlinePlayer.getName());
 
 				double balance = 0;
@@ -57,8 +57,8 @@ public class PlayerSettingsManager implements Listener {
 					if (EssentialsCompat.isSupported()) {
 						balance = EssentialsCompat.getEssentialsBalance(offlinePlayer);
 					} else
-						balance = BagOfGold.getInstance().getConfigManager().startingBalance;
-				ps = new PlayerSettings(offlinePlayer, BagOfGold.getInstance().getConfigManager().learningMode, false,
+						balance = plugin.getConfigManager().startingBalance;
+				ps = new PlayerSettings(offlinePlayer, plugin.getConfigManager().learningMode, false,
 						balance, 0, 0, 0);
 				try {
 					plugin.getStoreManager().insertPlayerSettings(ps);
@@ -74,7 +74,6 @@ public class PlayerSettingsManager implements Listener {
 				return new PlayerSettings(offlinePlayer, 0);
 			}
 			mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
-			plugin.getMessages().debug("%s is offline, fetching PlayerData from database", offlinePlayer.getName());
 			return ps;
 		}
 
@@ -164,6 +163,7 @@ public class PlayerSettingsManager implements Listener {
 
 			@Override
 			public void onCompleted(PlayerSettings ps) {
+				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
 				if (ps.isMuted())
 					plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
 				if (ps.isLearningMode())
@@ -178,8 +178,8 @@ public class PlayerSettingsManager implements Listener {
 						plugin.getEconomyManager().addBagOfGoldPlayer((Player) offlinePlayer, change);
 					else
 						plugin.getEconomyManager().removeBagOfGoldPlayer((Player) offlinePlayer, change);
+					setPlayerSettings(offlinePlayer, ps);
 				}
-				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
 			}
 
 			@Override

@@ -285,12 +285,26 @@
 	<!-- **************************** Dependencies **************************** -->
 	<!-- ********************************************************************** -->
 	<dependencies>
-	
+
 		<!-- SpigotMC -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc111R1.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigotmc112.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Bukkit -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkit112.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -342,18 +356,6 @@
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/craftbukkit-1.8-R0.1-SNAPSHOT.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc112.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkit112.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- SpongeAPI -->
@@ -492,15 +494,11 @@
 			<version>${spigetupdate.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
-		<!-- CustomItemsLib 
-		<dependency>
-			<groupId>one.lindegaard.CustomItemsLib</groupId>
-			<artifactId>CustomItemsLib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>-->
-		
+
+		<!-- CustomItemsLib <dependency> <groupId>one.lindegaard.CustomItemsLib</groupId> 
+			<artifactId>CustomItemsLib</artifactId> <version>0.0.1-SNAPSHOT</version> 
+			<scope>compile</scope> </dependency> -->
+
 	</dependencies>
 
 

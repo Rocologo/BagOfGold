@@ -248,6 +248,11 @@ public class BagOfGold extends JavaPlugin {
 		return instance;
 	}
 
+	@Deprecated
+	public static BagOfGold getApi() {
+		return instance;
+	}
+
 	public ConfigManager getConfigManager() {
 		return mConfig;
 	}

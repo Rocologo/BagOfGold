@@ -21,11 +21,11 @@ public class EssentialsCompat {
 	private static Essentials mPlugin;
 	private static boolean supported = false;
 
-	public EssentialsCompat(BagOfGold plugin) {
+	public EssentialsCompat() {
 		if (isDisabledInConfig()) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with Essentials is disabled in config.yml");
-			this.plugin=plugin;
+			this.plugin=BagOfGold.getInstance();
 		} else {
 			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin(CompatPlugin.Essentials.getName());
 
