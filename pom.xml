@@ -48,7 +48,7 @@
 
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<vault.version>1.5.6</vault.version>
-		<mobhunting.version>5.5.7</mobhunting.version>
+		<mobhunting.version>5.6.0</mobhunting.version>
 		<bstats.version>1.2</bstats.version>
 
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
