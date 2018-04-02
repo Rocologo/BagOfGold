@@ -1,6 +1,9 @@
+V1.1.0
+* Reversed startup changes in V1.0.7 which causes problems if you use EssentialsXProtect.
 V1.0.8
 * Statistics for mcstarts.org is now disabled.
 * Saving balance and shutdown process updated. 
+* Forced BagOfGold to be loaded before Vault, to create better compatibility with other plugins.
 V1.0.7
 * Improved /bag update so it handles SNAPSHOT's too.
 * Forced BagOfGold to be loaded before Vault, to create better compatibility with other plugins.
