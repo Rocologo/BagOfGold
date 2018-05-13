@@ -1,3 +1,5 @@
+V1.1.1
+* Fixed bug which could double bank balance when jumping between survival and creative worlds.
 V1.1.0
 * Reversed startup changes in V1.0.7 which causes problems if you use EssentialsXProtect.
 V1.0.8

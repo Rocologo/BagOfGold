@@ -54,10 +54,9 @@ public class EconomyManager implements Listener {
 			double amountInInventory = getAmountInInventory(player);
 			if (player.getGameMode() != GameMode.SURVIVAL)
 				return amountInInventory;
-
 			if (Misc.round(amountInInventory) != Misc.round(ps.getBalance() + ps.getBalanceChanges())) {
-				plugin.getMessages().debug("%s: inventory=%s, balance=%s, balancechanges=%s", player.getName(),
-						format(amountInInventory), format(ps.getBalance()), format(ps.getBalanceChanges()));
+				plugin.getMessages().debug("%s: inventory=%s, balance=%s, balancechanges=%s, bank balance=%s", player.getName(),
+						format(amountInInventory), format(ps.getBalance()), format(ps.getBalanceChanges()), format(ps.getBankBalance()));
 				if (ps.getBalanceChanges() == 0) {
 					plugin.getMessages().debug("Warning %s has a balance problem (%s,%s). Adjusting balance to %s",
 							offlinePlayer.getName(), format(ps.getBalance()), format(amountInInventory),
@@ -122,7 +121,7 @@ public class EconomyManager implements Listener {
 	 */
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-		if (amount > 0) {
+		if (amount >= 0) {
 			if (offlinePlayer.isOnline()) {
 				addBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
 				if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
@@ -158,7 +157,7 @@ public class EconomyManager implements Listener {
 	 */
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-		if (amount > 0) {
+		if (amount >= 0) {
 			if (has(offlinePlayer, amount)) {
 				if (offlinePlayer.isOnline()) {
 					removeBagOfGoldPlayer((Player) offlinePlayer, amount);
