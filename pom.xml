@@ -42,9 +42,9 @@
 		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
 		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
 		<javacompiler.version>1.8</javacompiler.version>
-		<mavenCompilerPlugin.version>3.6.1</mavenCompilerPlugin.version>
-		<mavenJarPlugin.version>3.0.2</mavenJarPlugin.version>
-		<mavenShadePlugin.version>3.0.2</mavenShadePlugin.version>
+		<mavenCompilerPlugin.version>3.7.0</mavenCompilerPlugin.version>
+		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
+		<mavenShadePlugin.version>3.1.1</mavenShadePlugin.version>
 
 		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<vault.version>1.5.6</vault.version>
