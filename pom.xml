@@ -52,7 +52,7 @@
 		<bstats.version>1.2</bstats.version>
 
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
-		<libsdisguises.version>9.4.0-SNAPSHOT</libsdisguises.version>
+		<libsdisguises.version>9.5.1-SNAPSHOT</libsdisguises.version>
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>2.0.0</titlemanager.version>
