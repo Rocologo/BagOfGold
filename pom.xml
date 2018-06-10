@@ -40,13 +40,12 @@
 		<bukkit18R2.version>1.8-R2</bukkit18R2.version>
 		<bukkit18R1.version>1.8-R1</bukkit18R1.version>
 		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
-		<spongeapi.version>5.1.0-SNAPSHOT</spongeapi.version>
+		
 		<javacompiler.version>1.8</javacompiler.version>
 		<mavenCompilerPlugin.version>3.7.0</mavenCompilerPlugin.version>
 		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
-		<mavenShadePlugin.version>3.1.1</mavenShadePlugin.version>
+		<mavenShadePlugin.version>2.4</mavenShadePlugin.version>
 
-		<mcstats.pluginname>${project.groupId}.${project.artifactId}</mcstats.pluginname>
 		<vault.version>1.5.6</vault.version>
 		<mobhunting.version>5.6.3</mobhunting.version>
 		<bstats.version>1.2</bstats.version>
@@ -183,12 +182,6 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-
-		<!-- Sponge -->
-		<repository>
-			<id>sponge</id>
-			<url>http://repo.spongepowered.org/maven</url>
 		</repository>
 
 		<!-- Vault -->
@@ -358,14 +351,6 @@
 			<systemPath>${project.basedir}/lib/craftbukkit-1.8-R0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 
-		<!-- SpongeAPI -->
-		<dependency>
-			<groupId>org.spongepowered</groupId>
-			<artifactId>spongeapi</artifactId>
-			<version>${spongeapi.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- Vault / -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
@@ -494,10 +479,6 @@
 			<version>${spigetupdate.version}</version>
 			<scope>compile</scope>
 		</dependency>
-
-		<!-- CustomItemsLib <dependency> <groupId>one.lindegaard.CustomItemsLib</groupId> 
-			<artifactId>CustomItemsLib</artifactId> <version>0.0.1-SNAPSHOT</version> 
-			<scope>compile</scope> </dependency> -->
 
 	</dependencies>
 

@@ -23,8 +23,6 @@ import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
-//import one.lindegaard.CustomItemsLib.CustomItemsLib;
-//import one.lindegaard.CustomItemsLib.Util.Misc;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;

@@ -121,7 +121,10 @@ public class EconomyManager implements Listener {
 	 */
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-		if (amount >= 0) {
+		if (amount==0){
+			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
+					null);
+		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
 				addBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
 				if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
@@ -358,6 +361,7 @@ public class EconomyManager implements Listener {
 	 * @return EconomyResponse containing amount, balance and ResponseType
 	 *         (Success/Failure).
 	 */
+	@SuppressWarnings("deprecation")
 	public EconomyResponse bankDeposit(String account, double amount) {
 		OfflinePlayer offlinePlayer;
 		if (Misc.isUUID(account))
@@ -390,6 +394,7 @@ public class EconomyManager implements Listener {
 	 * @return EconomyResponse containing amount, balance and ResponseType
 	 *         (Success/Failure).
 	 */
+	@SuppressWarnings("deprecation")
 	public EconomyResponse bankWithdraw(String account, double amount) {
 		OfflinePlayer offlinePlayer;
 		if (Misc.isUUID(account))
@@ -422,6 +427,7 @@ public class EconomyManager implements Listener {
 	 * @return EconomyResponse containing amount, bank balance and ResponseType
 	 *         (Success/Failure).
 	 */
+	@SuppressWarnings("deprecation")
 	public EconomyResponse bankBalance(String account) {
 		OfflinePlayer offlinePlayer;
 		if (Misc.isUUID(account))
@@ -448,6 +454,7 @@ public class EconomyManager implements Listener {
 	 *            - this is the player UUID.
 	 * @return ResponseType (Success/Failure)
 	 */
+	@SuppressWarnings("deprecation")
 	public EconomyResponse deleteBank(String account) {
 		OfflinePlayer offlinePlayer;
 		if (Misc.isUUID(account))
