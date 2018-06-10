@@ -153,12 +153,6 @@
 	<!-- ********************************************************************** -->
 	<repositories>
 
-		<repository>
-			<id>MinigamesAPI-Repo</id>
-			<name>MinigamesAPI Repository</name>
-			<url>http://nexus.xworlds.eu/nexus/content/repositories/mce/</url>
-		</repository>
-
 		<!-- Rocologo repository -->
 		<repository>
 			<id>fractal-ext-rel</id>
@@ -189,35 +183,10 @@
 			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
 		</repository>
 
-		<!-- sk89q WorldGuard WorldEdit repositories -->
-		<repository>
-			<id>sk89q-repo</id>
-			<url>http://maven.sk89q.com/repo/</url>
-		</repository>
-
 		<!-- dmulloy2 repository / ProtocolLib -->
 		<repository>
 			<id>dmulloy2-repo</id>
 			<url>http://repo.dmulloy2.net/content/groups/public/</url>
-		</repository>
-
-		<!-- mypet repository -->
-		<repository>
-			<id>mypet-repo1</id>
-			<url>http://repo.keyle.de/</url>
-		</repository>
-
-		<!-- BattleArena -->
-		<repository>
-			<id>battleplugins-net</id>
-			<name>BattlePlugins</name>
-			<url>http://rainbowcraft.sytes.net/maven/repository/</url>
-		</repository>
-
-		<!-- MiniGamesLib / MinigamesAPI repo -->
-		<repository>
-			<id>minigameslib-repo</id>
-			<url>http://nexus.xworlds.eu/nexus/content/repositories/</url>
 		</repository>
 
 		<!-- Inventive Repo / SpigetUpdater / BossBarAPI -->
@@ -242,20 +211,6 @@
 		<repository>
 			<id>citizens-repo</id>
 			<url>http://repo.citizensnpcs.co/</url>
-		</repository>
-
-		<!-- Minigames / Addstar repo -->
-		<repository>
-			<id>addstar-snapshot-repo</id>
-			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local/</url>
-		</repository>
-
-		<!-- md5 repository -->
-		<!-- mcMMO -->
-		<!-- LibsDisguises -->
-		<repository>
-			<id>md5-repo</id>
-			<url>http://repo.md-5.net/content/repositories/public/</url>
 		</repository>
 
 		<!-- bStats repository -->
