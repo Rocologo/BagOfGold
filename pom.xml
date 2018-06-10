@@ -40,7 +40,7 @@
 		<bukkit18R2.version>1.8-R2</bukkit18R2.version>
 		<bukkit18R1.version>1.8-R1</bukkit18R1.version>
 		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
-		
+
 		<javacompiler.version>1.8</javacompiler.version>
 		<mavenCompilerPlugin.version>3.7.0</mavenCompilerPlugin.version>
 		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
@@ -120,11 +120,10 @@
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>${mavenShadePlugin.version}</version>
 				<configuration>
-					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
 					<artifactSet>
 						<includes>
 							<include>org.bstats:*</include>
-							<!-- <include>org.inventivetalent:reflectionhelper**</include> -->
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
 						</includes>
 					</artifactSet>
@@ -154,6 +153,7 @@
 	<repositories>
 
 		<!-- Rocologo repository -->
+		<!--
 		<repository>
 			<id>fractal-ext-rel</id>
 			<url>https://fractal.lindegaard.one:8187/ext-release-local/</url>
@@ -161,7 +161,7 @@
 		<repository>
 			<id>fractal-ext-snap</id>
 			<url>https://fractal.lindegaard.one:8187/ext-snapshot-local/</url>
-		</repository>
+		</repository> -->
 		<repository>
 			<id>fractal</id>
 			<url>https://fractal.lindegaard.one:8187/plugins-release/</url>
@@ -329,6 +329,14 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- SpigetUpdate -->
+		<dependency>
+			<groupId>org.inventivetalent.spiget-update</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${spigetupdate.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- ProtocolLib -->
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
@@ -426,14 +434,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- SpigetUpdate -->
-		<dependency>
-			<groupId>org.inventivetalent.spiget-update</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${spigetupdate.version}</version>
-			<scope>compile</scope>
-		</dependency>
-
 	</dependencies>
 
 
@@ -450,7 +450,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 
 	<!-- ********************************************************************** -->
 	<!-- ******************** Distribution Management ************************* -->
