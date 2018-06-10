@@ -126,7 +126,6 @@
 							<include>org.bstats:*</include>
 							<!-- <include>org.inventivetalent:reflectionhelper**</include> -->
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
-							<!-- <include>one.lindegaard.CustomItemsLib:*</include> -->
 						</includes>
 					</artifactSet>
 					<relocations>
