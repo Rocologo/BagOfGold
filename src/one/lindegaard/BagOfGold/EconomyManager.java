@@ -127,12 +127,12 @@ public class EconomyManager implements Listener {
 		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
 				addBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
-				if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
+				//if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
 					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 					ps.setBalanceChanges(0);
-				} else {
-					ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
-				}
+				//} else {
+				//	ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
+				//}
 			} else {
 				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
 			}
@@ -164,12 +164,12 @@ public class EconomyManager implements Listener {
 			if (has(offlinePlayer, amount)) {
 				if (offlinePlayer.isOnline()) {
 					removeBagOfGoldPlayer((Player) offlinePlayer, amount);
-					if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
+					//if (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL) {
 						ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 						ps.setBalanceChanges(0);
-					} else {
-						ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
-					}
+					//} else {
+					//	ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+					//}
 				} else
 					ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", format(amount),
@@ -203,8 +203,8 @@ public class EconomyManager implements Listener {
 	 * @return true if the player has the amount on his money.
 	 */
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		if (offlinePlayer.isOnline() && ((Player) offlinePlayer).getGameMode() != GameMode.SURVIVAL)
-			return false;
+		//if (offlinePlayer.isOnline() && ((Player) offlinePlayer).getGameMode() != GameMode.SURVIVAL)
+		//	return false;
 		plugin.getMessages().debug("Check if %s has %s %s on his balance=%s)", offlinePlayer.getName(), format(amount),
 				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				format(plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
@@ -271,8 +271,8 @@ public class EconomyManager implements Listener {
 	 */
 	public double removeBagOfGoldPlayer(Player player, double amount) {
 		double taken = 0;
-		if (player.getGameMode() != GameMode.SURVIVAL)
-			amount = 0;
+		//if (player.getGameMode() != GameMode.SURVIVAL)
+		//	amount = 0;
 		double toBeTaken = Misc.round(amount);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
@@ -542,12 +542,12 @@ public class EconomyManager implements Listener {
 
 		if (offlinePlayer.isOnline()) {
 			Player player = (Player) offlinePlayer;
-			if (player.getGameMode() == GameMode.SURVIVAL) {
+			//if (player.getGameMode() == GameMode.SURVIVAL) {
 				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 				ps.setBalanceChanges(0);
-			} else {
-				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
-			}
+			//} else {
+			//	ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+			//}
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 		}
@@ -566,9 +566,9 @@ public class EconomyManager implements Listener {
 		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
-		if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
-			BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-		}
+		//if (!offlinePlayer.isOnline() || (((Player) offlinePlayer).getGameMode() == GameMode.SURVIVAL)) {
+			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+		//}
 	}
 
 	/**
@@ -587,7 +587,7 @@ public class EconomyManager implements Listener {
 
 		if (event.isCancelled())
 			return;
-
+/**
 		Player player = event.getPlayer();
 		if (event.getNewGameMode() == GameMode.SURVIVAL) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
@@ -614,18 +614,18 @@ public class EconomyManager implements Listener {
 					}
 				}
 			}
-		}
+		}**/
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDeathEvent(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		if (player.getGameMode() != GameMode.SURVIVAL) {
+		//if (player.getGameMode() != GameMode.SURVIVAL) {
 			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 			ps.setBalance(0);
 			ps.setBalanceChanges(0);
 			plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
-		}
+		//}
 	}
 
 }
