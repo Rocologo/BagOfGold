@@ -42,7 +42,7 @@
 		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
 
 		<javacompiler.version>1.8</javacompiler.version>
-		<mavenCompilerPlugin.version>3.7.0</mavenCompilerPlugin.version>
+		<mavenCompilerPlugin.version>3.6.0</mavenCompilerPlugin.version>
 		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
 		<mavenShadePlugin.version>2.4</mavenShadePlugin.version>
 

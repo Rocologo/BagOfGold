@@ -461,7 +461,6 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankBalance(String account) {
-		plugin.getMessages().debug("!!!!bankBalance (account)= %s", account);
 		return plugin.getEconomyManager().bankBalance(account);
 	}
 
@@ -476,7 +475,6 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankDeposit(String account, double amount) {
-		plugin.getMessages().debug("!!!!bankDeposit = %s", amount);
 		return plugin.getEconomyManager().bankDeposit(account, amount);
 	}
 
@@ -510,7 +508,6 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankWithdraw(String account, double amount) {
-		plugin.getMessages().debug("!!!!bankWithdraw = %s", amount);
 		return plugin.getEconomyManager().bankWithdraw(account, amount);
 
 	}

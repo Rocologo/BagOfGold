@@ -382,7 +382,7 @@
     <bukkit18R2.version>1.8-R2</bukkit18R2.version>
     <build.number>1337</build.number>
     <holograms.version>2.5.0-SNAPSHOT</holograms.version>
-    <mavenCompilerPlugin.version>3.7.0</mavenCompilerPlugin.version>
+    <mavenCompilerPlugin.version>3.6.0</mavenCompilerPlugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
     <mainClass>${project.groupId}.${project.artifactId}</mainClass>
