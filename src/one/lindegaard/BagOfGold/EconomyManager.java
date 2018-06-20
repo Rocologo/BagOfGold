@@ -541,7 +541,7 @@ public class EconomyManager implements Listener {
 				format(ps.getBalance() + ps.getBalanceChanges()));
 
 		if (offlinePlayer.isOnline()) {
-			Player player = (Player) offlinePlayer;
+			//Player player = (Player) offlinePlayer;
 			//if (player.getGameMode() == GameMode.SURVIVAL) {
 				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 				ps.setBalanceChanges(0);
