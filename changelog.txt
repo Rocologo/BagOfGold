@@ -1,3 +1,5 @@
+V1.1.2
+* Fixed bStarts.org reporting
 V1.1.1
 * Fixed bug which could double bank balance when jumping between survival and creative worlds.
 * BagOfGold can now be used in both Survival and Creative mode. PerWorldInventory or similar plugin is strongly recommended.

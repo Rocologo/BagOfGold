@@ -1,7 +1,6 @@
 package one.lindegaard.BagOfGold;
 
 import java.io.File;
-import java.util.UUID;
 
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
@@ -155,7 +154,7 @@ public class BagOfGold extends JavaPlugin {
 		if (!Misc.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
 			//mMetricsManager.startMetrics();
-			mMetricsManager.startBStatsMetrics();
+			mMetricsManager.start();
 		}
 
 		// Initialize BagOfGold Bank Signs
@@ -165,9 +164,9 @@ public class BagOfGold extends JavaPlugin {
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 
 		// Get random UUI>>>D's
-		for (int n = 0; n < 3; n++) {
-			getMessages().debug("UUID=%s", UUID.randomUUID().toString());
-		}
+		//for (int n = 0; n < 3; n++) {
+		//	getMessages().debug("UUID=%s", UUID.randomUUID().toString());
+		//}
 		mInitialized = true;
 
 	}
