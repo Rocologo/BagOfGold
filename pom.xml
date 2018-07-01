@@ -31,14 +31,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<spigotmc112.version>1.12.2-R0.1-SNAPSHOT</spigotmc112.version>
 		<bukkit112.version>1.12.2-R0.1-SNAPSHOT</bukkit112.version>
-		<bukkit111R1.version>1.11-R1</bukkit111R1.version>
-		<bukkit110R1.version>1.10-R1</bukkit110R1.version>
-		<bukkit19R1.version>1.9-R1</bukkit19R1.version>
-		<bukkit18R3.version>1.8-R3</bukkit18R3.version>
-		<bukkit18R2.version>1.8-R2</bukkit18R2.version>
-		<bukkit18R1.version>1.8-R1</bukkit18R1.version>
+		<spigotmc112.version>1.12.2-R0.1-SNAPSHOT</spigotmc112.version>
+		<craftbukkit112R1.version>1.12-R1</craftbukkit112R1.version>
+		<craftbukkit111R1.version>1.11-R1</craftbukkit111R1.version>
+		<craftbukkit110R1.version>1.10-R1</craftbukkit110R1.version>
+		<craftbukkit19R1.version>1.9-R1</craftbukkit19R1.version>
+		<craftbukkit18R3.version>1.8-R3</craftbukkit18R3.version>
+		<craftbukkit18R2.version>1.8-R2</craftbukkit18R2.version>
+		<craftbukkit18R1.version>1.8-R1</craftbukkit18R1.version>
 		<spigotmc.version>1.12.2-R0.1-SNAPSHOT</spigotmc.version>
 
 		<javacompiler.version>1.8</javacompiler.version>
@@ -153,15 +154,9 @@
 	<repositories>
 
 		<!-- Rocologo repository -->
-		<!--
-		<repository>
-			<id>fractal-ext-rel</id>
-			<url>https://fractal.lindegaard.one:8187/ext-release-local/</url>
-		</repository>
-		<repository>
-			<id>fractal-ext-snap</id>
-			<url>https://fractal.lindegaard.one:8187/ext-snapshot-local/</url>
-		</repository> -->
+		<!-- <repository> <id>fractal-ext-rel</id> <url>https://fractal.lindegaard.one:8187/ext-release-local/</url> 
+			</repository> <repository> <id>fractal-ext-snap</id> <url>https://fractal.lindegaard.one:8187/ext-snapshot-local/</url> 
+			</repository> -->
 		<repository>
 			<id>fractal</id>
 			<url>https://fractal.lindegaard.one:8187/plugins-release/</url>
@@ -258,48 +253,57 @@
 		<!-- CraftBukkit -->
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkit111R1.version}</version>
+			<artifactId>craftbukkit</artifactId>
+			<version>${craftbukkit112R1.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.12.2.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>craftbukkit111R1</artifactId>
+			<version>${craftbukkit111R1.version}</version>
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/craftbukkit-1.11.2.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
-			<artifactId>bukkit2</artifactId>
-			<version>${bukkit110R1.version}</version>
+			<artifactId>craftbukkit110R1</artifactId>
+			<version>${craftbukkit110R1.version}</version>
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/craftbukkit-1.10.2-R0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
-			<artifactId>bukkit3</artifactId>
-			<version>${bukkit19R1.version}</version>
+			<artifactId>craftbukkit19R1</artifactId>
+			<version>${craftbukkit19R1.version}</version>
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/craftbukkit-1.9-R0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
-			<artifactId>bukkit4</artifactId>
-			<version>${bukkit18R3.version}</version>
+			<artifactId>craftbukkit18R3</artifactId>
+			<version>${craftbukkit18R3.version}</version>
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/craftbukkit-1.8.8-R0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
-			<artifactId>bukkit5</artifactId>
-			<version>${bukkit18R2.version}</version>
+			<artifactId>craftbukkit18R2</artifactId>
+			<version>${craftbukkit18R2.version}</version>
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/craftbukkit-1.8.3-R0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
-			<artifactId>bukkit6</artifactId>
-			<version>${bukkit18R1.version}</version>
+			<artifactId>craftbukkit18R1</artifactId>
+			<version>${craftbukkit18R1.version}</version>
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/craftbukkit-1.8-R0.1-SNAPSHOT.jar</systemPath>
