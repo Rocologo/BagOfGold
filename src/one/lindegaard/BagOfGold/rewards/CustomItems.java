@@ -1,4 +1,4 @@
-package one.lindegaard.BagOfGold;
+package one.lindegaard.BagOfGold.rewards;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +23,8 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
+import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.Reward;
 import one.lindegaard.BagOfGold.skins.Skins;
 import one.lindegaard.BagOfGold.skins.Skins_1_10_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_11_R1;

@@ -1,3 +1,6 @@
+V1.1.3
+* Fixed bStarts.org redirecting
+* BagOfGold balance fixed when changing gamemode 
 V1.1.2
 * Fixed bStarts.org reporting
 V1.1.1
