@@ -45,7 +45,7 @@
 		<javacompiler.version>1.8</javacompiler.version>
 		<mavenCompilerPlugin.version>3.7.0</mavenCompilerPlugin.version>
 		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
-		<mavenShadePlugin.version>3.1.1</mavenShadePlugin.version>
+		<mavenShadePlugin.version>2.4</mavenShadePlugin.version>
 
 		<vault.version>1.5.6</vault.version>
 		<mobhunting.version>5.6.3</mobhunting.version>
