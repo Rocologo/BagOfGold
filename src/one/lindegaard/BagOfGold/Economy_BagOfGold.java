@@ -22,7 +22,7 @@ public class Economy_BagOfGold extends AbstractEconomy implements Listener {
 	private String name = "BagOfGold";
 	private Plugin plugin = null;
 	protected BagOfGoldEconomy economy = null;
-
+	
 	public Economy_BagOfGold(Plugin plugin) {
 		this.plugin = plugin;
 

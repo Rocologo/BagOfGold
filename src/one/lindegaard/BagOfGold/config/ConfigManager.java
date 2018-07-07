@@ -56,6 +56,10 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Economy settings
 	// #####################################################################################
+	
+	@ConfigField(name = "use-bagofgold-as-an-economy-plugin", category = "plugins", comment = "Set this to true if you want tha BagOfGold to be a real Economy, which can be used for buying/selling other items.")
+	public boolean useBagOfGoldAsAnEconomyPlugin = true;
+
 	@ConfigField(name = "starting_balance", category = "economy", comment = "Set initial balance for new players.")
 	public double startingBalance = 3000;
 

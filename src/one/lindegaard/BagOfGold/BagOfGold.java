@@ -55,6 +55,8 @@ public class BagOfGold extends JavaPlugin {
 
 	private boolean mInitialized = false;
 
+	private boolean useAsEconomyPlugin=false;
+
 	@Override
 	public void onLoad() {
 	}
@@ -161,9 +163,11 @@ public class BagOfGold extends JavaPlugin {
 		// Initialize BagOfGold Bank Signs
 		new BankSign(this);
 
+		if (useAsEconomyPlugin){
 		// Try to load BagOfGold
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
-
+		}
+		
 		// Get random UUI>>>D's
 		//for (int n = 0; n < 3; n++) {
 		//	getMessages().debug("UUID=%s", UUID.randomUUID().toString());

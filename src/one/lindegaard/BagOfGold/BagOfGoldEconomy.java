@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -14,9 +15,22 @@ import one.lindegaard.BagOfGold.util.Misc;
 public class BagOfGoldEconomy implements Economy {
 
 	private BagOfGold plugin;
+	private Economy mEconomy;
 
 	public BagOfGoldEconomy(BagOfGold plugin) {
 		this.plugin = plugin;
+		if (!isEnabled()) {
+			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
+					.getRegistration(Economy.class);
+			if (economyProvider == null) {
+				Bukkit.getLogger()
+						.severe(plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ"));
+				Bukkit.getPluginManager().disablePlugin(plugin);
+				return;
+			}
+			mEconomy = economyProvider.getProvider();
+		}
+
 	}
 
 	/**
@@ -26,7 +40,7 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return plugin.getConfigManager().useBagOfGoldAsAnEconomyPlugin;
 	}
 
 	/**
@@ -36,7 +50,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public String getName() {
-		return "BagOfGold";
+		if (isEnabled())
+			return "BagOfGold";
+		else
+			return mEconomy.getName();
 	}
 
 	/**
@@ -48,7 +65,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public int fractionalDigits() {
-		return 5;
+		if (isEnabled())
+			return 5;
+		else
+			return mEconomy.fractionalDigits();
 	}
 
 	/**
@@ -61,7 +81,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public String format(double money) {
-		return Misc.format(money);
+		if (isEnabled())
+			return Misc.format(money);
+		else
+			return mEconomy.format(money);
 	}
 
 	/**
@@ -70,7 +93,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(String playername) {
-		return getBalance(Bukkit.getOfflinePlayer(playername));
+		if (isEnabled())
+			return getBalance(Bukkit.getOfflinePlayer(playername));
+		else
+			return mEconomy.getBalance(playername);
 	}
 
 	/**
@@ -82,7 +108,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(OfflinePlayer offlinePlayer) {
-		return plugin.getEconomyManager().getBalance(offlinePlayer);
+		if (isEnabled())
+			return plugin.getEconomyManager().getBalance(offlinePlayer);
+		else
+			return mEconomy.getBalance(offlinePlayer);
 	}
 
 	/**
@@ -91,7 +120,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(String playername, String world) {
-		return getBalance(playername);
+		if (isEnabled())
+			return getBalance(playername);
+		else
+			return mEconomy.getBalance(playername, world);
 	}
 
 	/**
@@ -107,7 +139,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(OfflinePlayer offlinePlayer, String world) {
-		return getBalance(offlinePlayer);
+		if (isEnabled())
+			return getBalance(offlinePlayer);
+		else
+			return mEconomy.getBalance(offlinePlayer, world);
 	}
 
 	/**
@@ -117,7 +152,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public List<String> getBanks() {
-		return new ArrayList<String>();
+		if (isEnabled())
+			return new ArrayList<String>();
+		else
+			return mEconomy.getBanks();
 	}
 
 	/**
@@ -126,7 +164,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean createPlayerAccount(String playername) {
-		return createPlayerAccount(Bukkit.getServer().getOfflinePlayer(playername));
+		if (isEnabled())
+			return createPlayerAccount(Bukkit.getServer().getOfflinePlayer(playername));
+		else
+			return mEconomy.createPlayerAccount(playername);
 	}
 
 	/**
@@ -139,7 +180,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
-		return true;
+		if (isEnabled())
+			return true;
+		else
+			return mEconomy.createPlayerAccount(offlinePlayer);
 	}
 
 	/**
@@ -148,7 +192,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean createPlayerAccount(String playername, String world) {
-		return createPlayerAccount(Bukkit.getServer().getOfflinePlayer(playername), world);
+		if (isEnabled())
+			return createPlayerAccount(Bukkit.getServer().getOfflinePlayer(playername), world);
+		else
+			return mEconomy.createPlayerAccount(playername, world);
 	}
 
 	/**
@@ -164,7 +211,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String world) {
-		return true;
+		if (isEnabled())
+			return true;
+		else
+			return mEconomy.createPlayerAccount(offlinePlayer, world);
 	}
 
 	/**
@@ -176,7 +226,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public String currencyNamePlural() {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
+		if (isEnabled())
+			return plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
+		else
+			return mEconomy.currencyNamePlural();
 	}
 
 	/**
@@ -188,7 +241,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public String currencyNameSingular() {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
+		if (isEnabled())
+			return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
+		else
+			return mEconomy.currencyNameSingular();
 	}
 
 	/**
@@ -197,7 +253,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse depositPlayer(String playername, double amount) {
-		return depositPlayer(Bukkit.getOfflinePlayer(playername), amount);
+		if (isEnabled())
+			return depositPlayer(Bukkit.getOfflinePlayer(playername), amount);
+		else
+			return mEconomy.depositPlayer(playername, amount);
 	}
 
 	/**
@@ -211,7 +270,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-		return plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
+		if (isEnabled())
+			return plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
+		else
+			return mEconomy.depositPlayer(offlinePlayer, amount);
 	}
 
 	/**
@@ -221,7 +283,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse depositPlayer(String playername, String world, double amount) {
-		return depositPlayer(playername, amount);
+		if (isEnabled())
+			return depositPlayer(playername, amount);
+		else
+			return mEconomy.depositPlayer(playername, world, amount);
 	}
 
 	/**
@@ -239,7 +304,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String world, double amount) {
-		return depositPlayer(offlinePlayer, amount);
+		if (isEnabled())
+			return depositPlayer(offlinePlayer, amount);
+		else
+			return mEconomy.depositPlayer(offlinePlayer, world, amount);
 	}
 
 	/**
@@ -248,7 +316,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean has(String playername, double amount) {
-		return has(Bukkit.getOfflinePlayer(playername), amount);
+		if (isEnabled())
+			return has(Bukkit.getOfflinePlayer(playername), amount);
+		else
+			return mEconomy.has(playername, amount);
 	}
 
 	/**
@@ -262,7 +333,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		return getBalance(offlinePlayer) >= amount;
+		if (isEnabled())
+			return getBalance(offlinePlayer) >= amount;
+		else
+			return mEconomy.has(offlinePlayer, amount);
 	}
 
 	/**
@@ -271,7 +345,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean has(String playername, String world, double amount) {
-		return has(playername, amount);
+		if (isEnabled())
+			return has(playername, amount);
+		else
+			return mEconomy.has(playername, world, amount);
 	}
 
 	/**
@@ -289,7 +366,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean has(OfflinePlayer offlinePlayer, String world, double amount) {
-		return has(offlinePlayer, amount);
+		if (isEnabled())
+			return has(offlinePlayer, amount);
+		else
+			return mEconomy.has(offlinePlayer, world, amount);
 	}
 
 	/**
@@ -299,7 +379,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasAccount(String playername) {
-		return true;
+		if (isEnabled())
+			return true;
+		else
+			return mEconomy.hasAccount(playername);
 	}
 
 	/**
@@ -308,13 +391,16 @@ public class BagOfGoldEconomy implements Economy {
 	 * major economy plugins auto-generate a player account when the player
 	 * joins the server
 	 * 
-	 * @param player
+	 * @param offlinePlayer
 	 *            to check
 	 * @return if the player has an account
 	 */
 	@Override
-	public boolean hasAccount(OfflinePlayer player) {
-		return true;
+	public boolean hasAccount(OfflinePlayer offlinePlayer) {
+		if (isEnabled())
+			return true;
+		else
+			return mEconomy.hasAccount(offlinePlayer);
 	}
 
 	/**
@@ -329,14 +415,21 @@ public class BagOfGoldEconomy implements Economy {
 	 *            world-specific account
 	 * @return if the player has an account
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean hasAccount(String playername, String world) {
-		return true;
+		if (isEnabled())
+			return true;
+		else
+			return mEconomy.hasAccount(playername, world);
 	}
 
 	@Override
 	public boolean hasAccount(OfflinePlayer offlinePlayer, String world) {
-		return true;
+		if (isEnabled())
+			return true;
+		else
+			return mEconomy.hasAccount(offlinePlayer, world);
 	}
 
 	/**
@@ -350,7 +443,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-		return plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
+		if (isEnabled())
+			return plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
+		else
+			return mEconomy.withdrawPlayer(offlinePlayer, amount);
 	}
 
 	/**
@@ -359,7 +455,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(String playername, double amount) {
-		return withdrawPlayer(Bukkit.getOfflinePlayer(playername), amount);
+		if (isEnabled())
+			return withdrawPlayer(Bukkit.getOfflinePlayer(playername), amount);
+		else
+			return mEconomy.withdrawPlayer(playername, amount);
 	}
 
 	/**
@@ -369,7 +468,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(String playername, String world, double amount) {
-		return withdrawPlayer(playername, amount);
+		if (isEnabled())
+			return withdrawPlayer(playername, amount);
+		else
+			return mEconomy.withdrawPlayer(playername, world, amount);
 	}
 
 	/**
@@ -387,7 +489,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String world, double amount) {
-		return withdrawPlayer(offlinePlayer, amount);
+		if (isEnabled())
+			return withdrawPlayer(offlinePlayer, amount);
+		else
+			return mEconomy.withdrawPlayer(offlinePlayer, world, amount);
 	}
 
 	/**
@@ -397,7 +502,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasBankSupport() {
-		return true;
+		if (isEnabled())
+			return true;
+		else
+			return mEconomy.hasBankSupport();
 	}
 
 	/**
@@ -406,7 +514,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse isBankMember(String account, String playername) {
-		return isBankMember(account, Bukkit.getOfflinePlayer(playername));
+		if (isEnabled())
+			return isBankMember(account, Bukkit.getOfflinePlayer(playername));
+		else
+			return mEconomy.isBankMember(account, playername);
 	}
 
 	/**
@@ -414,16 +525,20 @@ public class BagOfGoldEconomy implements Economy {
 	 * 
 	 * @param name
 	 *            of the account
-	 * @param player
+	 * @param offlinePlayer
 	 *            to check membership
 	 * @return EconomyResponse Object
 	 */
 	@Override
-	public EconomyResponse isBankMember(String account, OfflinePlayer player) {
-		if (account.equalsIgnoreCase(player.getUniqueId().toString()))
-			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
-		else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+	public EconomyResponse isBankMember(String account, OfflinePlayer offlinePlayer) {
+		if (isEnabled()) {
+			if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
+				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+		} else
+			return mEconomy.isBankMember(account, offlinePlayer);
+
 	}
 
 	/**
@@ -432,7 +547,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse isBankOwner(String account, String playername) {
-		return isBankOwner(account, Bukkit.getOfflinePlayer(playername));
+		if (isEnabled())
+			return isBankOwner(account, Bukkit.getOfflinePlayer(playername));
+		else
+			return mEconomy.isBankOwner(account, playername);
 	}
 
 	/**
@@ -440,16 +558,20 @@ public class BagOfGoldEconomy implements Economy {
 	 * 
 	 * @param name
 	 *            of the account
-	 * @param player
+	 * @param offlinePlayer
 	 *            to check for ownership
 	 * @return EconomyResponse Object
 	 */
 	@Override
-	public EconomyResponse isBankOwner(String account, OfflinePlayer player) {
-		if (account.equalsIgnoreCase(player.getUniqueId().toString()))
-			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
-		else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+	public EconomyResponse isBankOwner(String account, OfflinePlayer offlinePlayer) {
+		if (isEnabled()) {
+			if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
+				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+		} else
+			return mEconomy.isBankOwner(account, offlinePlayer);
+
 	}
 
 	/**
@@ -461,7 +583,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankBalance(String account) {
-		return plugin.getEconomyManager().bankBalance(account);
+		if (isEnabled())
+			return plugin.getEconomyManager().bankBalance(account);
+		else
+			return mEconomy.bankBalance(account);
 	}
 
 	/**
@@ -475,7 +600,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankDeposit(String account, double amount) {
-		return plugin.getEconomyManager().bankDeposit(account, amount);
+		if (isEnabled())
+			return plugin.getEconomyManager().bankDeposit(account, amount);
+		else
+			return mEconomy.bankDeposit(account, amount);
 	}
 
 	/**
@@ -490,11 +618,15 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankHas(String account, double amount) {
-		double bal = bankBalance(account).amount;
-		if (bal > amount)
-			return new EconomyResponse(amount, bal, ResponseType.SUCCESS, null);
-		else
-			return new EconomyResponse(amount, bal, ResponseType.FAILURE, null);
+		if (isEnabled()) {
+			double bal = bankBalance(account).amount;
+			if (bal > amount)
+				return new EconomyResponse(amount, bal, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(amount, bal, ResponseType.FAILURE, null);
+		} else
+			return mEconomy.bankHas(account, amount);
+
 	}
 
 	/**
@@ -508,7 +640,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse bankWithdraw(String account, double amount) {
-		return plugin.getEconomyManager().bankWithdraw(account, amount);
+		if (isEnabled())
+			return plugin.getEconomyManager().bankWithdraw(account, amount);
+		else
+			return mEconomy.bankWithdraw(account, amount);
 
 	}
 
@@ -518,7 +653,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse createBank(String account, String playername) {
-		return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+		if (isEnabled())
+			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+		else
+			return mEconomy.createBank(account, playername);
 	}
 
 	/**
@@ -533,7 +671,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse createBank(String account, OfflinePlayer player) {
-		return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+		if (isEnabled())
+			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+		else
+			return mEconomy.createBank(account, player);
 	}
 
 	/**
@@ -545,7 +686,10 @@ public class BagOfGoldEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse deleteBank(String account) {
-		return plugin.getEconomyManager().deleteBank(account);
+		if (isEnabled())
+			return plugin.getEconomyManager().deleteBank(account);
+		else
+			return mEconomy.deleteBank(account);
 	}
 
 }
