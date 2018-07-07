@@ -15,6 +15,7 @@ import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
+import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
@@ -144,9 +145,9 @@ public class BagOfGold extends JavaPlugin {
 
 		mCompatibilityManager = new CompatibilityManager(this);
 
-		mBankManager = new BankManager(this);
+		mBankManager = new BankManager(this); 
 
-		// Handle compatibility stuff
+		mCompatibilityManager.registerPlugin(PerWorldInventoryCompat.class, CompatPlugin.PerWorldInventory);
 		if (Misc.isSpigotServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);

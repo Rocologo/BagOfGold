@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,8 +50,7 @@ public class PlayerSettingsManager implements Listener {
 				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
 			} catch (UserNotFoundException e) {
 
-				plugin.getMessages().debug("Insert new PlayerSettings for %s to database.",
-						offlinePlayer.getName());
+				plugin.getMessages().debug("Insert new PlayerSettings for %s to database.", offlinePlayer.getName());
 
 				double balance = 0;
 				if (offlinePlayer.hasPlayedBefore())
@@ -58,8 +58,7 @@ public class PlayerSettingsManager implements Listener {
 						balance = EssentialsCompat.getEssentialsBalance(offlinePlayer);
 					} else
 						balance = plugin.getConfigManager().startingBalance;
-				ps = new PlayerSettings(offlinePlayer, plugin.getConfigManager().learningMode, false,
-						balance, 0, 0, 0);
+				ps = new PlayerSettings(offlinePlayer, plugin.getConfigManager().learningMode, false, balance, 0, 0, 0);
 				try {
 					plugin.getStoreManager().insertPlayerSettings(ps);
 					mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
@@ -130,26 +129,28 @@ public class PlayerSettingsManager implements Listener {
 	}
 
 	/**
-	 * Write PlayerSettings to Database when Player Quit and remove PlayerSettings
-	 * from memory
+	 * Write PlayerSettings to Database when Player Quit and remove
+	 * PlayerSettings from memory
 	 * 
 	 * @param event
 	 */
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
-		final double balance = getPlayerSettings(player).getBalance();
-		if (EssentialsCompat.isSupported()) {
-			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+		if (player.getGameMode() == GameMode.SURVIVAL) {
+			final double balance = getPlayerSettings(player).getBalance();
+			if (EssentialsCompat.isSupported()) {
+				Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 
-				@Override
-				public void run() {
+					@Override
+					public void run() {
 
-					EssentialsCompat.setEssentialsBalance(player, balance);
+						EssentialsCompat.setEssentialsBalance(player, balance);
 
-				}
-			}, 100L);
+					}
+				}, 100L);
 
+			}
 		}
 	}
 

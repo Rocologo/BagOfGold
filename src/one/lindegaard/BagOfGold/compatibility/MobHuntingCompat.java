@@ -13,10 +13,6 @@ public class MobHuntingCompat implements Listener {
 	private static boolean supported = false;
 
 	public MobHuntingCompat() {
-		// if (isDisabledInConfig()) {
-		// Bukkit.getLogger().info("[BagOfGold] Compatibility with MobHunting is
-		// disabled in config.yml");
-		// } else {
 		mPlugin = (MobHunting) Bukkit.getPluginManager().getPlugin(CompatPlugin.MobHunting.getName());
 
 		Bukkit.getPluginManager().registerEvents(this, BagOfGold.getInstance());
@@ -24,7 +20,6 @@ public class MobHuntingCompat implements Listener {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 				+ "Enabling compatibility with MobHunting (" + getMobHunting().getDescription().getVersion() + ")");
 		supported = true;
-		// }
 	}
 
 	// **************************************************************************
@@ -37,14 +32,6 @@ public class MobHuntingCompat implements Listener {
 
 	public static boolean isSupported() {
 		return supported;
-	}
-
-	public static boolean isDisabledInConfig() {
-		return BagOfGold.getInstance().getConfigManager().disableIntegrationEssentials;
-	}
-
-	public static boolean isEnabledInConfig() {
-		return !BagOfGold.getInstance().getConfigManager().disableIntegrationEssentials;
 	}
 
 	// **************************************************************************

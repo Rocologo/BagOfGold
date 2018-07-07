@@ -143,12 +143,16 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
-	@ConfigField(name = "disable-integration-citizens", category = "plugins", comment = "Disable integration with Citizens2")
-	public boolean disableIntegrationCitizens = false;
+	@ConfigField(name = "enable-integration-citizens", category = "plugins", comment = "Enable integration with Citizens2")
+	public boolean enableIntegrationCitizens = true;
 
-	@ConfigField(name = "disable-integration-essentials", category = "plugins", comment = "Disable integration with Essentials"
+	@ConfigField(name = "enable-integration-essentials", category = "plugins", comment = "Enable integration with Essentials"
 			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
-	public boolean disableIntegrationEssentials = false;
+	public boolean enableIntegrationEssentials = true;
+
+	@ConfigField(name = "enable-integration-perworldinventory", category = "plugins", comment = "Enable integration with PerWorldInventory"
+			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
+	public boolean enableIntegrationPerWorldInventory = true;
 
 	// #####################################################################################
 	// Generel settings

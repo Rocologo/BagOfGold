@@ -49,7 +49,8 @@ public enum CompatPlugin {
 	HolographicDisplays("HolographicDisplays", 45), //
 	PreciousStones("PreciousStones", 46), //
 	BagOfGold("BagOfGold", 47), //
-	MobHunting("MobHunting", 48);
+	MobHunting("MobHunting", 48),//
+	PerWorldInventory("PerWorldInventory",49);
 
 	private final String name;
 	private final Integer id;

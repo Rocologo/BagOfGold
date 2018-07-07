@@ -28,7 +28,7 @@ public class CitizensCompat implements Listener {
 
 	public CitizensCompat() {
 		this.plugin = BagOfGold.getInstance();
-		if (isDisabledInConfig()) {
+		if (!isEnabledInConfig()) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with Citizens2 is disabled in config.yml");
 		} else {
@@ -45,6 +45,7 @@ public class CitizensCompat implements Listener {
 
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 
+			supported=true;
 		}
 	}
 
@@ -117,12 +118,8 @@ public class CitizensCompat implements Listener {
 			return false;
 	}
 
-	public boolean isDisabledInConfig() {
-		return plugin.getConfigManager().disableIntegrationCitizens;
-	}
-
 	public boolean isEnabledInConfig() {
-		return !plugin.getConfigManager().disableIntegrationCitizens;
+		return plugin.getConfigManager().enableIntegrationCitizens;
 	}
 
 	// **************************************************************************

@@ -22,7 +22,7 @@ public class EssentialsCompat {
 	private static boolean supported = false;
 
 	public EssentialsCompat() {
-		if (isDisabledInConfig()) {
+		if (!isEnabledInConfig()) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with Essentials is disabled in config.yml");
 			this.plugin=BagOfGold.getInstance();
@@ -47,12 +47,8 @@ public class EssentialsCompat {
 		return supported;
 	}
 
-	public static boolean isDisabledInConfig() {
-		return BagOfGold.getInstance().getConfigManager().disableIntegrationEssentials;
-	}
-
 	public static boolean isEnabledInConfig() {
-		return !BagOfGold.getInstance().getConfigManager().disableIntegrationEssentials;
+		return BagOfGold.getInstance().getConfigManager().enableIntegrationEssentials;
 	}
 
 	public static boolean isGodModeEnabled(Player player) {

@@ -1,7 +1,6 @@
 package one.lindegaard.BagOfGold.rewards;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,6 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.util.Misc;
 
@@ -43,7 +43,7 @@ public class RewardListeners implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onGameChange(PlayerGameModeChangeEvent event){
 		
-		if (event.isCancelled())
+		if (event.isCancelled() || PerWorldInventoryCompat.isSupported())
 			return;
 		
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
