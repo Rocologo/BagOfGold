@@ -28,7 +28,7 @@ public class ConfigManager extends AutoConfig {
 
 		setCategoryComment("dropmoneyonground",
 				"########################################################################"
-						+ "\nDropMoneyOnGround Settings"
+						+ "\nDropMoneyOnGround Settings / BagOfGold Item Settings"
 						+ "\n########################################################################");
 
 		setCategoryComment("banker",
@@ -56,14 +56,16 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Economy settings
 	// #####################################################################################
-	
-	@ConfigField(name = "use-bagofgold-as-an-economy-plugin", category = "plugins", comment = "Set this to true if you want tha BagOfGold to be a real Economy, which can be used for buying/selling other items.")
+
+	@ConfigField(name = "use-bagofgold-as-an-economy-plugin", category = "economy", comment = "Set this to true if you want tha BagOfGold to be a real Economy, which can be used for "
+			+ "\nbuying/selling other items. If you want the BagOfGold to be items which can be bought/sold,"
+			+ "\nset this to false")
 	public boolean useBagOfGoldAsAnEconomyPlugin = true;
 
 	@ConfigField(name = "starting_balance", category = "economy", comment = "Set initial balance for new players.")
 	public double startingBalance = 3000;
 
-	@ConfigField(name = "number-format", category = "economy", comment = "Here you can changenage the way the numbers is formatted when you use BagOfGold as an EconomyPlugin.")
+	@ConfigField(name = "number-format", category = "economy", comment = "Here you can change the way the numbers is formatted when you use BagOfGold as an EconomyPlugin.")
 	public String numberFormat = "#.#####";
 
 	@ConfigField(name = "reward_rounding", category = "economy", comment = "Rounding of rewards when you uses a range or %. (ex creeperPrize=10:30) the reward."
@@ -72,7 +74,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nSet rounding_reward=0.01 if you want 2 decimals 10.00, 10.01, 10.02... integers."
 			+ "\nSet rounding_reward=5 if you want multipla of 5 IE. 10,15,20,25..."
 			+ "\nSet rounding_reward=2 if you want multipla of 2 IE. 10,12,14,16...")
-	public double rewardRounding = 0.01;
+	public double rewardRounding = 1;
 
 	@ConfigField(name = "minimum_reward", category = "economy", comment = "This is the minimum reward which will which will be paid to the player 0.01 will be fine"
 			+ "\nin most installation, but Gringott users who want very low rewards (like 0.001  for killing"
@@ -117,13 +119,13 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE, GOLD")
 	public String dropMoneyOnGroundTextColor = "GOLD";
 
-	@ConfigField(name = "drop-money-on-ground-skull-reward-name", category = "economy", comment = "This is the name of the reward")
+	@ConfigField(name = "drop-money-on-ground-skull-reward-name", category = "dropmoneyonground", comment = "This is the name of the reward")
 	public String dropMoneyOnGroundSkullRewardName = "Bag of gold";
 
-	@ConfigField(name = "drop-money-on-ground-skull-reward-name-plural", category = "economy", comment = "This is the name of the reward in plural")
+	@ConfigField(name = "drop-money-on-ground-skull-reward-name-plural", category = "dropmoneyonground", comment = "This is the name of the reward in plural")
 	public String dropMoneyOnGroundSkullRewardNamePlural = "Bag of gold";
 
-	@ConfigField(name = "drop-money-on-ground-skull-texture-value", category = "economy", comment = "This is the Custom Texture Value generated at http://mineskin.org")
+	@ConfigField(name = "drop-money-on-ground-skull-texture-value", category = "dropmoneyonground", comment = "This is the Custom Texture Value generated at http://mineskin.org")
 	public String dropMoneyOnGroundSkullTextureValue = "eyJ0aW1lc3RhbXAiOjE0ODU5MTIwNjk3OTgsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM5NmNlMTNmZjYxNTVmZGYzMjM1ZDhkMjIxNzRjNWRlNGJmNTUxMmYxYWRlZGExYWZhM2ZjMjgxODBmM2Y3In19fQ==";
 
 	@ConfigField(name = "drop-money-on-ground-skull-texture-signature", category = "dropmoneyonground", comment = "This is the Custom Texture Signature generated at http://mineskin.org")
@@ -177,7 +179,7 @@ public class ConfigManager extends AutoConfig {
 			+ "\nin 'LEARNING MODE' and get extra information about when he get rewards and not,"
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mobhunt learn'")
 	public boolean learningMode = false;
-	
+
 	@ConfigField(name = "backup", category = "general", comment = "Backup config on each server start / reload")
 	public boolean backup = true;
 
@@ -222,7 +224,7 @@ public class ConfigManager extends AutoConfig {
 	protected void onPostLoad() throws InvalidConfigurationException {
 		plugin.getMessages().setLanguage(language + ".lang");
 	}
-	
+
 	public void backupConfig(File mFile) {
 		File backupFile = new File(mFile.toString());
 		int count = 0;

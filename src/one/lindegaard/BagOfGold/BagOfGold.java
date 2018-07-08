@@ -55,8 +55,6 @@ public class BagOfGold extends JavaPlugin {
 
 	private boolean mInitialized = false;
 
-	private boolean useAsEconomyPlugin=false;
-
 	@Override
 	public void onLoad() {
 	}
@@ -156,14 +154,13 @@ public class BagOfGold extends JavaPlugin {
 
 		if (!Misc.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
-			//mMetricsManager.startMetrics();
 			mMetricsManager.start();
 		}
 
 		// Initialize BagOfGold Bank Signs
 		new BankSign(this);
 
-		if (useAsEconomyPlugin){
+		if (mConfig.useBagOfGoldAsAnEconomyPlugin){
 		// Try to load BagOfGold
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 		}

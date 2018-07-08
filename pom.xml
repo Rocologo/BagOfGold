@@ -14,8 +14,8 @@
 
 	<scm>
 		<connection>scm:svn:https://github.com/Rocologo/BagOfGold.git</connection>
-		<developerConnection>scm:svn:https://github.com/Rocologo/BagOfGold.git</developerConnection>
-		<url>http://127.0.0.1/dummy</url>
+		<developerConnection>scm:git:git://github.com/Rocologo/BagOfGold.git</developerConnection>
+		<url>https://github.com/Rocologo/BagOfGold</url>
 	</scm>
 	<organization>
 		<name>Rocologo</name>
@@ -32,8 +32,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
 		<spigotmc112.version>1.12.2-R0.1-SNAPSHOT</spigotmc112.version>
-		<bukkit113.version>18w03b-R0.1-SNAPSHOT</bukkit113.version>
-		<bukkit112.version>1.12.2-R0.1-SNAPSHOT</bukkit112.version>
 		<craftbukkit112R1.version>1.12-R1</craftbukkit112R1.version>
 		<craftbukkit111R1.version>1.11-R1</craftbukkit111R1.version>
 		<craftbukkit110R1.version>1.10-R1</craftbukkit110R1.version>

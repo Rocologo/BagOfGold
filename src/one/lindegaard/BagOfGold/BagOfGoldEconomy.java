@@ -20,6 +20,7 @@ public class BagOfGoldEconomy implements Economy {
 	public BagOfGoldEconomy(BagOfGold plugin) {
 		this.plugin = plugin;
 		if (!isEnabled()) {
+			//BagOfGold is NOT use½d as an Economy plugin
 			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(Economy.class);
 			if (economyProvider == null) {
