@@ -46,7 +46,7 @@
 		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
 		<mavenShadePlugin.version>3.1.1</mavenShadePlugin.version>
 
-		<mobhunting.version>5.7.1-SNAPSHOT-B652</mobhunting.version>
+		<mobhunting.version>5.7.1-SNAPSHOT-B656</mobhunting.version>
 
 		<vault.version>1.6.6</vault.version>
 		<bstats.version>1.2</bstats.version>
