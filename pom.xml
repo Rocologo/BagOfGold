@@ -10,7 +10,7 @@
 	<version>1.1.4-SNAPSHOT-B${build.number}</version>
 	<name>BagOfGold</name>
 	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
-	<description>BagOfGold is an Item based eConomy plugin, which replace Essentials Economy, CraftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. </description>
+	<description>BagOfGold is an Item based eConomy plugin, which can replace Essentials Economy, CraftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. </description>
 
 	<scm>
 		<connection>scm:svn:https://github.com/Rocologo/BagOfGold.git</connection>
@@ -46,27 +46,31 @@
 		<javacompiler.version>1.8</javacompiler.version>
 		<mavenCompilerPlugin.version>3.7.0</mavenCompilerPlugin.version>
 		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
-		<mavenShadePlugin.version>2.4</mavenShadePlugin.version>
+		<mavenShadePlugin.version>3.1.1</mavenShadePlugin.version>
 
-		<vault.version>1.5.6</vault.version>
 		<mobhunting.version>5.7.1-SNAPSHOT-B651</mobhunting.version>
-		<bstats.version>1.2</bstats.version>
 
+		<vault.version>1.6.6</vault.version>
+		<bstats.version>1.2</bstats.version>
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
-		<PerWorldInventory.version>2.0.1</PerWorldInventory.version>
-		<libsdisguises.version>9.5.1-SNAPSHOT</libsdisguises.version>
+		<EssentialsX.version>2.0.1</EssentialsX.version>
+		<spigetupdate.version>1.4.0</spigetupdate.version>
+		
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>2.0.0</titlemanager.version>
-		<placeholderapi.version>2.0.6</placeholderapi.version>
 		<ActionBarAPI.version>1.5.2</ActionBarAPI.version>
 		<ActionAnnouncer.version>1.10.0</ActionAnnouncer.version>
-		<EssentialsX.version>2.0.1</EssentialsX.version>
 		<placeholderapi.version>2.0.8</placeholderapi.version>
+		<TitleAPI.version>1.7.5</TitleAPI.version>
+
+		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
 		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
 		<hologramdisplays.version>2.2.6</hologramdisplays.version>
-		<citizensapi.version>2.0.22-SNAPSHOT</citizensapi.version>
-		<spigetupdate.version>1.4.0</spigetupdate.version>
+		<libsdisguises.version>9.5.1-SNAPSHOT</libsdisguises.version>
+		
+		<PerWorldInventory.version>2.0.1</PerWorldInventory.version>
+
 	</properties>
 
 
@@ -157,20 +161,12 @@
 
 		<!-- Rocologo repository -->
 		<repository>
-			<id>fractal-ext-rel</id>
-			<url>https://fractal.lindegaard.one:8187/ext-release-local/</url>
-		</repository>
-		<repository>
-			<id>fractal-ext-snap</id>
-			<url>https://fractal.lindegaard.one:8187/ext-snapshot-local/</url>
-		</repository>
-		<repository>
-			<id>fractal</id>
+			<id>fractal-release</id>
 			<url>https://fractal.lindegaard.one:8187/plugins-release/</url>
 		</repository>
 		<repository>
-			<id>fractal-snapshots</id>
-			<url>https://fractal.lindegaard.one:8187/plugins-snapshots/</url>
+			<id>fractal-snapshot</id>
+			<url>https://fractal.lindegaard.one:8187/plugins-snapshot</url>
 		</repository>
 
 		<!-- SpigotMC Repository -->
@@ -226,11 +222,11 @@
 			<id>placeholderapi</id>
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
-		
+
 		<repository>
-            <id>aikar</id>
-            <url>https://repo.aikar.co/content/groups/aikar/</url>
-        </repository>
+			<id>aikar</id>
+			<url>https://repo.aikar.co/content/groups/aikar/</url>
+		</repository>
 
 	</repositories>
 
@@ -414,6 +410,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- TitleAPI -->
+		<dependency>
+			<groupId>com.connorlinfoot</groupId>
+			<artifactId>TitleAPI</artifactId>
+			<version>${TitleAPI.version}</version>
+		</dependency>
+
 		<!-- Essentials -->
 		<dependency>
 			<groupId>net.ess3</groupId>
@@ -485,16 +488,17 @@
 	<!-- ********************************************************************** -->
 	<!-- ******************** Distribution Management ************************* -->
 	<!-- ********************************************************************** -->
+	<!-- This is where the plugin is deployed -->
 	<distributionManagement>
 		<repository>
 			<id>central</id>
 			<name>fractal-releases</name>
-			<url>https://fractal.lindegaard.one:8187/plugins-release-local</url>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release-local</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>fractal-snapshot</name>
-			<url>https://fractal.lindegaard.one:8187/plugins-snapshot-local</url>
+			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 
