@@ -53,7 +53,7 @@
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
 		<EssentialsX.version>2.0.1</EssentialsX.version>
 		<spigetupdate.version>1.4.0</spigetupdate.version>
-		
+
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>2.0.0</titlemanager.version>
@@ -66,7 +66,7 @@
 		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
 		<hologramdisplays.version>2.2.6</hologramdisplays.version>
 		<libsdisguises.version>9.5.1-SNAPSHOT</libsdisguises.version>
-		
+
 		<PerWorldInventory.version>2.0.1</PerWorldInventory.version>
 
 	</properties>
@@ -481,14 +481,16 @@
 	<!-- This is where the plugin is deployed -->
 	<distributionManagement>
 		<repository>
+			<uniqueVersion>false</uniqueVersion>
 			<id>central</id>
 			<name>fractal-releases</name>
-			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-release-local</url>
+			<url>https://fractal.lindegaard.one:8187/plugins-release-local</url>
 		</repository>
 		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
 			<id>snapshots</id>
 			<name>fractal-snapshot</name>
-			<url>https://fractal.lindegaard.one:8187/artifactory/plugins-snapshot-local</url>
+			<url>https://fractal.lindegaard.one:8187/plugins-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
 
