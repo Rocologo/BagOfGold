@@ -321,7 +321,6 @@
 			<groupId>one.lindegaard</groupId>
 			<artifactId>MobHunting</artifactId>
 			<version>${mobhunting.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- bStats.org -->
