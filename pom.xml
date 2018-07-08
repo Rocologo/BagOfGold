@@ -488,7 +488,7 @@
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
-			<id>snapshots</id>
+			<id>central</id>
 			<name>fractal-snapshot</name>
 			<url>https://fractal.lindegaard.one:8187/plugins-snapshot-local</url>
 		</snapshotRepository>
