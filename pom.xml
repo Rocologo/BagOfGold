@@ -250,14 +250,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Bukkit -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkit112.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- CraftBukkit -->
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
