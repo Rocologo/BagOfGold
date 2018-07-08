@@ -321,6 +321,7 @@
 			<groupId>one.lindegaard</groupId>
 			<artifactId>MobHunting</artifactId>
 			<version>${mobhunting.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- bStats.org -->
@@ -398,6 +399,7 @@
 			<groupId>com.connorlinfoot</groupId>
 			<artifactId>TitleAPI</artifactId>
 			<version>${TitleAPI.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Essentials -->
@@ -405,6 +407,7 @@
 			<groupId>net.ess3</groupId>
 			<artifactId>EssentialsX</artifactId>
 			<version>${EssentialsX.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ActionBarAPI -->
@@ -412,6 +415,7 @@
 			<groupId>ActionBarAPI</groupId>
 			<artifactId>ActionBarAPI</artifactId>
 			<version>${ActionBarAPI.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ActionAnnouncer -->
@@ -419,6 +423,7 @@
 			<groupId>me.clip.actionannouncer.ActionAnnouncer</groupId>
 			<artifactId>ActionAnnouncer</artifactId>
 			<version>${ActionAnnouncer.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Holograms -->
@@ -426,6 +431,7 @@
 			<groupId>com.sainttx.holograms</groupId>
 			<artifactId>holograms</artifactId>
 			<version>${holograms.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- HologramDisplays -->
@@ -433,6 +439,7 @@
 			<groupId>com.gmail.filoghost.holographicdisplays.HolographicDisplays</groupId>
 			<artifactId>HolographicDisplays</artifactId>
 			<version>${hologramdisplays.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- PlacholdeAPI -->
