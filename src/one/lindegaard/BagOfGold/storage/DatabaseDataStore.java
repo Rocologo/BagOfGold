@@ -107,8 +107,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 	/**
 	 * Initialize the connection. Must be called after Opening of initial
-	 * connection. Open Prepared statements for batch processing large selections of
-	 * players. Batches will be performed in batches of 10,5,2,1
+	 * connection. Open Prepared statements for batch processing large
+	 * selections of players. Batches will be performed in batches of 10,5,2,1
 	 */
 	@Override
 	public void initialize() throws DataStoreException {
@@ -192,23 +192,28 @@ public abstract class DatabaseDataStore implements IDataStore {
 	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
 		Connection mConnection = setupConnection();
 		openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
-		mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
-		ResultSet result = mGetPlayerData.executeQuery();
-		if (result.next()) {
-			PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getBoolean("LEARNING_MODE"),
-					result.getBoolean("MUTE_MODE"), result.getDouble("BALANCE"), result.getDouble("BALANCE_CHANGES"),
-					result.getDouble("BANK_BALANCE"), result.getDouble("BANK_BALANCE_CHANGES"));
-			int id = result.getInt("PLAYER_ID");
-			if (id != 0)
-				ps.setPlayerId(id);
+		if (offlinePlayer.getUniqueId()!=null && offlinePlayer.getUniqueId().toString() != null && !offlinePlayer.getUniqueId().toString().isEmpty()) {
+			mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
+			ResultSet result = mGetPlayerData.executeQuery();
+			if (result.next()) {
+				PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getBoolean("LEARNING_MODE"),
+						result.getBoolean("MUTE_MODE"), result.getDouble("BALANCE"),
+						result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"),
+						result.getDouble("BANK_BALANCE_CHANGES"));
+				int id = result.getInt("PLAYER_ID");
+				if (id != 0)
+					ps.setPlayerId(id);
+				result.close();
+				plugin.getMessages().debug("Reading Playersettings from Database: %s", ps.toString());
+				mGetPlayerData.close();
+				mConnection.close();
+				return ps;
+			}
 			result.close();
-			plugin.getMessages().debug("Reading Playersettings from Database: %s", ps.toString());
-			mGetPlayerData.close();
-			mConnection.close();
-			return ps;
 		}
 		mGetPlayerData.close();
 		mConnection.close();
+
 		throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
 	}
 
