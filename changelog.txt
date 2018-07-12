@@ -1,5 +1,7 @@
+V1.1.4
+* Changed how data was stored in the database (Same order as they were inserted). Fix'ed ticket (https://github.com/Rocologo/BagOfGold/issues/25)
 V1.1.3
-* Added support fro PerWorldInventory. This plugin is strongly reccommended if your change gamemode / worlds.
+* Added support for PerWorldInventory. This plugin is strongly reccommended if your change gamemode / worlds.
 * Fixed bStarts.org redirecting
 * BagOfGold balance fixed when changing gamemode 
 V1.1.2

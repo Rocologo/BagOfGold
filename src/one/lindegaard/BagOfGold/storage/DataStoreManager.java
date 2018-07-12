@@ -1,6 +1,6 @@
 package one.lindegaard.BagOfGold.storage;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -18,7 +18,7 @@ public class DataStoreManager {
 	private BagOfGold plugin;
 
 	// Accessed on multiple threads
-	private final HashSet<Object> mWaiting = new HashSet<Object>();
+	private final LinkedHashSet<Object> mWaiting = new LinkedHashSet<Object>();
 
 	// Accessed only from these threads
 	private IDataStore mStore;
@@ -155,15 +155,10 @@ public class DataStoreManager {
 				mTaskThread.interrupt();
 			}
 			plugin.getMessages().debug("mStoreThread.state=%s", mStoreThread.getState());
-			//plugin.getMessages().debug("Interupting mStoreThread");
-			//mStoreThread.interrupt();
 			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() != Thread.State.WAITING) {
 				mTaskThread.waitForEmptyQueue();
-			} else {
-				//plugin.getMessages().debug("Interupting mTaskThread");
-				//mTaskThread.interrupt();
-			}
+			} 
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();

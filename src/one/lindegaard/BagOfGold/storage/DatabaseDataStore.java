@@ -192,7 +192,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
 		Connection mConnection = setupConnection();
 		openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
-		if (offlinePlayer.getUniqueId()!=null && offlinePlayer.getUniqueId().toString() != null && !offlinePlayer.getUniqueId().toString().isEmpty()) {
+		if (offlinePlayer.getUniqueId() != null && offlinePlayer.getUniqueId().toString() != null
+				&& !offlinePlayer.getUniqueId().toString().isEmpty()) {
 			mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
 			ResultSet result = mGetPlayerData.executeQuery();
 			if (result.next()) {

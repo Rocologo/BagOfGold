@@ -511,8 +511,9 @@ public class EconomyManager implements Listener {
 					amountInInventory = amountInInventory + reward.getMoney();
 			}
 		}
-		//plugin.getMessages().debug("EconomyManager: amountInInventory=%s (size=%s) (%s)", amountInInventory,
-		//		player.getInventory().getSize(), player.getGameMode());
+		// plugin.getMessages().debug("EconomyManager: amountInInventory=%s
+		// (size=%s) (%s)", amountInInventory,
+		// player.getInventory().getSize(), player.getGameMode());
 		return amountInInventory;
 	}
 
