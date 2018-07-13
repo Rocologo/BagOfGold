@@ -1,3 +1,5 @@
+V1.1.5
+* Fixed problem where balance was calculated before data was loaded from database.
 V1.1.4
 * Changed how data was stored in the database (Same order as they were inserted). Fix'ed ticket (https://github.com/Rocologo/BagOfGold/issues/25)
 V1.1.3
