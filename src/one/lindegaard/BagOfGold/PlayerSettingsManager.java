@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
+import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
@@ -45,35 +46,41 @@ public class PlayerSettingsManager implements Listener {
 		if (mPlayerSettings.containsKey(offlinePlayer.getUniqueId()))
 			return mPlayerSettings.get(offlinePlayer.getUniqueId());
 		else {
-			PlayerSettings ps;
-			try {
-				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
-			} catch (UserNotFoundException e) {
-
-				plugin.getMessages().debug("Insert new PlayerSettings for %s to database.", offlinePlayer.getName());
-
-				double balance = 0;
-				if (offlinePlayer.hasPlayedBefore())
-					if (EssentialsCompat.isSupported()) {
-						balance = EssentialsCompat.getEssentialsBalance(offlinePlayer);
-					} else
-						balance = plugin.getConfigManager().startingBalance;
-				ps = new PlayerSettings(offlinePlayer, plugin.getConfigManager().learningMode, false, balance, 0, 0, 0);
-				try {
-					plugin.getStoreManager().insertPlayerSettings(ps);
-					mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
-				} catch (DataStoreException e1) {
-					e1.printStackTrace();
-				}
-				return ps;
-
-			} catch (DataStoreException | SQLException e) {
-				plugin.getMessages().debug("Error reading %s's data from the database", offlinePlayer.getName(),
-						offlinePlayer.hasPlayedBefore());
+			if (offlinePlayer.isOnline())
 				return new PlayerSettings(offlinePlayer, 0);
+			else {
+				PlayerSettings ps;
+				try {
+					ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
+				} catch (UserNotFoundException e) {
+
+					plugin.getMessages().debug("Insert new PlayerSettings for %s to database.",
+							offlinePlayer.getName());
+
+					double balance = 0;
+					if (offlinePlayer.hasPlayedBefore())
+						if (EssentialsCompat.isSupported()) {
+							balance = EssentialsCompat.getEssentialsBalance(offlinePlayer);
+						} else
+							balance = plugin.getConfigManager().startingBalance;
+					ps = new PlayerSettings(offlinePlayer, plugin.getConfigManager().learningMode, false, balance, 0, 0,
+							0);
+					try {
+						plugin.getStoreManager().insertPlayerSettings(ps);
+						mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
+					} catch (DataStoreException e1) {
+						e1.printStackTrace();
+					}
+					return ps;
+
+				} catch (DataStoreException | SQLException e) {
+					plugin.getMessages().debug("Error reading %s's data from the database", offlinePlayer.getName(),
+							offlinePlayer.hasPlayedBefore());
+					return new PlayerSettings(offlinePlayer, 0);
+				}
+				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
+				return ps;
 			}
-			mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
-			return ps;
 		}
 
 	}
@@ -108,24 +115,28 @@ public class PlayerSettingsManager implements Listener {
 		final Player player = event.getPlayer();
 		if (!containsKey(player))
 			load(player);
-		else {
-			if (getPlayerSettings(player).getBalanceChanges() != 0) {
-				plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
-						player.getName(), plugin.getEconomyManager().format(getPlayerSettings(player).getBalance()
-								+ getPlayerSettings(player).getBalanceChanges()));
-				double change = getPlayerSettings(player).getBalanceChanges();
-				getPlayerSettings(player).setBalance(
-						getPlayerSettings(player).getBalance() + getPlayerSettings(player).getBalanceChanges());
-				getPlayerSettings(player).setBalanceChanges(0);
-				if (change > 0)
-					plugin.getEconomyManager().addBagOfGoldPlayer(player, change);
-				else
-					plugin.getEconomyManager().removeBagOfGoldPlayer(player, change);
-			}
-		}
-		if (!player.hasPlayedBefore()) {
-			plugin.getEconomyManager().depositPlayer(player, plugin.getConfigManager().startingBalance);
-		}
+
+		/**
+		 * else { Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+		 * 
+		 * @Override public void run() { if
+		 *           (getPlayerSettings(player).getBalanceChanges() != 0) {
+		 *           plugin.getMessages().debug("Balance was changed while %s
+		 *           was offline. New balance is %s.", player.getName(),
+		 *           plugin.getEconomyManager().format(getPlayerSettings(player).getBalance()
+		 *           + getPlayerSettings(player).getBalanceChanges())); double
+		 *           change = getPlayerSettings(player).getBalanceChanges();
+		 *           getPlayerSettings(player).setBalance(
+		 *           getPlayerSettings(player).getBalance() +
+		 *           getPlayerSettings(player).getBalanceChanges());
+		 *           getPlayerSettings(player).setBalanceChanges(0); if (change
+		 *           > 0) plugin.getEconomyManager().addBagOfGoldPlayer(player,
+		 *           change); else
+		 *           plugin.getEconomyManager().removeBagOfGoldPlayer(player,
+		 *           change); } } }, 5L); } if (!player.hasPlayedBefore()) {
+		 *           plugin.getEconomyManager().depositPlayer(player,
+		 *           plugin.getConfigManager().startingBalance); }
+		 **/
 	}
 
 	/**
@@ -169,17 +180,22 @@ public class PlayerSettingsManager implements Listener {
 					plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
 				if (ps.isLearningMode())
 					plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
-				if (offlinePlayer.isOnline() && ps.getBalanceChanges() != 0) {
-					plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
-							offlinePlayer.getName(), ps.getBalance() + ps.getBalanceChanges());
-					double change = ps.getBalanceChanges();
-					ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
-					ps.setBalanceChanges(0);
-					if (change > 0)
-						plugin.getEconomyManager().addBagOfGoldPlayer((Player) offlinePlayer, change);
-					else
-						plugin.getEconomyManager().removeBagOfGoldPlayer((Player) offlinePlayer, change);
-					setPlayerSettings(offlinePlayer, ps);
+				if (!PerWorldInventoryCompat.isSupported()) {
+					if (offlinePlayer.isOnline() && ps.getBalanceChanges() != 0) {
+						plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
+								offlinePlayer.getName(), ps.getBalance() + ps.getBalanceChanges());
+						double change = ps.getBalanceChanges();
+						ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
+						ps.setBalanceChanges(0);
+						if (change > 0)
+							plugin.getEconomyManager().addBagOfGoldPlayer((Player) offlinePlayer, change);
+						else
+							plugin.getEconomyManager().removeBagOfGoldPlayer((Player) offlinePlayer, change);
+						setPlayerSettings(offlinePlayer, ps);
+					}
+				}
+				if (!offlinePlayer.hasPlayedBefore()) {
+					plugin.getEconomyManager().depositPlayer(offlinePlayer, plugin.getConfigManager().startingBalance);
 				}
 			}
 

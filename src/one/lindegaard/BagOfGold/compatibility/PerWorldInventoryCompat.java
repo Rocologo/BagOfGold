@@ -11,6 +11,7 @@ import me.ebonjaeger.perworldinventory.PerWorldInventory;
 import me.ebonjaeger.perworldinventory.event.InventoryLoadEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public class PerWorldInventoryCompat implements Listener {
 
@@ -56,8 +57,8 @@ public class PerWorldInventoryCompat implements Listener {
 	// **************************************************************************
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	private void onInventoryChangeComplated(InventoryLoadEvent event) {
-		//TODO: Change to InventoryLoadCompleteEvent
+	private void onInventoryChangeCompleted(InventoryLoadEvent event) {
+		// TODO: Change to InventoryLoadCompleteEvent
 		// private void onInventoryChangeComplated(InventoryLoadCompleteEvent
 		// event) {
 
@@ -68,10 +69,21 @@ public class PerWorldInventoryCompat implements Listener {
 				PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 				double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
 				ps.setBalance(amountInInventory);
-				ps.setBalanceChanges(0);
 				plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
-				plugin.getMessages().debug("%s Inventory Loaded: new balance is %s", player.getName(),
-						plugin.getEconomyManager().getBalance(player));
+				if (Misc.round(ps.getBalanceChanges()) != 0) {
+					plugin.getMessages().debug("PWI:%s balance changed while offline (%s), new balance is %s",
+							player.getName(), Misc.round(ps.getBalanceChanges()),
+							amountInInventory + Misc.round(ps.getBalanceChanges()));
+					double change = ps.getBalanceChanges();
+					if (change > 0)
+						plugin.getEconomyManager().addBagOfGoldPlayer((Player) player, change);
+					else
+						plugin.getEconomyManager().removeBagOfGoldPlayer((Player) player, change);
+					ps.setBalance(amountInInventory+Misc.round(ps.getBalanceChanges()));
+					ps.setBalanceChanges(0);
+					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
+				}
+
 			}
 		}, 3);
 	}

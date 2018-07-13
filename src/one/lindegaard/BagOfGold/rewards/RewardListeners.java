@@ -26,15 +26,11 @@ public class RewardListeners implements Listener {
 		Player player = (Player) event.getPlayer();
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 		double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
-		if (Misc.round(amountInInventory) != Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges())) {
-			plugin.getMessages().debug("%s closed inventory: balance error (%s,%s,%s)", player.getName(),
-					Misc.round(amountInInventory), Misc.round(ps.getBalance()), Misc.round(ps.getBalanceChanges()));
+		if (Misc.round(amountInInventory) != Misc.round(ps.getBalance())) {
 			ps.setBalance(amountInInventory);
-			ps.setBalanceChanges(0);
 			plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
 			plugin.getMessages().debug("%s closed inventory: new balance is %s", player.getName(),
 					plugin.getEconomyManager().getBalance(player));
-
 		}
 	}
 

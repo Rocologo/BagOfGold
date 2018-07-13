@@ -49,6 +49,7 @@ public class EconomyManager implements Listener {
 	 */
 	public double getBalance(OfflinePlayer offlinePlayer) {
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+		/**
 		if (offlinePlayer.isOnline()) {
 			Player player = (Player) offlinePlayer;
 			double amountInInventory = getAmountInInventory(player);
@@ -106,6 +107,8 @@ public class EconomyManager implements Listener {
 			}
 		} else // player is known but not online
 			return ps.getBalance() + ps.getBalanceChanges();
+			**/
+		return ps.getBalance() + ps.getBalanceChanges();
 	}
 
 	/**
@@ -193,7 +196,7 @@ public class EconomyManager implements Listener {
 	 * @return true if the player has the amount on his money.
 	 */
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		plugin.getMessages().debug("Check if %s has %s %s on his balance=%s)", offlinePlayer.getName(), format(amount),
+		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
 				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				format(plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
 						+ plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges()));
