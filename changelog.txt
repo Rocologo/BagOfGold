@@ -1,3 +1,5 @@
+V1.1.6
+*
 V1.1.5
 * Fixed problem where balance was calculated before data was loaded from database.
 V1.1.4

@@ -115,28 +115,6 @@ public class PlayerSettingsManager implements Listener {
 		final Player player = event.getPlayer();
 		if (!containsKey(player))
 			load(player);
-
-		/**
-		 * else { Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-		 * 
-		 * @Override public void run() { if
-		 *           (getPlayerSettings(player).getBalanceChanges() != 0) {
-		 *           plugin.getMessages().debug("Balance was changed while %s
-		 *           was offline. New balance is %s.", player.getName(),
-		 *           plugin.getEconomyManager().format(getPlayerSettings(player).getBalance()
-		 *           + getPlayerSettings(player).getBalanceChanges())); double
-		 *           change = getPlayerSettings(player).getBalanceChanges();
-		 *           getPlayerSettings(player).setBalance(
-		 *           getPlayerSettings(player).getBalance() +
-		 *           getPlayerSettings(player).getBalanceChanges());
-		 *           getPlayerSettings(player).setBalanceChanges(0); if (change
-		 *           > 0) plugin.getEconomyManager().addBagOfGoldPlayer(player,
-		 *           change); else
-		 *           plugin.getEconomyManager().removeBagOfGoldPlayer(player,
-		 *           change); } } }, 5L); } if (!player.hasPlayedBefore()) {
-		 *           plugin.getEconomyManager().depositPlayer(player,
-		 *           plugin.getConfigManager().startingBalance); }
-		 **/
 	}
 
 	/**
@@ -180,12 +158,12 @@ public class PlayerSettingsManager implements Listener {
 					plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
 				if (ps.isLearningMode())
 					plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
+				double change = ps.getBalanceChanges();
 				if (!PerWorldInventoryCompat.isSupported()) {
-					if (offlinePlayer.isOnline() && ps.getBalanceChanges() != 0) {
+					if (offlinePlayer.isOnline() && change != 0) {
 						plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
-								offlinePlayer.getName(), ps.getBalance() + ps.getBalanceChanges());
-						double change = ps.getBalanceChanges();
-						ps.setBalance(ps.getBalance() + ps.getBalanceChanges());
+								offlinePlayer.getName(), ps.getBalance() + change);
+						ps.setBalance(ps.getBalance() + change);
 						ps.setBalanceChanges(0);
 						if (change > 0)
 							plugin.getEconomyManager().addBagOfGoldPlayer((Player) offlinePlayer, change);

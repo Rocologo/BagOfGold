@@ -164,11 +164,15 @@ public class BagOfGold extends JavaPlugin {
 		// Try to load BagOfGold
 		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 		}
+
+		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy()) 
+			PerWorldInventoryCompat.pwi_sync_economy_warning();
 		
 		// Get random UUI>>>D's
 		//for (int n = 0; n < 3; n++) {
 		//	getMessages().debug("UUID=%s", UUID.randomUUID().toString());
 		//}
+
 		mInitialized = true;
 
 	}
