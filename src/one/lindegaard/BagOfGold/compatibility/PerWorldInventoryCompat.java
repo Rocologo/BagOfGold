@@ -121,6 +121,17 @@ public class PerWorldInventoryCompat implements Listener {
 					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
 					plugin.getMessages().debug("PWI:%s Inventory loaded. New balance = %s", player.getName(),
 							ps.getBalance());
+					if (ps.getBalanceChanges()!=0){
+						plugin.getMessages().debug("PWI:%s balance was changed while offline. New balance = %s", player.getName(),
+								ps.getBalance()+ps.getBalanceChanges());
+						if (ps.getBalanceChanges()>0)
+							plugin.getEconomyManager().addBagOfGoldPlayer(player, ps.getBalanceChanges());
+						else
+							plugin.getEconomyManager().removeBagOfGoldPlayer(player, ps.getBalanceChanges());
+						ps.setBalance(ps.getBalance()+ps.getBalanceChanges());
+						ps.setBalanceChanges(0);
+
+					}
 				}
 
 			}

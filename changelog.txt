@@ -1,5 +1,7 @@
+V1.1.7
+* Better handling of player balance while player is offline.
 V1.1.6
-*
+* Better support for PerWorldInventory
 V1.1.5
 * Fixed problem where balance was calculated before data was loaded from database.
 V1.1.4
