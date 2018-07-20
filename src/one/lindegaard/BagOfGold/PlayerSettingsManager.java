@@ -1,22 +1,17 @@
 package one.lindegaard.BagOfGold;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
-import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
-import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.PlayerSettings;
@@ -46,41 +41,22 @@ public class PlayerSettingsManager implements Listener {
 		if (mPlayerSettings.containsKey(offlinePlayer.getUniqueId()))
 			return mPlayerSettings.get(offlinePlayer.getUniqueId());
 		else {
-			if (offlinePlayer.isOnline())
-				return new PlayerSettings(offlinePlayer, 0);
-			else {
-				PlayerSettings ps;
-				try {
-					ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
-				} catch (UserNotFoundException e) {
-
-					plugin.getMessages().debug("Insert new PlayerSettings for %s to database.",
-							offlinePlayer.getName());
-
-					double balance = 0;
-					if (offlinePlayer.hasPlayedBefore())
-						if (EssentialsCompat.isSupported()) {
-							balance = EssentialsCompat.getEssentialsBalance(offlinePlayer);
-						} else
-							balance = plugin.getConfigManager().startingBalance;
-					ps = new PlayerSettings(offlinePlayer, plugin.getConfigManager().learningMode, false, balance, 0, 0,
-							0);
-					try {
-						plugin.getStoreManager().insertPlayerSettings(ps);
-						mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
-					} catch (DataStoreException e1) {
-						e1.printStackTrace();
-					}
-					return ps;
-
-				} catch (DataStoreException | SQLException e) {
-					plugin.getMessages().debug("Error reading %s's data from the database", offlinePlayer.getName(),
-							offlinePlayer.hasPlayedBefore());
-					return new PlayerSettings(offlinePlayer, 0);
-				}
-				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
+			PlayerSettings ps;
+			try {
+				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
+			} catch (UserNotFoundException e) {
+				String worldgroup = offlinePlayer.isOnline()?plugin.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer):plugin.getWorldGroupManager().getDefaultWorldgroup();
+				plugin.getMessages().debug("Insert new PlayerSettings for %s to database.", offlinePlayer.getName());
+				ps = new PlayerSettings(offlinePlayer,worldgroup, plugin.getConfigManager().learningMode, false);
+				setPlayerSettings(offlinePlayer, ps);
 				return ps;
+			} catch (DataStoreException e) {
+				plugin.getMessages().debug("Error reading %s's data from the database", offlinePlayer.getName(),
+						offlinePlayer.hasPlayedBefore());
+				return new PlayerSettings(offlinePlayer);
 			}
+			mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
+			return ps;
 		}
 
 	}
@@ -118,32 +94,6 @@ public class PlayerSettingsManager implements Listener {
 	}
 
 	/**
-	 * Write PlayerSettings to Database when Player Quit and remove
-	 * PlayerSettings from memory
-	 * 
-	 * @param event
-	 */
-	@EventHandler(priority = EventPriority.NORMAL)
-	private void onPlayerQuit(PlayerQuitEvent event) {
-		final Player player = event.getPlayer();
-		if (player.getGameMode() == GameMode.SURVIVAL) {
-			final double balance = getPlayerSettings(player).getBalance();
-			if (EssentialsCompat.isSupported()) {
-				Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-
-					@Override
-					public void run() {
-
-						EssentialsCompat.setEssentialsBalance(player, balance);
-
-					}
-				}, 100L);
-
-			}
-		}
-	}
-
-	/**
 	 * Load PlayerSettings asynchronously from Database
 	 * 
 	 * @param offlinePlayer
@@ -158,31 +108,13 @@ public class PlayerSettingsManager implements Listener {
 					plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
 				if (ps.isLearningMode())
 					plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
-				double change = ps.getBalanceChanges();
-				if (!PerWorldInventoryCompat.isSupported()) {
-					if (offlinePlayer.isOnline() && change != 0) {
-						plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
-								offlinePlayer.getName(), ps.getBalance() + change);
-						ps.setBalance(ps.getBalance() + change);
-						ps.setBalanceChanges(0);
-						if (change > 0)
-							plugin.getEconomyManager().addBagOfGoldPlayer((Player) offlinePlayer, change);
-						else
-							plugin.getEconomyManager().removeBagOfGoldPlayer((Player) offlinePlayer, change);
-						setPlayerSettings(offlinePlayer, ps);
-					}
-				}
-				if (!offlinePlayer.hasPlayedBefore()) {
-					plugin.getEconomyManager().depositPlayer(offlinePlayer, plugin.getConfigManager().startingBalance);
-				}
 			}
 
 			@Override
 			public void onError(Throwable error) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[BagOfGold][ERROR] " + offlinePlayer.getName()
 						+ " is new, creating user in database.");
-				mPlayerSettings.put(offlinePlayer.getUniqueId(),
-						new PlayerSettings(offlinePlayer, plugin.getConfigManager().startingBalance));
+				mPlayerSettings.put(offlinePlayer.getUniqueId(), new PlayerSettings(offlinePlayer));
 			}
 		});
 	}

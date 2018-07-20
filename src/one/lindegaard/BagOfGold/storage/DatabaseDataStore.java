@@ -1,17 +1,16 @@
 package one.lindegaard.BagOfGold.storage;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.PlayerBalance;
+import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.util.Misc;
-//import one.lindegaard.CustomItemsLib.Util.Misc;
 
 public abstract class DatabaseDataStore implements IDataStore {
 
@@ -27,59 +26,29 @@ public abstract class DatabaseDataStore implements IDataStore {
 	// protected Connection mConnection;
 
 	/**
-	 * Args: player id
-	 */
-	protected PreparedStatement mSavePlayerStats;
-
-	/**
-	 * Args: player uuid
-	 */
-	protected PreparedStatement mGetPlayerData;
-
-	/**
 	 * Args: player name
 	 */
 	protected PreparedStatement mGetPlayerUUID;
 
 	/**
-	 * Args: player name, player uuid
+	 * Args: player uuid
 	 */
-	protected PreparedStatement mUpdatePlayerName;
+	protected PreparedStatement mGetPlayerSettings;
 
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement mUpdatePlayerSettings;
+	protected PreparedStatement mInsertPlayerSettings;
 
 	/**
-	 * Args: player uuid
+	 * Args: player uuid,worldgrp,gamemode
 	 */
-	protected PreparedStatement mInsertPlayerData;
+	protected PreparedStatement mGetPlayerBalance;
 
 	/**
-	 * Args: Player OfflinePLayer
+	 * Args: player uuid,worldgrp,gamemode
 	 */
-	protected PreparedStatement mGetBounties;
-
-	/**
-	 * Args: Bounty
-	 */
-	protected PreparedStatement mInsertBounty;
-
-	/**
-	 * Args: Bounty
-	 */
-	protected PreparedStatement mUpdateBounty;
-
-	/**
-	 * Args: Bounty ID
-	 */
-	protected PreparedStatement mDeleteBounty;
-
-	/**
-	 * Args: player player_id
-	 */
-	protected PreparedStatement mGetPlayerByPlayerId;
+	protected PreparedStatement mInsertPlayerBalance;
 
 	/**
 	 * Establish initial connection to Database
@@ -92,6 +61,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract void setupV1Tables(Connection connection) throws SQLException;
 
 	/**
+	 * Setup / Migrate from database version 1 to version 2 tables for BagOfGold
+	 * 
+	 * @throws SQLException
+	 */
+	protected abstract void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException;
+
+	/**
+	 * Setup / Create database version 2 tables for BagOfGold
+	 */
+	protected abstract void setupV2Tables(Connection connection) throws SQLException;
+
+	/**
 	 * Open a connection to the Database and prepare a statement for executing.
 	 * 
 	 * @param connection
@@ -102,7 +83,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		UPDATE_PLAYER_NAME, GET_PLAYER_DATA, GET_PLAYER_UUID, INSERT_PLAYER_DATA, UPDATE_PLAYER_SETTINGS, GET_PLAYER_BY_PLAYER_ID
+		GET_PLAYER_UUID, GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE
 	};
 
 	/**
@@ -119,15 +100,30 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			// Find current database version
 			if (plugin.getConfigManager().databaseVersion == 0) {
-				plugin.getConfigManager().databaseVersion = 1;
-				plugin.getConfigManager().saveConfig();
+				Statement statement = mConnection.createStatement();
+				try {
+					// Check if Database exists at all?
+					ResultSet rs = statement.executeQuery("SELECT UUID FROM mh_Players LIMIT 0");
+					rs.close();
+					plugin.getConfigManager().databaseVersion = 1;
+					plugin.getConfigManager().saveConfig();
+				} catch (SQLException e2) {
+					// Database does not exist. Create V2
+					plugin.getConfigManager().databaseVersion = 2;
+					plugin.getConfigManager().saveConfig();
+					setupV2Tables(mConnection);
+				}
+				statement.close();
 			}
 
 			switch (plugin.getConfigManager().databaseVersion) {
 			case 1:
 				Bukkit.getLogger().info(
 						"[BagOfGold] Database version " + plugin.getConfigManager().databaseVersion + " detected.");
-				setupV1Tables(mConnection);
+				setupV2Tables(mConnection);
+				migrateDatabaseLayoutFromV1ToV2(mConnection);
+			case 2:
+				setupV2Tables(mConnection);
 			}
 
 			// Enable FOREIGN KEY for Sqlite database
@@ -189,27 +185,28 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	@Override
-	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException, SQLException {
-		Connection mConnection = setupConnection();
-		openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
-		mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
-		ResultSet result = mGetPlayerData.executeQuery();
-		if (result.next()) {
-			PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getBoolean("LEARNING_MODE"),
-					result.getBoolean("MUTE_MODE"), result.getDouble("BALANCE"), result.getDouble("BALANCE_CHANGES"),
-					result.getDouble("BANK_BALANCE"), result.getDouble("BANK_BALANCE_CHANGES"));
-			int id = result.getInt("PLAYER_ID");
-			if (id != 0)
-				ps.setPlayerId(id);
-			result.close();
-			plugin.getMessages().debug("Reading from Database: %s", ps.toString());
-			mGetPlayerData.close();
+	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException {
+		Connection mConnection;
+		try {
+			mConnection = setupConnection();
+			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_SETTINGS);
+			mGetPlayerSettings.setString(1, offlinePlayer.getUniqueId().toString());
+			ResultSet result;
+			result = mGetPlayerSettings.executeQuery();
+			if (result.next()) {
+				PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getString("LAST_WORLDGRP"),
+						result.getBoolean("LEARNING_MODE"), result.getBoolean("MUTE_MODE"));
+				result.close();
+				plugin.getMessages().debug("Reading from Database: %s", ps.toString());
+				mGetPlayerSettings.close();
+				mConnection.close();
+				return ps;
+			}
+			mGetPlayerSettings.close();
 			mConnection.close();
-			return ps;
+		} catch (SQLException e) {
+			throw new DataStoreException(e);
 		}
-		mGetPlayerData.close();
-		mConnection.close();
-
 		throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
 	}
 
@@ -217,23 +214,20 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * insertPlayerSettings to database
 	 */
 	@Override
-	public void insertPlayerSettings(PlayerSettings playerSettings) throws DataStoreException {
+	public void insertPlayerSettingsNOW(PlayerSettings playerSettings) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
 			try {
-				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_DATA);
-				mInsertPlayerData.setString(1, playerSettings.getPlayer().getUniqueId().toString());
-				mInsertPlayerData.setString(2, playerSettings.getPlayer().getName());
-				mInsertPlayerData.setInt(3, playerSettings.isLearningMode() ? 1 : 0);
-				mInsertPlayerData.setInt(4, playerSettings.isMuted() ? 1 : 0);
-				mInsertPlayerData.setDouble(5, playerSettings.getBalance());
-				mInsertPlayerData.setDouble(6, playerSettings.getBalanceChanges());
-				mInsertPlayerData.setDouble(7, playerSettings.getBankBalance());
-				mInsertPlayerData.setDouble(8, playerSettings.getBankBalanceChanges());
-				mInsertPlayerData.addBatch();
-				mInsertPlayerData.executeBatch();
-				mInsertPlayerData.close();
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_SETTINGS);
+				mInsertPlayerSettings.setString(1, playerSettings.getPlayer().getUniqueId().toString());
+				mInsertPlayerSettings.setString(2, playerSettings.getPlayer().getName());
+				mInsertPlayerSettings.setString(3, playerSettings.getLastKnownWorldGrp());
+				mInsertPlayerSettings.setInt(4, playerSettings.isLearningMode() ? 1 : 0);
+				mInsertPlayerSettings.setInt(5, playerSettings.isMuted() ? 1 : 0);
+				mInsertPlayerSettings.addBatch();
+				mInsertPlayerSettings.executeBatch();
+				mInsertPlayerSettings.close();
 				mConnection.commit();
 				mConnection.close();
 			} catch (SQLException e) {
@@ -252,19 +246,17 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			mConnection = setupConnection();
 			try {
-				openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_PLAYER_SETTINGS);
-				for (PlayerSettings playerData : playerDataSet) {
-					mUpdatePlayerSettings.setInt(1, playerData.isLearningMode() ? 1 : 0);
-					mUpdatePlayerSettings.setInt(2, playerData.isMuted() ? 1 : 0);
-					mUpdatePlayerSettings.setDouble(3, Misc.round(playerData.getBalance()));
-					mUpdatePlayerSettings.setDouble(4, Misc.round(playerData.getBalanceChanges()));
-					mUpdatePlayerSettings.setDouble(5, Misc.round(playerData.getBankBalance()));
-					mUpdatePlayerSettings.setDouble(6, Misc.round(playerData.getBankBalanceChanges()));
-					mUpdatePlayerSettings.setString(7, playerData.getPlayer().getUniqueId().toString());
-					mUpdatePlayerSettings.addBatch();
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_SETTINGS);
+				for (PlayerSettings playerSettings : playerDataSet) {
+					mInsertPlayerSettings.setString(1, playerSettings.getPlayer().getUniqueId().toString());
+					mInsertPlayerSettings.setString(2, playerSettings.getPlayer().getName());
+					mInsertPlayerSettings.setString(3, playerSettings.getLastKnownWorldGrp());
+					mInsertPlayerSettings.setInt(4, playerSettings.isLearningMode() ? 1 : 0);
+					mInsertPlayerSettings.setInt(5, playerSettings.isMuted() ? 1 : 0);
+					mInsertPlayerSettings.addBatch();
 				}
-				mUpdatePlayerSettings.executeBatch();
-				mUpdatePlayerSettings.close();
+				mInsertPlayerSettings.executeBatch();
+				mInsertPlayerSettings.close();
 				mConnection.commit();
 				mConnection.close();
 
@@ -286,152 +278,125 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
+	// ******************************************************************
+	// PlayerBalances
+	// ******************************************************************
+
 	/**
-	 * getPlayerID. get the player ID and check if the player has change name
+	 * getPlayerBalances
 	 * 
 	 * @param offlinePlayer
-	 * @return PlayerID: int
-	 * @throws SQLException
+	 *            :OfflinePlayer
+	 * @return PlayerBalances
 	 * @throws DataStoreException
+	 * @throws SQLException
+	 * 
 	 */
-	public int getPlayerId(OfflinePlayer offlinePlayer) throws DataStoreException {
-		if (offlinePlayer == null)
-			return 0;
-		int playerId = 0;
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
-		if (ps != null)
-			playerId = ps.getPlayerId();
-		if (playerId == 0) {
-			Connection mConnection;
-			try {
-				ArrayList<OfflinePlayer> changedNames = new ArrayList<OfflinePlayer>();
-
-				mConnection = setupConnection();
-				openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_DATA);
-				mGetPlayerData.setString(1, offlinePlayer.getUniqueId().toString());
-				ResultSet result = mGetPlayerData.executeQuery();
-				if (result.next()) {
-					String name = result.getString(2);
-					UUID uuid = UUID.fromString(result.getString(1));
-					if (name != null && uuid != null)
-						if (offlinePlayer.getUniqueId().equals(uuid) && !offlinePlayer.getName().equals(name)) {
-							plugin.getLogger().warning("[BagOfGold] Name change detected(2): " + name + " -> "
-									+ offlinePlayer.getName() + " UUID=" + offlinePlayer.getUniqueId().toString());
-							changedNames.add(offlinePlayer);
-						}
-					playerId = result.getInt(3);
-					result.close();
-
-				}
-				result.close();
-				mGetPlayerData.close();
-				mConnection.close();
-
-				Iterator<OfflinePlayer> itr = changedNames.iterator();
-				while (itr.hasNext()) {
-					OfflinePlayer p = itr.next();
-					plugin.getMessages().debug("Updating playername in database and in memory (%s)", p.getName());
-					updatePlayerName(p.getPlayer());
-				}
-			} catch (SQLException e) {
-				throw new DataStoreException(e);
+	@Override
+	public PlayerBalances loadPlayerBalances(OfflinePlayer offlinePlayer) throws DataStoreException {
+		Connection mConnection;
+		PlayerBalances playerBalances = new PlayerBalances();
+		try {
+			mConnection = setupConnection();
+			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_BALANCE);
+			mGetPlayerBalance.setString(1, offlinePlayer.getUniqueId().toString());
+			ResultSet result = mGetPlayerBalance.executeQuery();
+			while (result.next()) {
+				PlayerBalance ps = new PlayerBalance(offlinePlayer, result.getString("WORLDGRP"),
+						GameMode.valueOf(result.getString("GAMEMODE")), result.getDouble("BALANCE"),
+						result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"),
+						result.getDouble("BANK_BALANCE_CHANGES"));
+				playerBalances.putPlayerBalance(ps);
+				BagOfGold.getInstance().getPlayerBalanceManager().getBalances().get(offlinePlayer.getUniqueId()).putPlayerBalance(ps);
 			}
+			result.close();
+			mGetPlayerBalance.close();
+			mConnection.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		return playerId;
+		if (!playerBalances.getPlayerBalances().isEmpty()) {
+			BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: player found in db=%s", playerBalances.toString());
+			return playerBalances;
+		} else{
+			BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: player not found in DB");
+			throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");}
+
 	}
 
 	/**
-	 * updatePlayerName - update the players name in the Database
-	 * 
-	 * @param offlinePlayer
-	 *            : OfflinePlayer
-	 * @throws SQLException
-	 * @throws DataStoreException
+	 * insertPlayerBalance to database
 	 */
-	protected void updatePlayerName(OfflinePlayer offlinePlayer) throws DataStoreException {
+	@Override
+	public void insertPlayerBalanceNOW(PlayerBalance playerBalance) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
 			try {
-				openPreparedStatements(mConnection, PreparedConnectionType.UPDATE_PLAYER_NAME);
-				mUpdatePlayerName.setString(1, offlinePlayer.getName());
-				mUpdatePlayerName.setString(2, offlinePlayer.getUniqueId().toString());
-				mUpdatePlayerName.executeUpdate();
-				mUpdatePlayerName.close();
+				BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: insert to db=%s", playerBalance.toString());
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
+				mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
+				mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
+				mInsertPlayerBalance.setString(3, playerBalance.getGamemode().toString());
+				mInsertPlayerBalance.setDouble(4, Misc.round(playerBalance.getBalance()));
+				mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
+				mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
+				mInsertPlayerBalance.setDouble(7, Misc.round(playerBalance.getBankBalanceChanges()));
+				mInsertPlayerBalance.addBatch();
+				mInsertPlayerBalance.executeBatch();
+				mInsertPlayerBalance.close();
 				mConnection.commit();
 				mConnection.close();
 			} catch (SQLException e) {
+				rollback(mConnection);
 				mConnection.close();
 				throw new DataStoreException(e);
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-
 	}
 
-	/**
-	 * getPlayerByName - get the player
-	 * 
-	 * @param name
-	 *            : String
-	 * @return player
-	 */
 	@Override
-	public OfflinePlayer getPlayerByName(String name) throws DataStoreException {
-		if (name.equals("Random Bounty"))
-			return null; // used for Random Bounties
+	public void savePlayerBalances(Set<PlayerBalance> playerBalanceSet) throws DataStoreException {
+		Connection mConnection;
 		try {
-			Connection mConnection = setupConnection();
-
-			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_UUID);
-			mGetPlayerUUID.setString(1, name);
-			ResultSet set = mGetPlayerUUID.executeQuery();
-
-			if (set.next()) {
-				UUID uid = UUID.fromString(set.getString(1));
-				set.close();
-				mGetPlayerUUID.close();
+			mConnection = setupConnection();
+			try {
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
+				for (PlayerBalance playerBalance : playerBalanceSet) {
+					BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: savedata: %s",
+							playerBalance.toString());
+					mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
+					mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
+					mInsertPlayerBalance.setString(3, playerBalance.getGamemode().toString());
+					mInsertPlayerBalance.setDouble(4, Misc.round(playerBalance.getBalance()));
+					mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
+					mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
+					mInsertPlayerBalance.setDouble(7, Misc.round(playerBalance.getBankBalanceChanges()));
+					mInsertPlayerBalance.addBatch();
+				}
+				mInsertPlayerBalance.executeBatch();
+				mInsertPlayerBalance.close();
+				mConnection.commit();
 				mConnection.close();
-				return Bukkit.getOfflinePlayer(uid);
-			}
-			mGetPlayerUUID.close();
-			mConnection.close();
-			throw new UserNotFoundException("[BagOfGold] User " + name + " is not present in database");
-		} catch (SQLException e) {
-			throw new DataStoreException(e);
-		}
-	}
 
-	/**
-	 * getPlayerByName - get the player
-	 * 
-	 * @param name
-	 *            : String
-	 * @return player
-	 */
-	@Override
-	public OfflinePlayer getPlayerByPlayerId(int playerId) throws DataStoreException {
-		if (playerId == 0)
-			return null; // Used for Random Bounty
-		try {
-			Connection mConnection = setupConnection();
-			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_BY_PLAYER_ID);
-			mGetPlayerByPlayerId.setInt(1, playerId);
-			ResultSet set = mGetPlayerByPlayerId.executeQuery();
+				plugin.getMessages().debug("PlayerBalances saved.");
 
-			if (set.next()) {
-				UUID uid = UUID.fromString(set.getString(1));
-				set.close();
-				mGetPlayerByPlayerId.close();
+				for (PlayerBalance playerData : playerBalanceSet) {
+					if (plugin.getPlayerBalanceManager().containsKey(playerData.getPlayer())
+							&& !playerData.getPlayer().isOnline())
+						plugin.getPlayerBalanceManager().removePlayerBalance(playerData.getPlayer());
+				}
+
+			} catch (SQLException e) {
+				rollback(mConnection);
 				mConnection.close();
-				return Bukkit.getOfflinePlayer(uid);
+				throw new DataStoreException(e);
 			}
-			mGetPlayerByPlayerId.close();
-			mConnection.close();
-			throw new UserNotFoundException("[BagOfGold] PlayerId " + playerId + " is not present in database");
-		} catch (SQLException e) {
-			throw new DataStoreException(e);
+		} catch (SQLException e1) {
+			throw new DataStoreException(e1);
 		}
 	}
 

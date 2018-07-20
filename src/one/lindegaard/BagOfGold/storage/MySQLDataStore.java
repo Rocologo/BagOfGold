@@ -1,6 +1,7 @@
 package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Locale;
@@ -59,26 +60,25 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected void openPreparedStatements(Connection connection, PreparedConnectionType preparedConnectionType)
 			throws SQLException {
 		switch (preparedConnectionType) {
-		case GET_PLAYER_DATA:
-			mGetPlayerData = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
-			break;
 		case GET_PLAYER_UUID:
-			mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
+			mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_PlayerSettings WHERE NAME=?;");
 			break;
-		case UPDATE_PLAYER_NAME:
-			mUpdatePlayerName = connection.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
+		case GET_PLAYER_SETTINGS:
+			mGetPlayerSettings = connection.prepareStatement("SELECT * FROM mh_PlayerSettings WHERE UUID=?;");
 			break;
-		case UPDATE_PLAYER_SETTINGS:
-			mUpdatePlayerSettings = connection.prepareStatement(
-					"UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=?,BALANCE=?,BALANCE_CHANGES=?,BANK_BALANCE=?, BANK_BALANCE_CHANGES=? WHERE UUID=?;");
-			break;
-		case INSERT_PLAYER_DATA:
-			mInsertPlayerData = connection.prepareStatement(
-					"INSERT INTO mh_Players (UUID,NAME,LEARNING_MODE,MUTE_MODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
+		case INSERT_PLAYER_SETTINGS:
+			mInsertPlayerSettings = connection.prepareStatement(
+					"REPLACE INTO mh_PlayerSettings (UUID,NAME,LEARNING_MODE,MUTE_MODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
 							+ "VALUES(?,?,?,?,?,?,?,?);");
 			break;
-		case GET_PLAYER_BY_PLAYER_ID:
-			mGetPlayerByPlayerId = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE PLAYER_ID=?;");
+		case GET_PLAYER_BALANCE:
+			mGetPlayerBalance = connection
+					.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=? AND WORLDGRP=? AND GAMEMODE=?;");
+			break;
+		case INSERT_PLAYER_BALANCE:
+			mInsertPlayerBalance = connection.prepareStatement(
+					"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
+							+ "VALUES(?,?,?,?,?,?,?);");
 			break;
 		}
 
@@ -100,21 +100,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 			create.executeUpdate(
 					"ALTER DATABASE " + database_name + " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate(
-					"ALTER TABLE mh_Achievements CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_AllTime CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate(
-					"ALTER TABLE mh_Bounties CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Daily CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Mobs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Monthly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			create.executeUpdate("ALTER TABLE mh_Players CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Weekly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Yearly CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_Balance CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			console.sendMessage(ChatColor.GREEN + "[BagOfGold] Done.");
 
 		} catch (SQLException e) {
-			console.sendMessage(ChatColor.RED + "[BagOfGold] Something went wrong.");
+			console.sendMessage(ChatColor.RED + "[BagOfGold] Something went wrong when converting database tables to UTF8MB4.");
 			e.printStackTrace();
 		}
 
@@ -133,18 +124,55 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players "//
 				+ "(UUID CHAR(40) ,"//
 				+ " NAME VARCHAR(20),"//
-				+ " PLAYER_ID INTEGER NOT NULL AUTO_INCREMENT,"//
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
-				+ " BALANCE REAL DEFAULT 0,"//
-				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
-				+ " BANK_BALANCE REAL DEFAULT 0,"//
-				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
 				+ " PRIMARY KEY (PLAYER_ID))");
 
 		create.close();
 		connection.commit();
 
+	}
+
+	@Override
+	protected void setupV2Tables(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
+
+		// Create new empty tables if they do not exist
+		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings "//
+				+ "(UUID CHAR(40) ,"//
+				+ " NAME VARCHAR(20),"//
+				+ " LAST_WORLDGRP VARCHAR(20) NOT NULL DEFAULT default," //
+				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
+				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
+				+ " PRIMARY KEY (UUID))");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance "//
+				+ "(UUID CHAR(40) ,"//
+				+ " WORLDGRP VARCHAR(20)," //
+				+ " GAMEMODE INTEGER NOT NULL DEFAULT 1," //
+				+ " BALANCE REAL DEFAULT 0,"//
+				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
+				+ " BANK_BALANCE REAL DEFAULT 0,"//
+				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
+				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE))");
+
+		create.close();
+		connection.commit();
+
+	}
+
+	@Override
+	protected void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		try {
+			ResultSet rs = statement.executeQuery("SELECT WORLDGRP from mh_PlayersSettings LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println("[BagOfGoldMobHunting] Migrating to BagOfGold Database V2.");
+		}
+		statement.close();
+		connection.commit();
 	}
 
 }

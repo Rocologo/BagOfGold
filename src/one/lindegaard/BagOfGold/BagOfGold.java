@@ -49,9 +49,11 @@ public class BagOfGold extends JavaPlugin {
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private EconomyManager mEconomyManager;
+	private WorldGroup mWorldGroupManager;
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
+	private PlayerBalanceManager mPlayerBalanceManager;
 
 	private boolean mInitialized = false;
 
@@ -100,6 +102,9 @@ public class BagOfGold extends JavaPlugin {
 				}
 			}
 		}
+		
+		mWorldGroupManager = new WorldGroup(this);
+		mWorldGroupManager.load();
 
 		mSpigetUpdater = new SpigetUpdater(this);
 		mSpigetUpdater.setCurrentJarFile(this.getFile().getName());
@@ -140,6 +145,7 @@ public class BagOfGold extends JavaPlugin {
 		mStoreManager = new DataStoreManager(this, mStore);
 
 		mPlayerSettingsManager = new PlayerSettingsManager(this);
+		mPlayerBalanceManager = new PlayerBalanceManager(this);
 
 		mEconomyManager = new EconomyManager(this);
 
@@ -328,6 +334,19 @@ public class BagOfGold extends JavaPlugin {
 
 	public SpigetUpdater getSpigetUpdater() {
 		return mSpigetUpdater;
+	}
+	
+	/**
+	 * Get all WorldGroups and their worlds
+	 * 
+	 * @return
+	 */
+	public WorldGroup getWorldGroupManager() {
+		return mWorldGroupManager;
+	}
+	
+	public PlayerBalanceManager getPlayerBalanceManager(){
+		return mPlayerBalanceManager;
 	}
 
 }

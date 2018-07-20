@@ -24,7 +24,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.rewards.CustomItems;
 import one.lindegaard.BagOfGold.rewards.RewardListeners;
-import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.MobHunting.MobHunting;
 
@@ -48,7 +47,7 @@ public class EconomyManager implements Listener {
 	 * @return
 	 */
 	public double getBalance(OfflinePlayer offlinePlayer) {
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		return ps.getBalance() + ps.getBalanceChanges();
 	}
 
@@ -61,14 +60,15 @@ public class EconomyManager implements Listener {
 	 * @return EconomyResponce containing amount, balance and ResponseType
 	 *         (Success/failure)
 	 */
-	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer,
+			double amount) {
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		if (amount == 0) {
 			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
 					null);
 		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
-				addBagOfGoldPlayer((Player) offlinePlayer, ps.getBalanceChanges() + amount);
+				addBagOfGoldPlayer2((Player) offlinePlayer, ps.getBalanceChanges() + amount);
 				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 				ps.setBalanceChanges(0);
 			} else {
@@ -76,7 +76,7 @@ public class EconomyManager implements Listener {
 			}
 			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(amount),
 					offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 					ResponseType.SUCCESS, null);
 		} else {
@@ -97,18 +97,18 @@ public class EconomyManager implements Listener {
 	 *         ResponseType (Success/Failure).
 	 */
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		if (amount >= 0) {
 			if (has(offlinePlayer, amount)) {
 				if (offlinePlayer.isOnline()) {
-					removeBagOfGoldPlayer((Player) offlinePlayer, amount);
+					removeBagOfGoldPlayer2((Player) offlinePlayer, amount);
 					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 					ps.setBalanceChanges(0);
 				} else
 					ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", format(amount),
 						offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
-				plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 						ResponseType.SUCCESS, null);
 			} else {
@@ -116,10 +116,10 @@ public class EconomyManager implements Listener {
 				plugin.getMessages().debug("%s has not enough bagofgold, Withdrawing only %s , new balance is %s",
 						offlinePlayer.getName(), format(remove), format(0));
 				if (remove > 0) {
-					removeBagOfGoldPlayer((Player) offlinePlayer, remove);
+					removeBagOfGoldPlayer2((Player) offlinePlayer, remove);
 					ps.setBalance(0);
 					ps.setBalanceChanges(0);
-					plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+					plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 				}
 				return new EconomyResponse(remove, 0, ResponseType.FAILURE,
 						plugin.getMessages().getString("bagofgold.commands.money.not-enough-money", "money", remove));
@@ -137,12 +137,11 @@ public class EconomyManager implements Listener {
 	 * @return true if the player has the amount on his money.
 	 */
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
+		PlayerBalance pb = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
 				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
-				format(plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
-						+ plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges()));
-		return plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalance()
-				+ plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getBalanceChanges() >= amount;
+				format(pb.getBalance() + pb.getBalanceChanges()));
+		return pb.getBalance() + pb.getBalanceChanges() >= amount;
 	}
 
 	/**
@@ -152,8 +151,7 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public void addBagOfGoldPlayer(Player offlinePlayer, double amount) {
-		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
+	public void addBagOfGoldPlayer2(Player player, double amount) {
 		boolean found = false;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
@@ -201,7 +199,7 @@ public class EconomyManager implements Listener {
 	 * @param amount
 	 * @return
 	 */
-	public double removeBagOfGoldPlayer(Player player, double amount) {
+	public double removeBagOfGoldPlayer2(Player player, double amount) {
 		double taken = 0;
 		double toBeTaken = Misc.round(amount);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
@@ -233,7 +231,7 @@ public class EconomyManager implements Listener {
 
 	}
 
-	public void setBagOfGoldPlayer(Player offlinePlayer, double amount) {
+	public void setBagOfGoldPlayer2(Player offlinePlayer, double amount) {
 		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
 		boolean found = false;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
@@ -346,7 +344,7 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() + amount));
 				ps.setBankBalanceChanges(0);
@@ -355,7 +353,7 @@ public class EconomyManager implements Listener {
 			}
 			plugin.getMessages().debug("bankDeposit: %s", ps.toString());
 
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
 					null);
 		}
@@ -379,7 +377,7 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() - amount));
 				ps.setBankBalanceChanges(0);
@@ -388,7 +386,7 @@ public class EconomyManager implements Listener {
 			}
 			plugin.getMessages().debug("bankWithdraw: %s", ps.toString());
 
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
 					null);
 		}
@@ -412,12 +410,12 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
 				ps.setBankBalanceChanges(0);
 			}
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(0, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
 		}
 		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
@@ -439,10 +437,10 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 			ps.setBankBalance(0);
 			ps.setBankBalanceChanges(0);
-			plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Bank account deleted");
 		}
 		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
@@ -515,8 +513,8 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public void removeMoneyFromBalance(OfflinePlayer offlinePlayer, double amount) {
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+	public void removeMoneyFromBalance2(OfflinePlayer offlinePlayer, double amount) {
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
 
@@ -526,7 +524,21 @@ public class EconomyManager implements Listener {
 		} else {
 			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
 		}
-		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+	}
+
+	public void removeMoneyFromBalance2(Player offlinePlayer, double amount) {
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
+				format(ps.getBalance() + ps.getBalanceChanges()));
+
+		if (offlinePlayer.isOnline()) {
+			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+			ps.setBalanceChanges(0);
+		} else {
+			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+		}
+		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 	}
 
 	/**
@@ -536,21 +548,21 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public void addMoneyToBalance(OfflinePlayer offlinePlayer, double amount) {
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+	public void addMoneyToBalance2(OfflinePlayer offlinePlayer, double amount) {
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
-		plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDeathEvent(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(player);
 		ps.setBalance(0);
 		ps.setBalanceChanges(0);
-		plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
+		plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
 	}
 
 }

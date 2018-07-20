@@ -15,7 +15,7 @@ import org.bukkit.event.Listener;
 import me.ebonjaeger.perworldinventory.PerWorldInventory;
 import me.ebonjaeger.perworldinventory.event.InventoryLoadEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.storage.PlayerSettings;
+import one.lindegaard.BagOfGold.PlayerBalance;
 
 public class PerWorldInventoryCompat implements Listener {
 
@@ -37,9 +37,9 @@ public class PerWorldInventoryCompat implements Listener {
 							+ "Enabling compatibility with PerWorldInventory ("
 							+ getEssentials().getDescription().getVersion() + ")");
 			Bukkit.getPluginManager().registerEvents(this, plugin);
-			
+
 			sync_economy = pwi_sync_economy();
-			
+
 			if (sync_economy)
 				pwi_sync_economy_warning();
 
@@ -74,6 +74,21 @@ public class PerWorldInventoryCompat implements Listener {
 		return false;
 	}
 
+	public static YamlConfiguration getWorldsFile() {
+		File datafolder = mPlugin.getDataFolder();
+		File configfile = new File(datafolder + "/worlds.yml");
+		if (configfile.exists()) {
+			YamlConfiguration config = new YamlConfiguration();
+			try {
+				config.load(configfile);
+				return config;
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+		}
+		return new YamlConfiguration();
+	}
+
 	public static void pwi_sync_economy_warning() {
 		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 				+ "=====================WARNING=============================");
@@ -105,31 +120,32 @@ public class PerWorldInventoryCompat implements Listener {
 		// private void onInventoryChangeCompleted(InventoryLoadCompleteEvent
 		// event) {
 
+		// OBS THIS does not work with the database layout
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
 			public void run() {
 
 				Player player = (Player) event.getPlayer();
-				PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
+				PlayerBalance playerBalance = plugin.getPlayerBalanceManager().getPlayerBalances(player);
 				double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
 				if (sync_economy) {
-					plugin.getMessages().debug("PWI:%s Inventory loaded. New balance = %s(amt=%s)", player.getName(),
-							ps.getBalance(), amountInInventory);
-					plugin.getEconomyManager().setBagOfGoldPlayer((Player) player, ps.getBalance());
+					plugin.getMessages().debug("PWI:%s Inventory loaded. adjust to ps, amt=%s, pb=%s", player.getName(),
+							amountInInventory, playerBalance.toString());
+					plugin.getEconomyManager().setBagOfGoldPlayer2((Player) player, playerBalance.getBalance());
 				} else {
-					ps.setBalance(amountInInventory);
-					plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
-					plugin.getMessages().debug("PWI:%s Inventory loaded. New balance = %s", player.getName(),
-							ps.getBalance());
-					if (ps.getBalanceChanges()!=0){
-						plugin.getMessages().debug("PWI:%s balance was changed while offline. New balance = %s", player.getName(),
-								ps.getBalance()+ps.getBalanceChanges());
-						if (ps.getBalanceChanges()>0)
-							plugin.getEconomyManager().addBagOfGoldPlayer(player, ps.getBalanceChanges());
+					playerBalance.setBalance(amountInInventory);
+					plugin.getPlayerBalanceManager().setPlayerBalance(player, playerBalance);
+					plugin.getMessages().debug("PWI:%s Inventory loaded. adjust to amt, amt=%s,pb=%s", player.getName(),
+							amountInInventory, playerBalance.toString());
+					if (playerBalance.getBalanceChanges() != 0) {
+						plugin.getMessages().debug("PWI:%s balance was changed while offline. New balance = %s",
+								player.getName(), playerBalance.getBalance() + playerBalance.getBalanceChanges());
+						if (playerBalance.getBalanceChanges() > 0)
+							plugin.getEconomyManager().addBagOfGoldPlayer2(player, playerBalance.getBalanceChanges());
 						else
-							plugin.getEconomyManager().removeBagOfGoldPlayer(player, ps.getBalanceChanges());
-						ps.setBalance(ps.getBalance()+ps.getBalanceChanges());
-						ps.setBalanceChanges(0);
+							plugin.getEconomyManager().removeBagOfGoldPlayer2(player, playerBalance.getBalanceChanges());
+						playerBalance.setBalance(playerBalance.getBalance() + playerBalance.getBalanceChanges());
+						playerBalance.setBalanceChanges(0);
 
 					}
 				}

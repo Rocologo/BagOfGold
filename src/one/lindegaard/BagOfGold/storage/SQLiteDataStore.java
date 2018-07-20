@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.bukkit.Bukkit;
@@ -27,9 +28,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	protected Connection setupConnection() throws DataStoreException {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			Connection connection = DriverManager
-					.getConnection("jdbc:sqlite:" + plugin.getDataFolder().getPath() + "/"
-							+ plugin.getConfigManager().databaseName + ".db");
+			Connection connection = DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder().getPath() + "/"
+					+ plugin.getConfigManager().databaseName + ".db");
 			connection.setAutoCommit(false);
 			return connection;
 		} catch (ClassNotFoundException classNotFoundEx) {
@@ -43,32 +43,28 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	protected void openPreparedStatements(Connection connection, PreparedConnectionType preparedConnectionType)
 			throws SQLException {
 		switch (preparedConnectionType) {
-		case GET_PLAYER_DATA:
-			mGetPlayerData = connection.prepareStatement("SELECT * FROM mh_Players WHERE UUID=?;");
-			break;
 		case GET_PLAYER_UUID:
-			mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE NAME=?;");
+			mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_PlayerSettings WHERE NAME=?;");
 			break;
-		case UPDATE_PLAYER_NAME:
-			mUpdatePlayerName = connection.prepareStatement("UPDATE mh_Players SET NAME=? WHERE UUID=?;");
+		case GET_PLAYER_SETTINGS:
+			mGetPlayerSettings = connection.prepareStatement("SELECT * FROM mh_PlayerSettings WHERE UUID=?;");
 			break;
-		case INSERT_PLAYER_DATA:
-			mInsertPlayerData = connection.prepareStatement(
-					"INSERT INTO mh_Players (UUID,NAME,PLAYER_ID,LEARNING_MODE,MUTE_MODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
-							+ "VALUES(?,?,(SELECT IFNULL(MAX(PLAYER_ID),0)+1 FROM mh_Players),?,?,?,?,?,?);");
+		case INSERT_PLAYER_SETTINGS:
+			mInsertPlayerSettings = connection.prepareStatement(
+					"INSERT OR REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE) "
+							+ "VALUES(?,?,?,?,?);");
 			break;
-		case UPDATE_PLAYER_SETTINGS:
-			mUpdatePlayerSettings = connection
-					.prepareStatement("UPDATE mh_Players SET LEARNING_MODE=?,MUTE_MODE=?,BALANCE=?,BALANCE_CHANGES=?,BANK_BALANCE=?,BANK_BALANCE_CHANGES=? WHERE UUID=?;");
+		case GET_PLAYER_BALANCE:
+			mGetPlayerBalance = connection.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=?;");
 			break;
-		case GET_PLAYER_BY_PLAYER_ID:
-			mGetPlayerByPlayerId = connection.prepareStatement("SELECT UUID FROM mh_Players WHERE PLAYER_ID=?;");
-			break;
-		default:
+		case INSERT_PLAYER_BALANCE:
+			mInsertPlayerBalance = connection.prepareStatement(
+					"INSERT OR REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
+							+ "VALUES(?,?,?,?,?,?,?);");
 			break;
 		}
 	}
-	
+
 	@Override
 	public void databaseConvertToUtf8(String database_name) throws DataStoreException {
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
@@ -85,7 +81,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 		// Create new empty tables if they do not exist
 		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players" //
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings" //
 				+ "(UUID TEXT," //
 				+ " NAME TEXT, " //
 				+ " PLAYER_ID INTEGER NOT NULL DEFAULT 1," //
@@ -100,6 +96,48 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		create.close();
 		connection.commit();
 
+	}
+
+	@Override
+	protected void setupV2Tables(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
+
+		// Create new empty tables if they do not exist
+		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings" //
+				+ "(UUID TEXT," //
+				+ " NAME TEXT, " //
+				+ " LAST_WORLDGRP NOT NULL DEFAULT 'default'," //
+				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + "," //
+				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," //
+				+ " PRIMARY KEY(UUID))");
+		
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance" //
+				+ "(UUID TEXT," //
+				+ " WORLDGRP TEXT DEFAULT 'default'," //
+				+ " GAMEMODE INT DEFAULT 0," //
+				+ " BALANCE REAL DEFAULT 0," //
+				+ " BALANCE_CHANGES REAL DEFAULT 0," //
+				+ " BANK_BALANCE REAL DEFAULT 0," //
+				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
+				+ " PRIMARY KEY(UUID, WORLDGRP, GAMEMODE))");
+		
+		create.close();
+		connection.commit();
+
+	}
+
+	@Override
+	protected void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		try {
+			ResultSet rs = statement.executeQuery("SELECT UUID from mh_Balance LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println("[MobHunting] Adding WORLDGRP to BagOfGold Database.");
+		}
+		statement.close();
+		connection.commit();
 	}
 
 }

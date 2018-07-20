@@ -9,7 +9,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.PlayerBalance;
+import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.storage.asynch.IDataStoreTask;
+import one.lindegaard.BagOfGold.storage.asynch.PlayerBalanceRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerSettingsRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.StoreTask;
 
@@ -49,31 +52,11 @@ public class DataStoreManager {
 				&& mStoreThread.getState() != Thread.State.TERMINATED;
 	}
 
-
 	// *****************************************************************************
 	// PlayerSettings
 	// *****************************************************************************
 	public void requestPlayerSettings(OfflinePlayer player, IDataCallback<PlayerSettings> callback) {
 		mTaskThread.addTask(new PlayerSettingsRetrieverTask(player, mWaiting), callback);
-	}
-
-	/**
-	 * Update the playerSettings in the Database
-	 * 
-	 * @param offlinePlayer
-	 * @param learning_mode
-	 * @param muted
-	 * @param balance
-	 * @param balanceChanges
-	 * @param bankBalance
-	 * @param bankBalanceChanges
-	 */
-	public void updatePlayerSettings(OfflinePlayer offlinePlayer, boolean learning_mode, boolean muted, double balance,
-			double balanceChanges, double bankBalance, double bankBalanceChanges) {
-		synchronized (mWaiting) {
-			mWaiting.add(new PlayerSettings(offlinePlayer, learning_mode, muted, balance, balanceChanges, bankBalance,
-					bankBalanceChanges));
-		}
 	}
 
 	/**
@@ -88,37 +71,23 @@ public class DataStoreManager {
 		}
 	}
 
-	/**
-	 * Gets an offline player using the last known name. WARNING: This does a
-	 * database lookup directly. This will block waiting for a reply
-	 */
-	public OfflinePlayer getPlayerByName(String name) {
-		try {
-			return mStore.getPlayerByName(name);
-		} catch (UserNotFoundException e) {
-			return null;
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-			return null;
-		}
+	// *****************************************************************************
+	// PlayerBalances
+	// *****************************************************************************
+	public void requestPlayerBalances(OfflinePlayer player, IDataCallback<PlayerBalances> callback) {
+		mTaskThread.addTask(new PlayerBalanceRetrieverTask(player, mWaiting), callback);
 	}
 
 	/**
-	 * Get the playerId from the database
+	 * Update the playerBalance in the Database
 	 * 
 	 * @param offlinePlayer
-	 * @return
-	 * @throws UserNotFoundException
+	 * @param playerSetting
 	 */
-	public int getPlayerId(OfflinePlayer offlinePlayer) throws UserNotFoundException {
-		try {
-			return mStore.getPlayerId(offlinePlayer);
-		} catch (DataStoreException e) {
-			if (plugin.getConfigManager().debug)
-				e.printStackTrace();
+	public void updatePlayerBalance(OfflinePlayer offlinePlayer, PlayerBalance ps) {
+		synchronized (mWaiting) {
+			mWaiting.add(new PlayerBalance(offlinePlayer, ps));
 		}
-		throw new UserNotFoundException(
-				"[BagOfGold] User " + offlinePlayer.getName() + " is not present in BagOfGold database");
 	}
 
 	// *****************************************************************************
@@ -146,7 +115,7 @@ public class DataStoreManager {
 			while (mTaskThread.getState() != Thread.State.WAITING && mTaskThread.getState() != Thread.State.TERMINATED
 					&& n < 40) {
 				Thread.sleep(500);
-				plugin.getMessages().debug("Waiting %s",n);
+				plugin.getMessages().debug("Waiting %s", n);
 				n++;
 			}
 			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
@@ -158,7 +127,7 @@ public class DataStoreManager {
 			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() != Thread.State.WAITING) {
 				mTaskThread.waitForEmptyQueue();
-			} 
+			}
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -262,7 +231,8 @@ public class DataStoreManager {
 				return;
 
 			synchronized (mSignal) {
-				plugin.getMessages().debug("waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
+				plugin.getMessages().debug(
+						"waitForEmptyQueue: Waiting for %s+%s tasks to finish before closing connections.",
 						mQueue.size(), mWaiting.size());
 				while (!mQueue.isEmpty())
 					mSignal.wait();

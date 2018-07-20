@@ -62,9 +62,6 @@ public class ConfigManager extends AutoConfig {
 			+ "\nset this to false")
 	public boolean useBagOfGoldAsAnEconomyPlugin = true;
 
-	@ConfigField(name = "starting_balance", category = "economy", comment = "Set initial balance for new players.")
-	public double startingBalance = 3000;
-
 	@ConfigField(name = "number-format", category = "economy", comment = "Here you can change the way the numbers is formatted when you use BagOfGold as an EconomyPlugin.")
 	public String numberFormat = "#.#####";
 
