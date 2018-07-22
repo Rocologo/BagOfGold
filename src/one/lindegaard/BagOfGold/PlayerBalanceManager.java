@@ -91,7 +91,7 @@ public class PlayerBalanceManager implements Listener {
 					amountInInventory,pb.toString(),diff);
 			
 			if (diff > 0)
-				plugin.getEconomyManager().removeBagOfGoldPlayer2(player, diff);
+				plugin.getEconomyManager().removeBagOfGoldPlayer(player, diff);
 			else if (diff < 0)
 				plugin.getEconomyManager().addBagOfGoldPlayer2(player, -diff);
 		}

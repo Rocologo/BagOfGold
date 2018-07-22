@@ -101,7 +101,7 @@ public class EconomyManager implements Listener {
 		if (amount >= 0) {
 			if (has(offlinePlayer, amount)) {
 				if (offlinePlayer.isOnline()) {
-					removeBagOfGoldPlayer2((Player) offlinePlayer, amount);
+					removeBagOfGoldPlayer((Player) offlinePlayer, amount);
 					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 					ps.setBalanceChanges(0);
 				} else
@@ -116,7 +116,7 @@ public class EconomyManager implements Listener {
 				plugin.getMessages().debug("%s has not enough bagofgold, Withdrawing only %s , new balance is %s",
 						offlinePlayer.getName(), format(remove), format(0));
 				if (remove > 0) {
-					removeBagOfGoldPlayer2((Player) offlinePlayer, remove);
+					removeBagOfGoldPlayer((Player) offlinePlayer, remove);
 					ps.setBalance(0);
 					ps.setBalanceChanges(0);
 					plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
@@ -199,7 +199,7 @@ public class EconomyManager implements Listener {
 	 * @param amount
 	 * @return
 	 */
-	public double removeBagOfGoldPlayer2(Player player, double amount) {
+	public double removeBagOfGoldPlayer(Player player, double amount) {
 		double taken = 0;
 		double toBeTaken = Misc.round(amount);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {

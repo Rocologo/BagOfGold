@@ -143,7 +143,7 @@ public class PerWorldInventoryCompat implements Listener {
 						if (playerBalance.getBalanceChanges() > 0)
 							plugin.getEconomyManager().addBagOfGoldPlayer2(player, playerBalance.getBalanceChanges());
 						else
-							plugin.getEconomyManager().removeBagOfGoldPlayer2(player, playerBalance.getBalanceChanges());
+							plugin.getEconomyManager().removeBagOfGoldPlayer(player, playerBalance.getBalanceChanges());
 						playerBalance.setBalance(playerBalance.getBalance() + playerBalance.getBalanceChanges());
 						playerBalance.setBalanceChanges(0);
 
