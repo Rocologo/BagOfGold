@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
-import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 
 public class PlayerSettingsManager implements Listener {

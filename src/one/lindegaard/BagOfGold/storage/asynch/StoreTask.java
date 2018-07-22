@@ -4,9 +4,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
+import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
-import one.lindegaard.BagOfGold.storage.PlayerSettings;
 
 public class StoreTask implements IDataStoreTask<Void> {
 	private LinkedHashSet<PlayerSettings> mWaitingPlayerSettings = new LinkedHashSet<PlayerSettings>();

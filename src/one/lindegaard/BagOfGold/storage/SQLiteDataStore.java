@@ -120,7 +120,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " BALANCE_CHANGES REAL DEFAULT 0," //
 				+ " BANK_BALANCE REAL DEFAULT 0," //
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
-				+ " PRIMARY KEY(UUID, WORLDGRP, GAMEMODE))");
+				+ " PRIMARY KEY(UUID, WORLDGRP, GAMEMODE)),"
+				+ " FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE");
 
 		create.close();
 		connection.commit();

@@ -1,8 +1,6 @@
-package one.lindegaard.BagOfGold.storage;
+package one.lindegaard.BagOfGold;
 
 import org.bukkit.OfflinePlayer;
-
-import one.lindegaard.BagOfGold.BagOfGold;
 
 public class PlayerSettings {
 	private OfflinePlayer player;

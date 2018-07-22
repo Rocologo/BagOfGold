@@ -5,9 +5,9 @@ import java.util.HashSet;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
-import one.lindegaard.BagOfGold.storage.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 
 public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSettings> {
