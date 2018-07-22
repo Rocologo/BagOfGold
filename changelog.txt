@@ -1,3 +1,6 @@
+V2.0.0
+* Real multi-world support added. 
+* New database layout implemented. NOTICE player accounts will be reset. I have yet implemented any conversion.
 V1.1.7
 * Better handling of player balance while player is offline.
 V1.1.6

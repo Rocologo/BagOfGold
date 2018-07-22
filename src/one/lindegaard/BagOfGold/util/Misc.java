@@ -20,6 +20,15 @@ import one.lindegaard.BagOfGold.BagOfGold;
 
 public class Misc {
 
+	public static boolean isSkull(Material material) {
+		return material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD
+				|| material == Material.SKELETON_SKULL || material == Material.SKELETON_WALL_SKULL
+				|| material == Material.LEGACY_SKULL || material == Material.LEGACY_SKULL_ITEM
+				|| material == Material.WITHER_SKELETON_SKULL || material == Material.WITHER_SKELETON_WALL_SKULL
+				|| material == Material.CREEPER_HEAD || material == Material.CREEPER_WALL_HEAD
+				|| material == Material.DRAGON_HEAD || material == Material.DRAGON_WALL_HEAD;
+	}
+
 	public static double round(double d) {
 		return Math.round(d / BagOfGold.getInstance().getConfigManager().rewardRounding)
 				* BagOfGold.getInstance().getConfigManager().rewardRounding;
@@ -38,6 +47,10 @@ public class Misc {
 	// *******************************************************************
 	// Version detection
 	// *******************************************************************
+	public static boolean isMC113() {
+		return Bukkit.getBukkitVersion().contains("1.13");
+	}
+
 	public static boolean isMC112() {
 		return Bukkit.getBukkitVersion().contains("1.12");
 	}
@@ -60,6 +73,14 @@ public class Misc {
 
 	public static boolean isMC17() {
 		return Bukkit.getBukkitVersion().contains("1.7");
+	}
+
+	public static boolean isMC113OrNewer() {
+		if (isMC113())
+			return true;
+		else if (isMC111() || isMC110() || isMC19() || isMC18() || isMC17())
+			return false;
+		return true;
 	}
 
 	public static boolean isMC112OrNewer() {
@@ -127,15 +148,17 @@ public class Misc {
 		return decimalFormat.format(money);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isSign(Block block) {
-		if (block.getType().equals(Material.SIGN_POST) || block.getType().equals(Material.WALL_SIGN))
+		if (block.getType().equals(Material.SIGN) || block.getType().equals(Material.WALL_SIGN)|| block.getType().equals(Material.LEGACY_SIGN) || block.getType().equals(Material.LEGACY_WALL_SIGN))
 			return true;
 		else
 			return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isSign(Material material) {
-		if (material.equals(Material.SIGN_POST) || material.equals(Material.WALL_SIGN))
+		if (material.equals(Material.SIGN) || material.equals(Material.WALL_SIGN)|| material.equals(Material.LEGACY_SIGN) || material.equals(Material.LEGACY_WALL_SIGN))
 			return true;
 		else
 			return false;

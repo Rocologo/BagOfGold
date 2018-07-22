@@ -31,7 +31,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<spigotmc112.version>1.12.2-R0.1-SNAPSHOT</spigotmc112.version>
+		<spigotmc113.version>1.13-R0-1-SNAPSHOT</spigotmc113.version>
+		<craftbukkit113R1.version>1.13-R1</craftbukkit113R1.version>
 		<craftbukkit112R1.version>1.12-R1</craftbukkit112R1.version>
 		<craftbukkit111R1.version>1.11-R1</craftbukkit111R1.version>
 		<craftbukkit110R1.version>1.10-R1</craftbukkit110R1.version>
@@ -235,14 +236,29 @@
 	<dependencies>
 
 		<!-- SpigotMC -->
+		<!-- <dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigotmc113.version}</version>
+			<scope>provided</scope>
+		</dependency> -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc112.version}</version>
-			<scope>provided</scope>
+			<version>${spigotmc113.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/spigot-1.13.jar</systemPath>
 		</dependency>
 
 		<!-- CraftBukkit -->
+		<dependency>
+			<groupId>org.craftbukkit</groupId>
+			<artifactId>craftbukkit113R1</artifactId>
+			<version>${craftbukkit113R1.version}</version>
+			<!-- <scope>provided</scope> -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.13.jar</systemPath>
+		</dependency>
 		<dependency>
 			<groupId>org.craftbukkit</groupId>
 			<artifactId>craftbukkit112R1</artifactId>

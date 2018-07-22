@@ -277,7 +277,7 @@ public class Reward {
 	}
 
 	public static boolean hasReward(Block block) {
-		return block.getType() == Material.SKULL && block.hasMetadata(MH_REWARD_DATA);
+		return block.getType() == Material.SKELETON_SKULL && block.hasMetadata(MH_REWARD_DATA);
 	}
 
 	public static Reward getReward(Block block) {

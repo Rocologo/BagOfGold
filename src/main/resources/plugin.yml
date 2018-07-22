@@ -7,6 +7,7 @@ author: Rocologo
 depend: []
 loadbefore: [PerWorldInventory, Citizens2, Essentials, MobHunting]
 softdepend: []
+api-version: 1.13
 
 commands:
   bagofgold:

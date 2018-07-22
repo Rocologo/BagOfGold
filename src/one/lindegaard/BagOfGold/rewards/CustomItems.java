@@ -29,6 +29,7 @@ import one.lindegaard.BagOfGold.skins.Skins;
 import one.lindegaard.BagOfGold.skins.Skins_1_10_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_11_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_12_R1;
+import one.lindegaard.BagOfGold.skins.Skins_1_13_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_8_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_8_R2;
 import one.lindegaard.BagOfGold.skins.Skins_1_8_R3;
@@ -66,7 +67,9 @@ public class CustomItems {
 			return null;
 		}
 		Bukkit.getLogger().info("[MobHunting] Your server is running version " + version);
-		if (version.equals("v1_12_R1")) {
+		if (version.equals("v1_13_R1")) {
+			sk = new Skins_1_13_R1();
+		} else if (version.equals("v1_12_R1")) {
 			sk = new Skins_1_12_R1();
 		} else if (version.equals("v1_11_R1")) {
 			plugin.getMessages().debug("v1_11_R1");
@@ -94,7 +97,8 @@ public class CustomItems {
 	 */
 	public ItemStack getPlayerHead(UUID uuid, int amount, double money) {
 
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		//TODO: Which skull is working
+		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
 
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
@@ -190,7 +194,8 @@ public class CustomItems {
 	 */
 	public ItemStack getPlayerHeadGameProfile(UUID uuid, int amount, double money) {
 
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		//TODO: Which SKULL is working??
+		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
@@ -235,8 +240,9 @@ public class CustomItems {
 		return skull;
 	}
 
+	//TODO: Which skull is working
 	public ItemStack getPlayerHeadOwningPlayer(UUID uuid, int amount, double money) {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		String name = Bukkit.getOfflinePlayer(uuid).getName();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
@@ -268,7 +274,8 @@ public class CustomItems {
 	 */
 	public ItemStack getCustomtexture(UUID mPlayerUUID, String mDisplayName, String mTextureValue,
 			String mTextureSignature, double money, UUID uniqueRewardUuid, UUID skinUuid) {
-		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		//TODO: which head is working
+		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
 
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;

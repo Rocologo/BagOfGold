@@ -513,21 +513,7 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public void removeMoneyFromBalance2(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
-		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
-				format(ps.getBalance() + ps.getBalanceChanges()));
-
-		if (offlinePlayer.isOnline()) {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
-			ps.setBalanceChanges(0);
-		} else {
-			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
-		}
-		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-	}
-
-	public void removeMoneyFromBalance2(Player offlinePlayer, double amount) {
+	public void removeMoneyFromBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
@@ -548,7 +534,7 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public void addMoneyToBalance2(OfflinePlayer offlinePlayer, double amount) {
+	public void addMoneyToBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
