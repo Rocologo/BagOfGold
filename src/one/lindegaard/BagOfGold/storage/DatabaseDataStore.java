@@ -2,8 +2,10 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.*;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 
@@ -59,13 +61,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * Setup / Create database version 1 tables for BagOfGold
 	 */
 	protected abstract void setupV1Tables(Connection connection) throws SQLException;
-
-	/**
-	 * Setup / Migrate from database version 1 to version 2 tables for BagOfGold
-	 * 
-	 * @throws SQLException
-	 */
-	protected abstract void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException;
 
 	/**
 	 * Setup / Create database version 2 tables for BagOfGold
@@ -214,7 +209,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * insertPlayerSettings to database
 	 */
 	@Override
-	public void insertPlayerSettingsNOW(PlayerSettings playerSettings) throws DataStoreException {
+	public void insertPlayerSettings(PlayerSettings playerSettings) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
@@ -329,7 +324,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * insertPlayerBalance to database
 	 */
 	@Override
-	public void insertPlayerBalanceNOW(PlayerBalance playerBalance) throws DataStoreException {
+	public void insertPlayerBalance(PlayerBalance playerBalance) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
@@ -399,5 +394,33 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throw new DataStoreException(e1);
 		}
 	}
+	
+	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		try {
+			ResultSet rs = statement.executeQuery("SELECT * from mh_Players LIMIT 0");
+			while (rs.next()) {
+				OfflinePlayer offlinePlayer =Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("UUID")));
+				boolean lm=rs.getBoolean("LEARNING_MODE");
+				boolean mute=rs.getBoolean("MUTE_MODE");
+				double balance = rs.getDouble("BALANCE");
+				double balanceChanges = rs.getDouble("BALANCE_CHANGES");
+				double bankBalance = rs.getDouble("BANK_BALANCE");
+				double bankBalanceChanges = rs.getDouble("Bank_BALANCE_CHANGES");
+				PlayerSettings playerSettings = new PlayerSettings(offlinePlayer, "default", lm, mute);
+				plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, playerSettings);
+				PlayerBalance playerBalance = new PlayerBalance(offlinePlayer, "default",GameMode.SURVIVAL, balance,balanceChanges,bankBalance,bankBalanceChanges);
+				plugin.getDataStoreManager().updatePlayerBalance(offlinePlayer, playerBalance);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED + "Error converting old balance data");
+		}
+		statement.close();
+		connection.commit();
+	}
+
+
 
 }

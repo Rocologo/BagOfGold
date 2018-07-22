@@ -48,7 +48,7 @@ public interface IDataStore {
 	 * @param ps
 	 * @throws DataStoreException
 	 */
-	void insertPlayerSettingsNOW(PlayerSettings ps) throws DataStoreException;
+	void insertPlayerSettings(PlayerSettings ps) throws DataStoreException;
 
 	/**
 	 * Get the players Balances from the Database
@@ -74,7 +74,7 @@ public interface IDataStore {
 	 * @param ps
 	 * @throws DataStoreException
 	 */
-	void insertPlayerBalanceNOW(PlayerBalance ps) throws DataStoreException;
+	void insertPlayerBalance(PlayerBalance ps) throws DataStoreException;
 
 	/**
 	 * Convert all tables to use UTF-8 character set.
@@ -82,5 +82,5 @@ public interface IDataStore {
 	 * @throws DataStoreException
 	 */
 	void databaseConvertToUtf8(String database_name) throws DataStoreException;
-
+	
 }

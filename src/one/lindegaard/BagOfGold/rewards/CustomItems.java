@@ -35,9 +35,8 @@ import one.lindegaard.BagOfGold.skins.Skins_1_8_R2;
 import one.lindegaard.BagOfGold.skins.Skins_1_8_R3;
 import one.lindegaard.BagOfGold.skins.Skins_1_9_R1;
 import one.lindegaard.BagOfGold.util.Misc;
-//import one.lindegaard.CustomItemsLib.Util.Misc;
 import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.storage.PlayerSettings;
+import one.lindegaard.MobHunting.PlayerSettings;
 
 public class CustomItems {
 

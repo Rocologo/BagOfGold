@@ -2,9 +2,9 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -111,7 +111,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + "," //
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," //
 				+ " PRIMARY KEY(UUID))");
-		
+
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance" //
 				+ "(UUID TEXT," //
 				+ " WORLDGRP TEXT DEFAULT 'default'," //
@@ -121,23 +121,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " BANK_BALANCE REAL DEFAULT 0," //
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
 				+ " PRIMARY KEY(UUID, WORLDGRP, GAMEMODE))");
-		
+
 		create.close();
 		connection.commit();
 
-	}
-
-	@Override
-	protected void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
-		Statement statement = connection.createStatement();
-		try {
-			ResultSet rs = statement.executeQuery("SELECT UUID from mh_Balance LIMIT 0");
-			rs.close();
-		} catch (SQLException e) {
-			System.out.println("[MobHunting] Adding WORLDGRP to BagOfGold Database.");
-		}
-		statement.close();
-		connection.commit();
 	}
 
 }

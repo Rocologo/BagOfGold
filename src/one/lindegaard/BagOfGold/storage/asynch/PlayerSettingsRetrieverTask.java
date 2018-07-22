@@ -33,7 +33,7 @@ public class PlayerSettingsRetrieverTask implements IDataStoreTask<PlayerSetting
 				PlayerSettings ps = new PlayerSettings(mPlayer, worldgroup,
 						BagOfGold.getInstance().getConfigManager().learningMode, false);
 				try {
-					store.insertPlayerSettingsNOW(ps);
+					store.insertPlayerSettings(ps);
 				} catch (DataStoreException e1) {
 					e1.printStackTrace();
 				}

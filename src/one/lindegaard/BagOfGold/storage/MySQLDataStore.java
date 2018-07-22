@@ -1,7 +1,6 @@
 package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Locale;
@@ -160,19 +159,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.close();
 		connection.commit();
 
-	}
-
-	@Override
-	protected void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
-		Statement statement = connection.createStatement();
-		try {
-			ResultSet rs = statement.executeQuery("SELECT WORLDGRP from mh_PlayersSettings LIMIT 0");
-			rs.close();
-		} catch (SQLException e) {
-			System.out.println("[BagOfGoldMobHunting] Migrating to BagOfGold Database V2.");
-		}
-		statement.close();
-		connection.commit();
 	}
 
 }
