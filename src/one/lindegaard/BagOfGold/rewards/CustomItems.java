@@ -96,8 +96,13 @@ public class CustomItems {
 	 */
 	public ItemStack getPlayerHead(UUID uuid, int amount, double money) {
 
-		//TODO: Which skull is working
-		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
+		// TODO: Which skull is working
+		ItemStack skull;
+		if (Misc.isMC113OrNewer())
+			skull = new ItemStack(Material.PLAYER_HEAD);
+		else
+			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+		skull.setAmount(amount);
 
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
@@ -193,9 +198,15 @@ public class CustomItems {
 	 */
 	public ItemStack getPlayerHeadGameProfile(UUID uuid, int amount, double money) {
 
-		//TODO: Which SKULL is working??
-		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
+		// TODO: Which SKULL is working??
+		ItemStack skull;
+		if (Misc.isMC113OrNewer())
+			skull = new ItemStack(Material.PLAYER_HEAD);
+		else
+			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+		
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
 		GameProfile profile = new GameProfile(uuid, offlinePlayer.getName());
@@ -239,9 +250,14 @@ public class CustomItems {
 		return skull;
 	}
 
-	//TODO: Which skull is working
+	// TODO: Which skull is working
 	public ItemStack getPlayerHeadOwningPlayer(UUID uuid, int amount, double money) {
-		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
+		ItemStack skull;
+		if (Misc.isMC113OrNewer())
+			skull = new ItemStack(Material.PLAYER_HEAD);
+		else
+			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		String name = Bukkit.getOfflinePlayer(uuid).getName();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
@@ -273,9 +289,13 @@ public class CustomItems {
 	 */
 	public ItemStack getCustomtexture(UUID mPlayerUUID, String mDisplayName, String mTextureValue,
 			String mTextureSignature, double money, UUID uniqueRewardUuid, UUID skinUuid) {
-		//TODO: which head is working
-		ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
-
+		// TODO: which head is working
+		ItemStack skull;
+		if (Misc.isMC113OrNewer())
+			skull = new ItemStack(Material.PLAYER_HEAD);
+		else
+			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+		
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;
 

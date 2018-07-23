@@ -14,19 +14,62 @@ import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 
 public class Misc {
 
+	public static boolean isAxe(ItemStack item) {
+		return item != null && (item.getType() == Material.DIAMOND_AXE || item.getType() == Material.GOLDEN_AXE
+				|| item.getType() == Material.IRON_AXE || item.getType() == Material.STONE_AXE
+				|| item.getType() == Material.WOODEN_AXE);
+	}
+
+	public static boolean isSword(ItemStack item) {
+		return item != null && (item.getType() == Material.DIAMOND_SWORD || item.getType() == Material.GOLDEN_SWORD
+				|| item.getType() == Material.IRON_SWORD || item.getType() == Material.STONE_SWORD
+				|| item.getType() == Material.WOODEN_SWORD);
+	}
+
+	public static boolean isPick(ItemStack item) {
+		return item != null && (item.getType() == Material.DIAMOND_PICKAXE || item.getType() == Material.GOLDEN_PICKAXE
+				|| item.getType() == Material.IRON_PICKAXE || item.getType() == Material.STONE_PICKAXE
+				|| item.getType() == Material.WOODEN_PICKAXE);
+	}
+
+	public static boolean isBow(ItemStack item) {
+		return item != null && (item.getType() == Material.BOW);
+	}
+
+	public static boolean isUnarmed(ItemStack item) {
+		return (item == null || item.getType() == Material.AIR);
+	}
+
+	public static boolean isSign(Block block) {
+		if (isMC113OrNewer())
+			return block.getType()==Material.SIGN || block.getType()==Material.WALL_SIGN;
+		else
+			return block.getType()==Material.LEGACY_SIGN || block.getType()==Material.LEGACY_SIGN_POST;
+	}
+
+	public static boolean isSign(Material material) {
+		if (isMC113OrNewer())
+			return material==Material.SIGN || material==Material.WALL_SIGN;
+		else
+			return material==Material.LEGACY_SIGN || material==Material.LEGACY_SIGN_POST;
+	}
+
 	public static boolean isSkull(Material material) {
-		return material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD
-				|| material == Material.SKELETON_SKULL || material == Material.SKELETON_WALL_SKULL
-				|| material == Material.LEGACY_SKULL || material == Material.LEGACY_SKULL_ITEM
-				|| material == Material.WITHER_SKELETON_SKULL || material == Material.WITHER_SKELETON_WALL_SKULL
-				|| material == Material.CREEPER_HEAD || material == Material.CREEPER_WALL_HEAD
-				|| material == Material.DRAGON_HEAD || material == Material.DRAGON_WALL_HEAD;
+		if (isMC113OrNewer())
+			return material == Material.PLAYER_HEAD || material == Material.PLAYER_WALL_HEAD
+					|| material == Material.SKELETON_SKULL || material == Material.SKELETON_WALL_SKULL
+					|| material == Material.WITHER_SKELETON_SKULL || material == Material.WITHER_SKELETON_WALL_SKULL
+					|| material == Material.CREEPER_HEAD || material == Material.CREEPER_WALL_HEAD
+					|| material == Material.DRAGON_HEAD || material == Material.DRAGON_WALL_HEAD;
+		else 
+			return material==Material.LEGACY_SKULL || material == Material.LEGACY_SKULL_ITEM;
 	}
 
 	public static double round(double d) {
@@ -78,7 +121,7 @@ public class Misc {
 	public static boolean isMC113OrNewer() {
 		if (isMC113())
 			return true;
-		else if (isMC111() || isMC110() || isMC19() || isMC18() || isMC17())
+		else if (isMC112() || isMC111() || isMC110() || isMC19() || isMC18() || isMC17())
 			return false;
 		return true;
 	}
@@ -148,22 +191,6 @@ public class Misc {
 		return decimalFormat.format(money);
 	}
 
-	@SuppressWarnings("deprecation")
-	public static boolean isSign(Block block) {
-		if (block.getType().equals(Material.SIGN) || block.getType().equals(Material.WALL_SIGN)|| block.getType().equals(Material.LEGACY_SIGN) || block.getType().equals(Material.LEGACY_WALL_SIGN))
-			return true;
-		else
-			return false;
-	}
-
-	@SuppressWarnings("deprecation")
-	public static boolean isSign(Material material) {
-		if (material.equals(Material.SIGN) || material.equals(Material.WALL_SIGN)|| material.equals(Material.LEGACY_SIGN) || material.equals(Material.LEGACY_WALL_SIGN))
-			return true;
-		else
-			return false;
-	}
-	
 	public static boolean isUUID(String string) {
 	    try {
 	        UUID.fromString(string);
