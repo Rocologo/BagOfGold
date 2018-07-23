@@ -131,7 +131,7 @@ public class PerWorldInventoryCompat implements Listener {
 				if (sync_economy) {
 					plugin.getMessages().debug("PWI:%s Inventory loaded. adjust to ps, amt=%s, pb=%s", player.getName(),
 							amountInInventory, playerBalance.toString());
-					plugin.getEconomyManager().setBagOfGoldPlayer2((Player) player, playerBalance.getBalance());
+					plugin.getEconomyManager().setBagOfGoldPlayer((Player) player, playerBalance.getBalance());
 				} else {
 					playerBalance.setBalance(amountInInventory);
 					plugin.getPlayerBalanceManager().setPlayerBalance(player, playerBalance);
@@ -141,7 +141,7 @@ public class PerWorldInventoryCompat implements Listener {
 						plugin.getMessages().debug("PWI:%s balance was changed while offline. New balance = %s",
 								player.getName(), playerBalance.getBalance() + playerBalance.getBalanceChanges());
 						if (playerBalance.getBalanceChanges() > 0)
-							plugin.getEconomyManager().addBagOfGoldPlayer2(player, playerBalance.getBalanceChanges());
+							plugin.getEconomyManager().addBagOfGoldPlayer(player, playerBalance.getBalanceChanges());
 						else
 							plugin.getEconomyManager().removeBagOfGoldPlayer(player, playerBalance.getBalanceChanges());
 						playerBalance.setBalance(playerBalance.getBalance() + playerBalance.getBalanceChanges());

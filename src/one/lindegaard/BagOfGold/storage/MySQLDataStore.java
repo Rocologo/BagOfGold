@@ -155,7 +155,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " BANK_BALANCE REAL DEFAULT 0,"//
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
 				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE)),"
-				+ " FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE, ");
+				+ " CONSTRAINT mh_PlayerSettings_UUID FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE, ");
 
 		create.close();
 		connection.commit();

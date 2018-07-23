@@ -41,7 +41,7 @@ public interface IDataStore {
 	 * @param playerDataSet
 	 * @throws DataStoreException
 	 */
-	void savePlayerSettings(Set<PlayerSettings> ps) throws DataStoreException;
+	void savePlayerSettings(Set<PlayerSettings> ps, boolean cleanCache) throws DataStoreException;
 
 	/**
 	 * Insert all PlayerData for one player into the Database
@@ -67,7 +67,7 @@ public interface IDataStore {
 	 * @param playerDataSet
 	 * @throws DataStoreException
 	 */
-	void savePlayerBalances(Set<PlayerBalance> ps) throws DataStoreException;
+	void savePlayerBalances(Set<PlayerBalance> ps, boolean cleanCache) throws DataStoreException;
 
 	/**
 	 * Insert PlayerBalance one player into the Database
@@ -79,9 +79,10 @@ public interface IDataStore {
 
 	/**
 	 * Convert all tables to use UTF-8 character set.
+	 * 
 	 * @param database_name
 	 * @throws DataStoreException
 	 */
 	void databaseConvertToUtf8(String database_name) throws DataStoreException;
-	
+
 }

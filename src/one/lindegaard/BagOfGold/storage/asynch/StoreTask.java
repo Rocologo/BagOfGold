@@ -31,9 +31,9 @@ public class StoreTask implements IDataStoreTask<Void> {
 	@Override
 	public Void run(IDataStore store) throws DataStoreException {
 		if (!mWaitingPlayerSettings.isEmpty())
-			store.savePlayerSettings(mWaitingPlayerSettings);
+			store.savePlayerSettings(mWaitingPlayerSettings, true);
 		if (!mWaitingPlayerBalances.isEmpty())
-			store.savePlayerBalances(mWaitingPlayerBalances);
+			store.savePlayerBalances(mWaitingPlayerBalances, true);
 
 		return null;
 	}

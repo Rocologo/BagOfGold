@@ -60,15 +60,15 @@ public class EconomyManager implements Listener {
 	 * @return EconomyResponce containing amount, balance and ResponseType
 	 *         (Success/failure)
 	 */
-	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer,
-			double amount) {
+	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
 		if (amount == 0) {
 			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
 					null);
 		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
-				addBagOfGoldPlayer2((Player) offlinePlayer, ps.getBalanceChanges() + amount);
+				addBagOfGoldPlayer((Player) offlinePlayer,
+							Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 				ps.setBalanceChanges(0);
 			} else {
@@ -151,7 +151,7 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public void addBagOfGoldPlayer2(Player player, double amount) {
+	public void addBagOfGoldPlayer(Player player, double amount) {
 		boolean found = false;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
@@ -231,7 +231,7 @@ public class EconomyManager implements Listener {
 
 	}
 
-	public void setBagOfGoldPlayer2(Player offlinePlayer, double amount) {
+	public void setBagOfGoldPlayer(Player offlinePlayer, double amount) {
 		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
 		boolean found = false;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
@@ -540,6 +540,11 @@ public class EconomyManager implements Listener {
 				format(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+	}
+
+	public void adjustBalanceToAmountInInventory(Player player) {
+		double amountInInventory = getAmountInInventory(player);
+
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)

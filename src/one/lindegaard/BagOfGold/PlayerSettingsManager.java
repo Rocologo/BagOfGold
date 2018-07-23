@@ -103,10 +103,10 @@ public class PlayerSettingsManager implements Listener {
 			@Override
 			public void onCompleted(PlayerSettings ps) {
 				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
-				if (ps.isMuted())
-					plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
-				if (ps.isLearningMode())
-					plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
+				//if (ps.isMuted())
+				//	plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
+				//if (ps.isLearningMode())
+				//	plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
 			}
 
 			@Override

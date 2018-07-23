@@ -26,33 +26,18 @@ public class RewardListeners implements Listener {
 		Player player = (Player) event.getPlayer();
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(player);
 		double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
-		plugin.getMessages().debug("RewardListener: amt=%s, ps=%s", amountInInventory, ps.toString());
-		if (Misc.round(amountInInventory) != Misc.round(ps.getBalance())) {
-			ps.setBalance(amountInInventory);
+		if (Misc.round(amountInInventory) != Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges())) {
+			ps.setBalance(Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
 			ps.setBalanceChanges(0);
 			plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
-			plugin.getMessages().debug("%s closed inventory: new balance is %s", player.getName(),
-					plugin.getEconomyManager().getBalance(player));
+			if (Misc.round(ps.getBalance()) > amountInInventory)
+				plugin.getEconomyManager().addBagOfGoldPlayer(player, Misc.round(ps.getBalance()) - amountInInventory);
+			else if (Misc.round(ps.getBalance()) < amountInInventory)
+				plugin.getEconomyManager().removeBagOfGoldPlayer(player,
+						amountInInventory - Misc.round(ps.getBalance()));
 		}
-		//if (Misc.round(ps.getBalanceChanges()) != 0) {
-		//	if (Misc.round(ps.getBalanceChanges()) > 0)
-		//		plugin.getEconomyManager().depositPlayer(player, Misc.round(ps.getBalanceChanges()));
-		//	else if (Misc.round(ps.getBalanceChanges())<0)
-		//		plugin.getEconomyManager().withdrawPlayer(player, -Misc.round(ps.getBalanceChanges()));
-		//}
-		
-		// plugin.getMessages().debug("bal=%s,%s amt=%s", ps.getBalance(),
-		// ps.getBalanceChanges(), amountInInventory);
-		// if (Misc.round(ps.getBalance()+ps.getBalanceChanges())<0) {
-		// plugin.getEconomyManager().removeBagOfGoldPlayer(player,
-		// -(Misc.round(ps.getBalance())+Misc.round(ps.getBalanceChanges())));
-		// ps.setBalance(amountInInventory+(Misc.round(ps.getBalance())+Misc.round(ps.getBalanceChanges())));
-		// ps.setBalanceChanges(0);
-		// }
-		// plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
-		// plugin.getMessages().debug("%s closed inventory: new balance is %s",
-		// player.getName(),
-		// plugin.getEconomyManager().getBalance(player));
+		plugin.getMessages().debug("RewardListener: InventoryCloseEvent amt=%s, ps=%s", amountInInventory,
+				ps.toString());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -68,11 +53,17 @@ public class RewardListeners implements Listener {
 				Player player = (Player) event.getPlayer();
 				PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(player);
 				double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
-				ps.setBalance(amountInInventory);
+				ps.setBalance(Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
 				ps.setBalanceChanges(0);
 				plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
-				plugin.getMessages().debug("%s gamemodechange: new balance is %s", player.getName(),
-						plugin.getEconomyManager().getBalance(player));
+				if (Misc.round(ps.getBalance()) > amountInInventory)
+					plugin.getEconomyManager().addBagOfGoldPlayer(player,
+							Misc.round(ps.getBalance()) - amountInInventory);
+				else if (Misc.round(ps.getBalance()) < amountInInventory)
+					plugin.getEconomyManager().removeBagOfGoldPlayer(player,
+							amountInInventory - Misc.round(ps.getBalance()));
+				plugin.getMessages().debug("RewardListernes: PlayerGameModeChange %s (to %s) new balance is %s",
+						player.getName(), event.getNewGameMode(), plugin.getEconomyManager().getBalance(player));
 			}
 		}, 3);
 	}

@@ -2,10 +2,8 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.*;
 import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 
@@ -104,10 +102,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 					plugin.getConfigManager().databaseVersion = 1;
 					plugin.getConfigManager().saveConfig();
 				} catch (SQLException e2) {
-					// Database does not exist. Create V2
+					// Database v1 does not exist. Create V2
+					setupV2Tables(mConnection);
 					plugin.getConfigManager().databaseVersion = 2;
 					plugin.getConfigManager().saveConfig();
-					setupV2Tables(mConnection);
 				}
 				statement.close();
 			}
@@ -121,6 +119,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			case 2:
 				setupV2Tables(mConnection);
 			}
+
+			plugin.getConfigManager().databaseVersion = 2;
+			plugin.getConfigManager().saveConfig();
 
 			// Enable FOREIGN KEY for Sqlite database
 			if (!plugin.getConfigManager().databaseType.equalsIgnoreCase("MySQL")) {
@@ -237,7 +238,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	@Override
-	public void savePlayerSettings(Set<PlayerSettings> playerDataSet) throws DataStoreException {
+	public void savePlayerSettings(Set<PlayerSettings> playerDataSet, boolean cleanCache) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
@@ -258,11 +259,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 				plugin.getMessages().debug("PlayerSettings saved.");
 
-				for (PlayerSettings playerData : playerDataSet) {
-					if (plugin.getPlayerSettingsManager().containsKey(playerData.getPlayer())
-							&& !playerData.getPlayer().isOnline() && playerData.getPlayer().hasPlayedBefore())
-						plugin.getPlayerSettingsManager().removePlayerSettings(playerData.getPlayer());
-				}
+				if (cleanCache)
+					for (PlayerSettings playerData : playerDataSet) {
+						if (plugin.getPlayerSettingsManager().containsKey(playerData.getPlayer())
+								&& !playerData.getPlayer().isOnline() && playerData.getPlayer().hasPlayedBefore())
+							plugin.getPlayerSettingsManager().removePlayerSettings(playerData.getPlayer());
+					}
 
 			} catch (SQLException e) {
 				rollback(mConnection);
@@ -303,7 +305,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 						result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"),
 						result.getDouble("BANK_BALANCE_CHANGES"));
 				playerBalances.putPlayerBalance(ps);
-				BagOfGold.getInstance().getPlayerBalanceManager().getBalances().get(offlinePlayer.getUniqueId()).putPlayerBalance(ps);
 			}
 			result.close();
 			mGetPlayerBalance.close();
@@ -313,11 +314,13 @@ public abstract class DatabaseDataStore implements IDataStore {
 			e.printStackTrace();
 		}
 		if (!playerBalances.getPlayerBalances().isEmpty()) {
-			BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: player found in db=%s", playerBalances.toString());
+			plugin.getMessages().debug("DatabaseDataStore: player found in db=%s",
+					playerBalances.toString());
 			return playerBalances;
-		} else{
-			BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: player not found in DB");
-			throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");}
+		} else {
+			plugin.getMessages().debug("DatabaseDataStore: player not found in DB");
+			throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
+		}
 
 	}
 
@@ -330,7 +333,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 			mConnection = setupConnection();
 			try {
-				BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: insert to db=%s", playerBalance.toString());
+				BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: insert to db=%s",
+						playerBalance.toString());
 				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
 				mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
 				mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
@@ -355,7 +359,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	@Override
-	public void savePlayerBalances(Set<PlayerBalance> playerBalanceSet) throws DataStoreException {
+	public void savePlayerBalances(Set<PlayerBalance> playerBalanceSet, boolean cleanCache) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
@@ -380,11 +384,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 				plugin.getMessages().debug("PlayerBalances saved.");
 
-				for (PlayerBalance playerData : playerBalanceSet) {
-					if (plugin.getPlayerBalanceManager().containsKey(playerData.getPlayer())
-							&& !playerData.getPlayer().isOnline())
-						plugin.getPlayerBalanceManager().removePlayerBalance(playerData.getPlayer());
-				}
+				if (cleanCache)
+					for (PlayerBalance playerData : playerBalanceSet) {
+						if (plugin.getPlayerBalanceManager().containsKey(playerData.getPlayer())
+								&& !playerData.getPlayer().isOnline())
+							plugin.getPlayerBalanceManager().removePlayerBalance(playerData.getPlayer());
+					}
 
 			} catch (SQLException e) {
 				rollback(mConnection);
@@ -395,33 +400,22 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throw new DataStoreException(e1);
 		}
 	}
-	
+
 	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
-		try {
-			ResultSet rs = statement.executeQuery("SELECT * from mh_Players LIMIT 0");
-			while (rs.next()) {
-				OfflinePlayer offlinePlayer =Bukkit.getOfflinePlayer(UUID.fromString(rs.getString("UUID")));
-				boolean lm=rs.getBoolean("LEARNING_MODE");
-				boolean mute=rs.getBoolean("MUTE_MODE");
-				double balance = rs.getDouble("BALANCE");
-				double balanceChanges = rs.getDouble("BALANCE_CHANGES");
-				double bankBalance = rs.getDouble("BANK_BALANCE");
-				double bankBalanceChanges = rs.getDouble("Bank_BALANCE_CHANGES");
-				PlayerSettings playerSettings = new PlayerSettings(offlinePlayer, "default", lm, mute);
-				plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, playerSettings);
-				PlayerBalance playerBalance = new PlayerBalance(offlinePlayer, "default",GameMode.SURVIVAL, balance,balanceChanges,bankBalance,bankBalanceChanges);
-				plugin.getDataStoreManager().updatePlayerBalance(offlinePlayer, playerBalance);
-			}
-			rs.close();
-		} catch (SQLException e) {
-			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED + "Error converting old balance data");
-		}
+		statement.executeUpdate("INSERT INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
+				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
+		statement.close();
+		connection.commit();
+		statement.executeUpdate(
+				"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
+						+ " SELECT DISTINCT UUID,'default','SURVIVAL',MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
+						+ "from mh_Players GROUP BY UUID ");
+		statement.close();
+		connection.commit();
+		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
 		connection.commit();
 	}
-
-
 
 }
