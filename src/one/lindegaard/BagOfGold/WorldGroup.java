@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,6 +35,8 @@ public class WorldGroup {
 	public WorldGroup(BagOfGold plugin) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), "worldgroups.yml");
+		if (file.exists())
+			load();
 		if (worldGroups.isEmpty()) {
 			/**
 			 * if (PerWorldInventoryCompat.isSupported()) { YamlConfiguration
@@ -48,10 +53,9 @@ public class WorldGroup {
 			 * else
 			 **/
 			{
-				worldGroups.put(getDefaultWorldgroup(),
-						Arrays.asList("world", "world_nether", "world_the_end"));
+				worldGroups.put(getDefaultWorldgroup(), Arrays.asList("world", "world_nether", "world_the_end"));
 				startBalance.put(getDefaultWorldgroup(), 3000.0);
-				defaultGameMode.put(getDefaultWorldgroup() , GameMode.SURVIVAL);
+				defaultGameMode.put(getDefaultWorldgroup(), GameMode.SURVIVAL);
 
 				worldGroups.put("survival", Arrays.asList("survival"));
 				startBalance.put("survival", 3000.0);
@@ -62,8 +66,7 @@ public class WorldGroup {
 				defaultGameMode.put("creative", GameMode.CREATIVE);
 			}
 			save();
-		} else
-			load();
+		}
 	}
 
 	public void add(String world) {
@@ -101,10 +104,14 @@ public class WorldGroup {
 	}
 
 	public String getWorldGroup(String world) {
-		for (String worldGroup : worldGroups.keySet()) {
-			if (worldGroup.contains(world))
-				return worldGroup;
+		for (Entry<String, List<String>> worldGroup : worldGroups.entrySet()) {
+			if (worldGroup.getValue().contains(world))
+				return worldGroup.getKey();
 		}
+		worldGroups.get(getDefaultWorldgroup()).add(world);
+		save();
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + " World:" + world
+				+ " was missing in the worldgroups.yml file. It has beed added to the default group. Please review the worldgroups.");
 		return getDefaultWorldgroup();
 	}
 
@@ -132,6 +139,7 @@ public class WorldGroup {
 	public double getCurrentStartingBalance(String worldgroup) {
 		return startBalance.get(worldgroup);
 	}
+
 	// ***************************************************************
 	// write & read
 	// ***************************************************************

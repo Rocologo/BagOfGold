@@ -47,7 +47,7 @@ public class EconomyManager implements Listener {
 	 * @return
 	 */
 	public double getBalance(OfflinePlayer offlinePlayer) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		return ps.getBalance() + ps.getBalanceChanges();
 	}
 
@@ -61,14 +61,15 @@ public class EconomyManager implements Listener {
 	 *         (Success/failure)
 	 */
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		if (amount == 0) {
 			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
 					null);
 		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
 				addBagOfGoldPlayer((Player) offlinePlayer,
-							Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+						// Misc.round(ps.getBalance()) +
+						Misc.round(ps.getBalanceChanges()) + Misc.round(amount));
 				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 				ps.setBalanceChanges(0);
 			} else {
@@ -77,6 +78,8 @@ public class EconomyManager implements Listener {
 			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(amount),
 					offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+			if (offlinePlayer.isOnline())
+				adjustAmountInInventoryToBalance((Player) offlinePlayer);
 			return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 					ResponseType.SUCCESS, null);
 		} else {
@@ -97,11 +100,11 @@ public class EconomyManager implements Listener {
 	 *         ResponseType (Success/Failure).
 	 */
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		if (amount >= 0) {
 			if (has(offlinePlayer, amount)) {
 				if (offlinePlayer.isOnline()) {
-					removeBagOfGoldPlayer((Player) offlinePlayer, amount);
+					removeBagOfGoldPlayer((Player) offlinePlayer, amount + Misc.round(ps.getBalanceChanges()));
 					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 					ps.setBalanceChanges(0);
 				} else
@@ -109,6 +112,8 @@ public class EconomyManager implements Listener {
 				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", format(amount),
 						offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+				if (offlinePlayer.isOnline())
+					adjustAmountInInventoryToBalance((Player) offlinePlayer);
 				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 						ResponseType.SUCCESS, null);
 			} else {
@@ -137,7 +142,7 @@ public class EconomyManager implements Listener {
 	 * @return true if the player has the amount on his money.
 	 */
 	public boolean has(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance pb = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+		PlayerBalance pb = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
 				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				format(pb.getBalance() + pb.getBalanceChanges()));
@@ -344,7 +349,7 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() + amount));
 				ps.setBankBalanceChanges(0);
@@ -377,7 +382,7 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() - amount));
 				ps.setBankBalanceChanges(0);
@@ -410,7 +415,7 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
 				ps.setBankBalanceChanges(0);
@@ -437,7 +442,7 @@ public class EconomyManager implements Listener {
 		else
 			offlinePlayer = Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			ps.setBankBalance(0);
 			ps.setBankBalanceChanges(0);
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
@@ -514,7 +519,7 @@ public class EconomyManager implements Listener {
 	 * @param amount
 	 */
 	public void removeMoneyFromBalance(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
 
@@ -535,25 +540,40 @@ public class EconomyManager implements Listener {
 	 * @param amount
 	 */
 	public void addMoneyToBalance(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(offlinePlayer);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
 		ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 	}
 
-	public void adjustBalanceToAmountInInventory(Player player) {
+	public void adjustAmountInInventoryToBalance(Player player) {
 		double amountInInventory = getAmountInInventory(player);
-
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		if (ps != null) {
+			plugin.getMessages().debug("EconomyManager: ps=%s", ps.toString());
+			double diff = (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()))
+					- Misc.round(amountInInventory);
+			if (Misc.round(diff) != 0) {
+				plugin.getMessages().debug("Adjusting amt to Balance: amt=%s, bal=%s(+%s)", amountInInventory,
+						ps.getBalance(), ps.getBalanceChanges());
+				addBagOfGoldPlayer(player, Misc.round(diff));
+			}
+		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerDeathEvent(PlayerDeathEvent event) {
-		Player player = event.getEntity();
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(player);
-		ps.setBalance(0);
-		ps.setBalanceChanges(0);
-		plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
+	public void adjustBalanceToamountInInventory(Player player) {
+		double amountInInventory = getAmountInInventory(player);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		if (ps != null) {
+			double diff = Misc.round(amountInInventory)
+					- (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
+			if (Misc.round(diff) != 0) {
+				plugin.getMessages().debug("Adjusting Balance to amt: amt=%s, bal=%s(+%s)", amountInInventory,
+						ps.getBalance(), ps.getBalanceChanges());
+				addMoneyToBalance(player, Misc.round(diff));
+			}
+		}
 	}
 
 }

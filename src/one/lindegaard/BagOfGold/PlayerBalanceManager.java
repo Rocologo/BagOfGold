@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -37,32 +38,36 @@ public class PlayerBalanceManager implements Listener {
 		return mBalances;
 	}
 
-	public PlayerBalance getPlayerBalances(OfflinePlayer offlinePlayer) {
+	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer) {
 		if (offlinePlayer.isOnline()) {
 			String worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer);
 			GameMode gamemode = plugin.getWorldGroupManager().getCurrentGameMode(offlinePlayer);
-			return getPlayerBalances(offlinePlayer, worldGroup, gamemode);
+			return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 		} else {
 			String worldGroup = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer)
 					.getLastKnownWorldGrp();
 			GameMode gamemode = plugin.getWorldGroupManager().getDefaultGameMode();
-			return getPlayerBalances(offlinePlayer, worldGroup, gamemode);
+			return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 		}
 	}
 
-	public PlayerBalance getPlayerBalances(OfflinePlayer offlinePlayer, String worldGroup, GameMode gamemode) {
+	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer, String worldGroup, GameMode gamemode) {
 		if (mBalances.containsKey(offlinePlayer.getUniqueId()))
 			// offlinePlayer is in the Database
 			if (mBalances.get(offlinePlayer.getUniqueId()).has(worldGroup, gamemode)) {
-				//plugin.getMessages().debug("Get Balance from mBalances: %s", mBalances.get(offlinePlayer.getUniqueId()).getPlayerBalance(worldGroup, gamemode).toString());
+				plugin.getMessages().debug("PlayerBlananceManager: player has %s and %s",worldGroup,gamemode);
 				return mBalances.get(offlinePlayer.getUniqueId()).getPlayerBalance(worldGroup, gamemode);
 			} else {
 				// offlinePlayer does have a balance for this
 				// worldgroup-gamemode. Create it with default values
-				PlayerBalances ps = new PlayerBalances();
+				// PlayerBalances ps = new PlayerBalances();
+				plugin.getMessages().debug("PlayerBlananceManager: creating new %s and %s", worldGroup,gamemode);
+				PlayerBalances ps = mBalances.get(offlinePlayer.getUniqueId());
 				PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 				ps.putPlayerBalance(pb);
 				setPlayerBalance(offlinePlayer, pb);
+				plugin.getMessages().debug("PlayerBlananceManager: pb=%s", pb.toString());
+				plugin.getMessages().debug("PlayerBlananceManager: ps=%s", ps.toString());
 				return pb;
 			}
 		else {
@@ -70,13 +75,13 @@ public class PlayerBalanceManager implements Listener {
 			PlayerBalances ps = new PlayerBalances();
 			PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 			try {
+				plugin.getMessages().debug("PlayerBalanceManager: loading PlayerBalances");
 				ps = plugin.getStoreManager().loadPlayerBalances(offlinePlayer);
 			} catch (UserNotFoundException e) {
 				//
 			} catch (DataStoreException e) {
 				e.printStackTrace();
 			}
-			plugin.getMessages().debug("Loaded balance: %s",ps.toString());
 			
 			if (!ps.has(worldGroup, gamemode)) {
 				setPlayerBalance(offlinePlayer, pb);
@@ -90,14 +95,10 @@ public class PlayerBalanceManager implements Listener {
 	// TODO: remove parameter offlinePlayer
 	public void setPlayerBalance(OfflinePlayer offlinePlayer, PlayerBalance playerBalance) {
 		if (!mBalances.containsKey(offlinePlayer.getUniqueId())) {
-			//plugin.getMessages().debug("PlayerBalanceManager: mBalances does not contain player %s",
-			//		offlinePlayer.getName());
 			PlayerBalances ps = new PlayerBalances();
 			ps.putPlayerBalance(playerBalance);
 			mBalances.put(offlinePlayer.getUniqueId(), ps);
 		} else {
-			//plugin.getMessages().debug("PlayerBalanceManager: insert playerBalance into mBalances for player %s",
-			//		offlinePlayer.getName());
 			mBalances.get(offlinePlayer.getUniqueId()).putPlayerBalance(playerBalance);
 		}
 		plugin.getDataStoreManager().updatePlayerBalance(offlinePlayer, playerBalance);
@@ -146,7 +147,7 @@ public class PlayerBalanceManager implements Listener {
 
 		// update Essentials balance
 		if (EssentialsCompat.isSupported()) {
-			final double balance = getPlayerBalances(player).getBalance();
+			final double balance = getPlayerBalance(player).getBalance();
 			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 				@Override
 				public void run() {
@@ -185,7 +186,7 @@ public class PlayerBalanceManager implements Listener {
 
 				if (offlinePlayer.isOnline()) {
 					double amountInInventory = plugin.getEconomyManager().getAmountInInventory((Player) offlinePlayer);
-					PlayerBalance pb = getPlayerBalances(offlinePlayer);
+					PlayerBalance pb = getPlayerBalance(offlinePlayer);
 					if (Misc.round(amountInInventory) != Misc.round(pb.getBalance())
 							+ Misc.round(pb.getBalanceChanges())) {
 						double change = pb.getBalanceChanges();
@@ -225,6 +226,16 @@ public class PlayerBalanceManager implements Listener {
 	 */
 	public boolean containsKey(final OfflinePlayer player) {
 		return mBalances.containsKey(player.getUniqueId());
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerDeathEvent(PlayerDeathEvent event) {
+		Player player = event.getEntity();
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		ps.setBalance(0);
+		ps.setBalanceChanges(0);
+		setPlayerBalance(player, ps);
+		plugin.getMessages().debug("PlayerBalancManager: player died balance=0");
 	}
 
 }

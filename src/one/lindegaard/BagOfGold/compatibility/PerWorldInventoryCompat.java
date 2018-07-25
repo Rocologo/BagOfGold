@@ -7,15 +7,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import me.ebonjaeger.perworldinventory.PerWorldInventory;
+import me.ebonjaeger.perworldinventory.event.InventoryLoadCompleteEvent;
 import me.ebonjaeger.perworldinventory.event.InventoryLoadEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.PlayerBalance;
 
 public class PerWorldInventoryCompat implements Listener {
 
@@ -42,6 +41,28 @@ public class PerWorldInventoryCompat implements Listener {
 
 			if (sync_economy)
 				pwi_sync_economy_warning();
+
+			if (mPlugin.getDescription().getVersion().compareTo("2.1.0") >= 0)
+				Bukkit.getPluginManager().registerEvents(new Listener() {
+					@EventHandler(priority = EventPriority.HIGHEST)
+					public void onInventoryChangeCompleted(InventoryLoadCompleteEvent event) {
+							plugin.getMessages().debug("onInventoryLoadCompleted");
+							plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
+					}
+				}, plugin);
+			// TODO: place else here when the above event works
+			Bukkit.getPluginManager().registerEvents(new Listener() {
+				@EventHandler(priority = EventPriority.HIGHEST)
+				public void onInventoryLoad(InventoryLoadEvent event) {
+					Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+						@Override
+						public void run() {
+							plugin.getMessages().debug("onInventoryLoad");
+							plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
+						}
+					}, 10);
+				}
+			}, plugin);
 
 			supported = true;
 		}
@@ -114,43 +135,4 @@ public class PerWorldInventoryCompat implements Listener {
 	// EVENTS
 	// **************************************************************************
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	private void onInventoryChangeCompleted(InventoryLoadEvent event) {
-		// TODO: Change to InventoryLoadCompleteEvent
-		// private void onInventoryChangeCompleted(InventoryLoadCompleteEvent
-		// event) {
-
-		// OBS THIS does not work with the database layout
-		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			@Override
-			public void run() {
-
-				Player player = (Player) event.getPlayer();
-				PlayerBalance playerBalance = plugin.getPlayerBalanceManager().getPlayerBalances(player);
-				double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
-				if (sync_economy) {
-					plugin.getMessages().debug("PWI:%s Inventory loaded. adjust to ps, amt=%s, pb=%s", player.getName(),
-							amountInInventory, playerBalance.toString());
-					plugin.getEconomyManager().setBagOfGoldPlayer((Player) player, playerBalance.getBalance());
-				} else {
-					playerBalance.setBalance(amountInInventory);
-					plugin.getPlayerBalanceManager().setPlayerBalance(player, playerBalance);
-					plugin.getMessages().debug("PWI:%s Inventory loaded. adjust to amt, amt=%s,pb=%s", player.getName(),
-							amountInInventory, playerBalance.toString());
-					if (playerBalance.getBalanceChanges() != 0) {
-						plugin.getMessages().debug("PWI:%s balance was changed while offline. New balance = %s",
-								player.getName(), playerBalance.getBalance() + playerBalance.getBalanceChanges());
-						if (playerBalance.getBalanceChanges() > 0)
-							plugin.getEconomyManager().addBagOfGoldPlayer(player, playerBalance.getBalanceChanges());
-						else
-							plugin.getEconomyManager().removeBagOfGoldPlayer(player, playerBalance.getBalanceChanges());
-						playerBalance.setBalance(playerBalance.getBalance() + playerBalance.getBalanceChanges());
-						playerBalance.setBalanceChanges(0);
-
-					}
-				}
-
-			}
-		}, 5);
-	}
 }

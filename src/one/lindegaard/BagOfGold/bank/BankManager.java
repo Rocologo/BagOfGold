@@ -34,7 +34,7 @@ public class BankManager {
 	public void sendBankerMessage(Player player) {
 		plugin.getMessages().playerSendMessage(player,
 				" \n" + plugin.getMessages().getString("bagofgold.banker.introduction"));
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(player);
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 
 		player.spigot()
 				.sendMessage(new ComponentBuilder("Balance: " +plugin.getEconomyManager().format(ps.getBalance() + ps.getBalanceChanges())

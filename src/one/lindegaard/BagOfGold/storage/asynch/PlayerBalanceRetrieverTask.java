@@ -56,7 +56,6 @@ public class PlayerBalanceRetrieverTask implements IDataStoreTask<PlayerBalances
 					}
 				}
 			}
-			BagOfGold.getInstance().getMessages().debug("PlayerBalanceRetriver: ps=%s", ps.toString());
 			return ps;
 		}
 	}

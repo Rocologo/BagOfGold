@@ -314,7 +314,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			e.printStackTrace();
 		}
 		if (!playerBalances.getPlayerBalances().isEmpty()) {
-			plugin.getMessages().debug("DatabaseDataStore: player found in db=%s",
+			plugin.getMessages().debug("DatabaseDataStore - %s found in database:%s", offlinePlayer.getName(),
 					playerBalances.toString());
 			return playerBalances;
 		} else {

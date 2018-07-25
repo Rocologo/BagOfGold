@@ -55,6 +55,8 @@
 		<EssentialsX.version>2.0.1</EssentialsX.version>
 		<spigetupdate.version>1.4.0</spigetupdate.version>
 
+		<PerWorldInventory.version>2.1.0</PerWorldInventory.version>
+
 		<bossbarapi.version>2.4.1</bossbarapi.version>
 		<barapi.version>3.4</barapi.version>
 		<titlemanager.version>2.0.0</titlemanager.version>
@@ -67,8 +69,6 @@
 		<holograms.version>2.5.0-SNAPSHOT</holograms.version>
 		<hologramdisplays.version>2.2.6</hologramdisplays.version>
 		<libsdisguises.version>9.5.1-SNAPSHOT</libsdisguises.version>
-
-		<PerWorldInventory.version>2.0.1</PerWorldInventory.version>
 
 	</properties>
 
@@ -236,12 +236,8 @@
 	<dependencies>
 
 		<!-- SpigotMC -->
-		<!-- <dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc113.version}</version>
-			<scope>provided</scope>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.spigotmc</groupId> <artifactId>spigot-api</artifactId> 
+			<version>${spigotmc113.version}</version> <scope>provided</scope> </dependency> -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
@@ -496,7 +492,7 @@
 	<!-- ********************************************************************** -->
 	<!-- This is where the plugin is deployed -->
 	<distributionManagement>
-		<repository> 
+		<repository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>central</id>
 			<name>fractal-releases</name>

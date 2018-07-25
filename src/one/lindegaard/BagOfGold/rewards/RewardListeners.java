@@ -6,7 +6,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.world.WorldEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
@@ -24,24 +27,17 @@ public class RewardListeners implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(player);
-		double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
-		if (Misc.round(amountInInventory) != Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges())) {
-			ps.setBalance(Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
-			ps.setBalanceChanges(0);
-			plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
-			if (Misc.round(ps.getBalance()) > amountInInventory)
-				plugin.getEconomyManager().addBagOfGoldPlayer(player, Misc.round(ps.getBalance()) - amountInInventory);
-			else if (Misc.round(ps.getBalance()) < amountInInventory)
-				plugin.getEconomyManager().removeBagOfGoldPlayer(player,
-						amountInInventory - Misc.round(ps.getBalance()));
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		if (player.isOnline() && player.isValid() && ps.getBalance() + ps.getBalanceChanges() > 0) {
+			plugin.getMessages().debug(
+					"RewardListener: InventoryCloseEvent adjusting balance to Amount of BagOfGold in Inventory: %s",
+					ps.toString());
+			plugin.getEconomyManager().adjustBalanceToamountInInventory(player);
 		}
-		plugin.getMessages().debug("RewardListener: InventoryCloseEvent amt=%s, ps=%s", amountInInventory,
-				ps.toString());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onGameChange(PlayerGameModeChangeEvent event) {
+	public void onGameModeChange(PlayerGameModeChangeEvent event) {
 
 		if (event.isCancelled() || PerWorldInventoryCompat.isSupported())
 			return;
@@ -51,7 +47,7 @@ public class RewardListeners implements Listener {
 			@Override
 			public void run() {
 				Player player = (Player) event.getPlayer();
-				PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalances(player);
+				PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 				double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
 				ps.setBalance(Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
 				ps.setBalanceChanges(0);
@@ -66,5 +62,22 @@ public class RewardListeners implements Listener {
 						player.getName(), event.getNewGameMode(), plugin.getEconomyManager().getBalance(player));
 			}
 		}, 3);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onWorldChange(PlayerChangedWorldEvent event) {
+		Player player = (Player) event.getPlayer();
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
+		ps.setBalance(Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
+		ps.setBalanceChanges(0);
+		plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
+		if (Misc.round(ps.getBalance()) > amountInInventory)
+			plugin.getEconomyManager().addBagOfGoldPlayer(player, Misc.round(ps.getBalance()) - amountInInventory);
+		else if (Misc.round(ps.getBalance()) < amountInInventory)
+			plugin.getEconomyManager().removeBagOfGoldPlayer(player, amountInInventory - Misc.round(ps.getBalance()));
+		plugin.getMessages().debug("RewardListernes: PlayerChangedWorld %s (from %s to %s) new balance is %s",
+				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
+				plugin.getEconomyManager().getBalance(player));
 	}
 }
