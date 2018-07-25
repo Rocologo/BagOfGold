@@ -164,7 +164,10 @@ public class EconomyManager implements Listener {
 				Reward rewardInSlot = Reward.getReward(is);
 				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
 					rewardInSlot.setMoney(rewardInSlot.getMoney() + amount);
-					is = setDisplayNameAndHiddenLores(is, rewardInSlot);
+					if (rewardInSlot.getMoney() == 0)
+						is = new ItemStack(Material.AIR);
+					else
+						is = setDisplayNameAndHiddenLores(is, rewardInSlot);
 					plugin.getMessages().debug(
 							"Added %s to %s's item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
 							format(amount), player.getName(), slot, format(rewardInSlot.getMoney()));
