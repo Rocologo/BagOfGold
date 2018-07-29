@@ -130,19 +130,16 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	
 	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
-		statement.executeUpdate("INSERT INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
+		statement.executeUpdate("INSERT OR REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
 				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
-		statement.close();
-		connection.commit();
 		statement.executeUpdate(
 				"INSERT OR REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
 						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
 						+ "from mh_Players GROUP BY UUID ");
-		statement.close();
-		connection.commit();
 		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
 		connection.commit();
+		plugin.getMessages().debug("BagOfGold databse was converted to V2");
 	}
 
 
