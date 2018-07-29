@@ -370,7 +370,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 							playerBalance.toString());
 					mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
 					mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
-					mInsertPlayerBalance.setString(3, playerBalance.getGamemode().toString());
+					mInsertPlayerBalance.setInt(3, playerBalance.getGamemode().getValue());
 					mInsertPlayerBalance.setDouble(4, Misc.round(playerBalance.getBalance()));
 					mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
 					mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
