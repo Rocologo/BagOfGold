@@ -164,12 +164,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 		Statement statement = connection.createStatement();
 		statement.executeUpdate("INSERT INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
 				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
-		statement.close();
+		//statement.close();
 		statement.executeUpdate(
 				"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
 						+ " SELECT DISTINCT UUID,'default','SURVIVAL',MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
 						+ "from mh_Players GROUP BY UUID ");
-		statement.close();
+		//statement.close();
 		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
 		//connection.commit();
