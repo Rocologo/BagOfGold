@@ -29,6 +29,9 @@ public class PlayerSettings {
 		this.player = ps.getPlayer();
 		this.setLearningMode(ps.isLearningMode());
 		this.setMuteMode(ps.isMuted());
+		this.setLastKnownWorldGrp(ps.getLastKnownWorldGrp());
+		this.setTexture(ps.getTexture());
+		this.setSignature(ps.getSignature());
 	}
 
 	public String getLastKnownWorldGrp() {

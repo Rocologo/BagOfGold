@@ -99,6 +99,7 @@ public class PlayerSettingsManager implements Listener {
 		PlayerSettings ps = mPlayerSettings.get(player.getUniqueId());
 		ps.setLastKnownWorldGrp(plugin.getWorldGroupManager().getCurrentWorldGroup(player));
 		setPlayerSettings(player, ps);
+		plugin.getMessages().debug("Saving lastKnownWorldGroup: %s",plugin.getWorldGroupManager().getCurrentWorldGroup(player));
 	}
 
 	/**
