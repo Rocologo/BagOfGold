@@ -67,12 +67,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 			break;
 		case INSERT_PLAYER_SETTINGS:
 			mInsertPlayerSettings = connection.prepareStatement(
-					"REPLACE INTO mh_PlayerSettings (UUID,NAME,LEARNING_MODE,MUTE_MODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
-							+ "VALUES(?,?,?,?,?,?,?,?);");
+					"REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE) "
+							+ "VALUES(?,?,?,?,?);");
 			break;
 		case GET_PLAYER_BALANCE:
 			mGetPlayerBalance = connection
-					.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=? AND WORLDGRP=? AND GAMEMODE=?;");
+					.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=?;");
 			break;
 		case INSERT_PLAYER_BALANCE:
 			mInsertPlayerBalance = connection.prepareStatement(
