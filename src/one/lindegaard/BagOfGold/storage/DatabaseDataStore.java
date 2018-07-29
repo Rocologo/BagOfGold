@@ -301,7 +301,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			ResultSet result = mGetPlayerBalance.executeQuery();
 			while (result.next()) {
 				PlayerBalance ps = new PlayerBalance(offlinePlayer, result.getString("WORLDGRP"),
-						GameMode.valueOf(result.getString("GAMEMODE")), result.getDouble("BALANCE"),
+						GameMode.getByValue(result.getInt("GAMEMODE")), result.getDouble("BALANCE"),
 						result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"),
 						result.getDouble("BANK_BALANCE_CHANGES"));
 				playerBalances.putPlayerBalance(ps);
