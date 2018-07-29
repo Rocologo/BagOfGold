@@ -136,7 +136,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		connection.commit();
 		statement.executeUpdate(
 				"INSERT OR REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-						+ " SELECT DISTINCT UUID,'default','SURVIVAL',MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
+						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
 						+ "from mh_Players GROUP BY UUID ");
 		statement.close();
 		connection.commit();

@@ -149,7 +149,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance "//
 				+ "(UUID CHAR(40) ,"//
 				+ " WORLDGRP VARCHAR(20)," //
-				+ " GAMEMODE INTEGER NOT NULL DEFAULT 1," //
+				+ " GAMEMODE INTEGER NOT NULL DEFAULT 0," //
 				+ " BALANCE REAL DEFAULT 0,"//
 				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
 				+ " BANK_BALANCE REAL DEFAULT 0,"//
@@ -167,7 +167,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		//statement.close();
 		statement.executeUpdate(
 				"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-						+ " SELECT DISTINCT UUID,'default','SURVIVAL',MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
+						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
 						+ "from mh_Players GROUP BY UUID ");
 		//statement.close();
 		statement.executeUpdate("DROP TABLE mh_Players;");
