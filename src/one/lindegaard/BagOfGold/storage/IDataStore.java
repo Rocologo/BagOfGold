@@ -1,5 +1,6 @@
 package one.lindegaard.BagOfGold.storage;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -85,4 +86,6 @@ public interface IDataStore {
 	 */
 	void databaseConvertToUtf8(String database_name) throws DataStoreException;
 
+	void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException;
+	
 }
