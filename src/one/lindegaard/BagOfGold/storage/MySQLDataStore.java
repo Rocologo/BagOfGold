@@ -158,8 +158,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " CONSTRAINT mh_PlayerSettings_UUID FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
 
 		create.close();
-		connection.commit();
-
 	}
 	
 	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
@@ -174,7 +172,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		statement.close();
 		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
-		connection.commit();
+		//connection.commit();
 	}
 
 
