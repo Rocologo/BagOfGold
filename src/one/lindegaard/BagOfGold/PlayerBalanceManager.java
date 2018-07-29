@@ -55,7 +55,6 @@ public class PlayerBalanceManager implements Listener {
 		if (mBalances.containsKey(offlinePlayer.getUniqueId()))
 			// offlinePlayer is in the Database
 			if (mBalances.get(offlinePlayer.getUniqueId()).has(worldGroup, gamemode)) {
-				plugin.getMessages().debug("PlayerBlananceManager: player has %s and %s",worldGroup,gamemode);
 				return mBalances.get(offlinePlayer.getUniqueId()).getPlayerBalance(worldGroup, gamemode);
 			} else {
 				// offlinePlayer does have a balance for this
@@ -66,8 +65,6 @@ public class PlayerBalanceManager implements Listener {
 				PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 				ps.putPlayerBalance(pb);
 				setPlayerBalance(offlinePlayer, pb);
-				plugin.getMessages().debug("PlayerBlananceManager: pb=%s", pb.toString());
-				plugin.getMessages().debug("PlayerBlananceManager: ps=%s", ps.toString());
 				return pb;
 			}
 		else {
@@ -75,7 +72,6 @@ public class PlayerBalanceManager implements Listener {
 			PlayerBalances ps = new PlayerBalances();
 			PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 			try {
-				plugin.getMessages().debug("PlayerBalanceManager: loading PlayerBalances");
 				ps = plugin.getStoreManager().loadPlayerBalances(offlinePlayer);
 			} catch (UserNotFoundException e) {
 				//

@@ -13,6 +13,7 @@ public class PlayerSettings {
 
 	public PlayerSettings(OfflinePlayer player) {
 		this.player = player;
+		this.setLastKnownWorldGrp("default");
 		this.setLearningMode(BagOfGold.getInstance().getConfigManager().learningMode);
 		this.setMuteMode(false);
 	}

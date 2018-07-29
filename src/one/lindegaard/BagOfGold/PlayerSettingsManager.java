@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
@@ -92,6 +93,14 @@ public class PlayerSettingsManager implements Listener {
 			load(player);
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
+	private void onPlayerQuit(PlayerQuitEvent event) {
+		final Player player = event.getPlayer();
+		PlayerSettings ps = mPlayerSettings.get(player.getUniqueId());
+		ps.setLastKnownWorldGrp(plugin.getWorldGroupManager().getCurrentWorldGroup(player));
+		setPlayerSettings(player, ps);
+	}
+
 	/**
 	 * Load PlayerSettings asynchronously from Database
 	 * 
@@ -103,10 +112,6 @@ public class PlayerSettingsManager implements Listener {
 			@Override
 			public void onCompleted(PlayerSettings ps) {
 				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
-				//if (ps.isMuted())
-				//	plugin.getMessages().debug("%s isMuted()", offlinePlayer.getName());
-				//if (ps.isLearningMode())
-				//	plugin.getMessages().debug("%s is in LearningMode()", offlinePlayer.getName());
 			}
 
 			@Override
