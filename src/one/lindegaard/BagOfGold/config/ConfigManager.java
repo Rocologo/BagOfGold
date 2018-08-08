@@ -41,6 +41,15 @@ public class ConfigManager extends AutoConfig {
 						+ "\nIntegration to other plugins."
 						+ "\n########################################################################");
 
+		setCategoryComment("plugins.citizens",
+				"########################################################################"
+						+ "\nCitizens / MasterMobHunter settings."
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.placeholderapi",
+				"########################################################################" + "\nPlaceholderApi"
+						+ "\n########################################################################");
+
 		setCategoryComment("general", "########################################################################"
 				+ "\nGeneral Settings" + "\n########################################################################");
 
@@ -86,6 +95,10 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Drop Money on Ground Settings
 	// #####################################################################################
+	@ConfigField(name = "drop_money_command_alias", category = "dropmoneyonground", comment = "Here you can chance the command /bag money ... to /mh <alias> ..."
+			+ "\nExample: gold,bag,silver,coin,???? ")
+	public String dropMoneyOnGroundMoneyCommandAlias = "money";
+
 	@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "Here you can set the type of the ITEM to be dropped."
 			+ "\nYou can choose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\". The default is ITEM."
 			+ "\nThe value will be showed above the item." + "\nITEM: The reward is dropped as a normal Minecraft item."
@@ -157,6 +170,29 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
 	public boolean enableIntegrationPerWorldInventory = true;
 
+	@ConfigField(name = "placeholderapi.enable_integration_placeholderapi", category = "plugins", comment = "Enable/Disable integration with PlaceholderAPI."
+			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")
+	public boolean enableIntegrationPlaceholderAPI = true;
+
+	@ConfigField(name = "titleapi.enable_integration_titleapi", category = "plugins", comment = "Enable/Disable integration with TitleAPI")
+	public boolean enableIntegrationTitleAPI = true;
+
+	@ConfigField(name = "titlemanager.enable_integration_titlemanager", category = "plugins", comment = "Enable/Disable integration with TitleManger. If you want messages in player chat you can set this to true."
+			+ "\nhttps://www.spigotmc.org/resources/titlemanager.1049/")
+	public boolean enableIntegrationTitleManager = true;
+
+	@ConfigField(name = "actionbar.enable_integration_actionbar", category = "plugins", comment = "Enable/Disable integration with Actionbar. If you want messages in player chat you can set this to true.")
+	public boolean enableIntegrationActionbar = true;
+
+	@ConfigField(name = "actionbarapi.enable_integration_actionbarapi", category = "plugins", comment = "Enable/Disable integration with ActionBarAPI. If you want messages in player chat you can set this to true."
+			+ "\nhttps://www.spigotmc.org/resources/actionbarapi_1_8_1_9_1_10.1315/")
+	public boolean enableIntegrationActionBarAPI = true;
+
+	@ConfigField(name = "actionannouncer.enable_integration_actionannouncer", category = "plugins", comment = "Enable/Disable integration with ActionAnnouncer. If you want messages in player chat you can set this to true."
+			+ "\nhttps://www.spigotmc.org/resources/actionannouncer.1320/")
+	public boolean enableIntegrationActionAnnouncer = true;
+
+	
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################

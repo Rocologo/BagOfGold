@@ -7,15 +7,21 @@ import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.CommandDispatcher;
 import one.lindegaard.BagOfGold.commands.ConvertCommand;
 import one.lindegaard.BagOfGold.commands.DebugCommand;
+import one.lindegaard.BagOfGold.commands.MoneyCommand;
 import one.lindegaard.BagOfGold.commands.NpcCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
 import one.lindegaard.BagOfGold.commands.VersionCommand;
+import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
+import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
+import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
+import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
@@ -32,6 +38,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.connorlinfoot.titleapi.TitleAPI;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -120,6 +128,7 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new VersionCommand(this));
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
 		mCommandDispatcher.registerCommand(new ConvertCommand(this));
+		mCommandDispatcher.registerCommand(new MoneyCommand(this));
 
 		// Check for new BagOfGold updates
 		mSpigetUpdater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
@@ -157,6 +166,12 @@ public class BagOfGold extends JavaPlugin {
 		if (Misc.isSpigotServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
+		
+		mCompatibilityManager.registerPlugin(TitleManagerCompat.class, CompatPlugin.TitleManager);
+		mCompatibilityManager.registerPlugin(TitleAPICompat.class, CompatPlugin.TitleAPI);
+		mCompatibilityManager.registerPlugin(ActionAnnouncerCompat.class, CompatPlugin.ActionAnnouncer);
+		mCompatibilityManager.registerPlugin(ActionBarAPICompat.class, CompatPlugin.ActionBarApi);
+		mCompatibilityManager.registerPlugin(ActionbarCompat.class, CompatPlugin.Actionbar);
 
 		if (!Misc.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);

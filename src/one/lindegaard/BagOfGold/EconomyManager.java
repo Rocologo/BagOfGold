@@ -12,10 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -156,7 +153,7 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public void addBagOfGoldPlayer(Player player, double amount) {
+	public boolean addBagOfGoldPlayer(Player player, double amount) {
 		boolean found = false;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
@@ -197,6 +194,7 @@ public class EconomyManager implements Listener {
 				player.getInventory().addItem(is);
 			}
 		}
+		return true;
 	}
 
 	/**
@@ -323,12 +321,10 @@ public class EconomyManager implements Listener {
 									plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
 											: Reward.getReward(is).getDisplayname(),
 									money, uuid, UUID.randomUUID(), skinuuid)));
-			if (Misc.isMC18OrNewer()) {
-				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-						+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? format(money)
-								: Reward.getReward(is).getDisplayname() + " (" + format(Misc.round(money)) + ")"));
-				item.setCustomNameVisible(true);
-			}
+			item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+					+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? format(money)
+							: Reward.getReward(is).getDisplayname() + " (" + format(Misc.round(money)) + ")"));
+			item.setCustomNameVisible(true);
 			plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)", player.getName(),
 					format(money), plugin.getConfigManager().dropMoneyOnGroundItemtype,
 					MobHunting.getInstance().getRewardManager().getDroppedMoney().size());

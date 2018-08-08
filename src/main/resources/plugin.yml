@@ -6,7 +6,7 @@ dev-url: http://dev.bukkit.org/server-mods/bagofgold/
 author: Rocologo
 depend: []
 loadbefore: [PerWorldInventory, Citizens2, Essentials, MobHunting]
-softdepend: []
+softdepend: [ActionAnnouncer, ActionBarAPI, Actionbar, TitleAPI, TitleManager, PlaceholderAPI]
 api-version: 1.13
 
 commands:
@@ -40,3 +40,14 @@ permissions:
     default: op
     children:
       bagofgold.cmd: true
+  bagofgold.money:
+    description: Allows you to drop money and give/take money to/from the players.
+    default: op
+    children:
+      bagofgold.cmd: true
+  bagofgold.convert:
+    description: Allows you to convert some data.
+    default: op
+    children:
+      bagofgold.cmd: true
+      

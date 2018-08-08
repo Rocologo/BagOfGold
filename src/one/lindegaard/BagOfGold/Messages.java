@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -24,8 +25,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
-import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
+import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
+import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
+import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
+import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 
 public class Messages {
 
@@ -340,5 +346,98 @@ public class Messages {
 		message = ChatColor.stripColor(message);
 		return message.isEmpty();
 	}
+
+	HashMap<Player, HashMap<Long, MessageQueue>> messageQueue = new HashMap<Player, HashMap<Long, MessageQueue>>();
+	HashMap<Player, BukkitTask> taskId = new HashMap<Player, BukkitTask>();
+
+	public void playerActionBarMessageQueue(Player player, String message) {
+		if (isEmpty(message))
+			return;
+
+		message = PlaceholderAPICompat.setPlaceholders(player, message);
+
+		HashMap<Long, MessageQueue> messagesToBeDisplayed = new HashMap<Long, MessageQueue>();
+		if (messageQueue.containsKey(player))
+			messagesToBeDisplayed = messageQueue.get(player);
+		messagesToBeDisplayed.put(System.currentTimeMillis() + 5000L, new MessageQueue(player, message));
+		messageQueue.put(player, messagesToBeDisplayed);
+		// debug("message=%s", message);
+		// debug("messageQueue(player).size=%s",
+		// messageQueue.get(player).size());
+
+		Runnable messageTask = new Runnable() {
+			@Override
+			public void run() {
+
+				while (!messageQueue.get(player).isEmpty()) {
+					Long key = System.currentTimeMillis() + 3600000L;
+					Iterator<Entry<Long, MessageQueue>> itr = messageQueue.get(player).entrySet().iterator();
+					while (itr.hasNext()) {
+						Entry<Long, MessageQueue> k = itr.next();
+						if (k.getValue().getPlayer().equals(player))
+							key = Math.min(key, k.getKey());
+					}
+					MessageQueue msg = messageQueue.get(player).get(key);
+					if (msg != null) {
+						playerActionBarMessageNow(msg.getPlayer(), msg.getMessage());
+						HashMap<Long, MessageQueue> msg1 = messageQueue.get(player);
+						msg1.remove(key);
+						messageQueue.put(player, msg1);
+						// wait 1.5 sec before sending next message
+						if (messageQueue.get(player).size() > 0)
+							try {
+								Thread.sleep(1500L);
+								// Thread.sleep(10000L);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+					}
+				}
+				// debug("cancel task");
+				Bukkit.getScheduler().cancelTask(taskId.get(player).getTaskId());
+				taskId.remove(player);
+			};
+		};
+
+		// debug("taskId.containsKey(player)=%s", taskId.containsKey(player));
+
+		if (!taskId.containsKey(player))
+
+			if (taskId.get(player) == null || !Bukkit.getScheduler().isCurrentlyRunning(taskId.get(player).getTaskId())
+					|| !Bukkit.getScheduler().isQueued(taskId.get(player).getTaskId())) {
+				// debug("start task");
+				taskId.put(player, Bukkit.getScheduler().runTaskAsynchronously(plugin, messageTask));
+			}
+	}
+
+	/**
+	 * Show message to the player using the ActionBar
+	 * 
+	 * @param player
+	 * @param message
+	 */
+	public void playerActionBarMessageNow(Player player, String message) {
+		if (isEmpty(message))
+			return;
+
+		message = PlaceholderAPICompat.setPlaceholders(player, message);
+
+		if (messageQueue.isEmpty()) {
+
+		}
+		if (TitleManagerCompat.isSupported()) {
+			TitleManagerCompat.setActionBar(player, message);
+		} else if (ActionbarCompat.isSupported()) {
+			ActionbarCompat.setMessage(player, message);
+		} else if (ActionAnnouncerCompat.isSupported()) {
+			ActionAnnouncerCompat.setMessage(player, message);
+		} else if (ActionBarAPICompat.isSupported()) {
+			ActionBarAPICompat.setMessage(player, message);
+		} else {
+			if (!isEmpty(message))
+				player.sendMessage(message);
+		}
+	}
+
 
 }

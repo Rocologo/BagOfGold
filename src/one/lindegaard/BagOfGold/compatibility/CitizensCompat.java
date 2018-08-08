@@ -45,7 +45,7 @@ public class CitizensCompat implements Listener {
 
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 
-			supported=true;
+			supported = true;
 		}
 	}
 
@@ -55,8 +55,7 @@ public class CitizensCompat implements Listener {
 	public void shutdown() {
 		if (supported) {
 			TraitInfo trait = TraitInfo.create(BagOfGoldBankerTrait.class).withName("BagOfGoldBanker");
-			if (Misc.isMC18OrNewer())
-				citizensAPI.getTraitFactory().deregisterTrait(trait);
+			citizensAPI.getTraitFactory().deregisterTrait(trait);
 		}
 	}
 

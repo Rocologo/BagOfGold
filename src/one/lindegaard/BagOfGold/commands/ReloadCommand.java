@@ -71,15 +71,16 @@ public class ReloadCommand implements ICommand {
 		if (plugin.getConfigManager().loadConfig()) {
 			int n = Misc.getOnlinePlayersAmount();
 			if (n > 0) {
-				plugin.getMessages().debug("Reloading %s online playerSettings from the database", n);
-				// reload player settings
-				for (Player player : Misc.getOnlinePlayers())
+				plugin.getMessages().debug("Reloading %s PlayerSettings & PlayerBalancees from the database", n);
+				for (Player player : Misc.getOnlinePlayers()){
 					plugin.getPlayerSettingsManager().load(player);
+					plugin.getPlayerBalanceManager().load(player);
+				}
 			}
 
-			// if (CitizensCompat.isSupported())
-			// CitizensCompat.loadCitizensData();
-
+			plugin.getMessages().debug("Reloading WorldGroups", n);
+			plugin.getWorldGroupManager().load();
+			
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.reload.reload-complete"));
 
