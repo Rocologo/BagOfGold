@@ -17,8 +17,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
-
 /**
  * @author Rocologo
  *

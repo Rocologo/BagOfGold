@@ -13,7 +13,6 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.placeholder.BagOfGoldPlaceholderHook;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderData;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderManager;
-import one.lindegaard.BagOfGold.util.Misc;
 
 public class PlaceholderAPICompat {
 
@@ -65,10 +64,6 @@ public class PlaceholderAPICompat {
 
 	public static HashMap<UUID, PlaceHolderData> getPlaceHolders() {
 		return mPlaceHolderManager.getPlaceHolders();
-	}
-
-	public static void shutdown() {
-		mPlaceHolderManager.shutdown();
 	}
 
 	public static String setPlaceholders(Player player, String messages_with_placeholders) {

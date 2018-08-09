@@ -46,23 +46,23 @@ public class PerWorldInventoryCompat implements Listener {
 				Bukkit.getPluginManager().registerEvents(new Listener() {
 					@EventHandler(priority = EventPriority.HIGHEST)
 					public void onInventoryChangeCompleted(InventoryLoadCompleteEvent event) {
-							plugin.getMessages().debug("onInventoryLoadCompleted");
-							plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
+						plugin.getMessages().debug("onInventoryLoadCompleted");
+						plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
 					}
 				}, plugin);
-			// TODO: place else here when the above event works
-			Bukkit.getPluginManager().registerEvents(new Listener() {
-				@EventHandler(priority = EventPriority.HIGHEST)
-				public void onInventoryLoad(InventoryLoadEvent event) {
-					Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-						@Override
-						public void run() {
-							plugin.getMessages().debug("onInventoryLoad");
-							plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
-						}
-					}, 10);
-				}
-			}, plugin);
+			else
+				Bukkit.getPluginManager().registerEvents(new Listener() {
+					@EventHandler(priority = EventPriority.HIGHEST)
+					public void onInventoryLoad(InventoryLoadEvent event) {
+						Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+							@Override
+							public void run() {
+								plugin.getMessages().debug("onInventoryLoad");
+								plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
+							}
+						}, 10);
+					}
+				}, plugin);
 
 			supported = true;
 		}

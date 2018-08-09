@@ -8,8 +8,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
-//import one.lindegaard.CustomItemsLib.Util.Misc;
-import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,7 +22,6 @@ public class CitizensCompat implements Listener {
 
 	private static boolean supported = false;
 	private static CitizensPlugin citizensAPI;
-	// public static final String MH_CITIZENS = "BG:CITIZENS";
 
 	public CitizensCompat() {
 		this.plugin = BagOfGold.getInstance();

@@ -4,14 +4,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import me.clip.placeholderapi.external.EZPlaceholderHook;
-import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.compatibility.PlaceholderAPICompat;
+import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Listener {
 	
 	public BagOfGoldPlaceholderHook(Plugin plugin) {
-		super(plugin, "mobhunting");
-		MobHunting.getInstance().getMessages().debug("PlaceHolderHook started");
+		super(plugin, "bagofgold");
+		BagOfGold.getInstance().getMessages().debug("PlaceHolderHook started");
 	}
 
 	@Override
@@ -20,22 +20,9 @@ public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Liste
 		// Remember to update the documentation when adding new placeholders
 		// https://www.spigotmc.org/wiki/mobhunting-placeholders/
 
-		// placeholder: %mobhunting_ping%
+		// placeholder: %bagofgold_ping%
 		if (identifier.equals("ping")) {
 			return "pong";
-		}
-
-		// placeholder: %mobhunting_dropped_rewards%
-		if (identifier.equals("dropped_rewards")) {
-			return String.valueOf(MobHunting.getInstance().getRewardManager().getDroppedMoney().size());
-		}
-
-		// placeholder: %mobhunting_dropped_rewards%
-		if (identifier.equals("dropped_money")) {
-			double amt = 0;
-			for (double d : MobHunting.getInstance().getRewardManager().getDroppedMoney().values())
-				amt = amt + d;
-			return MobHunting.getInstance().getRewardManager().format(amt);
 		}
 
 		// always check if the player is null for placeholders related to the
@@ -44,25 +31,14 @@ public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Liste
 			return "";
 		}
 
-		// placeholder: %mobhunting_total_kills%
-		if (identifier.equals("total_kills")) {
-			return String.valueOf(PlaceholderAPICompat.getPlaceHolders().get(player.getUniqueId()).getTotal_kills());
-		}
-
-		// placeholder: %mobhunting_total_cash%
-		if (identifier.equals("total_cash")) {
-			return MobHunting.getInstance().getRewardManager()
-					.format(PlaceholderAPICompat.getPlaceHolders().get(player.getUniqueId()).getTotal_cash());
-		}
-
-		// placeholder: %mobhunting_rank%
-		if (identifier.equals("rank")) {
-			return String.valueOf(PlaceholderAPICompat.getPlaceHolders().get(player.getUniqueId()).getRank());
-		}
-
-		// placeholder: %mobhunting_balance%
+		// placeholder: %bagofgold_balance%
 		if (identifier.equals("balance")) {
-			return String.valueOf(MobHunting.getInstance().getRewardManager().getBalance(player));
+			return Misc.format(BagOfGold.getInstance().getPlayerBalanceManager().getPlayerBalance(player).getBalance());
+		}
+
+		// placeholder: %bagofgold_bank_balance%
+		if (identifier.equals("bank_balance")) {
+			return Misc.format(BagOfGold.getInstance().getPlayerBalanceManager().getPlayerBalance(player).getBankBalance());
 		}
 
 		// anything else someone types is invalid because we never defined

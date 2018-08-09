@@ -1,9 +1,9 @@
 V2.0.1
-* Added new commands "/bag money", "/bag money drop", "/bag money give", "/bag money take" incl. permissions
-* BagOfGoldBanker code moved completely to the BagOfGold plugin
+* Added new commands "/bag money", "/bag money drop", "/bag money give", "/bag money take" incl. permissions (bagofgold.money.balance, bagofgold.money.balance.other, bagofgold.money.drop, bagofgold.money.give, bagofgold.money.take)
+* BagOfGoldBanker code moved completely to the BagOfGold plugin (/bag npc create... ,/bag npc remove ID, /bag npc sethome, /bag npc select, /bag npc tphere, /bag npc spawn, /bag npc despawn)
 * Message queues added to bagOfGold
 * Support added for TitleManager, ActionAnnouncer, ActionBarAPI, Actionbar ,TitleAPI
-* Basic support for PlaceholderAPI added
+* Support for PlaceholderAPI added. New PlaceHolders: %bagofgold_balance% and %bagofgold_bank_balance%
 * plugin.yml updated
 * Removed old MC1.7 code   
 V2.0.0 Minecraft 1.13 release

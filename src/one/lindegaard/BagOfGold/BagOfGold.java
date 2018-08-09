@@ -39,8 +39,6 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.connorlinfoot.titleapi.TitleAPI;
-
 import net.milkbowl.vault.economy.Economy;
 
 public class BagOfGold extends JavaPlugin {
