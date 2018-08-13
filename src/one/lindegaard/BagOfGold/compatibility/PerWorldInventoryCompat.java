@@ -42,15 +42,20 @@ public class PerWorldInventoryCompat implements Listener {
 			if (sync_economy)
 				pwi_sync_economy_warning();
 
-			//if (mPlugin.getDescription().getVersion().compareTo("2.1.0") >= 0)
-			//	Bukkit.getPluginManager().registerEvents(new Listener() {
-			//		@EventHandler(priority = EventPriority.HIGHEST)
-			//		public void onInventoryChangeCompleted(InventoryLoadCompleteEvent event) {
-			//			plugin.getMessages().debug("onInventoryLoadCompleted");
-			//			plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
-			//		}
-			//	}, plugin);
-			//else
+			if (mPlugin.getDescription().getVersion().compareTo("2.1.0") >= 0)
+				Bukkit.getPluginManager().registerEvents(new Listener() {
+					@EventHandler(priority = EventPriority.HIGHEST)
+					public void onInventoryChangeCompleted(InventoryLoadCompleteEvent event) {
+						Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+							@Override
+							public void run() {
+								plugin.getMessages().debug("onInventoryLoadCompleted");
+								plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
+							}
+						}, 40);
+					}
+				}, plugin);
+			else
 				Bukkit.getPluginManager().registerEvents(new Listener() {
 					@EventHandler(priority = EventPriority.HIGHEST)
 					public void onInventoryLoad(InventoryLoadEvent event) {
@@ -60,7 +65,7 @@ public class PerWorldInventoryCompat implements Listener {
 								plugin.getMessages().debug("onInventoryLoad");
 								plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
 							}
-						}, 10);
+						}, 40);
 					}
 				}, plugin);
 

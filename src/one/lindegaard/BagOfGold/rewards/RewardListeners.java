@@ -66,6 +66,10 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldChange(PlayerChangedWorldEvent event) {
+		
+		if (PerWorldInventoryCompat.isSupported())
+			return;
+
 		Player player = (Player) event.getPlayer();
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
