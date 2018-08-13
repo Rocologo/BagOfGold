@@ -25,7 +25,7 @@ public class PlayerBalanceManager implements Listener {
 
 	private BagOfGold plugin;
 	private HashMap<UUID, PlayerBalances> mBalances = new HashMap<UUID, PlayerBalances>();
-	
+
 	/**
 	 * Constructor for the PlayerBalanceManager
 	 */
@@ -60,7 +60,7 @@ public class PlayerBalanceManager implements Listener {
 				// offlinePlayer does have a balance for this
 				// worldgroup-gamemode. Create it with default values
 				// PlayerBalances ps = new PlayerBalances();
-				plugin.getMessages().debug("PlayerBlananceManager: creating new %s and %s", worldGroup,gamemode);
+				plugin.getMessages().debug("PlayerBlananceManager: creating new %s and %s", worldGroup, gamemode);
 				PlayerBalances ps = mBalances.get(offlinePlayer.getUniqueId());
 				PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 				ps.putPlayerBalance(pb);
@@ -78,7 +78,7 @@ public class PlayerBalanceManager implements Listener {
 			} catch (DataStoreException e) {
 				e.printStackTrace();
 			}
-			
+
 			if (!ps.has(worldGroup, gamemode)) {
 				setPlayerBalance(offlinePlayer, pb);
 			}
@@ -202,7 +202,8 @@ public class PlayerBalanceManager implements Listener {
 					plugin.getEconomyManager().depositPlayer(offlinePlayer,
 							plugin.getWorldGroupManager().getCurrentStartingBalance(offlinePlayer));
 				}
-				plugin.getEconomyManager().addMoneyToBalance(offlinePlayer, getPlayerBalance(offlinePlayer).getBalance());
+				if (offlinePlayer.isOnline())
+					plugin.getEconomyManager().adjustAmountInInventoryToBalance((Player) offlinePlayer);
 			}
 
 			@Override
@@ -224,7 +225,7 @@ public class PlayerBalanceManager implements Listener {
 	public boolean containsKey(final OfflinePlayer player) {
 		return mBalances.containsKey(player.getUniqueId());
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDeathEvent(PlayerDeathEvent event) {
 		Player player = event.getEntity();
