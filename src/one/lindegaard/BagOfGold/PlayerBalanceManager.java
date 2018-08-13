@@ -125,6 +125,7 @@ public class PlayerBalanceManager implements Listener {
 			mBalances.put(player.getUniqueId(), playerBalances);
 			load(player);
 		}
+		plugin.getEconomyManager().adjustAmountInInventoryToBalance(player);
 	}
 
 	/**
