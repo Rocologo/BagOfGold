@@ -202,6 +202,7 @@ public class PlayerBalanceManager implements Listener {
 					plugin.getEconomyManager().depositPlayer(offlinePlayer,
 							plugin.getWorldGroupManager().getCurrentStartingBalance(offlinePlayer));
 				}
+				plugin.getEconomyManager().addMoneyToBalance(offlinePlayer, getPlayerBalance(offlinePlayer).getBalance());
 			}
 
 			@Override
