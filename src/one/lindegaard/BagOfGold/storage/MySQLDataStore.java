@@ -173,7 +173,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		//		"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
 		//				+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE) D,MAX(BALANCE_CHANGES) E,MAX(BANK_BALANCE) F,MAX(BANK_BALANCE_CHANGES) G"
 		//				+ " from mh_Players GROUP BY UUID,A,B ON DUPLICATE KEY UPDATE BALANCE=D, BALANCE_CHANGES=E, BANK_BALANCE=F, BANK_BALANCE_CHANGES=G");
-		statement.executeUpdate("DROP TABLE mh_Players;");
+		//statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
 		connection.commit();
 	}
