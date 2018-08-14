@@ -172,9 +172,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 		statement.executeUpdate("INSERT INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
 				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
 		statement.executeUpdate(
-				"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-						+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE) D,MAX(BALANCE_CHANGES) E,MAX(BANK_BALANCE) F,MAX(BANK_BALANCE_CHANGES) G"
-						+ " from mh_Players GROUP BY UUID,A,B ON DUPLICATE KEY UPDATE BALANCE=D, BALANCE_CHANGES=E, BANK_BALANCE=F, BANK_BALANCE_CHANGES=G");
+				"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
+						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
+						+ "from mh_Players GROUP BY UUID ");
+				//"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
+				//		+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE) D,MAX(BALANCE_CHANGES) E,MAX(BANK_BALANCE) F,MAX(BANK_BALANCE_CHANGES) G"
+				//		+ " from mh_Players GROUP BY UUID,A,B ON DUPLICATE KEY UPDATE BALANCE=D, BALANCE_CHANGES=E, BANK_BALANCE=F, BANK_BALANCE_CHANGES=G");
 		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
 		connection.commit();
@@ -199,7 +202,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
 				mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
 				mInsertPlayerBalance.setDouble(7, Misc.round(playerBalance.getBankBalanceChanges()));
-				// ON DUBLICATE KEY
+				// ON DUPLICATE KEY
 				mInsertPlayerBalance.setDouble(8, Misc.round(playerBalance.getBalance()));
 				mInsertPlayerBalance.setDouble(9, Misc.round(playerBalance.getBalanceChanges()));
 				mInsertPlayerBalance.setDouble(10, Misc.round(playerBalance.getBankBalance()));
