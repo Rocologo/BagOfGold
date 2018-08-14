@@ -144,7 +144,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		// Create new empty tables if they do not exist
 		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings "//
-				+ "(UUID CHAR(40) PRIMARY KEY,"//
+				+ "(UUID CHAR(40),"//
 				+ " NAME VARCHAR(20),"//
 				+ " LAST_WORLDGRP VARCHAR(20) NOT NULL DEFAULT 'default'," //
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
