@@ -159,11 +159,12 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
 				+ " BANK_BALANCE REAL DEFAULT 0,"//
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
-				+ " UNIQUE KEY (UUID,WORLDGRP,GAMEMODE),"
+				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE),"
 				//+ " CONSTRAINT UNIQUE (UUID,WORLDGRP,GAMEMODE),"
 				+ " CONSTRAINT mh_PlayerSettings_UUID FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
 
 		create.close();
+		connection.commit();
 	}
 
 	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
