@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Locale;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,6 +13,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.PlayerBalance;
+import one.lindegaard.BagOfGold.storage.DatabaseDataStore.PreparedConnectionType;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public class MySQLDataStore extends DatabaseDataStore {
 
@@ -76,8 +80,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			break;
 		case INSERT_PLAYER_BALANCE:
 			mInsertPlayerBalance = connection.prepareStatement(
-					"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
-							+ "VALUES(?,?,?,?,?,?,?);");
+					"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
+							+ "VALUES(?,?,?,?,?,?,?)"
+							+ "ON DUBLICATE KEY UPDATE BALANCE=?, BALANCE_CHANGES=?, BANK_BALANCE,=? BANK_BALANCE_CHANGES=?;");
 			break;
 		}
 
@@ -173,5 +178,92 @@ public class MySQLDataStore extends DatabaseDataStore {
 		connection.commit();
 	}
 
+	/**
+	 * insertPlayerBalance to database
+	 */
+	@Override
+	public void insertPlayerBalance(PlayerBalance playerBalance) throws DataStoreException {
+		Connection mConnection;
+		try {
+			mConnection = setupConnection();
+			try {
+				BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: insert to db=%s",
+						playerBalance.toString());
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
+				mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
+				mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
+				mInsertPlayerBalance.setInt(3, 	playerBalance.getGamemode().getValue());
+				mInsertPlayerBalance.setDouble(4, Misc.round(playerBalance.getBalance()));
+				mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
+				mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
+				mInsertPlayerBalance.setDouble(7, Misc.round(playerBalance.getBankBalanceChanges()));
+				// ON DUBLICATE KEY
+				mInsertPlayerBalance.setDouble(8, Misc.round(playerBalance.getBalance()));
+				mInsertPlayerBalance.setDouble(9, Misc.round(playerBalance.getBalanceChanges()));
+				mInsertPlayerBalance.setDouble(10, Misc.round(playerBalance.getBankBalance()));
+				mInsertPlayerBalance.setDouble(11, Misc.round(playerBalance.getBankBalanceChanges()));
+				mInsertPlayerBalance.addBatch();
+				mInsertPlayerBalance.executeBatch();
+				mInsertPlayerBalance.close();
+				mConnection.commit();
+				mConnection.close();
+			} catch (SQLException e) {
+				rollback(mConnection);
+				mConnection.close();
+				throw new DataStoreException(e);
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	@Override
+	public void savePlayerBalances(Set<PlayerBalance> playerBalanceSet, boolean cleanCache) throws DataStoreException {
+		Connection mConnection;
+		try {
+			mConnection = setupConnection();
+			try {
+				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
+				for (PlayerBalance playerBalance : playerBalanceSet) {
+					BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: savedata: %s",
+							playerBalance.toString());
+					mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
+					mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
+					mInsertPlayerBalance.setInt(3, playerBalance.getGamemode().getValue());
+					mInsertPlayerBalance.setDouble(4, Misc.round(playerBalance.getBalance()));
+					mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
+					mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
+					mInsertPlayerBalance.setDouble(7, Misc.round(playerBalance.getBankBalanceChanges()));
+					//ON DUBLICATE KEY
+					mInsertPlayerBalance.setDouble(8, Misc.round(playerBalance.getBalance()));
+					mInsertPlayerBalance.setDouble(9, Misc.round(playerBalance.getBalanceChanges()));
+					mInsertPlayerBalance.setDouble(10, Misc.round(playerBalance.getBankBalance()));
+					mInsertPlayerBalance.setDouble(11, Misc.round(playerBalance.getBankBalanceChanges()));
+
+					mInsertPlayerBalance.addBatch();
+				}
+				mInsertPlayerBalance.executeBatch();
+				mInsertPlayerBalance.close();
+				mConnection.commit();
+				mConnection.close();
+
+				plugin.getMessages().debug("PlayerBalances saved.");
+
+				if (cleanCache)
+					for (PlayerBalance playerData : playerBalanceSet) {
+						if (plugin.getPlayerBalanceManager().containsKey(playerData.getPlayer())
+								&& !playerData.getPlayer().isOnline())
+							plugin.getPlayerBalanceManager().removePlayerBalance(playerData.getPlayer());
+					}
+
+			} catch (SQLException e) {
+				rollback(mConnection);
+				mConnection.close();
+				throw new DataStoreException(e);
+			}
+		} catch (SQLException e1) {
+			throw new DataStoreException(e1);
+		}
+	}
 
 }

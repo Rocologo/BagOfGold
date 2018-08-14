@@ -60,6 +60,9 @@ public class PlayerBalanceManager implements Listener {
 				// offlinePlayer does have a balance for this
 				// worldgroup-gamemode. Create it with default values
 				// PlayerBalances ps = new PlayerBalances();
+				
+				//TODO: hvorfor bliver denne kaldt ind i mellem???
+				
 				plugin.getMessages().debug("PlayerBlananceManager: creating new %s and %s", worldGroup, gamemode);
 				PlayerBalances ps = mBalances.get(offlinePlayer.getUniqueId());
 				PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
@@ -72,6 +75,7 @@ public class PlayerBalanceManager implements Listener {
 			PlayerBalances ps = new PlayerBalances();
 			PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 			try {
+				plugin.getMessages().debug("PlayerBlananceManager: loading %s balance (%s,%s)", offlinePlayer.getName(),worldGroup,gamemode);
 				ps = plugin.getStoreManager().loadPlayerBalances(offlinePlayer);
 			} catch (UserNotFoundException e) {
 				//
@@ -80,6 +84,7 @@ public class PlayerBalanceManager implements Listener {
 			}
 
 			if (!ps.has(worldGroup, gamemode)) {
+				plugin.getMessages().debug("PlayerBlananceManager: setPlayerBalances:%s",pb.toString()); 
 				setPlayerBalance(offlinePlayer, pb);
 			}
 			mBalances.put(offlinePlayer.getUniqueId(), ps);
