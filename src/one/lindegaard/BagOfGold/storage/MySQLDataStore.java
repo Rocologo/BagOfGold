@@ -81,8 +81,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 		case INSERT_PLAYER_BALANCE:
 			mInsertPlayerBalance = connection.prepareStatement(
 					"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
-							+ "VALUES(?,?,?,?,?,?,?)"
-							+ "ON DUPLICATE KEY UPDATE BALANCE=?, BALANCE_CHANGES=?, BANK_BALANCE,=? BANK_BALANCE_CHANGES=?;");
+							+ "VALUES(?,?,?,?,?,?,?) "
+							+ "ON DUPLICATE KEY UPDATE BALANCE=?, BALANCE_CHANGES=?, BANK_BALANCE=?, BANK_BALANCE_CHANGES=?;");
 			break;
 		}
 
