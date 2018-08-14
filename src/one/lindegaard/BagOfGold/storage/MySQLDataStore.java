@@ -149,7 +149,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " LAST_WORLDGRP VARCHAR(20) NOT NULL DEFAULT 'default'," //
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
-				+ " UNIQUE KEY (UUID))");
+				+ " PRIMARY KEY (UUID))");
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance "//
 				+ "(UUID CHAR(40),"//
@@ -159,8 +159,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
 				+ " BANK_BALANCE REAL DEFAULT 0,"//
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
-				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE),"
-				//+ " CONSTRAINT UNIQUE (UUID,WORLDGRP,GAMEMODE),"
+				+ " UNIQUE KEY (UUID,WORLDGRP,GAMEMODE),"
+				+ " CONSTRAINT UNIQUE (UUID,WORLDGRP,GAMEMODE),"
 				+ " CONSTRAINT mh_PlayerSettings_UUID FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
 
 		create.close();
