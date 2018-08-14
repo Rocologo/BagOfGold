@@ -82,7 +82,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 			mInsertPlayerBalance = connection.prepareStatement(
 					"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
 							+ "VALUES(?,?,?,?,?,?,?)"
-							+ "ON DUBLICATE KEY UPDATE BALANCE=?, BALANCE_CHANGES=?, BANK_BALANCE,=? BANK_BALANCE_CHANGES=?;");
+							+ "ON DUPLICATE KEY UPDATE BALANCE=?, BALANCE_CHANGES=?, BANK_BALANCE,=? BANK_BALANCE_CHANGES=?;");
 			break;
 		}
 
