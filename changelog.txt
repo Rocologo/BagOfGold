@@ -1,5 +1,6 @@
 V2.0.3
 * Delayed loading the balance 2 sec. for better result if the server is slow. (The balance MUST be loaded after PerWorldInventory has loaded the inventory).
+* Fixed MySQL bug
 V2.0.2
 * Fixed bug intruduced in V2.0.1. Its strongly recommended not to use 2.0.1 
 V2.0.1

@@ -109,12 +109,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		// Create new empty tables if they do not exist
 		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings" //
-				+ "(UUID TEXT," //
+				+ "(UUID TEXT PRIMARY KEY," //
 				+ " NAME TEXT, " //
 				+ " LAST_WORLDGRP NOT NULL DEFAULT 'default'," //
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + "," //
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," //
-				+ " PRIMARY KEY(UUID))");
+				+ " UNIQUE(UUID))");
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance" //
 				+ "(UUID TEXT," //
@@ -124,7 +124,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " BALANCE_CHANGES REAL DEFAULT 0," //
 				+ " BANK_BALANCE REAL DEFAULT 0," //
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
-				+ " PRIMARY KEY(UUID, WORLDGRP, GAMEMODE),"
+				+ " UNIQUE(UUID, WORLDGRP, GAMEMODE),"
 				+ " FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE)");
 
 		create.close();

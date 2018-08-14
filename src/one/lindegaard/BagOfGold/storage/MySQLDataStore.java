@@ -144,22 +144,22 @@ public class MySQLDataStore extends DatabaseDataStore {
 		// Create new empty tables if they do not exist
 		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings "//
-				+ "(UUID CHAR(40) ,"//
+				+ "(UUID CHAR(40) PRIMARY KEY,"//
 				+ " NAME VARCHAR(20),"//
 				+ " LAST_WORLDGRP VARCHAR(20) NOT NULL DEFAULT 'default'," //
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
-				+ " PRIMARY KEY (UUID))");
+				+ " UNIQUE KEY (UUID))");
 
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance "//
-				+ "(UUID CHAR(40) ,"//
+				+ "(UUID CHAR(40),"//
 				+ " WORLDGRP VARCHAR(20)," //
 				+ " GAMEMODE INTEGER NOT NULL DEFAULT 0," //
 				+ " BALANCE REAL DEFAULT 0,"//
 				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
 				+ " BANK_BALANCE REAL DEFAULT 0,"//
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
-				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE),"
+				+ " UNIQUE KEY (UUID,WORLDGRP,GAMEMODE),"
 				+ " CONSTRAINT mh_PlayerSettings_UUID FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
 
 		create.close();
