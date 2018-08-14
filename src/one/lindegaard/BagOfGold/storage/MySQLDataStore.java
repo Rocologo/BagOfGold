@@ -171,8 +171,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
 		statement.executeUpdate(
 				"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
-						+ "from mh_Players GROUP BY UUID ");
+						+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
+						+ "from mh_Players GROUP BY UUID,A,B ");
 		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
 		connection.commit();
