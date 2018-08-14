@@ -75,8 +75,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 							+ "VALUES(?,?,?,?,?);");
 			break;
 		case GET_PLAYER_BALANCE:
-			mGetPlayerBalance = connection
-					.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=?;");
+			mGetPlayerBalance = connection.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=?;");
 			break;
 		case INSERT_PLAYER_BALANCE:
 			mInsertPlayerBalance = connection.prepareStatement(
@@ -109,7 +108,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 			console.sendMessage(ChatColor.GREEN + "[BagOfGold] Done.");
 
 		} catch (SQLException e) {
-			console.sendMessage(ChatColor.RED + "[BagOfGold] Something went wrong when converting database tables to UTF8MB4.");
+			console.sendMessage(
+					ChatColor.RED + "[BagOfGold] Something went wrong when converting database tables to UTF8MB4.");
 			e.printStackTrace();
 		}
 
@@ -159,21 +159,22 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
 				+ " BANK_BALANCE REAL DEFAULT 0,"//
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
-				+ " UNIQUE KEY (UUID,WORLDGRP,GAMEMODE),"
+				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE),"
+				+ " CONSTRAINT UNIQUE (UUID,WORLDGRP,GAMEMODE),"
 				+ " CONSTRAINT mh_PlayerSettings_UUID FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
 
 		create.close();
 	}
-	
+
 	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
 		statement.executeUpdate("INSERT INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
 				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
-		//statement.executeUpdate(
-		//		"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-		//				+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE) D,MAX(BALANCE_CHANGES) E,MAX(BANK_BALANCE) F,MAX(BANK_BALANCE_CHANGES) G"
-		//				+ " from mh_Players GROUP BY UUID,A,B ON DUPLICATE KEY UPDATE BALANCE=D, BALANCE_CHANGES=E, BANK_BALANCE=F, BANK_BALANCE_CHANGES=G");
-		//statement.executeUpdate("DROP TABLE mh_Players;");
+		statement.executeUpdate(
+				"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
+						+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE) D,MAX(BALANCE_CHANGES) E,MAX(BANK_BALANCE) F,MAX(BANK_BALANCE_CHANGES) G"
+						+ " from mh_Players GROUP BY UUID,A,B ON DUPLICATE KEY UPDATE BALANCE=D, BALANCE_CHANGES=E, BANK_BALANCE=F, BANK_BALANCE_CHANGES=G");
+		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
 		connection.commit();
 	}
@@ -192,7 +193,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
 				mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
 				mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
-				mInsertPlayerBalance.setInt(3, 	playerBalance.getGamemode().getValue());
+				mInsertPlayerBalance.setInt(3, playerBalance.getGamemode().getValue());
 				mInsertPlayerBalance.setDouble(4, Misc.round(playerBalance.getBalance()));
 				mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
 				mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
@@ -234,7 +235,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 					mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
 					mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
 					mInsertPlayerBalance.setDouble(7, Misc.round(playerBalance.getBankBalanceChanges()));
-					//ON DUBLICATE KEY
+					// ON DUBLICATE KEY
 					mInsertPlayerBalance.setDouble(8, Misc.round(playerBalance.getBalance()));
 					mInsertPlayerBalance.setDouble(9, Misc.round(playerBalance.getBalanceChanges()));
 					mInsertPlayerBalance.setDouble(10, Misc.round(playerBalance.getBankBalance()));
