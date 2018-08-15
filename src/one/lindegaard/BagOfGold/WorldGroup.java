@@ -33,8 +33,10 @@ public class WorldGroup {
 	public WorldGroup(BagOfGold plugin) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), "worldgroups.yml");
-		if (file.exists())
+		if (file.exists()) {
 			load();
+			save();
+		}
 		if (worldGroups.isEmpty()) {
 			/**
 			 * if (PerWorldInventoryCompat.isSupported()) { YamlConfiguration
