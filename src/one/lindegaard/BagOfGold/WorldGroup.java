@@ -156,7 +156,7 @@ public class WorldGroup {
 			for (String wg : groups) {
 				section.set(wg + ".worlds", worldGroups.get(wg));
 				section.set(wg + ".default-gamemode", defaultGameMode.get(wg).toString());
-				section.set(wg + ".starting-blance", startBalance.get(wg));
+				section.set(wg + ".starting-balance", startBalance.get(wg));
 			}
 			config.save(file);
 		} catch (IOException e) {
