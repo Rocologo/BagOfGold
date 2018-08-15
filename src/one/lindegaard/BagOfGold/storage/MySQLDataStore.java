@@ -143,6 +143,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 		// Create new empty tables if they do not exist
 		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
+		plugin.getMessages().debug("MySQLDatastore: create mh_PlayerSettings");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings "//
 				+ "(UUID CHAR(40),"//
 				+ " NAME VARCHAR(20),"//
@@ -150,36 +151,63 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
 				+ " PRIMARY KEY (UUID))");
+		connection.commit();
+		
+		//Delete FOREIGN KEY IF EXISTS
+		try {
+			create.executeUpdate("ALTER TABLE mh_Balance DROP FOREIGN KEY mh_PlayerSettings_UUID");
+			plugin.getMessages().debug("MySQLDatastore: FOREIGN KEY mh_PlayerSettings_UUID on mh_Balance deleted");
+		} catch (Exception e) {
+			plugin.getMessages().debug("MySQLDatastore: FOREIGN KEY mh_PlayerSettings_UUID on mh_Balance does not exists");
+		}
 
+		try {
+			create.executeUpdate("ALTER TABLE mh_Balance DROP FOREIGN KEY mh_PlayerSettings_UUID_V2");
+			plugin.getMessages().debug("MySQLDatastore: FOREIGN KEY mh_PlayerSettings_UUID_V2 on mh_Balance deleted");
+		} catch (Exception e) {
+			plugin.getMessages().debug("MySQLDatastore: FOREIGN KEY mh_PlayerSettings_UUID_V2 on mh_Balance does not exists");
+		}
+
+		try {
+			create.executeUpdate("ALTER TABLE mh_Balance DROP FOREIGN KEY mh_PlayerSettings_UNIQUE_V2");
+			plugin.getMessages().debug("MySQLDatastore: FOREIGN KEY mh_PlayerSettings_UNIQUE_V2 on mh_Balance deleted");
+		} catch (Exception e) {
+			plugin.getMessages().debug("MySQLDatastore: FOREIGN KEY mh_PlayerSettings_UNIQUE_V2 on mh_Balance does not exists");
+		}
+
+		plugin.getMessages().debug("MySQLDatastore: create mh_Balance");
 		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance "//
 				+ "(UUID CHAR(40),"//
-				+ " WORLDGRP VARCHAR(20)," //
+				+ " WORLDGRP VARCHAR(20) NOT NULL DEFAULT 'default'," //
 				+ " GAMEMODE INTEGER NOT NULL DEFAULT 0," //
-				+ " BALANCE REAL DEFAULT 0,"//
-				+ " BALANCE_CHANGES REAL DEFAULT 0,"//
-				+ " BANK_BALANCE REAL DEFAULT 0,"//
-				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0,"//
+				+ " BALANCE REAL NOT NULL DEFAULT 0,"//
+				+ " BALANCE_CHANGES REAL NOT NULL DEFAULT 0,"//
+				+ " BANK_BALANCE REAL NOT NULL DEFAULT 0,"//
+				+ " BANK_BALANCE_CHANGES REAL NOT NULL DEFAULT 0,"//
 				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE),"
-				//+ " CONSTRAINT UNIQUE (UUID,WORLDGRP,GAMEMODE),"
-				+ " CONSTRAINT mh_PlayerSettings_UUID FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
-
+				+ " CONSTRAINT mh_PlayerSettings_UNIQUE_V2 UNIQUE (UUID,WORLDGRP,GAMEMODE),"
+				+ " CONSTRAINT mh_PlayerSettings_UUID_V2 FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
+		
 		create.close();
+		plugin.getMessages().debug("MySQLDatastore: commit transactions");
 		connection.commit();
 	}
 
 	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
+		plugin.getMessages().debug("MySQLDatastore: insert old player settings into mh_PlayerSettings");
 		statement.executeUpdate("INSERT INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
 				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
+		connection.commit();
+		
+		plugin.getMessages().debug("MySQLDatastore: insert old balance data into mh_Balance");
 		statement.executeUpdate(
 				"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
-						+ "from mh_Players GROUP BY UUID ");
-				//"INSERT INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-				//		+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE) D,MAX(BALANCE_CHANGES) E,MAX(BANK_BALANCE) F,MAX(BANK_BALANCE_CHANGES) G"
-				//		+ " from mh_Players GROUP BY UUID,A,B ON DUPLICATE KEY UPDATE BALANCE=D, BALANCE_CHANGES=E, BANK_BALANCE=F, BANK_BALANCE_CHANGES=G");
+						+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
+						+ "from mh_Players GROUP BY UUID,A,B ");
 		statement.executeUpdate("DROP TABLE mh_Players;");
 		statement.close();
+		plugin.getMessages().debug("MySQLDatastore: commit transactions");
 		connection.commit();
 	}
 

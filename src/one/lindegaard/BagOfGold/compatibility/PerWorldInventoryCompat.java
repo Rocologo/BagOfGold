@@ -52,7 +52,7 @@ public class PerWorldInventoryCompat implements Listener {
 			//					plugin.getMessages().debug("onInventoryLoadCompleted");
 			//					plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
 			//				}
-			//			}, 40);
+			//			}, 20);
 			//		}
 			//	}, plugin);
 			//else
@@ -65,7 +65,7 @@ public class PerWorldInventoryCompat implements Listener {
 								plugin.getMessages().debug("onInventoryLoad");
 								plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
 							}
-						}, 40);
+						}, 20);
 					}
 				}, plugin);
 
