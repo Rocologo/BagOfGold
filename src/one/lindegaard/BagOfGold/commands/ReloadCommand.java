@@ -69,6 +69,8 @@ public class ReloadCommand implements ICommand {
 		plugin.setMessages(new Messages(plugin));
 
 		if (plugin.getConfigManager().loadConfig()) {
+			plugin.getWorldGroupManager().load();
+			
 			int n = Misc.getOnlinePlayersAmount();
 			if (n > 0) {
 				plugin.getMessages().debug("Reloading %s PlayerSettings & PlayerBalancees from the database", n);
@@ -78,9 +80,6 @@ public class ReloadCommand implements ICommand {
 				}
 			}
 
-			plugin.getMessages().debug("Reloading WorldGroups", n);
-			plugin.getWorldGroupManager().load();
-			
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.reload.reload-complete"));
 
