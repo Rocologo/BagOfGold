@@ -206,7 +206,7 @@ public class CustomItems {
 			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
 
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		
+
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
 		GameProfile profile = new GameProfile(uuid, offlinePlayer.getName());
@@ -231,12 +231,17 @@ public class CustomItems {
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + offlinePlayer.getName(),
 				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
 				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:" + uuid)));
+		ChatColor color = ChatColor.GOLD;
+		try {
+			color = ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor.toUpperCase());
+		} catch (Exception e) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+					+ "drop-money-on-ground-text-color in your config.yml cant be read.");
+		}
 		if (money == 0)
-			skullMeta.setDisplayName(
-					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + offlinePlayer.getName());
+			skullMeta.setDisplayName(color + offlinePlayer.getName());
 		else
-			skullMeta.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-					+ offlinePlayer.getName() + " (" + Misc.format(money) + ")");
+			skullMeta.setDisplayName(color + offlinePlayer.getName() + " (" + Misc.format(money) + ")");
 		if (money == 0) {
 			skullMeta.setDisplayName(offlinePlayer.getName());
 			skull.setAmount(amount);
@@ -295,7 +300,7 @@ public class CustomItems {
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
 			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
-		
+
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;
 
@@ -323,12 +328,17 @@ public class CustomItems {
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
 				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + mPlayerUUID,
 				money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid, "Hidden:" + skinUuid)));
+		ChatColor color = ChatColor.GOLD;
+		try {
+			color = ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor.toUpperCase());
+		} catch (Exception e) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+					+ "drop-money-on-ground-text-color in your config.yml cant be read.");
+		}
 		if (money == 0)
-			skullMeta.setDisplayName(
-					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + mDisplayName);
+			skullMeta.setDisplayName(color + mDisplayName);
 		else
-			skullMeta.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-					+ mDisplayName + " (" + Misc.format(money) + ")");
+			skullMeta.setDisplayName(color + mDisplayName + " (" + Misc.format(money) + ")");
 
 		skull.setItemMeta(skullMeta);
 		return skull;

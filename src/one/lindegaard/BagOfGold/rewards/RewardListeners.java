@@ -8,8 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.world.WorldEvent;
-import org.bukkit.event.world.WorldLoadEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
@@ -28,12 +26,12 @@ public class RewardListeners implements Listener {
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
-		if (player.isOnline() && player.isValid() && ps.getBalance() + ps.getBalanceChanges() > 0) {
+		if (player.isOnline() && player.isValid()) {
 			plugin.getMessages().debug(
 					"RewardListener: InventoryCloseEvent adjusting balance to Amount of BagOfGold in Inventory: %s",
 					ps.toString());
 			plugin.getEconomyManager().adjustBalanceToamountInInventory(player);
-		}
+		} 
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

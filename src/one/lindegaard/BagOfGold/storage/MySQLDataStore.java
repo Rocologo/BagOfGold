@@ -14,7 +14,6 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.BagOfGold.storage.DatabaseDataStore.PreparedConnectionType;
 import one.lindegaard.BagOfGold.util.Misc;
 
 public class MySQLDataStore extends DatabaseDataStore {
