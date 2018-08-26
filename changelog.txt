@@ -1,3 +1,6 @@
+V2.0.5
+* Support for SpigotMC 1.13.1 added
+* "MobHunting Reward" Lore added to MobHunting Rewards 
 V2.0.4
 * Fixed balance problem when moving ALL money to a chest!
 V2.0.3

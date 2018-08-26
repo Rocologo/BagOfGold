@@ -87,3 +87,5 @@ bagofgold.commands.update.help=Kérjük, írd be a '/bagofgold update' a frissí
 bagofgold.commands.version.description=A BagOfGold verziószámának megjelenítése.
 bagofgold.commands.version.currentversion=Ez a kiszolgáló fut 'BagOfGold ${currentversion}'.
 bagofgold.commands.version.newversion=Verzió ${newversion} elérhető. Használd a '/bagofgold update' a plugin frissítéséhez.
+
+mobhunting.reward.name=MobHunting Reward

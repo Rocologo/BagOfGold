@@ -87,3 +87,5 @@ bagofgold.moneygain=你获得了 ${prize}!
 bagofgold.moneygain.drop=${killed} 下降 ${prize} 在地上!
 bagofgold.moneylost=你丢失了 ${prize}!
 bagofgold.moneypickup=You found ${money}
+
+mobhunting.reward.name=MobHunting Reward

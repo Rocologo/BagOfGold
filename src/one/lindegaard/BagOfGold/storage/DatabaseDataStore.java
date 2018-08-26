@@ -11,7 +11,6 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.PlayerSettings;
-import one.lindegaard.BagOfGold.util.Misc;
 
 public abstract class DatabaseDataStore implements IDataStore {
 

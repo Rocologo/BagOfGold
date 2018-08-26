@@ -18,6 +18,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 
+import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.mobs.MinecraftMob;
 
 public class Reward {
@@ -105,11 +106,22 @@ public class Reward {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
-				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
-				"Hidden:" + uuid.toString(), // type
-				money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique id
-				"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()))); // skin
+		if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
+			return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
+					"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
+					"Hidden:" + uuid.toString(), // type
+					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
+																				// id
+					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()))); // skin
+		else
+			return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
+					"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
+					"Hidden:" + uuid.toString(), // type
+					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
+																				// id
+					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()),
+					MobHunting.getAPI().getMessages().getString("mobhunting.reward.name"))); // skin
+
 	}
 
 	/**
