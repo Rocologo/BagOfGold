@@ -46,6 +46,7 @@ public class PlayerBalanceManager implements Listener {
 		} else {
 			String worldGroup = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer)
 					.getLastKnownWorldGrp();
+			plugin.getMessages().debug("PlayerBalanceManager: LastKnownWorldgroup=%s",worldGroup);
 			GameMode gamemode = plugin.getWorldGroupManager().getDefaultGameMode();
 			return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 		}
@@ -63,7 +64,7 @@ public class PlayerBalanceManager implements Listener {
 				
 				//TODO: hvorfor bliver denne kaldt ind i mellem???
 				
-				plugin.getMessages().debug("PlayerBlananceManager: creating new %s and %s", worldGroup, gamemode);
+				plugin.getMessages().debug("PlayerBalanceManager: creating new %s and %s", worldGroup, gamemode);
 				PlayerBalances ps = mBalances.get(offlinePlayer.getUniqueId());
 				PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 				ps.putPlayerBalance(pb);
@@ -75,20 +76,22 @@ public class PlayerBalanceManager implements Listener {
 			PlayerBalances ps = new PlayerBalances();
 			PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
 			try {
-				plugin.getMessages().debug("PlayerBlananceManager: loading %s balance (%s,%s)", offlinePlayer.getName(),worldGroup,gamemode);
+				plugin.getMessages().debug("PlayerBalanceManager: loading %s balance (%s,%s) from DB", offlinePlayer.getName(),worldGroup,gamemode);
 				ps = plugin.getStoreManager().loadPlayerBalances(offlinePlayer);
 			} catch (UserNotFoundException e) {
-				//
+				//TODO: DOES this work??????????????????????????????????????????????????++
+				plugin.getMessages().debug("PlayerBalanceManager: UserNotFoundException - setPlayerBalances:%s",pb.toString()); 
+				setPlayerBalance(offlinePlayer, pb);
 			} catch (DataStoreException e) {
 				e.printStackTrace();
 			}
 
 			if (!ps.has(worldGroup, gamemode)) {
-				plugin.getMessages().debug("PlayerBlananceManager: setPlayerBalances:%s",pb.toString()); 
+				plugin.getMessages().debug("PlayerBalanceManager: setPlayerBalances (1):%s",pb.toString()); 
 				setPlayerBalance(offlinePlayer, pb);
 			}
 			mBalances.put(offlinePlayer.getUniqueId(), ps);
-			pb = ps.getPlayerBalance(worldGroup, gamemode);
+			plugin.getMessages().debug("PlayerBalanceManager: setPlayerBalances (2):%s",pb.toString()); 
 			return pb;
 		}
 	}
@@ -96,6 +99,7 @@ public class PlayerBalanceManager implements Listener {
 	// TODO: remove parameter offlinePlayer
 	public void setPlayerBalance(OfflinePlayer offlinePlayer, PlayerBalance playerBalance) {
 		if (!mBalances.containsKey(offlinePlayer.getUniqueId())) {
+			plugin.getMessages().debug("PlayerBalanceManager - insert PlayerBlance to Memory");
 			PlayerBalances ps = new PlayerBalances();
 			ps.putPlayerBalance(playerBalance);
 			mBalances.put(offlinePlayer.getUniqueId(), ps);

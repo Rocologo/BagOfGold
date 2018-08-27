@@ -62,23 +62,38 @@ public class MoneyCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] {
-				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
-						+ " drop <amount>" + ChatColor.WHITE + " - to drop <amount> of "
-						+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim() + ", where you look.",
+		return new String[] { ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias
+				+ ChatColor.GREEN + " drop <amount>" + ChatColor.WHITE + " - to drop <amount> of "
+				+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim() + ", where you look.",
+
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " drop <playername> " + ChatColor.YELLOW + "<amount>" + ChatColor.WHITE
 						+ " - to drop <amount> of " + plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
 						+ " 3 block in front of the <player>.",
+
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
 						+ " - to give the player a " + plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
 						+ " in his inventory.",
+
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " take <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
 						+ " - to take <amount> gold from the "
 						+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
-						+ " in the players inventory" };
+						+ " in the players inventory",
+
+				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " balance [optional playername]" + ChatColor.WHITE + " - to get your balance of "
+						+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+
+				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " bankbalance [optional playername]" + ChatColor.WHITE + " - to get your bankbalance of "
+						+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+
+				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " pay <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+						+ " - to give the player a " + plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
+						+ " in his inventory." };
 	}
 
 	@Override
@@ -143,7 +158,7 @@ public class MoneyCommand implements ICommand {
 
 				if (other)
 					plugin.getMessages().senderSendMessage(sender,
-							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.balance",
+							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.balance.other",
 									"playername", offlinePlayer.getName(), "money",
 									plugin.getEconomyManager().format(balance), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
@@ -152,6 +167,61 @@ public class MoneyCommand implements ICommand {
 					plugin.getMessages().senderSendMessage(sender,
 							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.balance",
 									"playername", "You", "money", plugin.getEconomyManager().format(balance),
+									"rewardname",
+									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+			} else {
+				plugin.getMessages().senderSendMessage(sender,
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
+								"bagofgold.money.balance", "command", "money"));
+			}
+			return true;
+
+		} else if (args.length == 0 || (args.length >= 1
+				&& (args[0].equalsIgnoreCase("bankbalance") || args[0].equalsIgnoreCase("bankbal")))) {
+			// mh money
+			// mh money bankbalance
+			// mh money bankbalance <player>
+			// show the total amount of "bag of gold" in the players inventory.
+
+			if (sender.hasPermission("bagofgold.money.bankbalance") || sender.hasPermission("bagofgold.money.*")) {
+				OfflinePlayer offlinePlayer = null;
+				boolean other = false;
+				if (args.length <= 1) {
+					if (!(sender instanceof Player)) {
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.base.noconsole", "command", "'money bankbalance'"));
+						return true;
+					} else
+						offlinePlayer = (Player) sender;
+
+				} else {
+					if (sender.hasPermission("bagofgold.money.bankbalance.other")
+							|| sender.hasPermission("bagofgold.money.*")) {
+						offlinePlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
+						other = true;
+					} else {
+						plugin.getMessages().senderSendMessage(sender,
+								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission",
+										"perm", "bagofgold.money.bankbalance.other", "command",
+										"money bankbalance <playername>"));
+						return true;
+					}
+				}
+
+				double bankBalance = plugin.getEconomyManager().bankBalance(offlinePlayer.getUniqueId().toString()).amount;
+
+				if (other)
+					plugin.getMessages().senderSendMessage(sender,
+							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.bankbalance.other",
+									"playername", offlinePlayer.getName(), "money",
+									plugin.getEconomyManager().format(bankBalance), "rewardname",
+									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+				else
+					plugin.getMessages().senderSendMessage(sender,
+							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.bankbalance",
+									"playername", "You", "money", plugin.getEconomyManager().format(bankBalance),
 									"rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
@@ -246,6 +316,46 @@ public class MoneyCommand implements ICommand {
 				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
 								"bagofgold.money.give", "command", "money give"));
+			}
+			return true;
+		}
+
+		else if (args.length >= 2 && args[0].equalsIgnoreCase("pay")) {
+			// /mh money pay <player> <amount>
+			if (sender.hasPermission("bagofgold.money.pay") || sender.hasPermission("bagofgold.money.*")) {
+
+				if (!(sender instanceof Player)) {
+					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+							.getString("bagofgold.commands.base.noconsole", "command", "'money pay'"));
+					return true;
+				}
+
+				OfflinePlayer offlinePlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
+				if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
+					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+							.getString("bagofgold.commands.base.playername-missing", "player", args[1]));
+					return true;
+				}
+
+				Player fromPlayer = (Player) sender;
+				if (args[2].matches("\\d+(\\.\\d+)?")) {
+					double amount = Misc.round(Double.valueOf(args[2]));
+					if (!plugin.getEconomyManager().has(fromPlayer, amount)) {
+						plugin.getMessages().senderSendMessage(fromPlayer,
+								plugin.getMessages().getString("bagofgold.commands.money.not-enough-money"));
+						return true;
+					}
+					plugin.getMessages().debug("BagOfGold supported, using depositPlayer");
+					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
+					plugin.getEconomyManager().withdrawPlayer(fromPlayer, amount);
+				} else {
+					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
+				}
+			} else {
+				plugin.getMessages().senderSendMessage(sender,
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
+								"bagofgold.money.pay", "command", "money pay"));
 			}
 			return true;
 		}
@@ -399,6 +509,9 @@ public class MoneyCommand implements ICommand {
 			items.add("drop");
 			items.add("give");
 			items.add("take");
+			items.add("balance");
+			items.add("bankbalance");
+			items.add("pay");
 		} else if (args.length == 2)
 			for (Player player : Bukkit.getOnlinePlayers())
 				items.add(player.getName());

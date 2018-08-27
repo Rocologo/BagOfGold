@@ -181,7 +181,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	@Override
-	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws DataStoreException {
+	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws UserNotFoundException, DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
@@ -290,7 +290,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	@Override
-	public PlayerBalances loadPlayerBalances(OfflinePlayer offlinePlayer) throws DataStoreException {
+	public PlayerBalances loadPlayerBalances(OfflinePlayer offlinePlayer) throws UserNotFoundException, DataStoreException {
 		Connection mConnection;
 		PlayerBalances playerBalances = new PlayerBalances();
 		try {

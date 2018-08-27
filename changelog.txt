@@ -1,3 +1,6 @@
+V2.0.6
+* Added new commands "/bag money pay", /bag money bankbalance", /bag money bankbalance <playername>"
+* Fix bug where new players throw an error in the console and invalidated the balance. 
 V2.0.5
 * Support for SpigotMC 1.13.1 added
 * "MobHunting Reward" Lore added to MobHunting Rewards 
@@ -18,7 +21,7 @@ V2.0.1
 * plugin.yml updated
 * Removed old MC1.7 code   
 V2.0.0 Minecraft 1.13 release
-* This version is ONLY for Mincraft 1.13.
+* This version is ONLY for Minecraft 1.13.
 * Real multi-world support added. 
 * New database layout implemented, inclusive automatic conversion.
 V1.1.7

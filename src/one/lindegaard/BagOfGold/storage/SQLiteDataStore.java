@@ -12,7 +12,6 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.BagOfGold.storage.DatabaseDataStore.PreparedConnectionType;
 import one.lindegaard.BagOfGold.util.Misc;
 
 public class SQLiteDataStore extends DatabaseDataStore {

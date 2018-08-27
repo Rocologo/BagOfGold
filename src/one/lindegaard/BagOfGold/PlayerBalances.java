@@ -6,13 +6,13 @@ import java.util.Map.Entry;
 import org.bukkit.GameMode;
 
 public class PlayerBalances {
-	
+
 	private HashMap<String, PlayerBalance> playerBalances = new HashMap<String, PlayerBalance>();
 
-	public HashMap<String, PlayerBalance> getPlayerBalances(){
+	public HashMap<String, PlayerBalance> getPlayerBalances() {
 		return playerBalances;
 	}
-	
+
 	public PlayerBalance getPlayerBalance(String worldGroup, GameMode gamemode) {
 		return playerBalances.get(String.valueOf(gamemode) + worldGroup);
 	}
@@ -28,11 +28,11 @@ public class PlayerBalances {
 	public boolean isEmpty() {
 		return playerBalances.isEmpty();
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		StringBuilder str = new StringBuilder().append("PlayerBalances: ");
-		for (Entry<String, PlayerBalance> pb: playerBalances.entrySet()){
-			str.append("\n"+pb.getValue().toString());
+		for (Entry<String, PlayerBalance> pb : playerBalances.entrySet()) {
+			str.append("\n" + pb.getValue().toString());
 		}
 		str.append("}");
 		return str.toString();

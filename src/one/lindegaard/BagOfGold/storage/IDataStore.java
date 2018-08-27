@@ -34,7 +34,7 @@ public interface IDataStore {
 	 * @throws DataStoreException
 	 * @throws SQLException
 	 */
-	PlayerSettings loadPlayerSettings(OfflinePlayer player) throws DataStoreException;
+	PlayerSettings loadPlayerSettings(OfflinePlayer player) throws UserNotFoundException, DataStoreException;
 
 	/**
 	 * Update the players Settings in the Database
@@ -60,7 +60,7 @@ public interface IDataStore {
 	 * @throws DataStoreException
 	 * @throws SQLException
 	 */
-	PlayerBalances loadPlayerBalances(OfflinePlayer player) throws DataStoreException;
+	PlayerBalances loadPlayerBalances(OfflinePlayer player) throws UserNotFoundException, DataStoreException;
 
 	/**
 	 * Save the players Balances in the Database
