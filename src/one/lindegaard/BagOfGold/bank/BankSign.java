@@ -2,7 +2,6 @@ package one.lindegaard.BagOfGold.bank;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -18,7 +17,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
-//import one.lindegaard.CustomItemsLib.Util.Misc;
 
 public class BankSign implements Listener {
 
@@ -109,6 +107,7 @@ public class BankSign implements Listener {
 					if (sign.getLine(2).isEmpty() || sign.getLine(2)
 							.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line3.everything"))) {
 						moneyOnSign = plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()).balance;
+						
 					} else {
 						try {
 							moneyOnSign = Double.valueOf(sign.getLine(2));
@@ -120,8 +119,10 @@ public class BankSign implements Listener {
 							return;
 						}
 					}
-					if (plugin.getEconomyManager()
-							.bankBalance(player.getUniqueId().toString()).balance >= moneyOnSign) {
+					plugin.getMessages().debug("BankSign: moneyOnSign=%s, bankBal=%s",moneyOnSign, plugin.getEconomyManager()
+							.bankBalance(player.getUniqueId().toString()).balance);
+					if (Misc.round(plugin.getEconomyManager()
+							.bankBalance(player.getUniqueId().toString()).balance) >= Misc.round(moneyOnSign)) {
 
 						plugin.getEconomyManager().bankWithdraw(player.getUniqueId().toString(), moneyOnSign);
 						plugin.getEconomyManager().depositPlayer(player, moneyOnSign);

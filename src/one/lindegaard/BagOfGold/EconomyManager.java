@@ -126,9 +126,8 @@ public class EconomyManager implements Listener {
 				return new EconomyResponse(remove, 0, ResponseType.FAILURE,
 						plugin.getMessages().getString("bagofgold.commands.money.not-enough-money", "money", remove));
 			}
-		} else {
+		} else
 			return new EconomyResponse(0, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
-		}
 	}
 
 	/**
@@ -342,12 +341,9 @@ public class EconomyManager implements Listener {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse bankDeposit(String account, double amount) {
-		OfflinePlayer offlinePlayer;
-		if (Misc.isUUID(account))
-			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
-		else
-			offlinePlayer = Bukkit.getOfflinePlayer(account);
-		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+				: Bukkit.getOfflinePlayer(account);
+		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() + amount));
@@ -360,8 +356,8 @@ public class EconomyManager implements Listener {
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
 					null);
-		}
-		return new EconomyResponse(0, 0, ResponseType.FAILURE, "Player has no bank account");
+		} else
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, "Player has no bank account");
 	}
 
 	/**
@@ -375,12 +371,9 @@ public class EconomyManager implements Listener {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse bankWithdraw(String account, double amount) {
-		OfflinePlayer offlinePlayer;
-		if (Misc.isUUID(account))
-			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
-		else
-			offlinePlayer = Bukkit.getOfflinePlayer(account);
-		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+				: Bukkit.getOfflinePlayer(account);
+		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() - amount));
@@ -393,9 +386,8 @@ public class EconomyManager implements Listener {
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
 					null);
-		}
-		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
-
+		} else
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, account + " has no bank account");
 	}
 
 	/**
@@ -408,22 +400,18 @@ public class EconomyManager implements Listener {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse bankBalance(String account) {
-		OfflinePlayer offlinePlayer;
-		if (Misc.isUUID(account))
-			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
-		else
-			offlinePlayer = Bukkit.getOfflinePlayer(account);
-		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+				: Bukkit.getOfflinePlayer(account);
+		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
 				ps.setBankBalanceChanges(0);
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			}
-			return new EconomyResponse(0,
-					ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
-		}
-		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
+			return new EconomyResponse(0, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
+		} else
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, account + " has no bank account");
 	}
 
 	/**
@@ -435,19 +423,16 @@ public class EconomyManager implements Listener {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse deleteBank(String account) {
-		OfflinePlayer offlinePlayer;
-		if (Misc.isUUID(account))
-			offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(account));
-		else
-			offlinePlayer = Bukkit.getOfflinePlayer(account);
-		if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+				: Bukkit.getOfflinePlayer(account);
+		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			ps.setBankBalance(0);
 			ps.setBankBalanceChanges(0);
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Bank account deleted");
-		}
-		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
+		} else
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, account + " has no bank account");
 	}
 
 	/**

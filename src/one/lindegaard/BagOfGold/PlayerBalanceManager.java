@@ -212,10 +212,10 @@ public class PlayerBalanceManager implements Listener {
 					}
 				}
 
-				if (!offlinePlayer.hasPlayedBefore()) {
-					plugin.getEconomyManager().depositPlayer(offlinePlayer,
-							plugin.getWorldGroupManager().getCurrentStartingBalance(offlinePlayer));
-				}
+				//if (!offlinePlayer.hasPlayedBefore()) {
+				//	plugin.getEconomyManager().depositPlayer(offlinePlayer,
+				//			plugin.getWorldGroupManager().getCurrentStartingBalance(offlinePlayer));
+				//}
 				if (offlinePlayer.isOnline())
 					plugin.getEconomyManager().adjustAmountInInventoryToBalance((Player) offlinePlayer);
 			}
