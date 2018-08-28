@@ -209,7 +209,7 @@ public class MoneyCommand implements ICommand {
 					}
 				}
 
-				double bankBalance = plugin.getEconomyManager().bankBalance(offlinePlayer.getUniqueId().toString()).amount;
+				double bankBalance = plugin.getEconomyManager().bankBalance(offlinePlayer.getUniqueId().toString()).balance;
 
 				if (other)
 					plugin.getMessages().senderSendMessage(sender,
@@ -342,7 +342,7 @@ public class MoneyCommand implements ICommand {
 					double amount = Misc.round(Double.valueOf(args[2]));
 					if (!plugin.getEconomyManager().has(fromPlayer, amount)) {
 						plugin.getMessages().senderSendMessage(fromPlayer,
-								plugin.getMessages().getString("bagofgold.commands.money.not-enough-money"));
+								plugin.getMessages().getString("bagofgold.commands.money.not-enough-money","money",args[2]));
 						return true;
 					}
 					plugin.getMessages().debug("BagOfGold supported, using depositPlayer");

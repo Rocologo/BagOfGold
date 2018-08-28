@@ -418,12 +418,12 @@ public class EconomyManager implements Listener {
 			if (offlinePlayer.isOnline()) {
 				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
 				ps.setBankBalanceChanges(0);
+				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			}
-			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			return new EconomyResponse(0, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
+			return new EconomyResponse(0,
+					ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
 		}
 		return new EconomyResponse(0, 0, ResponseType.FAILURE, offlinePlayer.getName() + " has no bank account");
-
 	}
 
 	/**
