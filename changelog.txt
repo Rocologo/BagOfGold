@@ -1,6 +1,8 @@
 V2.0.6
 * Added new commands "/bag money pay", /bag money bankbalance", /bag money bankbalance <playername>"
-* Fix bug where new players throw an error in the console and invalidated the balance. 
+* Fix bug where new players throw an error in the console and invalidated the balance.
+* Fixed BankSigns not working for player first time players
+* Fixed double starting balance for first time players  
 V2.0.5
 * Support for SpigotMC 1.13.1 added
 * "MobHunting Reward" Lore added to MobHunting Rewards 

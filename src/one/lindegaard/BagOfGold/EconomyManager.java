@@ -75,7 +75,7 @@ public class EconomyManager implements Listener {
 			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(amount),
 					offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			if (offlinePlayer.isOnline())
+			if (offlinePlayer.isOnline() && ((Player)offlinePlayer).isValid())
 				adjustAmountInInventoryToBalance((Player) offlinePlayer);
 			return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 					ResponseType.SUCCESS, null);
@@ -109,7 +109,7 @@ public class EconomyManager implements Listener {
 				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", format(amount),
 						offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-				if (offlinePlayer.isOnline())
+				if (offlinePlayer.isOnline()&& ((Player)offlinePlayer).isValid())
 					adjustAmountInInventoryToBalance((Player) offlinePlayer);
 				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 						ResponseType.SUCCESS, null);
@@ -497,9 +497,6 @@ public class EconomyManager implements Listener {
 					amountInInventory = amountInInventory + reward.getMoney();
 			}
 		}
-		// plugin.getMessages().debug("EconomyManager: amountInInventory=%s
-		// (size=%s) (%s)", amountInInventory,
-		// player.getInventory().getSize(), player.getGameMode());
 		return amountInInventory;
 	}
 
@@ -543,7 +540,6 @@ public class EconomyManager implements Listener {
 		double amountInInventory = getAmountInInventory(player);
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		if (ps != null) {
-			plugin.getMessages().debug("EconomyManager: ps=%s", ps.toString());
 			double diff = (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()))
 					- Misc.round(amountInInventory);
 			if (Misc.round(diff) != 0) {

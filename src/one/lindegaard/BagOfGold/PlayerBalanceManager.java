@@ -46,7 +46,6 @@ public class PlayerBalanceManager implements Listener {
 		} else {
 			String worldGroup = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer)
 					.getLastKnownWorldGrp();
-			plugin.getMessages().debug("PlayerBalanceManager: LastKnownWorldgroup=%s", worldGroup);
 			GameMode gamemode = plugin.getWorldGroupManager().getDefaultGameMode();
 			return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 		}
@@ -58,12 +57,6 @@ public class PlayerBalanceManager implements Listener {
 			if (mBalances.get(offlinePlayer.getUniqueId()).has(worldGroup, gamemode)) {
 				return mBalances.get(offlinePlayer.getUniqueId()).getPlayerBalance(worldGroup, gamemode);
 			} else {
-				// offlinePlayer does have a balance for this
-				// worldgroup-gamemode. Create it with default values
-				// PlayerBalances ps = new PlayerBalances();
-
-				// TODO: hvorfor bliver denne kaldt ind i mellem???
-
 				plugin.getMessages().debug("PlayerBalanceManager: creating new %s and %s", worldGroup, gamemode);
 				PlayerBalances ps = mBalances.get(offlinePlayer.getUniqueId());
 				PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
@@ -81,21 +74,17 @@ public class PlayerBalanceManager implements Listener {
 				ps = plugin.getStoreManager().loadPlayerBalances(offlinePlayer);
 				pb = ps.getPlayerBalance(worldGroup, gamemode);
 			} catch (UserNotFoundException e) {
-				// TODO: DOES this
-				// work??????????????????????????????????????????????????++
 				plugin.getMessages().debug("PlayerBalanceManager: UserNotFoundException - setPlayerBalances:%s",
 						pb.toString());
 				setPlayerBalance(offlinePlayer, pb);
 			} catch (DataStoreException e) {
 				e.printStackTrace();
 			}
-
 			if (!ps.has(worldGroup, gamemode)) {
-				plugin.getMessages().debug("PlayerBalanceManager: setPlayerBalances (1):%s", pb.toString());
+				plugin.getMessages().debug("PlayerBalanceManager: creating new balance:%s", pb.toString());
 				setPlayerBalance(offlinePlayer, pb);
 			}
 			mBalances.put(offlinePlayer.getUniqueId(), ps);
-			plugin.getMessages().debug("PlayerBalanceManager: setPlayerBalances (2):%s", pb.toString());
 			return pb;
 		}
 	}
@@ -138,7 +127,6 @@ public class PlayerBalanceManager implements Listener {
 			mBalances.put(player.getUniqueId(), playerBalances);
 			load(player);
 		}
-		plugin.getEconomyManager().adjustAmountInInventoryToBalance(player);
 	}
 
 	/**
@@ -194,36 +182,34 @@ public class PlayerBalanceManager implements Listener {
 				}
 				mBalances.put(offlinePlayer.getUniqueId(), ps);
 
-				if (offlinePlayer.isOnline()) {
-					double amountInInventory = plugin.getEconomyManager().getAmountInInventory((Player) offlinePlayer);
-					PlayerBalance pb = getPlayerBalance(offlinePlayer);
-					if (Misc.round(amountInInventory) != Misc.round(pb.getBalance())
-							+ Misc.round(pb.getBalanceChanges())) {
-						double change = pb.getBalanceChanges();
-						plugin.getMessages().debug("Balance was changed while %s was offline. New balance is %s.",
-								offlinePlayer.getName(), pb.getBalance() + change);
-						pb.setBalance(pb.getBalance() + change);
-						pb.setBalanceChanges(0);
-						setPlayerBalance(offlinePlayer, pb);
-						if (change > 0)
-							plugin.getEconomyManager().addBagOfGoldPlayer((Player) offlinePlayer, change);
-						else
-							plugin.getEconomyManager().removeBagOfGoldPlayer((Player) offlinePlayer, change);
+				Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+					@Override
+					public void run() {
+						if (offlinePlayer.isOnline() && ((Player) offlinePlayer).isValid()) {
+							double amountInInventory = plugin.getEconomyManager()
+									.getAmountInInventory((Player) offlinePlayer);
+							PlayerBalance pb = getPlayerBalance(offlinePlayer);
+							if (Misc.round(amountInInventory) != Misc.round(pb.getBalance())
+									+ Misc.round(pb.getBalanceChanges())) {
+								double change = pb.getBalanceChanges();
+								plugin.getMessages().debug(
+										"Balance was changed while %s was offline. New balance is %s.",
+										offlinePlayer.getName(), pb.getBalance() + change);
+								pb.setBalance(pb.getBalance() + change);
+								pb.setBalanceChanges(0);
+								setPlayerBalance(offlinePlayer, pb);
+								plugin.getEconomyManager().adjustAmountInInventoryToBalance((Player) offlinePlayer);
+							}
+						}
 					}
-				}
+				}, 40L);
 
-				//if (!offlinePlayer.hasPlayedBefore()) {
-				//	plugin.getEconomyManager().depositPlayer(offlinePlayer,
-				//			plugin.getWorldGroupManager().getCurrentStartingBalance(offlinePlayer));
-				//}
-				if (offlinePlayer.isOnline())
-					plugin.getEconomyManager().adjustAmountInInventoryToBalance((Player) offlinePlayer);
 			}
 
 			@Override
 			public void onError(Throwable error) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[BagOfGold][ERROR] " + offlinePlayer.getName()
-						+ " is new, creating user in database.");
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[BagOfGold][ERROR] Could not load "
+						+ offlinePlayer.getName() + "'s balance from the database.");
 				mBalances.put(offlinePlayer.getUniqueId(), new PlayerBalances());
 			}
 

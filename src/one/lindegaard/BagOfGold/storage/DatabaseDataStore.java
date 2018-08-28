@@ -181,7 +181,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	@Override
-	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer) throws UserNotFoundException, DataStoreException {
+	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer)
+			throws UserNotFoundException, DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
@@ -290,7 +291,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * 
 	 */
 	@Override
-	public PlayerBalances loadPlayerBalances(OfflinePlayer offlinePlayer) throws UserNotFoundException, DataStoreException {
+	public PlayerBalances loadPlayerBalances(OfflinePlayer offlinePlayer)
+			throws UserNotFoundException, DataStoreException {
 		Connection mConnection;
 		PlayerBalances playerBalances = new PlayerBalances();
 		try {
@@ -312,16 +314,10 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		if (!playerBalances.getPlayerBalances().isEmpty()) {
-			plugin.getMessages().debug("DatabaseDataStore - %s found in database:%s", offlinePlayer.getName(),
-					playerBalances.toString());
+		if (!playerBalances.getPlayerBalances().isEmpty())
 			return playerBalances;
-		} else {
-			plugin.getMessages().debug("DatabaseDataStore: player not found in DB");
+		else
 			throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
-		}
-
 	}
-
 
 }
