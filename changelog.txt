@@ -1,5 +1,5 @@
 V2.0.6
-* Added new commands "/bag money pay", /bag money bankbalance", /bag money bankbalance <playername>"
+* Added new commands "/bag money pay"(bagofgold.money.pay), /bag money bankbalance"(bagofgold.money.bankbalance), /bag money bankbalance <playername>"(bagofgold.money.bankbalance.other)
 * Fix bug where new players throw an error in the console and invalidated the balance.
 * Fixed BankSigns not working for player first time players
 * Fixed double starting balance for first time players  
