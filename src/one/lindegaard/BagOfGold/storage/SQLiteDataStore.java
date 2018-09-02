@@ -65,6 +65,15 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					"INSERT OR REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES) "
 							+ "VALUES(?,?,?,?,?,?,?);");
 			break;
+		case GET_TOP25_BALANCE:
+			mTop25Balances = connection.prepareStatement("select UUID,WORLDGRP,GAMEMODE, BALANCE, BALANCE_CHANGES, BANK_BALANCE,BANK_BALANCE_CHANGES, "
+					+"sum(BALANCE + BALANCE_CHANGES + BANK_BALANCE + BANK_BALANCE_CHANGES) AS 'TOTAL'"
+					+"FROM mh_Balance "//
+					+"WHERE (WORLDGRP=? OR ?='') AND (GAMEMODE=? OR ?=-1) "//
+					+"GROUP BY UUID "//
+					+"ORDER BY TOTAL DESC "//
+					+"LIMIT ?");//
+			break;
 		}
 	}
 

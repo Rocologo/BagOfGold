@@ -2,9 +2,12 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
@@ -87,5 +90,7 @@ public interface IDataStore {
 	void databaseConvertToUtf8(String database_name) throws DataStoreException;
 
 	void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException;
+	
+	List<PlayerBalance> loadTop25(int i, String worldGroup, int gamemode);
 	
 }

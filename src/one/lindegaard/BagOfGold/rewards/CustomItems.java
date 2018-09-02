@@ -146,7 +146,7 @@ public class CustomItems {
 				if (sk != null) {
 					String[] skinOnline = sk.getSkin(player);
 					if (skinOnline != null && !skinOnline.equals(skinCache)) {
-						plugin.getMessages().debug("%s has changed skin, updating MobHunting Skin cache");
+						plugin.getMessages().debug("%s has changed skin, updating MobHunting Skin cache",player.getName());
 						ps.setTexture(skinOnline[0]);
 						ps.setSignature(skinOnline[1]);
 						MobHunting.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);

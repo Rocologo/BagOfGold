@@ -1,6 +1,7 @@
 package one.lindegaard.BagOfGold.storage;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -16,6 +17,7 @@ import one.lindegaard.BagOfGold.storage.asynch.IDataStoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerBalanceRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerSettingsRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.StoreTask;
+import one.lindegaard.BagOfGold.storage.asynch.Top25BalanceRetrieverTask;
 
 public class DataStoreManager {
 
@@ -90,6 +92,13 @@ public class DataStoreManager {
 			mWaiting.add(new PlayerBalance(offlinePlayer, ps));
 		}
 	}
+	
+	public void requestTop25PlayerBalances(int n, String worldGroup, int gamemode, IDataCallback<List<PlayerBalance>> callback) {
+		mTaskThread.addTask(new Top25BalanceRetrieverTask
+				(n,worldGroup,gamemode, mWaiting), callback);
+	}
+
+	
 
 	// *****************************************************************************
 	// Common

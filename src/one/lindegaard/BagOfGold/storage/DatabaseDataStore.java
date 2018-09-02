@@ -1,7 +1,10 @@
 package one.lindegaard.BagOfGold.storage;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -39,6 +42,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * Args: player uuid
 	 */
 	protected PreparedStatement mInsertPlayerSettings;
+	
+	/**
+	 *  Args n Top of records.
+	 */
+	protected PreparedStatement mTop25Balances;
 
 	/**
 	 * Args: player uuid,worldgrp,gamemode
@@ -76,7 +84,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		GET_PLAYER_UUID, GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE
+		GET_PLAYER_UUID, GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE, GET_TOP25_BALANCE
 	};
 
 	/**
@@ -319,5 +327,36 @@ public abstract class DatabaseDataStore implements IDataStore {
 		else
 			throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
 	}
+	
+	@Override
+	public List<PlayerBalance> loadTop25(int n, String worldgroup, int gamemode) {
+		Connection mConnection;
+		List<PlayerBalance> playerBalances = new ArrayList<PlayerBalance>();
+		try {
+			mConnection = setupConnection();
+			openPreparedStatements(mConnection, PreparedConnectionType.GET_TOP25_BALANCE);
+			mTop25Balances.setString(1, worldgroup);
+			mTop25Balances.setString(2, worldgroup);
+			mTop25Balances.setInt(3, gamemode);
+			mTop25Balances.setInt(4, gamemode);
+			mTop25Balances.setInt(5, n);
+			
+			ResultSet result = mTop25Balances.executeQuery();
+			while (result.next()) {
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("UUID")));
+				PlayerBalance ps = new PlayerBalance(offlinePlayer, result.getString("WORLDGRP"),
+						GameMode.getByValue(result.getInt("GAMEMODE")), result.getDouble("BALANCE")
+						, result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"), result.getDouble("BANK_BALANCE_CHANGES"));
+				playerBalances.add(ps);
+			}
+			result.close();
+			mTop25Balances.close();
+			mConnection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return playerBalances;
+	}
+
 
 }

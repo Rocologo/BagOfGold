@@ -1,12 +1,15 @@
 package one.lindegaard.BagOfGold;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,12 +17,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
+import one.lindegaard.BagOfGold.rewards.CustomItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
-import one.lindegaard.MobHunting.util.Misc;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public class PlayerBalanceManager implements Listener {
 
@@ -216,6 +223,22 @@ public class PlayerBalanceManager implements Listener {
 		});
 	}
 
+	public void loadTop25(final CommandSender sender, final int n, final String worldGroup, final int gamemode) {
+		plugin.getDataStoreManager().requestTop25PlayerBalances(n, worldGroup, gamemode,
+				new IDataCallback<List<PlayerBalance>>() {
+
+					@Override
+					public void onCompleted(List<PlayerBalance> playerBalances) {
+						showTopPlayers(sender, playerBalances);
+					}
+
+					@Override
+					public void onError(Throwable error) {
+
+					}
+				});
+	}
+
 	/**
 	 * Test if PlayerSettings contains data for Player
 	 * 
@@ -234,6 +257,71 @@ public class PlayerBalanceManager implements Listener {
 		ps.setBalanceChanges(0);
 		setPlayerBalance(player, ps);
 		plugin.getMessages().debug("PlayerBalancManager: player died balance=0");
+	}
+
+	private HashMap<CommandSender, Inventory> inventoryMap = new HashMap<CommandSender, Inventory>();
+
+	public void showTopPlayers(CommandSender sender, List<PlayerBalance> playerBalances) {
+		if (sender instanceof Player) {
+			if (!playerBalances.isEmpty()) {
+				CustomItems customItems = new CustomItems(plugin);
+				Inventory inventory = Bukkit.createInventory(null, 54,
+						ChatColor.BLUE + "" + ChatColor.BOLD + "TOP players");
+				int n = 0;
+				for (PlayerBalance playerBalance : playerBalances) {
+					addInventoryDetails(
+							customItems.getPlayerHead(playerBalance.getPlayer().getUniqueId(), 1,
+									playerBalance.getBalance() + playerBalance.getBalanceChanges()
+											+ playerBalance.getBankBalance() + playerBalance.getBankBalanceChanges()),
+							inventory, n, ChatColor.GREEN + playerBalance.getPlayer().getName(),
+							new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
+									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+											+ plugin.getMessages().getString("bagofgold.commands.money.top", "total",
+													playerBalance.getBalance() + playerBalance.getBalanceChanges()
+															+ playerBalance.getBankBalance()
+															+ playerBalance.getBankBalanceChanges(),
+													"rewardname",
+													plugin.getConfigManager().dropMoneyOnGroundSkullRewardName) });
+					if (n < 53)
+						n++;
+				}
+				inventoryMap.put((Player) sender, inventory);
+				((Player) sender).openInventory(inventoryMap.get(sender));
+			}
+		} else {
+			sender.sendMessage("[BagOgGold] You cant use this command in the console");
+		}
+	}
+
+	public static void addInventoryDetails(ItemStack itemStack, Inventory inv, int Slot, String name, String[] lores) {
+		final int max = 40;
+		ItemMeta meta = itemStack.getItemMeta();
+		meta.setDisplayName(name);
+		ArrayList<String> lore = new ArrayList<String>();
+		for (int n = 0; n < lores.length; n = n + 2) {
+			String color = lores[n];
+			String line, rest = lores[n + 1];
+			while (!rest.isEmpty()) {
+				if (rest.length() < max) {
+					lore.add(color + rest);
+					break;
+				} else {
+					int splitPos = rest.substring(0, max).lastIndexOf(" ");
+					if (splitPos != -1) {
+						line = rest.substring(0, splitPos);
+						rest = rest.substring(splitPos + 1);
+					} else {
+						line = rest.substring(0, max);
+						rest = rest.substring(max);
+					}
+					lore.add(color + line);
+				}
+			}
+		}
+		meta.setLore(lore);
+		itemStack.setItemMeta(meta);
+
+		inv.setItem(Slot, itemStack);
 	}
 
 }

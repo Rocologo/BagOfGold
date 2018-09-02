@@ -3,6 +3,7 @@ package one.lindegaard.BagOfGold.commands;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.Reward;
+import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
@@ -93,7 +94,10 @@ public class MoneyCommand implements ICommand {
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " pay <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
 						+ " - to give the player a " + plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
-						+ " in his inventory." };
+						+ " ein his inventory.",
+
+				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN + " top"
+						+ ChatColor.YELLOW + " <amount>" + ChatColor.WHITE + " - to show top 25 players." };
 	}
 
 	@Override
@@ -121,6 +125,27 @@ public class MoneyCommand implements ICommand {
 			// Show help
 			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))
 				return false;
+
+			// Top 25 players
+			else if (args[0].equalsIgnoreCase("top")) {
+				if (sender.hasPermission("bagofgold.money.top") || sender.hasPermission("bagofgold.money.*")) {
+					Player player = (Player) sender;
+					List<PlayerBalance> playerBalances = new ArrayList<PlayerBalance>();
+					String worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(player);
+					int gamemode = plugin.getWorldGroupManager().getCurrentGameMode(player).getValue();
+					playerBalances = plugin.getStoreManager().loadTop25(25, worldGroup, gamemode);
+					for (PlayerBalance pb : playerBalances) {
+						plugin.getMessages().debug("Top25: %s Total=%s", pb.getPlayer().getName(), pb.getBalance()
+								+ pb.getBalanceChanges() + pb.getBankBalance() + pb.getBankBalanceChanges());
+					}
+					plugin.getPlayerBalanceManager().showTopPlayers(sender, playerBalances);
+				} else {
+					plugin.getMessages().senderSendMessage(sender,
+							ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission",
+									"perm", "bagofgold.money.top", "command", "money top"));
+				}
+				return true;
+			}
 		}
 
 		if (args.length == 0
@@ -209,13 +234,14 @@ public class MoneyCommand implements ICommand {
 					}
 				}
 
-				double bankBalance = plugin.getEconomyManager().bankBalance(offlinePlayer.getUniqueId().toString()).balance;
+				double bankBalance = plugin.getEconomyManager()
+						.bankBalance(offlinePlayer.getUniqueId().toString()).balance;
 
 				if (other)
 					plugin.getMessages().senderSendMessage(sender,
-							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.bankbalance.other",
-									"playername", offlinePlayer.getName(), "money",
-									plugin.getEconomyManager().format(bankBalance), "rewardname",
+							ChatColor.GREEN + plugin.getMessages().getString(
+									"bagofgold.commands.money.bankbalance.other", "playername", offlinePlayer.getName(),
+									"money", plugin.getEconomyManager().format(bankBalance), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 				else
@@ -341,8 +367,8 @@ public class MoneyCommand implements ICommand {
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
 					if (!plugin.getEconomyManager().has(fromPlayer, amount)) {
-						plugin.getMessages().senderSendMessage(fromPlayer,
-								plugin.getMessages().getString("bagofgold.commands.money.not-enough-money","money",args[2]));
+						plugin.getMessages().senderSendMessage(fromPlayer, plugin.getMessages()
+								.getString("bagofgold.commands.money.not-enough-money", "money", args[2]));
 						return true;
 					}
 					plugin.getMessages().debug("BagOfGold supported, using depositPlayer");
@@ -512,6 +538,7 @@ public class MoneyCommand implements ICommand {
 			items.add("balance");
 			items.add("bankbalance");
 			items.add("pay");
+			items.add("Top");
 		} else if (args.length == 2)
 			for (Player player : Bukkit.getOnlinePlayers())
 				items.add(player.getName());
