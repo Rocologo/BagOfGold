@@ -231,9 +231,7 @@ public class EconomyManager implements Listener {
 			}
 
 		}
-
 		return taken;
-
 	}
 
 	public void setBagOfGoldPlayer(Player offlinePlayer, double amount) {

@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold.rewards;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -37,11 +38,19 @@ public class RewardListeners implements Listener {
 		Player player = (Player) event.getPlayer();
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		if (player.isOnline() && player.isValid()) {
-			plugin.getMessages().debug(
-					"RewardListener: InventoryCloseEvent adjusting balance to Amount of BagOfGold in Inventory: %s",
-					ps.toString());
-			plugin.getEconomyManager().adjustBalanceToamountInInventory(player);
-		} 
+			if (player.getGameMode() == GameMode.SURVIVAL) {
+				plugin.getMessages().debug(
+						"RewardListener: InventoryCloseEvent adjusting balance to Amount of BagOfGold in Inventory: %s",
+						ps.toString());
+
+				plugin.getEconomyManager().adjustBalanceToamountInInventory(player);
+			} else {
+				plugin.getMessages().debug(
+						"RewardListener: InventoryCloseEvent adjusting Amount of BagOfGold in Inventory To Balance: %s",
+						ps.toString());
+				plugin.getEconomyManager().adjustAmountInInventoryToBalance(player);
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -74,7 +83,7 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldChange(PlayerChangedWorldEvent event) {
-		
+
 		if (PerWorldInventoryCompat.isSupported())
 			return;
 
@@ -92,26 +101,28 @@ public class RewardListeners implements Listener {
 				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
 				plugin.getEconomyManager().getBalance(player));
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
-		
+
 		if (event.isCancelled())
 			return;
 
-		if (event.getRightClicked().getLocation()==null)
+		if (event.getRightClicked().getLocation() == null)
 			return;
-		
+
 		Player player = event.getPlayer();
 
-		if (event.getRightClicked().getType()==EntityType.ITEM_FRAME && Reward.isReward(player.getInventory().getItemInMainHand())){
-			Reward reward=Reward.getReward(player.getInventory().getItemInMainHand());
-			if (reward.getMoney()!=0){
+		if (event.getRightClicked().getType() == EntityType.ITEM_FRAME
+				&& Reward.isReward(player.getInventory().getItemInMainHand())) {
+			Reward reward = Reward.getReward(player.getInventory().getItemInMainHand());
+			if (reward.getMoney() != 0) {
 				plugin.getMessages().debug("%s placed a BagOfGod in an ItemFrame", player.getName());
 				plugin.getEconomyManager().removeMoneyFromBalance(player, reward.getMoney());
 				plugin.getMessages().playerActionBarMessageQueue(player,
 						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-								+ reward.getDisplayname()+plugin.getMessages().getString("bagofgold.moneydrop","money",Misc.round(reward.getMoney())));
+								+ reward.getDisplayname() + plugin.getMessages().getString("bagofgold.moneydrop",
+										"money", Misc.round(reward.getMoney())));
 			}
 		}
 	}
