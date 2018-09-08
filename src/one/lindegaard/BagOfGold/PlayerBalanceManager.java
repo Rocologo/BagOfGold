@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
@@ -322,6 +323,14 @@ public class PlayerBalanceManager implements Listener {
 		itemStack.setItemMeta(meta);
 
 		inv.setItem(Slot, itemStack);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	public void onInventoryClick(InventoryClickEvent event) {
+		if (ChatColor.stripColor(event.getInventory().getName()).startsWith("TOP players")) {
+			event.setCancelled(true);
+			event.getWhoClicked().closeInventory();
+		}
 	}
 
 }
