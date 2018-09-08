@@ -3,7 +3,6 @@ package one.lindegaard.BagOfGold.commands;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.Reward;
-import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
@@ -133,11 +132,7 @@ public class MoneyCommand implements ICommand {
 					List<PlayerBalance> playerBalances = new ArrayList<PlayerBalance>();
 					String worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(player);
 					int gamemode = plugin.getWorldGroupManager().getCurrentGameMode(player).getValue();
-					playerBalances = plugin.getStoreManager().loadTop25(25, worldGroup, gamemode);
-					for (PlayerBalance pb : playerBalances) {
-						plugin.getMessages().debug("Top25: %s Total=%s", pb.getPlayer().getName(), pb.getBalance()
-								+ pb.getBalanceChanges() + pb.getBankBalance() + pb.getBankBalanceChanges());
-					}
+					playerBalances = plugin.getStoreManager().loadTop54(54, worldGroup, gamemode);
 					plugin.getPlayerBalanceManager().showTopPlayers(sender, playerBalances);
 				} else {
 					plugin.getMessages().senderSendMessage(sender,

@@ -224,8 +224,8 @@ public class PlayerBalanceManager implements Listener {
 		});
 	}
 
-	public void loadTop25(final CommandSender sender, final int n, final String worldGroup, final int gamemode) {
-		plugin.getDataStoreManager().requestTop25PlayerBalances(n, worldGroup, gamemode,
+	public void loadTop54(final CommandSender sender, final int n, final String worldGroup, final int gamemode) {
+		plugin.getDataStoreManager().requestTop54PlayerBalances(n, worldGroup, gamemode,
 				new IDataCallback<List<PlayerBalance>>() {
 
 					@Override
@@ -324,7 +324,7 @@ public class PlayerBalanceManager implements Listener {
 
 		inv.setItem(Slot, itemStack);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if (ChatColor.stripColor(event.getInventory().getName()).startsWith("TOP players")) {

@@ -8,20 +8,18 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 
-
-public class Top25BalanceRetrieverTask implements IDataStoreTask<List<PlayerBalance>> {
+public class Top54BalanceRetrieverTask implements IDataStoreTask<List<PlayerBalance>> {
 	private int mCount;
 	private String mWorldGroup;
 	private int mGamemode;
 	private HashSet<Object> mWaiting;
 
-	public Top25BalanceRetrieverTask(int count, String worldGroup,int  mGamemode, HashSet<Object> waiting) {
-		mCount=count;
-		mWorldGroup=worldGroup;
+	public Top54BalanceRetrieverTask(int count, String worldGroup, int mGamemode, HashSet<Object> waiting) {
+		mCount = count;
+		mWorldGroup = worldGroup;
 		mWaiting = waiting;
 	}
 
-	
 	private void updateUsingCache(List<PlayerBalance> stats) {
 		for (Object obj : mWaiting) {
 			if (obj instanceof PlayerBalance) {
@@ -34,7 +32,7 @@ public class Top25BalanceRetrieverTask implements IDataStoreTask<List<PlayerBala
 					PlayerBalance stat = it.next();
 					if (cached.getPlayer().getUniqueId().equals(stat.getPlayer().getUniqueId())
 							&& cached.getWorldGroup().equals(stat.getWorldGroup())
-									&& cached.getGamemode()==stat.getGamemode()) {
+							&& cached.getGamemode() == stat.getGamemode()) {
 						stat.setBalance(cached.getBalance());
 						stat.setBalanceChanges(cached.getBalanceChanges());
 						stat.setBankBalance(cached.getBankBalance());
@@ -43,8 +41,10 @@ public class Top25BalanceRetrieverTask implements IDataStoreTask<List<PlayerBala
 					}
 				}
 
-				//if (!found && cached.getType().equals(mType))
-				//	stats.add(cached);
+				if (!found && cached.getPlayer().getUniqueId().equals(cached.getPlayer().getUniqueId())
+						&& cached.getWorldGroup().equals(cached.getWorldGroup())
+						&& cached.getGamemode() == cached.getGamemode())
+					stats.add(cached);
 			}
 		}
 	}
@@ -52,7 +52,7 @@ public class Top25BalanceRetrieverTask implements IDataStoreTask<List<PlayerBala
 	@Override
 	public List<PlayerBalance> run(IDataStore store) throws DataStoreException {
 		synchronized (mWaiting) {
-			List<PlayerBalance> stats = store.loadTop25(mCount,mWorldGroup, mGamemode);
+			List<PlayerBalance> stats = store.loadTop54(mCount, mWorldGroup, mGamemode);
 			updateUsingCache(stats);
 			return stats;
 		}

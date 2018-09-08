@@ -329,7 +329,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 	
 	@Override
-	public List<PlayerBalance> loadTop25(int n, String worldgroup, int gamemode) {
+	public List<PlayerBalance> loadTop54(int n, String worldgroup, int gamemode) {
 		Connection mConnection;
 		List<PlayerBalance> playerBalances = new ArrayList<PlayerBalance>();
 		try {
