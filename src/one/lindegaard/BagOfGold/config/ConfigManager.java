@@ -89,6 +89,10 @@ public class ConfigManager extends AutoConfig {
 			+ "\n of smallest reward. In the Gringotts example minimum_reward should be 0.0001 or 0.00005.")
 	public double minimumReward = 0.01;
 
+	@ConfigField(name = "limit_per_bag", category = "economy", comment = "If you only want the bags to be able to contain a "
+			+"\ncertain amount of gold you can set the limit here.")
+	public double limitPerBag = 10000;
+
 	@ConfigField(name = "bank_name_on_sign", category = "economy", comment = "Here you can change then name of your sign banks.")
 	public String bankname = "BagOfGold Bank";
 
@@ -262,7 +266,7 @@ public class ConfigManager extends AutoConfig {
 		File backupFile = new File(mFile.toString());
 		int count = 0;
 		while (backupFile.exists() && count++ < 1000) {
-			backupFile = new File("plugins/MobHunting/backup/" + mFile.getName() + ".bak" + count);
+			backupFile = new File("plugins/bagofgold/backup/" + mFile.getName() + ".bak" + count);
 		}
 		if (mFile.exists())
 			try {
@@ -270,11 +274,11 @@ public class ConfigManager extends AutoConfig {
 					backupFile.mkdirs();
 				Files.copy(mFile.toPath(), backupFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES,
 						StandardCopyOption.REPLACE_EXISTING);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting]" + ChatColor.RESET
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RESET
 						+ " Config.yml was backed up to " + backupFile.getPath());
 			} catch (IOException e1) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting]" + ChatColor.RED
-						+ "[ERROR] - Could not backup config.yml file to plugins/MobHunting/config.yml. Delete some old backups");
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+						+ "[ERROR] - Could not backup config.yml file to plugins/bagofgold/config.yml. Delete some old backups");
 				e1.printStackTrace();
 			}
 	}
