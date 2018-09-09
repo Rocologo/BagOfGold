@@ -1,5 +1,6 @@
 V2.0.8
 * Added a limit of gold per BagOfGold, default 10000 (Notice that you need to set the limit in both BagOfGold and MobHunting at the moment).
+* Added a limit on how much gold the player can drop, give and take using /bag money .... the limit is 100 bags
 V2.0.7
 * New command "/bag money top" showing top 54 wealthy players in a GUI
 * Fixed ticket 33 ItemFrame causes doubling money

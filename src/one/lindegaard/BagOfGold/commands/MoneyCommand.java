@@ -271,28 +271,38 @@ public class MoneyCommand implements ICommand {
 					if (args[1].matches("\\d+(\\.\\d+)?")) {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
+						double money = Misc.floor(Double.valueOf(args[1]));
+						if (money>plugin.getConfigManager().limitPerBag*100) {
+							money = plugin.getConfigManager().limitPerBag*100;
+							plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+							.getString("bagofgold.commands.money.to_big_number", "number", args[1], "maximum", money));
+						}	
 						plugin.getMessages().debug("The BagOfGold was dropped at %s", location);
-						plugin.getEconomyManager().dropMoneyOnGround_EconomyManager(player, null, location,
-								Misc.floor(Double.valueOf(args[1])));
+						plugin.getEconomyManager().dropMoneyOnGround_EconomyManager(player, null, location, money);
 						plugin.getMessages().playerActionBarMessageQueue(player,
 								plugin.getMessages().getString("bagofgold.moneydrop", "rewardname",
 										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 												+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 										"money",
-										plugin.getEconomyManager().format(Misc.floor(Double.valueOf(args[1])))));
+										plugin.getEconomyManager().format(money)));
 					} else if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
 							Location location = Misc.getTargetBlock(player, 3).getLocation();
+							double money = Misc.floor(Double.valueOf(args[2]));
+							if (money>plugin.getConfigManager().limitPerBag*100) {
+								money = plugin.getConfigManager().limitPerBag*100;
+								plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", money));
+							}	
 							plugin.getMessages().debug("The BagOfGold was dropped at %s", location);
-							plugin.getEconomyManager().dropMoneyOnGround_EconomyManager(player, null, location,
-									Misc.floor(Double.valueOf(args[2])));
+							plugin.getEconomyManager().dropMoneyOnGround_EconomyManager(player, null, location,money);
 							plugin.getMessages().playerActionBarMessageQueue(player,
 									plugin.getMessages().getString("bagofgold.moneydrop", "rewardname",
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 													+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 											"money",
-											plugin.getEconomyManager().format(Misc.floor(Double.valueOf(args[2])))));
+											plugin.getEconomyManager().format(money)));
 						} else {
 							plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 									.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
@@ -327,6 +337,11 @@ public class MoneyCommand implements ICommand {
 
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
+					if (amount>plugin.getConfigManager().limitPerBag*100) {
+						amount = plugin.getConfigManager().limitPerBag*100;
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+						.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", amount));
+					}	
 					plugin.getMessages().debug("BagOfGold supported, using depositPlayer");
 					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
 				} else {
@@ -361,6 +376,11 @@ public class MoneyCommand implements ICommand {
 				Player fromPlayer = (Player) sender;
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
+					if (amount>plugin.getConfigManager().limitPerBag*100) {
+						amount = plugin.getConfigManager().limitPerBag*100;
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+						.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", amount));
+					}	
 					if (!plugin.getEconomyManager().has(fromPlayer, amount)) {
 						plugin.getMessages().senderSendMessage(fromPlayer, plugin.getMessages()
 								.getString("bagofgold.commands.money.not-enough-money", "money", args[2]));
@@ -398,8 +418,13 @@ public class MoneyCommand implements ICommand {
 					return true;
 				}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double rest = Misc.round(Double.valueOf(args[2]));
-					plugin.getEconomyManager().withdrawPlayer(offlinePlayer, rest);
+					double amount = Misc.round(Double.valueOf(args[2]));
+					if (amount>plugin.getConfigManager().limitPerBag*100) {
+						amount = plugin.getConfigManager().limitPerBag*100;
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+						.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", amount));
+					}	
+					plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
 				} else {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));

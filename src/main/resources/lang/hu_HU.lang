@@ -68,6 +68,7 @@ bagofgold.commands.money.take-sender=Elvettél egy ${rewardname} (${money}) ${pl
 bagofgold.commands.money.no-bossshop=A BossShop plugin nincs telepítve erre a kiszolgálóra.
 bagofgold.commands.money.not-enough-money=Neked nincs ${money} pénz a zsebedben.
 bagofgold.commands.money.top=${total} ${rewardname}
+bagofgold.commands.money.to_big_number=&aThe number ${number} is too big. Reduced to ${maximum}.
 bagofgold.commands.mute.description=A jutalmazási értesítések be- és kikapcsolása
 bagofgold.commands.mute.muted=A BagOfGOld most &bnémítva ${player}&f játékosnál
 bagofgold.commands.mute.unmuted=A BagOfGold most &bfeloldva ${player}&f játékosnál

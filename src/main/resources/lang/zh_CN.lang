@@ -61,6 +61,7 @@ bagofgold.commands.money.sell=你卖了 ${rewardname} 得到了 ${money}.
 bagofgold.commands.money.take=管理员已 ${money} ${rewardname} 给你.
 bagofgold.commands.money.take-sender=你把一个 ${rewardname} (${money}) 给 ${player}
 bagofgold.commands.money.top=${total} ${rewardname}
+bagofgold.commands.money.to_big_number=&aThe number ${number} is too big. Reduced to ${maximum}.
 bagofgold.commands.mute.description=悬赏通知 on/off
 bagofgold.commands.mute.muted=BagOfGold 现在报酬 &bmuted&f 给了 &b${player}
 bagofgold.commands.mute.unmuted=BagOfGold 现在报酬 &bunmuted&f 给了 &b${player}

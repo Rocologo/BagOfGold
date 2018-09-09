@@ -68,6 +68,7 @@ bagofgold.commands.money.take-sender=&aYou took ${money} ${rewardname} &a from $
 bagofgold.commands.money.no-bossshop=&aThe BossShop plugin is not installed on this server.
 bagofgold.commands.money.not-enough-money=&aYou don't have ${money} in your pockets.
 bagofgold.commands.money.top=${total} ${rewardname}
+bagofgold.commands.money.to_big_number=&aThe number ${number} is too big. Reduced to ${maximum}.
 bagofgold.commands.mute.description=Turns reward notifications on/off
 bagofgold.commands.mute.muted=BagOfGOld is now &bmuted&f for player &b${player}
 bagofgold.commands.mute.unmuted=BagOfGold is now &bunmuted&f for player &b${player}
