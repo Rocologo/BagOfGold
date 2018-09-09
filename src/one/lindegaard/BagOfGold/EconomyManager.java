@@ -258,50 +258,6 @@ public class EconomyManager implements Listener {
 		return taken;
 	}
 
-	public void setBagOfGoldPlayer(Player offlinePlayer, double amount) {
-		Player player = ((Player) Bukkit.getServer().getOfflinePlayer(offlinePlayer.getUniqueId()));
-		boolean found = false;
-		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			ItemStack is = player.getInventory().getItem(slot);
-			if (Reward.isReward(is)) {
-				Reward rewardInSlot = Reward.getReward(is);
-				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
-					rewardInSlot.setMoney(amount);
-					is = setDisplayNameAndHiddenLores(is, rewardInSlot);
-					plugin.getMessages().debug("Set %s's item in slot %s to %s (setBagOfGoldPlayer_EconomyManager)",
-							player.getName(), slot, format(amount));
-					found = true;
-					if (rewardInSlot.getMoney() == 0)
-						player.getInventory().clear(slot);
-					break;
-				}
-			}
-		}
-		if (!found) {
-			if (amount != 0)
-				if (player.getInventory().firstEmpty() == -1)
-					dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), Misc.round(amount));
-				else {
-					ItemStack is;
-					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
-						is = new CustomItems(plugin).getCustomtexture(
-								UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
-								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(amount),
-								UUID.randomUUID(), UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
-					else {
-						is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
-						setDisplayNameAndHiddenLores(is,
-								new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-										Misc.round(amount), UUID.fromString(Reward.MH_REWARD_ITEM_UUID),
-										UUID.randomUUID(), null));
-					}
-					player.getInventory().addItem(is);
-				}
-		}
-	}
-
 	/**
 	 * dropMoneyOnGround_EconomyManager: drop the amount of money in the
 	 * location

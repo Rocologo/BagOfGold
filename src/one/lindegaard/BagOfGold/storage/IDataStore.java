@@ -2,12 +2,10 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
