@@ -152,9 +152,10 @@ public class EconomyManager implements Listener {
 	 * @param offlinePlayer
 	 * @param amount
 	 */
-	public boolean addBagOfGoldPlayer(Player player, double amount) {
+	public double addBagOfGoldPlayer(Player player, double amount) {
 		boolean found = false;
 		double moneyLeftToGive = amount;
+		double addedMoney = 0;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
@@ -163,9 +164,11 @@ public class EconomyManager implements Listener {
 					if (rewardInSlot.getMoney() < plugin.getConfigManager().limitPerBag) {
 						double space = plugin.getConfigManager().limitPerBag - rewardInSlot.getMoney();
 						if (space > moneyLeftToGive) {
+							addedMoney = addedMoney + moneyLeftToGive;
 							rewardInSlot.setMoney(rewardInSlot.getMoney() + moneyLeftToGive);
 							moneyLeftToGive = 0;
 						} else {
+							addedMoney = addedMoney + space;
 							rewardInSlot.setMoney(plugin.getConfigManager().limitPerBag);
 							moneyLeftToGive = moneyLeftToGive - space;
 						}
@@ -186,7 +189,7 @@ public class EconomyManager implements Listener {
 		}
 		if (!found) {
 
-			while (Misc.round(moneyLeftToGive) > 0) {
+			while (Misc.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
 				double nextBag = 0;
 				if (moneyLeftToGive > plugin.getConfigManager().limitPerBag) {
 					nextBag = plugin.getConfigManager().limitPerBag;
@@ -198,6 +201,7 @@ public class EconomyManager implements Listener {
 				if (player.getInventory().firstEmpty() == -1)
 					dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), Misc.round(nextBag));
 				else {
+					addedMoney = addedMoney + nextBag;
 					ItemStack is;
 					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
 						is = new CustomItems(plugin).getCustomtexture(
@@ -217,7 +221,7 @@ public class EconomyManager implements Listener {
 				}
 			}
 		}
-		return true;
+		return addedMoney;
 	}
 
 	/**
@@ -290,8 +294,8 @@ public class EconomyManager implements Listener {
 				is = new CustomItems(plugin).getCustomtexture(uuid,
 						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, nextBag,
-						UUID.randomUUID(), skinuuid);
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, nextBag, UUID.randomUUID(),
+						skinuuid);
 			} else { // ITEM
 				uuid = UUID.fromString(Reward.MH_REWARD_ITEM_UUID);
 				skinuuid = null;
@@ -300,8 +304,7 @@ public class EconomyManager implements Listener {
 
 			item = location.getWorld().dropItem(location, is);
 			if (item != null) {
-				MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(),
-						nextBag);
+				MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
 				item.setMetadata(Reward.MH_REWARD_DATA,
 						new FixedMetadataValue(plugin,
 								new Reward(
@@ -552,6 +555,22 @@ public class EconomyManager implements Listener {
 				addMoneyToBalance(player, Misc.round(diff));
 			}
 		}
+	}
+
+	public boolean canPickupMoney(Player player) {
+		if (player.getInventory().firstEmpty() != -1)
+			return true;
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward rewardInSlot = Reward.getReward(is);
+				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
+					if (rewardInSlot.getMoney() < plugin.getConfigManager().limitPerBag)
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }
