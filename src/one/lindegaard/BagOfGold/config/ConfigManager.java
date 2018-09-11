@@ -266,7 +266,7 @@ public class ConfigManager extends AutoConfig {
 		File backupFile = new File(mFile.toString());
 		int count = 0;
 		while (backupFile.exists() && count++ < 1000) {
-			backupFile = new File("plugins/bagofgold/backup/" + mFile.getName() + ".bak" + count);
+			backupFile = new File("plugins/BagOfGold/backup/" + mFile.getName() + ".bak" + count);
 		}
 		if (mFile.exists())
 			try {
