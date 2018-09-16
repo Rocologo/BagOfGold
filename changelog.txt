@@ -1,3 +1,5 @@
+V2.0.9
+* Added three new admin commands /bag bank give... /bag bank take... /bag bank balance... (inclusive permissions)
 V2.0.8
 * Added a limit of gold per BagOfGold, default 10000 (Notice that you need to set the limit in both BagOfGold and MobHunting at the moment).
 * Added a limit on how much gold the player can drop, give and take using /bag money .... the limit is 100 bags
