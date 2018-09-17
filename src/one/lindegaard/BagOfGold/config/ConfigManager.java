@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,7 +91,7 @@ public class ConfigManager extends AutoConfig {
 	public double minimumReward = 0.01;
 
 	@ConfigField(name = "limit_per_bag", category = "economy", comment = "If you only want the bags to be able to contain a "
-			+"\ncertain amount of gold you can set the limit here.")
+			+ "\ncertain amount of gold you can set the limit here.")
 	public double limitPerBag = 10000;
 
 	@ConfigField(name = "bank_name_on_sign", category = "economy", comment = "Here you can change then name of your sign banks.")
@@ -148,16 +149,17 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Banker Settings
 	// #####################################################################################
-	@ConfigField(name = "banker-npc", category = "banker", comment = "Banker")
-	public HashMap<String, String> actions = new HashMap<String, String>();
+	@ConfigField(name = "banker-actions", category = "banker", comment = "Change the numbers or add new lines if you like.")
+	public LinkedHashMap<String, String> actions = new LinkedHashMap<String, String>();
 	{
-		actions.put("balance.0", "0");
-		actions.put("deposit.10", "10");
-		actions.put("deposit.100", "100");
-		actions.put("deposit.all", "All");
-		actions.put("withdraw.10", "10");
-		actions.put("withdraw.100", "100");
-		actions.put("withdraw.all", "All");
+		actions.put("deposit10", "10");
+		actions.put("deposit100", "100");
+		actions.put("deposit1000", "1000");
+		actions.put("depositall", "All");
+		actions.put("withdraw10", "10");
+		actions.put("withdraw100", "100");
+		actions.put("withdraw1000", "1000");
+		actions.put("withdrawall", "All");
 	}
 
 	// #####################################################################################
@@ -196,7 +198,6 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/actionannouncer.1320/")
 	public boolean enableIntegrationActionAnnouncer = true;
 
-	
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################

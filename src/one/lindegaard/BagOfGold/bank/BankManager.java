@@ -1,5 +1,9 @@
 package one.lindegaard.BagOfGold.bank;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -37,31 +41,42 @@ public class BankManager {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 
 		player.spigot()
-				.sendMessage(new ComponentBuilder("Balance: " +plugin.getEconomyManager().format(ps.getBalance() + ps.getBalanceChanges())
-						+ " BankBalance: " + plugin.getEconomyManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
+				.sendMessage(new ComponentBuilder("Balance: "
+						+ plugin.getEconomyManager().format(ps.getBalance() + ps.getBalanceChanges()) + " BankBalance: "
+						+ plugin.getEconomyManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
 								.color(ChatColor.GREEN).bold(true).create());
-		player.spigot()
-				.sendMessage(new ComponentBuilder("Deposit: ").color(ChatColor.GREEN).bold(true).append(" ").append("[10]").color(ChatColor.RED).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to deposit 10.") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money deposit 10")).append(" ").append("[100]").color(ChatColor.RED).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to deposit 100") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money deposit 100")).append(" ").append("[1000]").color(ChatColor.RED).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to deposit 1000") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money deposit 1000")).append(" ").append("[All]").color(ChatColor.RED).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to deposit all.") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money deposit all")).create());
-		
-		player.spigot()
-				.sendMessage(new ComponentBuilder("Withdraw: ").color(ChatColor.GREEN).bold(true).append(" ").append("[10]").color(ChatColor.GREEN).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to withdraw 10.") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money withdraw 10")).append(" ").append("[100]").color(ChatColor.GREEN).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to withdraw 100.") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money withdraw 100")).append(" ").append("[1000]").color(ChatColor.GREEN).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to withdraw 1000.") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money withdraw 1000")).append(" ").append("[All]").color(ChatColor.GREEN).bold(true)
-						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new BaseComponent[] { new TextComponent("§cClick to withdraw all.") }))
-						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bagofgold money withdraw all")).create());
-		
+		ComponentBuilder deposit = new ComponentBuilder("Deposit: ").color(ChatColor.GREEN).bold(true).append(" ");
+		Iterator<Entry<String, String>> itr1 = plugin.getConfigManager().actions.entrySet().iterator();
+		while (itr1.hasNext()) {
+			Entry<String, String> set = itr1.next();
+			if (set.getKey().startsWith("deposit")) {
+				deposit.append("[" + set.getValue() + "]").color(ChatColor.RED).bold(true)
+						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+								new BaseComponent[] {
+										new TextComponent("§cClick to deposit " + set.getValue() + ".") }))
+						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+								"/bagofgold money deposit " + set.getValue()))
+						.append(" ");
+			}
+		}
+		player.spigot().sendMessage(deposit.create());
+
+		ComponentBuilder withdraw = new ComponentBuilder("Withdraw: ").color(ChatColor.GREEN).bold(true).append(" ");
+		Iterator<Entry<String, String>> itr2 = plugin.getConfigManager().actions.entrySet().iterator();
+		while (itr2.hasNext()) {
+			Entry<String, String> set = itr2.next();
+			if (set.getKey().startsWith("withdraw")) {
+				withdraw.append("[" + set.getValue() + "]").color(ChatColor.RED).bold(true)
+						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+								new BaseComponent[] {
+										new TextComponent("§cClick to withdraw " + set.getValue() + ".") }))
+						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+								"/bagofgold money withdraw " + set.getValue()))
+						.append(" ");
+			}
+		}
+		player.spigot().sendMessage(withdraw.create());
+
 	}
 
 }

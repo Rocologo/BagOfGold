@@ -57,6 +57,7 @@ bagofgold.commands.money.give=管理员给了你 ${rewardname} (${money})
 bagofgold.commands.money.give-sender=你得到了 ${player} 一个 ${rewardname} (${money})
 bagofgold.commands.money.no-bossshop= BossShop 插件没有在此服务器上安装.
 bagofgold.commands.money.not-enough-money=你没有 ${money} ，对于你剩下的钱.
+bagofgold.commands.money.not-enough-money-in-bank=&aYou don't have ${money} on your bank account.
 bagofgold.commands.money.sell=你卖了 ${rewardname} 得到了 ${money}.
 bagofgold.commands.money.take=管理员已 ${money} ${rewardname} 给你.
 bagofgold.commands.money.take-sender=你把一个 ${rewardname} (${money}) 给 ${player}

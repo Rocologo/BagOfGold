@@ -67,6 +67,7 @@ bagofgold.commands.money.take=&aAdmin has taken ${money} ${rewardname}&a from yo
 bagofgold.commands.money.take-sender=&aYou took ${money} ${rewardname} &a from ${player} 
 bagofgold.commands.money.no-bossshop=&aThe BossShop plugin is not installed on this server.
 bagofgold.commands.money.not-enough-money=&aYou don't have ${money} in your pockets.
+bagofgold.commands.money.not-enough-money-in-bank=&aYou don't have ${money} on your bank account.
 bagofgold.commands.money.top=${total} ${rewardname}
 bagofgold.commands.money.to_big_number=&aThe number ${number} is too big. Reduced to ${maximum}.
 bagofgold.commands.mute.description=Turns reward notifications on/off
