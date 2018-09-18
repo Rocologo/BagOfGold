@@ -1,6 +1,5 @@
 package one.lindegaard.BagOfGold.bank;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 

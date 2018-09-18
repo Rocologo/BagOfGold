@@ -546,8 +546,15 @@ public class EconomyManager implements Listener {
 	public void adjustBalanceToamountInInventory(Player player) {
 		double amountInInventory = getAmountInInventory(player);
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		ItemStack is = player.getItemOnCursor();
+		double inHand=0;
+		if (Reward.isReward(is)) {
+			Reward reward = Reward.getReward(is);
+			if (reward.isBagOfGoldReward()||reward.isItemReward())
+				inHand=reward.getMoney();
+		}
 		if (ps != null) {
-			double diff = Misc.round(amountInInventory)
+			double diff = Misc.round(amountInInventory+inHand)
 					- (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
 			if (Misc.round(diff) != 0) {
 				plugin.getMessages().debug("Adjusting Balance to amt: amt=%s, bal=%s(+%s)", amountInInventory,
