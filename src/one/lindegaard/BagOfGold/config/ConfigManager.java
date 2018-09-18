@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -149,7 +149,7 @@ public class ConfigManager extends AutoConfig {
 	// Banker Settings
 	// #####################################################################################
 	@ConfigField(name = "banker-actions", category = "banker", comment = "Change the numbers or add new lines if you like.")
-	public HashMap<String, String> actions = new HashMap<String, String>();
+	public LinkedHashMap<String, String> actions = new LinkedHashMap<String, String>();
 	{
 		actions.put("deposit10", "10");
 		actions.put("deposit100", "100");
@@ -159,6 +159,8 @@ public class ConfigManager extends AutoConfig {
 		actions.put("withdraw100", "100");
 		actions.put("withdraw1000", "1000");
 		actions.put("withdrawall", "All");
+		
+		
 	}
 
 	// #####################################################################################

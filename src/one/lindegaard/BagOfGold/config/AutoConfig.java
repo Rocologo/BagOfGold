@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -146,6 +147,10 @@ public abstract class AutoConfig {
 						// HashMap
 						else if (field.getType().getComponentType().equals(HashMap.class)) {
 							field.set(this, yml.getConfigurationSection(path).getValues(true));
+							
+						// LinkedHashMap
+						} else if (field.getType().getComponentType().equals(LinkedHashMap.class)) {
+							field.set(this, yml.getConfigurationSection(path).getValues(true));
 						} else
 							throw new IllegalArgumentException("LoadConfig - Cannot use type "
 									+ field.getType().getSimpleName() + " for AutoConfiguration (Is it an Array?)");
@@ -183,6 +188,10 @@ public abstract class AutoConfig {
 							field.set(this, yml.getString(path));
 						// HashMap
 						else if (field.getType().equals(HashMap.class)) {
+							field.set(this, yml.getConfigurationSection(path).getValues(true));
+						
+						// LinkedHashMap
+						} else if (field.getType().equals(LinkedHashMap.class)) {
 							field.set(this, yml.getConfigurationSection(path).getValues(true));
 						} else
 							throw new IllegalArgumentException("LoadConfig - Cannot use type "
@@ -257,8 +266,14 @@ public abstract class AutoConfig {
 					// String
 					else if (field.getType().getComponentType().equals(String.class))
 						config.set(path, Arrays.asList((String[]) field.get(this)));
+					
 					// HashMap
 					else if (field.getType().getComponentType().equals(HashMap.class)) {
+						config.createSection(path, (Map<String, String>) Arrays.asList(field.get(this)));
+					} 
+					
+					// LinkedHashMap
+					else if (field.getType().getComponentType().equals(LinkedHashMap.class)) {
 						config.createSection(path, (Map<String, String>) Arrays.asList(field.get(this)));
 					} else
 						throw new IllegalArgumentException("SaveConfig - Cannot use type "
@@ -295,9 +310,16 @@ public abstract class AutoConfig {
 					// String
 					else if (field.getType().equals(String.class))
 						config.set(path, field.get(this));
+					
 					// HashMap
 					else if (field.getType().equals(HashMap.class)) {
 						config.createSection(path, (HashMap<String, String>) field.get(this));
+					} 
+					
+					// LinkedHashMap
+					else if (field.getType().equals(LinkedHashMap.class)) {
+						config.createSection(path, (LinkedHashMap<String, String>) field.get(this));
+						
 					} else
 						throw new IllegalArgumentException("SaveConfig - Cannot use type "
 								+ field.getType().getSimpleName() + " for AutoConfiguration (" + field.getName() + ")");
