@@ -1,5 +1,5 @@
 V2.1.0
-* Fixed Ticket 42. (https://github.com/Rocologo/BagOfGold/issues/42)
+* Fixed Ticket 42 - losing money when deposit all money into the bank. (https://github.com/Rocologo/BagOfGold/issues/42)
 V2.0.9
 * Added three new admin commands /bag bank give... /bag bank take... /bag bank balance... (inclusive permissions)
 * Fixed ticket 35. Loss of money when splitting a bag and closing inventory before placing the second half in the inventory. (https://github.com/Rocologo/BagOfGold/issues/35)
