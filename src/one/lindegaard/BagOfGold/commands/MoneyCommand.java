@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,18 +30,19 @@ public class MoneyCommand implements ICommand {
 	}
 
 	// Admin command
-	// /mh money drop <amount> - to drop <amount money> where player look.
+	// /bag money drop <amount> - to drop <amount money> where player look.
 	// Permission needed mobhunt.money.drop
 
-	// /mh money drop <playername> <amount> - to drop <amount money> where
+	// /bag money drop <playername> <amount> - to drop <amount money> where
 	// player look.
 	// Permission needed bagofgold.money.drop
 
-	// /mh money give <player> <amount> - to give the player an amount of bag of
+	// /bag money give <player> <amount> - to give the player an amount of bag
+	// of
 	// gold.
 	// Permission needed bagofgold.money.sell
 
-	// /mh money take <player> <amount> - to take an amount of money from the
+	// /bag money take <player> <amount> - to take an amount of money from the
 	// player.
 	// have in your hand.
 	// Permission needed bagofgold.money.sell
@@ -120,7 +122,7 @@ public class MoneyCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 
 		if (args.length == 1) {
-			// /mh money help
+			// /bag money help
 			// Show help
 			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))
 				return false;
@@ -261,8 +263,8 @@ public class MoneyCommand implements ICommand {
 		} else if (args.length >= 2 && args[0].equalsIgnoreCase("drop") || args[0].equalsIgnoreCase("place"))
 
 		{
-			// /mh money drop <amount>
-			// /mh money drop <player> <amount>
+			// /bag money drop <amount>
+			// /bag money drop <player> <amount>
 			if (sender.hasPermission("bagofgold.money.drop") || sender.hasPermission("bagofgold.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED
@@ -272,37 +274,39 @@ public class MoneyCommand implements ICommand {
 						Player player = (Player) sender;
 						Location location = Misc.getTargetBlock(player, 20).getLocation();
 						double money = Misc.floor(Double.valueOf(args[1]));
-						if (money>plugin.getConfigManager().limitPerBag*100) {
-							money = plugin.getConfigManager().limitPerBag*100;
-							plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-							.getString("bagofgold.commands.money.to_big_number", "number", args[1], "maximum", money));
-						}	
+						if (money > plugin.getConfigManager().limitPerBag * 100) {
+							money = plugin.getConfigManager().limitPerBag * 100;
+							plugin.getMessages().senderSendMessage(sender,
+									ChatColor.RED
+											+ plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
+													"number", args[1], "maximum", money));
+						}
 						plugin.getMessages().debug("The BagOfGold was dropped at %s", location);
 						plugin.getEconomyManager().dropMoneyOnGround_EconomyManager(player, null, location, money);
 						plugin.getMessages().playerActionBarMessageQueue(player,
 								plugin.getMessages().getString("bagofgold.moneydrop", "rewardname",
 										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 												+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
-										"money",
-										plugin.getEconomyManager().format(money)));
+										"money", plugin.getEconomyManager().format(money)));
 					} else if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
 							Location location = Misc.getTargetBlock(player, 3).getLocation();
 							double money = Misc.floor(Double.valueOf(args[2]));
-							if (money>plugin.getConfigManager().limitPerBag*100) {
-								money = plugin.getConfigManager().limitPerBag*100;
-								plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-								.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", money));
-							}	
+							if (money > plugin.getConfigManager().limitPerBag * 100) {
+								money = plugin.getConfigManager().limitPerBag * 100;
+								plugin.getMessages().senderSendMessage(sender,
+										ChatColor.RED + plugin.getMessages().getString(
+												"bagofgold.commands.money.to_big_number", "number", args[2], "maximum",
+												money));
+							}
 							plugin.getMessages().debug("The BagOfGold was dropped at %s", location);
-							plugin.getEconomyManager().dropMoneyOnGround_EconomyManager(player, null, location,money);
+							plugin.getEconomyManager().dropMoneyOnGround_EconomyManager(player, null, location, money);
 							plugin.getMessages().playerActionBarMessageQueue(player,
 									plugin.getMessages().getString("bagofgold.moneydrop", "rewardname",
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 													+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-											"money",
-											plugin.getEconomyManager().format(money)));
+											"money", plugin.getEconomyManager().format(money)));
 						} else {
 							plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 									.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
@@ -320,7 +324,7 @@ public class MoneyCommand implements ICommand {
 			return true;
 
 		} else if (args.length >= 2 && args[0].equalsIgnoreCase("give")) {
-			// /mh money give <player> <amount>
+			// /bag money give <player> <amount>
 			if (sender.hasPermission("bagofgold.money.give") || sender.hasPermission("bagofgold.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED
@@ -337,11 +341,12 @@ public class MoneyCommand implements ICommand {
 
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
-					if (amount>plugin.getConfigManager().limitPerBag*100) {
-						amount = plugin.getConfigManager().limitPerBag*100;
-						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-						.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", amount));
-					}	
+					if (amount > plugin.getConfigManager().limitPerBag * 100) {
+						amount = plugin.getConfigManager().limitPerBag * 100;
+						plugin.getMessages().senderSendMessage(sender,
+								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
+										"number", args[2], "maximum", amount));
+					}
 					plugin.getMessages().debug("BagOfGold supported, using depositPlayer");
 					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
 				} else {
@@ -357,7 +362,7 @@ public class MoneyCommand implements ICommand {
 		}
 
 		else if (args.length >= 2 && args[0].equalsIgnoreCase("pay")) {
-			// /mh money pay <player> <amount>
+			// /bag money pay <player> <amount>
 			if (sender.hasPermission("bagofgold.money.pay") || sender.hasPermission("bagofgold.money.*")) {
 
 				if (!(sender instanceof Player)) {
@@ -376,11 +381,12 @@ public class MoneyCommand implements ICommand {
 				Player fromPlayer = (Player) sender;
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
-					if (amount>plugin.getConfigManager().limitPerBag*100) {
-						amount = plugin.getConfigManager().limitPerBag*100;
-						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-						.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", amount));
-					}	
+					if (amount > plugin.getConfigManager().limitPerBag * 100) {
+						amount = plugin.getConfigManager().limitPerBag * 100;
+						plugin.getMessages().senderSendMessage(sender,
+								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
+										"number", args[2], "maximum", amount));
+					}
 					if (!plugin.getEconomyManager().has(fromPlayer, amount)) {
 						plugin.getMessages().senderSendMessage(fromPlayer, plugin.getMessages()
 								.getString("bagofgold.commands.money.not-enough-money", "money", args[2]));
@@ -404,7 +410,7 @@ public class MoneyCommand implements ICommand {
 		else if (args.length >= 2 && args[0].equalsIgnoreCase("take"))
 
 		{
-			// /mh money take <player> <amount>
+			// /bag money take <player> <amount>
 			if (sender.hasPermission("bagofgold.money.take") || sender.hasPermission("bagofgold.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED
@@ -419,11 +425,12 @@ public class MoneyCommand implements ICommand {
 				}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
-					if (amount>plugin.getConfigManager().limitPerBag*100) {
-						amount = plugin.getConfigManager().limitPerBag*100;
-						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-						.getString("bagofgold.commands.money.to_big_number", "number", args[2], "maximum", amount));
-					}	
+					if (amount > plugin.getConfigManager().limitPerBag * 100) {
+						amount = plugin.getConfigManager().limitPerBag * 100;
+						plugin.getMessages().senderSendMessage(sender,
+								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
+										"number", args[2], "maximum", amount));
+					}
 					plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
 				} else {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
@@ -439,10 +446,10 @@ public class MoneyCommand implements ICommand {
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("deposit")
 				|| (args.length == 2 && args[0].equalsIgnoreCase("deposit")
 						&& (args[1].matches("\\d+(\\.\\d+)?") || args[1].equalsIgnoreCase("all")))) {
-			// /mh money deposit - deposit the bagofgold in the players hand
+			// /bag money deposit - deposit the bagofgold in the players hand
 			// to
 			// the bank
-			// /mh money deposit <amount>
+			// /bag money deposit <amount>
 			if (sender.hasPermission("bagofgold.money.deposit") || sender.hasPermission("bagofgold.money.*")) {
 				if (!(sender instanceof Player)) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
@@ -466,16 +473,20 @@ public class MoneyCommand implements ICommand {
 														reward.getDisplayname()));
 										return true;
 									}
-									plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(),
-											reward.getMoney());
-									plugin.getEconomyManager().withdrawPlayer(player, reward.getMoney());
+									EconomyResponse res = plugin.getEconomyManager()
+											.bankDeposit(player.getUniqueId().toString(), reward.getMoney());
+									if (res.transactionSuccess()) {
+										plugin.getEconomyManager().withdrawPlayer(player, res.amount);
+									}
 									plugin.getBankManager().sendBankerMessage(player);
 								}
 							} else {
 								double to_be_removed = args[1].equalsIgnoreCase("all")
 										? ps.getBalance() + ps.getBalanceChanges() : Double.valueOf(args[1]);
-								double sold = plugin.getEconomyManager().withdrawPlayer(player, to_be_removed).amount;
-								plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), sold);
+								EconomyResponse res = plugin.getEconomyManager().withdrawPlayer(player, to_be_removed);
+								if (res.transactionSuccess()) {
+									plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), res.amount);
+								}
 								plugin.getBankManager().sendBankerMessage(player);
 							}
 							break;
@@ -495,7 +506,7 @@ public class MoneyCommand implements ICommand {
 		}
 
 		else if (args.length == 2 && args[0].equalsIgnoreCase("withdraw")) {
-			// /mh money withdraw <amount>
+			// /bag money withdraw <amount>
 			if (sender.hasPermission("bagofgold.money.withdraw") || sender.hasPermission("bagofgold.money.*")) {
 				if (args.length == 2 && (args[1].matches("\\d+(\\.\\d+)?") || args[1].equalsIgnoreCase("all"))) {
 					Player player = (Player) sender;
@@ -508,8 +519,11 @@ public class MoneyCommand implements ICommand {
 							if (npc.getEntity().getLocation().distance(player.getLocation()) < 3) {
 								if (ps.getBankBalance() + ps.getBankBalanceChanges() >= amount) {
 
-									plugin.getEconomyManager().bankWithdraw(player.getUniqueId().toString(), amount);
-									plugin.getEconomyManager().depositPlayer(player, amount);
+									EconomyResponse res = plugin.getEconomyManager()
+											.bankWithdraw(player.getUniqueId().toString(), amount);
+									if (res.transactionSuccess()) {
+										plugin.getEconomyManager().depositPlayer(player, amount);
+									}
 									plugin.getBankManager().sendBankerMessage(player);
 
 								} else {

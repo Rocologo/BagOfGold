@@ -114,7 +114,7 @@ public class EconomyManager implements Listener {
 				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 						ResponseType.SUCCESS, null);
 			} else {
-				double remove = ps.getBalance() + ps.getBalanceChanges();
+				double remove = Misc.round(ps.getBalance() + ps.getBalanceChanges());
 				plugin.getMessages().debug("%s has not enough bagofgold, Withdrawing only %s , new balance is %s",
 						offlinePlayer.getName(), format(remove), format(0));
 				if (remove > 0) {
@@ -142,7 +142,7 @@ public class EconomyManager implements Listener {
 		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
 				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				format(pb.getBalance() + pb.getBalanceChanges()));
-		return pb.getBalance() + pb.getBalanceChanges() >= amount;
+		return Misc.round(pb.getBalance()) + Misc.round(pb.getBalanceChanges()) >= Misc.round(amount);
 	}
 
 	/**
