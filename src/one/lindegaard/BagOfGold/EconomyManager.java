@@ -2,6 +2,8 @@ package one.lindegaard.BagOfGold;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -20,6 +22,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.rewards.CustomItems;
+import one.lindegaard.BagOfGold.rewards.GringottsItems;
 import one.lindegaard.BagOfGold.rewards.RewardListeners;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.MobHunting.MobHunting;
@@ -27,11 +30,13 @@ import one.lindegaard.MobHunting.MobHunting;
 public class EconomyManager implements Listener {
 
 	private BagOfGold plugin;
+	private GringottsItems gtItems;
 
 	public EconomyManager(BagOfGold plugin) {
 		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
+		gtItems = new GringottsItems(plugin);
 	}
 
 	/**
@@ -122,6 +127,7 @@ public class EconomyManager implements Listener {
 					ps.setBalance(0);
 					ps.setBalanceChanges(0);
 					plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+					return new EconomyResponse(remove, 0, ResponseType.SUCCESS, null);
 				}
 				return new EconomyResponse(remove, 0, ResponseType.FAILURE,
 						plugin.getMessages().getString("bagofgold.commands.money.not-enough-money", "money", remove));
@@ -156,72 +162,99 @@ public class EconomyManager implements Listener {
 		boolean found = false;
 		double moneyLeftToGive = amount;
 		double addedMoney = 0;
-		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			ItemStack is = player.getInventory().getItem(slot);
-			if (Reward.isReward(is)) {
-				Reward rewardInSlot = Reward.getReward(is);
-				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
-					if (rewardInSlot.getMoney() < plugin.getConfigManager().limitPerBag) {
-						double space = plugin.getConfigManager().limitPerBag - rewardInSlot.getMoney();
-						if (space > moneyLeftToGive) {
-							addedMoney = addedMoney + moneyLeftToGive;
-							rewardInSlot.setMoney(rewardInSlot.getMoney() + moneyLeftToGive);
-							moneyLeftToGive = 0;
-						} else {
-							addedMoney = addedMoney + space;
-							rewardInSlot.setMoney(plugin.getConfigManager().limitPerBag);
-							moneyLeftToGive = moneyLeftToGive - space;
-						}
-						if (rewardInSlot.getMoney() == 0)
-							player.getInventory().clear(slot);
-						else
-							is = setDisplayNameAndHiddenLores(is, rewardInSlot);
-						plugin.getMessages().debug(
-								"Added %s to %s's item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
-								format(amount), player.getName(), slot, format(rewardInSlot.getMoney()));
-						if (moneyLeftToGive <= 0) {
-							found = true;
-							break;
+		if (gtItems.isGringottsStyle()) {
+			Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+			while (itr.hasNext()) {
+				Entry<String, String> pair = itr.next();
+				Material material;
+				double value;
+				try {
+					material = Material.valueOf(pair.getKey());
+					value = Double.valueOf(pair.getValue());
+				} catch (Exception e) {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+							+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
+					break;
+				}
+				plugin.getMessages().debug("addBagOfGoldPlayer, Material=%s value=%s", material, value);
+				while (moneyLeftToGive >= value) {
+					player.getInventory().addItem(new ItemStack(material));
+					moneyLeftToGive = moneyLeftToGive - value;
+					addedMoney = addedMoney + value;
+				}
+			}
+			return addedMoney;
+		} else {
+			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+				if (slot >= 36 && slot <= 40)
+					continue;
+				ItemStack is = player.getInventory().getItem(slot);
+				if (Reward.isReward(is)) {
+					Reward rewardInSlot = Reward.getReward(is);
+					if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
+						if (rewardInSlot.getMoney() < plugin.getConfigManager().limitPerBag) {
+							double space = plugin.getConfigManager().limitPerBag - rewardInSlot.getMoney();
+							if (space > moneyLeftToGive) {
+								addedMoney = addedMoney + moneyLeftToGive;
+								rewardInSlot.setMoney(rewardInSlot.getMoney() + moneyLeftToGive);
+								moneyLeftToGive = 0;
+							} else {
+								addedMoney = addedMoney + space;
+								rewardInSlot.setMoney(plugin.getConfigManager().limitPerBag);
+								moneyLeftToGive = moneyLeftToGive - space;
+							}
+							if (rewardInSlot.getMoney() == 0)
+								player.getInventory().clear(slot);
+							else
+								is = setDisplayNameAndHiddenLores(is, rewardInSlot);
+							plugin.getMessages().debug(
+									"Added %s to %s's item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
+									format(amount), player.getName(), slot, format(rewardInSlot.getMoney()));
+							if (moneyLeftToGive <= 0) {
+								found = true;
+								break;
+							}
 						}
 					}
 				}
 			}
-		}
-		if (!found) {
+			if (!found) {
 
-			while (Misc.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
-				double nextBag = 0;
-				if (moneyLeftToGive > plugin.getConfigManager().limitPerBag) {
-					nextBag = plugin.getConfigManager().limitPerBag;
-					moneyLeftToGive = moneyLeftToGive - nextBag;
-				} else {
-					nextBag = moneyLeftToGive;
-					moneyLeftToGive = 0;
-				}
-				if (player.getInventory().firstEmpty() == -1)
-					dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), Misc.round(nextBag));
-				else {
-					addedMoney = addedMoney + nextBag;
-					ItemStack is;
-					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
-						is = new CustomItems(plugin).getCustomtexture(
-								UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
-								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(nextBag),
-								UUID.randomUUID(), UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
-					else {
-						is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
-						setDisplayNameAndHiddenLores(is,
-								new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-										Misc.round(nextBag), UUID.fromString(Reward.MH_REWARD_ITEM_UUID),
-										UUID.randomUUID(), null));
+				while (Misc.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
+					double nextBag = 0;
+					if (moneyLeftToGive > plugin.getConfigManager().limitPerBag) {
+						nextBag = plugin.getConfigManager().limitPerBag;
+						moneyLeftToGive = moneyLeftToGive - nextBag;
+					} else {
+						nextBag = moneyLeftToGive;
+						moneyLeftToGive = 0;
 					}
-					player.getInventory().addItem(is);
+					if (player.getInventory().firstEmpty() == -1)
+						dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), Misc.round(nextBag));
+					else {
+						addedMoney = addedMoney + nextBag;
+						ItemStack is;
+						if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
+							is = new CustomItems(plugin).getCustomtexture(
+									UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
+									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+									plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+									plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature,
+									Misc.round(nextBag), UUID.randomUUID(),
+									UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
+						else {
+							is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
+							setDisplayNameAndHiddenLores(is,
+									new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+											Misc.round(nextBag), UUID.fromString(Reward.MH_REWARD_ITEM_UUID),
+											UUID.randomUUID(), null));
+						}
+						player.getInventory().addItem(is);
+					}
 				}
 			}
+			return addedMoney;
 		}
-		return addedMoney;
 	}
 
 	/**
@@ -235,31 +268,64 @@ public class EconomyManager implements Listener {
 	public double removeBagOfGoldPlayer(Player player, double amount) {
 		double taken = 0;
 		double toBeTaken = Misc.round(amount);
-		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			ItemStack is = player.getInventory().getItem(slot);
-			if (Reward.isReward(is)) {
-				Reward reward = Reward.getReward(is);
-				if (reward.isBagOfGoldReward() || reward.isItemReward()) {
-					double saldo = Misc.round(reward.getMoney());
-					if (saldo > toBeTaken) {
-						reward.setMoney(Misc.round(saldo - toBeTaken));
-						is = setDisplayNameAndHiddenLores(is, reward);
-						player.getInventory().setItem(slot, is);
-						taken = taken + toBeTaken;
-						toBeTaken = 0;
-						return Misc.round(taken);
+		if (gtItems.isGringottsStyle()) {
+			Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+			while (itr.hasNext()) {
+				Entry<String, String> pair = itr.next();
+				Material material;
+				double value;
+				try {
+					material = Material.valueOf(pair.getKey());
+					value = Double.valueOf(pair.getValue());
+				} catch (Exception e) {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+							+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
+					continue;
+				}
+				plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s value=%s", material, value);
+				while (toBeTaken >= value) {
+					int i = player.getInventory().first(material);
+					ItemStack is = player.getInventory().getItem(i);
+					toBeTaken = toBeTaken - value;
+					taken = taken + value;
+					if (is.getAmount() > 1) {
+						is.setAmount(is.getAmount() - 1);
+						player.getInventory().setItem(i, is);
 					} else {
-						player.getInventory().clear(slot);
-						taken = taken + saldo;
-						toBeTaken = toBeTaken - saldo;
+						player.getInventory().clear(i);
 					}
-					if (reward.getMoney() == 0)
-						player.getInventory().clear(slot);
 				}
 			}
+			return taken;
+		} else {
+			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+				if (slot >= 36 && slot <= 40)
+					continue;
+				ItemStack is = player.getInventory().getItem(slot);
+				if (Reward.isReward(is)) {
+					Reward reward = Reward.getReward(is);
+					if (reward.isBagOfGoldReward() || reward.isItemReward()) {
+						double saldo = Misc.round(reward.getMoney());
+						if (saldo > toBeTaken) {
+							reward.setMoney(Misc.round(saldo - toBeTaken));
+							is = setDisplayNameAndHiddenLores(is, reward);
+							player.getInventory().setItem(slot, is);
+							taken = taken + toBeTaken;
+							toBeTaken = 0;
+							return Misc.round(taken);
+						} else {
+							player.getInventory().clear(slot);
+							taken = taken + saldo;
+							toBeTaken = toBeTaken - saldo;
+						}
+						if (reward.getMoney() == 0)
+							player.getInventory().clear(slot);
+					}
+				}
 
+			}
+			return taken;
 		}
-		return taken;
 	}
 
 	/**
@@ -276,49 +342,74 @@ public class EconomyManager implements Listener {
 	public void dropMoneyOnGround_EconomyManager(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
 		double moneyLeftToDrop = Misc.ceil(money);
-		ItemStack is;
-		UUID uuid = null, skinuuid = null;
-		double nextBag = 0;
-		while (moneyLeftToDrop > 0) {
-			if (moneyLeftToDrop > plugin.getConfigManager().limitPerBag) {
-				nextBag = plugin.getConfigManager().limitPerBag;
-				moneyLeftToDrop = Misc.round(moneyLeftToDrop - nextBag);
-			} else {
-				nextBag = Misc.round(moneyLeftToDrop);
-				moneyLeftToDrop = 0;
+		double droppedMoney = 0;
+		if (gtItems.isGringottsStyle()) {
+			Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+			while (itr.hasNext()) {
+				Entry<String, String> pair = itr.next();
+				Material material;
+				double value;
+				try {
+					material = Material.valueOf(pair.getKey());
+					value = Double.valueOf(pair.getValue());
+				} catch (Exception e) {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+							+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
+					break;
+				}
+				plugin.getMessages().debug("dropMoneyOnGround_EconomyManager, Material=%s value=%s", material, value);
+				while (moneyLeftToDrop >= value) {
+					ItemStack is = new ItemStack(material);
+					item = location.getWorld().dropItem(location, is);
+					moneyLeftToDrop = moneyLeftToDrop - value;
+					droppedMoney = droppedMoney + value;
+				}
 			}
+		} else {
+			ItemStack is;
+			UUID uuid = null, skinuuid = null;
+			double nextBag = 0;
+			while (moneyLeftToDrop > 0) {
+				if (moneyLeftToDrop > plugin.getConfigManager().limitPerBag) {
+					nextBag = plugin.getConfigManager().limitPerBag;
+					moneyLeftToDrop = Misc.round(moneyLeftToDrop - nextBag);
+				} else {
+					nextBag = Misc.round(moneyLeftToDrop);
+					moneyLeftToDrop = 0;
+				}
 
-			if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
-				uuid = UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID);
-				skinuuid = uuid;
-				is = new CustomItems(plugin).getCustomtexture(uuid,
-						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, nextBag, UUID.randomUUID(),
-						skinuuid);
-			} else { // ITEM
-				uuid = UUID.fromString(Reward.MH_REWARD_ITEM_UUID);
-				skinuuid = null;
-				is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
-			}
+				if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
+					uuid = UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID);
+					skinuuid = uuid;
+					is = new CustomItems(plugin).getCustomtexture(uuid,
+							plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+							plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+							plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, nextBag,
+							UUID.randomUUID(), skinuuid);
+				} else { // ITEM
+					uuid = UUID.fromString(Reward.MH_REWARD_ITEM_UUID);
+					skinuuid = null;
+					is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
+				}
 
-			item = location.getWorld().dropItem(location, is);
-			if (item != null) {
-				MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
-				item.setMetadata(Reward.MH_REWARD_DATA,
-						new FixedMetadataValue(plugin,
-								new Reward(
-										plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-												? "" : Reward.getReward(is).getDisplayname(),
-										nextBag, uuid, UUID.randomUUID(), skinuuid)));
-				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-						+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-								? format(nextBag)
-								: Reward.getReward(is).getDisplayname() + " (" + format(nextBag) + ")"));
-				item.setCustomNameVisible(true);
-				plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)", player.getName(),
-						format(nextBag), plugin.getConfigManager().dropMoneyOnGroundItemtype,
-						MobHunting.getInstance().getRewardManager().getDroppedMoney().size());
+				item = location.getWorld().dropItem(location, is);
+				if (item != null) {
+					MobHunting.getInstance().getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
+					item.setMetadata(Reward.MH_REWARD_DATA,
+							new FixedMetadataValue(plugin,
+									new Reward(
+											plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+													? "" : Reward.getReward(is).getDisplayname(),
+											nextBag, uuid, UUID.randomUUID(), skinuuid)));
+					item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+							+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+									? format(nextBag)
+									: Reward.getReward(is).getDisplayname() + " (" + format(nextBag) + ")"));
+					item.setCustomNameVisible(true);
+					plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)",
+							player.getName(), format(nextBag), plugin.getConfigManager().dropMoneyOnGroundItemtype,
+							MobHunting.getInstance().getRewardManager().getDroppedMoney().size());
+				}
 			}
 		}
 	}
@@ -482,12 +573,39 @@ public class EconomyManager implements Listener {
 	 */
 	public double getAmountInInventory(Player player) {
 		double amountInInventory = 0;
-		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			ItemStack is = player.getInventory().getItem(slot);
-			if (Reward.isReward(is)) {
-				Reward reward = Reward.getReward(is);
-				if (reward.isBagOfGoldReward() || reward.isItemReward())
-					amountInInventory = amountInInventory + reward.getMoney();
+		if (gtItems.isGringottsStyle()) {
+			Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+			while (itr.hasNext()) {
+				Entry<String, String> pair = itr.next();
+				Material material;
+				double value;
+				try {
+					material = Material.valueOf(pair.getKey());
+					value = Double.valueOf(pair.getValue());
+				} catch (Exception e) {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+							+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
+					break;
+				}
+				plugin.getMessages().debug("getAmountInInventory, Material=%s value=%s", material, value);
+				for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+					if (slot >= 36 && slot <= 40)
+						continue;
+					ItemStack is = player.getInventory().getItem(slot);
+					if (is != null && is.getType() == material)
+						amountInInventory = amountInInventory + is.getAmount() * value;
+				}
+			}
+		} else {
+			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+				if (slot >= 36 && slot <= 40)
+					continue;
+				ItemStack is = player.getInventory().getItem(slot);
+				if (Reward.isReward(is)) {
+					Reward reward = Reward.getReward(is);
+					if (reward.isBagOfGoldReward() || reward.isItemReward())
+						amountInInventory = amountInInventory + reward.getMoney();
+				}
 			}
 		}
 		return amountInInventory;
@@ -547,14 +665,14 @@ public class EconomyManager implements Listener {
 		double amountInInventory = getAmountInInventory(player);
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		ItemStack is = player.getItemOnCursor();
-		double inHand=0;
+		double inHand = 0;
 		if (Reward.isReward(is)) {
 			Reward reward = Reward.getReward(is);
-			if (reward.isBagOfGoldReward()||reward.isItemReward())
-				inHand=reward.getMoney();
+			if (reward.isBagOfGoldReward() || reward.isItemReward())
+				inHand = reward.getMoney();
 		}
 		if (ps != null) {
-			double diff = Misc.round(amountInInventory+inHand)
+			double diff = Misc.round(amountInInventory + inHand)
 					- (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
 			if (Misc.round(diff) != 0) {
 				plugin.getMessages().debug("Adjusting Balance to amt: amt=%s, bal=%s(+%s)", amountInInventory,
@@ -568,6 +686,8 @@ public class EconomyManager implements Listener {
 		if (player.getInventory().firstEmpty() != -1)
 			return true;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);
@@ -578,6 +698,25 @@ public class EconomyManager implements Listener {
 			}
 		}
 		return false;
+	}
+
+	public double getSpaceForMoney(Player player) {
+		double space = 0;
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward rewardInSlot = Reward.getReward(is);
+				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
+					space = space + plugin.getConfigManager().limitPerBag - rewardInSlot.getMoney();
+				}
+			} else if (is == null || is.getType() == Material.AIR) {
+				space = space + plugin.getConfigManager().limitPerBag;
+			}
+		}
+		plugin.getMessages().debug("%s has room for %s BagOfGold in the inventory", player.getName(), space);
+		return space;
 	}
 
 }

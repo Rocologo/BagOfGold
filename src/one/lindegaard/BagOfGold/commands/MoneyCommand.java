@@ -513,6 +513,9 @@ public class MoneyCommand implements ICommand {
 					PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 					double amount = args[1].equalsIgnoreCase("all") ? ps.getBankBalance() + ps.getBankBalanceChanges()
 							: Double.valueOf(args[1]);
+					double space=plugin.getEconomyManager().getSpaceForMoney(player);
+					if (amount>space)
+						amount=space;
 					for (Iterator<NPC> npcList = CitizensAPI.getNPCRegistry().iterator(); npcList.hasNext();) {
 						NPC npc = npcList.next();
 						if (plugin.getBankManager().isBagOfGoldBanker(npc.getEntity())) {

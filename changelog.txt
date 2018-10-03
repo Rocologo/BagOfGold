@@ -1,3 +1,7 @@
+V2.1.1
+* Fixed Ticket 42 - losing money when deposit all money into the bank. (https://github.com/Rocologo/BagOfGold/issues/42)
+* Fixed duplication bug appeared when player tried to withdraw more money from the bank than the player had room for.
+* Development of GRINGOTTS_STYLE began, but DONT use it until its finish. There still stuff to do before it works. 
 V2.1.0
 * Fixed Ticket 42 - losing money when deposit all money into the bank. (https://github.com/Rocologo/BagOfGold/issues/42)
 V2.0.9

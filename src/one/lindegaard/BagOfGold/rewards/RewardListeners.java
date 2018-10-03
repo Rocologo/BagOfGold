@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.Reward;
@@ -36,8 +35,6 @@ public class RewardListeners implements Listener {
 				plugin.getMessages().debug(
 						"RewardListener: InventoryCloseEvent adjusting balance to Amount of BagOfGold in Inventory: %s",
 						ps.toString());
-				
-				
 
 				plugin.getEconomyManager().adjustBalanceToamountInInventory(player);
 			} else {
@@ -122,4 +119,6 @@ public class RewardListeners implements Listener {
 			}
 		}
 	}
+
+
 }

@@ -31,6 +31,13 @@ public class ConfigManager extends AutoConfig {
 						+ "\nDropMoneyOnGround Settings / BagOfGold Item Settings"
 						+ "\n########################################################################");
 
+		setCategoryComment("gringotts",
+				"########################################################################"
+						+ "\nGringotts Style"
+						+ "\n########################################################################"
+						+ "\nOBS DONT USE GRINGOTTS_STYLE YET! Gringotts seems to die with Minecraft 1.13, but I have made a Gringotts style"
+						+ "\nfor Gringotts lovers (https://www.spigotmc.org/resources/gringotts.42071/)");
+
 		setCategoryComment("banker",
 				"########################################################################" + "\nBanker NPC settings"
 						+ "\n########################################################################"
@@ -104,7 +111,7 @@ public class ConfigManager extends AutoConfig {
 	public String dropMoneyOnGroundMoneyCommandAlias = "money";
 
 	@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "Here you can set the type of the ITEM to be dropped."
-			+ "\nYou can choose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\". The default is ITEM."
+			+ "\nYou can choose between \"ITEM\",\"KILLED\",\"SKULL\",\"KILLER\",\"GRINGOTTS_STYLE\". The default is SKULL."
 			+ "\nThe value will be showed above the item." + "\nITEM: The reward is dropped as a normal Minecraft item."
 			+ "\nSKULL: The reward is dropped as a SKULL with a custom texture. You can generate custom texture value"
 			+ "\nand custom texture signature at http://mineskin.org" + "\nExamples:"
@@ -127,7 +134,8 @@ public class ConfigManager extends AutoConfig {
 	public String dropMoneyOnGroundItemtype = "SKULL";
 
 	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used when you have chosen drop-money-on-ground-itemtype: ITEM. "
-			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE ")
+			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE"
+			+"\nChoose from this list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE, GOLD")
@@ -146,6 +154,24 @@ public class ConfigManager extends AutoConfig {
 	public String dropMoneyOnGroundSkullTextureSignature = "m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=";
 
 	// #####################################################################################
+	// Gringotts style
+	// #####################################################################################
+	@ConfigField(name = "denomination", category = "gringotts", comment = 
+				  "If you want to have an Gringotts style economy you can set "
+				+"\n'drop-money-on-ground-itemtype: GRINGOTTS_STYLE' and then set the value of the"
+				+"\nvalue of the items here. You can add as many items as you want, but be"
+				+"\ncareful when you choose the value of the item so you dont ruin the"
+				+"\nserver economy. The Gringoots defaul values is EMERALD=1 and EMERALD_BLOCK=9"
+				+"\nAnother good combination would be GOLD_NUGGET=1, GOLD_INGOT=9, GOLD_BLOCK=81"
+				+"\nChoose from this list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html"
+				+"\nThe value of the denomination must be desending.")
+	public LinkedHashMap<String, String> gringottsDenomination = new LinkedHashMap<String, String>();
+	{		
+		gringottsDenomination.put("EMERALD_BLOCK", "9");
+		gringottsDenomination.put("EMERALD", "1");
+	}
+
+	// #####################################################################################
 	// Banker Settings
 	// #####################################################################################
 	@ConfigField(name = "banker-actions", category = "banker", comment = "Change the numbers or add new lines if you like.")
@@ -159,8 +185,7 @@ public class ConfigManager extends AutoConfig {
 		actions.put("withdraw100", "100");
 		actions.put("withdraw1000", "1000");
 		actions.put("withdrawall", "All");
-		
-		
+
 	}
 
 	// #####################################################################################
