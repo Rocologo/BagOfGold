@@ -24,7 +24,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Reward;
 import one.lindegaard.BagOfGold.skins.Skins;
 import one.lindegaard.BagOfGold.skins.Skins_1_10_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_11_R1;

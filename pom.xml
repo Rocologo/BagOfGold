@@ -6,8 +6,8 @@
 	<groupId>one.lindegaard</groupId>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>2.1.1</version>
-	<!-- <version>2.1.1-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>2.1.1</version> -->
+	<version>2.1.2-SNAPSHOT-B${build.number}</version>
 	<name>BagOfGold</name>
 	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
 	<description>BagOfGold is an Item based eConomy plugin, which can replace Essentials Economy, CraftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. </description>
@@ -31,7 +31,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<spigotmc113.version>1.13.1-R0-1-SNAPSHOT</spigotmc113.version>
+		<spigotmc113.version>1.13.2-R1</spigotmc113.version>
 		<craftbukkit113R2.version>1.13-R2</craftbukkit113R2.version>
 		<craftbukkit113R1.version>1.13-R1</craftbukkit113R1.version>
 		<craftbukkit112R1.version>1.12-R1</craftbukkit112R1.version>
@@ -48,10 +48,10 @@
 		<mavenJarPlugin.version>3.1.0</mavenJarPlugin.version>
 		<mavenShadePlugin.version>3.1.1</mavenShadePlugin.version>
 
-		<mobhunting.version>6.0.0-SNAPSHOT-B668</mobhunting.version>
+		<mobhunting.version>6.0.8</mobhunting.version>
 
 		<vault.version>1.6.6</vault.version>
-		<bstats.version>1.2</bstats.version>
+		<bstats.version>1.4</bstats.version>
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
 		<EssentialsX.version>2.0.1</EssentialsX.version>
 		<spigetupdate.version>1.4.0</spigetupdate.version>
@@ -213,8 +213,8 @@
 
 		<!-- bStats repository -->
 		<repository>
-			<id>bstats-repo</id>
-			<url>http://repo.bstats.org/content/repositories/releases/</url>
+			<id>CodeMC</id>
+			<url>https://repo.codemc.org/repository/maven-public</url>
 		</repository>
 
 		<!-- PlaceholderAPI -->
@@ -244,7 +244,7 @@
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc113.version}</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/spigot-1.13.1.jar</systemPath>
+			<systemPath>${project.basedir}/lib/spigot-1.13.2.jar</systemPath>
 		</dependency>
 
 		<!-- CraftBukkit -->
@@ -254,7 +254,7 @@
 			<version>${craftbukkit113R2.version}</version>
 			<!-- <scope>provided</scope> -->
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/craftbukkit-1.13.1.jar</systemPath>
+			<systemPath>${project.basedir}/lib/craftbukkit-1.13.2.jar</systemPath>
 		</dependency>
 		<!-- CraftBukkit -->
 		<dependency>

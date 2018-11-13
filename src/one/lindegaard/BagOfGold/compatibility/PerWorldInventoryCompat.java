@@ -63,7 +63,7 @@ public class PerWorldInventoryCompat implements Listener {
 							@Override
 							public void run() {
 								plugin.getMessages().debug("onInventoryLoad");
-								plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
+								plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToBalance(event.getPlayer());
 							}
 						}, 20);
 					}

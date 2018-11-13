@@ -1,4 +1,4 @@
-package one.lindegaard.BagOfGold;
+package one.lindegaard.BagOfGold.rewards;
 
 import java.util.ArrayList;
 
@@ -18,8 +18,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 
-import one.lindegaard.MobHunting.MobHunting;
-import one.lindegaard.MobHunting.mobs.MinecraftMob;
+import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 
 public class Reward {
 
@@ -53,7 +53,7 @@ public class Reward {
 	public Reward(Reward reward) {
 		this.displayname = reward.getDisplayname();
 		this.money = reward.getMoney();
-		this.uuid = reward.getRewardUUID();
+		this.uuid = reward.getRewardType();
 		this.skinUUID = reward.getSkinUUID();
 		this.uniqueId = reward.getUniqueUUID();
 	}
@@ -120,7 +120,7 @@ public class Reward {
 					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
 																				// id
 					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()),
-					MobHunting.getAPI().getMessages().getString("mobhunting.reward.name"))); // skin
+					BagOfGold.getAPI().getMessages().getString("mobhunting.reward.name"))); // skin
 
 	}
 
@@ -141,7 +141,7 @@ public class Reward {
 	/**
 	 * @return the uuid
 	 */
-	public UUID getRewardUUID() {
+	public UUID getRewardType() {
 		return uuid;
 	}
 

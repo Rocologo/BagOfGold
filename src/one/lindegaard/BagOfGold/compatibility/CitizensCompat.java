@@ -67,7 +67,7 @@ public class CitizensCompat implements Listener {
 			return false;
 	}
 
-	public boolean isNPC(Entity entity) {
+	public static boolean isNPC(Entity entity) {
 		if (isSupported())
 			return citizensAPI.getNPCRegistry().isNPC(entity);
 		return false;

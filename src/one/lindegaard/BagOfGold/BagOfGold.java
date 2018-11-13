@@ -24,6 +24,9 @@ import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
+import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
+import one.lindegaard.BagOfGold.rewards.EconomyManager;
+import one.lindegaard.BagOfGold.rewards.GringottsItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
 import one.lindegaard.BagOfGold.storage.IDataStore;
@@ -61,6 +64,8 @@ public class BagOfGold extends JavaPlugin {
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
 	private PlayerBalanceManager mPlayerBalanceManager;
+	private GringottsItems mGringottsItems;
+	private BagOfGoldItems mBagOfGoldItems;
 
 	private boolean mInitialized = false;
 
@@ -196,7 +201,10 @@ public class BagOfGold extends JavaPlugin {
 		//for (int n = 0; n < 3; n++) {
 		//	getMessages().debug("UUID=%s", UUID.randomUUID().toString());
 		//}
-
+		
+		mGringottsItems = new GringottsItems(this);
+		mBagOfGoldItems = new BagOfGoldItems(this);
+		
 		mInitialized = true;
 
 	}
@@ -367,4 +375,11 @@ public class BagOfGold extends JavaPlugin {
 		return mPlayerBalanceManager;
 	}
 
+	public GringottsItems getgringottsItems(){
+		return mGringottsItems;
+	}
+	
+	public BagOfGoldItems getBagOfGoldItems(){
+		return mBagOfGoldItems;
+	}
 }
