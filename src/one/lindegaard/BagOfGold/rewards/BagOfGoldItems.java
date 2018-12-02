@@ -69,17 +69,33 @@ public class BagOfGoldItems implements Listener {
 	public BagOfGoldItems(BagOfGold plugin) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), "rewards.yml");
-		if (isBagOfGoldStyle())
-			Bukkit.getPluginManager().registerEvents(this, plugin);
 		loadAllStoredRewardsFromMobHunting();
 		loadAllStoredRewards();
+		if (isBagOfGoldStyle()) {
+			plugin.getMessages().debug("BagOfGoldItems: register events");
+			Bukkit.getPluginManager().registerEvents(this, plugin);
+		} else
+			plugin.getMessages().debug("BagOfGoldItems: could not register events");
+		
 	}
 
 	public boolean isBagOfGoldStyle() {
-		return plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("SKULL")
-				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("ITEM")
-				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("KILLED")
-				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("KILLER");
+		return plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")
+				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED")
+				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLER");
+	}
+
+	public HashMap<Integer, Double> getDroppedMoney() {
+		return droppedMoney;
+	}
+
+	public HashMap<UUID, Reward> getReward() {
+		return placedMoney_Reward;
+	}
+
+	public HashMap<UUID, Location> getLocations() {
+		return placedMoney_Location;
 	}
 
 	public String format(double money) {
@@ -278,7 +294,7 @@ public class BagOfGoldItems implements Listener {
 			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + reward.getDisplayname(),
 					"Hidden:" + reward.getMoney(), "Hidden:" + reward.getRewardType(),
 					reward.getMoney() == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(),
-					"Hidden:" + reward.getSkinUUID(), plugin.getMessages().getString("mobhunting.reward.name"))));
+					"Hidden:" + reward.getSkinUUID(), plugin.getMessages().getString("bagofgold.reward.name"))));
 
 		if (reward.getMoney() == 0)
 			skullMeta.setDisplayName(
@@ -373,7 +389,7 @@ public class BagOfGoldItems implements Listener {
 				if (file2.exists()) {
 					plugin.getMessages().debug("Loading rewards from MobHunting first time.");
 					loadAllStoredRewardsFromMobHunting();
-				} 
+				}
 				return;
 			}
 
@@ -490,7 +506,7 @@ public class BagOfGoldItems implements Listener {
 		Player player = event.getPlayer();
 
 		if (isFakeReward(item)) {
-			player.sendMessage(ChatColor.RED + "[MobHunting] WARNING, this was a FAKE reward with no value");
+			player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward with no value");
 			return;
 		}
 
@@ -517,7 +533,7 @@ public class BagOfGoldItems implements Listener {
 				plugin.getMessages().debug("%s dropped %s money. (# of rewards left=%s)", player.getName(),
 						format(money), droppedMoney.size());
 				plugin.getMessages().playerActionBarMessageQueue(player,
-						plugin.getMessages().getString("mobhunting.moneydrop", "money", format(money), "rewardname",
+						plugin.getMessages().getString("bagofgold.moneydrop", "money", format(money), "rewardname",
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 										+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 												? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
@@ -538,7 +554,7 @@ public class BagOfGoldItems implements Listener {
 		Block block = event.getBlockPlaced();
 
 		if (isFakeReward(is)) {
-			player.sendMessage(ChatColor.RED + "[MobHunting] WARNING, this was a FAKE reward with no value");
+			player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward with no value");
 			return;
 		}
 
@@ -561,6 +577,48 @@ public class BagOfGoldItems implements Listener {
 				plugin.getEconomyManager().removeMoneyFromBalance(player, reward.getMoney());
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onRewardBlockBreak(BlockBreakEvent event) {
+		if (event.isCancelled())
+			return;
+
+		CustomItems customItems = new CustomItems(plugin);
+
+		Block block = event.getBlock();
+		if (Reward.hasReward(block)) {
+			plugin.getMessages().debug("A BagOfGold block was broken."); 
+			Reward reward = Reward.getReward(block);
+			block.getDrops().clear();
+			block.setType(Material.AIR);
+			block.removeMetadata(Reward.MH_REWARD_DATA, plugin);
+			ItemStack is;
+			if (reward.isBagOfGoldReward()) {
+				is = customItems.getCustomtexture(reward.getRewardType(), reward.getDisplayname(),
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, reward.getMoney(),
+						reward.getUniqueUUID(), reward.getSkinUUID());
+
+				Item item = block.getWorld().dropItemNaturally(block.getLocation(), is);
+
+				String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+						? format(reward.getMoney())
+						: (reward.getMoney() == 0 ? reward.getDisplayname()
+								: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")");
+				item.setCustomName(
+						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
+				item.setCustomNameVisible(true);
+				item.setMetadata(Reward.MH_REWARD_DATA,
+						new FixedMetadataValue(plugin, new Reward(reward.getHiddenLore())));
+				if (placedMoney_Location.containsKey(reward.getUniqueUUID()))
+					placedMoney_Location.remove(reward.getUniqueUUID());
+				if (placedMoney_Reward.containsKey(reward.getUniqueUUID()))
+					placedMoney_Reward.remove(reward.getUniqueUUID());
+			}
+
+		}
+
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
@@ -658,18 +716,20 @@ public class BagOfGoldItems implements Listener {
 				Item item = (Item) entity;
 
 				if (isFakeReward(item)) {
-					player.sendMessage(ChatColor.RED + "[MobHunting] WARNING, this was a FAKE reward with no value");
+					player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward with no value");
 					return;
 				}
 
 				if (Reward.isReward(item)) {
 					if (droppedMoney.containsKey(entity.getEntityId())) {
+						droppedMoney.remove(entity.getEntityId());
 						Reward reward = Reward.getReward(item);
+						item.remove();
 						if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 							double addedMoney = 0;
-							plugin.getMessages().debug("AddMoney if possible: %s", reward.getMoney());
+							//plugin.getMessages().debug("AddMoney if possible: %s", reward.getMoney());
 							addedMoney = addBagOfGoldMoneyToPlayer(player, reward.getMoney());
-							plugin.getMessages().debug("AddedMoney=%s", addedMoney);
+							//plugin.getMessages().debug("AddedMoney=%s", addedMoney);
 
 							if (addedMoney > 0) {
 								PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
@@ -702,47 +762,6 @@ public class BagOfGoldItems implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onRewardBlockBreak(BlockBreakEvent event) {
-		if (event.isCancelled())
-			return;
-
-		CustomItems customItems = new CustomItems(plugin);
-
-		Block block = event.getBlock();
-		if (Reward.hasReward(block)) {
-			Reward reward = Reward.getReward(block);
-			block.getDrops().clear();
-			block.setType(Material.AIR);
-			block.removeMetadata(Reward.MH_REWARD_DATA, plugin);
-			ItemStack is;
-			if (reward.isBagOfGoldReward()) {
-				is = customItems.getCustomtexture(reward.getRewardType(), reward.getDisplayname(),
-						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, reward.getMoney(),
-						reward.getUniqueUUID(), reward.getSkinUUID());
-
-				Item item = block.getWorld().dropItemNaturally(block.getLocation(), is);
-
-				String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-						? format(reward.getMoney())
-						: (reward.getMoney() == 0 ? reward.getDisplayname()
-								: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")");
-				item.setCustomName(
-						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
-				item.setCustomNameVisible(true);
-				item.setMetadata(Reward.MH_REWARD_DATA,
-						new FixedMetadataValue(plugin, new Reward(reward.getHiddenLore())));
-				if (placedMoney_Location.containsKey(reward.getUniqueUUID()))
-					placedMoney_Location.remove(reward.getUniqueUUID());
-				if (placedMoney_Reward.containsKey(reward.getUniqueUUID()))
-					placedMoney_Reward.remove(reward.getUniqueUUID());
-			}
-
-		}
-
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		Inventory inventory = event.getInventory();
@@ -751,7 +770,7 @@ public class BagOfGoldItems implements Listener {
 
 			if (isFakeReward(helmet)) {
 				player.sendMessage(
-						ChatColor.RED + "[MobHunting] WARNING, you have a reward on your head. It was removed.");
+						ChatColor.RED + "[BagOfGold] WARNING, you can't wear a reward on your head. It was removed.");
 				event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
 				return;
 			}
@@ -807,63 +826,6 @@ public class BagOfGoldItems implements Listener {
 			if (owner != null && owner.getName() != null)
 				plugin.getMessages().playerActionBarMessageQueue(player,
 						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + owner.getName());
-		} else if (block.getType() == Material.LEGACY_SKULL) {
-			Skull skullState = (Skull) block.getState();
-			switch (skullState.getSkullType()) {
-			case PLAYER:
-				if (Misc.isMC19OrNewer()) {
-					OfflinePlayer owner = skullState.getOwningPlayer();
-					if (owner != null && owner.getName() != null) {
-						plugin.getMessages().playerActionBarMessageQueue(player,
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-										+ owner.getName());
-					} else
-						plugin.getMessages().playerActionBarMessageQueue(player,
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-										+ plugin.getMessages().getString("mobhunting.reward.customtexture"));
-				} else if (skullState.hasOwner()) {
-					@SuppressWarnings("deprecation")
-					String owner = skullState.getOwner();
-					if (owner != null && !owner.equalsIgnoreCase("")) {
-						plugin.getMessages().playerActionBarMessageQueue(player,
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + owner);
-					} else
-						plugin.getMessages().playerActionBarMessageQueue(player,
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-										+ plugin.getMessages().getString("mobhunting.reward.customtexture"));
-				} else
-					plugin.getMessages().playerActionBarMessageQueue(player,
-							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-									+ plugin.getMessages().getString("mobhunting.reward.steve"));
-				break;
-			case CREEPER:
-				plugin.getMessages().playerActionBarMessageQueue(player,
-						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-								+ plugin.getMessages().getString("mobs.Creeper.name"));
-				break;
-			case SKELETON:
-				plugin.getMessages().playerActionBarMessageQueue(player,
-						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-								+ plugin.getMessages().getString("mobs.Skeleton.name"));
-				break;
-			case WITHER:
-				plugin.getMessages().playerActionBarMessageQueue(player,
-						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-								+ plugin.getMessages().getString("mobs.Wither.name"));
-				break;
-			case ZOMBIE:
-				plugin.getMessages().playerActionBarMessageQueue(player,
-						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-								+ plugin.getMessages().getString("mobs.Zombie.name"));
-				break;
-			case DRAGON:
-				plugin.getMessages().playerActionBarMessageQueue(player,
-						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-								+ plugin.getMessages().getString("mobs.EnderDragon.name"));
-				break;
-			default:
-				break;
-			}
 		}
 	}
 
@@ -885,12 +847,12 @@ public class BagOfGoldItems implements Listener {
 
 		if (!(Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor))) {
 			if (isFakeReward(isCurrentSlot)) {
-				player.sendMessage(ChatColor.RED + "[MobHunting] WARNING, this is a FAKE reward. It was removed.");
+				player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
 				isCurrentSlot.setType(Material.AIR);
 				return;
 			}
 			if (isFakeReward(isCursor)) {
-				player.sendMessage(ChatColor.RED + "[MobHunting] WARNING, this is a FAKE reward. It was removed.");
+				player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
 				isCursor.setType(Material.AIR);
 				return;
 			}
@@ -917,8 +879,8 @@ public class BagOfGoldItems implements Listener {
 		if (!(slotType == SlotType.CONTAINER || slotType == SlotType.QUICKBAR || slotType == SlotType.OUTSIDE
 				|| slotType == SlotType.RESULT || (slotType == SlotType.ARMOR && event.getSlot() == 39))) {
 			if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor)) {
-				Reward reward = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot)
-						: Reward.getReward(isCursor);
+				//Reward reward = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot)
+				//		: Reward.getReward(isCursor);
 				// plugin.getMessages().learn(player,
 				// plugin.getMessages().getString("mobhunting.learn.rewards.no-use",
 				// "rewardname", reward.getDisplayname()));
@@ -930,8 +892,8 @@ public class BagOfGoldItems implements Listener {
 
 		if (action == InventoryAction.CLONE_STACK || action == InventoryAction.UNKNOWN) {
 			if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor)) {
-				Reward reward = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot)
-						: Reward.getReward(isCursor);
+				//Reward reward = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot)
+				//		: Reward.getReward(isCursor);
 				// plugin.getMessages().learn(player,
 				// plugin.getMessages().getString("mobhunting.learn.rewards.no-clone",
 				// "rewardname", reward.getDisplayname()));

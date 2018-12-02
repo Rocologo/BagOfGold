@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -17,14 +16,35 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
 
-public class EconomyManager implements Listener {
+public class EconomyManager {
 
 	private BagOfGold plugin;
-
+	private PickupRewards pickupRewards;
+	
 	public EconomyManager(BagOfGold plugin) {
 		this.plugin = plugin;
-		Bukkit.getPluginManager().registerEvents(this, plugin);
+		
+		pickupRewards = new PickupRewards(plugin);
+
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
+		Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
+		
+		if (Misc.isMC112OrNewer() && eventDoesExists())
+			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), plugin);
+		else
+			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
+
+	}
+	
+	private boolean eventDoesExists() {
+		try {
+			@SuppressWarnings({ "rawtypes", "unused" })
+			Class cls = Class.forName("org.bukkit.event.entity.EntityPickupItemEvent");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+
 	}
 
 	/**

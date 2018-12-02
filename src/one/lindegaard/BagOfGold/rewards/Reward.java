@@ -120,7 +120,7 @@ public class Reward {
 					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
 																				// id
 					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()),
-					BagOfGold.getAPI().getMessages().getString("mobhunting.reward.name"))); // skin
+					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.name"))); // skin
 
 	}
 
@@ -289,7 +289,7 @@ public class Reward {
 	}
 
 	public static boolean hasReward(Block block) {
-		return block.getType() == Material.SKELETON_SKULL && block.hasMetadata(MH_REWARD_DATA);
+		return (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD) && block.hasMetadata(MH_REWARD_DATA);
 	}
 
 	public static Reward getReward(Block block) {

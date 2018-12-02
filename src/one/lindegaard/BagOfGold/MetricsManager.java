@@ -28,7 +28,7 @@ public class MetricsManager {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
 			public void run() {
 				try {
-					URL url = new URL("https://www.bstats.org/");
+					URL url = new URL("https://bstats.org/");
 					if (!started && HttpTools.isHomePageReachable(url)) {
 						startBStatsMetrics();
 						plugin.getMessages().debug("Metrics reporting to Https://bstats.org has started.");

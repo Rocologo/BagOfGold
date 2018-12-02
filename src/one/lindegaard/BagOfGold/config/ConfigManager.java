@@ -230,6 +230,10 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/actionannouncer.1320/")
 	public boolean enableIntegrationActionAnnouncer = true;
 
+	@ConfigField(name = "protocollib.enable_integration_protocollib", category = "plugins", comment = "Enable/Disable integration with ProtocolLib."
+			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
+	public boolean enableIntegrationProtocolLib = true;
+	
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
