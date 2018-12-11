@@ -1,3 +1,5 @@
+V2.5.1
+* Fixed bug where you could not withdraw bagofgold using the BankSigns
 V2.5.0
 * Updated to bStats 1.4
 * Dependency for MobHunting removed. MobHunting and BagOfGold is not dependend on each other anymore. 

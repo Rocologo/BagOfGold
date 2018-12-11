@@ -277,7 +277,7 @@ public class EconomyManager {
 			} else {
 				ps.setBankBalanceChanges(ps.getBankBalanceChanges() - amount);
 			}
-			plugin.getMessages().debug("bankWithdraw: %s", ps.toString());
+			plugin.getMessages().debug("bankWithdraw: %s -  ", ps.toString());
 
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
@@ -445,7 +445,7 @@ public class EconomyManager {
 
 	public double getSpaceForMoney(Player player) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
-			return plugin.getBagOfGoldItems().getAmountOfBagOfGoldMoneyInInventory(player);
+			return plugin.getBagOfGoldItems().getSpaceForBagOfGoldMoney(player);
 		else if (plugin.getgringottsItems().isGringottsStyle()) {
 			return plugin.getgringottsItems().getSpaceForGringottsMoney(player);
 		} else {

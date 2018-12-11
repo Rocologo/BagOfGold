@@ -79,8 +79,8 @@ public class BankSign implements Listener {
 							} catch (NumberFormatException e) {
 								plugin.getMessages().playerSendMessage(player,
 										plugin.getMessages().getString("bagofgold.banksign.line3.not_a_number",
-												"number", sign.getLine(2), "everything", plugin.getMessages()
-														.getString("bagofgold.banksign.line3.everything")));
+												"number", sign.getLine(2), "everything",
+												plugin.getMessages().getString("bagofgold.banksign.line3.everything")));
 								return;
 							}
 						}
@@ -108,6 +108,7 @@ public class BankSign implements Listener {
 				} else if (signType
 						.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line2.withdraw"))) {
 					double space = plugin.getEconomyManager().getSpaceForMoney(player);
+					plugin.getMessages().debug("BankSign: space=%s", space);
 					if (sign.getLine(2).isEmpty() || sign.getLine(2)
 							.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line3.everything"))) {
 						moneyOnSign = plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()).balance;
@@ -118,8 +119,8 @@ public class BankSign implements Listener {
 						} catch (NumberFormatException e) {
 							plugin.getMessages().playerSendMessage(player,
 									plugin.getMessages().getString("bagofgold.banksign.line3.not_a_number", "number",
-											sign.getLine(2), "everything", plugin.getMessages()
-													.getString("bagofgold.banksign.line3.everything")));
+											sign.getLine(2), "everything",
+											plugin.getMessages().getString("bagofgold.banksign.line3.everything")));
 							return;
 						}
 					}
@@ -131,17 +132,24 @@ public class BankSign implements Listener {
 
 						if (space < moneyOnSign)
 							moneyOnSign = space;
-						plugin.getEconomyManager().bankWithdraw(player.getUniqueId().toString(), moneyOnSign);
-						plugin.getEconomyManager().depositPlayer(player, moneyOnSign);
+						if (plugin.getEconomyManager().bankWithdraw(player.getUniqueId().toString(), moneyOnSign)
+								.transactionSuccess()) {
+							plugin.getEconomyManager().depositPlayer(player, moneyOnSign);
 
-						plugin.getMessages().debug("%s withdraw %s %s from Bank", player.getName(),
-								plugin.getEconomyManager().format(money),
-								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
-						plugin.getMessages().playerSendMessage(player,
-								plugin.getMessages().getString("bagofgold.banksign.withdraw", "money",
-										plugin.getEconomyManager().format(moneyOnSign), "rewardname",
-										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-												+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+							plugin.getMessages().debug("%s withdraw %s %s from Bank", player.getName(),
+									plugin.getEconomyManager().format(Misc.round(moneyOnSign)),
+									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
+							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
+									"bagofgold.banksign.withdraw", "money",
+									plugin.getEconomyManager().format(moneyOnSign), "rewardname",
+									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+						} else {
+							plugin.getMessages().debug("%s could not withdraw %s %s from Bank", player.getName(),
+									plugin.getEconomyManager().format(moneyOnSign),
+									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
+							
+						}
 					} else {
 						double bal = Misc
 								.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()).balance);
