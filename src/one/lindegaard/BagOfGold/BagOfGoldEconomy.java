@@ -20,7 +20,7 @@ public class BagOfGoldEconomy implements Economy {
 	public BagOfGoldEconomy(BagOfGold plugin) {
 		this.plugin = plugin;
 		if (!isEnabled()) {
-			//BagOfGold is NOT used as an Economy plugin
+			// BagOfGold is NOT used as an Economy plugin
 			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(Economy.class);
 			if (economyProvider == null) {
@@ -59,8 +59,8 @@ public class BagOfGoldEconomy implements Economy {
 
 	/**
 	 * Some economy plugins round off after a certain number of digits. This
-	 * function returns the number of digits the plugin keeps or -1 if no
-	 * rounding occurs.
+	 * function returns the number of digits the plugin keeps or -1 if no rounding
+	 * occurs.
 	 * 
 	 * @return number of digits after the decimal point kept
 	 */
@@ -76,8 +76,7 @@ public class BagOfGoldEconomy implements Economy {
 	 * Format amount into a human readable String This provides translation into
 	 * economy specific formatting to improve consistency between plugins.
 	 *
-	 * @param amount
-	 *            to format
+	 * @param amount to format
 	 * @return Human readable string describing amount
 	 */
 	@Override
@@ -103,8 +102,7 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Gets balance of a player
 	 * 
-	 * @param player
-	 *            of the player
+	 * @param player of the player
 	 * @return Amount currently held in players account
 	 */
 	@Override
@@ -116,8 +114,8 @@ public class BagOfGoldEconomy implements Economy {
 	}
 
 	/**
-	 * @deprecated As of VaultAPI 1.4 use
-	 *             {@link #getBalance(OfflinePlayer, String)} instead.
+	 * @deprecated As of VaultAPI 1.4 use {@link #getBalance(OfflinePlayer, String)}
+	 *             instead.
 	 */
 	@Override
 	public double getBalance(String playername, String world) {
@@ -128,14 +126,11 @@ public class BagOfGoldEconomy implements Economy {
 	}
 
 	/**
-	 * Gets balance of a player on the specified world. IMPLEMENTATION SPECIFIC
-	 * - if an economy plugin does not support this the global balance will be
-	 * returned.
+	 * Gets balance of a player on the specified world. IMPLEMENTATION SPECIFIC - if
+	 * an economy plugin does not support this the global balance will be returned.
 	 * 
-	 * @param player
-	 *            to check
-	 * @param world
-	 *            name of the world
+	 * @param player to check
+	 * @param world  name of the world
 	 * @return Amount currently held in players account
 	 */
 	@Override
@@ -175,8 +170,7 @@ public class BagOfGoldEconomy implements Economy {
 	 * Attempts to create a player account for the given player. The player is
 	 * auto-created when the player logon to the server.
 	 * 
-	 * @param player
-	 *            OfflinePlayer
+	 * @param player OfflinePlayer
 	 * @return if the account creation was successful
 	 */
 	@Override
@@ -201,13 +195,11 @@ public class BagOfGoldEconomy implements Economy {
 
 	/**
 	 * Attempts to create a player account for the given player on the specified
-	 * world IMPLEMENTATION SPECIFIC - if an economy plugin does not support
-	 * this the global balance will be returned.
+	 * world IMPLEMENTATION SPECIFIC - if an economy plugin does not support this
+	 * the global balance will be returned.
 	 * 
-	 * @param player
-	 *            OfflinePlayer
-	 * @param worldName
-	 *            String name of the world
+	 * @param player    OfflinePlayer
+	 * @param worldName String name of the world
 	 * @return if the account creation was successful
 	 */
 	@Override
@@ -219,9 +211,8 @@ public class BagOfGoldEconomy implements Economy {
 	}
 
 	/**
-	 * Returns the name of the currency in plural form. If the economy being
-	 * used does not support currency names then an empty string will be
-	 * returned.
+	 * Returns the name of the currency in plural form. If the economy being used
+	 * does not support currency names then an empty string will be returned.
 	 * 
 	 * @return name of the currency (plural)
 	 */
@@ -234,9 +225,8 @@ public class BagOfGoldEconomy implements Economy {
 	}
 
 	/**
-	 * Returns the name of the currency in singular form. If the economy being
-	 * used does not support currency names then an empty string will be
-	 * returned.
+	 * Returns the name of the currency in singular form. If the economy being used
+	 * does not support currency names then an empty string will be returned.
 	 * 
 	 * @return name of the currency (singular)
 	 */
@@ -263,10 +253,8 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Deposit an amount to a player - DO NOT USE NEGATIVE AMOUNTS
 	 * 
-	 * @param player
-	 *            to deposit to
-	 * @param amount
-	 *            Amount to deposit
+	 * @param player to deposit to
+	 * @param amount Amount to deposit
 	 * @return Detailed response of transaction
 	 */
 	@Override
@@ -279,8 +267,7 @@ public class BagOfGoldEconomy implements Economy {
 
 	/**
 	 * @deprecated As of VaultAPI 1.4 use
-	 *             {@link #depositPlayer(OfflinePlayer, String, double)}
-	 *             instead.
+	 *             {@link #depositPlayer(OfflinePlayer, String, double)} instead.
 	 */
 	@Override
 	public EconomyResponse depositPlayer(String playername, String world, double amount) {
@@ -291,16 +278,13 @@ public class BagOfGoldEconomy implements Economy {
 	}
 
 	/**
-	 * Deposit an amount to a player - DO NOT USE NEGATIVE AMOUNTS
-	 * IMPLEMENTATION SPECIFIC - if an economy plugin does not support this the
-	 * global balance will be returned.
+	 * Deposit an amount to a player - DO NOT USE NEGATIVE AMOUNTS IMPLEMENTATION
+	 * SPECIFIC - if an economy plugin does not support this the global balance will
+	 * be returned.
 	 * 
-	 * @param player
-	 *            to deposit to
-	 * @param worldName
-	 *            name of the world
-	 * @param amount
-	 *            Amount to deposit
+	 * @param player    to deposit to
+	 * @param worldName name of the world
+	 * @param amount    Amount to deposit
 	 * @return Detailed response of transaction
 	 */
 	@Override
@@ -326,10 +310,8 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Checks if the player account has the amount - DO NOT USE NEGATIVE AMOUNTS
 	 * 
-	 * @param player
-	 *            to check
-	 * @param amount
-	 *            to check for
+	 * @param player to check
+	 * @param amount to check for
 	 * @return True if <b>player</b> has <b>amount</b>, False else wise
 	 */
 	@Override
@@ -357,12 +339,9 @@ public class BagOfGoldEconomy implements Economy {
 	 * NEGATIVE AMOUNTS IMPLEMENTATION SPECIFIC - if an economy plugin does not
 	 * support this the global balance will be returned.
 	 * 
-	 * @param player
-	 *            to check
-	 * @param worldName
-	 *            to check with
-	 * @param amount
-	 *            to check for
+	 * @param player    to check
+	 * @param worldName to check with
+	 * @param amount    to check for
 	 * @return True if <b>player</b> has <b>amount</b>, False else wise
 	 */
 	@Override
@@ -388,12 +367,11 @@ public class BagOfGoldEconomy implements Economy {
 
 	/**
 	 * Checks if this player has an account on the server yet This will always
-	 * return true if the player has joined the server at least once as all
-	 * major economy plugins auto-generate a player account when the player
-	 * joins the server
+	 * return true if the player has joined the server at least once as all major
+	 * economy plugins auto-generate a player account when the player joins the
+	 * server
 	 * 
-	 * @param offlinePlayer
-	 *            to check
+	 * @param offlinePlayer to check
 	 * @return if the player has an account
 	 */
 	@Override
@@ -410,10 +388,8 @@ public class BagOfGoldEconomy implements Economy {
 	 * once as all major economy plugins auto-generate a player account when the
 	 * player joins the server
 	 * 
-	 * @param player
-	 *            to check in the world
-	 * @param worldName
-	 *            world-specific account
+	 * @param player    to check in the world
+	 * @param worldName world-specific account
 	 * @return if the player has an account
 	 */
 	@SuppressWarnings("deprecation")
@@ -436,10 +412,8 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Withdraw an amount from a player - DO NOT USE NEGATIVE AMOUNTS
 	 * 
-	 * @param player
-	 *            to withdraw from
-	 * @param amount
-	 *            Amount to withdraw
+	 * @param player to withdraw from
+	 * @param amount Amount to withdraw
 	 * @return Detailed response of transaction
 	 */
 	@Override
@@ -464,8 +438,7 @@ public class BagOfGoldEconomy implements Economy {
 
 	/**
 	 * @deprecated As of VaultAPI 1.4 use
-	 *             {@link #withdrawPlayer(OfflinePlayer, String, double)}
-	 *             instead.
+	 *             {@link #withdrawPlayer(OfflinePlayer, String, double)} instead.
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(String playername, String world, double amount) {
@@ -477,15 +450,12 @@ public class BagOfGoldEconomy implements Economy {
 
 	/**
 	 * Withdraw an amount from a player on a given world - DO NOT USE NEGATIVE
-	 * AMOUNTS IMPLEMENTATION SPECIFIC - if an economy plugin does not support
-	 * this the global balance will be returned.
+	 * AMOUNTS IMPLEMENTATION SPECIFIC - if an economy plugin does not support this
+	 * the global balance will be returned.
 	 * 
-	 * @param player
-	 *            to withdraw from
-	 * @param worldName
-	 *            - name of the world
-	 * @param amount
-	 *            Amount to withdraw
+	 * @param player    to withdraw from
+	 * @param worldName - name of the world
+	 * @param amount    Amount to withdraw
 	 * @return Detailed response of transaction
 	 */
 	@Override
@@ -524,22 +494,16 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Check if the player is a member of the bank account
 	 * 
-	 * @param name
-	 *            of the account
-	 * @param offlinePlayer
-	 *            to check membership
+	 * @param name          of the account
+	 * @param offlinePlayer to check membership
 	 * @return EconomyResponse Object
 	 */
 	@Override
 	public EconomyResponse isBankMember(String account, OfflinePlayer offlinePlayer) {
-		if (isEnabled()) {
-			if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
-				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
-			else
-				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
-		} else
-			return mEconomy.isBankMember(account, offlinePlayer);
-
+		if (isEnabled())
+			return plugin.getEconomyManager().isBankMember(account, offlinePlayer);
+		else
+			return mEconomy.isBankOwner(account, offlinePlayer);
 	}
 
 	/**
@@ -557,29 +521,22 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Check if a player is the owner of a bank account
 	 * 
-	 * @param name
-	 *            of the account
-	 * @param offlinePlayer
-	 *            to check for ownership
+	 * @param name          of the account
+	 * @param offlinePlayer to check for ownership
 	 * @return EconomyResponse Object
 	 */
 	@Override
 	public EconomyResponse isBankOwner(String account, OfflinePlayer offlinePlayer) {
-		if (isEnabled()) {
-			if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
-				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
-			else
-				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
-		} else
+		if (isEnabled())
+			return plugin.getEconomyManager().isBankOwner(account, offlinePlayer);
+		else
 			return mEconomy.isBankOwner(account, offlinePlayer);
-
 	}
 
 	/**
 	 * Returns the amount the bank has
 	 * 
-	 * @param name
-	 *            of the account
+	 * @param name of the account
 	 * @return EconomyResponse Object
 	 */
 	@Override
@@ -593,10 +550,8 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Deposit an amount into a bank account - DO NOT USE NEGATIVE AMOUNTS
 	 * 
-	 * @param name
-	 *            of the account
-	 * @param amount
-	 *            to deposit
+	 * @param name   of the account
+	 * @param amount to deposit
 	 * @return EconomyResponse Object
 	 */
 	@Override
@@ -608,13 +563,11 @@ public class BagOfGoldEconomy implements Economy {
 	}
 
 	/**
-	 * Returns true or false whether the bank has the amount specified - DO NOT
-	 * USE NEGATIVE AMOUNTS
+	 * Returns true or false whether the bank has the amount specified - DO NOT USE
+	 * NEGATIVE AMOUNTS
 	 * 
-	 * @param name
-	 *            of the account
-	 * @param amount
-	 *            to check for
+	 * @param name   of the account
+	 * @param amount to check for
 	 * @return EconomyResponse Object
 	 */
 	@Override
@@ -633,10 +586,8 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Withdraw an amount from a bank account - DO NOT USE NEGATIVE AMOUNTS
 	 * 
-	 * @param name
-	 *            of the account
-	 * @param amount
-	 *            to withdraw
+	 * @param name   of the account
+	 * @param amount to withdraw
 	 * @return EconomyResponse Object
 	 */
 	@Override
@@ -661,13 +612,10 @@ public class BagOfGoldEconomy implements Economy {
 	}
 
 	/**
-	 * Creates a bank account with the specified name and the player as the
-	 * owner
+	 * Creates a bank account with the specified name and the player as the owner
 	 * 
-	 * @param name
-	 *            of account
-	 * @param player
-	 *            the account should be linked to
+	 * @param name   of account
+	 * @param player the account should be linked to
 	 * @return EconomyResponse Object
 	 */
 	@Override
@@ -681,8 +629,7 @@ public class BagOfGoldEconomy implements Economy {
 	/**
 	 * Deletes a bank account with the specified name.
 	 * 
-	 * @param name
-	 *            of the bank to delete
+	 * @param name of the bank to delete
 	 * @return if the operation completed successfully
 	 */
 	@Override

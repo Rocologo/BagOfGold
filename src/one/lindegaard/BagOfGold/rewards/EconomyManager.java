@@ -331,6 +331,27 @@ public class EconomyManager {
 			return new EconomyResponse(0, 0, ResponseType.FAILURE, account + " has no bank account");
 	}
 
+	public EconomyResponse isBankOwner(String account, OfflinePlayer offlinePlayer) {
+			if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
+				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);		
+	}
+	
+	/**
+	 * Check if the player is a member of the bank account
+	 * 
+	 * @param name          of the account
+	 * @param offlinePlayer to check membership
+	 * @return EconomyResponse Object
+	 */
+	public EconomyResponse isBankMember(String account, OfflinePlayer offlinePlayer) {
+			if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
+				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+	}
+	
 	/**
 	 * Format the number
 	 * 
