@@ -370,7 +370,6 @@ public class BagOfGoldItems implements Listener {
 					ConfigurationSection section = config.createSection(uuid.toString());
 					section.set("location", location);
 					reward.save(section);
-					plugin.getMessages().debug("Saving a reward placed as a block.");
 					config.save(file);
 				}
 			}

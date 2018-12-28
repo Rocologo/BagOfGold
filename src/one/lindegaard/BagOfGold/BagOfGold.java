@@ -203,10 +203,7 @@ public class BagOfGold extends JavaPlugin {
 		//}
 		
 		mGringottsItems = new GringottsItems(this);
-		getMessages().debug("Before new BagOfGoldItems");
 		mBagOfGoldItems = new BagOfGoldItems(this);
-		getMessages().debug("After new BagOfGoldItems");
-		
 		mInitialized = true;
 
 	}
