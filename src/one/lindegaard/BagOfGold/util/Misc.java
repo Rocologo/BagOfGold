@@ -161,6 +161,11 @@ public class Misc {
 		return Bukkit.getServer().getName().equalsIgnoreCase("Glowstone");
 	}
 
+    public static boolean isPaperServer() {
+        return Bukkit.getServer().getName().equalsIgnoreCase("Paper")
+                && Bukkit.getServer().getVersion().toLowerCase().contains("paper");
+    }
+
 	public static boolean isSpigotServer() {
 		return Bukkit.getServer().getName().equalsIgnoreCase("CraftBukkit")
 				&& Bukkit.getServer().getVersion().toLowerCase().contains("spigot");

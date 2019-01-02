@@ -767,24 +767,24 @@ public class BagOfGoldItems implements Listener {
 		if (inventory.getType() == InventoryType.CRAFTING) {
 			ItemStack helmet = player.getEquipment().getHelmet();
 
-			if (isFakeReward(helmet)) {
-				player.sendMessage(
-						ChatColor.RED + "[BagOfGold] WARNING, you can't wear a reward on your head. It was removed.");
-				event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
-				return;
-			}
+            if (isFakeReward(helmet)) {
+                player.sendMessage(
+                        ChatColor.RED + "[BagOfGold] WARNING, you can't wear a reward on your head. It was removed.");
+                event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
+                return;
+            }
 
-			if (Reward.isReward(helmet)) {
-				Reward reward = Reward.getReward(helmet);
-				if (reward.isBagOfGoldReward()) {
-					// plugin.getMessages().learn(player,
-					// plugin.getMessages().getString("mobhunting.learn.rewards.no-helmet"));
-					event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
-					if (Misc.round(reward.getMoney()) != Misc
-							.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
-						dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), reward.getMoney());
-				}
-			}
+            if (Reward.isReward(helmet)) {
+                Reward reward = Reward.getReward(helmet);
+                if (reward.isBagOfGoldReward()) {
+                    // plugin.getMessages().learn(player,
+                    // plugin.getMessages().getString("mobhunting.learn.rewards.no-helmet"));
+                    event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
+                    if (Misc.round(reward.getMoney()) != Misc
+                            .round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
+                        dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), reward.getMoney());
+                }
+            }
 		}
 	}
 

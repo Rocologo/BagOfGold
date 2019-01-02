@@ -207,6 +207,7 @@ public class PlayerBalanceManager implements Listener {
 								pb.setBalanceChanges(0);
 								setPlayerBalance(offlinePlayer, pb);
 								plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToBalance((Player) offlinePlayer);
+                                plugin.getLogger().severe("Add01");
 							}
 						}
 					}

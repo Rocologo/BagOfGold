@@ -33,12 +33,12 @@ public class RewardListeners implements Listener {
 						ps.toString());
 
 				plugin.getEconomyManager().adjustBalanceToAmounOfMoneyInInventory(player);
-			} else {
+			} /*else {
 				plugin.getMessages().debug(
 						"RewardListener: InventoryCloseEvent adjusting Amount of BagOfGold in Inventory To Balance: %s",
 						ps.toString());
 				plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToBalance(player);
-			}
+			}*/
 		}
 	}
 
@@ -59,9 +59,9 @@ public class RewardListeners implements Listener {
 				ps.setBalanceChanges(0);
 				plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
 				if (Misc.round(ps.getBalance()) > amountInInventory)
-					plugin.getEconomyManager().addMoneyToPlayer(player,
-							Misc.round(ps.getBalance()) - amountInInventory);
-				else if (Misc.round(ps.getBalance()) < amountInInventory)
+                    plugin.getEconomyManager().addMoneyToPlayer(player,
+                            Misc.round(ps.getBalance()) - amountInInventory);
+                else if (Misc.round(ps.getBalance()) < amountInInventory)
 					plugin.getEconomyManager().removeBagOfGoldPlayer(player,
 							amountInInventory - Misc.round(ps.getBalance()));
 				plugin.getMessages().debug("RewardListernes: PlayerGameModeChange %s (to %s) new balance is %s",
@@ -83,8 +83,8 @@ public class RewardListeners implements Listener {
 		ps.setBalanceChanges(0);
 		plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
 		if (Misc.round(ps.getBalance()) > amountInInventory)
-			plugin.getEconomyManager().addMoneyToPlayer(player, Misc.round(ps.getBalance()) - amountInInventory);
-		else if (Misc.round(ps.getBalance()) < amountInInventory)
+            plugin.getEconomyManager().addMoneyToPlayer(player, Misc.round(ps.getBalance()) - amountInInventory);
+        else if (Misc.round(ps.getBalance()) < amountInInventory)
 			plugin.getEconomyManager().removeBagOfGoldPlayer(player, amountInInventory - Misc.round(ps.getBalance()));
 		plugin.getMessages().debug("RewardListernes: PlayerChangedWorld %s (from %s to %s) new balance is %s",
 				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
