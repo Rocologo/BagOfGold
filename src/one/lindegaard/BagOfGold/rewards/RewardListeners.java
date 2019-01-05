@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
-import one.lindegaard.BagOfGold.util.Misc;
 
 public class RewardListeners implements Listener {
 
@@ -29,15 +28,14 @@ public class RewardListeners implements Listener {
 		if (player.isOnline() && player.isValid()) {
 			if (player.getGameMode() == GameMode.SURVIVAL) {
 				plugin.getMessages().debug(
-						"RewardListener: InventoryCloseEvent adjusting balance to Amount of BagOfGold in Inventory: %s",
+						"RewardListener: InventoryCloseEvent adjusting Player Balance to Amount of BagOfGold in Inventory: %s",
 						ps.toString());
-
-				plugin.getEconomyManager().adjustBalanceToAmounOfMoneyInInventory(player);
+				plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 			} else {
 				plugin.getMessages().debug(
 						"RewardListener: InventoryCloseEvent adjusting Amount of BagOfGold in Inventory To Balance: %s",
 						ps.toString());
-				plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToBalance(player);
+				plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 			}
 		}
 	}
@@ -53,19 +51,20 @@ public class RewardListeners implements Listener {
 			@Override
 			public void run() {
 				Player player = (Player) event.getPlayer();
-				PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
-				double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
-				ps.setBalance(Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
-				ps.setBalanceChanges(0);
-				plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
-				if (Misc.round(ps.getBalance()) > amountInInventory)
-					plugin.getEconomyManager().addMoneyToPlayer(player,
-							Misc.round(ps.getBalance()) - amountInInventory);
-				else if (Misc.round(ps.getBalance()) < amountInInventory)
-					plugin.getEconomyManager().removeBagOfGoldPlayer(player,
-							amountInInventory - Misc.round(ps.getBalance()));
-				plugin.getMessages().debug("RewardListernes: PlayerGameModeChange %s (to %s) new balance is %s",
-						player.getName(), event.getNewGameMode(), plugin.getEconomyManager().getBalance(player));
+				
+				if (player.getGameMode() == GameMode.SURVIVAL) {
+					plugin.getMessages().debug(
+							"RewardListener: PlayerGameModeChange %s adjusting Player Balance to Amount of BagOfGold in Inventory");
+					plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+				} else {
+					plugin.getMessages().debug(
+							"RewardListener: PlayerGameModeChange %s adjusting Amount of BagOfGold in Inventory To Balance");
+					plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+				}
+				
+				//plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+				//plugin.getMessages().debug("RewardListernes: PlayerGameModeChange %s (to %s) new balance is %s",
+				//		player.getName(), event.getNewGameMode(), plugin.getEconomyManager().getBalance(player));
 			}
 		}, 3);
 	}
@@ -77,20 +76,35 @@ public class RewardListeners implements Listener {
 			return;
 
 		Player player = (Player) event.getPlayer();
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
-		double amountInInventory = plugin.getEconomyManager().getAmountInInventory(player);
-		ps.setBalance(Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
-		ps.setBalanceChanges(0);
-		plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
-		if (Misc.round(ps.getBalance()) > amountInInventory)
-			plugin.getEconomyManager().addMoneyToPlayer(player, Misc.round(ps.getBalance()) - amountInInventory);
-		else if (Misc.round(ps.getBalance()) < amountInInventory)
-			plugin.getEconomyManager().removeBagOfGoldPlayer(player, amountInInventory - Misc.round(ps.getBalance()));
+		// PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		// double amountInInventory =
+		// plugin.getEconomyManager().getAmountInInventory(player);
+		// ps.setBalance(Misc.round(ps.getBalance()) +
+		// Misc.round(ps.getBalanceChanges()));
+		// ps.setBalanceChanges(0);
+		// plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
+		// if (Misc.round(ps.getBalance()) > amountInInventory)
+		// plugin.getEconomyManager().addMoneyToPlayer(player,
+		// Misc.round(ps.getBalance()) - amountInInventory);
+		// else if (Misc.round(ps.getBalance()) < amountInInventory)
+		// plugin.getEconomyManager().removeMoneyFromPlayer(player, amountInInventory -
+		// Misc.round(ps.getBalance()));
+
+		if (player.getGameMode() == GameMode.SURVIVAL) {
+			plugin.getMessages().debug(
+					"RewardListener: PlayerChangedWorld %s adjusting Player Balance to Amount of BagOfGold in Inventory");
+			plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+		} else {
+			plugin.getMessages().debug(
+					"RewardListener: PlayerChangedWorld %s adjusting Amount of BagOfGold in Inventory To Balance");
+			plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+		}
+		
+		//plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+
 		plugin.getMessages().debug("RewardListernes: PlayerChangedWorld %s (from %s to %s) new balance is %s",
 				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
 				plugin.getEconomyManager().getBalance(player));
 	}
-
-	
 
 }
