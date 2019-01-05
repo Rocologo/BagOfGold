@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -31,7 +32,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<spigotmc113.version>1.13.2-R1</spigotmc113.version>
+		<spigotmc113.version>1.13.2-R0.1-SNAPSHOT</spigotmc113.version>
 		<craftbukkit113R2.version>1.13-R2</craftbukkit113R2.version>
 		<craftbukkit113R1.version>1.13-R1</craftbukkit113R1.version>
 		<craftbukkit112R1.version>1.12-R1</craftbukkit112R1.version>
@@ -237,22 +238,19 @@
 	<dependencies>
 
 		<!-- SpigotMC -->
-		<!-- <dependency> <groupId>org.spigotmc</groupId> <artifactId>spigot-api</artifactId> 
-			<version>${spigotmc113.version}</version> <scope>provided</scope> </dependency> -->
-
-        <!-- Javadoc -->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
-            <classifier>javadoc</classifier>
-        </dependency>
-
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.13.2-R0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+			<version>${spigotmc113.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- SpigotMC Javadoc -->
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigotmc113.version}</version>
+			<classifier>javadoc</classifier>
 		</dependency>
 
 		<!-- CraftBukkit -->
