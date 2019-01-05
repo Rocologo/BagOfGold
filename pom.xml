@@ -253,8 +253,6 @@
 			<artifactId>spigot-api</artifactId>
 			<version>1.13.2-R0.1-SNAPSHOT</version>
             <scope>compile</scope>
-			<!--<scope>system</scope>
-			<systemPath>${project.basedir}/lib/spigot-1.13.2.jar</systemPath>-->
 		</dependency>
 
 		<!-- CraftBukkit -->
