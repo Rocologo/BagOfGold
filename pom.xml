@@ -241,12 +241,12 @@
 			<version>${spigotmc113.version}</version> <scope>provided</scope> </dependency> -->
 
         <!-- Javadoc -->
-        <dependency>
+        <!-- <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.13.2-R0.1-SNAPSHOT</version>
             <classifier>javadoc</classifier>
-        </dependency>
+        </dependency> -->
 
 		<dependency>
 			<groupId>org.spigotmc</groupId>
