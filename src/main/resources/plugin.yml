@@ -13,7 +13,7 @@ commands:
   bagofgold:
     description: Allows you to configure mobhunt
     permission: bagofgold.cmd
-    aliases: [bag,bog,bgold]
+    aliases: [bag,bog,bgold,money]
     usage: /<command> command
 
 permissions:
