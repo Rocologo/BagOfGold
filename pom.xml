@@ -27,7 +27,7 @@
 	<!-- ********************************************************************** -->
 	<properties>
 
-		<build.number>1337</build.number>
+		<build.number>1338</build.number>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
@@ -239,12 +239,22 @@
 		<!-- SpigotMC -->
 		<!-- <dependency> <groupId>org.spigotmc</groupId> <artifactId>spigot-api</artifactId> 
 			<version>${spigotmc113.version}</version> <scope>provided</scope> </dependency> -->
+
+        <!-- Javadoc -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc113.version}</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/spigot-1.13.2.jar</systemPath>
+			<version>1.13.2-R0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+			<!--<scope>system</scope>
+			<systemPath>${project.basedir}/lib/spigot-1.13.2.jar</systemPath>-->
 		</dependency>
 
 		<!-- CraftBukkit -->

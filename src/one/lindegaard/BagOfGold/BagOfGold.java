@@ -168,7 +168,7 @@ public class BagOfGold extends JavaPlugin {
 		mBankManager = new BankManager(this); 
 
 		mCompatibilityManager.registerPlugin(PerWorldInventoryCompat.class, CompatPlugin.PerWorldInventory);
-		if (Misc.isSpigotServer())
+		if (Misc.isSpigotServer() || Misc.isPaperServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
 		

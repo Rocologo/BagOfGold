@@ -281,7 +281,7 @@ public class BankSign implements Listener {
 			return ChatColor.stripColor(((Sign) block.getState()).getLine(0)).equalsIgnoreCase(
 					ChatColor.stripColor(BagOfGold.getInstance().getMessages().getString("bagofgold.banksign.line1",
 							"bankname", BagOfGold.getInstance().getConfigManager().bankname.trim())))
-					|| ChatColor.stripColor(((Sign) block.getState()).getLine(0)).equalsIgnoreCase("[bank]");
+					|| ChatColor.stripColor(((Sign) block.getState()).getLine(0)).equalsIgnoreCase("[BagOfGold Bank]");
 		}
 		return false;
 	}
@@ -290,7 +290,7 @@ public class BankSign implements Listener {
 		return ChatColor.stripColor(line).equalsIgnoreCase(
 				ChatColor.stripColor(BagOfGold.getInstance().getMessages().getString("bagofgold.banksign.line1",
 						"bankname", BagOfGold.getInstance().getConfigManager().bankname.trim())))
-				|| ChatColor.stripColor(line).equalsIgnoreCase("[bank]");
+				|| ChatColor.stripColor(line).equalsIgnoreCase("[BagOfGold Bank]");
 	}
 
 }
