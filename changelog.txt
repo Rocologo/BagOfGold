@@ -1,5 +1,6 @@
 V2.5.2
-* 
+* Added Mob names to lang.yaml file
+* Bug fixing, removed some debug information. 
 V2.5.1
 * Fixed bug where you could not withdraw bagofgold using the BankSigns
 V2.5.0

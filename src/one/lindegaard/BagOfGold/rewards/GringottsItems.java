@@ -203,7 +203,7 @@ public class GringottsItems implements Listener {
 					plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 			double amount = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()))
 					* is.getAmount();
-			plugin.getEconomyManager().removeMoneyFromBalance(player, amount);
+			plugin.getEconomyManager().removeMoneyFromPlayer(player, amount);
 		}
 	}
 
@@ -221,7 +221,7 @@ public class GringottsItems implements Listener {
 
 			double amount = Double
 					.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
-			plugin.getEconomyManager().removeMoneyFromBalance(player, amount);
+			plugin.getEconomyManager().removeMoneyFromPlayer(player, amount);
 		}
 	}
 
@@ -243,7 +243,7 @@ public class GringottsItems implements Listener {
 					plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 			double amount = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()))
 					* is.getAmount();
-			plugin.getEconomyManager().addMoneyToBalance(player, amount);
+			plugin.getEconomyManager().addMoneyToPlayer(player, amount);
 		}
 	}
 

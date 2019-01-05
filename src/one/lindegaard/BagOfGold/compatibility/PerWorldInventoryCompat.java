@@ -49,7 +49,7 @@ public class PerWorldInventoryCompat implements Listener {
 			//			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			//				@Override
 			//				public void run() {
-			//					plugin.getMessages().debug("onInventoryLoadCompleted");
+			//					plugin.getMessages().debug("PerWorldInventoryCompat: onInventoryLoadCompleted");
 			//					plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
 			//				}
 			//			}, 20);
@@ -62,8 +62,8 @@ public class PerWorldInventoryCompat implements Listener {
 						Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 							@Override
 							public void run() {
-								plugin.getMessages().debug("onInventoryLoad");
-								plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToBalance(event.getPlayer());
+								plugin.getMessages().debug("PerWorldInventoryCompat: onInventoryLoad");
+								plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(event.getPlayer());
 							}
 						}, 20);
 					}
