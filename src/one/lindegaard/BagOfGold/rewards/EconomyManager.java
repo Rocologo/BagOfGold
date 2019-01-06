@@ -489,9 +489,10 @@ public class EconomyManager {
 				plugin.getMessages().debug("Adjusting Balance to amt: amt=%s, inHand=%s, bal=%s(+%s)",
 						amountInInventory, inHand, ps.getBalance(), ps.getBalanceChanges());
 			if (Misc.round(diff) > 0)
-				addMoneyToPlayer(player, Misc.round(diff));
+				addMoneyToPlayerBalance(player, Misc.round(diff));
 			else if (Misc.round(diff) < 0)
-				removeMoneyFromPlayer(player, -diff);
+				//removeMoneyFromPlayer(player, -diff);
+				removeMoneyFromPlayerBalance(player, -diff);
 			else
 				plugin.getMessages().debug("there was no difference");
 

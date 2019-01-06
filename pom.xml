@@ -54,7 +54,7 @@
 		<vault.version>1.6.6</vault.version>
 		<bstats.version>1.4</bstats.version>
 		<protocollib.version>4.4.0-SNAPSHOT</protocollib.version>
-		<EssentialsX.version>2.0.1</EssentialsX.version>
+		<EssentialsX.version>2.16.0</EssentialsX.version>
 		<spigetupdate.version>1.4.0</spigetupdate.version>
 
 		<PerWorldInventory.version>2.1.0</PerWorldInventory.version>
