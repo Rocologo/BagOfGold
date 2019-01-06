@@ -24,6 +24,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.compatibility.MobHuntingCompat;
 import one.lindegaard.BagOfGold.skins.Skins;
 import one.lindegaard.BagOfGold.skins.Skins_1_10_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_11_R1;
@@ -145,11 +146,14 @@ public class CustomItems {
 				if (sk != null) {
 					String[] skinOnline = sk.getSkin(player);
 					if (skinOnline != null && !skinOnline.equals(skinCache)) {
-						plugin.getMessages().debug("%s has changed skin, updating MobHunting Skin cache",player.getName());
-						ps.setTexture(skinOnline[0]);
-						ps.setSignature(skinOnline[1]);
-						MobHunting.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-						MobHunting.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+						if (MobHuntingCompat.isSupported()) {
+							plugin.getMessages().debug("%s has changed skin, updating MobHunting Skin cache",
+									player.getName());
+							ps.setTexture(skinOnline[0]);
+							ps.setSignature(skinOnline[1]);
+							MobHunting.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+							MobHunting.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+						}
 					}
 				}
 			}
@@ -193,8 +197,7 @@ public class CustomItems {
 	/**
 	 * Return an ItemStack with the Players head texture.
 	 *
-	 * @param player
-	 *            uuid
+	 * @param player uuid
 	 * @param money
 	 * @return
 	 */

@@ -1,6 +1,8 @@
 V2.5.2
+* Total Wealth fixed (/bag bag Top or /bag bag wealth)
 * Added Mob names to lang.yaml file
-* Bug fixing, removed some debug information. 
+* Portuguese language added 
+* Bug fixing, removed some debug information.
 V2.5.1
 * Fixed bug where you could not withdraw bagofgold using the BankSigns
 V2.5.0

@@ -28,6 +28,7 @@ import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.MobHunting.bounty.WorldGroup;
 
 public class PlayerBalanceManager implements Listener {
 
@@ -138,8 +139,8 @@ public class PlayerBalanceManager implements Listener {
 	}
 
 	/**
-	 * Write PlayerSettings to Database when Player Quit and remove
-	 * PlayerSettings from memory
+	 * Write PlayerSettings to Database when Player Quit and remove PlayerSettings
+	 * from memory
 	 * 
 	 * @param event
 	 */
@@ -206,7 +207,8 @@ public class PlayerBalanceManager implements Listener {
 								pb.setBalance(pb.getBalance() + change);
 								pb.setBalanceChanges(0);
 								setPlayerBalance(offlinePlayer, pb);
-								plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance((Player) offlinePlayer);
+								plugin.getEconomyManager()
+										.adjustAmountOfMoneyInInventoryToPlayerBalance((Player) offlinePlayer);
 							}
 						}
 					}
@@ -264,10 +266,11 @@ public class PlayerBalanceManager implements Listener {
 
 	public void showTopPlayers(CommandSender sender, List<PlayerBalance> playerBalances) {
 		if (sender instanceof Player) {
+			Player player = (Player) sender;
 			if (!playerBalances.isEmpty()) {
 				CustomItems customItems = new CustomItems(plugin);
 				Inventory inventory = Bukkit.createInventory(null, 54,
-						ChatColor.BLUE + "" + ChatColor.BOLD + "TOP players");
+						ChatColor.BLUE + "" + ChatColor.BOLD + "TOP wealth players");
 				int n = 0;
 				for (PlayerBalance playerBalance : playerBalances) {
 					addInventoryDetails(
@@ -275,6 +278,8 @@ public class PlayerBalanceManager implements Listener {
 									playerBalance.getBalance() + playerBalance.getBalanceChanges()
 											+ playerBalance.getBankBalance() + playerBalance.getBankBalanceChanges()),
 							inventory, n, ChatColor.GREEN + playerBalance.getPlayer().getName(),
+							
+							//Lores
 							new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getMessages().getString("bagofgold.commands.money.top", "total",
@@ -282,7 +287,15 @@ public class PlayerBalanceManager implements Listener {
 															+ playerBalance.getBankBalance()
 															+ playerBalance.getBankBalanceChanges(),
 													"rewardname",
-													plugin.getConfigManager().dropMoneyOnGroundSkullRewardName) });
+													plugin.getConfigManager().dropMoneyOnGroundSkullRewardName)
+
+									,
+									ChatColor.DARK_PURPLE + "WorldGrp:" + ChatColor.GREEN
+											+ plugin.getWorldGroupManager().getCurrentWorldGroup(player) + " ",
+											
+									ChatColor.DARK_PURPLE + "Mode:" + ChatColor.GREEN + player.getGameMode().toString()
+
+							});
 					if (n < 53)
 						n++;
 				}
@@ -327,7 +340,7 @@ public class PlayerBalanceManager implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (ChatColor.stripColor(event.getInventory().getName()).startsWith("TOP players")) {
+		if (ChatColor.stripColor(event.getInventory().getName()).startsWith("TOP wealth players")) {
 			event.setCancelled(true);
 			event.getWhoClicked().closeInventory();
 		}

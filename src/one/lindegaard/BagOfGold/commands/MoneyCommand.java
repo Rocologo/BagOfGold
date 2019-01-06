@@ -127,9 +127,13 @@ public class MoneyCommand implements ICommand {
 			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))
 				return false;
 
-			// Top 25 players
-			else if (args[0].equalsIgnoreCase("top")) {
-				if (sender.hasPermission("bagofgold.money.top") || sender.hasPermission("bagofgold.money.*")) {
+			// Top 54 players 
+			else if (args[0].equalsIgnoreCase("top") || args[0].equalsIgnoreCase("wealth")) {
+				if (!(sender instanceof Player)) {
+					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+							.getString("bagofgold.commands.base.noconsole", "command", "'money deposit'"));
+					return true;
+				} else if (sender.hasPermission("bagofgold.money.top") || sender.hasPermission("bagofgold.money.*")) {
 					Player player = (Player) sender;
 					List<PlayerBalance> playerBalances = new ArrayList<PlayerBalance>();
 					String worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(player);

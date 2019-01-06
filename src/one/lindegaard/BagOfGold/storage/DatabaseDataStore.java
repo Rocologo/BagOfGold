@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -42,9 +43,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * Args: player uuid
 	 */
 	protected PreparedStatement mInsertPlayerSettings;
-	
+
 	/**
-	 *  Args n Top of records.
+	 * Args n Top of records.
 	 */
 	protected PreparedStatement mTop25Balances;
 
@@ -84,13 +85,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		GET_PLAYER_UUID, GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE, GET_TOP25_BALANCE
+		GET_PLAYER_UUID, GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE,
+		GET_TOP25_BALANCE
 	};
 
 	/**
 	 * Initialize the connection. Must be called after Opening of initial
-	 * connection. Open Prepared statements for batch processing large
-	 * selections of players. Batches will be performed in batches of 10,5,2,1
+	 * connection. Open Prepared statements for batch processing large selections of
+	 * players. Batches will be performed in batches of 10,5,2,1
 	 */
 	@Override
 	public void initialize() throws DataStoreException {
@@ -181,8 +183,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * getPlayerSettings
 	 * 
-	 * @param offlinePlayer
-	 *            :OfflinePlayer
+	 * @param offlinePlayer :OfflinePlayer
 	 * @return PlayerData
 	 * @throws DataStoreException
 	 * @throws SQLException
@@ -202,7 +203,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 				PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getString("LAST_WORLDGRP"),
 						result.getBoolean("LEARNING_MODE"), result.getBoolean("MUTE_MODE"));
 				result.close();
-				plugin.getMessages().debug("Reading from Database: %s", ps.toString());
+				//plugin.getMessages().debug("Reading from Database: %s", ps.toString());
 				mGetPlayerSettings.close();
 				mConnection.close();
 				return ps;
@@ -291,8 +292,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * getPlayerBalances
 	 * 
-	 * @param offlinePlayer
-	 *            :OfflinePlayer
+	 * @param offlinePlayer :OfflinePlayer
 	 * @return PlayerBalances
 	 * @throws DataStoreException
 	 * @throws SQLException
@@ -327,7 +327,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		else
 			throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
 	}
-	
+
 	@Override
 	public List<PlayerBalance> loadTop54(int n, String worldgroup, int gamemode) {
 		Connection mConnection;
@@ -340,14 +340,23 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mTop25Balances.setInt(3, gamemode);
 			mTop25Balances.setInt(4, gamemode);
 			mTop25Balances.setInt(5, n);
-			
+
 			ResultSet result = mTop25Balances.executeQuery();
 			while (result.next()) {
 				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("UUID")));
-				PlayerBalance ps = new PlayerBalance(offlinePlayer, result.getString("WORLDGRP"),
-						GameMode.getByValue(result.getInt("GAMEMODE")), result.getDouble("BALANCE")
-						, result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"), result.getDouble("BANK_BALANCE_CHANGES"));
-				playerBalances.add(ps);
+				if (offlinePlayer.getName() != null) {
+					PlayerBalance ps = null;
+					if (plugin.getPlayerBalanceManager().containsKey(offlinePlayer)) {
+						ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer, worldgroup,
+								GameMode.getByValue(gamemode));
+					} else {
+						ps = new PlayerBalance(offlinePlayer, result.getString("WORLDGRP"),
+								GameMode.getByValue(result.getInt("GAMEMODE")), result.getDouble("BALANCE"),
+								result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"),
+								result.getDouble("BANK_BALANCE_CHANGES"));
+					}
+					playerBalances.add(ps);
+				}
 			}
 			result.close();
 			mTop25Balances.close();
@@ -355,8 +364,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		playerBalances.sort(Comparator.comparing(PlayerBalance::getTotalWealth).reversed());
 		return playerBalances;
 	}
-
 
 }

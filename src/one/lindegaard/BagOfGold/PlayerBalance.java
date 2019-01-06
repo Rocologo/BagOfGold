@@ -181,4 +181,14 @@ public class PlayerBalance {
 		this.bankBalanceChanges = bankBalanceChanges;
 	}
 
+	/**
+	 * Get the players total wealth 
+	 * 
+	 * @return
+	 */
+	public double getTotalWealth() {
+		return balance+balanceChanges+bankBalance+bankBalanceChanges;
+	}
+
+	
 }
