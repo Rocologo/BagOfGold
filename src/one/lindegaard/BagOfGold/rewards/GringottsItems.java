@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -81,8 +80,9 @@ public class GringottsItems implements Listener {
 						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
 				continue;
 			}
-			plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s value=%s", material, value);
 			while (toBeTaken >= value) {
+				plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s, value=%s, ToBetaken=%s, taken=%s",
+						material, value, toBeTaken, taken);
 				int i = player.getInventory().first(material);
 				ItemStack is = player.getInventory().getItem(i);
 				toBeTaken = toBeTaken - value;
@@ -99,7 +99,6 @@ public class GringottsItems implements Listener {
 	}
 
 	public void dropGringottsMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
-		Item item = null;
 		double moneyLeftToDrop = Misc.ceil(money);
 		double droppedMoney = 0;
 		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
@@ -118,7 +117,7 @@ public class GringottsItems implements Listener {
 			plugin.getMessages().debug("dropGringottsMoneyOnGround, Material=%s value=%s", material, value);
 			while (moneyLeftToDrop >= value) {
 				ItemStack is = new ItemStack(material);
-				item = location.getWorld().dropItem(location, is);
+				location.getWorld().dropItem(location, is);
 				moneyLeftToDrop = moneyLeftToDrop - value;
 				droppedMoney = droppedMoney + value;
 			}
@@ -175,7 +174,7 @@ public class GringottsItems implements Listener {
 				if (slot >= 36 && slot <= 40)
 					continue;
 				ItemStack is = player.getInventory().getItem(slot);
-				if (is.getType() == material)
+				if (is != null && is.getType() == material)
 					space = space + (64 - is.getAmount()) * value;
 			}
 		}
@@ -199,11 +198,11 @@ public class GringottsItems implements Listener {
 		ItemStack is = event.getItemDrop().getItemStack();
 		if (plugin.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
 			Player player = event.getPlayer();
-			plugin.getMessages().debug("%s dropped a %s with a value of %s", player.getName(), is.getType().toString(),
-					plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 			double amount = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()))
 					* is.getAmount();
-			plugin.getEconomyManager().removeMoneyFromPlayer(player, amount);
+			plugin.getMessages().debug("%s dropped a %s with a value of %s", player.getName(), is.getType().toString(),
+					amount);
+			plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, amount);
 		}
 	}
 
@@ -221,7 +220,7 @@ public class GringottsItems implements Listener {
 
 			double amount = Double
 					.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
-			plugin.getEconomyManager().removeMoneyFromPlayer(player, amount);
+			plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, amount);
 		}
 	}
 
@@ -243,7 +242,7 @@ public class GringottsItems implements Listener {
 					plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 			double amount = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()))
 					* is.getAmount();
-			plugin.getEconomyManager().addMoneyToPlayer(player, amount);
+			plugin.getEconomyManager().addMoneyToPlayerBalance(player, amount);
 		}
 	}
 
