@@ -23,11 +23,12 @@ public class PickupRewards {
 			Reward reward = Reward.getReward(item);
 			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 				callBack.setCancelled(true);
-					done = plugin.getEconomyManager().depositPlayer(player, reward.getMoney())
-							.amount;
-				
+				plugin.getMessages().debug("PickuupRewards: rewardPlayer");
+				done = plugin.getEconomyManager().depositPlayer(player, reward.getMoney()).amount;
+			} else {
+				return;
 			}
-			if (done>0) {
+			if (done > 0) {
 				item.remove();
 				if (plugin.getBagOfGoldItems().getDroppedMoney().containsKey(item.getEntityId()))
 					plugin.getBagOfGoldItems().getDroppedMoney().remove(item.getEntityId());
@@ -35,11 +36,10 @@ public class PickupRewards {
 					ProtocolLibHelper.pickupMoney(player, item);
 
 				if (reward.getMoney() == 0) {
-					plugin.getMessages()
-							.debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
-									plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-											? "ITEM" : reward.getDisplayname(),
-									plugin.getBagOfGoldItems().getDroppedMoney().size());
+					plugin.getMessages().debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
+							plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
+									: reward.getDisplayname(),
+							plugin.getBagOfGoldItems().getDroppedMoney().size());
 				} else {
 					plugin.getMessages().debug(
 							"%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)", player.getName(),
@@ -54,8 +54,9 @@ public class PickupRewards {
 											+ (reward.getDisplayname().isEmpty()
 													? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName
 													: reward.getDisplayname())));
-
 				}
+			} else {
+				callBack.setCancelled(true);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
 
 public class EntityPickupItemEventListener implements Listener {
-	
+
 	private PickupRewards pickupRewards;
 
 	public EntityPickupItemEventListener(PickupRewards pickupRewards) {
@@ -20,8 +20,11 @@ public class EntityPickupItemEventListener implements Listener {
 	public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
 		// OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
 
-		// This event is NOT called when the inventory is full.
+		// This event is NOT called when the inventory is full. IS THIS CORREECT????
 		if (event.isCancelled())
+			return;
+
+		if (!Reward.isReward(event.getItem()))
 			return;
 
 		Entity entity = event.getEntity();
@@ -37,8 +40,12 @@ public class EntityPickupItemEventListener implements Listener {
 			}
 			return;
 		}
-		if (((Player) entity).getInventory().firstEmpty() != -1)
+
+		Player player = (Player) entity;
+		if (BagOfGold.getAPI().getBagOfGoldItems().canPickupMoney(player))
 			pickupRewards.rewardPlayer((Player) entity, event.getItem(), event::setCancelled);
+		else
+			event.setCancelled(true);
 	}
 
 }

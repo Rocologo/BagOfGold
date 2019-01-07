@@ -73,39 +73,30 @@ public class EconomyManager {
 	 */
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
+		double drop = 0, give = amount;
 		if (amount == 0) {
 			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
 					null);
 		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
-				addMoneyToPlayer((Player) offlinePlayer,
-						// Misc.round(ps.getBalance()) +
-						Misc.round(ps.getBalanceChanges()) + Misc.round(amount));
-				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+				Player player = (Player) offlinePlayer;
+				double space = getSpaceForMoney(player);
+				if (amount > space) {
+					give = space;
+					drop = amount - give;
+				}
+				addMoneyToPlayer(player, Misc.round(ps.getBalanceChanges()) + Misc.round(give));
+				dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), drop);
+				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + give));
 				ps.setBalanceChanges(0);
 			} else {
-				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + amount));
+				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + give));
 			}
-			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(amount),
+			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(give),
 					offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			
-			if (offlinePlayer.isOnline() && ((Player) offlinePlayer).isValid()) {
-				Player player = (Player) offlinePlayer;
-				if (player.getGameMode() == GameMode.SURVIVAL) {
-					plugin.getMessages().debug(
-							"RewardListener: PlayerChangedWorld %s adjusting Player Balance to Amount of BagOfGold in Inventory", player.getName());
-					plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
-				} else {
-					plugin.getMessages().debug(
-							"RewardListener: PlayerChangedWorld %s adjusting Amount of BagOfGold in Inventory To Balance", player.getName());
-					plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
-				}
-
-				//adjustAmountOfMoneyInInventoryToPlayerBalance((Player) offlinePlayer);
-			}
-			return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
-					ResponseType.SUCCESS, null);
+			return new EconomyResponse(give, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
+					null);
 		} else {
 			plugin.getMessages().debug("Could not deposit %s to %s's account, because the number is negative",
 					format(amount), offlinePlayer.getName());
@@ -136,19 +127,20 @@ public class EconomyManager {
 				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", format(amount),
 						offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-				if (offlinePlayer.isOnline() && ((Player) offlinePlayer).isValid()){
+				if (offlinePlayer.isOnline() && ((Player) offlinePlayer).isValid()) {
 					Player player = (Player) offlinePlayer;
 					if (player.getGameMode() == GameMode.SURVIVAL) {
 						plugin.getMessages().debug(
-								"RewardListener: PlayerChangedWorld %s adjusting Player Balance to Amount of BagOfGold in Inventory", player.getName());
-						plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+								"EconomyManager: withdrawPlayer adjusting Player Balance to Amount of BagOfGold in Inventory",
+								player.getName());
+						plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+						//plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 					} else {
 						plugin.getMessages().debug(
-								"RewardListener: PlayerChangedWorld %s adjusting Amount of BagOfGold in Inventory To Balance", player.getName());
+								"EconomyManager: withdrawPlayer %s adjusting Amount of BagOfGold in Inventory To Balance",
+								player.getName());
 						plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 					}
-
-					//adjustAmountOfMoneyInInventoryToPlayerBalance((Player) offlinePlayer);
 				}
 				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
 						ResponseType.SUCCESS, null);
@@ -457,6 +449,12 @@ public class EconomyManager {
 		if (ps != null) {
 			double diff = (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()))
 					- Misc.round(amountInInventory);
+			double space = getSpaceForMoney(player);
+			if (diff > space) {
+				plugin.getMessages().debug("Not enough space for the money. Space=%s", space);
+				diff = space;
+				ps.setBalance(ps.getBalance() + space);
+			}
 			if (Misc.round(diff) != 0)
 				plugin.getMessages().debug("Adjusting amt to Balance: amt=%s, bal=%s(+%s)", amountInInventory,
 						ps.getBalance(), ps.getBalanceChanges());
@@ -491,7 +489,7 @@ public class EconomyManager {
 			if (Misc.round(diff) > 0)
 				addMoneyToPlayerBalance(player, Misc.round(diff));
 			else if (Misc.round(diff) < 0)
-				//removeMoneyFromPlayer(player, -diff);
+				// removeMoneyFromPlayer(player, -diff);
 				removeMoneyFromPlayerBalance(player, -diff);
 			else
 				plugin.getMessages().debug("there was no difference");

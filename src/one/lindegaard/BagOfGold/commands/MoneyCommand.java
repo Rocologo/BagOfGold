@@ -351,7 +351,6 @@ public class MoneyCommand implements ICommand {
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 										"number", args[2], "maximum", amount));
 					}
-					plugin.getMessages().debug("BagOfGold supported, using depositPlayer");
 					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
 				} else {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
@@ -396,7 +395,6 @@ public class MoneyCommand implements ICommand {
 								.getString("bagofgold.commands.money.not-enough-money", "money", args[2]));
 						return true;
 					}
-					plugin.getMessages().debug("BagOfGold supported, using depositPlayer");
 					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
 					plugin.getEconomyManager().withdrawPlayer(fromPlayer, amount);
 				} else {

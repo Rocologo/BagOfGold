@@ -3,6 +3,7 @@ package one.lindegaard.BagOfGold.rewards;
 import java.util.ArrayList;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -153,32 +154,28 @@ public class Reward {
 	}
 
 	/**
-	 * @param displayName
-	 *            the displayName to set
+	 * @param displayName the displayName to set
 	 */
 	public void setDisplayname(String displayName) {
 		this.displayname = displayName.startsWith("Hidden:") ? displayName.substring(7) : displayName;
 	}
 
 	/**
-	 * @param money
-	 *            the money to set
+	 * @param money the money to set
 	 */
 	public void setMoney(double money) {
 		this.money = money;
 	}
 
 	/**
-	 * @param uuid
-	 *            the uuid to set
+	 * @param uuid the uuid to set
 	 */
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
 
 	/**
-	 * @param uniqueId
-	 *            the uniqueId to set
+	 * @param uniqueId the uniqueId to set
 	 */
 	public void setUniqueId(UUID uniqueId) {
 		this.uniqueId = uniqueId;
@@ -272,11 +269,13 @@ public class Reward {
 
 	public static boolean isReward(ItemStack itemStack) {
 		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
-			for (int i = 0; i < itemStack.getItemMeta().getLore().size(); i++) {
-				if (itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
-						|| itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_KILLED_UUID)
-						|| itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_KILLER_UUID)
-						|| itemStack.getItemMeta().getLore().get(i).equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
+			Iterator<String> itr = itemStack.getItemMeta().getLore().iterator();
+			while (itr.hasNext()) {
+				String lore = itr.next();
+				if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
+						|| lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
+						|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID)
+						|| lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
 					return true;
 				}
 			}
@@ -289,7 +288,8 @@ public class Reward {
 	}
 
 	public static boolean hasReward(Block block) {
-		return (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD) && block.hasMetadata(MH_REWARD_DATA);
+		return (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD)
+				&& block.hasMetadata(MH_REWARD_DATA);
 	}
 
 	public static Reward getReward(Block block) {

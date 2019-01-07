@@ -34,7 +34,7 @@ public class PerWorldInventoryCompat implements Listener {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 							+ "Enabling compatibility with PerWorldInventory ("
-							+ getEssentials().getDescription().getVersion() + ")");
+							+ getPWI().getDescription().getVersion() + ")");
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 
 			sync_economy = pwi_sync_economy();
@@ -77,7 +77,7 @@ public class PerWorldInventoryCompat implements Listener {
 	// OTHER
 	// **************************************************************************
 
-	public static PerWorldInventory getEssentials() {
+	public static PerWorldInventory getPWI() {
 		return mPlugin;
 	}
 
