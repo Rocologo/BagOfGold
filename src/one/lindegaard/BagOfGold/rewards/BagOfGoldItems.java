@@ -1192,23 +1192,23 @@ public class BagOfGoldItems implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
-		plugin.getMessages().debug("BagOfGoldItems: onInventoryMoveItemEvent called");
-		plugin.getMessages().debug("BagOfGoldItems: Moved Item=%s", event.getItem().getType());
+		//plugin.getMessages().debug("BagOfGoldItems: onInventoryMoveItemEvent called");
+		//plugin.getMessages().debug("BagOfGoldItems: Moved Item=%s", event.getItem().getType());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryInteractEvent(InventoryInteractEvent event) {
-		plugin.getMessages().debug("BagOfGoldItems: onInventoryInteractEvent called");
-		plugin.getMessages().debug("BagOfGoldItems: %s clicked an inventory %s", event.getWhoClicked().getName(),
-				event.getInventory().getType());
+		//plugin.getMessages().debug("BagOfGoldItems: onInventoryInteractEvent called");
+		//plugin.getMessages().debug("BagOfGoldItems: %s clicked an inventory %s", event.getWhoClicked().getName(),
+		//		event.getInventory().getType());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryDragEvent(InventoryDragEvent event) {
-		plugin.getMessages().debug("BagOfGoldItems: onInventoryDragEvent called");
-		plugin.getMessages().debug("BagOfGoldItems: %s draged an %s in inventory %s",
-				event.getWhoClicked().getName() == null ? "null" : event.getWhoClicked().getName(),
-				event.getCursor() == null ? "null" : event.getCursor().getType(),
-				event.getInventory() == null ? "null" : event.getInventory().getType());
+		//plugin.getMessages().debug("BagOfGoldItems: onInventoryDragEvent called");
+		//plugin.getMessages().debug("BagOfGoldItems: %s draged an %s in inventory %s",
+		//		event.getWhoClicked().getName() == null ? "null" : event.getWhoClicked().getName(),
+		//		event.getCursor() == null ? "null" : event.getCursor().getType(),
+		//		event.getInventory() == null ? "null" : event.getInventory().getType());
 	}
 }
