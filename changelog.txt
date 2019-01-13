@@ -1,7 +1,8 @@
 V2.5.2
 * Total Wealth fixed (/bag bag Top or /bag bag wealth)
 * Added Mob names to lang.yaml file
-* Portuguese language added 
+* Portuguese language added
+* BagOfGold works alot better in Creative mode now. "Fake" rewards has been reduced. 
 * Bug fixing, removed some debug information.
 V2.5.1
 * Fixed bug where you could not withdraw bagofgold using the BankSigns
