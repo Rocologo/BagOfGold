@@ -25,12 +25,12 @@ public class MoneyMergeEventListener implements Listener {
 	public void onMoneyMergeEvent(ItemMergeEvent event) {
 		// OBS: ItemMergeEvent does only exist in MC1.8 and newer
 
-		plugin.getMessages().debug("MoneyMergeEvent: 1");
+		//plugin.getMessages().debug("MoneyMergeEvent: 1");
 		
 		if (event.isCancelled())
 			return;
 
-		plugin.getMessages().debug("MoneyMergeEvent: 2");
+		//plugin.getMessages().debug("MoneyMergeEvent: 2");
 		
 		Item item1 = event.getEntity();
 		Item item2 = event.getTarget();
