@@ -28,7 +28,6 @@ import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.BagOfGold.util.Misc;
-import one.lindegaard.MobHunting.bounty.WorldGroup;
 
 public class PlayerBalanceManager implements Listener {
 
@@ -135,7 +134,10 @@ public class PlayerBalanceManager implements Listener {
 			playerBalances.putPlayerBalance(playerBalance);
 			mBalances.put(player.getUniqueId(), playerBalances);
 			load(player);
+		} else {
+			plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
+		
 	}
 
 	/**
@@ -180,6 +182,8 @@ public class PlayerBalanceManager implements Listener {
 					Player player = (Player) offlinePlayer;
 					worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(player);
 					gamemode = player.getGameMode();
+					//Next line is important, to adjust the AmountInInventory to Balance
+					plugin.getEconomyManager().getAmountInInventory(player);
 				} else {
 					worldGroup = plugin.getWorldGroupManager().getDefaultWorldgroup();
 					gamemode = plugin.getWorldGroupManager().getDefaultGameMode();

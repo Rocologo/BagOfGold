@@ -25,13 +25,9 @@ public class MoneyMergeEventListener implements Listener {
 	public void onMoneyMergeEvent(ItemMergeEvent event) {
 		// OBS: ItemMergeEvent does only exist in MC1.8 and newer
 
-		//plugin.getMessages().debug("MoneyMergeEvent: 1");
-		
 		if (event.isCancelled())
 			return;
 
-		//plugin.getMessages().debug("MoneyMergeEvent: 2");
-		
 		Item item1 = event.getEntity();
 		Item item2 = event.getTarget();
 		ItemStack is2 = item2.getItemStack();
@@ -78,7 +74,7 @@ public class MoneyMergeEventListener implements Listener {
 								plugin.getEconomyManager().format(reward2.getMoney()));
 					}
 				} else {
-					plugin.getMessages().debug("MoneyMergeEvent: This is not a reward");
+					//plugin.getMessages().debug("MoneyMergeEvent: This is not a reward");
 				}
 				if (plugin.getBagOfGoldItems().getDroppedMoney().containsKey(item1.getEntityId()))
 					plugin.getBagOfGoldItems().getDroppedMoney().remove(item1.getEntityId());

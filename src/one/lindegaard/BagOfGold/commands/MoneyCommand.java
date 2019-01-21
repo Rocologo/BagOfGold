@@ -2,11 +2,13 @@ package one.lindegaard.BagOfGold.commands;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
+import one.lindegaard.BagOfGold.WorldGroup;
 import one.lindegaard.BagOfGold.rewards.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -382,6 +384,8 @@ public class MoneyCommand implements ICommand {
 				}
 
 				Player fromPlayer = (Player) sender;
+				GameMode fromPlayerGamemode = plugin.getWorldGroupManager().getCurrentGameMode(fromPlayer);
+				String fromPlayerWorldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(fromPlayer);
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
