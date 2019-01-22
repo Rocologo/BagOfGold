@@ -1,5 +1,5 @@
 V2.5.3
-*
+* Fix a balance problem when players was given money while being offline
 V2.5.2
 * Total Wealth fixed (/bag bag Top or /bag bag wealth)
 * Added Mob names to lang.yaml file
