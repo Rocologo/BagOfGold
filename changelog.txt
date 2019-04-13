@@ -1,3 +1,5 @@
+V2.5.4
+* Placeholder %bagofgold_balance% and %bagofgold_bank_balance% for PlaceholderAPI is now fixed. 
 V2.5.3
 * Fix a balance problem when players was given money while being offline
 V2.5.2
