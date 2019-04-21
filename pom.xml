@@ -87,7 +87,7 @@
 						<includes>
 							<include>org.bstats:*</include>
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
-							<include>one.lindegaard.Core:*</include>
+		<!-- 					<include>one.lindegaard.Core:*</include> -->
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -95,10 +95,10 @@
 							<pattern>org.bstats</pattern>
 							<shadedPattern>one.lindegaard.BagOfGold</shadedPattern>
 						</relocation>
-						<relocation>
+						<!--  <relocation>
 							<pattern>one.lindegaard.Core</pattern>
 							<shadedPattern>one.lindegaard.BagOfGold</shadedPattern>
-						</relocation>
+						</relocation>-->
 					</relocations>
 				</configuration>
 				<executions>
@@ -132,7 +132,7 @@
 			<artifactId>MobHunting</artifactId>
 			<version>${mobhunting.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- PerWorldInventory -->
