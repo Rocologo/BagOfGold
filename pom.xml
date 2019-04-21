@@ -131,7 +131,8 @@
 			<groupId>one.lindegaard</groupId>
 			<artifactId>MobHunting</artifactId>
 			<version>${mobhunting.version}</version>
-			<scope>provided</scope>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- PerWorldInventory -->
