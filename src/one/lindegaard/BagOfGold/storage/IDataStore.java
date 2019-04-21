@@ -54,6 +54,14 @@ public interface IDataStore {
 	void insertPlayerSettings(PlayerSettings ps) throws DataStoreException;
 
 	/**
+	 * Get the player by his name from the Database. ings @param name
+	 * 
+	 * @return
+	 * @throws DataStoreException
+	 */
+	OfflinePlayer getPlayerByName(String name) throws DataStoreException;
+
+	/**
 	 * Get the players Balances from the Database
 	 * 
 	 * @param player

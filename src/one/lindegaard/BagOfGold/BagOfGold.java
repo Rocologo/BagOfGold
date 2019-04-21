@@ -2,6 +2,15 @@ package one.lindegaard.BagOfGold;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.ServicesManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.BankCommand;
@@ -9,6 +18,7 @@ import one.lindegaard.BagOfGold.commands.CommandDispatcher;
 import one.lindegaard.BagOfGold.commands.ConvertCommand;
 import one.lindegaard.BagOfGold.commands.DebugCommand;
 import one.lindegaard.BagOfGold.commands.MoneyCommand;
+import one.lindegaard.BagOfGold.commands.MuteCommand;
 import one.lindegaard.BagOfGold.commands.NpcCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
@@ -35,17 +45,7 @@ import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
 import one.lindegaard.BagOfGold.util.Misc;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.ServicesManager;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import me.clip.placeholderapi.PlaceholderAPI;
-import net.milkbowl.vault.economy.Economy;
+//import one.lindegaard.Shared.Tools;
 
 public class BagOfGold extends JavaPlugin {
 
@@ -136,6 +136,7 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new ConvertCommand(this));
 		mCommandDispatcher.registerCommand(new MoneyCommand(this));
 		mCommandDispatcher.registerCommand(new BankCommand(this));
+		mCommandDispatcher.registerCommand(new MuteCommand(this));
 
 		// Check for new BagOfGold updates
 		mSpigetUpdater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
@@ -210,6 +211,7 @@ public class BagOfGold extends JavaPlugin {
 		mBagOfGoldItems = new BagOfGoldItems(this);
 		mInitialized = true;
 
+		//Tools.Testing();
 	}
 
 	@Override

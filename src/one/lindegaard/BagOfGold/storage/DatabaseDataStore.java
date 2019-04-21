@@ -285,6 +285,39 @@ public abstract class DatabaseDataStore implements IDataStore {
 		}
 	}
 
+	/**
+	 * getPlayerByName - get the player
+	 * 
+	 * @param name
+	 *            : String
+	 * @return player
+	 */
+	@Override
+	public OfflinePlayer getPlayerByName(String name) throws DataStoreException {
+		if (name.equals("Random Bounty"))
+			return null; // used for Random Bounties
+		try {
+			Connection mConnection = setupConnection();
+
+			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_UUID);
+			mGetPlayerUUID.setString(1, name);
+			ResultSet set = mGetPlayerUUID.executeQuery();
+
+			if (set.next()) {
+				UUID uid = UUID.fromString(set.getString(1));
+				set.close();
+				mGetPlayerUUID.close();
+				mConnection.close();
+				return Bukkit.getOfflinePlayer(uid);
+			}
+			mGetPlayerUUID.close();
+			mConnection.close();
+			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
+		} catch (SQLException e) {
+			throw new DataStoreException(e);
+		}
+	}
+
 	// ******************************************************************
 	// PlayerBalances
 	// ******************************************************************

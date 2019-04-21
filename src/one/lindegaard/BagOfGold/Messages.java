@@ -256,11 +256,9 @@ public class Messages {
 	/**
 	 * Gets the message and replaces specified values
 	 * 
-	 * @param key
-	 *            The message key to find
-	 * @param values
-	 *            these are key-value pairs, they should be like: {key1, value1,
-	 *            key2, value2,..., keyN,valueN}. keys must be strings
+	 * @param key    The message key to find
+	 * @param values these are key-value pairs, they should be like: {key1, value1,
+	 *               key2, value2,..., keyN,valueN}. keys must be strings
 	 */
 	public String getString(String key, Object... values) {
 		try {
@@ -327,9 +325,11 @@ public class Messages {
 	public void senderSendMessage(final CommandSender sender, String message) {
 		if (isEmpty(message))
 			return;
-		if (sender instanceof Player)
-			((Player) sender).sendMessage(PlaceholderAPICompat.setPlaceholders((Player) sender, message));
-		else
+		if (sender instanceof Player) {
+			Player player = ((Player) sender);
+			if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+				player.sendMessage(PlaceholderAPICompat.setPlaceholders((Player) sender, message));
+		} else
 			sender.sendMessage(message);
 	}
 
@@ -419,12 +419,8 @@ public class Messages {
 	public void playerActionBarMessageNow(Player player, String message) {
 		if (isEmpty(message))
 			return;
-
+		
 		message = PlaceholderAPICompat.setPlaceholders(player, message);
-
-		if (messageQueue.isEmpty()) {
-
-		}
 		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.setActionBar(player, message);
 		} else if (ActionbarCompat.isSupported()) {
@@ -434,10 +430,9 @@ public class Messages {
 		} else if (ActionBarAPICompat.isSupported()) {
 			ActionBarAPICompat.setMessage(player, message);
 		} else {
-			if (!isEmpty(message))
+			if (!isEmpty(message) && !plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 				player.sendMessage(message);
 		}
 	}
-
 
 }
