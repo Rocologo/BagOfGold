@@ -34,7 +34,7 @@ public class MuteCommand implements ICommand {
 
 	@Override
 	public String getPermission() {
-		return "mobhunting.mute";
+		return "bagofgold.mute";
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class MuteCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return plugin.getMessages().getString("mobhunting.commands.mute.description");
+		return plugin.getMessages().getString("bagofgold.commands.mute.description");
 	}
 
 	@Override
@@ -74,11 +74,11 @@ public class MuteCommand implements ICommand {
 			DataStoreManager ds = plugin.getDataStoreManager();
 			Player player = (Player) ds.getPlayerByName(args[0]);
 			if (player != null) {
-				if (sender.hasPermission("mobhunting.mute.other") || sender instanceof ConsoleCommandSender) {
+				if (sender.hasPermission("bagofgold.mute.other") || sender instanceof ConsoleCommandSender) {
 					togglePlayerMuteMode(player);
 				} else {
 					plugin.getMessages().senderSendMessage(sender,
-							ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'mobhunting.mute.other'");
+							ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'bagofgold.mute.other'");
 				}
 				return true;
 			} else {
@@ -95,9 +95,9 @@ public class MuteCommand implements ICommand {
 		plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
 		if (ps.isMuted())
 			player.sendMessage(
-					plugin.getMessages().getString("mobhunting.commands.mute.unmuted", "player", player.getName()));
+					plugin.getMessages().getString("bagofgold.commands.mute.unmuted", "player", player.getName()));
 		else
 			player.sendMessage(
-					plugin.getMessages().getString("mobhunting.commands.mute.muted", "player", player.getName()));
+					plugin.getMessages().getString("bagofgold.commands.mute.muted", "player", player.getName()));
 	}
 }

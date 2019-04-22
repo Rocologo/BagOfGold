@@ -45,13 +45,14 @@ public class PickupRewards {
 										: reward.getDisplayname(),
 								plugin.getBagOfGoldItems().format(Misc.round(reward.getMoney())),
 								plugin.getBagOfGoldItems().getDroppedMoney().size());
-						plugin.getMessages().playerActionBarMessageQueue(player,
-								plugin.getMessages().getString("bagofgold.moneypickup", "money",
-										plugin.getBagOfGoldItems().format(reward.getMoney()), "rewardname",
-										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-												+ (reward.getDisplayname().isEmpty()
-														? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName
-														: reward.getDisplayname())));
+						if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+							plugin.getMessages().playerActionBarMessageQueue(player,
+									plugin.getMessages().getString("bagofgold.moneypickup", "money",
+											plugin.getBagOfGoldItems().format(reward.getMoney()), "rewardname",
+											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+													+ (reward.getDisplayname().isEmpty()
+															? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName
+															: reward.getDisplayname())));
 					}
 				} else {
 					callBack.setCancelled(true);
