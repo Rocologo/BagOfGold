@@ -85,18 +85,14 @@
 					<createDependencyReducedPom>false</createDependencyReducedPom>
 					<artifactSet>
 						<includes>
+							<include>one.lindegaard:Core:*</include>
 							<include>org.bstats:*</include>
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
-							<include>one.lindegaard.Core:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
 						<relocation>
 							<pattern>org.bstats</pattern>
-							<shadedPattern>one.lindegaard.BagOfGold</shadedPattern>
-						</relocation>
-						<relocation>
-							<pattern>one.lindegaard.Core</pattern>
 							<shadedPattern>one.lindegaard.BagOfGold</shadedPattern>
 						</relocation>
 					</relocations>
