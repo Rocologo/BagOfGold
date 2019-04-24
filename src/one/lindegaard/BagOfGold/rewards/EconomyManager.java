@@ -16,6 +16,8 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.Server.Servers;
 
 public class EconomyManager {
 
@@ -30,7 +32,7 @@ public class EconomyManager {
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
 		Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
 
-		if (Misc.isMC112OrNewer() && eventDoesExists())
+		if (Servers.isMC112OrNewer() && eventDoesExists())
 			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), plugin);
 		else
 			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
@@ -134,7 +136,7 @@ public class EconomyManager {
 								"EconomyManager: withdrawPlayer adjusting Player Balance to Amount of BagOfGold in Inventory",
 								player.getName());
 						plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
-						//plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+						// plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 					} else {
 						plugin.getMessages().debug(
 								"EconomyManager: withdrawPlayer %s adjusting Amount of BagOfGold in Inventory To Balance",
@@ -181,7 +183,7 @@ public class EconomyManager {
 	 * dropMoneyOnGround_EconomyManager: drop the amount of money in the location
 	 * 
 	 * @param player       - not used in EconomyManager
-	 * @param killedEntity - not used in EconomyManager
+	 * @param killedEntity -Misc not used in EconomyManager
 	 * @param location
 	 * @param money
 	 */
@@ -208,7 +210,7 @@ public class EconomyManager {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse bankDeposit(String account, double amount) {
-		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
@@ -237,7 +239,7 @@ public class EconomyManager {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse bankWithdraw(String account, double amount) {
-		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
@@ -265,7 +267,7 @@ public class EconomyManager {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse bankBalance(String account) {
-		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
@@ -287,7 +289,7 @@ public class EconomyManager {
 	 */
 	@SuppressWarnings("deprecation")
 	public EconomyResponse deleteBank(String account) {
-		OfflinePlayer offlinePlayer = Misc.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);

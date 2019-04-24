@@ -35,7 +35,8 @@ import one.lindegaard.BagOfGold.skins.Skins_1_8_R1;
 import one.lindegaard.BagOfGold.skins.Skins_1_8_R2;
 import one.lindegaard.BagOfGold.skins.Skins_1_8_R3;
 import one.lindegaard.BagOfGold.skins.Skins_1_9_R1;
-import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.Server.Servers;
 import one.lindegaard.MobHunting.MobHunting;
 import one.lindegaard.MobHunting.PlayerSettings;
 
@@ -101,7 +102,7 @@ public class CustomItems {
 
 		// TODO: Which skull is working
 		ItemStack skull;
-		if (Misc.isMC113OrNewer())
+		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
 			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
@@ -127,7 +128,7 @@ public class CustomItems {
 			}
 
 			if ((skinCache == null || skinCache[0] == null || skinCache[0].isEmpty() || skinCache[1] == null
-					|| skinCache[1].isEmpty()) && Misc.isMC112OrNewer())
+					|| skinCache[1].isEmpty()) && Servers.isMC112OrNewer())
 				return getPlayerHeadOwningPlayer(uuid, amount, money);
 
 			if (skinCache != null && !skinCache[0].isEmpty() && !skinCache[1].isEmpty()) {
@@ -205,7 +206,7 @@ public class CustomItems {
 
 		// TODO: Which SKULL is working??
 		ItemStack skull;
-		if (Misc.isMC113OrNewer())
+		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
 			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
@@ -247,12 +248,12 @@ public class CustomItems {
 		if (money == 0)
 			skullMeta.setDisplayName(color + offlinePlayer.getName());
 		else
-			skullMeta.setDisplayName(color + offlinePlayer.getName() + " (" + Misc.format(money) + ")");
+			skullMeta.setDisplayName(color + offlinePlayer.getName() + " (" + Tools.format(money) + ")");
 		if (money == 0) {
 			skullMeta.setDisplayName(offlinePlayer.getName());
 			skull.setAmount(amount);
 		} else {
-			skullMeta.setDisplayName(offlinePlayer.getName() + " (" + Misc.format(money) + ")");
+			skullMeta.setDisplayName(offlinePlayer.getName() + " (" + Tools.format(money) + ")");
 			skull.setAmount(1);
 		}
 		skull.setItemMeta(skullMeta);
@@ -264,7 +265,7 @@ public class CustomItems {
 	// TODO: Which skull is working
 	public ItemStack getPlayerHeadOwningPlayer(UUID uuid, int amount, double money) {
 		ItemStack skull;
-		if (Misc.isMC113OrNewer())
+		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
 			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
@@ -280,7 +281,7 @@ public class CustomItems {
 			skullMeta.setDisplayName(name);
 			skull.setAmount(amount);
 		} else {
-			skullMeta.setDisplayName(name + " (" + Misc.format(money) + ")");
+			skullMeta.setDisplayName(name + " (" + Tools.format(money) + ")");
 			skull.setAmount(1);
 		}
 		skull.setItemMeta(skullMeta);
@@ -303,7 +304,7 @@ public class CustomItems {
 			String mTextureSignature, double money, UUID uniqueRewardUuid, UUID skinUuid) {
 		// TODO: which head is working
 		ItemStack skull;
-		if (Misc.isMC113OrNewer())
+		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
 			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
@@ -352,7 +353,7 @@ public class CustomItems {
 		if (money == 0)
 			skullMeta.setDisplayName(color + mDisplayName);
 		else
-			skullMeta.setDisplayName(color + mDisplayName + " (" + Misc.format(money) + ")");
+			skullMeta.setDisplayName(color + mDisplayName + " (" + Tools.format(money) + ")");
 
 		skull.setItemMeta(skullMeta);
 		return skull;

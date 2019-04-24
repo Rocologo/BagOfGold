@@ -21,6 +21,7 @@ import one.lindegaard.BagOfGold.BagOfGold;
 
 public class Misc {
 
+	/**
 	public static boolean isAxe(ItemStack item) {
 		return item != null && (item.getType() == Material.DIAMOND_AXE || item.getType() == Material.GOLDEN_AXE
 				|| item.getType() == Material.IRON_AXE || item.getType() == Material.STONE_AXE
@@ -71,7 +72,7 @@ public class Misc {
 		else 
 			return material==Material.LEGACY_SKULL || material == Material.LEGACY_SKULL_ITEM;
 	}
-
+**/
 	public static double round(double d) {
 		return Math.round(d / BagOfGold.getInstance().getConfigManager().rewardRounding)
 				* BagOfGold.getInstance().getConfigManager().rewardRounding;
@@ -87,6 +88,7 @@ public class Misc {
 				* BagOfGold.getInstance().getConfigManager().rewardRounding;
 	}
 
+	/**
 	// *******************************************************************
 	// Version detection
 	// *******************************************************************
@@ -204,13 +206,14 @@ public class Misc {
 			break;
 		}
 		return lastBlock;
-	}
+	}**/
 
 	/**
 	 * Gets the online player (backwards compatibility)
 	 *
 	 * @return number of players online
 	 */
+	/**
 	public static int getOnlinePlayersAmount() {
 		try {
 			Method method = Server.class.getMethod("getOnlinePlayers");
@@ -224,7 +227,7 @@ public class Misc {
 		}
 		return 0;
 	}
-
+**/
 	/**
 	 * Gets the online player (for backwards compatibility)
 	 *
@@ -232,6 +235,7 @@ public class Misc {
 	 *         Bukkit.getOnlinePlayers() is Player[] it will be converted to a
 	 *         Collection.
 	 */
+	/**
 	@SuppressWarnings({ "unchecked" })
 	public static Collection<Player> getOnlinePlayers() {
 		Method method;
@@ -249,5 +253,5 @@ public class Misc {
 		}
 		return Collections.emptyList();
 	}
-
+**/
 }

@@ -10,7 +10,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
-import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -150,7 +150,7 @@ public class NpcCommand implements ICommand, Listener {
 
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("tphere")) {
 				npc.teleport(((Player) sender).getLocation(), TeleportCause.PLUGIN);
-				Block b = Misc.getTargetBlock((Player) sender, 200);
+				Block b = Tools.getTargetBlock((Player) sender, 200);
 				if (b != null)
 					npc.faceLocation(b.getLocation());
 				return true;

@@ -18,6 +18,8 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.rewards.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Materials.Materials;
+import one.lindegaard.Core.Server.Servers;
 
 public class BankSign implements Listener {
 
@@ -37,7 +39,7 @@ public class BankSign implements Listener {
 		if (event.isCancelled())
 			return;
 
-		if (Misc.isMC19OrNewer() && (event.getHand() == null || event.getHand().equals(EquipmentSlot.OFF_HAND)))
+		if (Servers.isMC19OrNewer() && (event.getHand() == null || event.getHand().equals(EquipmentSlot.OFF_HAND)))
 			return;
 
 		Block clickedBlock = event.getClickedBlock();
@@ -277,7 +279,7 @@ public class BankSign implements Listener {
 	// ************************************************************************************
 
 	private boolean isBankSign(Block block) {
-		if (Misc.isSign(block)) {
+		if (Materials.isSign(block)) {
 			return ChatColor.stripColor(((Sign) block.getState()).getLine(0)).equalsIgnoreCase(
 					ChatColor.stripColor(BagOfGold.getInstance().getMessages().getString("bagofgold.banksign.line1",
 							"bankname", BagOfGold.getInstance().getConfigManager().bankname.trim())))

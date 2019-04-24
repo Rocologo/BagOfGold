@@ -44,8 +44,7 @@ import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
-import one.lindegaard.BagOfGold.util.Misc;
-//import one.lindegaard.Shared.Tools;
+import one.lindegaard.Core.Server.Servers;
 
 public class BagOfGold extends JavaPlugin {
 
@@ -171,7 +170,7 @@ public class BagOfGold extends JavaPlugin {
 		mBankManager = new BankManager(this); 
 
 		mCompatibilityManager.registerPlugin(PerWorldInventoryCompat.class, CompatPlugin.PerWorldInventory);
-		if (Misc.isSpigotServer() || Misc.isPaperServer())
+		if (Servers.isSpigotServer() || Servers.isPaperServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
 		
@@ -183,7 +182,7 @@ public class BagOfGold extends JavaPlugin {
 
 		mCompatibilityManager.registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
 
-		if (!Misc.isGlowstoneServer()) {
+		if (!Servers.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
 			mMetricsManager.start();
 		}
@@ -199,7 +198,7 @@ public class BagOfGold extends JavaPlugin {
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy()) 
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
 		
-		if (!Misc.isMC113OrNewer())
+		if (!Servers.isMC113OrNewer())
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold]"+ChatColor.RED+" version +2.0.0 is only for Minecraft 1.13! You should downgrade to 1.x");
 		
 		// Get random UUI>>>D's

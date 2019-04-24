@@ -10,7 +10,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
 
 public class BagOfGoldEconomy implements Economy {
 
@@ -82,7 +82,7 @@ public class BagOfGoldEconomy implements Economy {
 	@Override
 	public String format(double money) {
 		if (isEnabled())
-			return Misc.format(money);
+			return Tools.format(money);
 		else
 			return mEconomy.format(money);
 	}

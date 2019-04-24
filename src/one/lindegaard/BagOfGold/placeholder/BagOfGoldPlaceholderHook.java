@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
 
 public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Listener {
 	
@@ -33,12 +33,12 @@ public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Liste
 
 		// placeholder: %bagofgold_balance%
 		if (identifier.equals("balance")) {
-			return Misc.format(BagOfGold.getInstance().getPlayerBalanceManager().getPlayerBalance(player).getBalance());
+			return Tools.format(BagOfGold.getInstance().getPlayerBalanceManager().getPlayerBalance(player).getBalance());
 		}
 
 		// placeholder: %bagofgold_bank_balance%
 		if (identifier.equals("bank_balance")) {
-			return Misc.format(BagOfGold.getInstance().getPlayerBalanceManager().getPlayerBalance(player).getBankBalance());
+			return Tools.format(BagOfGold.getInstance().getPlayerBalanceManager().getPlayerBalance(player).getBankBalance());
 		}
 
 		// anything else someone types is invalid because we never defined

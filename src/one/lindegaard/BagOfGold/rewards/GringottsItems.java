@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
 
 public class GringottsItems implements Listener {
 
@@ -35,7 +36,7 @@ public class GringottsItems implements Listener {
 	}
 
 	public String format(double money) {
-		return Misc.format(money);
+		return Tools.format(money);
 	}
 
 	public double addGringottsMoneyToPlayer(Player player, double amount) {
