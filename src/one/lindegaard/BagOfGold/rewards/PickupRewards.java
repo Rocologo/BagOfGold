@@ -4,6 +4,7 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibHelper;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.rewards.Reward;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;

@@ -61,6 +61,8 @@ import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Materials.Materials;
 import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.rewards.CustomItems;
+import one.lindegaard.Core.rewards.Reward;
 
 public class BagOfGoldItems implements Listener {
 
@@ -163,7 +165,7 @@ public class BagOfGoldItems implements Listener {
 					addedMoney = addedMoney + nextBag;
 					ItemStack is;
 					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
-						is = new CustomItems(plugin).getCustomtexture(
+						is = new CustomItems().getCustomtexture(
 								UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
 								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
@@ -235,7 +237,7 @@ public class BagOfGoldItems implements Listener {
 			if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 				uuid = UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID);
 				skinuuid = uuid;
-				is = new CustomItems(plugin).getCustomtexture(uuid,
+				is = new CustomItems().getCustomtexture(uuid,
 						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, nextBag, UUID.randomUUID(),
@@ -604,7 +606,7 @@ public class BagOfGoldItems implements Listener {
 		if (event.isCancelled())
 			return;
 
-		CustomItems customItems = new CustomItems(plugin);
+		CustomItems customItems = new CustomItems();
 
 		Block block = event.getBlock();
 		if (Reward.hasReward(block)) {

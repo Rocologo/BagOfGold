@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
-import one.lindegaard.BagOfGold.rewards.CustomItems;
+import one.lindegaard.Core.rewards.CustomItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
@@ -272,7 +272,7 @@ public class PlayerBalanceManager implements Listener {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (!playerBalances.isEmpty()) {
-				CustomItems customItems = new CustomItems(plugin);
+				CustomItems customItems = new CustomItems();
 				Inventory inventory = Bukkit.createInventory(null, 54,
 						ChatColor.BLUE + "" + ChatColor.BOLD + "TOP wealth players");
 				int n = 0;

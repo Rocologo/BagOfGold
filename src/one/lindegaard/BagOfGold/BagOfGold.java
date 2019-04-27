@@ -77,16 +77,22 @@ public class BagOfGold extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
+		//Bukkit.getConsoleSender().sendMessage("Loading BagOfGoldcore Library Plugin");
+		//BagOfGoldCore bagOfGoldCore = (BagOfGoldCore) Bukkit.getPluginManager().getPlugin("BagOfGoldCore");
+		//if (bagOfGoldCore != null)
+		//	Bukkit.getConsoleSender().sendMessage(
+		//			"After loading BagOfGoldcore Library Plugin. bagOfGoldCore=" + bagOfGoldCore.toString());
+		//else
+		//	Bukkit.getConsoleSender().sendMessage("BagOfGoldcore Library is not loaded.");
+
 		instance = this;
 
 		mServiceManager = Bukkit.getServicesManager();
-
 		mMessages = new Messages(this);
-
 		mConfig = new ConfigManager(this, mFile);
 
 		if (mConfig.loadConfig()) {
-			if(mConfig.backup)
+			if (mConfig.backup)
 				mConfig.backupConfig(mFile);
 			mConfig.saveConfig();
 		} else
@@ -115,7 +121,7 @@ public class BagOfGold extends JavaPlugin {
 				}
 			}
 		}
-		
+
 		mWorldGroupManager = new WorldGroup(this);
 		mWorldGroupManager.load();
 
@@ -167,13 +173,13 @@ public class BagOfGold extends JavaPlugin {
 
 		mCompatibilityManager = new CompatibilityManager(this);
 
-		mBankManager = new BankManager(this); 
+		mBankManager = new BankManager(this);
 
 		mCompatibilityManager.registerPlugin(PerWorldInventoryCompat.class, CompatPlugin.PerWorldInventory);
 		if (Servers.isSpigotServer() || Servers.isPaperServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
-		
+
 		mCompatibilityManager.registerPlugin(TitleManagerCompat.class, CompatPlugin.TitleManager);
 		mCompatibilityManager.registerPlugin(TitleAPICompat.class, CompatPlugin.TitleAPI);
 		mCompatibilityManager.registerPlugin(ActionAnnouncerCompat.class, CompatPlugin.ActionAnnouncer);
@@ -190,27 +196,27 @@ public class BagOfGold extends JavaPlugin {
 		// Initialize BagOfGold Bank Signs
 		new BankSign(this);
 
-		if (mConfig.useBagOfGoldAsAnEconomyPlugin){
-		// Try to load BagOfGold
-		hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
+		if (mConfig.useBagOfGoldAsAnEconomyPlugin) {
+			// Try to load BagOfGold
+			hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 		}
 
-		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy()) 
+		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
-		
+
 		if (!Servers.isMC113OrNewer())
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold]"+ChatColor.RED+" version +2.0.0 is only for Minecraft 1.13! You should downgrade to 1.x");
-		
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+					+ " version +2.0.0 is only for Minecraft 1.13! You should downgrade to 1.x");
+
 		// Get random UUI>>>D's
-		//for (int n = 0; n < 3; n++) {
-		//	getMessages().debug("UUID=%s", UUID.randomUUID().toString());
-		//}
-		
+		// for (int n = 0; n < 3; n++) {
+		// getMessages().debug("UUID=%s", UUID.randomUUID().toString());
+		// }
+
 		mGringottsItems = new GringottsItems(this);
 		mBagOfGoldItems = new BagOfGoldItems(this);
 		mInitialized = true;
 
-		//Tools.Testing();
 	}
 
 	@Override
@@ -261,8 +267,7 @@ public class BagOfGold extends JavaPlugin {
 	 * the best way to determine if a specific plugin exists and will be loaded. If
 	 * the plugin package isn't loaded, we shouldn't bother waiting for it!
 	 * 
-	 * @param packages
-	 *            String Array of package names to check
+	 * @param packages String Array of package names to check
 	 * @return Success or Failure
 	 */
 	private static boolean packagesExists(String... packages) {
@@ -365,7 +370,7 @@ public class BagOfGold extends JavaPlugin {
 	public SpigetUpdater getSpigetUpdater() {
 		return mSpigetUpdater;
 	}
-	
+
 	/**
 	 * Get all WorldGroups and their worlds
 	 * 
@@ -374,16 +379,16 @@ public class BagOfGold extends JavaPlugin {
 	public WorldGroup getWorldGroupManager() {
 		return mWorldGroupManager;
 	}
-	
-	public PlayerBalanceManager getPlayerBalanceManager(){
+
+	public PlayerBalanceManager getPlayerBalanceManager() {
 		return mPlayerBalanceManager;
 	}
 
-	public GringottsItems getgringottsItems(){
+	public GringottsItems getgringottsItems() {
 		return mGringottsItems;
 	}
-	
-	public BagOfGoldItems getBagOfGoldItems(){
+
+	public BagOfGoldItems getBagOfGoldItems() {
 		return mBagOfGoldItems;
 	}
 }

@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.rewards.Reward;
 
 public class MoneyMergeEventListener implements Listener {
 

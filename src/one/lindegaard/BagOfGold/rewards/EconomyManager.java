@@ -18,6 +18,7 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.rewards.Reward;
 
 public class EconomyManager {
 
