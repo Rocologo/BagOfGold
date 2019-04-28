@@ -1,14 +1,26 @@
 package one.lindegaard.BagOfGold.rewards;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -43,19 +55,301 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.Materials.Materials;
 import one.lindegaard.Core.Server.Servers;
 import one.lindegaard.Core.rewards.CustomItems;
 import one.lindegaard.Core.rewards.Reward;
 
-public class BagOfGoldListeners implements Listener {
+public class BagOfGoldItems implements Listener {
 
 	BagOfGold plugin;
+	private File file;
+	private YamlConfiguration config = new YamlConfiguration();
 
-	public BagOfGoldListeners(BagOfGold plugin) {
+	private HashMap<Integer, Double> droppedMoney = new HashMap<Integer, Double>();
+	private HashMap<UUID, Reward> placedMoney_Reward = new HashMap<UUID, Reward>();
+	private HashMap<UUID, Location> placedMoney_Location = new HashMap<UUID, Location>();
+
+	public BagOfGoldItems(BagOfGold plugin) {
 		this.plugin = plugin;
+		file = new File(plugin.getDataFolder(), "rewards.yml");
+		loadAllStoredRewardsFromMobHunting();
+		loadAllStoredRewards();
+		if (isBagOfGoldStyle()) {
+			plugin.getMessages().debug("BagOfGoldItems: register events");
+			Bukkit.getPluginManager().registerEvents(this, plugin);
+		} else
+			plugin.getMessages().debug("BagOfGoldItems: could not register events");
+
+	}
+
+	public boolean isBagOfGoldStyle() {
+		return plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")
+				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLED")
+				|| plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("KILLER");
+	}
+
+	public HashMap<Integer, Double> getDroppedMoney() {
+		return droppedMoney;
+	}
+
+	public HashMap<UUID, Reward> getReward() {
+		return placedMoney_Reward;
+	}
+
+	public HashMap<UUID, Location> getLocations() {
+		return placedMoney_Location;
+	}
+
+	public String format(double money) {
+		return Tools.format(money);
+	}
+
+	public double addBagOfGoldMoneyToPlayer(Player player, double amount) {
+		boolean found = false;
+		double moneyLeftToGive = amount;
+		double addedMoney = 0;
+
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward rewardInSlot = Reward.getReward(is);
+				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
+					if (rewardInSlot.getMoney() < plugin.getConfigManager().limitPerBag) {
+						double space = plugin.getConfigManager().limitPerBag - rewardInSlot.getMoney();
+						if (space > moneyLeftToGive) {
+							addedMoney = addedMoney + moneyLeftToGive;
+							rewardInSlot.setMoney(rewardInSlot.getMoney() + moneyLeftToGive);
+							moneyLeftToGive = 0;
+						} else {
+							addedMoney = addedMoney + space;
+							rewardInSlot.setMoney(plugin.getConfigManager().limitPerBag);
+							moneyLeftToGive = moneyLeftToGive - space;
+						}
+						if (rewardInSlot.getMoney() == 0)
+							player.getInventory().clear(slot);
+						else
+							is = setDisplayNameAndHiddenLores(is, rewardInSlot);
+						plugin.getMessages().debug(
+								"Added %s to %s's item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
+								format(amount), player.getName(), slot, format(rewardInSlot.getMoney()));
+						if (moneyLeftToGive <= 0) {
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (!found) {
+
+			while (Tools.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
+				double nextBag = 0;
+				if (moneyLeftToGive > plugin.getConfigManager().limitPerBag) {
+					nextBag = plugin.getConfigManager().limitPerBag;
+					moneyLeftToGive = moneyLeftToGive - nextBag;
+				} else {
+					nextBag = moneyLeftToGive;
+					moneyLeftToGive = 0;
+				}
+				if (player.getInventory().firstEmpty() == -1)
+					dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), Tools.round(nextBag));
+				else {
+					addedMoney = addedMoney + nextBag;
+					ItemStack is;
+					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
+						is = new CustomItems().getCustomtexture(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
+								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Tools.round(nextBag),
+								UUID.randomUUID(), UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
+					else {
+						is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
+						setDisplayNameAndHiddenLores(is,
+								new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+										Tools.round(nextBag), UUID.fromString(Reward.MH_REWARD_ITEM_UUID),
+										UUID.randomUUID(), null));
+					}
+					player.getInventory().addItem(is);
+				}
+			}
+		}
+		if (moneyLeftToGive > 0)
+			dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), moneyLeftToGive);
+		return addedMoney;
+	}
+
+	public double removeBagOfGoldFromPlayer(Player player, double amount) {
+		double taken = 0;
+		double toBeTaken = Tools.round(amount);
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward reward = Reward.getReward(is);
+				if (reward.isBagOfGoldReward() || reward.isItemReward()) {
+					double saldo = Tools.round(reward.getMoney());
+					if (saldo > toBeTaken) {
+						reward.setMoney(Tools.round(saldo - toBeTaken));
+						is = setDisplayNameAndHiddenLores(is, reward);
+						player.getInventory().setItem(slot, is);
+						taken = taken + toBeTaken;
+						toBeTaken = 0;
+						return Tools.round(taken);
+					} else {
+						player.getInventory().clear(slot);
+						taken = taken + saldo;
+						toBeTaken = toBeTaken - saldo;
+					}
+					if (reward.getMoney() == 0)
+						player.getInventory().clear(slot);
+				}
+			}
+
+		}
+		return taken;
+	}
+
+	public void dropBagOfGoldMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
+		Item item = null;
+		double moneyLeftToDrop = Tools.ceil(money);
+		ItemStack is;
+		UUID uuid = null, skinuuid = null;
+		double nextBag = 0;
+		while (moneyLeftToDrop > 0) {
+			if (moneyLeftToDrop > plugin.getConfigManager().limitPerBag) {
+				nextBag = plugin.getConfigManager().limitPerBag;
+				moneyLeftToDrop = Tools.round(moneyLeftToDrop - nextBag);
+			} else {
+				nextBag = Tools.round(moneyLeftToDrop);
+				moneyLeftToDrop = 0;
+			}
+
+			if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
+				uuid = UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID);
+				skinuuid = uuid;
+				is = new CustomItems().getCustomtexture(uuid,
+						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, nextBag, UUID.randomUUID(),
+						skinuuid);
+			} else { // ITEM
+				uuid = UUID.fromString(Reward.MH_REWARD_ITEM_UUID);
+				skinuuid = null;
+				is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
+			}
+
+			item = location.getWorld().dropItem(location, is);
+			if (item != null) {
+				droppedMoney.put(item.getEntityId(), nextBag);
+				item.setMetadata(Reward.MH_REWARD_DATA,
+						new FixedMetadataValue(plugin, new Reward(
+								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
+										: Reward.getReward(is).getDisplayname(),
+								nextBag, uuid, UUID.randomUUID(), skinuuid)));
+				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+						+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+								? format(nextBag)
+								: Reward.getReward(is).getDisplayname() + " (" + format(nextBag) + ")"));
+				item.setCustomNameVisible(true);
+				plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)(3)",
+						player.getName(), format(nextBag), plugin.getConfigManager().dropMoneyOnGroundItemtype,
+						droppedMoney.size());
+			}
+		}
+	}
+
+	public double getAmountOfBagOfGoldMoneyInInventory(Player player) {
+		double amountInInventory = 0;
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward reward = Reward.getReward(is);
+				if (reward.isBagOfGoldReward() || reward.isItemReward())
+					amountInInventory = amountInInventory + reward.getMoney();
+			}
+		}
+		return amountInInventory;
+	}
+
+	/**
+	 * setDisplayNameAndHiddenLores: add the Display name and the (hidden) Lores.
+	 * The lores identifies the reward and contain secret information.
+	 * 
+	 * @param skull  - The base itemStack without the information.
+	 * @param reward - The reward information is added to the ItemStack
+	 * @return the updated ItemStack.
+	 */
+	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
+		ItemMeta skullMeta = skull.getItemMeta();
+		if (reward.getRewardType().equals(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID)))
+			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + reward.getDisplayname(),
+					"Hidden:" + reward.getMoney(), "Hidden:" + reward.getRewardType(),
+					reward.getMoney() == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(),
+					"Hidden:" + reward.getSkinUUID())));
+		else
+			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + reward.getDisplayname(),
+					"Hidden:" + reward.getMoney(), "Hidden:" + reward.getRewardType(),
+					reward.getMoney() == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(),
+					"Hidden:" + reward.getSkinUUID(), plugin.getMessages().getString("bagofgold.reward.name"))));
+
+		if (reward.getMoney() == 0)
+			skullMeta.setDisplayName(
+					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + reward.getDisplayname());
+		else
+			skullMeta.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+					+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+							? format(reward.getMoney())
+							: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")"));
+		skull.setItemMeta(skullMeta);
+		return skull;
+	}
+
+	public boolean canPickupMoney(Player player) {
+		if (player.getInventory().firstEmpty() != -1)
+			return true;
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward rewardInSlot = Reward.getReward(is);
+				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
+					if (rewardInSlot.getMoney() < plugin.getConfigManager().limitPerBag)
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public double getSpaceForBagOfGoldMoney(Player player) {
+		double space = 0;
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
+			ItemStack is = player.getInventory().getItem(slot);
+			if (Reward.isReward(is)) {
+				Reward rewardInSlot = Reward.getReward(is);
+				if ((rewardInSlot.isBagOfGoldReward() || rewardInSlot.isItemReward())) {
+					space = space + plugin.getConfigManager().limitPerBag - rewardInSlot.getMoney();
+				}
+			} else if (is == null || is.getType() == Material.AIR) {
+				space = space + plugin.getConfigManager().limitPerBag;
+			}
+		}
+		plugin.getMessages().debug("%s has room for %s BagOfGold in the inventory", player.getName(), space);
+		return space;
 	}
 
 	private boolean isFakeReward(Item item) {
@@ -73,11 +367,144 @@ public class BagOfGoldListeners implements Listener {
 		return false;
 	}
 
+	public void saveReward(UUID uuid) {
+		try {
+			config.options().header("This is the rewards placed as blocks. Do not edit this file manually!");
+			if (placedMoney_Reward.containsKey(uuid)) {
+				Location location = placedMoney_Location.get(uuid);
+				if (location != null && Materials.isSkull(location.getBlock().getType())) {
+					Reward reward = placedMoney_Reward.get(uuid);
+					ConfigurationSection section = config.createSection(uuid.toString());
+					section.set("location", location);
+					reward.save(section);
+					config.save(file);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void loadAllStoredRewards() {
+		int n = 0;
+		int deleted = 0;
+		try {
+
+			if (!file.exists()) {
+				File file2 = new File(plugin.getDataFolder().getParentFile(), "MobHunting/rewards.yml");
+				if (file2.exists()) {
+					plugin.getMessages().debug("Loading rewards from MobHunting first time.");
+					loadAllStoredRewardsFromMobHunting();
+				}
+				return;
+			}
+
+			config.load(file);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			for (String key : config.getKeys(false)) {
+				ConfigurationSection section = config.getConfigurationSection(key);
+				Reward reward = new Reward();
+				reward.read(section);
+				Location location = (Location) section.get("location");
+				if (location != null && Materials.isSkull(location.getBlock().getType())) {
+					location.getBlock().setMetadata(Reward.MH_REWARD_DATA,
+							new FixedMetadataValue(plugin, new Reward(reward)));
+					placedMoney_Reward.put(UUID.fromString(key), reward);
+					placedMoney_Location.put(UUID.fromString(key), location);
+					n++;
+				} else {
+					deleted++;
+					config.set(key, null);
+				}
+			}
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		try {
+
+			if (deleted > 0) {
+				plugin.getMessages().debug("Deleted %s rewards from the rewards.yml file", deleted);
+				File file_copy = new File(plugin.getDataFolder(), "rewards.yml.old");
+				Files.copy(file.toPath(), file_copy.toPath(), StandardCopyOption.COPY_ATTRIBUTES,
+						StandardCopyOption.REPLACE_EXISTING);
+				config.save(file);
+			}
+			if (n > 0) {
+				plugin.getMessages().debug("Loaded %s rewards from the rewards.yml file", n);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void loadAllStoredRewardsFromMobHunting() {
+		int n = 0;
+		int deleted = 0;
+		File file = new File(plugin.getDataFolder().getParentFile(), "MobHunting/rewards.yml");
+		try {
+
+			if (!file.exists())
+				return;
+
+			config.load(file);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			for (String key : config.getKeys(false)) {
+				ConfigurationSection section = config.getConfigurationSection(key);
+				Reward reward = new Reward();
+				reward.read(section);
+				Location location = (Location) section.get("location");
+				if (location != null && Materials.isSkull(location.getBlock().getType())) {
+					location.getBlock().setMetadata(Reward.MH_REWARD_DATA,
+							new FixedMetadataValue(plugin, new Reward(reward)));
+					placedMoney_Reward.put(UUID.fromString(key), reward);
+					placedMoney_Location.put(UUID.fromString(key), location);
+					saveReward(UUID.fromString(key));
+					n++;
+				} else {
+					deleted++;
+					config.set(key, null);
+				}
+			}
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		try {
+
+			if (deleted > 0) {
+				plugin.getMessages().debug("Deleted %s rewards from the rewards.yml file", deleted);
+				File file_copy = new File(plugin.getDataFolder(), "rewards.yml.old");
+				Files.copy(file.toPath(), file_copy.toPath(), StandardCopyOption.COPY_ATTRIBUTES,
+						StandardCopyOption.REPLACE_EXISTING);
+				config.save(file);
+			}
+			if (n > 0) {
+				plugin.getMessages().debug("Loaded %s rewards from the rewards.yml file", n);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void onPlayerDropReward(PlayerDropItemEvent event) {
-
-		plugin.getMessages().debug("An item was dropped");
-
 		if (event.isCancelled())
 			return;
 
@@ -95,25 +522,25 @@ public class BagOfGoldListeners implements Listener {
 			if (money == 0) {
 				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 						+ reward.getDisplayname());
-				Core.getAPI().getBagOfGoldItems().getDroppedMoney().put(item.getEntityId(), money);
+				droppedMoney.put(item.getEntityId(), money);
 				plugin.getMessages().debug("%s dropped a %s (# of rewards left=%s)(1)", player.getName(),
 						reward.getDisplayname() != null ? reward.getDisplayname()
 								: plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-						Core.getAPI().getRewardManager().getDroppedMoney().size());
+						droppedMoney.size());
 			} else {
 				if (reward.isItemReward())
-					item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-							+ Tools.format(money));
+					item.setCustomName(
+							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + format(money));
 				else
 					item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-							+ reward.getDisplayname() + " (" + Tools.format(money) + ")");
+							+ reward.getDisplayname() + " (" + format(money) + ")");
 
-				Core.getAPI().getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
+				droppedMoney.put(item.getEntityId(), money);
 				plugin.getMessages().debug("%s dropped %s money. (# of rewards left=%s)(2)", player.getName(),
-						Tools.format(money), Core.getAPI().getRewardManager().getDroppedMoney().size());
+						format(money), droppedMoney.size());
 				if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 					plugin.getMessages().playerActionBarMessageQueue(player, plugin.getMessages().getString(
-							"bagofgold.moneydrop", "money", Tools.format(money), "rewardname",
+							"bagofgold.moneydrop", "money", format(money), "rewardname",
 							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 									+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 											? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
@@ -134,8 +561,6 @@ public class BagOfGoldListeners implements Listener {
 					plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, money);
 				}
 			}
-		} else {
-			plugin.getMessages().debug("This was not a reward");
 			item.setCustomNameVisible(true);
 		}
 	}
@@ -166,9 +591,9 @@ public class BagOfGoldListeners implements Listener {
 			plugin.getMessages().debug("%s placed a reward block: %s", player.getName(),
 					ChatColor.stripColor(reward.toString()));
 			block.setMetadata(Reward.MH_REWARD_DATA, new FixedMetadataValue(plugin, reward));
-			Core.getAPI().getRewardManager().getReward().put(reward.getUniqueUUID(), reward);
-			Core.getAPI().getRewardManager().getLocations().put(reward.getUniqueUUID(), block.getLocation());
-			plugin.getBagOfGoldItems().saveReward(reward.getUniqueUUID());
+			placedMoney_Reward.put(reward.getUniqueUUID(), reward);
+			placedMoney_Location.put(reward.getUniqueUUID(), block.getLocation());
+			saveReward(reward.getUniqueUUID());
 			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 				plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 			}
@@ -199,18 +624,18 @@ public class BagOfGoldListeners implements Listener {
 				Item item = block.getWorld().dropItemNaturally(block.getLocation(), is);
 
 				String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-						? Tools.format(reward.getMoney())
+						? format(reward.getMoney())
 						: (reward.getMoney() == 0 ? reward.getDisplayname()
-								: reward.getDisplayname() + " (" + Tools.format(reward.getMoney()) + ")");
+								: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")");
 				item.setCustomName(
 						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 				item.setCustomNameVisible(true);
 				item.setMetadata(Reward.MH_REWARD_DATA,
 						new FixedMetadataValue(plugin, new Reward(reward.getHiddenLore())));
-				if (Core.getAPI().getRewardManager().getLocations().containsKey(reward.getUniqueUUID()))
-					Core.getAPI().getRewardManager().getLocations().remove(reward.getUniqueUUID());
-				if (Core.getAPI().getRewardManager().getReward().containsKey(reward.getUniqueUUID()))
-					Core.getAPI().getRewardManager().getReward().remove(reward.getUniqueUUID());
+				if (placedMoney_Location.containsKey(reward.getUniqueUUID()))
+					placedMoney_Location.remove(reward.getUniqueUUID());
+				if (placedMoney_Reward.containsKey(reward.getUniqueUUID()))
+					placedMoney_Reward.remove(reward.getUniqueUUID());
 			}
 
 		}
@@ -261,14 +686,13 @@ public class BagOfGoldListeners implements Listener {
 			return;
 
 		if (Reward.isReward(event.getEntity())) {
-			if (Core.getAPI().getRewardManager().getDroppedMoney().containsKey(event.getEntity().getEntityId())) {
-				Core.getAPI().getRewardManager().getDroppedMoney().remove(event.getEntity().getEntityId());
+			if (droppedMoney.containsKey(event.getEntity().getEntityId())) {
+				droppedMoney.remove(event.getEntity().getEntityId());
 				if (event.getEntity().getLastDamageCause() != null)
 					plugin.getMessages().debug("The reward was destroyed by %s",
 							event.getEntity().getLastDamageCause().getCause());
 				else
-					plugin.getMessages().debug("The reward despawned (# of rewards left=%s)",
-							Core.getAPI().getRewardManager().getDroppedMoney().size());
+					plugin.getMessages().debug("The reward despawned (# of rewards left=%s)", droppedMoney.size());
 			}
 		}
 	}
@@ -292,8 +716,8 @@ public class BagOfGoldListeners implements Listener {
 		} else {
 			// plugin.getMessages().debug("The reward was picked up by %s",
 			// event.getInventory().getType());
-			if (Core.getAPI().getRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
-				Core.getAPI().getRewardManager().getDroppedMoney().remove(item.getEntityId());
+			if (droppedMoney.containsKey(item.getEntityId()))
+				droppedMoney.remove(item.getEntityId());
 		}
 	}
 
@@ -304,9 +728,9 @@ public class BagOfGoldListeners implements Listener {
 
 		Player player = event.getPlayer();
 
-		if (Core.getAPI().getRewardManager().canPickupMoney(player)) {
+		if (canPickupMoney(player)) {
 			Iterator<Entity> entityList = ((Entity) player).getNearbyEntities(1, 1, 1).iterator();
-			while (entityList.hasNext() && Core.getAPI().getRewardManager().canPickupMoney(player)) {
+			while (entityList.hasNext() && canPickupMoney(player)) {
 				Entity entity = entityList.next();
 				if (!(entity instanceof Item))
 					continue;
@@ -319,12 +743,11 @@ public class BagOfGoldListeners implements Listener {
 				}
 
 				if (Reward.isReward(item)) {
-					if (Core.getAPI().getRewardManager().getDroppedMoney().containsKey(entity.getEntityId())) {
-						Core.getAPI().getRewardManager().getDroppedMoney().remove(entity.getEntityId());
+					if (droppedMoney.containsKey(entity.getEntityId())) {
+						droppedMoney.remove(entity.getEntityId());
 						Reward reward = Reward.getReward(item);
 						if (reward.isBagOfGoldReward() || reward.isItemReward()) {
-							double addedMoney = Core.getAPI().getRewardManager().addBagOfGoldMoneyToPlayer(player,
-									reward.getMoney());
+							double addedMoney = addBagOfGoldMoneyToPlayer(player, reward.getMoney());
 							if (addedMoney > 0) {
 								PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 								ps.setBalance(Tools.round(ps.getBalance() + addedMoney));
@@ -347,11 +770,11 @@ public class BagOfGoldListeners implements Listener {
 			targetEntity = nearby.next();
 
 			if (Reward.isReward(targetEntity)) {
-				if (Core.getAPI().getRewardManager().getDroppedMoney().containsKey(targetEntity.getEntityId()))
-					Core.getAPI().getRewardManager().getDroppedMoney().remove(targetEntity.getEntityId());
+				if (droppedMoney.containsKey(targetEntity.getEntityId()))
+					droppedMoney.remove(targetEntity.getEntityId());
 				targetEntity.remove();
 				plugin.getMessages().debug("The reward was hit by %s and removed. (# of rewards left=%s)",
-						projectile.getType(), Core.getAPI().getRewardManager().getDroppedMoney().size());
+						projectile.getType(), droppedMoney.size());
 			}
 		}
 	}
@@ -376,10 +799,9 @@ public class BagOfGoldListeners implements Listener {
 					// plugin.getMessages().learn(player,
 					// plugin.getMessages().getString("mobhunting.learn.rewards.no-helmet"));
 					event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
-					if (Tools.round(reward.getMoney()) != Tools.round(Core.getInstance().getBagOfGoldItems()
-							.addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
-						Core.getAPI().getRewardManager().dropBagOfGoldMoneyOnGround(player, null, player.getLocation(),
-								reward.getMoney());
+					if (Tools.round(reward.getMoney()) != Tools
+							.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
+						dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), reward.getMoney());
 				}
 			}
 		}
@@ -414,8 +836,8 @@ public class BagOfGoldListeners implements Listener {
 					plugin.getMessages().playerActionBarMessageQueue(player,
 							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 									+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-											? Tools.format(reward.getMoney())
-											: reward.getDisplayname() + " (" + Tools.format(reward.getMoney()) + ")"));
+											? format(reward.getMoney())
+											: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")"));
 			}
 		} else if (Servers.isMC113OrNewer()
 				&& (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD)) {
@@ -583,8 +1005,8 @@ public class BagOfGoldListeners implements Listener {
 						imCursor.setLore(reward2.getHiddenLore());
 						imCursor.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 								+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-										? Tools.format(reward2.getMoney())
-										: reward2.getDisplayname() + " (" + Tools.format(reward2.getMoney()) + ")"));
+										? format(reward2.getMoney())
+										: reward2.getDisplayname() + " (" + format(reward2.getMoney()) + ")"));
 						isCursor.setItemMeta(imCursor);
 						isCurrentSlot.setAmount(0);
 						isCurrentSlot.setType(Material.AIR);
@@ -599,17 +1021,17 @@ public class BagOfGoldListeners implements Listener {
 						imCursor.setLore(reward2.getHiddenLore());
 						imCursor.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 								+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-										? Tools.format(plugin.getConfigManager().limitPerBag)
+										? format(plugin.getConfigManager().limitPerBag)
 										: reward2.getDisplayname() + " ("
-												+ Tools.format(plugin.getConfigManager().limitPerBag) + ")"));
+												+ format(plugin.getConfigManager().limitPerBag) + ")"));
 						isCursor.setItemMeta(imCursor);
 
 						reward1.setMoney(rest);
 						imCurrent.setLore(reward1.getHiddenLore());
 						imCurrent.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 								+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-										? Tools.format(plugin.getConfigManager().limitPerBag)
-										: reward1.getDisplayname() + " (" + Tools.format(reward1.getMoney()) + ")"));
+										? format(plugin.getConfigManager().limitPerBag)
+										: reward1.getDisplayname() + " (" + format(reward1.getMoney()) + ")"));
 						isCurrentSlot.setItemMeta(imCurrent);
 						event.setCurrentItem(isCursor);
 						event.setCursor(isCurrentSlot);
@@ -646,15 +1068,13 @@ public class BagOfGoldListeners implements Listener {
 					if (cursorMoney >= plugin.getConfigManager().minimumReward) {
 						event.setCancelled(true);
 						reward.setMoney(currentSlotMoney);
-						isCurrentSlot = Core.getInstance().getBagOfGoldItems()
-								.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
+						isCurrentSlot = setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 						event.setCurrentItem(isCurrentSlot);
 						reward.setMoney(cursorMoney);
-						isCursor = Core.getInstance().getBagOfGoldItems()
-								.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
+						isCursor = setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 						event.setCursor(isCursor);
 						plugin.getMessages().debug("%s halfed a reward in two (%s,%s)", player.getName(),
-								Tools.format(currentSlotMoney), Tools.format(cursorMoney));
+								format(currentSlotMoney), format(cursorMoney));
 						if (event.getView().getTitle().equalsIgnoreCase("Inventory")) {
 							plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, cursorMoney);
 						}
@@ -679,8 +1099,7 @@ public class BagOfGoldListeners implements Listener {
 									event.getClickedInventory().clear(slot);
 								else {
 									reward.setMoney(plugin.getConfigManager().limitPerBag);
-									is = Core.getAPI().getRewardManager().setDisplayNameAndHiddenLores(is.clone(),
-											reward);
+									is = setDisplayNameAndHiddenLores(is.clone(), reward);
 									is.setAmount(1);
 									// event.setCurrentItem(is);
 									event.getClickedInventory().clear(slot);
@@ -691,7 +1110,7 @@ public class BagOfGoldListeners implements Listener {
 						}
 					}
 					cursor.setMoney(saldo);
-					isCursor = Core.getAPI().getRewardManager().setDisplayNameAndHiddenLores(isCursor.clone(), cursor);
+					isCursor = setDisplayNameAndHiddenLores(isCursor.clone(), cursor);
 					event.setCursor(isCursor);
 					plugin.getMessages().debug("%s collected %s to the cursor", player.getName(), saldo);
 					if (event.getView().getTitle().equalsIgnoreCase("Inventory")) {

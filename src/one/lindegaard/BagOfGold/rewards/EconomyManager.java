@@ -30,7 +30,7 @@ public class EconomyManager {
 		pickupRewards = new PickupRewards(plugin);
 
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
-		Bukkit.getPluginManager().registerEvents(new BagOfGoldListeners(plugin), plugin);
+		//Bukkit.getPluginManager().registerEvents(new BagOfGoldListeners(plugin), plugin);
 		Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
 
 		if (Servers.isMC112OrNewer() && eventDoesExists())

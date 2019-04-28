@@ -33,7 +33,7 @@ public class GringottsItems implements Listener {
 	public boolean isGringottsStyle() {
 		return plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("GRINGOTTS_STYLE");
 	}
-
+	
 	public String format(double money) {
 		return Tools.format(money);
 	}

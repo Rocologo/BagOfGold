@@ -3,6 +3,7 @@ package one.lindegaard.BagOfGold.rewards;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibHelper;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.rewards.Reward;
 
@@ -37,7 +38,7 @@ public class PickupRewards {
 						plugin.getMessages().debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
 								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
 										: reward.getDisplayname(),
-								plugin.getBagOfGoldItems().getDroppedMoney().size());
+										plugin.getBagOfGoldItems().getDroppedMoney().size());
 					} else {
 						plugin.getMessages().debug(
 								"%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)",
