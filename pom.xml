@@ -114,6 +114,14 @@
 	<!-- ********************************************************************** -->
 	<dependencies>
 
+		<!-- Rocologo Core -->
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>Core</artifactId>
+			<version>${core.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- MobHunting / -->
 		<dependency>
 			<groupId>one.lindegaard</groupId>
