@@ -1,7 +1,7 @@
 package one.lindegaard.BagOfGold.commands;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,10 +52,11 @@ public class BankCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias
-				+ ChatColor.GREEN + " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
-				+ " - to give the player a " + plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
-				+ " in his inventory.",
+		return new String[] {
+				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+						+ " - to give the player a " + plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
+						+ " in his inventory.",
 
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " take <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
@@ -131,9 +132,9 @@ public class BankCommand implements ICommand {
 
 				if (other)
 					plugin.getMessages().senderSendMessage(sender,
-							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.bankbalance.other",
-									"playername", offlinePlayer.getName(), "money",
-									plugin.getEconomyManager().format(balance), "rewardname",
+							ChatColor.GREEN + plugin.getMessages().getString(
+									"bagofgold.commands.money.bankbalance.other", "playername", offlinePlayer.getName(),
+									"money", plugin.getEconomyManager().format(balance), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 				else
@@ -172,7 +173,7 @@ public class BankCommand implements ICommand {
 				}
 
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Misc.round(Double.valueOf(args[2]));
+					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
@@ -207,7 +208,7 @@ public class BankCommand implements ICommand {
 					return true;
 				}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Misc.round(Double.valueOf(args[2]));
+					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,

@@ -17,7 +17,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import net.milkbowl.vault.economy.EconomyResponse;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.rewards.Reward;
-import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Materials.Materials;
 import one.lindegaard.Core.Server.Servers;
 
@@ -128,8 +128,8 @@ public class BankSign implements Listener {
 					}
 					plugin.getMessages().debug("BankSign: moneyOnSign=%s, bankBal=%s", moneyOnSign,
 							plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()).balance);
-					if (Misc.round(
-							plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()).balance) >= Misc
+					if (Tools.round(
+							plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()).balance) >= Tools
 									.round(moneyOnSign)) {
 
 						if (space < moneyOnSign)
@@ -139,7 +139,7 @@ public class BankSign implements Listener {
 							plugin.getEconomyManager().depositPlayer(player, moneyOnSign);
 
 							plugin.getMessages().debug("%s withdraw %s %s from Bank", player.getName(),
-									plugin.getEconomyManager().format(Misc.round(moneyOnSign)),
+									plugin.getEconomyManager().format(Tools.round(moneyOnSign)),
 									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
 							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
 									"bagofgold.banksign.withdraw", "money",
@@ -153,7 +153,7 @@ public class BankSign implements Listener {
 							
 						}
 					} else {
-						double bal = Misc
+						double bal = Tools
 								.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()).balance);
 						if (space < bal)
 							bal = space;

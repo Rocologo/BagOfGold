@@ -15,7 +15,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
 import one.lindegaard.Core.rewards.Reward;
@@ -31,6 +30,7 @@ public class EconomyManager {
 		pickupRewards = new PickupRewards(plugin);
 
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
+		Bukkit.getPluginManager().registerEvents(new BagOfGoldListeners(plugin), plugin);
 		Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
 
 		if (Servers.isMC112OrNewer() && eventDoesExists())
@@ -78,7 +78,7 @@ public class EconomyManager {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		double drop = 0, give = amount;
 		if (amount == 0) {
-			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
+			return new EconomyResponse(0, Tools.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
 					null);
 		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
@@ -88,22 +88,22 @@ public class EconomyManager {
 					give = space;
 					drop = amount - give;
 				}
-				addMoneyToPlayer(player, Misc.round(ps.getBalanceChanges()) + Misc.round(give));
+				addMoneyToPlayer(player, Tools.round(ps.getBalanceChanges()) + Tools.round(give));
 				dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), drop);
-				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + give));
+				ps.setBalance(Tools.round(ps.getBalance() + ps.getBalanceChanges() + give));
 				ps.setBalanceChanges(0);
 			} else {
-				ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() + give));
+				ps.setBalanceChanges(Tools.round(ps.getBalanceChanges() + give));
 			}
 			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(give),
 					offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			return new EconomyResponse(give, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
+			return new EconomyResponse(give, Tools.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
 					null);
 		} else {
 			plugin.getMessages().debug("Could not deposit %s to %s's account, because the number is negative",
 					format(amount), offlinePlayer.getName());
-			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.FAILURE,
+			return new EconomyResponse(0, Tools.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.FAILURE,
 					null);
 		}
 	}
@@ -122,11 +122,11 @@ public class EconomyManager {
 		if (amount >= 0) {
 			if (has(offlinePlayer, amount)) {
 				if (offlinePlayer.isOnline()) {
-					removeMoneyFromPlayer((Player) offlinePlayer, amount + Misc.round(ps.getBalanceChanges()));
-					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+					removeMoneyFromPlayer((Player) offlinePlayer, amount + Tools.round(ps.getBalanceChanges()));
+					ps.setBalance(Tools.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 					ps.setBalanceChanges(0);
 				} else
-					ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+					ps.setBalanceChanges(Tools.round(ps.getBalanceChanges() - amount));
 				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", format(amount),
 						offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
@@ -145,10 +145,10 @@ public class EconomyManager {
 						plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 					}
 				}
-				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
+				return new EconomyResponse(amount, Tools.round(ps.getBalance() + ps.getBalanceChanges()),
 						ResponseType.SUCCESS, null);
 			} else {
-				double remove = Misc.round(ps.getBalance() + ps.getBalanceChanges());
+				double remove = Tools.round(ps.getBalance() + ps.getBalanceChanges());
 				plugin.getMessages().debug("%s has not enough bagofgold, Withdrawing only %s , new balance is %s",
 						offlinePlayer.getName(), format(remove), format(0));
 				if (remove > 0) {
@@ -177,7 +177,7 @@ public class EconomyManager {
 		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
 				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 				format(pb.getBalance() + pb.getBalanceChanges()));
-		return Misc.round(pb.getBalance()) + Misc.round(pb.getBalanceChanges()) >= Misc.round(amount);
+		return Tools.round(pb.getBalance()) + Tools.round(pb.getBalanceChanges()) >= Tools.round(amount);
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class EconomyManager {
 		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
-				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() + amount));
+				ps.setBankBalance(Tools.round(ps.getBankBalance() + ps.getBankBalanceChanges() + amount));
 				ps.setBankBalanceChanges(0);
 			} else {
 				ps.setBankBalanceChanges(ps.getBankBalanceChanges() + amount);
@@ -245,7 +245,7 @@ public class EconomyManager {
 		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
-				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges() - amount));
+				ps.setBankBalance(Tools.round(ps.getBankBalance() + ps.getBankBalanceChanges() - amount));
 				ps.setBankBalanceChanges(0);
 			} else {
 				ps.setBankBalanceChanges(ps.getBankBalanceChanges() - amount);
@@ -273,7 +273,7 @@ public class EconomyManager {
 		if (offlinePlayer != null) {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 			if (offlinePlayer.isOnline()) {
-				ps.setBankBalance(Misc.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
+				ps.setBankBalance(Tools.round(ps.getBankBalance() + ps.getBankBalanceChanges()));
 				ps.setBankBalanceChanges(0);
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			}
@@ -418,10 +418,10 @@ public class EconomyManager {
 		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
 		if (offlinePlayer.isOnline()) {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+			ps.setBalance(Tools.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 			ps.setBalanceChanges(0);
 		} else {
-			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+			ps.setBalanceChanges(Tools.round(ps.getBalanceChanges() - amount));
 		}
 		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 	}
@@ -438,10 +438,10 @@ public class EconomyManager {
 		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
 				format(ps.getBalance() + ps.getBalanceChanges()));
 		if (offlinePlayer.isOnline()) {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+			ps.setBalance(Tools.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 			ps.setBalanceChanges(0);
 		} else {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+			ps.setBalance(Tools.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 		}
 		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 	}
@@ -450,21 +450,21 @@ public class EconomyManager {
 		double amountInInventory = getAmountInInventory(player);
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		if (ps != null) {
-			double diff = (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()))
-					- Misc.round(amountInInventory);
+			double diff = (Tools.round(ps.getBalance()) + Tools.round(ps.getBalanceChanges()))
+					- Tools.round(amountInInventory);
 			double space = getSpaceForMoney(player);
 			if (diff > space) {
 				plugin.getMessages().debug("Not enough space for the money. Space=%s", space);
 				diff = space;
 				ps.setBalance(ps.getBalance() + space);
 			}
-			if (Misc.round(diff) != 0)
+			if (Tools.round(diff) != 0)
 				plugin.getMessages().debug("Adjusting amt to Balance: amt=%s, bal=%s(+%s)", amountInInventory,
 						ps.getBalance(), ps.getBalanceChanges());
-			if (Misc.round(diff) > 0) {
+			if (Tools.round(diff) > 0) {
 				plugin.getMessages().debug("Add %s money to balance", diff);
-				addMoneyToPlayer(player, Misc.round(diff));
-			} else if (Misc.round(diff) < 0) {
+				addMoneyToPlayer(player, Tools.round(diff));
+			} else if (Tools.round(diff) < 0) {
 				plugin.getMessages().debug("remove %s money from balance", -diff);
 				removeMoneyFromPlayer(player, -diff);
 			} else
@@ -483,15 +483,15 @@ public class EconomyManager {
 				inHand = reward.getMoney();
 		}
 		if (ps != null) {
-			double diff = Misc.round(amountInInventory + inHand)
-					- (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
+			double diff = Tools.round(amountInInventory + inHand)
+					- (Tools.round(ps.getBalance()) + Tools.round(ps.getBalanceChanges()));
 			plugin.getMessages().debug("Adjusting Balance to amt: diff=%s", diff);
-			if (Misc.round(diff) != 0)
+			if (Tools.round(diff) != 0)
 				plugin.getMessages().debug("Adjusting Balance to amt: amt=%s, inHand=%s, bal=%s(+%s)",
 						amountInInventory, inHand, ps.getBalance(), ps.getBalanceChanges());
-			if (Misc.round(diff) > 0)
-				addMoneyToPlayerBalance(player, Misc.round(diff));
-			else if (Misc.round(diff) < 0)
+			if (Tools.round(diff) > 0)
+				addMoneyToPlayerBalance(player, Tools.round(diff));
+			else if (Tools.round(diff) < 0)
 				// removeMoneyFromPlayer(player, -diff);
 				removeMoneyFromPlayerBalance(player, -diff);
 			else

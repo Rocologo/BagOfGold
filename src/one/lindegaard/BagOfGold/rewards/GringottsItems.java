@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 
 public class GringottsItems implements Listener {
@@ -67,7 +66,7 @@ public class GringottsItems implements Listener {
 
 	public double removeGringottsMoneyFromPlayer(Player player, double amount) {
 		double taken = 0;
-		double toBeTaken = Misc.round(amount);
+		double toBeTaken = Tools.round(amount);
 		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
@@ -100,7 +99,7 @@ public class GringottsItems implements Listener {
 	}
 
 	public void dropGringottsMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
-		double moneyLeftToDrop = Misc.ceil(money);
+		double moneyLeftToDrop = Tools.ceil(money);
 		double droppedMoney = 0;
 		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {

@@ -23,11 +23,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
+import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.rewards.CustomItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
-import one.lindegaard.BagOfGold.util.Misc;
 
 public class PlayerBalanceManager implements Listener {
 
@@ -137,7 +137,7 @@ public class PlayerBalanceManager implements Listener {
 		} else {
 			plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
-		
+
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class PlayerBalanceManager implements Listener {
 	}
 
 	/**
-	 * Load PlayerSettings asynchronously from Database
+	 * Load PlayerSettings asynchronously from Database Misc
 	 * 
 	 * @param offlinePlayer
 	 */
@@ -182,7 +182,7 @@ public class PlayerBalanceManager implements Listener {
 					Player player = (Player) offlinePlayer;
 					worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(player);
 					gamemode = player.getGameMode();
-					//Next line is important, to adjust the AmountInInventory to Balance
+					// Next line is important, to adjust the AmountInInventory to Balance
 					plugin.getEconomyManager().getAmountInInventory(player);
 				} else {
 					worldGroup = plugin.getWorldGroupManager().getDefaultWorldgroup();
@@ -202,8 +202,8 @@ public class PlayerBalanceManager implements Listener {
 							double amountInInventory = plugin.getEconomyManager()
 									.getAmountInInventory((Player) offlinePlayer);
 							PlayerBalance pb = getPlayerBalance(offlinePlayer);
-							if (Misc.round(amountInInventory) != Misc.round(pb.getBalance())
-									+ Misc.round(pb.getBalanceChanges())) {
+							if (Tools.round(amountInInventory) != Tools.round(pb.getBalance())
+									+ Tools.round(pb.getBalanceChanges())) {
 								double change = pb.getBalanceChanges();
 								plugin.getMessages().debug(
 										"Balance was changed while %s was offline. New balance is %s.",
@@ -282,8 +282,8 @@ public class PlayerBalanceManager implements Listener {
 									playerBalance.getBalance() + playerBalance.getBalanceChanges()
 											+ playerBalance.getBankBalance() + playerBalance.getBankBalanceChanges()),
 							inventory, n, ChatColor.GREEN + playerBalance.getPlayer().getName(),
-							
-							//Lores
+
+							// Lores
 							new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getMessages().getString("bagofgold.commands.money.top", "total",
@@ -296,7 +296,7 @@ public class PlayerBalanceManager implements Listener {
 									,
 									ChatColor.DARK_PURPLE + "WorldGrp:" + ChatColor.GREEN
 											+ plugin.getWorldGroupManager().getCurrentWorldGroup(player) + " ",
-											
+
 									ChatColor.DARK_PURPLE + "Mode:" + ChatColor.GREEN + player.getGameMode().toString()
 
 							});

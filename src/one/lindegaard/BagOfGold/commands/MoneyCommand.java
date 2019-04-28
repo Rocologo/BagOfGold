@@ -3,7 +3,6 @@ package one.lindegaard.BagOfGold.commands;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.Core.rewards.Reward;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 
 import org.bukkit.Bukkit;
@@ -279,7 +278,7 @@ public class MoneyCommand implements ICommand {
 					if (args[1].matches("\\d+(\\.\\d+)?")) {
 						Player player = (Player) sender;
 						Location location = Tools.getTargetBlock(player, 20).getLocation();
-						double money = Misc.floor(Double.valueOf(args[1]));
+						double money = Tools.floor(Double.valueOf(args[1]));
 						if (money > plugin.getConfigManager().limitPerBag * 100) {
 							money = plugin.getConfigManager().limitPerBag * 100;
 							plugin.getMessages().senderSendMessage(sender,
@@ -298,7 +297,7 @@ public class MoneyCommand implements ICommand {
 						if (args[2].matches("\\d+(\\.\\d+)?")) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
 							Location location = Tools.getTargetBlock(player, 3).getLocation();
-							double money = Misc.floor(Double.valueOf(args[2]));
+							double money = Tools.floor(Double.valueOf(args[2]));
 							if (money > plugin.getConfigManager().limitPerBag * 100) {
 								money = plugin.getConfigManager().limitPerBag * 100;
 								plugin.getMessages().senderSendMessage(sender,
@@ -346,7 +345,7 @@ public class MoneyCommand implements ICommand {
 				}
 
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Misc.round(Double.valueOf(args[2]));
+					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
@@ -387,7 +386,7 @@ public class MoneyCommand implements ICommand {
 				GameMode fromPlayerGamemode = plugin.getWorldGroupManager().getCurrentGameMode(fromPlayer);
 				String fromPlayerWorldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(fromPlayer);
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Misc.round(Double.valueOf(args[2]));
+					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
@@ -430,7 +429,7 @@ public class MoneyCommand implements ICommand {
 					return true;
 				}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Misc.round(Double.valueOf(args[2]));
+					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
