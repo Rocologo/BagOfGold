@@ -44,6 +44,7 @@ import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
+import one.lindegaard.Core.WorldGroupManager;
 import one.lindegaard.Core.Server.Servers;
 
 public class BagOfGold extends JavaPlugin {
@@ -60,7 +61,7 @@ public class BagOfGold extends JavaPlugin {
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private EconomyManager mEconomyManager;
-	private WorldGroup mWorldGroupManager;
+	private WorldGroupManager mWorldGroupManager;
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
@@ -114,7 +115,7 @@ public class BagOfGold extends JavaPlugin {
 			}
 		}
 
-		mWorldGroupManager = new WorldGroup(this);
+		mWorldGroupManager = new WorldGroupManager(this);
 		mWorldGroupManager.load();
 
 		mSpigetUpdater = new SpigetUpdater(this);
@@ -368,7 +369,7 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public WorldGroup getWorldGroupManager() {
+	public WorldGroupManager getWorldGroupManager() {
 		return mWorldGroupManager;
 	}
 
