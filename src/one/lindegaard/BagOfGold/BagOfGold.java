@@ -81,13 +81,10 @@ public class BagOfGold extends JavaPlugin {
 
 		Plugin bagOfGoldCorePlugin = Bukkit.getPluginManager().getPlugin("BagOfGoldCore");
 		if (bagOfGoldCorePlugin == null) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW
-					+ "BagOfGoldCore is missing. Will now be downloaded. Restart your server when downloading has finished.");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+					+ "BagOfGoldCore is missing. BagOfGold is dependend on BagGoldCore. It Will now be downloaded. Restart your server when downloading has finished.");
 			SpigetUpdaterForced.setCurrentJarFile(this.getFile().getName());
-			SpigetUpdaterForced.setCurrentPath(this.getFile().getParent());
 			SpigetUpdaterForced.ForceDownloadJar(this);
-		} else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "BagOfGoldCore exists.");
 		}
 
 		instance = this;
