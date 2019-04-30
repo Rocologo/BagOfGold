@@ -44,6 +44,7 @@ import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
+import one.lindegaard.Core.update.SpigetUpdaterForced;
 import one.lindegaard.Core.WorldGroupManager;
 import one.lindegaard.Core.Server.Servers;
 
@@ -77,6 +78,17 @@ public class BagOfGold extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+
+		Plugin bagOfGoldCorePlugin = Bukkit.getPluginManager().getPlugin("BagOfGoldCore");
+		if (bagOfGoldCorePlugin == null) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW
+					+ "BagOfGoldCore is missing. Will now be downloaded. Restart your server when downloading has finished.");
+			SpigetUpdaterForced.setCurrentJarFile(this.getFile().getName());
+			SpigetUpdaterForced.setCurrentPath(this.getFile().getParent());
+			SpigetUpdaterForced.ForceDownloadJar(this);
+		} else {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "BagOfGoldCore exists.");
+		}
 
 		instance = this;
 
@@ -209,6 +221,8 @@ public class BagOfGold extends JavaPlugin {
 		mGringottsItems = new GringottsItems(this);
 		mBagOfGoldItems = new BagOfGoldItems(this);
 		mInitialized = true;
+
+		setEnabled(mInitialized);
 
 	}
 
