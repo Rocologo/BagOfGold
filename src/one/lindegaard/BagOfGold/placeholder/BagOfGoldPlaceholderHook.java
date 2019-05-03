@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Tools;
+import one.lindegaard.BagOfGoldCore.Tools;
 
 public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Listener {
 	

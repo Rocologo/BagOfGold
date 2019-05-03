@@ -15,9 +15,9 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.Server.Servers;
-import one.lindegaard.Core.rewards.Reward;
+import one.lindegaard.BagOfGoldCore.Tools;
+import one.lindegaard.BagOfGoldCore.Server.Servers;
+import one.lindegaard.BagOfGoldCore.rewards.Reward;
 
 public class EconomyManager {
 

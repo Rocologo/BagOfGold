@@ -1,7 +1,7 @@
 package one.lindegaard.BagOfGold.commands;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Tools;
+import one.lindegaard.BagOfGoldCore.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

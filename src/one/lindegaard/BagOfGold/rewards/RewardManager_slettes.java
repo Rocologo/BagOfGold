@@ -15,8 +15,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Materials.Materials;
-import one.lindegaard.Core.rewards.Reward;
+import one.lindegaard.BagOfGoldCore.Materials.Materials;
+import one.lindegaard.BagOfGoldCore.rewards.Reward;
 
 public class RewardManager_slettes {
 

@@ -3,8 +3,8 @@ package one.lindegaard.BagOfGold.rewards;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibHelper;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.rewards.Reward;
+import one.lindegaard.BagOfGoldCore.Tools;
+import one.lindegaard.BagOfGoldCore.rewards.Reward;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;

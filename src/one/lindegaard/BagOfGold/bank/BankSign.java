@@ -16,10 +16,10 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.rewards.Reward;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.Materials.Materials;
-import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.BagOfGoldCore.rewards.Reward;
+import one.lindegaard.BagOfGoldCore.Tools;
+import one.lindegaard.BagOfGoldCore.Materials.Materials;
+import one.lindegaard.BagOfGoldCore.Server.Servers;
 
 public class BankSign implements Listener {
 

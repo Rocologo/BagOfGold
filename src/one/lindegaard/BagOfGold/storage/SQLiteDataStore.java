@@ -12,7 +12,7 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.Core.Tools;
+import one.lindegaard.BagOfGoldCore.Tools;
 
 public class SQLiteDataStore extends DatabaseDataStore {
 

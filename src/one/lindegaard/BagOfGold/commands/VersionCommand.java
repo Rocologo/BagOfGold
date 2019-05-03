@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.update.UpdateStatus;
+import one.lindegaard.BagOfGoldCore.update.UpdateStatus;
 
 public class VersionCommand implements ICommand {
 

@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Tools;
+import one.lindegaard.BagOfGoldCore.Tools;
 
 public class GringottsItems implements Listener {
 
