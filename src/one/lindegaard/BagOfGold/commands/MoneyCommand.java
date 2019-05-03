@@ -7,7 +7,6 @@ import one.lindegaard.Core.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -383,8 +382,6 @@ public class MoneyCommand implements ICommand {
 				}
 
 				Player fromPlayer = (Player) sender;
-				GameMode fromPlayerGamemode = plugin.getWorldGroupManager().getCurrentGameMode(fromPlayer);
-				String fromPlayerWorldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(fromPlayer);
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {

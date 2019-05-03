@@ -1,13 +1,18 @@
 package one.lindegaard.BagOfGold;
 
 import java.io.File;
+import java.io.FileFilter;
 
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
+import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
@@ -85,6 +90,24 @@ public class BagOfGold extends JavaPlugin {
 					+ "BagOfGoldCore is missing. BagOfGold is dependend on BagGoldCore. It Will now be downloaded. Restart your server when downloading has finished.");
 			SpigetUpdaterForced.setCurrentJarFile(this.getFile().getName());
 			SpigetUpdaterForced.ForceDownloadJar(this);
+			File dir = new File("./plugins");
+			FileFilter fileFilter = new WildcardFileFilter("BagOfGoldCore*.jar");
+			File[] jars = dir.listFiles(fileFilter);
+			if (jars.length>=1)
+				try {
+					Bukkit.getPluginManager().loadPlugin(jars[0]);
+				} catch (UnknownDependencyException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidPluginException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidDescriptionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			else
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED + "BagOfGOld was not able to download and enable BagOfGoldCore.");
 		}
 
 		instance = this;

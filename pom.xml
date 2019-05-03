@@ -14,7 +14,7 @@
 
 	<scm>
 		<connection>scm:svn:https://github.com/Rocologo/BagOfGold.git</connection>
-		<developerConnection>scm:git:git://github.com/Rocologo/BagOfGold.git</developerConnection>
+		<developerConnection>scm:git:git://github.com/Rocologo</developerConnection>
 		<url>https://github.com/Rocologo/BagOfGold</url>
 	</scm>
 
@@ -117,7 +117,7 @@
 		<!-- Rocologo Core -->
 		<dependency>
 			<groupId>one.lindegaard</groupId>
-			<artifactId>Core</artifactId>
+			<artifactId>BagOfGoldCore</artifactId>
 			<version>${core.version}</version>
 			<scope>compile</scope>
 		</dependency>

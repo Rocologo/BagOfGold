@@ -6,7 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Core;
 
 
 @SuppressWarnings("deprecation")
