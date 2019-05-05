@@ -23,11 +23,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
-import one.lindegaard.BagOfGoldCore.Tools;
-import one.lindegaard.BagOfGoldCore.rewards.CustomItems;
+import one.lindegaard.BagOfGold.rewards.CustomItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
+import one.lindegaard.BagOfGold.util.Misc;
 
 public class PlayerBalanceManager implements Listener {
 
@@ -202,8 +202,8 @@ public class PlayerBalanceManager implements Listener {
 							double amountInInventory = plugin.getEconomyManager()
 									.getAmountInInventory((Player) offlinePlayer);
 							PlayerBalance pb = getPlayerBalance(offlinePlayer);
-							if (Tools.round(amountInInventory) != Tools.round(pb.getBalance())
-									+ Tools.round(pb.getBalanceChanges())) {
+							if (Misc.round(amountInInventory) != Misc.round(pb.getBalance())
+									+ Misc.round(pb.getBalanceChanges())) {
 								double change = pb.getBalanceChanges();
 								plugin.getMessages().debug(
 										"Balance was changed while %s was offline. New balance is %s.",

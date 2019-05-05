@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Messages;
-import one.lindegaard.BagOfGoldCore.Tools;
+import one.lindegaard.Core.Tools;
 
 public class ReloadCommand implements ICommand {
 

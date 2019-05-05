@@ -11,7 +11,6 @@ import org.inventivetalent.update.spiget.UpdateCallback;
 import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGoldCore.update.UpdateStatus;
 
 public class SpigetUpdater {
 
@@ -67,7 +66,7 @@ public class SpigetUpdater {
 				public void run() {
 					checkForUpdate(sender, false);
 				}
-			}.runTaskTimer(BagOfGold.getInstance(), 0L, seconds * 20L);
+			}.runTaskTimer(BagOfGold.getInstance(), 20000L, seconds * 20L);
 		}
 	}
 

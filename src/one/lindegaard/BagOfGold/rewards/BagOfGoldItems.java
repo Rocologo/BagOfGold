@@ -57,11 +57,10 @@ import org.bukkit.metadata.FixedMetadataValue;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
-import one.lindegaard.BagOfGoldCore.Tools;
-import one.lindegaard.BagOfGoldCore.Materials.Materials;
-import one.lindegaard.BagOfGoldCore.Server.Servers;
-import one.lindegaard.BagOfGoldCore.rewards.CustomItems;
-import one.lindegaard.BagOfGoldCore.rewards.Reward;
+import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.Materials.Materials;
+import one.lindegaard.Core.Server.Servers;
 
 public class BagOfGoldItems implements Listener {
 
@@ -149,7 +148,7 @@ public class BagOfGoldItems implements Listener {
 		}
 		if (!found) {
 
-			while (Tools.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
+			while (Misc.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
 				double nextBag = 0;
 				if (moneyLeftToGive > plugin.getConfigManager().limitPerBag) {
 					nextBag = plugin.getConfigManager().limitPerBag;
@@ -159,7 +158,7 @@ public class BagOfGoldItems implements Listener {
 					moneyLeftToGive = 0;
 				}
 				if (player.getInventory().firstEmpty() == -1)
-					dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), Tools.round(nextBag));
+					dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), Misc.round(nextBag));
 				else {
 					addedMoney = addedMoney + nextBag;
 					ItemStack is;
@@ -167,13 +166,13 @@ public class BagOfGoldItems implements Listener {
 						is = new CustomItems().getCustomtexture(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
 								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Tools.round(nextBag),
+								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(nextBag),
 								UUID.randomUUID(), UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
 					else {
 						is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
 						setDisplayNameAndHiddenLores(is,
 								new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-										Tools.round(nextBag), UUID.fromString(Reward.MH_REWARD_ITEM_UUID),
+										Misc.round(nextBag), UUID.fromString(Reward.MH_REWARD_ITEM_UUID),
 										UUID.randomUUID(), null));
 					}
 					player.getInventory().addItem(is);
@@ -187,7 +186,7 @@ public class BagOfGoldItems implements Listener {
 
 	public double removeBagOfGoldFromPlayer(Player player, double amount) {
 		double taken = 0;
-		double toBeTaken = Tools.round(amount);
+		double toBeTaken = Misc.round(amount);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			if (slot >= 36 && slot <= 40)
 				continue;
@@ -195,14 +194,14 @@ public class BagOfGoldItems implements Listener {
 			if (Reward.isReward(is)) {
 				Reward reward = Reward.getReward(is);
 				if (reward.isBagOfGoldReward() || reward.isItemReward()) {
-					double saldo = Tools.round(reward.getMoney());
+					double saldo = Misc.round(reward.getMoney());
 					if (saldo > toBeTaken) {
-						reward.setMoney(Tools.round(saldo - toBeTaken));
+						reward.setMoney(Misc.round(saldo - toBeTaken));
 						is = setDisplayNameAndHiddenLores(is, reward);
 						player.getInventory().setItem(slot, is);
 						taken = taken + toBeTaken;
 						toBeTaken = 0;
-						return Tools.round(taken);
+						return Misc.round(taken);
 					} else {
 						player.getInventory().clear(slot);
 						taken = taken + saldo;
@@ -219,16 +218,16 @@ public class BagOfGoldItems implements Listener {
 
 	public void dropBagOfGoldMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
-		double moneyLeftToDrop = Tools.ceil(money);
+		double moneyLeftToDrop = Misc.ceil(money);
 		ItemStack is;
 		UUID uuid = null, skinuuid = null;
 		double nextBag = 0;
 		while (moneyLeftToDrop > 0) {
 			if (moneyLeftToDrop > plugin.getConfigManager().limitPerBag) {
 				nextBag = plugin.getConfigManager().limitPerBag;
-				moneyLeftToDrop = Tools.round(moneyLeftToDrop - nextBag);
+				moneyLeftToDrop = Misc.round(moneyLeftToDrop - nextBag);
 			} else {
-				nextBag = Tools.round(moneyLeftToDrop);
+				nextBag = Misc.round(moneyLeftToDrop);
 				moneyLeftToDrop = 0;
 			}
 
@@ -674,7 +673,7 @@ public class BagOfGoldItems implements Listener {
 					plugin.getMessages().playerActionBarMessageQueue(player,
 							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 									+ reward.getDisplayname() + plugin.getMessages().getString("bagofgold.moneydrop",
-											"money", Tools.round(reward.getMoney())));
+											"money", Misc.round(reward.getMoney())));
 			}
 		}
 	}
@@ -749,7 +748,7 @@ public class BagOfGoldItems implements Listener {
 							double addedMoney = addBagOfGoldMoneyToPlayer(player, reward.getMoney());
 							if (addedMoney > 0) {
 								PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
-								ps.setBalance(Tools.round(ps.getBalance() + addedMoney));
+								ps.setBalance(Misc.round(ps.getBalance() + addedMoney));
 								plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
 							}
 							item.remove();
@@ -798,7 +797,7 @@ public class BagOfGoldItems implements Listener {
 					// plugin.getMessages().learn(player,
 					// plugin.getMessages().getString("mobhunting.learn.rewards.no-helmet"));
 					event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
-					if (Tools.round(reward.getMoney()) != Tools
+					if (Misc.round(reward.getMoney()) != Misc
 							.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
 						dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), reward.getMoney());
 				}
@@ -1062,8 +1061,8 @@ public class BagOfGoldItems implements Listener {
 			if (isCursor.getType() == Material.AIR && Reward.isReward(isCurrentSlot)) {
 				Reward reward = Reward.getReward(isCurrentSlot);
 				if (reward.isBagOfGoldReward() || reward.isItemReward()) {
-					double currentSlotMoney = Tools.round(reward.getMoney() / 2);
-					double cursorMoney = Tools.round(reward.getMoney()) - currentSlotMoney;
+					double currentSlotMoney = Misc.round(reward.getMoney() / 2);
+					double cursorMoney = Misc.round(reward.getMoney()) - currentSlotMoney;
 					if (cursorMoney >= plugin.getConfigManager().minimumReward) {
 						event.setCancelled(true);
 						reward.setMoney(currentSlotMoney);
@@ -1087,7 +1086,7 @@ public class BagOfGoldItems implements Listener {
 				Reward cursor = Reward.getReward(isCursor);
 				double money_in_hand = cursor.getMoney();
 				if (cursor.isBagOfGoldReward() || cursor.isItemReward()) {
-					double saldo = Tools.floor(cursor.getMoney());
+					double saldo = Misc.floor(cursor.getMoney());
 					for (int slot = 0; slot < event.getClickedInventory().getSize(); slot++) {
 						ItemStack is = event.getClickedInventory().getItem(slot);
 						if (Reward.isReward(is)) {

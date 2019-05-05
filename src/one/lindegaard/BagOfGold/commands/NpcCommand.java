@@ -10,7 +10,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
-import one.lindegaard.BagOfGoldCore.Tools;
+import one.lindegaard.Core.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

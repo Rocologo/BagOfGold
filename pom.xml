@@ -117,12 +117,12 @@
 		<!-- Rocologo Core -->
 		<dependency>
 			<groupId>one.lindegaard</groupId>
-			<artifactId>BagOfGoldCore</artifactId>
-			<version>${bagofgoldcore.version}</version>
+			<artifactId>Core</artifactId>
+			<version>${core.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- MobHunting / -->
+				<!-- MobHunting / -->
 		<dependency>
 			<groupId>one.lindegaard</groupId>
 			<artifactId>MobHunting</artifactId>

@@ -10,7 +10,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import one.lindegaard.BagOfGoldCore.Tools;
+import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Tools;
 
 public class BagOfGoldEconomy implements Economy {
 

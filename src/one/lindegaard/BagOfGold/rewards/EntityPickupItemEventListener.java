@@ -7,7 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGoldCore.rewards.Reward;
 
 public class EntityPickupItemEventListener implements Listener {
 
