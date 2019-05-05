@@ -93,7 +93,7 @@
 					<createDependencyReducedPom>false</createDependencyReducedPom>
 					<artifactSet>
 						<includes>
-							<include>one.lindegaard:BagOfGoldCore:*</include>
+							<include>one.lindegaard:Core:*</include>
 							<include>org.bstats:*</include>
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
 						</includes>
