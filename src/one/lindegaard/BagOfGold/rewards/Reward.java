@@ -122,7 +122,7 @@ public class Reward {
 					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
 																				// id
 					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()),
-					BagOfGold.getAPI().getMessages().getString("bagofgoldcore.reward.name"))); // skin
+					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.name"))); // skin
 
 	}
 

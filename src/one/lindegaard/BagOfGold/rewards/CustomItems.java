@@ -238,7 +238,7 @@ public class CustomItems {
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + offlinePlayer.getName(),
 				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
 				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:" + uuid,
-				plugin.getMessages().getString("bagofgoldcore..reward.name"))));
+				plugin.getMessages().getString("bagofgold.reward.name"))));
 		ChatColor color = ChatColor.GOLD;
 		try {
 			color = ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor.toUpperCase());
@@ -276,7 +276,7 @@ public class CustomItems {
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
 				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
 				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:" + uuid,
-				plugin.getMessages().getString("bagofgoldcore.reward.name"))));
+				plugin.getMessages().getString("bagofgold.reward.name"))));
 		skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 		if (money == 0) {
 			skullMeta.setDisplayName(name);
@@ -342,7 +342,7 @@ public class CustomItems {
 			skullMeta.setLore(new ArrayList<String>(
 					Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.format(Locale.ENGLISH, "%.5f", money),
 							"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid,
-							"Hidden:" + skinUuid, plugin.getMessages().getString("bagofgoldcore.reward.name"))));
+							"Hidden:" + skinUuid, plugin.getMessages().getString("bagofgold.reward.name"))));
 
 		ChatColor color = ChatColor.GOLD;
 		try {
@@ -427,7 +427,7 @@ public class CustomItems {
 					"Hidden:" + reward.getMoney(), "Hidden:" + reward.getRewardType(),
 					reward.getMoney() == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(),
 					"Hidden:" + reward.getSkinUUID(),
-					BagOfGold.getInstance().getMessages().getString("bagofgoldcore.reward.name"))));
+					BagOfGold.getInstance().getMessages().getString("bagofgold.reward.name"))));
 
 		if (reward.getMoney() == 0)
 			skullMeta.setDisplayName(
