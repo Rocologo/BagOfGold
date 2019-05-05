@@ -1,7 +1,7 @@
 package one.lindegaard.BagOfGold.commands;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGoldCore.Tools;
+import one.lindegaard.BagOfGold.util.Misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -173,7 +173,7 @@ public class BankCommand implements ICommand {
 				}
 
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Tools.round(Double.valueOf(args[2]));
+					double amount = Misc.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
@@ -208,7 +208,7 @@ public class BankCommand implements ICommand {
 					return true;
 				}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Tools.round(Double.valueOf(args[2]));
+					double amount = Misc.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
