@@ -2,6 +2,7 @@ V2.5.5
 * Minecraft 1.14 support added
 * Mute command added. (Permission: bagofgold.mute)
 * Core library implemented
+* Moved to new PlaceHolderExpansionAPI
 V2.5.4
 * Placeholder %bagofgold_balance% and %bagofgold_bank_balance% for PlaceholderAPI is now fixed. 
 V2.5.3

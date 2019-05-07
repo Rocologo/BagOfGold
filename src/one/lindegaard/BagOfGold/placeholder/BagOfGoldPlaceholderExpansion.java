@@ -1,21 +1,28 @@
 package one.lindegaard.BagOfGold.placeholder;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
-import me.clip.placeholderapi.external.EZPlaceholderHook;
+
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.Tools;
 
-public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Listener {
+public class BagOfGoldPlaceholderExpansion extends PlaceholderExpansion implements Listener {
 	
-	public BagOfGoldPlaceholderHook(Plugin plugin) {
-		super(plugin, "bagofgold");
-		BagOfGold.getInstance().getMessages().debug("PlaceHolderHook started");
-	}
-
+    /**
+     * This method should always return true unless we
+     * have a dependency we need to make sure is on the server
+     * for our placeholders to work!
+     *
+     * @return always true since we do not have any dependencies.
+     */
+    @Override
+    public boolean canRegister(){
+        return true;
+    }
+    
 	@Override
-	public String onPlaceholderRequest(Player player, String identifier) {
+	public String onRequest(OfflinePlayer player, String identifier) {
 
 		// Remember to update the documentation when adding new placeholders
 		// https://www.spigotmc.org/wiki/mobhunting-placeholders/
@@ -46,6 +53,21 @@ public class BagOfGoldPlaceholderHook extends EZPlaceholderHook implements Liste
 		// we can just return null so the placeholder they specified is not
 		// replaced.
 		return null;
+	}
+
+	@Override
+	public String getAuthor() {
+		return "Rocologo";
+	}
+
+	@Override
+	public String getIdentifier() {
+		return "bagofgold";
+	}
+
+	@Override
+	public String getVersion() {
+		return "1.0.0";
 	}
 
 }

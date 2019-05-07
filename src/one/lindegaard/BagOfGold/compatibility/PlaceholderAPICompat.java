@@ -10,7 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.placeholder.BagOfGoldPlaceholderHook;
+import one.lindegaard.BagOfGold.placeholder.BagOfGoldPlaceholderExpansion;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderData;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderManager;
 
@@ -21,7 +21,7 @@ public class PlaceholderAPICompat {
 	private static PlaceHolderManager mPlaceHolderManager;
 
 	// https://www.spigotmc.org/resources/placeholderapi.6245/
-	// https://www.spigotmc.org/wiki/hooking-into-placeholderapi/
+	// https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/PlaceholderExpansion#without-external-plugin
 
 	public PlaceholderAPICompat() {
 		if (!isEnabledInConfig()) {
@@ -34,7 +34,7 @@ public class PlaceholderAPICompat {
 						.sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
 								+ "Enabling compatibility with PlaceholderAPI (" + mPlugin.getDescription().getVersion()
 								+ ").");
-				new BagOfGoldPlaceholderHook(BagOfGold.getAPI()).hook();
+				new BagOfGoldPlaceholderExpansion().register();
 				mPlaceHolderManager = new PlaceHolderManager(BagOfGold.getAPI());
 				supported = true;
 			} else {
