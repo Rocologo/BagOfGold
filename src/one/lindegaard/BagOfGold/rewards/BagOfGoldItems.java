@@ -890,8 +890,8 @@ public class BagOfGoldItems implements Listener {
 				isKey.setType(Material.AIR);
 				return;
 			}
-			plugin.getMessages().debug("This is not a BagOfGold reward. key=%s isKey=%s", event.getHotbarButton(),
-					isKey == null ? "null" : isKey.getType());
+			//plugin.getMessages().debug("This is not a BagOfGold reward. key=%s isKey=%s", event.getHotbarButton(),
+			//		isKey == null ? "null" : isKey.getType());
 			return;
 		}
 
