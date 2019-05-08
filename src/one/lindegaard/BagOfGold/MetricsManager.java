@@ -11,6 +11,8 @@ import org.bukkit.Bukkit;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.MobHuntingCompat;
+import one.lindegaard.Core.HttpTools;
+import one.lindegaard.Core.HttpTools.httpCallback;
 
 import org.bstats.bukkit.Metrics;
 
@@ -26,21 +28,30 @@ public class MetricsManager {
 	}
 
 	public void start() {
-		Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
 			public void run() {
 				try {
 					URL url = new URL("https://bstats.org/");
-					if (!started && HttpTools.isHomePageReachable(url)) {
-						startBStatsMetrics();
-						plugin.getMessages().debug("Metrics reporting to Https://bstats.org has started.");
-						started = true;
-					} else {
-						plugin.getMessages().debug("https://bstats.org/ seems to be down");
+					if (!started) {
+						HttpTools.isHomePageReachable(url, new httpCallback() {
+
+							@Override
+							public void onSuccess() {
+								startBStatsMetrics();
+								plugin.getMessages().debug("Metrics reporting to Https://bstats.org has started.");
+								started = true;
+							}
+
+							@Override
+							public void onError() {
+								started = false;
+								plugin.getMessages().debug("https://bstats.org/ seems to be down");
+							}
+						});
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			}
 		}, 100, 72000);
 	}

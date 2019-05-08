@@ -1,4 +1,6 @@
-V2.5.5
+V2.5.7
+* Better handling of bStats data collection
+V2.5.6
 * Minecraft 1.14 support added
 * Mute command added. (Permission: bagofgold.mute)
 * Core library implemented
