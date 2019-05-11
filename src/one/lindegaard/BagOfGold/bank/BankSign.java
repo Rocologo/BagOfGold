@@ -2,7 +2,6 @@ package one.lindegaard.BagOfGold.bank;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -280,7 +279,6 @@ public class BankSign implements Listener {
 	// ************************************************************************************
 
 	private boolean isBankSign(Block block) {
-		plugin.getMessages().debug("Block=%s Material=%s", block.getType() , Material.matchMaterial("WALL_SIGN") );
 		if (Materials.isSign(block)) {
 			plugin.getMessages().debug("This block is a sign");
 			return ChatColor.stripColor(((Sign) block.getState()).getLine(0)).equalsIgnoreCase(
