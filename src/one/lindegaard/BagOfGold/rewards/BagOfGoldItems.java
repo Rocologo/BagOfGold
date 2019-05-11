@@ -21,6 +21,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -106,6 +107,10 @@ public class BagOfGoldItems implements Listener {
 
 	public String format(double money) {
 		return Tools.format(money);
+	}
+	
+	private boolean hasFortuneEnchanhtment(ItemStack itemStack) {
+		return itemStack.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS);
 	}
 
 	public double addBagOfGoldMoneyToPlayer(Player player, double amount) {
