@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 
@@ -75,6 +76,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract void setupV2Tables(Connection connection) throws SQLException;
 
 	/**
+	 * Setup / Create database version 3 tables for BagOfGold
+	 */
+	protected abstract void setupV3Tables(Connection connection) throws SQLException;
+
+	/**
 	 * Open a connection to the Database and prepare a statement for executing.
 	 * 
 	 * @param connection
@@ -102,31 +108,56 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Connection mConnection = setupConnection();
 
 			// Find current database version
-			if (plugin.getConfigManager().databaseVersion == 0) {
+			if (plugin.getConfigManager().databaseVersion < 3) {
 				Statement statement = mConnection.createStatement();
 				try {
-					// Check if Database exists at all?
-					ResultSet rs = statement.executeQuery("SELECT UUID FROM mh_Players LIMIT 0");
+					ResultSet rs = statement.executeQuery("SELECT TEXTURE FROM mh_PlayerSettings LIMIT 0");
 					rs.close();
-					plugin.getConfigManager().databaseVersion = 1;
-					plugin.getConfigManager().saveConfig();
-				} catch (SQLException e2) {
-					// Database v1 does not exist. Create V2
-					setupV2Tables(mConnection);
-					plugin.getConfigManager().databaseVersion = 2;
-					plugin.getConfigManager().saveConfig();
+					plugin.getConfigManager().databaseVersion = 3;
+				} catch (SQLException e1) {
+					try {
+						ResultSet rs = statement.executeQuery("SELECT UUID FROM mh_PlayerSettings LIMIT 0");
+						rs.close();
+						plugin.getConfigManager().databaseVersion = 2;
+					} catch (SQLException e2) {
+						try {
+							// Check if Database exists at all?
+							ResultSet rs = statement.executeQuery("SELECT UUID FROM mh_Balance LIMIT 0");
+							rs.close();
+							plugin.getConfigManager().databaseVersion = 1;
+						} catch (SQLException e3) {
+							// Database v1,v2 does not exist. Create V3
+							plugin.getConfigManager().databaseVersion = 3;
+						}
+
+					}
+
 				}
 				statement.close();
+				plugin.getConfigManager().saveConfig();
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.WHITE
+						+ " Database version " + plugin.getConfigManager().databaseVersion + " detected.");
 			}
 
 			switch (plugin.getConfigManager().databaseVersion) {
 			case 1:
-				Bukkit.getLogger().info(
-						"[BagOfGold] Database version " + plugin.getConfigManager().databaseVersion + " detected.");
 				setupV2Tables(mConnection);
 				migrateDatabaseLayoutFromV1ToV2(mConnection);
+				plugin.getConfigManager().databaseVersion = 2;
+				plugin.getConfigManager().saveConfig();
+				migrateDatabaseLayoutFromV2ToV3(mConnection);
+				plugin.getConfigManager().databaseVersion = 3;
+				plugin.getConfigManager().saveConfig();
+
 			case 2:
 				setupV2Tables(mConnection);
+				migrateDatabaseLayoutFromV2ToV3(mConnection);
+				plugin.getConfigManager().databaseVersion = 3;
+				plugin.getConfigManager().saveConfig();
+
+			default:
+				setupV3Tables(mConnection);
+
 			}
 
 			plugin.getConfigManager().databaseVersion = 2;
@@ -201,9 +232,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			result = mGetPlayerSettings.executeQuery();
 			if (result.next()) {
 				PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getString("LAST_WORLDGRP"),
-						result.getBoolean("LEARNING_MODE"), result.getBoolean("MUTE_MODE"));
+						result.getBoolean("LEARNING_MODE"), result.getBoolean("MUTE_MODE"), result.getString("TEXTURE"),
+						result.getString("SIGNATURE"), result.getLong("LAST_LOGON"), result.getLong("LAST_INTEREST"));
 				result.close();
-				//plugin.getMessages().debug("Reading from Database: %s", ps.toString());
 				mGetPlayerSettings.close();
 				mConnection.close();
 				return ps;
@@ -231,6 +262,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 				mInsertPlayerSettings.setString(3, playerSettings.getLastKnownWorldGrp());
 				mInsertPlayerSettings.setInt(4, playerSettings.isLearningMode() ? 1 : 0);
 				mInsertPlayerSettings.setInt(5, playerSettings.isMuted() ? 1 : 0);
+				mInsertPlayerSettings.setString(6, playerSettings.getTexture());
+				mInsertPlayerSettings.setString(7, playerSettings.getSignature());
+				mInsertPlayerSettings.setLong(8, playerSettings.getLast_logon());
+				mInsertPlayerSettings.setLong(9, playerSettings.getLast_interest());
+				
 				mInsertPlayerSettings.addBatch();
 				mInsertPlayerSettings.executeBatch();
 				mInsertPlayerSettings.close();
@@ -247,7 +283,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	@Override
-	public void savePlayerSettings(Set<PlayerSettings> playerDataSet, boolean cleanCache) throws DataStoreException {
+	public void savePlayerSettings(Set<PlayerSettings> playerDataSet, boolean removeFromCache) throws DataStoreException {
 		Connection mConnection;
 		try {
 			mConnection = setupConnection();
@@ -259,6 +295,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 					mInsertPlayerSettings.setString(3, playerSettings.getLastKnownWorldGrp());
 					mInsertPlayerSettings.setInt(4, playerSettings.isLearningMode() ? 1 : 0);
 					mInsertPlayerSettings.setInt(5, playerSettings.isMuted() ? 1 : 0);
+					mInsertPlayerSettings.setString(6, playerSettings.getTexture());
+					mInsertPlayerSettings.setString(7, playerSettings.getSignature());
+					mInsertPlayerSettings.setLong(8, playerSettings.getLast_logon());
+					mInsertPlayerSettings.setLong(9, playerSettings.getLast_interest());
+					
 					mInsertPlayerSettings.addBatch();
 				}
 				mInsertPlayerSettings.executeBatch();
@@ -268,7 +309,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 				plugin.getMessages().debug("PlayerSettings saved.");
 
-				if (cleanCache)
+				if (removeFromCache)
 					for (PlayerSettings playerData : playerDataSet) {
 						if (plugin.getPlayerSettingsManager().containsKey(playerData.getPlayer())
 								&& !playerData.getPlayer().isOnline() && playerData.getPlayer().hasPlayedBefore())
@@ -288,8 +329,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * getPlayerByName - get the player
 	 * 
-	 * @param name
-	 *            : String
+	 * @param name : String
 	 * @return player
 	 */
 	@Override

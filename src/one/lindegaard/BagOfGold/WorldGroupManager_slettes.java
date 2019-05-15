@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
  * @author Rocologo
  *
  */
-public class WorldGroupManager {
+public class WorldGroupManager_slettes {
 
 	private BagOfGold plugin;
 	private File file;
@@ -30,7 +30,7 @@ public class WorldGroupManager {
 	private HashMap<String, GameMode> defaultGameMode = new HashMap<String, GameMode>();
 	private HashMap<String, Double> startBalance = new HashMap<String, Double>();
 
-	public WorldGroupManager(BagOfGold plugin) {
+	public WorldGroupManager_slettes(BagOfGold plugin) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), "worldgroups.yml");
 		load();

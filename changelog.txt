@@ -1,3 +1,5 @@
+V2.5.8
+* New messages added when using command /bag bag pay ...
 V2.5.7
 * Better handling of bStats data collection
 * Deny players in Spectator mode to pickup BagOfGold items.

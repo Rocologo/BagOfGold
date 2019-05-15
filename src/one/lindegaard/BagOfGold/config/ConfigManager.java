@@ -31,12 +31,10 @@ public class ConfigManager extends AutoConfig {
 						+ "\nDropMoneyOnGround Settings / BagOfGold Item Settings"
 						+ "\n########################################################################");
 
-		setCategoryComment("gringotts",
-				"########################################################################"
-						+ "\nGringotts Style"
-						+ "\n########################################################################"
-						+ "\nOBS DONT USE GRINGOTTS_STYLE YET! Gringotts seems to die with Minecraft 1.13, but I have made a Gringotts style"
-						+ "\nfor Gringotts lovers (https://www.spigotmc.org/resources/gringotts.42071/)");
+		setCategoryComment("gringotts", "########################################################################"
+				+ "\nGringotts Style" + "\n########################################################################"
+				+ "\nOBS DONT USE GRINGOTTS_STYLE YET! Gringotts seems to die with Minecraft 1.13, but I have made a Gringotts style"
+				+ "\nfor Gringotts lovers (https://www.spigotmc.org/resources/gringotts.42071/)");
 
 		setCategoryComment("banker",
 				"########################################################################" + "\nBanker NPC settings"
@@ -135,7 +133,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "Here you can set which item should be used when you have chosen drop-money-on-ground-itemtype: ITEM. "
 			+ "\nUse Minecraft Item names like: " + "\nGOLD_NUGGET, DIAMOND, GOLD_INGOT, EMERALD, GOLDEN_APPLE"
-			+"\nChoose from this list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
+			+ "\nChoose from this list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
 	public String dropMoneyOnGroundItem = "GOLD_INGOT";
 
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE, GOLD")
@@ -158,21 +156,19 @@ public class ConfigManager extends AutoConfig {
 			+ "\nset \"deny_hoppers_to_pickup_money_on_ground\"=false")
 	public boolean denyHoppersToPickUpMoney = true;
 
-	
 	// #####################################################################################
 	// Gringotts style
 	// #####################################################################################
-	@ConfigField(name = "denomination", category = "gringotts", comment = 
-				  "If you want to have an Gringotts style economy you can set "
-				+"\n'drop-money-on-ground-itemtype: GRINGOTTS_STYLE' and then set the value of the"
-				+"\nvalue of the items here. You can add as many items as you want, but be"
-				+"\ncareful when you choose the value of the item so you dont ruin the"
-				+"\nserver economy. The Gringoots defaul values is EMERALD=1 and EMERALD_BLOCK=9"
-				+"\nAnother good combination would be GOLD_NUGGET=1, GOLD_INGOT=9, GOLD_BLOCK=81"
-				+"\nChoose from this list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html"
-				+"\nThe value of the denomination must be desending.")
+	@ConfigField(name = "denomination", category = "gringotts", comment = "If you want to have an Gringotts style economy you can set "
+			+ "\n'drop-money-on-ground-itemtype: GRINGOTTS_STYLE' and then set the value of the"
+			+ "\nvalue of the items here. You can add as many items as you want, but be"
+			+ "\ncareful when you choose the value of the item so you dont ruin the"
+			+ "\nserver economy. The Gringoots defaul values is EMERALD=1 and EMERALD_BLOCK=9"
+			+ "\nAnother good combination would be GOLD_NUGGET=1, GOLD_INGOT=9, GOLD_BLOCK=81"
+			+ "\nChoose from this list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html"
+			+ "\nThe value of the denomination must be desending.")
 	public LinkedHashMap<String, String> gringottsDenomination = new LinkedHashMap<String, String>();
-	{		
+	{
 		gringottsDenomination.put("EMERALD_BLOCK", "9");
 		gringottsDenomination.put("EMERALD", "1");
 	}
@@ -193,6 +189,20 @@ public class ConfigManager extends AutoConfig {
 		actions.put("withdrawall", "All");
 
 	}
+
+	@ConfigField(name = "calculate-interests", category = "banker.interest", comment = "Enable interst calculation. Players can get an interest per day/week")
+	public boolean calculateInterests = false;
+
+	@ConfigField(name = "period", category = "banker.interest", comment = "How often do you want the Interest to be calculated and added to your"
+			+ "\naccount: DAY, WEEK, MONTH, YEAR. 1 Minecraft day = 20 min, "//
+			+ "\n1 Minecraft week = 2.3 hours, 1 Minecraft nmonth = 10 hours,"//
+			+ "\n1 Minecraft year = 121.75 hours"//
+			+ "\nSource: https://minecraft.gamepedia.com/Day-night_cycle")
+	public String interestPeriod = "WEEK";
+
+	@ConfigField(name = "interest", category = "banker.interest", comment = "This is the interest in % per Minecraft year (121.75 hours). Be careful not to make"
+			+ "\nit too big, it can ruin your server economy. Default is 20%")
+	public double interest = 20;
 
 	// #####################################################################################
 	// Plugin integration
@@ -233,7 +243,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "protocollib.enable_integration_protocollib", category = "plugins", comment = "Enable/Disable integration with ProtocolLib."
 			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
 	public boolean enableIntegrationProtocolLib = true;
-	
+
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################

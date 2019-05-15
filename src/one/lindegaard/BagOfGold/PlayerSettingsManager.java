@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import one.lindegaard.BagOfGold.rewards.CustomItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
@@ -47,7 +48,8 @@ public class PlayerSettingsManager implements Listener {
 			} catch (UserNotFoundException e) {
 				String worldgroup = offlinePlayer.isOnline()?plugin.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer):plugin.getWorldGroupManager().getDefaultWorldgroup();
 				plugin.getMessages().debug("Insert new PlayerSettings for %s to database.", offlinePlayer.getName());
-				ps = new PlayerSettings(offlinePlayer,worldgroup, plugin.getConfigManager().learningMode, false);
+				ps = new PlayerSettings(offlinePlayer,worldgroup, plugin.getConfigManager().learningMode, false, null, null, System.currentTimeMillis(),
+						System.currentTimeMillis());
 				setPlayerSettings(offlinePlayer, ps);
 				return ps;
 			} catch (DataStoreException e) {
@@ -112,7 +114,14 @@ public class PlayerSettingsManager implements Listener {
 
 			@Override
 			public void onCompleted(PlayerSettings ps) {
+				ps.setLast_logon(System.currentTimeMillis());
 				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
+				
+				if (ps.getTexture() == null || ps.getTexture().equals("")) {
+					plugin.getMessages().debug("Store %s skin in BagOfGold Skin Cache", offlinePlayer.getName());
+					new CustomItems().getPlayerHead(offlinePlayer.getUniqueId(), 1, 0);
+				}
+
 			}
 
 			@Override

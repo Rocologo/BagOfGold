@@ -10,6 +10,8 @@ public class PlayerSettings {
 	private String lastKnownWorldGrp;
 	private String texture;
 	private String signature;
+	private long last_logon;
+	private long last_interest;
 
 	public PlayerSettings(OfflinePlayer player) {
 		this.player = player;
@@ -18,11 +20,15 @@ public class PlayerSettings {
 		this.setMuteMode(false);
 	}
 
-	public PlayerSettings(OfflinePlayer player, String lastKnownWorldGrp, boolean learning_mode, boolean mute) {
+	public PlayerSettings(OfflinePlayer player, String lastKnownWorldGrp, boolean learning_mode, boolean mute, String texture, String signature, long last_logon, long last_interest) {
 		this.player = player;
 		this.setLastKnownWorldGrp(lastKnownWorldGrp);
 		this.setLearningMode(learning_mode);
 		this.setMuteMode(mute);
+		this.setTexture(texture);
+		this.setSignature(signature);
+		this.setLast_logon(last_logon);
+		this.setLast_interest(last_interest);
 	}
 	
 	public PlayerSettings(OfflinePlayer player, PlayerSettings ps) {
@@ -32,6 +38,8 @@ public class PlayerSettings {
 		this.setLastKnownWorldGrp(ps.getLastKnownWorldGrp());
 		this.setTexture(ps.getTexture());
 		this.setSignature(ps.getSignature());
+		this.setLast_logon(ps.getLast_logon());
+		this.setLast_interest(ps.getLast_interest());
 	}
 
 	public String getLastKnownWorldGrp() {
@@ -119,6 +127,34 @@ public class PlayerSettings {
 
 	public void setSignature(String signature) {
 		this.signature = signature;
+	}
+
+	/**
+	 * @return the last_logon
+	 */
+	public long getLast_logon() {
+		return last_logon;
+	}
+
+	/**
+	 * @param last_logon the last_logon to set
+	 */
+	public void setLast_logon(long last_logon) {
+		this.last_logon = last_logon;
+	}
+
+	/**
+	 * @return the last_interest
+	 */
+	public long getLast_interest() {
+		return last_interest;
+	}
+
+	/**
+	 * @param last_interest the last_interest to set
+	 */
+	public void setLast_interest(long last_interest) {
+		this.last_interest = last_interest;
 	}
 
 }

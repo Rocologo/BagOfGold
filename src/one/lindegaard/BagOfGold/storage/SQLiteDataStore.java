@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
@@ -54,8 +55,8 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			break;
 		case INSERT_PLAYER_SETTINGS:
 			mInsertPlayerSettings = connection.prepareStatement(
-					"INSERT OR REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE) "
-							+ "VALUES(?,?,?,?,?);");
+					"INSERT OR REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE,TEXTURE,SIGNATURE,LAST_LOGON,LAST_INTEREST) "
+							+ "VALUES(?,?,?,?,?,?,?,?,?);");
 			break;
 		case GET_PLAYER_BALANCE:
 			mGetPlayerBalance = connection.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=?;");
@@ -66,13 +67,14 @@ public class SQLiteDataStore extends DatabaseDataStore {
 							+ "VALUES(?,?,?,?,?,?,?);");
 			break;
 		case GET_TOP25_BALANCE:
-			mTop25Balances = connection.prepareStatement("select UUID,WORLDGRP,GAMEMODE, BALANCE, BALANCE_CHANGES, BANK_BALANCE,BANK_BALANCE_CHANGES, "
-					+"sum(BALANCE + BALANCE_CHANGES + BANK_BALANCE + BANK_BALANCE_CHANGES) AS 'TOTAL'"
-					+"FROM mh_Balance "//
-					+"WHERE (WORLDGRP=? OR ?='') AND (GAMEMODE=? OR ?=-1) "//
-					+"GROUP BY UUID "//
-					+"ORDER BY TOTAL DESC "//
-					+"LIMIT ?");//
+			mTop25Balances = connection.prepareStatement(
+					"select UUID,WORLDGRP,GAMEMODE, BALANCE, BALANCE_CHANGES, BANK_BALANCE,BANK_BALANCE_CHANGES, "
+							+ "sum(BALANCE + BALANCE_CHANGES + BANK_BALANCE + BANK_BALANCE_CHANGES) AS 'TOTAL'"
+							+ "FROM mh_Balance "//
+							+ "WHERE (WORLDGRP=? OR ?='') AND (GAMEMODE=? OR ?=-1) "//
+							+ "GROUP BY UUID "//
+							+ "ORDER BY TOTAL DESC "//
+							+ "LIMIT ?");//
 			break;
 		}
 	}
@@ -110,6 +112,10 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	}
 
+	// *******************************************************************************
+	// V2 DATABASE SETUP
+	// *******************************************************************************
+
 	@Override
 	protected void setupV2Tables(Connection connection) throws SQLException {
 		Statement create = connection.createStatement();
@@ -139,11 +145,12 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		connection.commit();
 
 	}
-	
+
 	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
-		statement.executeUpdate("INSERT OR REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
-				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
+		statement.executeUpdate(
+				"INSERT OR REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
+						+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
 		statement.executeUpdate(
 				"INSERT OR REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
 						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
@@ -154,6 +161,66 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		plugin.getMessages().debug("BagOfGold databse was converted to V2");
 	}
 
+	// *******************************************************************************
+	// V3 DATABASE SETUP
+	// *******************************************************************************
+
+	@Override
+	protected void setupV3Tables(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
+
+		// Create new empty tables if they do not exist
+		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings" //
+				+ "(UUID TEXT PRIMARY KEY," //
+				+ " NAME TEXT, " //
+				+ " LAST_WORLDGRP NOT NULL DEFAULT 'default'," //
+				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + "," //
+				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," //
+				+ " TEXTURE TEXT, " //
+				+ " SIGNATURE TEXT, " //
+				+ " LAST_LOGON INTEGER, " //
+				+ " LAST_INTEREST INTEGER, " //
+				+ " UNIQUE(UUID))");
+
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance" //
+				+ "(UUID TEXT," //
+				+ " WORLDGRP TEXT DEFAULT 'default'," //
+				+ " GAMEMODE INT DEFAULT 0," //
+				+ " BALANCE REAL DEFAULT 0," //
+				+ " BALANCE_CHANGES REAL DEFAULT 0," //
+				+ " BANK_BALANCE REAL DEFAULT 0," //
+				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
+				+ " UNIQUE(UUID, WORLDGRP, GAMEMODE),"
+				+ " FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE)");
+
+		create.close();
+		connection.commit();
+
+	}
+
+	public void migrateDatabaseLayoutFromV2ToV3(Connection connection) throws SQLException {
+		Statement statement = connection.createStatement();
+		try {
+			ResultSet rs = statement.executeQuery("SELECT TEXTURE from mh_PlayerSettings LIMIT 0");
+			rs.close();
+		} catch (SQLException e) {
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN + "Adding new coloumns to BagOfGold Database.");
+			statement.executeUpdate("alter table `mh_PlayerSettings` add column `TEXTURE` TEXT");
+			statement.executeUpdate("alter table `mh_PlayerSettings` add column `SIGNATURE` TEXT");
+			statement.executeUpdate("alter table `mh_PlayerSettings` add column `LAST_LOGON` INTEGER DEFAULT 0");
+			statement.executeUpdate("alter table `mh_PlayerSettings` add column `LAST_INTEREST` INTEGER DEFAULT 0");
+			statement.close();
+			connection.commit();
+			Bukkit.getConsoleSender().sendMessage(
+					ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN + "Database was converted to version 3");
+		}
+	}
+
+	// *******************************************************************************
+	// Other functions
+	// *******************************************************************************
 
 	/**
 	 * insertPlayerBalance to database
@@ -169,7 +236,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
 				mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
 				mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
-				mInsertPlayerBalance.setInt(3, 	playerBalance.getGamemode().getValue());
+				mInsertPlayerBalance.setInt(3, playerBalance.getGamemode().getValue());
 				mInsertPlayerBalance.setDouble(4, Misc.round(playerBalance.getBalance()));
 				mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
 				mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));

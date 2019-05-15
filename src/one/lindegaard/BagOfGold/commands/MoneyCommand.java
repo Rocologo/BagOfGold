@@ -65,9 +65,10 @@ public class MoneyCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias
-				+ ChatColor.GREEN + " drop <amount>" + ChatColor.WHITE + " - to drop <amount> of "
-				+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim() + ", where you look.",
+		return new String[] {
+				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+						+ " drop <amount>" + ChatColor.WHITE + " - to drop <amount> of "
+						+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim() + ", where you look.",
 
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " drop <playername> " + ChatColor.YELLOW + "<amount>" + ChatColor.WHITE
@@ -128,7 +129,7 @@ public class MoneyCommand implements ICommand {
 			if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?"))
 				return false;
 
-			// Top 54 players 
+			// Top 54 players
 			else if (args[0].equalsIgnoreCase("top") || args[0].equalsIgnoreCase("wealth")) {
 				if (!(sender instanceof Player)) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
@@ -396,8 +397,27 @@ public class MoneyCommand implements ICommand {
 								.getString("bagofgold.commands.money.not-enough-money", "money", args[2]));
 						return true;
 					}
-					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
-					plugin.getEconomyManager().withdrawPlayer(fromPlayer, amount);
+					EconomyResponse res = plugin.getEconomyManager().withdrawPlayer(fromPlayer, amount);
+					if (res.transactionSuccess()) {
+						EconomyResponse res2 = plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
+						if (res2.transactionSuccess()) {
+							plugin.getMessages().senderSendMessage(fromPlayer,
+									plugin.getMessages().getString("bagofgold.commands.money.pay-sender", "money",
+											args[2], "rewardname",
+											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+													+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+											"toplayer", offlinePlayer.getName()));
+							if (offlinePlayer.isOnline())
+								plugin.getMessages().senderSendMessage((Player) offlinePlayer,
+										plugin.getMessages().getString("bagofgold.commands.money.pay-reciever",
+												"money", args[2], "rewardname",
+												ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+														+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName
+																.trim(),
+												"fromplayer", fromPlayer.getName()));
+						}
+					}
+
 				} else {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
@@ -485,7 +505,8 @@ public class MoneyCommand implements ICommand {
 								}
 							} else {
 								double to_be_removed = args[1].equalsIgnoreCase("all")
-										? ps.getBalance() + ps.getBalanceChanges() : Double.valueOf(args[1]);
+										? ps.getBalance() + ps.getBalanceChanges()
+										: Double.valueOf(args[1]);
 								EconomyResponse res = plugin.getEconomyManager().withdrawPlayer(player, to_be_removed);
 								if (res.transactionSuccess()) {
 									plugin.getEconomyManager().bankDeposit(player.getUniqueId().toString(), res.amount);
@@ -516,9 +537,9 @@ public class MoneyCommand implements ICommand {
 					PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 					double amount = args[1].equalsIgnoreCase("all") ? ps.getBankBalance() + ps.getBankBalanceChanges()
 							: Double.valueOf(args[1]);
-					double space=plugin.getEconomyManager().getSpaceForMoney(player);
-					if (amount>space)
-						amount=space;
+					double space = plugin.getEconomyManager().getSpaceForMoney(player);
+					if (amount > space)
+						amount = space;
 					for (Iterator<NPC> npcList = CitizensAPI.getNPCRegistry().iterator(); npcList.hasNext();) {
 						NPC npc = npcList.next();
 						if (plugin.getBankManager().isBagOfGoldBanker(npc.getEntity())) {

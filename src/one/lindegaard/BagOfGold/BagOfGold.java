@@ -43,7 +43,7 @@ import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
 import one.lindegaard.Core.Server.Servers;
-import one.lindegaard.BagOfGold.WorldGroupManager;
+import one.lindegaard.Core.WorldGroupManager;
 
 public class BagOfGold extends JavaPlugin {
 
@@ -228,6 +228,8 @@ public class BagOfGold extends JavaPlugin {
 		if (!mInitialized)
 			return;
 
+        mBankManager.shutdown();
+        
 		try {
 			getMessages().debug("Shutdown StoreManager");
 			mStoreManager.shutdown();

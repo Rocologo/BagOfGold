@@ -97,6 +97,8 @@ public interface IDataStore {
 
 	void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException;
 	
+	void migrateDatabaseLayoutFromV2ToV3(Connection connection) throws SQLException;
+	
 	List<PlayerBalance> loadTop54(int i, String worldGroup, int gamemode);
 	
 }

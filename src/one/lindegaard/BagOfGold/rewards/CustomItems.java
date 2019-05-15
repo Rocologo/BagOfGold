@@ -36,6 +36,7 @@ import one.lindegaard.Core.skins.Skins_1_12_R1;
 import one.lindegaard.Core.skins.Skins_1_13_R1;
 import one.lindegaard.Core.skins.Skins_1_13_R2;
 import one.lindegaard.Core.skins.Skins_1_14_R1;
+import one.lindegaard.Core.skins.Skins_1_14_R2;
 import one.lindegaard.Core.skins.Skins_1_8_R1;
 import one.lindegaard.Core.skins.Skins_1_8_R2;
 import one.lindegaard.Core.skins.Skins_1_8_R3;
@@ -68,7 +69,9 @@ public class CustomItems {
 			whatVersionAreYouUsingException.printStackTrace();
 			return null;
 		}
-		if (version.equals("v1_14_R1")) {
+		if (version.equals("v1_14_R2")) {
+			sk = new Skins_1_14_R2();
+		} else if (version.equals("v1_14_R1")) {
 			sk = new Skins_1_14_R1();
 		} else if (version.equals("v1_13_R2")) {
 			sk = new Skins_1_13_R2();
@@ -137,8 +140,8 @@ public class CustomItems {
 			if (skinCache != null && !skinCache[0].isEmpty() && !skinCache[1].isEmpty()) {
 				ps.setTexture(skinCache[0]);
 				ps.setSignature(skinCache[1]);
-				BagOfGold.getInstance().getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-				BagOfGold.getInstance().getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+				plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+				plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
 			} else {
 				plugin.getMessages().debug("Empty skin");
 				return skull;
