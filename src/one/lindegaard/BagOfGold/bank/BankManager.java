@@ -95,8 +95,13 @@ public class BankManager {
 						Collection<Player> onlinePlayers = Tools.getOnlinePlayers();
 						for (Player p : onlinePlayers) {
 							PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(p);
-							PlayerBalances pbs = plugin.getPlayerBalanceManager().getBalances().get(p.getUniqueId());
-							while (ps.getLast_interest() + period < System.currentTimeMillis()) {
+							if (ps.getLast_interest() == 0)
+								ps.setLast_interest(System.currentTimeMillis());
+							int n = 0;
+							while (ps.getLast_interest() + period < System.currentTimeMillis() && n++ < 10) {
+								PlayerBalances pbs = plugin.getPlayerBalanceManager().getBalances().get(p.getUniqueId());
+								plugin.getMessages().debug("Player:%s, last_interest=%s, period=%s", p.getName(),
+										ps.getLast_interest(), period);
 								for (PlayerBalance pb : pbs.getPlayerBalances().values()) {
 									pb.setBankBalance(
 											pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100));

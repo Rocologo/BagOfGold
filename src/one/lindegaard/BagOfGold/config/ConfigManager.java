@@ -40,6 +40,8 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nBanker NPC settings"
 						+ "\n########################################################################"
 						+ "\nThe Banker is dependend on Citizens2 plugin.");
+		
+		setCategoryComment("banker.interest","Settings for the interest calculation");
 
 		setCategoryComment("plugins",
 				"########################################################################"
@@ -95,7 +97,7 @@ public class ConfigManager extends AutoConfig {
 	public double minimumReward = 0.01;
 
 	@ConfigField(name = "limit_per_bag", category = "economy", comment = "If you only want the bags to be able to contain a "
-			+ "\ncertain amount of gold you can set the limit here.")
+			+ "\ncertain amount of gold you can set the limit here. Set limit_per_bag: 9999999999 to disable the limit.")
 	public double limitPerBag = 10000;
 
 	@ConfigField(name = "bank_name_on_sign", category = "economy", comment = "Here you can change then name of your sign banks.")

@@ -1,3 +1,5 @@
+V2.6.0
+* Fixed ticket 64: https://github.com/Rocologo/BagOfGold/issues/64
 V2.5.8
 * New messages added when using command /bag bag pay ...
 V2.5.7
