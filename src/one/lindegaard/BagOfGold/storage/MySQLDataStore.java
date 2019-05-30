@@ -245,6 +245,10 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " LAST_WORLDGRP VARCHAR(20) NOT NULL DEFAULT 'default'," //
 				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
 				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
+				+ " TEXTURE TEXT, " //
+				+ " SIGNATURE TEXT, " //
+				+ " LAST_LOGON BIGINT, " //
+				+ " LAST_INTEREST BIGINT, " //
 				+ " PRIMARY KEY (UUID))");
 		connection.commit();
 
@@ -275,9 +279,9 @@ public class MySQLDataStore extends DatabaseDataStore {
 			statement.executeUpdate("alter table `mh_PlayerSettings` add column `TEXTURE` TEXT");
 			statement.executeUpdate("alter table `mh_PlayerSettings` add column `SIGNATURE` TEXT");
 			statement.executeUpdate(
-					"alter table `mh_PlayerSettings` add column `LAST_LOGON` INTEGER NOT NULL DEFAULT 0");
+					"alter table `mh_PlayerSettings` add column `LAST_LOGON` BIGINT");
 			statement.executeUpdate(
-					"alter table `mh_PlayerSettings` add column `LAST_INTEREST` INTEGER NOT NULL DEFAULT 0");
+					"alter table `mh_PlayerSettings` add column `LAST_INTEREST` BIGINT");
 			statement.close();
 			connection.commit();
 			Bukkit.getConsoleSender().sendMessage(
