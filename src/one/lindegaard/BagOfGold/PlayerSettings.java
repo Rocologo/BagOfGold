@@ -27,8 +27,8 @@ public class PlayerSettings {
 		this.setMuteMode(mute);
 		this.setTexture(texture);
 		this.setSignature(signature);
-		this.setLast_logon(last_logon);
-		this.setLast_interest(last_interest);
+		this.setLast_logon(last_logon==0?last_logon=System.currentTimeMillis():last_logon);
+		this.setLast_interest(last_interest==0?System.currentTimeMillis():last_interest);
 	}
 	
 	public PlayerSettings(OfflinePlayer player, PlayerSettings ps) {
@@ -38,8 +38,8 @@ public class PlayerSettings {
 		this.setLastKnownWorldGrp(ps.getLastKnownWorldGrp());
 		this.setTexture(ps.getTexture());
 		this.setSignature(ps.getSignature());
-		this.setLast_logon(ps.getLast_logon());
-		this.setLast_interest(ps.getLast_interest());
+		this.setLast_logon(last_logon==0?last_logon=System.currentTimeMillis():last_logon);
+		this.setLast_interest(last_interest==0?System.currentTimeMillis():last_interest);
 	}
 
 	public String getLastKnownWorldGrp() {

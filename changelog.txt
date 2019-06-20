@@ -1,3 +1,5 @@
+V2.6.2
+* Implemented bStats v1.5
 V2.6.1
 * Changed LAST_LOGON, LAST_INTEREST datatype to BIGINT for MySQL users
 * Core updated

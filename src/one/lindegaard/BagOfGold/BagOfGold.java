@@ -192,7 +192,8 @@ public class BagOfGold extends JavaPlugin {
 
 		if (!Servers.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
-			mMetricsManager.start();
+			//mMetricsManager.start();
+			mMetricsManager.startBStatsMetrics();
 		}
 
 		// Initialize BagOfGold Bank Signs

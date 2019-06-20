@@ -53,10 +53,10 @@ public class MetricsManager {
 					e.printStackTrace();
 				}
 			}
-		}, 100, 72000);
+		}, 100L, 72000L);
 	}
 
-	private void startBStatsMetrics() {
+	public void startBStatsMetrics() {
 		bStatsMetrics = new Metrics(plugin);
 		bStatsMetrics.addCustomChart(
 				new Metrics.SimplePie("database_used_for_bagofgold", () -> plugin.getConfigManager().databaseType));
