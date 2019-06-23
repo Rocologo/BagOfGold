@@ -111,7 +111,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
 		skull.setAmount(amount);
 
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
@@ -213,7 +213,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
 
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 
@@ -272,7 +272,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
 
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		String name = Bukkit.getOfflinePlayer(uuid).getName();
@@ -311,7 +311,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.LEGACY_SKULL, (short) 3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
 
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;

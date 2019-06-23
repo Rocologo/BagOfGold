@@ -76,17 +76,6 @@ public class BagOfGold extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
-		// Plugin bagOfGoldCorePlugin =
-		// Bukkit.getPluginManager().getPlugin("BagOfGoldCore");
-		// if (bagOfGoldCorePlugin == null) {
-		// Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " +
-		// ChatColor.GREEN
-		// + "BagOfGoldCore is missing. BagOfGold is dependend on BagGoldCore. It Will
-		// now be downloaded. Restart your server when downloading has finished.");
-		// SpigetUpdaterForced.setCurrentJarFile(this.getFile().getName());
-		// SpigetUpdaterForced.ForceDownloadJar(this);
-		// }
-
 		instance = this;
 
 		mServiceManager = Bukkit.getServicesManager();
@@ -207,9 +196,9 @@ public class BagOfGold extends JavaPlugin {
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
 
-		if (!Servers.isMC113OrNewer())
+		if (!Servers.isMC112OrNewer())
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
-					+ " version +2.0.0 is only for Minecraft 1.13! You should downgrade to 1.x");
+					+ " version +2.0.0 is only for Minecraft 1.12! You should downgrade to 1.x");
 
 		// Get random UUI>>>D's
 		// for (int n = 0; n < 3; n++) {

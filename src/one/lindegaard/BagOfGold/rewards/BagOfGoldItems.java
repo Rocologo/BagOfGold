@@ -108,7 +108,7 @@ public class BagOfGoldItems implements Listener {
 	public String format(double money) {
 		return Tools.format(money);
 	}
-	
+
 	private boolean hasFortuneEnchanhtment(ItemStack itemStack) {
 		return itemStack.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS);
 	}
@@ -319,7 +319,7 @@ public class BagOfGoldItems implements Listener {
 	}
 
 	public boolean canPickupMoney(Player player) {
-		if (player.getGameMode()==GameMode.SPECTATOR)
+		if (player.getGameMode() == GameMode.SPECTATOR)
 			return false;
 		else if (player.getInventory().firstEmpty() != -1)
 			return true;
@@ -897,8 +897,9 @@ public class BagOfGoldItems implements Listener {
 				isKey.setType(Material.AIR);
 				return;
 			}
-			//plugin.getMessages().debug("This is not a BagOfGold reward. key=%s isKey=%s", event.getHotbarButton(),
-			//		isKey == null ? "null" : isKey.getType());
+			// plugin.getMessages().debug("This is not a BagOfGold reward. key=%s isKey=%s",
+			// event.getHotbarButton(),
+			// isKey == null ? "null" : isKey.getType());
 			return;
 		}
 
@@ -906,7 +907,11 @@ public class BagOfGoldItems implements Listener {
 		SlotType slotType = event.getSlotType();
 
 		Inventory inventory = event.getInventory();
-		Inventory clickedInventory = event.getClickedInventory();
+		Inventory clickedInventory;
+		if (Servers.isMC113OrNewer())
+			clickedInventory = event.getClickedInventory();
+		else
+			clickedInventory = inventory;
 
 		if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor) || Reward.isReward(isKey)) {
 			plugin.getMessages().debug(
@@ -914,7 +919,7 @@ public class BagOfGoldItems implements Listener {
 					action, inventory.getType(), slotType, event.getSlot(),
 					isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
 					isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
-					clickedInventory == null ? "null" : event.getClickedInventory().getType(),
+					clickedInventory == null ? "null" : clickedInventory.getType(),
 					isKey == null ? "null" : isKey.getType());
 		} else {
 			plugin.getMessages().debug("No BagOfGold reward");
@@ -1094,21 +1099,21 @@ public class BagOfGoldItems implements Listener {
 				double money_in_hand = cursor.getMoney();
 				if (cursor.isBagOfGoldReward() || cursor.isItemReward()) {
 					double saldo = Misc.floor(cursor.getMoney());
-					for (int slot = 0; slot < event.getClickedInventory().getSize(); slot++) {
-						ItemStack is = event.getClickedInventory().getItem(slot);
+					for (int slot = 0; slot < clickedInventory.getSize(); slot++) {
+						ItemStack is = clickedInventory.getItem(slot);
 						if (Reward.isReward(is)) {
 							Reward reward = Reward.getReward(is);
 							if ((reward.isBagOfGoldReward() || reward.isItemReward()) && reward.getMoney() > 0) {
 								saldo = saldo + reward.getMoney();
 								if (saldo <= plugin.getConfigManager().limitPerBag)
-									event.getClickedInventory().clear(slot);
+									clickedInventory.clear(slot);
 								else {
 									reward.setMoney(plugin.getConfigManager().limitPerBag);
 									is = setDisplayNameAndHiddenLores(is.clone(), reward);
 									is.setAmount(1);
 									// event.setCurrentItem(is);
-									event.getClickedInventory().clear(slot);
-									event.getClickedInventory().addItem(is);
+									clickedInventory.clear(slot);
+									clickedInventory.addItem(is);
 									saldo = saldo - plugin.getConfigManager().limitPerBag;
 								}
 							}
@@ -1132,7 +1137,7 @@ public class BagOfGoldItems implements Listener {
 
 				// event.setCancelled(true);
 				// if (player.getGameMode() != GameMode.SURVIVAL) {
-				if (event.getClickedInventory().getType() == InventoryType.PLAYER) {
+				if (clickedInventory.getType() == InventoryType.PLAYER) {
 					double playerInv = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot).getMoney() : 0;
 					double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
 					double keyMoney = Reward.isReward(isKey) ? Reward.getReward(isKey).getMoney() : 0;
@@ -1159,7 +1164,7 @@ public class BagOfGoldItems implements Listener {
 			if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor)) {
 				Reward reward = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot)
 						: Reward.getReward(isCursor);
-				if (event.getClickedInventory().getType() == InventoryType.PLAYER) {
+				if (clickedInventory.getType() == InventoryType.PLAYER) {
 					plugin.getMessages().debug("%s Moved %s BagOfGold out of the Player Inventory", player.getName(),
 							reward.getMoney());
 					plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
