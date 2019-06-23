@@ -1,5 +1,5 @@
 V2.6.3
-*
+* Added Support for Minecraft 1.12
 V2.6.2
 * Implemented bStats v1.5
 V2.6.1
