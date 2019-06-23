@@ -844,14 +844,25 @@ public class BagOfGoldItems implements Listener {
 											? format(reward.getMoney())
 											: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")"));
 			}
-		} else if (Servers.isMC113OrNewer()
-				&& (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD)) {
-			Skull skullState = (Skull) block.getState();
-			OfflinePlayer owner = skullState.getOwningPlayer();
-			if (owner != null && owner.getName() != null
-					&& !plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
-				plugin.getMessages().playerActionBarMessageQueue(player,
-						ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + owner.getName());
+		} else if (Servers.isMC113OrNewer()) {
+			if (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD) {
+				Skull skullState = (Skull) block.getState();
+				OfflinePlayer owner = skullState.getOwningPlayer();
+				if (owner != null && owner.getName() != null
+						&& !plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+					plugin.getMessages().playerActionBarMessageQueue(player,
+							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + owner.getName());
+			}
+		} else {
+			if (block.getType() == Material.matchMaterial("SKULL_ITEM")
+					|| block.getType() == Material.matchMaterial("SKULL")) {
+				Skull skullState = (Skull) block.getState();
+				OfflinePlayer owner = skullState.getOwningPlayer();
+				if (owner != null && owner.getName() != null
+						&& !plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+					plugin.getMessages().playerActionBarMessageQueue(player,
+							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + owner.getName());
+			}
 		}
 	}
 
