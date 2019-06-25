@@ -151,6 +151,15 @@ mobs.Pufferfish.name=§9Gömbhal
 
 mobs.Slime.name=§9Nyálka
 
+mobs.Armorer.name=§9Armorer
+mobs.Cleric.name=§9Cleric
+mobs.Fisherman.name=§9Fisherman
+mobs.Fletcher.name=§9Fletcher
+mobs.Leatherworker.name=§9Leatherworker
+mobs.Mason.name=§9Mason
+mobs.Shepherd.name=§9Shepherd
+mobs.Weaponsmith.name=§9Weaponsmith
+mobs.Toolsmith.name=§9Toolsmith
 mobs.Villager.name=§9Falusi
 mobs.Farmer.name=§9Gazda
 mobs.Librarian.name=§9Könyvtáros

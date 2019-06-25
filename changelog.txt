@@ -1,3 +1,5 @@
+V2.6.4
+* Added all Villagers introduced in Minecraft 1.14
 V2.6.3
 * Added Support for Minecraft 1.12
 V2.6.2

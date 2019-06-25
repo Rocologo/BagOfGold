@@ -150,6 +150,15 @@ mobs.TropicalFish.name=§9Tropical Fish
 mobs.Pufferfish.name=§9Pufferfish
 mobs.Slime.name=§9Slime
 
+mobs.Armorer.name=§9Armorer
+mobs.Cleric.name=§9Cleric
+mobs.Fisherman.name=§9Fisherman
+mobs.Fletcher.name=§9Fletcher
+mobs.Leatherworker.name=§9Leatherworker
+mobs.Mason.name=§9Mason
+mobs.Shepherd.name=§9Shepherd
+mobs.Weaponsmith.name=§9Weaponsmith
+mobs.Toolsmith.name=§9Toolsmith
 mobs.Villager.name=§9Villager
 mobs.Farmer.name=§9Farmer
 mobs.Librarian.name=§9Librarian
