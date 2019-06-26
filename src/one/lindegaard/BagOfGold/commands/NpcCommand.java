@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import one.lindegaard.BagOfGold.BagOfGold;
@@ -172,6 +173,7 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("create")) {
 				NPCRegistry registry = CitizensAPI.getNPCRegistry();
 				npc = registry.createNPC(EntityType.PLAYER, "BagOfGoldBanker");
+				npc.setBukkitEntityType(EntityType.VILLAGER);
 				npc.addTrait(BagOfGoldBankerTrait.class);
 				npc.spawn(p.getLocation());
 				plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN

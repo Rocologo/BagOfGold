@@ -12,6 +12,7 @@ import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -49,6 +50,10 @@ public class CitizensCompat implements Listener {
 	// **************************************************************************
 	// OTHER FUNCTIONS
 	// **************************************************************************
+	public void setVillagerSkin(Entity entity) {
+		getNPC(entity).setBukkitEntityType(EntityType.VILLAGER);
+	}
+	
 	public void shutdown() {
 		if (supported) {
 			TraitInfo trait = TraitInfo.create(BagOfGoldBankerTrait.class).withName("BagOfGoldBanker");
