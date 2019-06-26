@@ -33,7 +33,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryAction;
@@ -512,6 +511,8 @@ public class BagOfGoldItems implements Listener {
 	public void onPlayerDropReward(PlayerDropItemEvent event) {
 		if (event.isCancelled())
 			return;
+		
+		plugin.getMessages().debug("onPlayerDropReward");
 
 		Item item = event.getItemDrop();
 		Player player = event.getPlayer();
@@ -644,18 +645,6 @@ public class BagOfGoldItems implements Listener {
 			}
 
 		}
-
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
-	public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
-		// OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
-
-		if (event.isCancelled())
-			return;
-
-		if (!(event.getEntity() instanceof Player))
-			return;
 
 	}
 

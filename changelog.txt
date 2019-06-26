@@ -1,5 +1,9 @@
+V2.6.5
+* Re-Added support for Minecraft 1.11. 
+* Fixed some bugs 
 V2.6.4
 * Added all Villagers introduced in Minecraft 1.14. (Armorer, Butcher, Cartographer, Cleric, Fisherman, Fletcher, Leatherworker, Librarian, Mason, Nitwit, Unemployed, Shepherd, Toolsmith, Weaponsmith) Please notice that the deprecated villagers Priest, Blacksmith, Farmer is still in the config for backward compatibility with older versions.
+* The BagOfGold Banker Trait is now a Villager
 V2.6.3
 * Added Support for Minecraft 1.12
 V2.6.2

@@ -12,7 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import me.ebonjaeger.perworldinventory.PerWorldInventory;
-import me.ebonjaeger.perworldinventory.event.InventoryLoadCompleteEvent;
+//import me.ebonjaeger.perworldinventory.event.InventoryLoadCompleteEvent;
 import me.ebonjaeger.perworldinventory.event.InventoryLoadEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
 
@@ -30,7 +30,8 @@ public class PerWorldInventoryCompat implements Listener {
 					+ "Compatibility with PerWorldInventory is disabled in config.yml");
 		} else {
 			mPlugin = (PerWorldInventory) Bukkit.getPluginManager().getPlugin(CompatPlugin.PerWorldInventory.getName());
-
+			
+			if (mPlugin.getDescription().getVersion().compareTo("2.0") >= 0) {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 							+ "Enabling compatibility with PerWorldInventory ("
@@ -68,8 +69,12 @@ public class PerWorldInventoryCompat implements Listener {
 						}, 20);
 					}
 				}, plugin);
-
-			supported = true;
+				supported = true;
+			} else {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+						+ "You are using an old version and unsupported version of PerWorldInventory. Integration to PerWorldInventory is disabled");
+			}
+			
 		}
 	}
 
