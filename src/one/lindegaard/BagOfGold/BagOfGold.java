@@ -196,9 +196,9 @@ public class BagOfGold extends JavaPlugin {
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
 
-		if (!Servers.isMC112OrNewer())
+		if (!Servers.isMC110OrNewer())
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
-					+ " version +2.0.0 is only for Minecraft 1.12! You should downgrade to 1.x");
+					+ " version +2.0.0 is only for Minecraft 1.10 and newer! You should downgrade to 1.x");
 
 		// Get random UUI>>>D's
 		// for (int n = 0; n < 3; n++) {

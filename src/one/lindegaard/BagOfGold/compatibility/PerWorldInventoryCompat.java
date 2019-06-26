@@ -7,19 +7,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
-import me.ebonjaeger.perworldinventory.PerWorldInventory;
-//import me.ebonjaeger.perworldinventory.event.InventoryLoadCompleteEvent;
-import me.ebonjaeger.perworldinventory.event.InventoryLoadEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
 
-public class PerWorldInventoryCompat implements Listener {
+public class PerWorldInventoryCompat {
 
 	BagOfGold plugin;
-	private static PerWorldInventory mPlugin;
+	private static Plugin mPlugin;
 	private static boolean supported = false;
 	private static boolean sync_economy = false;
 
@@ -29,52 +24,43 @@ public class PerWorldInventoryCompat implements Listener {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 					+ "Compatibility with PerWorldInventory is disabled in config.yml");
 		} else {
-			mPlugin = (PerWorldInventory) Bukkit.getPluginManager().getPlugin(CompatPlugin.PerWorldInventory.getName());
-			
-			if (mPlugin.getDescription().getVersion().compareTo("2.0") >= 0) {
-			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-							+ "Enabling compatibility with PerWorldInventory ("
-							+ getPWI().getDescription().getVersion() + ")");
-			Bukkit.getPluginManager().registerEvents(this, plugin);
+			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.PerWorldInventory.getName());
 
-			sync_economy = pwi_sync_economy();
+			if (mPlugin.getDescription().getVersion().compareTo("1.7.6") >= 0) {
+				Bukkit.getConsoleSender()
+						.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
+								+ "Enabling compatibility with PerWorldInventory ("
+								+ getPWI().getDescription().getVersion() + ")");
 
-			if (sync_economy)
-				pwi_sync_economy_warning();
+				sync_economy = pwi_sync_economy();
 
-			//if (mPlugin.getDescription().getVersion().compareTo("2.1.0") >= 0)
-			//	Bukkit.getPluginManager().registerEvents(new Listener() {
-			//		@EventHandler(priority = EventPriority.HIGHEST)
-			//		public void onInventoryChangeCompleted(InventoryLoadCompleteEvent event) {
-			//			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			//				@Override
-			//				public void run() {
-			//					plugin.getMessages().debug("PerWorldInventoryCompat: onInventoryLoadCompleted");
-			//					plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
-			//				}
-			//			}, 20);
-			//		}
-			//	}, plugin);
-			//else
-				Bukkit.getPluginManager().registerEvents(new Listener() {
-					@EventHandler(priority = EventPriority.HIGHEST)
-					public void onInventoryLoad(InventoryLoadEvent event) {
-						Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-							@Override
-							public void run() {
-								plugin.getMessages().debug("PerWorldInventoryCompat: onInventoryLoad");
-								plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(event.getPlayer());
-							}
-						}, 20);
-					}
-				}, plugin);
+				if (sync_economy)
+					pwi_sync_economy_warning();
+				
+				//if (mPlugin.getDescription().getVersion().compareTo("2.1.0") >= 0)
+				//	Bukkit.getPluginManager().registerEvents(new Listener() {
+				//		@EventHandler(priority = EventPriority.HIGHEST)
+				//		public void onInventoryChangeCompleted(InventoryLoadCompleteEvent event) {
+				//			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+				//				@Override
+				//				public void run() {
+				//					plugin.getMessages().debug("PerWorldInventoryCompat: onInventoryLoadCompleted");
+				//					plugin.getEconomyManager().adjustAmountInInventoryToBalance(event.getPlayer());
+				//				}
+				//			}, 20);
+				//		}
+				//	}, plugin);
+				//else
+				if (mPlugin.getDescription().getVersion().compareTo("2.0") >= 0)
+				PerWorldInventory2Helper.registerPWI2Events(plugin);
+				
 				supported = true;
+
 			} else {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 						+ "You are using an old version and unsupported version of PerWorldInventory. Integration to PerWorldInventory is disabled");
 			}
-			
+
 		}
 	}
 
@@ -82,7 +68,7 @@ public class PerWorldInventoryCompat implements Listener {
 	// OTHER
 	// **************************************************************************
 
-	public static PerWorldInventory getPWI() {
+	public static Plugin getPWI() {
 		return mPlugin;
 	}
 
@@ -140,9 +126,5 @@ public class PerWorldInventoryCompat implements Listener {
 	public static boolean isEnabledInConfig() {
 		return BagOfGold.getInstance().getConfigManager().enableIntegrationPerWorldInventory;
 	}
-
-	// **************************************************************************
-	// EVENTS
-	// **************************************************************************
 
 }
