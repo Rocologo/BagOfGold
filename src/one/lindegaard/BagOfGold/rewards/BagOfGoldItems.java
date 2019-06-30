@@ -512,8 +512,6 @@ public class BagOfGoldItems implements Listener {
 		if (event.isCancelled())
 			return;
 		
-		plugin.getMessages().debug("onPlayerDropReward");
-
 		Item item = event.getItemDrop();
 		Player player = event.getPlayer();
 

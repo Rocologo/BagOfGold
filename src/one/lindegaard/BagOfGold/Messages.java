@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -25,7 +24,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
@@ -347,67 +345,36 @@ public class Messages {
 		return message.isEmpty();
 	}
 
-	HashMap<Player, HashMap<Long, MessageQueue>> messageQueue = new HashMap<Player, HashMap<Long, MessageQueue>>();
-	HashMap<Player, BukkitTask> taskId = new HashMap<Player, BukkitTask>();
-
+	HashMap<Player, Long> lastMessage = new HashMap<Player,Long>();
 	public void playerActionBarMessageQueue(Player player, String message) {
 		if (isEmpty(message))
 			return;
 
-		message = PlaceholderAPICompat.setPlaceholders(player, message);
+		final String final_message = PlaceholderAPICompat.setPlaceholders(player, message);
 
-		HashMap<Long, MessageQueue> messagesToBeDisplayed = new HashMap<Long, MessageQueue>();
-		if (messageQueue.containsKey(player))
-			messagesToBeDisplayed = messageQueue.get(player);
-		messagesToBeDisplayed.put(System.currentTimeMillis() + 5000L, new MessageQueue(player, message));
-		messageQueue.put(player, messagesToBeDisplayed);
-		// debug("message=%s", message);
-		// debug("messageQueue(player).size=%s",
-		// messageQueue.get(player).size());
-
-		Runnable messageTask = new Runnable() {
+		long last = 0L;
+		long time_between_messages=80L;
+		long delay = 1L, now=System.currentTimeMillis();
+		if(lastMessage.containsKey(player)) {
+			 last=lastMessage.get(player);
+			if (now>last+time_between_messages) {
+				delay=1L; 
+			} else if (now>last)
+				delay=time_between_messages-(now -last);
+			else
+				delay=(last-now)+time_between_messages;
+		}
+		lastMessage.put(player, now+delay);
+		
+		debug("Send message '%s' delay=%s, last=%s, now=%s, diff=%s", final_message,delay,last,now,last-now);
+		
+		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+			
 			@Override
 			public void run() {
-
-				while (!messageQueue.get(player).isEmpty()) {
-					Long key = System.currentTimeMillis() + 3600000L;
-					Iterator<Entry<Long, MessageQueue>> itr = messageQueue.get(player).entrySet().iterator();
-					while (itr.hasNext()) {
-						Entry<Long, MessageQueue> k = itr.next();
-						if (k.getValue().getPlayer().equals(player))
-							key = Math.min(key, k.getKey());
-					}
-					MessageQueue msg = messageQueue.get(player).get(key);
-					if (msg != null) {
-						playerActionBarMessageNow(msg.getPlayer(), msg.getMessage());
-						HashMap<Long, MessageQueue> msg1 = messageQueue.get(player);
-						msg1.remove(key);
-						messageQueue.put(player, msg1);
-						// wait 1.5 sec before sending next message
-						if (messageQueue.get(player).size() > 0)
-							try {
-								Thread.sleep(1500L);
-								// Thread.sleep(10000L);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-					}
-				}
-				// debug("cancel task");
-				Bukkit.getScheduler().cancelTask(taskId.get(player).getTaskId());
-				taskId.remove(player);
-			};
-		};
-
-		// debug("taskId.containsKey(player)=%s", taskId.containsKey(player));
-
-		if (!taskId.containsKey(player))
-
-			if (taskId.get(player) == null || !Bukkit.getScheduler().isCurrentlyRunning(taskId.get(player).getTaskId())
-					|| !Bukkit.getScheduler().isQueued(taskId.get(player).getTaskId())) {
-				// debug("start task");
-				taskId.put(player, Bukkit.getScheduler().runTaskAsynchronously(plugin, messageTask));
+				playerActionBarMessageNow(player, final_message);
 			}
+		}, delay);
 	}
 
 	/**

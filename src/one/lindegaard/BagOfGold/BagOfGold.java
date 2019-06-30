@@ -44,6 +44,7 @@ import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
 import one.lindegaard.Core.Server.Servers;
 import one.lindegaard.Core.WorldGroupManager;
+import one.lindegaard.Core.Messages.MessageManager;
 
 public class BagOfGold extends JavaPlugin {
 
@@ -66,6 +67,7 @@ public class BagOfGold extends JavaPlugin {
 	private PlayerBalanceManager mPlayerBalanceManager;
 	private GringottsItems mGringottsItems;
 	private BagOfGoldItems mBagOfGoldItems;
+	private MessageManager mMessageManager;
 
 	private boolean mInitialized = false;
 
@@ -181,7 +183,7 @@ public class BagOfGold extends JavaPlugin {
 
 		if (!Servers.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
-			//mMetricsManager.start();
+			// mMetricsManager.start();
 			mMetricsManager.startBStatsMetrics();
 		}
 
@@ -218,8 +220,8 @@ public class BagOfGold extends JavaPlugin {
 		if (!mInitialized)
 			return;
 
-        mBankManager.shutdown();
-        
+		mBankManager.shutdown();
+
 		try {
 			getMessages().debug("Shutdown StoreManager");
 			mStoreManager.shutdown();
@@ -386,6 +388,10 @@ public class BagOfGold extends JavaPlugin {
 
 	public BagOfGoldItems getBagOfGoldItems() {
 		return mBagOfGoldItems;
+	}
+
+	public MessageManager getMessageManager() {
+		return mMessageManager;
 	}
 
 }

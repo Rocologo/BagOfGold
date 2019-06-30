@@ -2,12 +2,12 @@ package one.lindegaard.BagOfGold;
 
 import org.bukkit.entity.Player;
 
-public class MessageQueue {
+public class MessageQueue_old {
 
 	Player player;
 	String message;
 	
-	public MessageQueue(Player player, String message) {
+	public MessageQueue_old(Player player, String message) {
 		this.player=player;
 		this.message=message;
 	}

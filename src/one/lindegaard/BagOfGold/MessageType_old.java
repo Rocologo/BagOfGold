@@ -1,11 +1,13 @@
 package one.lindegaard.BagOfGold;
 
-public enum MessageType {
+import one.lindegaard.Core.Messages.MessageType;
+
+public enum MessageType_old {
 	Chat("Chat"), ActionBar("ActionBar"), BossBar("BossBar"), Title("Title"), Subtitle("Subtitle");
 
 	private final String name;
 
-	private MessageType(String name) {
+	private MessageType_old(String name) {
 		this.name = name;
 	}
 
