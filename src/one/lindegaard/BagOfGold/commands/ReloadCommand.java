@@ -70,6 +70,9 @@ public class ReloadCommand implements ICommand {
 		if (plugin.getConfigManager().loadConfig()) {
 			plugin.getWorldGroupManager().load();
 			
+			plugin.getBankManager().shutdown();
+			plugin.getBankManager().start();
+			
 			int n = Tools.getOnlinePlayersAmount();
 			if (n > 0) {
 				plugin.getMessages().debug("Reloading %s PlayerSettings & PlayerBalancees from the database", n);

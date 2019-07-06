@@ -366,8 +366,6 @@ public class Messages {
 		}
 		lastMessage.put(player, now+delay);
 		
-		debug("Send message '%s' delay=%s, last=%s, now=%s, diff=%s", final_message,delay,last,now,last-now);
-		
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			
 			@Override

@@ -1,3 +1,6 @@
+V2.6.8
+* Implemented a MessageQueue system between MobHunting and BagOfGold
+* Moved more shared code to one.lindegaard.Core 
 V2.6.6
 * Re-Added support for Minecraft 1.10
 V2.6.5

@@ -12,6 +12,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.config.AutoConfig;
+import one.lindegaard.Core.config.ConfigField;
 
 public class ConfigManager extends AutoConfig {
 
@@ -19,7 +21,7 @@ public class ConfigManager extends AutoConfig {
 
 	public ConfigManager(BagOfGold plugin, File file) {
 
-		super(plugin, file);
+		super(file);
 
 		this.plugin = plugin;
 
@@ -37,11 +39,11 @@ public class ConfigManager extends AutoConfig {
 				+ "\nfor Gringotts lovers (https://www.spigotmc.org/resources/gringotts.42071/)");
 
 		setCategoryComment("banker",
-				"########################################################################" + "\nBanker NPC settings"
+				"########################################################################" + "\nBank settings"
 						+ "\n########################################################################"
 						+ "\nThe Banker is dependend on Citizens2 plugin.");
 		
-		setCategoryComment("banker.interest","Settings for the interest calculation");
+		//setCategoryComment("banker.interest","Settings for the interest calculation");
 
 		setCategoryComment("plugins",
 				"########################################################################"
@@ -192,7 +194,7 @@ public class ConfigManager extends AutoConfig {
 
 	}
 
-	@ConfigField(name = "calculate-interests", category = "banker.interest", comment = "Enable interst calculation. Players can get an interest per day/week")
+	@ConfigField(name = "calculate-interest", category = "banker.interest", comment = "Enable interst calculation. Players can get an interest per day/week")
 	public boolean calculateInterests = false;
 
 	@ConfigField(name = "period", category = "banker.interest", comment = "How often do you want the Interest to be calculated and added to your"

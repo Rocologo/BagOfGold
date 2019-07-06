@@ -2,12 +2,9 @@ package one.lindegaard.BagOfGold.bank;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -25,6 +22,7 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
+import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
 
@@ -36,34 +34,44 @@ public class BankManager {
 
 	public BankManager(BagOfGold plugin) {
 		this.plugin = plugin;
-		if (plugin.getConfigManager().calculateInterests) {
-			switch (plugin.getConfigManager().interestPeriod) {
-			case "TEST":
-				period = 1200;
-				break;
+		start();
+	}
 
+	public void start() {
+		if (plugin.getConfigManager().calculateInterests) {
+			// https://minecraft.gamepedia.com/Day-night_cycle
+			switch (plugin.getConfigManager().interestPeriod) {
 			case "DAY":
-				period = 24000;
+				period = 24000; // 1 minecraft day = 20 min
 				break;
 
 			case "WEEK":
-				period = 168000;
+				period = 168000; // 1 minecraft week = 2.3 hours
 				break;
 
 			case "MONTH":
-				period = 720000;
+				period = 720000; // 1 minecraft months = 10 hours
 				break;
 
-			case "YEAR":
-				period = 8766000;
+			case "YEAR": 
+				period = 8766000; // 1 minecraft year = 121.75 hours
 				break;
 
 			default:
-				period = 168000;
+
+				if (plugin.getConfigManager().interestPeriod.matches("\\d+$")) {
+					period = Integer.valueOf(plugin.getConfigManager().interestPeriod) * 20;
+				} else {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+							+ "The interest period in the config.yml must be an integer (seconds) or 'DAY/WEEK/MONTH/YEAR'.");
+				}
+
 				break;
 			}
-			mBankInterestCalculator = Bukkit.getScheduler().runTaskTimer(plugin, new InterestUpdater(), 120L, period);
+			mBankInterestCalculator = Bukkit.getScheduler().runTaskTimer(plugin, new InterestUpdater2(), period,
+					period);
 		}
+
 	}
 
 	public void shutdown() {
@@ -71,47 +79,27 @@ public class BankManager {
 			mBankInterestCalculator.cancel();
 	}
 
-	private class InterestUpdater implements Runnable {
+	private class InterestUpdater2 implements Runnable {
 
 		@Override
 		public void run() {
-			Set<String> worldGroups = plugin.getWorldGroupManager().getAllWorldGroups();
-			for (String worldGroup : worldGroups) {
-				List<String> worlds = plugin.getWorldGroupManager().getWorlds(worldGroup);
-				if (!worlds.isEmpty()) {
-					World world = null;
-					for (String w : worlds) {
-						world = Bukkit.getServer().getWorld(w);
-						if (world != null)
-							break;
-						else
-							Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
-									+ "Warning you have a non existing world (" + w + ") in WorldGroup " + worldGroup);
-					}
-					if (world != null) {
-						plugin.getMessages().debug(
-								"Calculating interest for players in worldGroup:%s, world=%s, worldTime=%s, fullTime=%s",
-								worldGroup, world.getName(), world.getTime(), world.getFullTime());
-						Collection<Player> onlinePlayers = Tools.getOnlinePlayers();
-						for (Player p : onlinePlayers) {
-							PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(p);
-							if (ps.getLast_interest() == 0)
-								ps.setLast_interest(System.currentTimeMillis());
-							int n = 0;
-							while (ps.getLast_interest() + period < System.currentTimeMillis() && n++ < 10) {
-								PlayerBalances pbs = plugin.getPlayerBalanceManager().getBalances().get(p.getUniqueId());
-								plugin.getMessages().debug("Player:%s, last_interest=%s, period=%s", p.getName(),
-										ps.getLast_interest(), period);
-								for (PlayerBalance pb : pbs.getPlayerBalances().values()) {
-									pb.setBankBalance(
-											pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100));
-									plugin.getPlayerBalanceManager().setPlayerBalance(p, pb);
-								}
-								ps.setLast_interest(ps.getLast_interest() + period);
-							}
-						}
-					}
+			plugin.getMessages().debug(ChatColor.BLUE + "Start bank interest calculation.");
+			Collection<Player> onlinePlayers = Tools.getOnlinePlayers();
+			for (Player p : onlinePlayers) {
+				PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(p);
+				if (ps.getLast_interest() == 0)
+					ps.setLast_interest(System.currentTimeMillis() - period);
+				PlayerBalances pbs = plugin.getPlayerBalanceManager().getBalances().get(p.getUniqueId());
+				for (PlayerBalance pb : pbs.getPlayerBalances().values()) {
+					plugin.getMessages()
+							.debug(ChatColor.BLUE
+									+ "Calculating Bank interest for %s in worldGroup:%s (Balance=%s, new balance=%s",
+									p.getName(), pb.getWorldGroup(), pb.getBankBalance(),
+									Misc.round(pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100)));
+					pb.setBankBalance(Misc.round(pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100)));
+					plugin.getPlayerBalanceManager().setPlayerBalance(p, pb);
 				}
+				ps.setLast_interest(ps.getLast_interest() + period);
 			}
 		}
 	}
