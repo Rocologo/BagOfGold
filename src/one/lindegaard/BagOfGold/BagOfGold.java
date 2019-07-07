@@ -9,6 +9,8 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
+import net.tnemc.core.Reserve;
+//import net.tnemc.core.economy.EconomyAPI;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.BankCommand;
@@ -48,8 +50,14 @@ import one.lindegaard.Core.Messages.MessageManager;
 
 public class BagOfGold extends JavaPlugin {
 
+	public static final boolean USE_RESERVE = false;
+
 	private static BagOfGold instance;
 	private File mFile = new File(getDataFolder(), "config.yml");
+
+	//private Economy vaultEconomy;
+	//private EconomyAPI reserveEconomy;
+	//private ReserveEconomy reserveEconomy;
 
 	private Messages mMessages;
 	private MetricsManager mMetricsManager;
@@ -73,6 +81,10 @@ public class BagOfGold extends JavaPlugin {
 
 	@Override
 	public void onLoad() {
+		//reserveEconomy = new ReserveEconomy(this);
+		//if (Bukkit.getPluginManager().getPlugin("Reserve") != null) {
+		//	setupReserve();
+		//}
 	}
 
 	@Override
@@ -192,7 +204,12 @@ public class BagOfGold extends JavaPlugin {
 
 		if (mConfig.useBagOfGoldAsAnEconomyPlugin) {
 			// Try to load BagOfGold
-			hookEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
+			Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
+			if (vaultPlugin != null)
+				hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");
+			// if (USE_RESERVE)
+			// hookReserveEconomy(EconomyAPI.class, ServicePriority.Normal,
+			// "one.lindegaard.BagOfGold.BagOfGoldEconomyReserve");
 		}
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
@@ -242,23 +259,47 @@ public class BagOfGold extends JavaPlugin {
 	}
 
 	// ************************************************************************************
-	// Hook into Vault / Economy
+	// Hook into Vault / Reserve (Economy)
 	// ************************************************************************************
 
-	public static void hookEconomy(Class<? extends Economy> hookClass, ServicePriority priority, String... packages) {
+	public static void hookVaultEconomy(Class<? extends Economy> hookClass, ServicePriority priority,
+			String... packages) {
 		try {
 			if (packagesExists(packages)) {
-				Economy economy = hookClass.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
-				mServiceManager.register(Economy.class, economy, Bukkit.getPluginManager().getPlugin("Vault"),
-						ServicePriority.Normal);
+				Economy vaultEconomy = hookClass.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
+				Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
+				if (vaultPlugin != null)
+					mServiceManager.register(Economy.class, vaultEconomy, vaultPlugin, ServicePriority.Normal);
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
-						"[BagOfGold][Economy] BagOfGold found: %s", economy.isEnabled() ? "Loaded" : "Waiting"));
+						"[BagOfGold][Economy] Vault found: %s", vaultEconomy.isEnabled() ? "Loaded" : "Waiting"));
 			}
 		} catch (Exception e) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
-					"[Economy] There was an error hooking BagOfGold - check to make sure you're using a compatible version!"));
+					"[Economy] There was an error hooking into Vault - check to make sure you're using a compatible version!"));
 		}
 	}
+
+	/**
+	public static void hookReserveEconomy(Class<EconomyAPI> class1, ServicePriority priority, String string) {
+		try {
+			if (packagesExists(string)) {
+				// EconomyAPI reserveEconomy =
+				// class1.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
+				Plugin reservePlugin = Bukkit.getPluginManager().getPlugin("Reserve");
+				// if (reservePlugin != null)
+				// mServiceManager.register(EconomyAPI.class, reserveEconomy, reservePlugin,
+				// ServicePriority.Normal);
+				BagOfGold bagofgold = (BagOfGold) Bukkit.getPluginManager().getPlugin("BagOfGold");
+				BagOfGoldEconomyReserve reserveEconomy = new BagOfGoldEconomyReserve(bagofgold);
+				Reserve.instance().registerProvider(reserveEconomy);
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
+						"[BagOfGold][Economy] Reserve found: %s", reserveEconomy.enabled() ? "Loaded" : "Waiting"));
+			}
+		} catch (Exception e) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
+					"[Economy] There was an error hooking in to Reserve - check to make sure you're using a compatible version!"));
+		}
+	}**/
 
 	/**
 	 * Determines if all packages in a String array are within the Classpath This is
@@ -278,6 +319,13 @@ public class BagOfGold extends JavaPlugin {
 			return false;
 		}
 	}
+
+	/**
+	private void setupReserve() {
+		reserveEconomy = (EconomyAPI) Bukkit.getPluginManager().getPlugin("Reserve");
+		Reserve.instance().registerProvider(reserveEconomy);
+		getLogger().info("[BAGOFGOLD] Hooked into Reserve");
+	}**/
 
 	// ************************************************************************************
 	// Managers and handlers

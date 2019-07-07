@@ -10,15 +10,14 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 
-public class BagOfGoldEconomy implements Economy {
+public class BagOfGoldEconomyVault implements Economy {
 
 	private BagOfGold plugin;
 	private Economy mEconomy;
 
-	public BagOfGoldEconomy(BagOfGold plugin) {
+	public BagOfGoldEconomyVault(BagOfGold plugin) {
 		this.plugin = plugin;
 		if (!isEnabled()) {
 			// BagOfGold is NOT used as an Economy plugin

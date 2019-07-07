@@ -310,7 +310,7 @@ public class Messages {
 	 */
 	public void debug(String message, Object... args) {
 		if (plugin.getConfigManager().debug) {
-			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + "[Debug] " + String.format(message, args));
+			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + " [Debug] " + String.format(message, args));
 		}
 	}
 

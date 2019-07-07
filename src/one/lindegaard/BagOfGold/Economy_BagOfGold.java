@@ -1,229 +1,195 @@
 package one.lindegaard.BagOfGold;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
+
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.BagOfGoldEconomy;
+import one.lindegaard.BagOfGold.BagOfGoldEconomyVault;
 
-public class Economy_BagOfGold extends AbstractEconomy implements Listener {
+public class Economy_BagOfGold extends AbstractEconomy {
 
-	private static final Logger log = Logger.getLogger("Minecraft");
-
-	private String name = "BagOfGold";
 	private Plugin plugin = null;
-	protected BagOfGoldEconomy economy = null;
+	protected BagOfGoldEconomyVault vaultEconomy = null;
 	
 	public Economy_BagOfGold(Plugin plugin) {
 		this.plugin = plugin;
 
-		Bukkit.getServer().getPluginManager().registerEvents(new EconomyServerListener(this), plugin);
+		Bukkit.getServer().getPluginManager().registerEvents(new EconomyListener(plugin, this), plugin);
 
 		// Load Plugin in case it was not loaded before
-		if (economy == null) {
+		/**if (vaultEconomy == null) {
 			BagOfGold bagofgold = (BagOfGold) plugin.getServer().getPluginManager().getPlugin("BagOfGold");
 			if (bagofgold != null && bagofgold.isEnabled()) {
-				economy = new BagOfGoldEconomy((BagOfGold) plugin);
-				log.info(String.format("[%s][Economy] %s hooked into Vault", plugin.getDescription().getName(), name));
+				vaultEconomy = new BagOfGoldEconomyVault((BagOfGold) plugin);
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] " +ChatColor.RESET+"BagOfGold hooked into Vault2");
 			}
 		}
-	}
-
-	public class EconomyServerListener implements Listener {
-		Economy_BagOfGold economy = null;
-
-		public EconomyServerListener(Economy_BagOfGold economy) {
-			this.economy = economy;
-		}
-
-		@EventHandler(priority = EventPriority.MONITOR)
-		public void onPluginEnable(PluginEnableEvent event) {
-			Plugin eco = event.getPlugin();
-			if (eco.getDescription().getName().equals("BagOfGold")) {
-				if (economy.economy == null) {
-					BagOfGold bagofgold = (BagOfGold) plugin.getServer().getPluginManager().getPlugin("BagOfGold");
-					economy.economy = new BagOfGoldEconomy(bagofgold);
-					log.info(String.format("[%s][Economy] %s hooked into Vault", plugin.getDescription().getName(),
-							name));
-				}
+		if (reserveEconomy == null) {
+			BagOfGold bagofgold = (BagOfGold) plugin.getServer().getPluginManager().getPlugin("BagOfGold");
+			if (bagofgold != null && bagofgold.isEnabled()) {
+				reserveEconomy = new BagOfGoldEconomyReserve();
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] " +ChatColor.RESET+"BagOfGold hooked into Reserve2");
 			}
-		}
-
-		@EventHandler(priority = EventPriority.MONITOR)
-		public void onPluginDisable(PluginDisableEvent event) {
-			if (event.getPlugin().getDescription().getName().equals("BagOfGold")) {
-				if (economy != null && economy.economy != null) {
-					economy.economy = null;
-					log.info(String.format("[%s][Economy] %s unhooked from Vault.", plugin.getDescription().getName(),
-							economy.name));
-				}
-			}
-		}
+		}**/
 	}
 
 	@Override
 	public boolean isEnabled() {
-		if (economy == null) 
+		if (vaultEconomy == null) 
 			return false;
 		return true;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return "BagOfGold";
 	}
 
 	@Override
 	public String format(double amount) {
-		return economy.format(amount);
+		return vaultEconomy.format(amount);
 	}
 
 	@Override
 	public String currencyNamePlural() {
-		return economy.currencyNamePlural();
+		return vaultEconomy.currencyNamePlural();
 	}
 
 	@Override
 	public String currencyNameSingular() {
-		return economy.currencyNameSingular();
+		return vaultEconomy.currencyNameSingular();
 	}
 
 	@Override
 	public int fractionalDigits() {
-		return economy.fractionalDigits();
+		return vaultEconomy.fractionalDigits();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean createPlayerAccount(String playername) {
-		return economy.createPlayerAccount(playername);
+		return vaultEconomy.createPlayerAccount(playername);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean createPlayerAccount(String playername, String world) {
-		return economy.createPlayerAccount(playername, playername);
+		return vaultEconomy.createPlayerAccount(playername, playername);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public double getBalance(String playername) {
-		return economy.getBalance(playername);
+		return vaultEconomy.getBalance(playername);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public double getBalance(String playername, String world) {
-		return economy.getBalance(playername, world);
+		return vaultEconomy.getBalance(playername, world);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean has(String playername, double amount) {
-		return economy.has(playername, amount);
+		return vaultEconomy.has(playername, amount);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean has(String playername, String world, double amount) {
-		return economy.has(playername, world, amount);
+		return vaultEconomy.has(playername, world, amount);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse depositPlayer(String playername, double amount) {
-		return economy.depositPlayer(playername, amount);
+		return vaultEconomy.depositPlayer(playername, amount);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse depositPlayer(String playername, String world, double amount) {
-		return economy.depositPlayer(playername, world, amount);
+		return vaultEconomy.depositPlayer(playername, world, amount);
 	}
 
 	@Override
 	public boolean hasBankSupport() {
-		return economy.hasBankSupport();
+		return vaultEconomy.hasBankSupport();
 	}
 
 	@Override
 	public List<String> getBanks() {
-		return economy.getBanks();
+		return vaultEconomy.getBanks();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse createBank(String account, String playername) {
-		return economy.createBank(account, playername);
+		return vaultEconomy.createBank(account, playername);
 	}
 
 	@Override
 	public EconomyResponse deleteBank(String account) {
-		return economy.deleteBank(account);
+		return vaultEconomy.deleteBank(account);
 	}
 
 	@Override
 	public EconomyResponse bankHas(String account, double amount) {
-		return economy.bankHas(account, amount);
+		return vaultEconomy.bankHas(account, amount);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean hasAccount(String playername) {
-		return economy.hasAccount(playername);
+		return vaultEconomy.hasAccount(playername);
 	}
 
 	@Override
 	public boolean hasAccount(String playername, String world) {
-		return economy.hasAccount(playername, world);
+		return vaultEconomy.hasAccount(playername, world);
 	}
 
 	@Override
 	public EconomyResponse bankBalance(String playername) {
-		return economy.bankBalance(playername);
+		return vaultEconomy.bankBalance(playername);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse isBankOwner(String account, String playername) {
-		return economy.isBankOwner(account, playername);
+		return vaultEconomy.isBankOwner(account, playername);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse isBankMember(String account, String playername) {
-		return economy.isBankMember(account, playername);
+		return vaultEconomy.isBankMember(account, playername);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse withdrawPlayer(String playername, double amount) {
-		return economy.withdrawPlayer(playername, amount);
+		return vaultEconomy.withdrawPlayer(playername, amount);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public EconomyResponse withdrawPlayer(String playername, String world, double amount) {
-		return economy.withdrawPlayer(playername, world, amount);
+		return vaultEconomy.withdrawPlayer(playername, world, amount);
 	}
 
 	@Override
 	public EconomyResponse bankDeposit(String playername, double world) {
-		return economy.bankDeposit(playername, world);
+		return vaultEconomy.bankDeposit(playername, world);
 	}
 
 	@Override
 	public EconomyResponse bankWithdraw(String playername, double amount) {
-		return economy.bankWithdraw(playername, amount);
+		return vaultEconomy.bankWithdraw(playername, amount);
 	}
 
 }

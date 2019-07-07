@@ -6,7 +6,7 @@ dev-url: http://dev.bukkit.org/server-mods/bagofgold/
 author: Rocologo
 depend: []
 loadbefore: [PerWorldInventory, Citizens2, Essentials, MobHunting, ItemFrameShops]
-softdepend: [ActionAnnouncer, ActionBarAPI, Actionbar, TitleAPI, TitleManager, PlaceholderAPI]
+softdepend: [Reserve, ActionAnnouncer, ActionBarAPI, Actionbar, TitleAPI, TitleManager, PlaceholderAPI]
 api-version: 1.13
 
 commands:
