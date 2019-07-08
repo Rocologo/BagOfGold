@@ -111,7 +111,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), 1, (short) 3);
 		skull.setAmount(amount);
 
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
@@ -153,13 +153,12 @@ public class CustomItems {
 				if (sk != null) {
 					String[] skinOnline = sk.getSkin(player);
 					if (skinOnline != null && !skinOnline.equals(skinCache)) {
-							plugin.getMessages().debug("%s has changed skin, updating skin cache",
-									player.getName());
-							ps.setTexture(skinOnline[0]);
-							ps.setSignature(skinOnline[1]);
-							plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
-							plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
-						}
+						plugin.getMessages().debug("%s has changed skin, updating skin cache", player.getName());
+						ps.setTexture(skinOnline[0]);
+						ps.setSignature(skinOnline[1]);
+						plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+						plugin.getDataStoreManager().updatePlayerSettings(offlinePlayer, ps);
+					}
 				}
 			}
 			skinCache[0] = ps.getTexture();
@@ -213,7 +212,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), 1, (short) 3);
 
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 
@@ -272,7 +271,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), 1, (short) 3);
 
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		String name = Bukkit.getOfflinePlayer(uuid).getName();
@@ -311,7 +310,7 @@ public class CustomItems {
 		if (Servers.isMC113OrNewer())
 			skull = new ItemStack(Material.PLAYER_HEAD);
 		else
-			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"),1,(short)3);
+			skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), 1, (short) 3);
 
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
 			return skull;
@@ -362,7 +361,7 @@ public class CustomItems {
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
-	
+
 	public ItemStack getCustomHead(MinecraftMob minecraftMob, String name, int amount, double money, UUID skinUUID) {
 		ItemStack skull;
 		switch (minecraftMob) {
@@ -409,7 +408,7 @@ public class CustomItems {
 		}
 		return skull;
 	}
-	
+
 	/**
 	 * setDisplayNameAndHiddenLores: add the Display name and the (hidden) Lores.
 	 * The lores identifies the reward and contain secret information.

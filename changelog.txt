@@ -1,5 +1,5 @@
 V2.6.9
-*
+* Fix on error when players without a skin joins the server
 V2.6.8
 * Implemented a MessageQueue system between MobHunting and BagOfGold
 * Moved more shared code to one.lindegaard.Core 
