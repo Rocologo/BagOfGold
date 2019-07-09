@@ -17,13 +17,13 @@ public class ActionBarAPICompat {
 
 	public ActionBarAPICompat() {
 		if (!isEnabledInConfig()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with ActionBarAPI is disabled in config.yml");
 		} else {
 			mPlugin = (ActionBarAPI) Bukkit.getPluginManager().getPlugin(CompatPlugin.ActionBarApi.getName());
 
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 							+ "Enabling compatibility with ActionBarAPI ("
 							+ getActionBarAPI().getDescription().getVersion() + ")");
 			supported = true;

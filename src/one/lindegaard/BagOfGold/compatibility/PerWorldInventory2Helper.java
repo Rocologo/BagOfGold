@@ -17,7 +17,6 @@ public class PerWorldInventory2Helper {
 				Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 					@Override
 					public void run() {
-						plugin.getMessages().debug("PerWorldInventoryCompat: onInventoryLoad");
 						plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(event.getPlayer());
 					}
 				}, 20);

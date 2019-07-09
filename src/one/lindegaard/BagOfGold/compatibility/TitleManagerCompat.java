@@ -21,17 +21,17 @@ public class TitleManagerCompat {
 
 	public TitleManagerCompat() {
 		if (!isEnabledInConfig()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with TitleManager is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.TitleManager.getName());
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Enabling compatibility with TitleManager ("
 					+ mPlugin.getDescription().getVersion() + ")");
 			if (mPlugin.getDescription().getVersion().compareTo("2.0") >= 0)
 				api = getTitleManagerAPI();
 			else {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RED
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 						+ "You are using an old version of TitleManager. Consider updating.");
 			}
 			supported = true;

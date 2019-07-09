@@ -17,12 +17,12 @@ public class ActionbarCompat {
 
 	public ActionbarCompat() {
 		if (!isEnabledInConfig()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with Actionbar is disabled in config.yml ");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.Actionbar.getName());
 
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Enabling compatibility with Actionbar (" + getActionbar().getDescription().getVersion() + ")");
 			supported = true;
 		}

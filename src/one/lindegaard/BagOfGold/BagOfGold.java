@@ -30,6 +30,7 @@ import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
+import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
@@ -178,6 +179,7 @@ public class BagOfGold extends JavaPlugin {
 
 		mBankManager = new BankManager(this);
 
+		mCompatibilityManager.registerPlugin(ProtocolLibCompat.class, CompatPlugin.ProtocolLib);
 		mCompatibilityManager.registerPlugin(PerWorldInventoryCompat.class, CompatPlugin.PerWorldInventory);
 		if (Servers.isSpigotServer() || Servers.isPaperServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);

@@ -25,13 +25,13 @@ public class PlaceholderAPICompat {
 
 	public PlaceholderAPICompat() {
 		if (!isEnabledInConfig()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with PlaceholderAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.PlaceholderAPI.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("2.0.6") >= 0) {
 				Bukkit.getConsoleSender()
-						.sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RESET
+						.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 								+ "Enabling compatibility with PlaceholderAPI (" + mPlugin.getDescription().getVersion()
 								+ ").");
 				new BagOfGoldPlaceholderExpansion().register();
@@ -39,9 +39,9 @@ public class PlaceholderAPICompat {
 				supported = true;
 			} else {
 				Bukkit.getConsoleSender()
-						.sendMessage(ChatColor.GOLD + "[MobHunting] " + ChatColor.RED
+						.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 								+ "Your current version of PlaceholderAPI (" + mPlugin.getDescription().getVersion()
-								+ ") is not supported by MobHunting, please upgrade to 2.0.6 or newer.");
+								+ ") is not supported by BagOfGold, please upgrade to 2.0.6 or newer.");
 			}
 		}
 	}

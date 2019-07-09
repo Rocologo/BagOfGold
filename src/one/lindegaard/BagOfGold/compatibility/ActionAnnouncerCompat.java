@@ -18,11 +18,11 @@ public class ActionAnnouncerCompat {
 	public ActionAnnouncerCompat() {
 		if (!isEnabledInConfig()) {
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD+"[MobHunting]"+ChatColor.RESET+" Compatibility with ActionAnnouncer is disabled in config.yml");
+					.sendMessage(ChatColor.GOLD+"[BagOfGold]"+ChatColor.RESET+" Compatibility with ActionAnnouncer is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.ActionAnnouncer.getName());
 
-			Bukkit.getConsoleSender().sendMessage("[MobHunting] Enabling compatibility with ActionAnnouncer ("
+			Bukkit.getConsoleSender().sendMessage("[BagOfGold] Enabling compatibility with ActionAnnouncer ("
 					+ mPlugin.getDescription().getVersion() + ").");
 			supported = true;
 		}
