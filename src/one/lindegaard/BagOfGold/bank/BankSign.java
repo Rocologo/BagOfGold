@@ -280,7 +280,6 @@ public class BankSign implements Listener {
 
 	private boolean isBankSign(Block block) {
 		if (Materials.isSign(block)) {
-			plugin.getMessages().debug("This block is a sign");
 			return ChatColor.stripColor(((Sign) block.getState()).getLine(0)).equalsIgnoreCase(
 					ChatColor.stripColor(BagOfGold.getInstance().getMessages().getString("bagofgold.banksign.line1",
 							"bankname", BagOfGold.getInstance().getConfigManager().bankname.trim())))

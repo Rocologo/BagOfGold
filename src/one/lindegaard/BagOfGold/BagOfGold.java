@@ -35,7 +35,6 @@ import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
-import one.lindegaard.BagOfGold.rewards.EconomyManager;
 import one.lindegaard.BagOfGold.rewards.GringottsItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
@@ -55,8 +54,7 @@ public class BagOfGold extends JavaPlugin {
 	private File mFile = new File(getDataFolder(), "config.yml");
 
 	//private Economy vaultEconomy;
-	//private EconomyAPI reserveEconomy;
-	//private ReserveEconomy reserveEconomy;
+	//private BagOfGoldEconomyReserve reserveEconomy;
 
 	private Messages mMessages;
 	private MetricsManager mMetricsManager;
@@ -80,14 +78,22 @@ public class BagOfGold extends JavaPlugin {
 
 	@Override
 	public void onLoad() {
-		//reserveEconomy = new ReserveEconomy(this);
-		//if (Bukkit.getPluginManager().getPlugin("Reserve") != null) {
-		//	setupReserve();
-		//}
 	}
+
+	//private void setupReserve() {
+	//	reserveEconomy = (BagOfGoldEconomyReserve) Bukkit.getPluginManager().getPlugin("BagOfGold");
+	//	Reserve.instance().registerProvider(reserveEconomy);
+	//	getLogger().info("[BAGOFGOLD] Hooked into Reserve");
+	//}
 
 	@Override
 	public void onEnable() {
+		
+		//if(Reserve.instance().economyProvided()) {
+		//	reserveEconomy = Reserve.instance().economy(). get();
+		//}
+
+				
 
 		instance = this;
 
@@ -174,7 +180,7 @@ public class BagOfGold extends JavaPlugin {
 		mPlayerBalanceManager = new PlayerBalanceManager(this);
 
 		mEconomyManager = new EconomyManager(this);
-
+		
 		mCompatibilityManager = new CompatibilityManager(this);
 
 		mBankManager = new BankManager(this);
@@ -207,9 +213,7 @@ public class BagOfGold extends JavaPlugin {
 			Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
 			if (vaultPlugin != null)
 				hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");
-			// if (USE_RESERVE)
-			// hookReserveEconomy(EconomyAPI.class, ServicePriority.Normal,
-			// "one.lindegaard.BagOfGold.BagOfGoldEconomyReserve");
+			//setupReserve();
 		}
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
@@ -280,28 +284,6 @@ public class BagOfGold extends JavaPlugin {
 	}
 
 	/**
-	public static void hookReserveEconomy(Class<EconomyAPI> class1, ServicePriority priority, String string) {
-		try {
-			if (packagesExists(string)) {
-				// EconomyAPI reserveEconomy =
-				// class1.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
-				Plugin reservePlugin = Bukkit.getPluginManager().getPlugin("Reserve");
-				// if (reservePlugin != null)
-				// mServiceManager.register(EconomyAPI.class, reserveEconomy, reservePlugin,
-				// ServicePriority.Normal);
-				BagOfGold bagofgold = (BagOfGold) Bukkit.getPluginManager().getPlugin("BagOfGold");
-				BagOfGoldEconomyReserve reserveEconomy = new BagOfGoldEconomyReserve(bagofgold);
-				Reserve.instance().registerProvider(reserveEconomy);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
-						"[BagOfGold][Economy] Reserve found: %s", reserveEconomy.enabled() ? "Loaded" : "Waiting"));
-			}
-		} catch (Exception e) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
-					"[Economy] There was an error hooking in to Reserve - check to make sure you're using a compatible version!"));
-		}
-	}**/
-
-	/**
 	 * Determines if all packages in a String array are within the Classpath This is
 	 * the best way to determine if a specific plugin exists and will be loaded. If
 	 * the plugin package isn't loaded, we shouldn't bother waiting for it!
@@ -320,13 +302,7 @@ public class BagOfGold extends JavaPlugin {
 		}
 	}
 
-	/**
-	private void setupReserve() {
-		reserveEconomy = (EconomyAPI) Bukkit.getPluginManager().getPlugin("Reserve");
-		Reserve.instance().registerProvider(reserveEconomy);
-		getLogger().info("[BAGOFGOLD] Hooked into Reserve");
-	}**/
-
+	
 	// ************************************************************************************
 	// Managers and handlers
 	// ************************************************************************************
