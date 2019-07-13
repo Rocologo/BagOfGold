@@ -23,7 +23,7 @@ public class PickupRewards {
 			Reward reward = Reward.getReward(item);
 			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 				callBack.setCancelled(true);
-				done = plugin.getEconomyManager().depositPlayer(player, reward.getMoney()).amount;
+				done = plugin.getRewardManager().depositPlayer(player, reward.getMoney()).amount;
 				if (done > 0) {
 					item.remove();
 					if (plugin.getBagOfGoldItems().getDroppedMoney().containsKey(item.getEntityId()))

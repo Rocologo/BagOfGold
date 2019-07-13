@@ -135,7 +135,7 @@ public class PlayerBalanceManager implements Listener {
 			mBalances.put(player.getUniqueId(), playerBalances);
 			load(player);
 		} else {
-			plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+			plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
 
 	}
@@ -183,7 +183,7 @@ public class PlayerBalanceManager implements Listener {
 					worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(player);
 					gamemode = player.getGameMode();
 					// Next line is important, to adjust the AmountInInventory to Balance
-					plugin.getEconomyManager().getAmountInInventory(player);
+					plugin.getRewardManager().getAmountInInventory(player);
 				} else {
 					worldGroup = plugin.getWorldGroupManager().getDefaultWorldgroup();
 					gamemode = plugin.getWorldGroupManager().getDefaultGameMode();
@@ -199,7 +199,7 @@ public class PlayerBalanceManager implements Listener {
 					@Override
 					public void run() {
 						if (offlinePlayer.isOnline() && ((Player) offlinePlayer).isValid()) {
-							double amountInInventory = plugin.getEconomyManager()
+							double amountInInventory = plugin.getRewardManager()
 									.getAmountInInventory((Player) offlinePlayer);
 							PlayerBalance pb = getPlayerBalance(offlinePlayer);
 							if (Misc.round(amountInInventory) != Misc.round(pb.getBalance())
@@ -211,7 +211,7 @@ public class PlayerBalanceManager implements Listener {
 								pb.setBalance(pb.getBalance() + change);
 								pb.setBalanceChanges(0);
 								setPlayerBalance(offlinePlayer, pb);
-								plugin.getEconomyManager()
+								plugin.getRewardManager()
 										.adjustAmountOfMoneyInInventoryToPlayerBalance((Player) offlinePlayer);
 							}
 						}

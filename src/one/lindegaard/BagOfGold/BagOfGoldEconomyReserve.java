@@ -27,7 +27,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 			if (economyProvider == null) {
 				Bukkit.getLogger().severe("[BagOfGold][Reserve]"
 						+ plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ.reserve"));
-				// Bukkit.getPluginManager().disablePlugin(plugin);
 				return;
 			}
 			mEconomy = economyProvider.getProvider();

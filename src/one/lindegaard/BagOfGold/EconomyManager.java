@@ -9,7 +9,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.tnemc.core.Reserve;
 import net.tnemc.core.economy.EconomyAPI;
 
-public class BagOfGoldEconomyManager {
+public class EconomyManager {
 
 	private BagOfGold plugin;
 	private Economy vaultEconomy = null;
@@ -21,13 +21,13 @@ public class BagOfGoldEconomyManager {
 		NONE, VAULT, RESERVE
 	}
 
-	public BagOfGoldEconomyManager(BagOfGold plugin) {
+	public EconomyManager(BagOfGold plugin) {
 		this.plugin = plugin;
 		
 		setupEconomyManager();
 		
 		if (plugin.getConfigManager().useBagOfGoldAsAnEconomyPlugin) {
-			// Try to load BagOfGold
+			
 			Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
 			if (vaultPlugin != null)
 				BagOfGoldEconomyVault.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");

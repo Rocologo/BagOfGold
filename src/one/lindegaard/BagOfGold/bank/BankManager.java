@@ -119,8 +119,8 @@ public class BankManager {
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 
 			player.spigot().sendMessage(new ComponentBuilder("Balance: "
-					+ plugin.getEconomyManager().format(ps.getBalance() + ps.getBalanceChanges()) + " BankBalance: "
-					+ plugin.getEconomyManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
+					+ plugin.getRewardManager().format(ps.getBalance() + ps.getBalanceChanges()) + " BankBalance: "
+					+ plugin.getRewardManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
 							.color(ChatColor.GREEN).bold(true).create());
 			ComponentBuilder deposit = new ComponentBuilder("Deposit: ").color(ChatColor.GREEN).bold(true).append(" ");
 			Iterator<Entry<String, String>> itr1 = plugin.getConfigManager().actions.entrySet().iterator();

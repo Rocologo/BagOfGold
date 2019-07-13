@@ -110,7 +110,7 @@ public class EssentialsCompat {
 						config.set("money", String.valueOf(amount));
 						config.save(configfile);
 						BagOfGold.getAPI().getMessages().debug("Updated %s essentials balance to %s",
-								offlinePlayer.getName(), BagOfGold.getAPI().getEconomyManager().format(amount));
+								offlinePlayer.getName(), BagOfGold.getAPI().getRewardManager().format(amount));
 					} catch (IOException | InvalidConfigurationException e) {
 						e.printStackTrace();
 						return;

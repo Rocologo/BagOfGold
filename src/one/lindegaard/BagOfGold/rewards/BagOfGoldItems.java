@@ -561,7 +561,7 @@ public class BagOfGoldItems implements Listener {
 				} else {
 					// when dropping from the quickbar using Q key
 					plugin.getMessages().debug("BagOfGoldItems: dropped BagOfGold using Q key");
-					plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, money);
+					plugin.getRewardManager().removeMoneyFromPlayerBalance(player, money);
 				}
 			}
 			item.setCustomNameVisible(true);
@@ -598,7 +598,7 @@ public class BagOfGoldItems implements Listener {
 			placedMoney_Location.put(reward.getUniqueUUID(), block.getLocation());
 			saveReward(reward.getUniqueUUID());
 			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
-				plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
+				plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 			}
 		}
 	}
@@ -661,7 +661,7 @@ public class BagOfGoldItems implements Listener {
 			Reward reward = Reward.getReward(player.getInventory().getItemInMainHand());
 			if (reward.getMoney() != 0) {
 				plugin.getMessages().debug("%s placed a BagOfGod in an ItemFrame", player.getName());
-				plugin.getEconomyManager().removeMoneyFromPlayer(player, reward.getMoney());
+				plugin.getRewardManager().removeMoneyFromPlayer(player, reward.getMoney());
 				if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 					plugin.getMessages().playerActionBarMessageQueue(player,
 							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
@@ -936,7 +936,7 @@ public class BagOfGoldItems implements Listener {
 			// reward.getMoney());
 			// plugin.getEconomyManager().removeMoneyFromPlayerBalance(player,
 			// reward.getMoney());
-			plugin.getEconomyManager().addMoneyToPlayerBalance(player, reward.getMoney());
+			plugin.getRewardManager().addMoneyToPlayerBalance(player, reward.getMoney());
 			return;
 		}
 
@@ -977,7 +977,7 @@ public class BagOfGoldItems implements Listener {
 				Reward reward = Reward.getReward(isCurrentSlot);
 				plugin.getMessages().debug("(2) %s moved BagOfGold (%s) out of Inventory", player.getName(),
 						reward.getMoney());
-				plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
+				plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 			}
 		} else if ((action == InventoryAction.PICKUP_ALL || action == InventoryAction.PICKUP_ONE
 				|| action == InventoryAction.PICKUP_SOME) && Reward.isReward(isCurrentSlot)) {
@@ -985,7 +985,7 @@ public class BagOfGoldItems implements Listener {
 				Reward reward = Reward.getReward(isCurrentSlot);
 				plugin.getMessages().debug("%s moved BagOfGold (%s) out of Inventory", player.getName(),
 						reward.getMoney());
-				plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
+				plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 			}
 		} else if ((action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE
 				|| action == InventoryAction.PLACE_SOME) && Reward.isReward(isCursor)) {
@@ -993,7 +993,7 @@ public class BagOfGoldItems implements Listener {
 				Reward reward = Reward.getReward(isCursor);
 				plugin.getMessages().debug("%s moved BagOfGold (%s) into Inventory", player.getName(),
 						reward.getMoney());
-				plugin.getEconomyManager().addMoneyToPlayerBalance(player, reward.getMoney());
+				plugin.getRewardManager().addMoneyToPlayerBalance(player, reward.getMoney());
 			}
 		}
 
@@ -1020,7 +1020,7 @@ public class BagOfGoldItems implements Listener {
 						event.setCurrentItem(isCursor);
 						event.setCursor(isCurrentSlot);
 						plugin.getMessages().debug("%s merged two rewards(1)", player.getName());
-						plugin.getEconomyManager().addMoneyToPlayerBalance(player, added_money);
+						plugin.getRewardManager().addMoneyToPlayerBalance(player, added_money);
 					} else {
 						double rest = reward1.getMoney() + reward2.getMoney() - plugin.getConfigManager().limitPerBag;
 						double added_money = plugin.getConfigManager().limitPerBag - reward1.getMoney();
@@ -1044,7 +1044,7 @@ public class BagOfGoldItems implements Listener {
 						event.setCursor(isCurrentSlot);
 						plugin.getMessages().debug("%s merged two rewards(2)", player.getName());
 						if (event.getView().getTitle().equalsIgnoreCase("Inventory")) {
-							plugin.getEconomyManager().addMoneyToPlayerBalance(player, added_money);
+							plugin.getRewardManager().addMoneyToPlayerBalance(player, added_money);
 						}
 					}
 				} else {
@@ -1053,13 +1053,13 @@ public class BagOfGoldItems implements Listener {
 								: 0;
 						double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
 						plugin.getMessages().debug("slot=%s cursor=%s", playerInv, chestInv);
-						plugin.getEconomyManager().removeMoneyFromPlayer(player, playerInv - chestInv);
+						plugin.getRewardManager().removeMoneyFromPlayer(player, playerInv - chestInv);
 					} else {
 						double playerInv = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot).getMoney()
 								: 0;
 						double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
 						plugin.getMessages().debug("slot=%s cursor=%s", playerInv, chestInv);
-						plugin.getEconomyManager().addMoneyToPlayer(player, playerInv - chestInv);
+						plugin.getRewardManager().addMoneyToPlayer(player, playerInv - chestInv);
 					}
 				}
 			} else {
@@ -1083,7 +1083,7 @@ public class BagOfGoldItems implements Listener {
 						plugin.getMessages().debug("%s halfed a reward in two (%s,%s)", player.getName(),
 								format(currentSlotMoney), format(cursorMoney));
 						if (event.getView().getTitle().equalsIgnoreCase("Inventory")) {
-							plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, cursorMoney);
+							plugin.getRewardManager().removeMoneyFromPlayerBalance(player, cursorMoney);
 						}
 					}
 				} else if (reward.isKilledHeadReward() || reward.isKilledHeadReward()) {
@@ -1121,7 +1121,7 @@ public class BagOfGoldItems implements Listener {
 					event.setCursor(isCursor);
 					plugin.getMessages().debug("%s collected %s to the cursor", player.getName(), saldo);
 					if (event.getView().getTitle().equalsIgnoreCase("Inventory")) {
-						plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, saldo - money_in_hand);
+						plugin.getRewardManager().removeMoneyFromPlayerBalance(player, saldo - money_in_hand);
 					}
 				}
 			}
@@ -1139,13 +1139,13 @@ public class BagOfGoldItems implements Listener {
 					double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
 					double keyMoney = Reward.isReward(isKey) ? Reward.getReward(isKey).getMoney() : 0;
 					plugin.getMessages().debug("slot=%s cursor=%s, key=%s", playerInv, chestInv, keyMoney);
-					plugin.getEconomyManager().removeMoneyFromPlayer(player, playerInv - chestInv);
+					plugin.getRewardManager().removeMoneyFromPlayer(player, playerInv - chestInv);
 				} else {
 					double playerInv = Reward.isReward(isCurrentSlot) ? Reward.getReward(isCurrentSlot).getMoney() : 0;
 					double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
 					double keyMoney = Reward.isReward(isKey) ? Reward.getReward(isKey).getMoney() : 0;
 					plugin.getMessages().debug("slot=%s cursor=%s, key=%s", playerInv, chestInv, keyMoney);
-					plugin.getEconomyManager().addMoneyToPlayer(player, playerInv - chestInv);
+					plugin.getRewardManager().addMoneyToPlayer(player, playerInv - chestInv);
 				}
 				// } else {
 				// event.setCancelled(true);
@@ -1164,11 +1164,11 @@ public class BagOfGoldItems implements Listener {
 				if (clickedInventory.getType() == InventoryType.PLAYER) {
 					plugin.getMessages().debug("%s Moved %s BagOfGold out of the Player Inventory", player.getName(),
 							reward.getMoney());
-					plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
+					plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 				} else {
 					plugin.getMessages().debug("%s Moved %s BagOfGold into the Player Inventory", player.getName(),
 							reward.getMoney());
-					plugin.getEconomyManager().addMoneyToPlayerBalance(player, reward.getMoney());
+					plugin.getRewardManager().addMoneyToPlayerBalance(player, reward.getMoney());
 
 				}
 			}
@@ -1199,9 +1199,9 @@ public class BagOfGoldItems implements Listener {
 		} else {
 			plugin.getMessages().debug("BagOfGoldItems: action=%s", action);
 			if (player.getGameMode() == GameMode.SURVIVAL)
-				plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+				plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 			else
-				plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+				plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
 
 	}

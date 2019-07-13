@@ -30,12 +30,12 @@ public class RewardListeners implements Listener {
 				plugin.getMessages().debug(
 						"RewardListener: InventoryCloseEvent adjusting Player Balance to Amount of BagOfGold in Inventory: %s",
 						ps.toString());
-				plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+				plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 			} else {
 				plugin.getMessages().debug(
 						"RewardListener: InventoryCloseEvent adjusting Amount of BagOfGold in Inventory To Balance: %s",
 						ps.toString());
-				plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+				plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 			}
 		}
 	}
@@ -53,11 +53,11 @@ public class RewardListeners implements Listener {
 				if (player.getGameMode() == GameMode.SURVIVAL) {
 					plugin.getMessages().debug(
 							"RewardListener: PlayerGameModeChange %s adjusting Player Balance to Amount of BagOfGold in Inventory",player.getName());
-					plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+					plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 				} else {
 					plugin.getMessages().debug(
 							"RewardListener: PlayerGameModeChange %s adjusting Amount of BagOfGold in Inventory To Balance",player.getName());
-					plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+					plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 				}
 			}
 		}, 3);
@@ -73,15 +73,15 @@ public class RewardListeners implements Listener {
 		if (player.getGameMode() == GameMode.SURVIVAL) {
 			plugin.getMessages().debug(
 					"RewardListener: PlayerChangedWorld: %s adjusting Player Balance to Amount of BagOfGold in Inventory",player.getName());
-			plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+			plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 		} else {
 			plugin.getMessages().debug(
 					"RewardListener: PlayerChangedWorld %s adjusting Amount of BagOfGold in Inventory To Balance",player.getName());
-			plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+			plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
 		plugin.getMessages().debug("RewardListernes: PlayerChangedWorld %s (from %s to %s) new balance is %s",
 				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
-				plugin.getEconomyManager().getBalance(player));
+				plugin.getRewardManager().getBalance(player));
 	}
 
 }

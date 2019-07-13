@@ -36,6 +36,17 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 			}
 			mEconomy = economyProvider.getProvider();
 		}
+		
+		plugin.getMessages().debug("Number of Vault Economy Providers = %s",
+				Bukkit.getServicesManager().getRegistrations(Economy.class).size());
+		if (Bukkit.getServicesManager().getRegistrations(Economy.class).size() > 1) {
+			for (RegisteredServiceProvider<Economy> registation : Bukkit.getServicesManager()
+					.getRegistrations(Economy.class)) {
+				plugin.getMessages().debug("Vault provider name=%s", registation.getProvider().getName());
+			}
+		}
+
+
 
 	}
 
@@ -154,7 +165,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public double getBalance(OfflinePlayer offlinePlayer) {
 		if (isEnabled())
-			return plugin.getEconomyManager().getBalance(offlinePlayer);
+			return plugin.getRewardManager().getBalance(offlinePlayer);
 		else
 			return mEconomy.getBalance(offlinePlayer);
 	}
@@ -306,7 +317,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		if (isEnabled())
-			return plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
+			return plugin.getRewardManager().depositPlayer(offlinePlayer, amount);
 		else
 			return mEconomy.depositPlayer(offlinePlayer, amount);
 	}
@@ -465,7 +476,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
 		if (isEnabled())
-			return plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
+			return plugin.getRewardManager().withdrawPlayer(offlinePlayer, amount);
 		else
 			return mEconomy.withdrawPlayer(offlinePlayer, amount);
 	}
@@ -547,7 +558,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse isBankMember(String account, OfflinePlayer offlinePlayer) {
 		if (isEnabled())
-			return plugin.getEconomyManager().isBankMember(account, offlinePlayer);
+			return plugin.getRewardManager().isBankMember(account, offlinePlayer);
 		else
 			return mEconomy.isBankOwner(account, offlinePlayer);
 	}
@@ -574,7 +585,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse isBankOwner(String account, OfflinePlayer offlinePlayer) {
 		if (isEnabled())
-			return plugin.getEconomyManager().isBankOwner(account, offlinePlayer);
+			return plugin.getRewardManager().isBankOwner(account, offlinePlayer);
 		else
 			return mEconomy.isBankOwner(account, offlinePlayer);
 	}
@@ -588,7 +599,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse bankBalance(String account) {
 		if (isEnabled())
-			return plugin.getEconomyManager().bankBalance(account);
+			return plugin.getRewardManager().bankBalance(account);
 		else
 			return mEconomy.bankBalance(account);
 	}
@@ -603,7 +614,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse bankDeposit(String account, double amount) {
 		if (isEnabled())
-			return plugin.getEconomyManager().bankDeposit(account, amount);
+			return plugin.getRewardManager().bankDeposit(account, amount);
 		else
 			return mEconomy.bankDeposit(account, amount);
 	}
@@ -639,7 +650,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse bankWithdraw(String account, double amount) {
 		if (isEnabled())
-			return plugin.getEconomyManager().bankWithdraw(account, amount);
+			return plugin.getRewardManager().bankWithdraw(account, amount);
 		else
 			return mEconomy.bankWithdraw(account, amount);
 
@@ -681,7 +692,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse deleteBank(String account) {
 		if (isEnabled())
-			return plugin.getEconomyManager().deleteBank(account);
+			return plugin.getRewardManager().deleteBank(account);
 		else
 			return mEconomy.deleteBank(account);
 	}

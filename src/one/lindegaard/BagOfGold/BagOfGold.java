@@ -4,9 +4,6 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
@@ -34,7 +31,7 @@ import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
-import one.lindegaard.BagOfGold.rewards.EconomyManager;
+import one.lindegaard.BagOfGold.rewards.RewardManager;
 import one.lindegaard.BagOfGold.rewards.GringottsItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
@@ -51,18 +48,15 @@ public class BagOfGold extends JavaPlugin {
 	private static BagOfGold instance;
 	private File mFile = new File(getDataFolder(), "config.yml");
 
-	//private Economy vaultEconomy;
-	//private BagOfGoldEconomyReserve reserveEconomy;
-
 	private Messages mMessages;
-	private BagOfGoldEconomyManager mBagOfGoldEconomyManager;
+	private EconomyManager mBagEconomyManager;
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
 	private PlayerSettingsManager mPlayerSettingsManager;
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
-	private EconomyManager mEconomyManager;
+	private RewardManager mRewardManager;
 	private WorldGroupManager mWorldGroupManager;
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
@@ -164,7 +158,7 @@ public class BagOfGold extends JavaPlugin {
 		mPlayerSettingsManager = new PlayerSettingsManager(this);
 		mPlayerBalanceManager = new PlayerBalanceManager(this);
 
-		mEconomyManager = new EconomyManager(this);
+		mRewardManager = new RewardManager(this);
 		
 		mCompatibilityManager = new CompatibilityManager(this);
 
@@ -193,7 +187,7 @@ public class BagOfGold extends JavaPlugin {
 		// Initialize BagOfGold Bank Signs
 		new BankSign(this);
 
-		mBagOfGoldEconomyManager = new BagOfGoldEconomyManager(this);
+		mBagEconomyManager = new EconomyManager(this);
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
@@ -316,8 +310,8 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public EconomyManager getEconomyManager() {
-		return mEconomyManager;
+	public RewardManager getRewardManager() {
+		return mRewardManager;
 	}
 
 	public BankManager getBankManager() {
@@ -357,8 +351,8 @@ public class BagOfGold extends JavaPlugin {
 		return mMessageManager;
 	}
 	
-	public BagOfGoldEconomyManager getBagOfGoldEconomyManager() {
-		return mBagOfGoldEconomyManager;
+	public EconomyManager getEconomyManager() {
+		return mBagEconomyManager;
 	}
 
 }

@@ -128,19 +128,19 @@ public class BankCommand implements ICommand {
 					}
 				}
 
-				double balance = plugin.getEconomyManager().bankBalance(offlinePlayer.getUniqueId().toString()).balance;
+				double balance = plugin.getRewardManager().bankBalance(offlinePlayer.getUniqueId().toString()).balance;
 
 				if (other)
 					plugin.getMessages().senderSendMessage(sender,
 							ChatColor.GREEN + plugin.getMessages().getString(
 									"bagofgold.commands.money.bankbalance.other", "playername", offlinePlayer.getName(),
-									"money", plugin.getEconomyManager().format(balance), "rewardname",
+									"money", plugin.getRewardManager().format(balance), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 				else
 					plugin.getMessages().senderSendMessage(sender,
 							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.bankbalance",
-									"playername", "You", "money", plugin.getEconomyManager().format(balance),
+									"playername", "You", "money", plugin.getRewardManager().format(balance),
 									"rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
@@ -180,7 +180,7 @@ public class BankCommand implements ICommand {
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 										"number", args[2], "maximum", amount));
 					}
-					plugin.getEconomyManager().bankDeposit(offlinePlayer.getUniqueId().toString(), amount);
+					plugin.getRewardManager().bankDeposit(offlinePlayer.getUniqueId().toString(), amount);
 				} else {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
@@ -215,7 +215,7 @@ public class BankCommand implements ICommand {
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 										"number", args[2], "maximum", amount));
 					}
-					plugin.getEconomyManager().bankWithdraw(offlinePlayer.getUniqueId().toString(), amount);
+					plugin.getRewardManager().bankWithdraw(offlinePlayer.getUniqueId().toString(), amount);
 				} else {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));

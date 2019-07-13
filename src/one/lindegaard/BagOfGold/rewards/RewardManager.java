@@ -19,12 +19,12 @@ import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
 
-public class EconomyManager {
+public class RewardManager {
 
 	private BagOfGold plugin;
 	private PickupRewards pickupRewards;
 
-	public EconomyManager(BagOfGold plugin) {
+	public RewardManager(BagOfGold plugin) {
 		this.plugin = plugin;
 
 		pickupRewards = new PickupRewards(plugin);
@@ -135,13 +135,13 @@ public class EconomyManager {
 						plugin.getMessages().debug(
 								"EconomyManager: withdrawPlayer adjusting Player Balance to Amount of BagOfGold in Inventory",
 								player.getName());
-						plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+						plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 						// plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 					} else {
 						plugin.getMessages().debug(
 								"EconomyManager: withdrawPlayer %s adjusting Amount of BagOfGold in Inventory To Balance",
 								player.getName());
-						plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
+						plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 					}
 				}
 				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
