@@ -9,6 +9,7 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
+import net.tnemc.core.Reserve;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.BankCommand;
@@ -54,7 +55,7 @@ public class BagOfGold extends JavaPlugin {
 	private File mFile = new File(getDataFolder(), "config.yml");
 
 	//private Economy vaultEconomy;
-	//private BagOfGoldEconomyReserve reserveEconomy;
+	private BagOfGoldEconomyReserve reserveEconomy;
 
 	private Messages mMessages;
 	private MetricsManager mMetricsManager;
@@ -80,11 +81,11 @@ public class BagOfGold extends JavaPlugin {
 	public void onLoad() {
 	}
 
-	//private void setupReserve() {
-	//	reserveEconomy = (BagOfGoldEconomyReserve) Bukkit.getPluginManager().getPlugin("BagOfGold");
-	//	Reserve.instance().registerProvider(reserveEconomy);
-	//	getLogger().info("[BAGOFGOLD] Hooked into Reserve");
-	//}
+	private void setupReserve() {
+		reserveEconomy = new BagOfGoldEconomyReserve(this);
+		Reserve.instance().registerProvider(reserveEconomy);
+		getLogger().info("[BAGOFGOLD] Hooked into Reserve");
+	}
 
 	@Override
 	public void onEnable() {
@@ -92,8 +93,6 @@ public class BagOfGold extends JavaPlugin {
 		//if(Reserve.instance().economyProvided()) {
 		//	reserveEconomy = Reserve.instance().economy(). get();
 		//}
-
-				
 
 		instance = this;
 
@@ -213,7 +212,7 @@ public class BagOfGold extends JavaPlugin {
 			Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
 			if (vaultPlugin != null)
 				hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");
-			//setupReserve();
+			setupReserve();
 		}
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
