@@ -195,15 +195,6 @@ public class BagOfGold extends JavaPlugin {
 
 		mBagOfGoldEconomyManager = new BagOfGoldEconomyManager(this);
 
-		if (mConfig.useBagOfGoldAsAnEconomyPlugin) {
-			// Try to load BagOfGold
-			//Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
-			//if (vaultPlugin != null)
-			//	BagOfGoldEconomyVault.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");
-			
-			
-		}
-
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
 
