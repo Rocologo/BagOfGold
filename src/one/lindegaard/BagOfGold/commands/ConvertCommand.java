@@ -112,7 +112,7 @@ public class ConvertCommand implements ICommand {
 					balances.put(offlinePlayer.getUniqueId(), from_economy.getBalance(offlinePlayer));
 				}
 				Bukkit.getServer().getPluginManager().enablePlugin(bPlugin);
-				BagOfGold.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
+				//BagOfGold.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "one.lindegaard.BagOfGold.BagOfGoldEconomy");
 			} else {
 				for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
 					plugin.getMessages().debug("balance=%s", from_economy.getBalance(offlinePlayer));

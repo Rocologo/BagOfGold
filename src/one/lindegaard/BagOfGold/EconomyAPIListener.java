@@ -26,7 +26,7 @@ public class EconomyAPIListener implements Listener {
 		Plugin eco = event.getPlugin();
 		if (eco.getDescription().getName().equals("BagOfGold")) {
 			BagOfGold bagofgold = (BagOfGold) plugin.getServer().getPluginManager().getPlugin("BagOfGold");
-			if (BagOfGold.USE_RESERVE && economy.reserveEconomy == null) {
+			if (economy.reserveEconomy == null) {
 				economy.reserveEconomy = new BagOfGoldEconomyReserve(bagofgold);
 				Reserve.instance().registerProvider(economy.reserveEconomy);
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] " +ChatColor.RESET+"hooked into Reserve");

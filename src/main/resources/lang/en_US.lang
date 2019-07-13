@@ -1,6 +1,7 @@
 bagofgold.command.base.description=BagOfGold Version 
 bagofgold.config.fail=There was a problem loading the BagOfGold config
 bagofgold.hook.econ=Unable to hook into an economy! Make sure you have one available that Vault accepts.
+bagofgold.hook.econ.reserve=Unable to hook into an economy! Make sure you have one available that Reserve accepts.
 bagofgold.moneypickup=You found ${money}
 bagofgold.moneydrop=You dropped ${money}
 bagofgold.moneylost=You lost ${prize}!

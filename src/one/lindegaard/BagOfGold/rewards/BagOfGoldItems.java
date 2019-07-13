@@ -78,7 +78,6 @@ public class BagOfGoldItems implements Listener {
 		loadAllStoredRewardsFromMobHunting();
 		loadAllStoredRewards();
 		if (isBagOfGoldStyle()) {
-			plugin.getMessages().debug("BagOfGoldItems: register events");
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 		} else
 			plugin.getMessages().debug("BagOfGoldItems: could not register events");

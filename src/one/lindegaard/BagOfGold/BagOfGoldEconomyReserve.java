@@ -7,23 +7,27 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import net.tnemc.core.Reserve;
 import net.tnemc.core.economy.EconomyAPI;
 
 public class BagOfGoldEconomyReserve implements EconomyAPI {
-	
+
 	private BagOfGold plugin;
 	private EconomyAPI mEconomy;
 
 	public BagOfGoldEconomyReserve(BagOfGold plugin) {
 		this.plugin = plugin;
+
+		mEconomy = this;
+		Reserve.instance().registerProvider(mEconomy);
+
 		if (!enabled()) {
-			// BagOfGold is NOT used as an Economy plugin
 			RegisteredServiceProvider<EconomyAPI> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(EconomyAPI.class);
 			if (economyProvider == null) {
-				Bukkit.getLogger()
-						.severe(plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ"));
-				Bukkit.getPluginManager().disablePlugin(plugin);
+				Bukkit.getLogger().severe("[BagOfGold][Reserve]"
+						+ plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ.reserve"));
+				// Bukkit.getPluginManager().disablePlugin(plugin);
 				return;
 			}
 			mEconomy = economyProvider.getProvider();
@@ -43,7 +47,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String version() {
-		return "1.0.0";
+		return BagOfGold.getAPI().getDescription().getVersion();
 	}
 
 	/**
@@ -51,8 +55,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean enabled() {
-		// TODO Auto-generated method stub
-		return false;
+		return plugin.getConfigManager().useBagOfGoldAsAnEconomyPlugin;
 	}
 
 	/**
@@ -61,6 +64,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean vault() {
+		// TODO: is correct ?
 		return true;
 	}
 

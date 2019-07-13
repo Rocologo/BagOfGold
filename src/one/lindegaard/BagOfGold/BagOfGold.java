@@ -8,8 +8,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.milkbowl.vault.economy.Economy;
-import net.tnemc.core.Reserve;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.BankCommand;
@@ -36,6 +34,7 @@ import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
+import one.lindegaard.BagOfGold.rewards.EconomyManager;
 import one.lindegaard.BagOfGold.rewards.GringottsItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
@@ -49,19 +48,17 @@ import one.lindegaard.Core.Messages.MessageManager;
 
 public class BagOfGold extends JavaPlugin {
 
-	public static final boolean USE_RESERVE = false;
-
 	private static BagOfGold instance;
 	private File mFile = new File(getDataFolder(), "config.yml");
 
 	//private Economy vaultEconomy;
-	private BagOfGoldEconomyReserve reserveEconomy;
+	//private BagOfGoldEconomyReserve reserveEconomy;
 
 	private Messages mMessages;
+	private BagOfGoldEconomyManager mBagOfGoldEconomyManager;
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
-	private static ServicesManager mServiceManager;
 	private PlayerSettingsManager mPlayerSettingsManager;
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
@@ -81,22 +78,11 @@ public class BagOfGold extends JavaPlugin {
 	public void onLoad() {
 	}
 
-	private void setupReserve() {
-		reserveEconomy = new BagOfGoldEconomyReserve(this);
-		Reserve.instance().registerProvider(reserveEconomy);
-		getLogger().info("[BAGOFGOLD] Hooked into Reserve");
-	}
-
 	@Override
 	public void onEnable() {
 		
-		//if(Reserve.instance().economyProvided()) {
-		//	reserveEconomy = Reserve.instance().economy(). get();
-		//}
-
 		instance = this;
 
-		mServiceManager = Bukkit.getServicesManager();
 		mMessages = new Messages(this);
 		mConfig = new ConfigManager(this, mFile);
 
@@ -136,7 +122,7 @@ public class BagOfGold extends JavaPlugin {
 
 		mSpigetUpdater = new SpigetUpdater(this);
 		mSpigetUpdater.setCurrentJarFile(this.getFile().getName());
-
+		
 		// Register commands
 		mCommandDispatcher = new CommandDispatcher(this, "bagofgold",
 				instance.getMessages().getString("bagofgold.command.base.description") + getDescription().getVersion());
@@ -207,12 +193,15 @@ public class BagOfGold extends JavaPlugin {
 		// Initialize BagOfGold Bank Signs
 		new BankSign(this);
 
+		mBagOfGoldEconomyManager = new BagOfGoldEconomyManager(this);
+
 		if (mConfig.useBagOfGoldAsAnEconomyPlugin) {
 			// Try to load BagOfGold
-			Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
-			if (vaultPlugin != null)
-				hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");
-			setupReserve();
+			//Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
+			//if (vaultPlugin != null)
+			//	BagOfGoldEconomyVault.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");
+			
+			
 		}
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
@@ -259,46 +248,6 @@ public class BagOfGold extends JavaPlugin {
 		File configFile = new File(bStatsFolder, "config.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 		return config.getBoolean("enabled", true);
-	}
-
-	// ************************************************************************************
-	// Hook into Vault / Reserve (Economy)
-	// ************************************************************************************
-
-	public static void hookVaultEconomy(Class<? extends Economy> hookClass, ServicePriority priority,
-			String... packages) {
-		try {
-			if (packagesExists(packages)) {
-				Economy vaultEconomy = hookClass.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
-				Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
-				if (vaultPlugin != null)
-					mServiceManager.register(Economy.class, vaultEconomy, vaultPlugin, ServicePriority.Normal);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
-						"[BagOfGold][Economy] Vault found: %s", vaultEconomy.isEnabled() ? "Loaded" : "Waiting"));
-			}
-		} catch (Exception e) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
-					"[Economy] There was an error hooking into Vault - check to make sure you're using a compatible version!"));
-		}
-	}
-
-	/**
-	 * Determines if all packages in a String array are within the Classpath This is
-	 * the best way to determine if a specific plugin exists and will be loaded. If
-	 * the plugin package isn't loaded, we shouldn't bother waiting for it!
-	 * 
-	 * @param packages String Array of package names to check
-	 * @return Success or Failure
-	 */
-	private static boolean packagesExists(String... packages) {
-		try {
-			for (String pkg : packages) {
-				Class.forName(pkg);
-			}
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
 	}
 
 	
@@ -415,6 +364,10 @@ public class BagOfGold extends JavaPlugin {
 
 	public MessageManager getMessageManager() {
 		return mMessageManager;
+	}
+	
+	public BagOfGoldEconomyManager getBagOfGoldEconomyManager() {
+		return mBagOfGoldEconomyManager;
 	}
 
 }

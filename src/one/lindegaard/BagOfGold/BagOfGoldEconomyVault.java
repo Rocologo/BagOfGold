@@ -4,34 +4,80 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.Core.Tools;
 
-public class BagOfGoldEconomyVault implements Economy {
+public class BagOfGoldEconomyVault implements Economy, Listener {
 
 	private BagOfGold plugin;
 	private Economy mEconomy;
 
 	public BagOfGoldEconomyVault(BagOfGold plugin) {
 		this.plugin = plugin;
+
 		if (!isEnabled()) {
 			// BagOfGold is NOT used as an Economy plugin
 			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(Economy.class);
 			if (economyProvider == null) {
-				Bukkit.getLogger()
-						.severe(plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ"));
-				Bukkit.getPluginManager().disablePlugin(plugin);
+				Bukkit.getLogger().severe("[BagOfGold][Vault]"
+						+ plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ"));
+				// Bukkit.getPluginManager().disablePlugin(plugin);
 				return;
 			}
 			mEconomy = economyProvider.getProvider();
 		}
 
+	}
+
+	// ************************************************************************************
+	// Hook into Vault (Economy)
+	// ************************************************************************************
+
+	public static void hookVaultEconomy(Class<? extends Economy> hookClass, ServicePriority priority,
+			String... packages) {
+		try {
+			if (packagesExists(packages)) {
+				Economy vaultEconomy = hookClass.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
+				Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
+				if (vaultPlugin != null)
+					Bukkit.getServicesManager().register(Economy.class, vaultEconomy, vaultPlugin,
+							ServicePriority.Normal);
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
+						"[BagOfGold][Economy] Vault found: %s", vaultEconomy.isEnabled() ? "Loaded" : "Waiting"));
+			}
+		} catch (Exception e) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
+					"[Economy] There was an error hooking into Vault - check to make sure you're using a compatible version!"));
+		}
+	}
+
+	/**
+	 * Determines if all packages in a String array are within the Classpath This is
+	 * the best way to determine if a specific plugin exists and will be loaded. If
+	 * the plugin package isn't loaded, we shouldn't bother waiting for it!
+	 * 
+	 * @param packages String Array of package names to check
+	 * @return Success or Failure
+	 */
+	private static boolean packagesExists(String... packages) {
+		try {
+			for (String pkg : packages) {
+				Class.forName(pkg);
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**

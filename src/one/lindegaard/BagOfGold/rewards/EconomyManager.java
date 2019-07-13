@@ -1,4 +1,4 @@
-package one.lindegaard.BagOfGold;
+package one.lindegaard.BagOfGold.rewards;
 
 import java.util.UUID;
 
@@ -13,12 +13,8 @@ import org.bukkit.inventory.ItemStack;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import one.lindegaard.BagOfGold.rewards.EntityPickupItemEventListener;
-import one.lindegaard.BagOfGold.rewards.MoneyMergeEventListener;
-import one.lindegaard.BagOfGold.rewards.PickupRewards;
-import one.lindegaard.BagOfGold.rewards.PlayerPickupItemEventListener;
-import one.lindegaard.BagOfGold.rewards.Reward;
-import one.lindegaard.BagOfGold.rewards.RewardListeners;
+import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
