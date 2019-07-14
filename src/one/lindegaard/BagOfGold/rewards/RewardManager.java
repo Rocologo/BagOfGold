@@ -51,10 +51,7 @@ public class RewardManager {
 	}
 
 	/**
-	 * getBalance : calculate the player balance and checks if the player balance is
-	 * equal with the amount of money in the inventory. If there is a difference it
-	 * checks if there has been changes while the player was offline if not the
-	 * balance / amount in inventory will be adjusted.
+	 * getBalance : calculate the player balance 
 	 * 
 	 * @param offlinePlayer
 	 * @return

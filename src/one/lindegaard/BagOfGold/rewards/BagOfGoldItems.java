@@ -441,7 +441,7 @@ public class BagOfGoldItems implements Listener {
 				config.save(file);
 			}
 			if (n > 0) {
-				plugin.getMessages().debug("Loaded %s rewards from the rewards.yml file", n);
+				plugin.getMessages().debug("Loaded %s rewards from the BagOfGold/rewards.yml file", n);
 			}
 
 		} catch (IOException e) {
@@ -498,7 +498,7 @@ public class BagOfGoldItems implements Listener {
 				config.save(file);
 			}
 			if (n > 0) {
-				plugin.getMessages().debug("Loaded %s rewards from the rewards.yml file", n);
+				plugin.getMessages().debug("Loaded %s rewards from the MobHunting/rewards.yml file", n);
 			}
 
 		} catch (IOException e) {
@@ -548,16 +548,8 @@ public class BagOfGoldItems implements Listener {
 									+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 											? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
 											: reward.getDisplayname())));
-				plugin.getMessages().debug("BagOfGoldItems: OpenInv.type=%s, cursor=%s",
-						player.getOpenInventory().getType(), player.getItemOnCursor().getType());
-				if (Reward.isReward(player.getItemOnCursor())) {// player.getOpenInventory() instanceof PlayerInventory)
-																// {
+				if (Reward.isReward(player.getItemOnCursor())) {
 					plugin.getMessages().debug("BagOfGoldItems: dropped BagOfGold from the PlayerInventory");
-					// when dropping directly from an inventory
-					// plugin.getEconomyManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
-					// plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
-					// plugin.getEconomyManager().removeMoneyFromPlayerBalance(player, money);
-					// removeBagOfGoldFromPlayer(player, money);
 				} else {
 					// when dropping from the quickbar using Q key
 					plugin.getMessages().debug("BagOfGoldItems: dropped BagOfGold using Q key");
@@ -729,7 +721,8 @@ public class BagOfGoldItems implements Listener {
 				Item item = (Item) entity;
 
 				if (isFakeReward(item)) {
-					player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward with no value");
+					player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward and it was removed");
+					item.remove();
 					return;
 				}
 
@@ -878,27 +871,31 @@ public class BagOfGoldItems implements Listener {
 			return;
 		}
 
-		if (!(Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor)) || Reward.isReward(isKey)) {
+		//if (!(Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor)) || Reward.isReward(isKey)) {
 			if (isFakeReward(isCurrentSlot)) {
-				player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
+				//player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
 				isCurrentSlot.setType(Material.AIR);
+				isCurrentSlot.setAmount(0);
+				player.getInventory().clear(event.getSlot());
 				return;
 			}
 			if (isFakeReward(isCursor)) {
-				player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
+				//player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
 				isCursor.setType(Material.AIR);
+				isCursor.setAmount(0);
 				return;
 			}
 			if (isFakeReward(isKey)) {
-				player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
+				//player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE reward. It was removed.");
 				isKey.setType(Material.AIR);
+				isKey.setAmount(0);
 				return;
 			}
 			// plugin.getMessages().debug("This is not a BagOfGold reward. key=%s isKey=%s",
 			// event.getHotbarButton(),
 			// isKey == null ? "null" : isKey.getType());
-			return;
-		}
+			//return;
+		//}
 
 		InventoryAction action = event.getAction();
 		SlotType slotType = event.getSlotType();

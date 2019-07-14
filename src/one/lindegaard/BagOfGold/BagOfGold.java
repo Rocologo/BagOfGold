@@ -48,6 +48,8 @@ public class BagOfGold extends JavaPlugin {
 	private static BagOfGold instance;
 	private File mFile = new File(getDataFolder(), "config.yml");
 
+	public static final boolean ENABLE_RESERVE=false;  
+	
 	private Messages mMessages;
 	private EconomyManager mBagEconomyManager;
 	private MetricsManager mMetricsManager;

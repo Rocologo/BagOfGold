@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.tnemc.core.Reserve;
@@ -12,6 +13,8 @@ import net.tnemc.core.economy.EconomyAPI;
 
 public class BagOfGoldEconomyReserve implements EconomyAPI {
 
+	//API: https://github.com/TheNewEconomy/Reserve/blob/master/src/net/tnemc/core/economy/EconomyAPI.java
+	
 	private BagOfGold plugin;
 	private EconomyAPI mEconomy;
 
@@ -22,10 +25,11 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 		Reserve.instance().registerProvider(mEconomy);
 
 		if (!enabled()) {
+			// BagOfGold is NOT used as an Economy plugin
 			RegisteredServiceProvider<EconomyAPI> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(EconomyAPI.class);
 			if (economyProvider == null) {
-				Bukkit.getLogger().severe("[BagOfGold][Reserve]"
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Reserve]"
 						+ plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ.reserve"));
 				return;
 			}
@@ -67,8 +71,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String currencyDefaultPlural() {
-		// TODO Auto-generated method stub
-		return null;
+		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
 	}
 
 	/**
@@ -77,9 +80,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The plural name of the default currency.
 	 */
 	@Override
-	public String currencyDefaultPlural(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String currencyDefaultSingular() {
+		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
 	}
 
 	/**
@@ -89,9 +91,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The plural name of the default currency.
 	 */
 	@Override
-	public String currencyDefaultSingular() {
-		// TODO Auto-generated method stub
-		return null;
+	public String currencyDefaultPlural(String world) {
+		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
 	}
 
 	/**
@@ -102,8 +103,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String currencyDefaultSingular(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
 	}
 
 	/**
@@ -113,9 +113,9 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the currency exists, else false.
 	 */
 	@Override
-	public boolean hasCurrency(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasCurrency(String name) {
+		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.equalsIgnoreCase(name)
+				|| plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural.equalsIgnoreCase(name);
 	}
 
 	/**
@@ -127,9 +127,9 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the currency exists, else false.
 	 */
 	@Override
-	public boolean hasCurrency(String arg0, String arg1) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasCurrency(String name, String world) {
+		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.equalsIgnoreCase(name)
+				|| plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural.equalsIgnoreCase(name);
 	}
 
 	/**
@@ -139,9 +139,12 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the currency exists, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasCurrency(String arg0) {
+	public CompletableFuture<Boolean> asyncHasCurrency(String name) {
 		// TODO Auto-generated method stub
-		return null;
+		CompletableFuture<Boolean> completableFuture = new CompletableFuture<Boolean>();
+		Boolean b = plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.equalsIgnoreCase(name)
+				|| plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural.equalsIgnoreCase(name);
+		return null;// completableFuture.complete(b);
 	}
 
 	/**
@@ -166,9 +169,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account exists for this player, else false.
 	 */
 	@Override
-	public boolean hasAccount(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasAccount(String name) {
+		return enabled();
 	}
 
 	/**
@@ -179,9 +181,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account exists for this player, else false.
 	 */
 	@Override
-	public boolean hasAccount(UUID arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasAccount(UUID identifier) {
+		return enabled();
 	}
 
 	/**
@@ -192,7 +193,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account exists for this player, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasAccount(String arg0) {
+	public CompletableFuture<Boolean> asyncHasAccount(String identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -205,7 +206,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account exists for this player, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasAccount(UUID arg0) {
+	public CompletableFuture<Boolean> asyncHasAccount(UUID identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -218,9 +219,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was created, else false.
 	 */
 	@Override
-	public boolean createAccount(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean createAccount(String name) {
+		return true;
 	}
 
 	/**
@@ -231,9 +231,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was created, else false.
 	 */
 	@Override
-	public boolean createAccount(UUID arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean createAccount(UUID identifier) {
+		return true;
 	}
 
 	/**
@@ -244,7 +243,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was created, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCreateAccount(String arg0) {
+	public CompletableFuture<Boolean> asyncCreateAccount(String identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -257,7 +256,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was created, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCreateAccount(UUID arg0) {
+	public CompletableFuture<Boolean> asyncCreateAccount(UUID identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -270,7 +269,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was deleted, else false.
 	 */
 	@Override
-	public boolean deleteAccount(String arg0) {
+	public boolean deleteAccount(String identifier) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -283,7 +282,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was deleted, else false.
 	 */
 	@Override
-	public boolean deleteAccount(UUID arg0) {
+	public boolean deleteAccount(UUID identifier) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -296,7 +295,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was deleted, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncDeleteAccount(String arg0) {
+	public CompletableFuture<Boolean> asyncDeleteAccount(String identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -309,7 +308,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if an account was deleted, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncDeleteAccount(UUID arg0) {
+	public CompletableFuture<Boolean> asyncDeleteAccount(UUID identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -324,7 +323,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return Whether or not the player is able to access this account.
 	 */
 	@Override
-	public boolean isAccessor(String arg0, String arg1) {
+	public boolean isAccessor(String identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -339,7 +338,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return Whether or not the player is able to access this account.
 	 */
 	@Override
-	public boolean isAccessor(String arg0, UUID arg1) {
+	public boolean isAccessor(String identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -354,7 +353,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return Whether or not the player is able to access this account.
 	 */
 	@Override
-	public boolean isAccessor(UUID arg0, String arg1) {
+	public boolean isAccessor(UUID identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -369,7 +368,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return Whether or not the player is able to access this account.
 	 */
 	@Override
-	public boolean isAccessor(UUID arg0, UUID arg1) {
+	public boolean isAccessor(UUID identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -386,7 +385,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canWithdraw(String arg0, String arg1) {
+	public boolean canWithdraw(String identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -403,7 +402,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canWithdraw(String arg0, UUID arg1) {
+	public boolean canWithdraw(String identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -420,7 +419,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canWithdraw(UUID arg0, String arg1) {
+	public boolean canWithdraw(UUID identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -437,7 +436,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canWithdraw(UUID arg0, UUID arg1) {
+	public boolean canWithdraw(UUID identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -454,7 +453,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(String arg0, String arg1) {
+	public CompletableFuture<Boolean> asyncCanWithdraw(String identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -471,7 +470,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(String arg0, UUID arg1) {
+	public CompletableFuture<Boolean> asyncCanWithdraw(String identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -488,7 +487,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(UUID arg0, String arg1) {
+	public CompletableFuture<Boolean> asyncCanWithdraw(UUID identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -505,7 +504,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(UUID arg0, UUID arg1) {
+	public CompletableFuture<Boolean> asyncCanWithdraw(UUID identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -522,7 +521,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canDeposit(String arg0, String arg1) {
+	public boolean canDeposit(String identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -539,7 +538,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canDeposit(String arg0, UUID arg1) {
+	public boolean canDeposit(String identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -556,7 +555,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canDeposit(UUID arg0, String arg1) {
+	public boolean canDeposit(UUID identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -573,7 +572,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public boolean canDeposit(UUID arg0, UUID arg1) {
+	public boolean canDeposit(UUID identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -590,7 +589,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(String arg0, String arg1) {
+	public CompletableFuture<Boolean> asyncCanDeposit(String identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -607,7 +606,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(String arg0, UUID arg1) {
+	public CompletableFuture<Boolean> asyncCanDeposit(String identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -624,7 +623,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(UUID arg0, String arg1) {
+	public CompletableFuture<Boolean> asyncCanDeposit(UUID identifier, String accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -641,7 +640,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         account.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(UUID arg0, UUID arg1) {
+	public CompletableFuture<Boolean> asyncCanDeposit(UUID identifier, UUID accessor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -654,7 +653,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public BigDecimal getHoldings(String arg0) {
+	public BigDecimal getHoldings(String identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -667,23 +666,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public BigDecimal getHoldings(UUID arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param world      The name of the {@link World} associated with the balance.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public BigDecimal getHoldings(String arg0, String arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal getHoldings(UUID identifier) {
+		return new BigDecimal(plugin.getRewardManager().getBalance(Bukkit.getOfflinePlayer(identifier)));
 	}
 
 	/**
@@ -695,9 +679,21 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public BigDecimal getHoldings(UUID arg0, String arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal getHoldings(String identifier, String world) {
+		return getHoldings(Bukkit.getOfflinePlayer(identifier).getUniqueId());
+	}
+
+	/**
+	 * Used to get the balance of an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param world      The name of the {@link World} associated with the balance.
+	 * @return The balance of the account.
+	 */
+	@Override
+	public BigDecimal getHoldings(UUID identifier, String world) {
+		return getHoldings(Bukkit.getOfflinePlayer(identifier).getUniqueId());
 	}
 
 	/**
@@ -710,9 +706,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public BigDecimal getHoldings(String arg0, String arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal getHoldings(String identifier, String world, String currency) {
+		return getHoldings(Bukkit.getOfflinePlayer(identifier).getUniqueId());
 	}
 
 	/**
@@ -725,7 +720,19 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public BigDecimal getHoldings(UUID arg0, String arg1, String arg2) {
+	public BigDecimal getHoldings(UUID identifier, String world, String currency) {
+		return getHoldings(Bukkit.getOfflinePlayer(identifier).getUniqueId());
+	}
+
+	/**
+	 * Used to get the balance of an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @return The balance of the account.
+	 */
+	@Override
+	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -738,34 +745,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param world      The name of the {@link World} associated with the balance.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(String arg0, String arg1) {
+	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -779,7 +759,21 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID arg0, String arg1) {
+	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to get the balance of an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param world      The name of the {@link World} associated with the balance.
+	 * @return The balance of the account.
+	 */
+	@Override
+	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -794,7 +788,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(String arg0, String arg1, String arg2) {
+	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier, String world, String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -809,7 +803,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The balance of the account.
 	 */
 	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID arg0, String arg1, String arg2) {
+	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier, String world, String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -824,9 +818,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public boolean hasHoldings(String arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasHoldings(String identifier, BigDecimal amount) {
+		return getHoldings(identifier).compareTo(amount) >= 1;
 	}
 
 	/**
@@ -839,25 +832,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public boolean hasHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public boolean hasHoldings(String arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasHoldings(UUID identifier, BigDecimal amount) {
+		return getHoldings(identifier).compareTo(amount) >= 1;
 	}
 
 	/**
@@ -871,9 +847,23 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public boolean hasHoldings(UUID arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasHoldings(String identifier, BigDecimal amount, String world) {
+		return getHoldings(identifier).compareTo(amount) >= 1;
+	}
+
+	/**
+	 * Used to determine if an account has at least an amount of funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to use for this check.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if the account has at least the specified amount of funds,
+	 *         otherwise false.
+	 */
+	@Override
+	public boolean hasHoldings(UUID identifier, BigDecimal amount, String world) {
+		return getHoldings(identifier).compareTo(amount) >= 1;
 	}
 
 	/**
@@ -888,9 +878,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public boolean hasHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasHoldings(String identifier, BigDecimal amount, String world, String currency) {
+		return getHoldings(identifier).compareTo(amount) >= 1;
 	}
 
 	/**
@@ -905,9 +894,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public boolean hasHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean hasHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
+		return getHoldings(identifier).compareTo(amount) >= 1;
 	}
 
 	/**
@@ -920,22 +908,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(String arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(UUID arg0, BigDecimal arg1) {
+	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -946,12 +919,11 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param identifier The identifier of the account that is associated with this
 	 *                   call.
 	 * @param amount     The amount you wish to use for this check.
-	 * @param world      The name of the {@link World} associated with the amount.
 	 * @return True if the account has at least the specified amount of funds,
 	 *         otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -967,7 +939,23 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if an account has at least an amount of funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to use for this check.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if the account has at least the specified amount of funds,
+	 *         otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -984,7 +972,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1001,7 +990,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1015,9 +1005,13 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were set for the account, otherwise false.
 	 */
 	@Override
-	public boolean setHoldings(String arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean setHoldings(String identifier, BigDecimal amount) {
+		BigDecimal diff = amount.subtract(getHoldings(identifier));
+		if (diff.compareTo(BigDecimal.ZERO) > 0)
+			plugin.getRewardManager().depositPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		else
+			plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		return true;
 	}
 
 	/**
@@ -1029,99 +1023,13 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were set for the account, otherwise false.
 	 */
 	@Override
-	public boolean setHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public boolean setHoldings(String arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public boolean setHoldings(UUID arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public boolean setHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public boolean setHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(String arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean setHoldings(UUID identifier, BigDecimal amount) {
+		BigDecimal diff = amount.subtract(getHoldings(identifier));
+		if (diff.compareTo(BigDecimal.ZERO) > 0)
+			plugin.getRewardManager().depositPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		else
+			plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		return true;
 	}
 
 	/**
@@ -1134,9 +1042,13 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were set for the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(String arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean setHoldings(String identifier, BigDecimal amount, String world) {
+		BigDecimal diff = amount.subtract(getHoldings(identifier));
+		if (diff.compareTo(BigDecimal.ZERO) > 0)
+			plugin.getRewardManager().depositPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		else
+			plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		return true;
 	}
 
 	/**
@@ -1149,9 +1061,13 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were set for the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(UUID arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean setHoldings(UUID identifier, BigDecimal amount, String world) {
+		BigDecimal diff = amount.subtract(getHoldings(identifier));
+		if (diff.compareTo(BigDecimal.ZERO) > 0)
+			plugin.getRewardManager().depositPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		else
+			plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		return true;
 	}
 
 	/**
@@ -1165,7 +1081,89 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were set for the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean setHoldings(String identifier, BigDecimal amount, String world, String currency) {
+		BigDecimal diff = amount.subtract(getHoldings(identifier));
+		if (diff.compareTo(BigDecimal.ZERO) > 0)
+			plugin.getRewardManager().depositPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		else
+			plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		return true;
+	}
+
+	/**
+	 * Used to set the funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to set this accounts's funds to.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @param currency   The {@link Currency} associated with the balance.
+	 * @return True if the funds were set for the account, otherwise false.
+	 */
+	@Override
+	public boolean setHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
+		BigDecimal diff = amount.subtract(getHoldings(identifier));
+		if (diff.compareTo(BigDecimal.ZERO) > 0)
+			plugin.getRewardManager().depositPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		else
+			plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), diff.doubleValue());
+		return true;
+	}
+
+	/**
+	 * Used to set the funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to set this accounts's funds to.
+	 * @return True if the funds were set for the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to set the funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to set this accounts's funds to.
+	 * @return True if the funds were set for the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to set the funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to set this accounts's funds to.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if the funds were set for the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to set the funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to set this accounts's funds to.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if the funds were set for the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1181,7 +1179,25 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were set for the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount, String world,
+			String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to set the funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to set this accounts's funds to.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @param currency   The {@link Currency} associated with the balance.
+	 * @return True if the funds were set for the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1195,7 +1211,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public boolean addHoldings(String arg0, BigDecimal arg1) {
+	public boolean addHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1209,22 +1225,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public boolean addHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public boolean addHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public boolean addHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1239,7 +1240,22 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public boolean addHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public boolean addHoldings(String identifier, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Used to add funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to add to this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public boolean addHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1255,7 +1271,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public boolean addHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean addHoldings(String identifier, BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1271,7 +1287,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public boolean addHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean addHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1285,7 +1301,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(String arg0, BigDecimal arg1) {
+	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1299,22 +1315,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1329,7 +1330,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1341,11 +1342,10 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *                   call.
 	 * @param amount     The amount you wish to add to this account.
 	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1361,7 +1361,25 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were added to the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount, String world,
+			String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to add funds to an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to add to this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @param currency   The {@link Currency} associated with the balance.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1377,7 +1395,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         true, otherwise false.
 	 */
 	@Override
-	public boolean canAddHoldings(String arg0, BigDecimal arg1) {
+	public boolean canAddHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1393,24 +1411,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         true, otherwise false.
 	 */
 	@Override
-	public boolean canAddHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding addHoldings method would be
-	 * successful. This method does not affect an account's funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if a call to the corresponding addHoldings method would return
-	 *         true, otherwise false.
-	 */
-	@Override
-	public boolean canAddHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public boolean canAddHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1427,7 +1428,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         true, otherwise false.
 	 */
 	@Override
-	public boolean canAddHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public boolean canAddHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1440,12 +1441,11 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *                   call.
 	 * @param amount     The amount you wish to add to this account.
 	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
 	 * @return True if a call to the corresponding addHoldings method would return
 	 *         true, otherwise false.
 	 */
 	@Override
-	public boolean canAddHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean canAddHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1463,75 +1463,9 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         true, otherwise false.
 	 */
 	@Override
-	public boolean canAddHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean canAddHoldings(String identifier, BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding addHoldings method would be
-	 * successful. This method does not affect an account's funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @return True if a call to the corresponding addHoldings method would return
-	 *         true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanAddHoldings(String arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding addHoldings method would be
-	 * successful. This method does not affect an account's funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @return True if a call to the corresponding addHoldings method would return
-	 *         true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding addHoldings method would be
-	 * successful. This method does not affect an account's funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if a call to the corresponding addHoldings method would return
-	 *         true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanAddHoldings(String arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding addHoldings method would be
-	 * successful. This method does not affect an account's funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if a call to the corresponding addHoldings method would return
-	 *         true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID arg0, BigDecimal arg1, String arg2) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
@@ -1547,7 +1481,73 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanAddHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean canAddHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding addHoldings method would be
+	 * successful. This method does not affect an account's funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to add to this account.
+	 * @return True if a call to the corresponding addHoldings method would return
+	 *         true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanAddHoldings(String identifier, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding addHoldings method would be
+	 * successful. This method does not affect an account's funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to add to this account.
+	 * @return True if a call to the corresponding addHoldings method would return
+	 *         true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID identifier, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding addHoldings method would be
+	 * successful. This method does not affect an account's funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to add to this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if a call to the corresponding addHoldings method would return
+	 *         true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanAddHoldings(String identifier, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding addHoldings method would be
+	 * successful. This method does not affect an account's funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to add to this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if a call to the corresponding addHoldings method would return
+	 *         true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1565,7 +1565,27 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncCanAddHoldings(String identifier, BigDecimal amount, String world,
+			String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding addHoldings method would be
+	 * successful. This method does not affect an account's funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to add to this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @param currency   The {@link Currency} associated with the balance.
+	 * @return True if a call to the corresponding addHoldings method would return
+	 *         true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1579,7 +1599,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public boolean removeHoldings(String arg0, BigDecimal arg1) {
+	public boolean removeHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1593,22 +1613,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public boolean removeHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to remove funds from an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to remove from this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were removed from the account, otherwise false.
-	 */
-	@Override
-	public boolean removeHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public boolean removeHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1623,7 +1628,22 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public boolean removeHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public boolean removeHoldings(String identifier, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Used to remove funds from an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to remove from this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public boolean removeHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1639,7 +1659,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public boolean removeHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean removeHoldings(String identifier, BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1655,7 +1675,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public boolean removeHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean removeHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1669,7 +1689,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncRemoveHoldings(String arg0, BigDecimal arg1) {
+	public CompletableFuture<Boolean> asyncRemoveHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1683,22 +1703,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to remove funds from an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to remove from this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were removed from the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncRemoveHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1713,7 +1718,22 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncRemoveHoldings(String identifier, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to remove funds from an account.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to remove from this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1729,7 +1749,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncRemoveHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncRemoveHoldings(String identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1745,7 +1766,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were removed from the account, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1761,7 +1783,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public boolean canRemoveHoldings(String arg0, BigDecimal arg1) {
+	public boolean canRemoveHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1777,24 +1799,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public boolean canRemoveHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding removeHoldings method would
-	 * be successful. This method does not affect an account's funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to remove from this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if a call to the corresponding removeHoldings method would
-	 *         return true, otherwise false.
-	 */
-	@Override
-	public boolean canRemoveHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1811,7 +1816,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public boolean canRemoveHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public boolean canRemoveHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1824,12 +1829,11 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *                   call.
 	 * @param amount     The amount you wish to remove from this account.
 	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
 	 * @return True if a call to the corresponding removeHoldings method would
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public boolean canRemoveHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1847,7 +1851,25 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public boolean canRemoveHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public boolean canRemoveHoldings(String identifier, BigDecimal amount, String world, String currency) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding removeHoldings method would
+	 * be successful. This method does not affect an account's funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to remove from this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @param currency   The {@link Currency} associated with the balance.
+	 * @return True if a call to the corresponding removeHoldings method would
+	 *         return true, otherwise false.
+	 */
+	@Override
+	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -1863,7 +1885,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String arg0, BigDecimal arg1) {
+	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1879,24 +1901,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID arg0, BigDecimal arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding removeHoldings method would
-	 * be successful. This method does not affect an account's funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to remove from this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if a call to the corresponding removeHoldings method would
-	 *         return true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1913,7 +1918,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID arg0, BigDecimal arg1, String arg2) {
+	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1926,12 +1931,11 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *                   call.
 	 * @param amount     The amount you wish to remove from this account.
 	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
 	 * @return True if a call to the corresponding removeHoldings method would
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1949,7 +1953,27 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String identifier, BigDecimal amount, String world,
+			String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding removeHoldings method would
+	 * be successful. This method does not affect an account's funds.
+	 * 
+	 * @param identifier The identifier of the account that is associated with this
+	 *                   call.
+	 * @param amount     The amount you wish to remove from this account.
+	 * @param world      The name of the {@link World} associated with the amount.
+	 * @param currency   The {@link Currency} associated with the balance.
+	 * @return True if a call to the corresponding removeHoldings method would
+	 *         return true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID identifier, BigDecimal amount, String world,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1966,7 +1990,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were transferred.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncTransferHoldings(String arg0, String arg1, BigDecimal arg2) {
+	public CompletableFuture<Boolean> asyncTransferHoldings(String fromIdentifier, String toIdentifier,
+			BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1984,7 +2009,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were transferred.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncTransferHoldings(UUID arg0, UUID arg1, BigDecimal arg2) {
+	public CompletableFuture<Boolean> asyncTransferHoldings(UUID fromIdentifier, UUID toIdentifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2003,7 +2028,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were transferred.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncTransferHoldings(String arg0, String arg1, BigDecimal arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncTransferHoldings(String identifier, String toIdentifier, BigDecimal amount,
+			String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2019,7 +2045,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were transferred.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncTransferHoldings(UUID arg0, UUID arg1, BigDecimal arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncTransferHoldings(UUID fromIdentifier, UUID toIdentifier, BigDecimal amount,
+			String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2037,8 +2064,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were transferred.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncTransferHoldings(String arg0, String arg1, BigDecimal arg2, String arg3,
-			String arg4) {
+	public CompletableFuture<Boolean> asyncTransferHoldings(String fromIdentifier, String toIdentifier,
+			BigDecimal amount, String currency, String arg4) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2057,8 +2084,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the funds were transferred.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncTransferHoldings(UUID arg0, UUID arg1, BigDecimal arg2, String arg3,
-			String arg4) {
+	public CompletableFuture<Boolean> asyncTransferHoldings(UUID fromIdentifier, UUID toIdentifier, BigDecimal amount,
+			String currency, String arg4) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2076,27 +2103,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanTransferHoldings(String arg0, String arg1, BigDecimal arg2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding transferHoldings method
-	 * would be successful. This method does not affect an account's funds.
-	 * 
-	 * @param fromIdentifier The identifier of the account that the holdings will be
-	 *                       coming from.
-	 * @param toIdentifier   The identifier of the account that the holdings will be
-	 *                       going to.
-	 * @param amount         The amount you wish to remove from this account.
-	 * @param world          The name of the {@link World} associated with the
-	 *                       amount.
-	 * @return True if a call to the corresponding transferHoldings method would
-	 *         return true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID arg0, UUID arg1, BigDecimal arg2) {
+	public CompletableFuture<Boolean> asyncCanTransferHoldings(String fromIdentifier, String toIdentifier,
+			BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2112,12 +2120,12 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param amount         The amount you wish to remove from this account.
 	 * @param world          The name of the {@link World} associated with the
 	 *                       amount.
-	 * @param currency       The {@link Currency} associated with the balance.
 	 * @return True if a call to the corresponding transferHoldings method would
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanTransferHoldings(String arg0, String arg1, BigDecimal arg2, String arg3) {
+	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID fromIdentifier, UUID toIdentifier,
+			BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2126,46 +2134,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * Used to determine if a call to the corresponding transferHoldings method
 	 * would be successful. This method does not affect an account's funds.
 	 * 
-	 * @param fromIdentifier The identifier of the account that the holdings will be
-	 *                       coming from.
-	 * @param toIdentifier   The identifier of the account that the holdings will be
-	 *                       going to.
-	 * @param amount         The amount you wish to remove from this account.
-	 * @return True if a call to the corresponding transferHoldings method would
-	 *         return true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID arg0, UUID arg1, BigDecimal arg2, String arg3) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding transferHoldings method
-	 * would be successful. This method does not affect an account's funds.
-	 *
-	 * @param fromIdentifier The identifier of the account that the holdings will be
-	 *                       coming from.
-	 * @param toIdentifier   The identifier of the account that the holdings will be
-	 *                       going to.
-	 * @param amount         The amount you wish to remove from this account.
-	 * @param world          The name of the {@link World} associated with the
-	 *                       amount.
-	 *
-	 * @return True if a call to the corresponding transferHoldings method would
-	 *         return true, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanTransferHoldings(String arg0, String arg1, BigDecimal arg2, String arg3,
-			String arg4) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Used to determine if a call to the corresponding transferHoldings method
-	 * would be successful. This method does not affect an account's funds.
-	 *
 	 * @param fromIdentifier The identifier of the account that the holdings will be
 	 *                       coming from.
 	 * @param toIdentifier   The identifier of the account that the holdings will be
@@ -2174,13 +2142,76 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param world          The name of the {@link World} associated with the
 	 *                       amount.
 	 * @param currency       The {@link Currency} associated with the balance.
+	 * @return True if a call to the corresponding transferHoldings method would
+	 *         return true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanTransferHoldings(String fromIdentifier, String toIdentifier,
+			BigDecimal amount, String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding transferHoldings method
+	 * would be successful. This method does not affect an account's funds.
+	 * 
+	 * @param fromIdentifier The identifier of the account that the holdings will be
+	 *                       coming from.
+	 * @param toIdentifier   The identifier of the account that the holdings will be
+	 *                       going to.
+	 * @param amount         The amount you wish to remove from this account.
+	 * @return True if a call to the corresponding transferHoldings method would
+	 *         return true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID fromIdentifier, UUID toIdentifier,
+			BigDecimal amount, String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding transferHoldings method
+	 * would be successful. This method does not affect an account's funds.
+	 *
+	 * @param fromIdentifier The identifier of the account that the holdings will be
+	 *                       coming from.
+	 * @param toIdentifier   The identifier of the account that the holdings will be
+	 *                       going to.
+	 * @param amount         The amount you wish to remove from this account.
+	 * @param world          The name of the {@link World} associated with the
+	 *                       amount.
 	 *
 	 * @return True if a call to the corresponding transferHoldings method would
 	 *         return true, otherwise false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID arg0, UUID arg1, BigDecimal arg2, String arg3,
-			String arg4) {
+	public CompletableFuture<Boolean> asyncCanTransferHoldings(String fromIdentifier, String toIdentifier,
+			BigDecimal amount, String currency, String arg4) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Used to determine if a call to the corresponding transferHoldings method
+	 * would be successful. This method does not affect an account's funds.
+	 *
+	 * @param fromIdentifier The identifier of the account that the holdings will be
+	 *                       coming from.
+	 * @param toIdentifier   The identifier of the account that the holdings will be
+	 *                       going to.
+	 * @param amount         The amount you wish to remove from this account.
+	 * @param world          The name of the {@link World} associated with the
+	 *                       amount.
+	 * @param currency       The {@link Currency} associated with the balance.
+	 *
+	 * @return True if a call to the corresponding transferHoldings method would
+	 *         return true, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID fromIdentifier, UUID toIdentifier,
+			BigDecimal amount, String currency, String arg4) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2192,7 +2223,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The formatted amount.
 	 */
 	@Override
-	public String format(BigDecimal arg0) {
+	public String format(BigDecimal identifier) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2205,7 +2236,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The formatted amount.
 	 */
 	@Override
-	public String format(BigDecimal arg0, String arg1) {
+	public String format(BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2220,7 +2251,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The formatted amount.
 	 */
 	@Override
-	public String format(BigDecimal arg0, String arg1, String arg2) {
+	public String format(BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2244,7 +2275,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the purge was completed successfully.
 	 */
 	@Override
-	public boolean purgeAccountsUnder(BigDecimal arg0) {
+	public boolean purgeAccountsUnder(BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -2268,7 +2299,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the purge was completed successfully.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncPurgeAccountsUnder(BigDecimal arg0) {
+	public CompletableFuture<Boolean> asyncPurgeAccountsUnder(BigDecimal amount) {
 		// TODO Auto-generated method stub
 		return null;
 	}

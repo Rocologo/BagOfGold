@@ -29,9 +29,8 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(Economy.class);
 			if (economyProvider == null) {
-				Bukkit.getLogger().severe("[BagOfGold][Vault]"
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold]"+ChatColor.RED+"[Vault]"
 						+ plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ"));
-				// Bukkit.getPluginManager().disablePlugin(plugin);
 				return;
 			}
 			mEconomy = economyProvider.getProvider();
@@ -42,7 +41,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 		if (Bukkit.getServicesManager().getRegistrations(Economy.class).size() > 1) {
 			for (RegisteredServiceProvider<Economy> registation : Bukkit.getServicesManager()
 					.getRegistrations(Economy.class)) {
-				plugin.getMessages().debug("Vault provider name=%s", registation.getProvider().getName());
+				plugin.getMessages().debug("Vault Economy provider name=%s", registation.getProvider().getName());
 			}
 		}
 

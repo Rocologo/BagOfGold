@@ -1,5 +1,5 @@
 V2.7.1
-*
+* Fixed problem where player could duplicate the BagOfGold item, making a fake reward. 
 V2.7.0
 * Fixed minor bugs and tested ProtocolLib-4.4.0 against MC 1.10.2 servers. 
 V2.6.9

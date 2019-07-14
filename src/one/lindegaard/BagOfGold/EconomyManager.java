@@ -23,20 +23,23 @@ public class EconomyManager {
 
 	public EconomyManager(BagOfGold plugin) {
 		this.plugin = plugin;
-		
+
 		setupEconomyManager();
-		
+
 		if (plugin.getConfigManager().useBagOfGoldAsAnEconomyPlugin) {
-			
+
 			Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
 			if (vaultPlugin != null)
-				BagOfGoldEconomyVault.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal, "net.milkbowl.vault.economy.Economy");
+				BagOfGoldEconomyVault.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal,
+						"net.milkbowl.vault.economy.Economy");
 
-			Plugin reservePlugin = Bukkit.getPluginManager().getPlugin("Reserve");
-			if (reservePlugin != null)
-				new BagOfGoldEconomyReserve(plugin);
+			if (BagOfGold.ENABLE_RESERVE) {
+				Plugin reservePlugin = Bukkit.getPluginManager().getPlugin("Reserve");
+				if (reservePlugin != null)
+					new BagOfGoldEconomyReserve(plugin);
+			}
 		}
-		
+
 	}
 
 	public Boolean setupEconomyManager() {
