@@ -43,16 +43,16 @@ public class MoneyMergeEventListener implements Listener {
 						is2.setAmount(1);
 						item2.setItemStack(is2);
 						String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
-								.equalsIgnoreCase("ITEM") ? plugin.getRewardManager().format(reward2.getMoney())
+								.equalsIgnoreCase("ITEM") ? plugin.getEconomyManager().format(reward2.getMoney())
 										: reward2.getDisplayname() + " ("
-												+ plugin.getRewardManager().format(reward2.getMoney()) + ")";
+												+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
 						item2.setCustomName(
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 						item2.setCustomNameVisible(true);
 						item2.setMetadata(Reward.MH_REWARD_DATA,
 								new FixedMetadataValue(BagOfGold.getInstance(), new Reward(reward2)));
 						plugin.getMessages().debug("Money merged - new value=%s",
-								plugin.getRewardManager().format(reward2.getMoney()));
+								plugin.getEconomyManager().format(reward2.getMoney()));
 					}
 				} else if (reward1.isKilledHeadReward() || reward1.isKillerHeadReward()) {
 					if (reward1.getMoney() == reward2.getMoney()) {
@@ -64,16 +64,16 @@ public class MoneyMergeEventListener implements Listener {
 						is2.setAmount(is2.getAmount());
 						item2.setItemStack(is2);
 						String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
-								.equalsIgnoreCase("ITEM") ? plugin.getRewardManager().format(reward2.getMoney())
+								.equalsIgnoreCase("ITEM") ? plugin.getEconomyManager().format(reward2.getMoney())
 										: reward2.getDisplayname() + " ("
-												+ plugin.getRewardManager().format(reward2.getMoney()) + ")";
+												+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
 						item2.setCustomName(
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 						item2.setCustomNameVisible(true);
 						item2.setMetadata(Reward.MH_REWARD_DATA,
 								new FixedMetadataValue(BagOfGold.getInstance(), new Reward(reward2)));
 						plugin.getMessages().debug("Heads merged - value=%s each head",
-								plugin.getRewardManager().format(reward2.getMoney()));
+								plugin.getEconomyManager().format(reward2.getMoney()));
 					}
 				}
 				if (plugin.getBagOfGoldItems().getDroppedMoney().containsKey(item1.getEntityId()))

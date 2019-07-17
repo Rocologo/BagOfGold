@@ -11,8 +11,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.milkbowl.vault.economy.EconomyResponse;
-import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+//import net.milkbowl.vault.economy.EconomyResponse;
+//import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
@@ -51,7 +51,7 @@ public class RewardManager {
 	}
 
 	/**
-	 * getBalance : calculate the player balance 
+	 * getBalance : calculate the player balance
 	 * 
 	 * @param offlinePlayer
 	 * @return
@@ -70,12 +70,11 @@ public class RewardManager {
 	 * @return EconomyResponce containing amount, balance and ResponseType
 	 *         (Success/failure)
 	 */
-	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
+	public boolean depositPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		double drop = 0, give = amount;
 		if (amount == 0) {
-			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
-					null);
+			return true;
 		} else if (amount > 0) {
 			if (offlinePlayer.isOnline()) {
 				Player player = (Player) offlinePlayer;
@@ -85,7 +84,7 @@ public class RewardManager {
 					drop = amount - give;
 				}
 				addMoneyToPlayer(player, Misc.round(ps.getBalanceChanges()) + Misc.round(give));
-				dropMoneyOnGround_EconomyManager(player, null, player.getLocation(), drop);
+				dropMoneyOnGround(player, null, player.getLocation(), drop);
 				ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + give));
 				ps.setBalanceChanges(0);
 			} else {
@@ -94,13 +93,11 @@ public class RewardManager {
 			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(give),
 					offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			return new EconomyResponse(give, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.SUCCESS,
-					null);
+			return true;
 		} else {
 			plugin.getMessages().debug("Could not deposit %s to %s's account, because the number is negative",
 					format(amount), offlinePlayer.getName());
-			return new EconomyResponse(0, Misc.round(ps.getBalance() + ps.getBalanceChanges()), ResponseType.FAILURE,
-					null);
+			return false;
 		}
 	}
 
@@ -113,7 +110,7 @@ public class RewardManager {
 	 * @return EconomyResponse containing amount withdraw, balance and ResponseType
 	 *         (Success/Failure).
 	 */
-	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
+	public boolean withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		if (amount >= 0) {
 			if (has(offlinePlayer, amount)) {
@@ -133,7 +130,6 @@ public class RewardManager {
 								"EconomyManager: withdrawPlayer adjusting Player Balance to Amount of BagOfGold in Inventory",
 								player.getName());
 						plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
-						// plugin.getEconomyManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 					} else {
 						plugin.getMessages().debug(
 								"EconomyManager: withdrawPlayer %s adjusting Amount of BagOfGold in Inventory To Balance",
@@ -141,8 +137,7 @@ public class RewardManager {
 						plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 					}
 				}
-				return new EconomyResponse(amount, Misc.round(ps.getBalance() + ps.getBalanceChanges()),
-						ResponseType.SUCCESS, null);
+				return true;
 			} else {
 				double remove = Misc.round(ps.getBalance() + ps.getBalanceChanges());
 				plugin.getMessages().debug("%s has not enough bagofgold, Withdrawing only %s , new balance is %s",
@@ -152,13 +147,12 @@ public class RewardManager {
 					ps.setBalance(0);
 					ps.setBalanceChanges(0);
 					plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-					return new EconomyResponse(remove, 0, ResponseType.SUCCESS, null);
+					return true;
 				}
-				return new EconomyResponse(remove, 0, ResponseType.FAILURE,
-						plugin.getMessages().getString("bagofgold.commands.money.not-enough-money", "money", remove));
+				return false;
 			}
 		} else
-			return new EconomyResponse(0, ps.getBalance() + ps.getBalanceChanges(), ResponseType.SUCCESS, null);
+			return true;
 	}
 
 	/**
@@ -184,7 +178,7 @@ public class RewardManager {
 	 * @param location
 	 * @param money
 	 */
-	public void dropMoneyOnGround_EconomyManager(Player player, Entity killedEntity, Location location, double amount) {
+	public void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double amount) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			plugin.getBagOfGoldItems().dropBagOfGoldMoneyOnGround(player, killedEntity, location, amount);
 		else if (plugin.getgringottsItems().isGringottsStyle())
@@ -206,7 +200,7 @@ public class RewardManager {
 	 *         (Success/Failure).
 	 */
 	@SuppressWarnings("deprecation")
-	public EconomyResponse bankDeposit(String account, double amount) {
+	public boolean bankDeposit(String account, double amount) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
@@ -220,10 +214,9 @@ public class RewardManager {
 			plugin.getMessages().debug("bankDeposit: %s", ps.toString());
 
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
-					null);
+			return true;
 		} else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, "Player has no bank account");
+			return false;
 	}
 
 	/**
@@ -235,7 +228,7 @@ public class RewardManager {
 	 *         (Success/Failure).
 	 */
 	@SuppressWarnings("deprecation")
-	public EconomyResponse bankWithdraw(String account, double amount) {
+	public boolean bankWithdraw(String account, double amount) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
@@ -249,10 +242,9 @@ public class RewardManager {
 			plugin.getMessages().debug("bankWithdraw: %s -  ", ps.toString());
 
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			return new EconomyResponse(amount, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS,
-					null);
+			return true;
 		} else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, account + " has no bank account");
+			return false;
 	}
 
 	/**
@@ -262,8 +254,7 @@ public class RewardManager {
 	 * @return EconomyResponse containing amount, bank balance and ResponseType
 	 *         (Success/Failure).
 	 */
-	@SuppressWarnings("deprecation")
-	public EconomyResponse bankBalance(String account) {
+	public double bankBalance(String account) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
@@ -273,9 +264,9 @@ public class RewardManager {
 				ps.setBankBalanceChanges(0);
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			}
-			return new EconomyResponse(0, ps.getBankBalance() + ps.getBankBalanceChanges(), ResponseType.SUCCESS, null);
+			return ps.getBankBalance() + ps.getBankBalanceChanges();
 		} else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, account + " has no bank account");
+			return 0;
 	}
 
 	/**
@@ -285,7 +276,7 @@ public class RewardManager {
 	 * @return ResponseType (Success/Failure)
 	 */
 	@SuppressWarnings("deprecation")
-	public EconomyResponse deleteBank(String account) {
+	public boolean deleteBank(String account) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
 		if (offlinePlayer != null) {
@@ -293,16 +284,13 @@ public class RewardManager {
 			ps.setBankBalance(0);
 			ps.setBankBalanceChanges(0);
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-			return new EconomyResponse(0, 0, ResponseType.SUCCESS, "Bank account deleted");
+			return true;
 		} else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, account + " has no bank account");
+			return false;
 	}
 
-	public EconomyResponse isBankOwner(String account, OfflinePlayer offlinePlayer) {
-		if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
-			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
-		else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+	public boolean isBankOwner(String account, OfflinePlayer offlinePlayer) {
+		return account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString());
 	}
 
 	/**
@@ -312,11 +300,8 @@ public class RewardManager {
 	 * @param offlinePlayer to check membership
 	 * @return EconomyResponse Object
 	 */
-	public EconomyResponse isBankMember(String account, OfflinePlayer offlinePlayer) {
-		if (account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString()))
-			return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
-		else
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+	public boolean isBankMember(String account, OfflinePlayer offlinePlayer) {
+		return account.equalsIgnoreCase(offlinePlayer.getUniqueId().toString());
 	}
 
 	/**
@@ -340,7 +325,7 @@ public class RewardManager {
 	}
 
 	/**
-	 * getAmountInInventory: calculate the total BagOfGold in the player inventory.
+	 * Calculate the total amount of money in the player inventory.
 	 * 
 	 * @param player
 	 * @return
@@ -360,8 +345,8 @@ public class RewardManager {
 	}
 
 	/**
-	 * addBagOfGoldPlayer_EconomyManager: add amount to the player inventory, but
-	 * NOT on player balance.
+	 * Add amount to the player inventory, but NOT on player balance in
+	 * memory/database.
 	 * 
 	 * @param offlinePlayer
 	 * @param amount
@@ -381,8 +366,8 @@ public class RewardManager {
 	}
 
 	/**
-	 * removeBagOfGoldPlayer_EconomyManager: remove the amount from the player
-	 * inventory but NOT from the player balance.
+	 * Remove the amount from the player inventory but NOT from the player balance
+	 * in memory/database.
 	 * 
 	 * @param player
 	 * @param amount
@@ -403,8 +388,8 @@ public class RewardManager {
 	}
 
 	/**
-	 * removeMoneyFromBalance: remove the amount from the player balance without
-	 * removing amount from the player inventory
+	 * Remove the amount from the player balance in memory/databse without removing
+	 * amount from the player inventory
 	 * 
 	 * @param offlinePlayer
 	 * @param amount
@@ -423,7 +408,7 @@ public class RewardManager {
 	}
 
 	/**
-	 * addMoneyToBalance: add amount to player balance but NOT on in the player
+	 * Add amount to player balance in memory/database but NOT on in the players
 	 * inventory
 	 * 
 	 * @param offlinePlayer
@@ -442,6 +427,12 @@ public class RewardManager {
 		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 	}
 
+	/**
+	 * Change the players amount of money in his inventory to the players balance in
+	 * memory/database
+	 * 
+	 * @param player
+	 */
 	public void adjustAmountOfMoneyInInventoryToPlayerBalance(Player player) {
 		double amountInInventory = getAmountInInventory(player);
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
@@ -468,6 +459,12 @@ public class RewardManager {
 		}
 	}
 
+	/**
+	 * Change the players balance in memory/databse to the amount of money in his
+	 * inventory
+	 * 
+	 * @param player
+	 */
 	public void adjustPlayerBalanceToAmounOfMoneyInInventory(Player player) {
 		double amountInInventory = getAmountInInventory(player);
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
@@ -488,7 +485,6 @@ public class RewardManager {
 			if (Misc.round(diff) > 0)
 				addMoneyToPlayerBalance(player, Misc.round(diff));
 			else if (Misc.round(diff) < 0)
-				// removeMoneyFromPlayer(player, -diff);
 				removeMoneyFromPlayerBalance(player, -diff);
 			else
 				plugin.getMessages().debug("there was no difference");
@@ -496,6 +492,12 @@ public class RewardManager {
 		}
 	}
 
+	/**
+	 * Get the amount of money which the player has room for in his inventory.
+	 * 
+	 * @param player
+	 * @return
+	 */
 	public double getSpaceForMoney(Player player) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			return plugin.getBagOfGoldItems().getSpaceForBagOfGoldMoney(player);

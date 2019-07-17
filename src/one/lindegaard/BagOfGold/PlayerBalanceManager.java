@@ -28,6 +28,7 @@ import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.WorldGroupManager;
 
 public class PlayerBalanceManager implements Listener {
 
@@ -46,6 +47,10 @@ public class PlayerBalanceManager implements Listener {
 		return mBalances;
 	}
 
+	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer, String world) {
+		return null;
+	}
+	
 	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer) {
 		if (offlinePlayer.isOnline()) {
 			String worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer);
@@ -59,6 +64,11 @@ public class PlayerBalanceManager implements Listener {
 		}
 	}
 
+	public PlayerBalance getPlayerBalanceInWorld(OfflinePlayer offlinePlayer, String world, GameMode gamemode) {
+		String worldGroup = plugin.getWorldGroupManager().getWorldGroup(world);
+		return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
+	}
+	
 	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer, String worldGroup, GameMode gamemode) {
 		if (mBalances.containsKey(offlinePlayer.getUniqueId()))
 			// offlinePlayer is in the Database

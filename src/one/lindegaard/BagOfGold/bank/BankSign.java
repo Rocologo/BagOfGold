@@ -14,7 +14,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-import net.milkbowl.vault.economy.EconomyResponse;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.rewards.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
@@ -87,14 +86,14 @@ public class BankSign implements Listener {
 							}
 						}
 
-						EconomyResponse res = plugin.getRewardManager().withdrawPlayer(player, money);
-						if (res.transactionSuccess()) {
-							plugin.getRewardManager().bankDeposit(player.getUniqueId().toString(), res.amount);
+						boolean res = plugin.getEconomyManager().withdrawPlayer(player, money);
+						if (res) {
+							plugin.getEconomyManager().bankAccountDeposit(player.getUniqueId().toString(), money);
 							plugin.getMessages().debug("%s deposit %s %s into Bank", player.getName(),
-									plugin.getRewardManager().format(res.amount), reward.getDisplayname());
+									plugin.getEconomyManager().format(money), reward.getDisplayname());
 							plugin.getMessages().playerSendMessage(player,
 									plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
-											plugin.getRewardManager().format(res.amount), "rewardname",
+											plugin.getEconomyManager().format(money), "rewardname",
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 													+ reward.getDisplayname().trim()));
 						}
@@ -113,7 +112,7 @@ public class BankSign implements Listener {
 					plugin.getMessages().debug("BankSign: space=%s", space);
 					if (sign.getLine(2).isEmpty() || sign.getLine(2)
 							.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line3.everything"))) {
-						moneyOnSign = plugin.getRewardManager().bankBalance(player.getUniqueId().toString()).balance;
+						moneyOnSign = plugin.getEconomyManager().bankBalance(player.getUniqueId().toString());
 
 					} else {
 						try {
@@ -127,38 +126,39 @@ public class BankSign implements Listener {
 						}
 					}
 					plugin.getMessages().debug("BankSign: moneyOnSign=%s, bankBal=%s", moneyOnSign,
-							plugin.getRewardManager().bankBalance(player.getUniqueId().toString()).balance);
-					if (Misc.round(
-							plugin.getRewardManager().bankBalance(player.getUniqueId().toString()).balance) >= Misc
-									.round(moneyOnSign)) {
+							plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()));
+					if (Misc.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString())) >= Misc
+							.round(moneyOnSign)) {
 
 						if (space < moneyOnSign)
 							moneyOnSign = space;
-						if (plugin.getRewardManager().bankWithdraw(player.getUniqueId().toString(), moneyOnSign)
-								.transactionSuccess()) {
-							plugin.getRewardManager().depositPlayer(player, moneyOnSign);
+						if (plugin.getEconomyManager().bankAccountWithdraw(player.getUniqueId().toString(),
+								moneyOnSign)) {
+							plugin.getEconomyManager().depositPlayer(player, moneyOnSign);
 
 							plugin.getMessages().debug("%s withdraw %s %s from Bank", player.getName(),
-									plugin.getRewardManager().format(Misc.round(moneyOnSign)),
+									plugin.getEconomyManager().format(Misc.round(moneyOnSign)),
 									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
 							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
 									"bagofgold.banksign.withdraw", "money",
-									plugin.getRewardManager().format(moneyOnSign), "rewardname",
+									plugin.getEconomyManager().format(moneyOnSign), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 						} else {
 							plugin.getMessages().debug("%s could not withdraw %s %s from Bank", player.getName(),
-									plugin.getRewardManager().format(moneyOnSign),
+									plugin.getEconomyManager().format(moneyOnSign),
 									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
-							
+
 						}
 					} else {
+						plugin.getMessages().debug("Space=%s, bankbal=%s",space, Misc
+								.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString())));
 						double bal = Misc
-								.round(plugin.getRewardManager().bankBalance(player.getUniqueId().toString()).balance);
+								.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()));
 						if (space < bal)
 							bal = space;
-						plugin.getRewardManager().bankWithdraw(player.getUniqueId().toString(), bal);
-						plugin.getRewardManager().depositPlayer(player, bal);
+						plugin.getEconomyManager().bankAccountWithdraw(player.getUniqueId().toString(), bal);
+						plugin.getEconomyManager().depositPlayer(player, bal);
 						plugin.getMessages().playerSendMessage(player,
 								plugin.getMessages().getString("bagofgold.banksign.withdraw", "money", bal,
 										"rewardname",
@@ -172,17 +172,13 @@ public class BankSign implements Listener {
 					// -----------------------------------------------------------------------
 				} else if (signType
 						.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line2.balance"))) {
-					plugin.getMessages().playerSendMessage(player, plugin.getMessages()
-							.getString("bagofgold.banksign.balance", "money", plugin.getRewardManager().format(
-									plugin.getRewardManager().bankBalance(player.getUniqueId().toString()).balance),
-									"rewardname",
+					double bal = plugin.getEconomyManager().bankBalance(player.getUniqueId().toString());
+					plugin.getMessages().playerSendMessage(player,
+							plugin.getMessages().getString("bagofgold.banksign.balance", "money",
+									plugin.getEconomyManager().format(bal), "rewardname",
 									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
 				}
-				// } else {
-				// plugin.getMessages().playerSendMessage(player,
-				// plugin.getMessages().getString("bagofgold.banksign.only_survival"));
-				// }
 			} else {
 				plugin.getMessages().playerSendMessage(player, plugin.getMessages()
 						.getString("bagofgold.banksign.no_permission_to_use", "perm", "bagofgold.banksign.use"));

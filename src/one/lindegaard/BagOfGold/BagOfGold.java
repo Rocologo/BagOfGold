@@ -48,10 +48,8 @@ public class BagOfGold extends JavaPlugin {
 	private static BagOfGold instance;
 	private File mFile = new File(getDataFolder(), "config.yml");
 
-	public static final boolean ENABLE_RESERVE=false;  
-	
 	private Messages mMessages;
-	private EconomyManager mBagEconomyManager;
+	private EconomyManager mEconomyManager;
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
@@ -188,8 +186,8 @@ public class BagOfGold extends JavaPlugin {
 
 		// Initialize BagOfGold Bank Signs
 		new BankSign(this);
-
-		mBagEconomyManager = new EconomyManager(this);
+		// start the Economy Service Provider using Vault or Reserve
+		mEconomyManager = new EconomyManager(this);
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
@@ -354,7 +352,7 @@ public class BagOfGold extends JavaPlugin {
 	}
 	
 	public EconomyManager getEconomyManager() {
-		return mBagEconomyManager;
+		return mEconomyManager;
 	}
 
 }

@@ -19,12 +19,11 @@ public class PickupRewards {
 
 	public void rewardPlayer(Player player, Item item, CallBack callBack) {
 		if (Reward.isReward(item)) {
-			double done = 0;
 			Reward reward = Reward.getReward(item);
 			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 				callBack.setCancelled(true);
-				done = plugin.getRewardManager().depositPlayer(player, reward.getMoney()).amount;
-				if (done > 0) {
+				boolean succes = plugin.getEconomyManager().depositPlayer(player, reward.getMoney());
+				if (succes) {
 					item.remove();
 					if (plugin.getBagOfGoldItems().getDroppedMoney().containsKey(item.getEntityId()))
 						plugin.getBagOfGoldItems().getDroppedMoney().remove(item.getEntityId());

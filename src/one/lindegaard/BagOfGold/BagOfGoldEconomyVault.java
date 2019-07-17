@@ -29,13 +29,13 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(Economy.class);
 			if (economyProvider == null) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold]"+ChatColor.RED+"[Vault]"
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Vault]"
 						+ plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ"));
 				return;
 			}
 			mEconomy = economyProvider.getProvider();
 		}
-		
+
 		plugin.getMessages().debug("Number of Vault Economy Providers = %s",
 				Bukkit.getServicesManager().getRegistrations(Economy.class).size());
 		if (Bukkit.getServicesManager().getRegistrations(Economy.class).size() > 1) {
@@ -44,8 +44,6 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 				plugin.getMessages().debug("Vault Economy provider name=%s", registation.getProvider().getName());
 			}
 		}
-
-
 
 	}
 
@@ -315,9 +313,13 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	 */
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-		if (isEnabled())
-			return plugin.getRewardManager().depositPlayer(offlinePlayer, amount);
-		else
+		if (isEnabled()) {
+			boolean succes = plugin.getRewardManager().depositPlayer(offlinePlayer, amount);
+			if (succes)
+				return new EconomyResponse(amount, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(amount, 0, ResponseType.FAILURE, null);
+		} else
 			return mEconomy.depositPlayer(offlinePlayer, amount);
 	}
 
@@ -474,9 +476,13 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-		if (isEnabled())
-			return plugin.getRewardManager().withdrawPlayer(offlinePlayer, amount);
-		else
+		if (isEnabled()) {
+			boolean succes = plugin.getRewardManager().withdrawPlayer(offlinePlayer, amount);
+			if (succes)
+				return new EconomyResponse(amount, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(amount, 0, ResponseType.FAILURE, null);
+		} else
 			return mEconomy.withdrawPlayer(offlinePlayer, amount);
 	}
 
@@ -556,9 +562,13 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	 */
 	@Override
 	public EconomyResponse isBankMember(String account, OfflinePlayer offlinePlayer) {
-		if (isEnabled())
-			return plugin.getRewardManager().isBankMember(account, offlinePlayer);
-		else
+		if (isEnabled()) {
+			boolean succes = plugin.getRewardManager().isBankMember(account, offlinePlayer);
+			if (succes)
+				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+		} else
 			return mEconomy.isBankOwner(account, offlinePlayer);
 	}
 
@@ -583,9 +593,13 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	 */
 	@Override
 	public EconomyResponse isBankOwner(String account, OfflinePlayer offlinePlayer) {
-		if (isEnabled())
-			return plugin.getRewardManager().isBankOwner(account, offlinePlayer);
-		else
+		if (isEnabled()) {
+			boolean succes = plugin.getRewardManager().isBankOwner(account, offlinePlayer);
+			if (succes)
+				return new EconomyResponse(0, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(0, 0, ResponseType.FAILURE, null);
+		} else
 			return mEconomy.isBankOwner(account, offlinePlayer);
 	}
 
@@ -597,10 +611,12 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	 */
 	@Override
 	public EconomyResponse bankBalance(String account) {
-		if (isEnabled())
-			return plugin.getRewardManager().bankBalance(account);
-		else
+		if (isEnabled()) {
+			double amount = plugin.getRewardManager().bankBalance(account);
+			return new EconomyResponse(amount, amount, ResponseType.SUCCESS, null);
+		} else {
 			return mEconomy.bankBalance(account);
+		}
 	}
 
 	/**
@@ -612,9 +628,13 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	 */
 	@Override
 	public EconomyResponse bankDeposit(String account, double amount) {
-		if (isEnabled())
-			return plugin.getRewardManager().bankDeposit(account, amount);
-		else
+		if (isEnabled()) {
+			boolean succes = plugin.getRewardManager().bankDeposit(account, amount);
+			if (succes)
+				return new EconomyResponse(amount, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(amount, 0, ResponseType.FAILURE, null);
+		} else
 			return mEconomy.bankDeposit(account, amount);
 	}
 
@@ -648,9 +668,13 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	 */
 	@Override
 	public EconomyResponse bankWithdraw(String account, double amount) {
-		if (isEnabled())
-			return plugin.getRewardManager().bankWithdraw(account, amount);
-		else
+		if (isEnabled()) {
+			boolean succes = plugin.getRewardManager().bankWithdraw(account, amount);
+			if (succes)
+				return new EconomyResponse(amount, 0, ResponseType.SUCCESS, null);
+			else
+				return new EconomyResponse(amount, 0, ResponseType.FAILURE, null);
+		} else
 			return mEconomy.bankWithdraw(account, amount);
 
 	}
@@ -691,7 +715,9 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public EconomyResponse deleteBank(String account) {
 		if (isEnabled())
-			return plugin.getRewardManager().deleteBank(account);
+			return plugin.getRewardManager().deleteBank(account)
+					? new EconomyResponse(0, 0, ResponseType.SUCCESS, "Account deleted")
+					: new EconomyResponse(0, 0, ResponseType.FAILURE, "Could not delete account");
 		else
 			return mEconomy.deleteBank(account);
 	}

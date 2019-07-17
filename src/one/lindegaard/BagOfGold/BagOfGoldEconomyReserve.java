@@ -1,11 +1,16 @@
 package one.lindegaard.BagOfGold;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.tnemc.core.Reserve;
@@ -13,8 +18,9 @@ import net.tnemc.core.economy.EconomyAPI;
 
 public class BagOfGoldEconomyReserve implements EconomyAPI {
 
-	//API: https://github.com/TheNewEconomy/Reserve/blob/master/src/net/tnemc/core/economy/EconomyAPI.java
-	
+	// API:
+	// https://github.com/TheNewEconomy/Reserve/blob/master/src/net/tnemc/core/economy/EconomyAPI.java
+
 	private BagOfGold plugin;
 	private EconomyAPI mEconomy;
 
@@ -61,9 +67,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 		return plugin.getConfigManager().useBagOfGoldAsAnEconomyPlugin;
 	}
 
-	// *******************************************************
-	// NOT IMPLEMENTED
-	// *******************************************************
 	/**
 	 * Used to get the plural name of the default currency.
 	 * 
@@ -102,7 +105,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The plural name of the default currency.
 	 */
 	@Override
-	public String currencyDefaultSingular(String arg0) {
+	public String currencyDefaultSingular(String world) {
 		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
 	}
 
@@ -156,7 +159,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return True if the currency exists, else false.
 	 */
 	@Override
-	public CompletableFuture<Boolean> asyncHasCurrency(String arg0, String arg1) {
+	public CompletableFuture<Boolean> asyncHasCurrency(String name, String world) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -354,8 +357,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean isAccessor(UUID identifier, String accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equals(UUID.fromString(accessor));
 	}
 
 	/**
@@ -369,8 +371,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean isAccessor(UUID identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equals(accessor);
 	}
 
 	/**
@@ -386,8 +387,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canWithdraw(String identifier, String accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equalsIgnoreCase(accessor);
 	}
 
 	/**
@@ -403,8 +403,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canWithdraw(String identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equalsIgnoreCase(accessor.toString());
 	}
 
 	/**
@@ -420,8 +419,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canWithdraw(UUID identifier, String accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equals(UUID.fromString(accessor));
 	}
 
 	/**
@@ -437,8 +435,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canWithdraw(UUID identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equals(accessor);
 	}
 
 	/**
@@ -522,8 +519,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canDeposit(String identifier, String accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equalsIgnoreCase(accessor);
 	}
 
 	/**
@@ -539,8 +535,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canDeposit(String identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equalsIgnoreCase(accessor.toString());
 	}
 
 	/**
@@ -556,8 +551,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canDeposit(UUID identifier, String accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equals(UUID.fromString(accessor));
 	}
 
 	/**
@@ -573,8 +567,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canDeposit(UUID identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		return false;
+		return identifier.equals(accessor);
 	}
 
 	/**
@@ -654,8 +647,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public BigDecimal getHoldings(String identifier) {
-		// TODO Auto-generated method stub
-		return null;
+		return getHoldings(Bukkit.getOfflinePlayer(identifier).getUniqueId());
 	}
 
 	/**
@@ -1212,8 +1204,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean addHoldings(String identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		return addHoldings(Bukkit.getOfflinePlayer(identifier).getUniqueId(), amount);
 	}
 
 	/**
@@ -1226,8 +1217,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean addHoldings(UUID identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		return plugin.getRewardManager().depositPlayer(Bukkit.getOfflinePlayer(identifier), amount.doubleValue());
 	}
 
 	/**
@@ -1241,8 +1231,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean addHoldings(String identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return addHoldings(identifier, amount);
 	}
 
 	/**
@@ -1256,8 +1245,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean addHoldings(UUID identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return addHoldings(identifier, amount);
 	}
 
 	/**
@@ -1272,8 +1260,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean addHoldings(String identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return addHoldings(identifier, amount);
 	}
 
 	/**
@@ -1288,8 +1275,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean addHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return addHoldings(identifier, amount);
 	}
 
 	/**
@@ -1396,8 +1382,11 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canAddHoldings(String identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(identifier);
+		if (offlinePlayer.isOnline())
+			return plugin.getRewardManager().getSpaceForMoney((Player) offlinePlayer) <= amount.doubleValue();
+		else
+			return false;
 	}
 
 	/**
@@ -1412,8 +1401,11 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canAddHoldings(UUID identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(identifier);
+		if (offlinePlayer.isOnline())
+			return plugin.getRewardManager().getSpaceForMoney((Player) offlinePlayer) <= amount.doubleValue();
+		else
+			return false;
 	}
 
 	/**
@@ -1429,8 +1421,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canAddHoldings(String identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return canAddHoldings(identifier, amount);
 	}
 
 	/**
@@ -1446,8 +1437,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canAddHoldings(UUID identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return canAddHoldings(identifier, amount);
 	}
 
 	/**
@@ -1464,8 +1454,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canAddHoldings(String identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return canAddHoldings(identifier, amount);
 	}
 
 	/**
@@ -1482,8 +1471,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canAddHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return canAddHoldings(identifier, amount);
 	}
 
 	/**
@@ -1600,8 +1588,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean removeHoldings(String identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		return plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), amount.doubleValue());
 	}
 
 	/**
@@ -1614,8 +1601,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean removeHoldings(UUID identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		return plugin.getRewardManager().withdrawPlayer(Bukkit.getOfflinePlayer(identifier), amount.doubleValue());
 	}
 
 	/**
@@ -1629,8 +1615,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean removeHoldings(String identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return removeHoldings(identifier, amount);
 	}
 
 	/**
@@ -1644,8 +1629,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean removeHoldings(UUID identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return removeHoldings(identifier, amount);
 	}
 
 	/**
@@ -1660,8 +1644,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean removeHoldings(String identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return removeHoldings(identifier, amount);
 	}
 
 	/**
@@ -1676,8 +1659,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean removeHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return removeHoldings(identifier, amount);
 	}
 
 	/**
@@ -1784,8 +1766,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(String identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		return getHoldings(identifier).compareTo(amount)>=0;
 	}
 
 	/**
@@ -1800,8 +1781,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return false;
+		return getHoldings(identifier).compareTo(amount)>=0;
 	}
 
 	/**
@@ -1817,8 +1797,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(String identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return getHoldings(identifier).compareTo(amount)>=0;
 	}
 
 	/**
@@ -1834,8 +1813,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return false;
+		return getHoldings(identifier).compareTo(amount)>=0;
 	}
 
 	/**
@@ -1852,8 +1830,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(String identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return getHoldings(identifier).compareTo(amount)>=0;
 	}
 
 	/**
@@ -1870,8 +1847,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return false;
+		return getHoldings(identifier).compareTo(amount)>=0;
 	}
 
 	/**
@@ -2004,7 +1980,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param toIdentifier   The identifier of the account that the holdings will be
 	 *                       going to.
 	 * @param amount         The amount you wish to remove from this account.
-	 * @param world          The name of the {@link World} associated with the
 	 *                       amount.
 	 * @return True if the funds were transferred.
 	 */
@@ -2024,7 +1999,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param amount         The amount you wish to remove from this account.
 	 * @param world          The name of the {@link World} associated with the
 	 *                       amount.
-	 * @param currency       The {@link Currency} associated with the balance.
 	 * @return True if the funds were transferred.
 	 */
 	@Override
@@ -2042,6 +2016,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param toIdentifier   The identifier of the account that the holdings will be
 	 *                       going to.
 	 * @param amount         The amount you wish to remove from this account.
+	 * @param currency       The {@link Currency} associated with the balance.
 	 * @return True if the funds were transferred.
 	 */
 	@Override
@@ -2061,11 +2036,12 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param amount         The amount you wish to remove from this account.
 	 * @param world          The name of the {@link World} associated with the
 	 *                       amount.
+	 * @param currency       The {@link Currency} associated with the balance.
 	 * @return True if the funds were transferred.
 	 */
 	@Override
 	public CompletableFuture<Boolean> asyncTransferHoldings(String fromIdentifier, String toIdentifier,
-			BigDecimal amount, String currency, String arg4) {
+			BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2085,7 +2061,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public CompletableFuture<Boolean> asyncTransferHoldings(UUID fromIdentifier, UUID toIdentifier, BigDecimal amount,
-			String currency, String arg4) {
+			String world, String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2182,13 +2158,14 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @param amount         The amount you wish to remove from this account.
 	 * @param world          The name of the {@link World} associated with the
 	 *                       amount.
+	 * @param currency       The {@link Currency} associated with the balance.
 	 *
 	 * @return True if a call to the corresponding transferHoldings method would
 	 *         return true, otherwise false.
 	 */
 	@Override
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(String fromIdentifier, String toIdentifier,
-			BigDecimal amount, String currency, String arg4) {
+			BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2211,7 +2188,846 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID fromIdentifier, UUID toIdentifier,
-			BigDecimal amount, String currency, String arg4) {
+			BigDecimal amount, String world, String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// ****************************************************************************
+	// BANKS
+	// ****************************************************************************
+
+	/**
+	 * @return A list containing the names of the banks currently in the server.
+	 */
+	@Override
+	public List<String> getBanks() {
+		ArrayList<String> list = new ArrayList<>();
+		list.add( plugin.getConfigManager().bankname);
+		return list;
+	}
+
+	/**
+	 * @param world The name of the {@link World} to use for this call.
+	 * @return A list containing the names of the banks currently in the specified
+	 *         world
+	 */
+	@Override
+	public List<String> getBanks(String world) {
+		ArrayList<String> list = new ArrayList<>();
+		list.add( plugin.getConfigManager().bankname);
+		return list;
+	}
+
+	/**
+	 * Asynchronous version of getBanks()
+	 * 
+	 * @return A list containing the names of the banks currently in the server.
+	 */
+	@Override
+	public CompletableFuture<List<String>> asyncGetBanks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Asynchronous version of getBanks(String world)
+	 * 
+	 * @param world The name of the {@link World} to use for this call.
+	 * @return A list containing the names of the banks currently in the specified
+	 *         world
+	 */
+	@Override
+	public CompletableFuture<List<String>> asyncGetBanks(String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @return A list of currencies that are able to be used with banks.
+	 */
+	@Override
+	public List<String> acceptedBankCurrencies() {
+		ArrayList<String> list = new ArrayList<>();
+		list.add( plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+		return list;
+	}
+
+	/**
+	 * @param world The name of the {@link World} to use for this call.
+	 * @return A list of currencies that are able to be used with banks in the
+	 *         specified world.
+	 */
+	@Override
+	public List<String> acceptedBankCurrencies(String world) {
+		return acceptedBankCurrencies();
+	}
+
+	/**
+	 * @param world The name of the {@link World} to use for this call.
+	 * @param bank  The name of the bank to use for this call.
+	 * @return A list of currencies that are able to be used with the specified bank
+	 *         in the specified world.
+	 */
+	@Override
+	public List<String> acceptedBankCurrencies(String world, String bank) {
+		return acceptedBankCurrencies();
+	}
+
+	/**
+	 * @return A list of currencies that are able to be used with banks.
+	 */
+	@Override
+	public CompletableFuture<List<String>> asyncAcceptedBankCurrencies() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param world The name of the {@link World} to use for this call.
+	 * @return A list of currencies that are able to be used with banks in the
+	 *         specified world.
+	 */
+	@Override
+	public CompletableFuture<List<String>> asyncAcceptedBankCurrencies(String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param world The name of the {@link World} to use for this call.
+	 * @param bank  The name of the bank to use for this call.
+	 * @return A list of currencies that are able to be used with the specified bank
+	 *         in the specified world.
+	 */
+	@Override
+	public CompletableFuture<List<String>> asyncAcceptedBankCurrencies(String world, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @return A List of UUIDs of bank accounts that the specified player has access
+	 *         to.
+	 */
+	@Override
+	public List<UUID> availableBankAccounts(UUID player) {
+		ArrayList<UUID> list = new ArrayList<>();
+		list.add(player);
+		return list;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @return A List of UUIDs of bank accounts that the specified player has access
+	 *         to in a specific world.
+	 */
+	@Override
+	public List<UUID> availableBankAccounts(UUID player, String world) {
+		return availableBankAccounts(player);
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @param bank   The name of the bank to use for this call.
+	 * @return A List of UUIDs of bank accounts that the specified player has access
+	 *         to in a specific bank in a specific world.
+	 */
+	@Override
+	public List<UUID> availableBankAccounts(UUID player, String world, String bank) {
+		return availableBankAccounts(player);
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @return A List of UUIDs of bank accounts that the specified player has access
+	 *         to.
+	 */
+	@Override
+	public CompletableFuture<List<UUID>> asyncAvailableBankAccounts(UUID player) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @return A List of UUIDs of bank accounts that the specified player has access
+	 *         to in a specific world.
+	 */
+	@Override
+	public CompletableFuture<List<UUID>> asyncAvailableBankAccounts(UUID player, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @param bank   The name of the bank to use for this call.
+	 * @return A List of UUIDs of bank accounts that the specified player has access
+	 *         to in a specific bank in a specific world.
+	 */
+	@Override
+	public CompletableFuture<List<UUID>> asyncAvailableBankAccounts(UUID player, String world, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @return True if the specified player is the owner of a bank in the specified
+	 *         world.
+	 */
+	@Override
+	public boolean isBankOwner(UUID player, String world) {
+		return true;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @param bank   The name of the bank to use for this call.
+	 * @return True if the specified player is the owner of the specified bank in
+	 *         the specified world.
+	 */
+	@Override
+	public boolean isBankOwner(UUID player, String world, String bank) {
+		return true;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @return True if the specified player is the owner of a bank in the specified
+	 *         world.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncIsBankOwner(UUID player, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @param bank   The name of the bank to use for this call.
+	 * @return True if the specified player is the owner of the specified bank in
+	 *         the specified world.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncIsBankOwner(UUID owner, String world, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param owner The UUID of the owner of this bank account.
+	 * @return An optional with a UUID of the created bank account if it was
+	 *         created, otherwise an empty Optional.
+	 */
+	@Override
+	public Optional<UUID> createBankAccount(UUID owner) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param owner The UUID of the owner of this bank account.
+	 * @param world The name of the {@link World} to create this bank account in.
+	 * @return An optional with a UUID of the created bank account if it was
+	 *         created, otherwise an empty Optional.
+	 */
+	@Override
+	public Optional<UUID> createBankAccount(UUID owner, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param owner The UUID of the owner of this bank account.
+	 * @param world The name of the {@link World} to create this bank account in.
+	 * @param bank  The name of the bank to create this bank account in.
+	 * @return An optional with a UUID of the created bank account if it was
+	 *         created, otherwise an empty Optional.
+	 */
+	@Override
+	public Optional<UUID> createBankAccount(UUID owner, String world, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param owner The UUID of the owner of this bank account.
+	 * @return An optional with a UUID of the created bank account if it was
+	 *         created, otherwise an empty Optional.
+	 */
+	@Override
+	public CompletableFuture<Optional<UUID>> asyncCreateBankAccount(UUID owner) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param owner The UUID of the owner of this bank account.
+	 * @param world The name of the {@link World} to create this bank account in.
+	 * @return An optional with a UUID of the created bank account if it was
+	 *         created, otherwise an empty Optional.
+	 */
+	@Override
+	public CompletableFuture<Optional<UUID>> asyncCreateBankAccount(UUID owner, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param owner The UUID of the owner of this bank account.
+	 * @param world The name of the {@link World} to create this bank account in.
+	 * @param bank  The name of the bank to create this bank account in.
+	 * @return An optional with a UUID of the created bank account if it was
+	 *         created, otherwise an empty Optional.
+	 */
+	@Override
+	public CompletableFuture<Optional<UUID>> asyncCreateBankAccount(UUID owner, String world, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @return True if the specified player has a bank account.
+	 */
+	@Override
+	public boolean hasBankAccount(UUID player) {
+		return true;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @return True if the specified player has a bank account in the specified
+	 *         world.
+	 */
+	@Override
+	public boolean hasBankAccount(UUID player, String world) {
+		return true;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @param bank   The name of the bank to use for this call.
+	 * @return True if the specified player has a bank account in the specified bank
+	 *         in the specified world.
+	 */
+	@Override
+	public boolean hasBankAccount(UUID player, String world, String bank) {
+		return true;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @return True if the specified player has a bank account.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncHasBankAccount(UUID player) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @return True if the specified player has a bank account in the specified
+	 *         world.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncHasBankAccount(UUID player, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param player The UUID of the player to use for this call.
+	 * @param world  The name of the {@link World} to use for this call.
+	 * @param bank   The name of the bank to use for this call.
+	 * @return True if the specified player has a bank account in the specified bank
+	 *         in the specified world.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncHasBankAccount(UUID player, String world, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player to use for this call.
+	 * @return True if the specified player is the owner of the specified bank
+	 *         account.
+	 */
+	@Override
+	public boolean isBankAccountOwner(UUID account, UUID player) {
+		return account.equals(player);
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player to use for this call.
+	 * @return True if the specified player is the owner of the specified bank
+	 *         account.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncIsBankAccountOwner(UUID account, UUID player) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player to use for this call.
+	 * @return True if the specified player is a member of the specified bank
+	 *         account.
+	 */
+	@Override
+	public boolean isBankAccountMember(UUID account, UUID player) {
+		return account.equals(player);
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player to use for this call.
+	 * @return True if the specified player is a member of the specified bank
+	 *         account.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncIsBankAccountMember(UUID account, UUID player) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public BigDecimal getBankHoldings(UUID account) {
+		return new BigDecimal(plugin.getRewardManager().bankBalance(Bukkit.getOfflinePlayer(account).getUniqueId().toString()));
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public BigDecimal getBankHoldings(UUID account, String world) {
+		return getBankHoldings(account);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public BigDecimal getBankHoldings(UUID account, String world, String currency) {
+		return getBankHoldings(account);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public BigDecimal getBankHoldings(UUID account, String world, String currency, String bank) {
+		return getBankHoldings(account);
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world, String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return The balance of the bank account.
+	 */
+	@Override
+	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world, String currency,
+			String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if console.
+	 * @param amount  The amount of funds to add to the account.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public boolean bankAddHoldings(UUID account, UUID player, BigDecimal amount) {
+		return plugin.getRewardManager().bankDeposit(account.toString(), amount.doubleValue());
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if not associated with a player action.
+	 * @param amount  The amount of funds to add to the account.
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public boolean bankAddHoldings(UUID account, UUID player, BigDecimal amount, String world) {
+		return bankAddHoldings(account, player, amount);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if not associated with a player action.
+	 * @param amount   The amount of funds to add to the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public boolean bankAddHoldings(UUID account, UUID player, BigDecimal amount, String world, String currency) {
+		return bankAddHoldings(account, player, amount);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if not associated with a player action.
+	 * @param amount   The amount of funds to add to the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public boolean bankAddHoldings(UUID account, UUID player, BigDecimal amount, String world, String currency,
+			String bank) {
+		return bankAddHoldings(account, player, amount);
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if console.
+	 * @param amount  The amount of funds to add to the account.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if not associated with a player action.
+	 * @param amount  The amount of funds to add to the account.
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if not associated with a player action.
+	 * @param amount   The amount of funds to add to the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world,
+			String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if not associated with a player action.
+	 * @param amount   The amount of funds to add to the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return True if the funds were added to the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world,
+			String currency, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if console.
+	 * @param amount  The amount of funds to remove from the account.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public boolean bankRemoveHoldings(UUID account, UUID player, BigDecimal amount) {
+		return plugin.getRewardManager().bankWithdraw(account.toString(), amount.doubleValue());
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if console.
+	 * @param amount  The amount of funds to remove from the account.
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public boolean bankRemoveHoldings(UUID account, UUID player, BigDecimal amount, String world) {
+		return bankRemoveHoldings(account, player, amount);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if console.
+	 * @param amount   The amount of funds to remove from the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public boolean bankRemoveHoldings(UUID account, UUID player, BigDecimal amount, String world, String currency) {
+		return bankRemoveHoldings(account, player, amount);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if console.
+	 * @param amount   The amount of funds to remove from the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public boolean bankRemoveHoldings(UUID account, UUID player, BigDecimal amount, String world, String currency,
+			String bank) {
+		return bankRemoveHoldings(account, player, amount);
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if console.
+	 * @param amount  The amount of funds to remove from the account.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param player  The UUID of the player adding the funds to the account, null
+	 *                if console.
+	 * @param amount  The amount of funds to remove from the account.
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
+			String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if console.
+	 * @param amount   The amount of funds to remove from the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
+			String world, String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param player   The UUID of the player adding the funds to the account, null
+	 *                 if console.
+	 * @param amount   The amount of funds to remove from the account.
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return True if the funds were removed from the account, otherwise false.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
+			String world, String currency, String bank) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param amount  The amount to set the account's funds to
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public boolean bankSetHoldings(UUID account, BigDecimal amount) {
+		BigDecimal bal = getBankHoldings(account);
+		if (bal.compareTo(amount)>=0)
+			return bankRemoveHoldings(account, account, bal.subtract(amount));
+		else 
+			return bankAddHoldings(account, account, amount.subtract(bal));
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param amount  The amount to set the account's funds to
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public boolean bankSetHoldings(UUID account, BigDecimal amount, String world) {
+		return bankSetHoldings(account, amount);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param amount   The amount to set the account's funds to
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public boolean bankSetHoldings(UUID account, BigDecimal amount, String world, String currency) {
+		return bankSetHoldings(account, amount);
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param amount   The amount to set the account's funds to
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public boolean bankSetHoldings(UUID account, BigDecimal amount, String world, String currency, String bank) {
+		return bankSetHoldings(account, amount);
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param amount  The amount to set the account's funds to
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account The UUID of the bank account to use for this call.
+	 * @param amount  The amount to set the account's funds to
+	 * @param world   The name of the {@link World} to use for this call.
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param amount   The amount to set the account's funds to
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world,
+			String currency) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param account  The UUID of the bank account to use for this call.
+	 * @param amount   The amount to set the account's funds to
+	 * @param world    The name of the {@link World} to use for this call.
+	 * @param currency The name of the currency to use for this call.
+	 * @param bank     The name of the bank to use for this call.
+	 * @return True if the account's funds were set to the specified amount.
+	 */
+	@Override
+	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world,
+			String currency, String bank) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -2223,9 +3039,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 * @return The formatted amount.
 	 */
 	@Override
-	public String format(BigDecimal identifier) {
-		// TODO Auto-generated method stub
-		return null;
+	public String format(BigDecimal amount) {
+		return plugin.getRewardManager().format(amount.doubleValue());
 	}
 
 	/**
@@ -2237,8 +3052,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String format(BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		return null;
+		return format(amount);
 	}
 
 	/**
@@ -2252,8 +3066,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String format(BigDecimal amount, String world, String currency) {
-		// TODO Auto-generated method stub
-		return null;
+		return format(amount);
 	}
 
 	/**
