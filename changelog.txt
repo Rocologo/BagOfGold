@@ -1,4 +1,5 @@
 V2.7.1
+* BagOfGold now support both Vault and Reserve (https://www.spigotmc.org/resources/reserve.50739/)
 * Fixed problem where player could duplicate the BagOfGold item, making a fake reward. 
 V2.7.0
 * Fixed minor bugs and tested ProtocolLib-4.4.0 against MC 1.10.2 servers. 

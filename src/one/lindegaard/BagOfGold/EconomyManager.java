@@ -83,7 +83,7 @@ public class EconomyManager {
 		 */
 		return false;
 	}
-
+	
 	private void setVersion(String version) {
 		this.version = version;
 	}

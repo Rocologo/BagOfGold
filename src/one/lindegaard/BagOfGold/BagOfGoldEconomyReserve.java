@@ -147,6 +147,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 		CompletableFuture<Boolean> completableFuture = new CompletableFuture<Boolean>();
 		Boolean b = plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.equalsIgnoreCase(name)
 				|| plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural.equalsIgnoreCase(name);
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;// completableFuture.complete(b);
 	}
 
@@ -161,6 +162,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasCurrency(String name, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -198,6 +200,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasAccount(String identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -211,6 +214,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasAccount(UUID identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -248,6 +252,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCreateAccount(String identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -261,6 +266,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCreateAccount(UUID identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -300,6 +306,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncDeleteAccount(String identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -313,6 +320,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncDeleteAccount(UUID identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -452,6 +460,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanWithdraw(String identifier, String accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -469,6 +478,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanWithdraw(String identifier, UUID accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -486,6 +496,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanWithdraw(UUID identifier, String accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -503,6 +514,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanWithdraw(UUID identifier, UUID accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -584,6 +596,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanDeposit(String identifier, String accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -601,6 +614,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanDeposit(String identifier, UUID accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -618,6 +632,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanDeposit(UUID identifier, String accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -635,6 +650,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanDeposit(UUID identifier, UUID accessor) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -726,6 +742,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -739,6 +756,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -753,6 +771,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -767,6 +786,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -782,6 +802,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier, String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -797,6 +818,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier, String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -902,6 +924,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -917,6 +940,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -933,6 +957,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -949,6 +974,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -967,6 +993,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -985,6 +1012,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1113,6 +1141,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1127,6 +1156,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1142,6 +1172,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1157,6 +1188,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1174,6 +1206,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1191,6 +1224,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1289,6 +1323,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1303,6 +1338,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1318,6 +1354,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1333,6 +1370,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1350,6 +1388,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1367,6 +1406,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1487,6 +1527,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanAddHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1503,6 +1544,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1520,6 +1562,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanAddHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1537,6 +1580,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1556,6 +1600,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanAddHoldings(String identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1575,6 +1620,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanAddHoldings(UUID identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1673,6 +1719,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncRemoveHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1687,6 +1734,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1702,6 +1750,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncRemoveHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1717,6 +1766,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1734,6 +1784,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncRemoveHoldings(String identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1751,6 +1802,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncRemoveHoldings(UUID identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1766,7 +1818,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(String identifier, BigDecimal amount) {
-		return getHoldings(identifier).compareTo(amount)>=0;
+		return getHoldings(identifier).compareTo(amount) >= 0;
 	}
 
 	/**
@@ -1781,7 +1833,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount) {
-		return getHoldings(identifier).compareTo(amount)>=0;
+		return getHoldings(identifier).compareTo(amount) >= 0;
 	}
 
 	/**
@@ -1797,7 +1849,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(String identifier, BigDecimal amount, String world) {
-		return getHoldings(identifier).compareTo(amount)>=0;
+		return getHoldings(identifier).compareTo(amount) >= 0;
 	}
 
 	/**
@@ -1813,7 +1865,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount, String world) {
-		return getHoldings(identifier).compareTo(amount)>=0;
+		return getHoldings(identifier).compareTo(amount) >= 0;
 	}
 
 	/**
@@ -1830,7 +1882,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(String identifier, BigDecimal amount, String world, String currency) {
-		return getHoldings(identifier).compareTo(amount)>=0;
+		return getHoldings(identifier).compareTo(amount) >= 0;
 	}
 
 	/**
@@ -1847,7 +1899,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean canRemoveHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
-		return getHoldings(identifier).compareTo(amount)>=0;
+		return getHoldings(identifier).compareTo(amount) >= 0;
 	}
 
 	/**
@@ -1863,6 +1915,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1879,6 +1932,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID identifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1896,6 +1950,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1913,6 +1968,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID identifier, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1932,6 +1988,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanRemoveHoldings(String identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1951,6 +2008,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanRemoveHoldings(UUID identifier, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1969,6 +2027,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncTransferHoldings(String fromIdentifier, String toIdentifier,
 			BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -1986,6 +2045,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncTransferHoldings(UUID fromIdentifier, UUID toIdentifier, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2005,6 +2065,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncTransferHoldings(String identifier, String toIdentifier, BigDecimal amount,
 			String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2023,6 +2084,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncTransferHoldings(UUID fromIdentifier, UUID toIdentifier, BigDecimal amount,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2043,6 +2105,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncTransferHoldings(String fromIdentifier, String toIdentifier,
 			BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2063,6 +2126,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncTransferHoldings(UUID fromIdentifier, UUID toIdentifier, BigDecimal amount,
 			String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2082,6 +2146,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(String fromIdentifier, String toIdentifier,
 			BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2103,6 +2168,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID fromIdentifier, UUID toIdentifier,
 			BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2125,6 +2191,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(String fromIdentifier, String toIdentifier,
 			BigDecimal amount, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2144,6 +2211,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID fromIdentifier, UUID toIdentifier,
 			BigDecimal amount, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2167,6 +2235,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(String fromIdentifier, String toIdentifier,
 			BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2190,6 +2259,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncCanTransferHoldings(UUID fromIdentifier, UUID toIdentifier,
 			BigDecimal amount, String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2203,7 +2273,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public List<String> getBanks() {
 		ArrayList<String> list = new ArrayList<>();
-		list.add( plugin.getConfigManager().bankname);
+		list.add(plugin.getConfigManager().bankname);
 		return list;
 	}
 
@@ -2215,7 +2285,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public List<String> getBanks(String world) {
 		ArrayList<String> list = new ArrayList<>();
-		list.add( plugin.getConfigManager().bankname);
+		list.add(plugin.getConfigManager().bankname);
 		return list;
 	}
 
@@ -2227,6 +2297,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<String>> asyncGetBanks() {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2240,6 +2311,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<String>> asyncGetBanks(String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2249,7 +2321,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public List<String> acceptedBankCurrencies() {
 		ArrayList<String> list = new ArrayList<>();
-		list.add( plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+		list.add(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
 		return list;
 	}
 
@@ -2280,6 +2352,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<String>> asyncAcceptedBankCurrencies() {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2291,6 +2364,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<String>> asyncAcceptedBankCurrencies(String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2303,6 +2377,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<String>> asyncAcceptedBankCurrencies(String world, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2349,6 +2424,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<UUID>> asyncAvailableBankAccounts(UUID player) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2361,6 +2437,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<UUID>> asyncAvailableBankAccounts(UUID player, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2374,6 +2451,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<List<UUID>> asyncAvailableBankAccounts(UUID player, String world, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2409,6 +2487,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncIsBankOwner(UUID player, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2422,6 +2501,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncIsBankOwner(UUID owner, String world, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2433,6 +2513,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public Optional<UUID> createBankAccount(UUID owner) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2445,6 +2526,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public Optional<UUID> createBankAccount(UUID owner, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2458,6 +2540,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public Optional<UUID> createBankAccount(UUID owner, String world, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2469,6 +2552,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Optional<UUID>> asyncCreateBankAccount(UUID owner) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2481,6 +2565,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Optional<UUID>> asyncCreateBankAccount(UUID owner, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2494,6 +2579,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Optional<UUID>> asyncCreateBankAccount(UUID owner, String world, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2536,6 +2622,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasBankAccount(UUID player) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2548,6 +2635,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasBankAccount(UUID player, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2561,6 +2649,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncHasBankAccount(UUID player, String world, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2584,6 +2673,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncIsBankAccountOwner(UUID account, UUID player) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2607,6 +2697,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncIsBankAccountMember(UUID account, UUID player) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2616,7 +2707,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public BigDecimal getBankHoldings(UUID account) {
-		return new BigDecimal(plugin.getRewardManager().bankBalance(Bukkit.getOfflinePlayer(account).getUniqueId().toString()));
+		return new BigDecimal(
+				plugin.getRewardManager().bankBalance(Bukkit.getOfflinePlayer(account).getUniqueId().toString()));
 	}
 
 	/**
@@ -2659,6 +2751,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2670,6 +2763,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2682,6 +2776,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2696,6 +2791,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world, String currency,
 			String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2764,6 +2860,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2778,6 +2875,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2794,6 +2892,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2811,6 +2910,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world,
 			String currency, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2879,6 +2979,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2894,6 +2995,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
 			String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2910,6 +3012,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
 			String world, String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2927,6 +3030,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
 			String world, String currency, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -2938,9 +3042,9 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public boolean bankSetHoldings(UUID account, BigDecimal amount) {
 		BigDecimal bal = getBankHoldings(account);
-		if (bal.compareTo(amount)>=0)
+		if (bal.compareTo(amount) >= 0)
 			return bankRemoveHoldings(account, account, bal.subtract(amount));
-		else 
+		else
 			return bankAddHoldings(account, account, amount.subtract(bal));
 	}
 
@@ -2988,6 +3092,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -3000,6 +3105,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -3014,6 +3120,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world,
 			String currency) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -3029,6 +3136,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world,
 			String currency, String bank) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -3077,6 +3185,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public boolean purgeAccounts() {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return false;
 	}
 
@@ -3090,6 +3199,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public boolean purgeAccountsUnder(BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return false;
 	}
 
@@ -3101,6 +3211,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncPurgeAccounts() {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
@@ -3114,6 +3225,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public CompletableFuture<Boolean> asyncPurgeAccountsUnder(BigDecimal amount) {
 		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;
 	}
 
