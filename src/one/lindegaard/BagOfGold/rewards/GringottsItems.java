@@ -1,6 +1,5 @@
 package one.lindegaard.BagOfGold.rewards;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -55,7 +54,7 @@ public class GringottsItems implements Listener {
 					plugin.getMessages().debug("Money in hans is %s", money);
 					break;
 				} else {
-					plugin.getMessages().debug("This is not gringots money");
+					plugin.getMessages().debug("This is not Gringotts money");
 				}
 			} catch (Exception e) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
@@ -90,7 +89,6 @@ public class GringottsItems implements Listener {
 						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
 				break;
 			}
-			plugin.getMessages().debug("addBagOfGoldPlayer, Material=%s value=%s", material, value);
 			while (moneyLeftToGive >= value) {
 				player.getInventory().addItem(new ItemStack(material));
 				moneyLeftToGive = moneyLeftToGive - value;
@@ -123,8 +121,6 @@ public class GringottsItems implements Listener {
 			}
 			while (taken >= 0) {
 				int i = player.getInventory().first(material);
-				plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s, value=%s, ToBetaken=%s, taken=%s, i=%s",
-						material, value, toBeTaken, taken, i);
 				if (i != -1) {
 					ItemStack is = player.getInventory().getItem(i);
 					toBeTaken = toBeTaken - value;
@@ -142,43 +138,6 @@ public class GringottsItems implements Listener {
 				addGringottsMoneyToPlayer(player, -taken);
 		}
 		return amount;
-	}
-
-	public double removeGringottsMoneyFromPlayerOld(Player player, double amount) {
-		double taken = 0;
-		double toBeTaken = Misc.round(amount);
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
-		denomination: while (itr.hasNext()) {
-			Entry<String, String> pair = itr.next();
-			Material material;
-			double value;
-			try {
-				material = Material.valueOf(pair.getKey());
-				value = Double.valueOf(pair.getValue());
-			} catch (Exception e) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
-						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
-				continue denomination;
-			}
-			while (toBeTaken >= value) {
-				int i = player.getInventory().first(material);
-				plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s, value=%s, ToBetaken=%s, taken=%s, i=%s",
-						material, value, toBeTaken, taken, i);
-				if (i != -1) {
-					ItemStack is = player.getInventory().getItem(i);
-					toBeTaken = toBeTaken - value;
-					taken = taken + value;
-					if (is.getAmount() > 1) {
-						is.setAmount(is.getAmount() - 1);
-						player.getInventory().setItem(i, is);
-					} else {
-						player.getInventory().clear(i);
-					}
-				} else
-					continue denomination;
-			}
-		}
-		return taken;
 	}
 
 	public void dropGringottsMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
@@ -222,7 +181,6 @@ public class GringottsItems implements Listener {
 						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
 				break;
 			}
-			plugin.getMessages().debug("getAmountInInventory, Material=%s value=%s", material, value);
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 				if (slot >= 36 && slot <= 40)
 					continue;
@@ -245,8 +203,6 @@ public class GringottsItems implements Listener {
 							+ material.name() + ","
 							+ plugin.getConfigManager().gringottsDenomination.get(material.name()) + ")");
 		}
-		plugin.getMessages().debug("getAmountInInventory, Material=%s value=%s", material.toString(),
-				plugin.getConfigManager().gringottsDenomination.get(material.name()));
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			if (slot >= 36 && slot <= 40)
 				continue;
@@ -275,7 +231,6 @@ public class GringottsItems implements Listener {
 						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
 				break;
 			}
-			plugin.getMessages().debug("getSpaceForMoney, Material=%s value=%s", material, value);
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 				if (slot >= 36 && slot <= 40)
 					continue;
