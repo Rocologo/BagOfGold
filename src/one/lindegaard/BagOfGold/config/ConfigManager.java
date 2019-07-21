@@ -55,6 +55,13 @@ public class ConfigManager extends AutoConfig {
 						+ "\nCitizens / MasterMobHunter settings."
 						+ "\n########################################################################");
 
+		setCategoryComment("plugins.bossbarapi",
+				"########################################################################" + "\nBossBarAPI"
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.barapi", "########################################################################"
+				+ "\nBarApi" + "\n########################################################################");
+
 		setCategoryComment("plugins.placeholderapi",
 				"########################################################################" + "\nPlaceholderApi"
 						+ "\n########################################################################");
@@ -243,6 +250,13 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "actionannouncer.enable_integration_actionannouncer", category = "plugins", comment = "Enable/Disable integration with ActionAnnouncer. If you want messages in player chat you can set this to true."
 			+ "\nhttps://www.spigotmc.org/resources/actionannouncer.1320/")
 	public boolean enableIntegrationActionAnnouncer = true;
+
+	@ConfigField(name = "bossbarapi.enable_integration_bossbarapi", category = "plugins", comment = "Enable/Disable integration with BossBarAPI. If you want messages in player chat you can set this to true.")
+	public boolean enableIntegrationBossBarAPI = true;
+
+	@ConfigField(name = "barapi.enable_integration_barapi", category = "plugins", comment = "Enable/Disable integration with BarAPI. If you want messages in player chat you can set this to true."
+			+ "\nhttps://dev.bukkit.org/projects/bar_api")
+	public boolean enableIntegrationBarAPI = true;
 
 	@ConfigField(name = "protocollib.enable_integration_protocollib", category = "plugins", comment = "Enable/Disable integration with ProtocolLib."
 			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")

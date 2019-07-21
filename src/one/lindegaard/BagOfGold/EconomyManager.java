@@ -44,6 +44,17 @@ public class EconomyManager {
 		}
 
 	}
+	
+	public String getEconomyAPI() {
+		switch (Type) {
+		case RESERVE:
+			return "Reserve";
+		case VAULT:
+			return "Vault";
+		default:
+			return "None";
+		}
+	}
 
 	public Boolean setupEconomyManager() {
 

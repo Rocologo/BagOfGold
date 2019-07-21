@@ -79,9 +79,7 @@ public class BagOfGoldItems implements Listener {
 		loadAllStoredRewards();
 		if (isBagOfGoldStyle()) {
 			Bukkit.getPluginManager().registerEvents(this, plugin);
-		} else
-			plugin.getMessages().debug("BagOfGoldItems: could not register events");
-
+		} 
 	}
 
 	public boolean isBagOfGoldStyle() {

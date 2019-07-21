@@ -20,6 +20,8 @@ import one.lindegaard.BagOfGold.commands.VersionCommand;
 import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
+import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
@@ -175,7 +177,10 @@ public class BagOfGold extends JavaPlugin {
 		mCompatibilityManager.registerPlugin(ActionAnnouncerCompat.class, CompatPlugin.ActionAnnouncer);
 		mCompatibilityManager.registerPlugin(ActionBarAPICompat.class, CompatPlugin.ActionBarApi);
 		mCompatibilityManager.registerPlugin(ActionbarCompat.class, CompatPlugin.Actionbar);
-
+		mCompatibilityManager.registerPlugin(BossBarAPICompat.class, CompatPlugin.BossBarApi);
+		mCompatibilityManager.registerPlugin(BarAPICompat.class, CompatPlugin.BarApi);
+		
+		
 		mCompatibilityManager.registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
 
 		if (!Servers.isGlowstoneServer()) {
@@ -339,7 +344,7 @@ public class BagOfGold extends JavaPlugin {
 		return mPlayerBalanceManager;
 	}
 
-	public GringottsItems getgringottsItems() {
+	public GringottsItems getGringottsItems() {
 		return mGringottsItems;
 	}
 

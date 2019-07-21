@@ -1,3 +1,5 @@
+V2.7.2
+* Fixed "Unable to add money."
 V2.7.1
 * BagOfGold now support both Vault and Reserve (https://www.spigotmc.org/resources/reserve.50739/)
 * Fixed problem where player could duplicate the BagOfGold item, making a fake reward. (This only happened in creative mode) 

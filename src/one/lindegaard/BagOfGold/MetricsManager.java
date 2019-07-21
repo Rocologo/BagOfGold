@@ -8,9 +8,16 @@ import java.util.concurrent.Callable;
 
 import org.bukkit.Bukkit;
 
+import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
+import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
+import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.MobHuntingCompat;
+import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
+import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.Core.HttpTools;
 import one.lindegaard.Core.HttpTools.httpCallback;
 
@@ -73,7 +80,25 @@ public class MetricsManager {
 
 				}));
 		bStatsMetrics.addCustomChart(new Metrics.SimplePie("language", () -> plugin.getConfigManager().language));
-		bStatsMetrics.addCustomChart(new Metrics.SimplePie("economy_api", () -> plugin.getEconomyManager().getVersion()));
-	}
+		
+		bStatsMetrics.addCustomChart(new Metrics.SimplePie("economy_api", () -> plugin.getEconomyManager().getEconomyAPI()));
+	
+		bStatsMetrics.addCustomChart(new Metrics.AdvancedPie("titlemanagers", new Callable<Map<String, Integer>>() {
+			@Override
+			public Map<String, Integer> call() throws Exception {
+				Map<String, Integer> valueMap = new HashMap<>();
+				//actionbar
+				valueMap.put("TitleAPI", TitleAPICompat.isSupported() ? 1 : 0);
+				valueMap.put("TitleManager", TitleManagerCompat.isSupported() ? 1 : 0);
+				valueMap.put("ActionBar", ActionbarCompat.isSupported() ? 1 : 0);
+				valueMap.put("ActionBarAPI", ActionBarAPICompat.isSupported() ? 1 : 0);
+				valueMap.put("ActionAnnouncer", ActionAnnouncerCompat.isSupported() ? 1 : 0);
+				//bossbar
+				valueMap.put("BarAPI", BarAPICompat.isSupported() ? 1 : 0);
+				valueMap.put("BossBarAPI", BossBarAPICompat.isSupported() ? 1 : 0);
+				return valueMap;
+			}
+		}));
 
+	}
 }

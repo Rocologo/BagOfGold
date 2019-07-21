@@ -25,12 +25,16 @@ public class EssentialsCompat {
 		if (!isEnabledInConfig()) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Compatibility with Essentials is disabled in config.yml");
-			this.plugin=BagOfGold.getInstance();
+			this.plugin = BagOfGold.getInstance();
 		} else {
 			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin(CompatPlugin.Essentials.getName());
 
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Enabling compatibility with Essentials (" + getEssentials().getDescription().getVersion() + ")");
+			if (mPlugin.getDescription().getVersion().compareTo("2.17.0") <= 0
+					&& BagOfGold.getAPI().getEconomyManager().getEconomyAPI().endsWith("Reserve"))
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+						+ "This version of Essentials is not compatible with Reserve. You have 2 economy providers: Essentials and BagOfGold.");
 			supported = true;
 		}
 	}

@@ -39,6 +39,13 @@ public class RewardManager {
 
 	}
 
+	/**
+	 * Check if EntityPickupItemEvent exists. EntityPickupItemEvent was introduced
+	 * in after MC 1.12 was released. The result is that some MC 1.12 server know
+	 * the event, others dont.
+	 * 
+	 * @return
+	 */
 	private boolean eventDoesExists() {
 		try {
 			@SuppressWarnings({ "rawtypes", "unused" })
@@ -113,7 +120,7 @@ public class RewardManager {
 	public boolean withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		if (amount >= 0) {
-			if (has(offlinePlayer, amount)) {
+			if (hasMoney(offlinePlayer, amount)) {
 				if (offlinePlayer.isOnline()) {
 					removeMoneyFromPlayer((Player) offlinePlayer, amount + Misc.round(ps.getBalanceChanges()));
 					ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
@@ -162,7 +169,7 @@ public class RewardManager {
 	 * @param amount
 	 * @return true if the player has the amount on his money.
 	 */
-	public boolean has(OfflinePlayer offlinePlayer, double amount) {
+	public boolean hasMoney(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance pb = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
 				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
@@ -181,8 +188,8 @@ public class RewardManager {
 	public void dropMoneyOnGround(Player player, Entity killedEntity, Location location, double amount) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			plugin.getBagOfGoldItems().dropBagOfGoldMoneyOnGround(player, killedEntity, location, amount);
-		else if (plugin.getgringottsItems().isGringottsStyle())
-			plugin.getgringottsItems().dropGringottsMoneyOnGround(player, killedEntity, location, amount);
+		else if (plugin.getGringottsItems().isGringottsStyle())
+			plugin.getGringottsItems().dropGringottsMoneyOnGround(player, killedEntity, location, amount);
 		else {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
@@ -199,7 +206,6 @@ public class RewardManager {
 	 * @return EconomyResponse containing amount, balance and ResponseType
 	 *         (Success/Failure).
 	 */
-	@SuppressWarnings("deprecation")
 	public boolean bankDeposit(String account, double amount) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
@@ -227,7 +233,6 @@ public class RewardManager {
 	 * @return EconomyResponse containing amount, balance and ResponseType
 	 *         (Success/Failure).
 	 */
-	@SuppressWarnings("deprecation")
 	public boolean bankWithdraw(String account, double amount) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
@@ -275,7 +280,6 @@ public class RewardManager {
 	 * @param account - this is the player UUID.
 	 * @return ResponseType (Success/Failure)
 	 */
-	@SuppressWarnings("deprecation")
 	public boolean deleteBank(String account) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
@@ -313,8 +317,8 @@ public class RewardManager {
 	public String format(double money) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			return plugin.getBagOfGoldItems().format(money);
-		else if (plugin.getgringottsItems().isGringottsStyle())
-			return plugin.getgringottsItems().format(money);
+		else if (plugin.getGringottsItems().isGringottsStyle())
+			return plugin.getGringottsItems().format(money);
 		else {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
@@ -333,8 +337,8 @@ public class RewardManager {
 	public double getAmountInInventory(Player player) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			return plugin.getBagOfGoldItems().getAmountOfBagOfGoldMoneyInInventory(player);
-		else if (plugin.getgringottsItems().isGringottsStyle())
-			return plugin.getgringottsItems().getAmountOfGringottsMoneyInInventory(player);
+		else if (plugin.getGringottsItems().isGringottsStyle())
+			return plugin.getGringottsItems().getAmountOfGringottsMoneyInInventory(player);
 		else {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
@@ -354,8 +358,8 @@ public class RewardManager {
 	public double addMoneyToPlayer(Player player, double amount) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			return plugin.getBagOfGoldItems().addBagOfGoldMoneyToPlayer(player, amount);
-		else if (plugin.getgringottsItems().isGringottsStyle())
-			return plugin.getgringottsItems().addGringottsMoneyToPlayer(player, amount);
+		else if (plugin.getGringottsItems().isGringottsStyle())
+			return plugin.getGringottsItems().addGringottsMoneyToPlayer(player, amount);
 		else {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
@@ -376,8 +380,8 @@ public class RewardManager {
 	public double removeMoneyFromPlayer(Player player, double amount) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			return plugin.getBagOfGoldItems().removeBagOfGoldFromPlayer(player, amount);
-		else if (plugin.getgringottsItems().isGringottsStyle())
-			return plugin.getgringottsItems().removeGringottsMoneyFromPlayer(player, amount);
+		else if (plugin.getGringottsItems().isGringottsStyle())
+			return plugin.getGringottsItems().removeGringottsMoneyFromPlayer(player, amount);
 		else {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
@@ -501,8 +505,8 @@ public class RewardManager {
 	public double getSpaceForMoney(Player player) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
 			return plugin.getBagOfGoldItems().getSpaceForBagOfGoldMoney(player);
-		else if (plugin.getgringottsItems().isGringottsStyle()) {
-			return plugin.getgringottsItems().getSpaceForGringottsMoney(player);
+		else if (plugin.getGringottsItems().isGringottsStyle()) {
+			return plugin.getGringottsItems().getSpaceForGringottsMoney(player);
 		} else {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED

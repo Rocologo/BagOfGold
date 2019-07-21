@@ -1,7 +1,11 @@
 package one.lindegaard.BagOfGold.rewards;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,9 +38,40 @@ public class GringottsItems implements Listener {
 	public boolean isGringottsStyle() {
 		return plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("GRINGOTTS_STYLE");
 	}
-	
+
 	public String format(double money) {
 		return Tools.format(money);
+	}
+
+	public double getMoneyInHand(Player player) {
+		double money = 0;
+		ItemStack moneyInHand = player.getItemInHand();
+		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		while (itr.hasNext()) {
+			Entry<String, String> pair = itr.next();
+			try {
+				if (Material.valueOf(pair.getKey()) == moneyInHand.getType()) {
+					money = Double.valueOf(pair.getValue()) * moneyInHand.getAmount();
+					plugin.getMessages().debug("Money in hans is %s", money);
+					break;
+				} else {
+					plugin.getMessages().debug("This is not gringots money");
+				}
+			} catch (Exception e) {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
+				break;
+			}
+		}
+		return money;
+	}
+
+	public boolean hasMoney(Player player, double amount) {
+		return getAmountOfGringottsMoneyInInventory(player) >= amount;
+	}
+
+	public boolean hasMoney(Player player, Material material, double amount) {
+		return getAmountOfGringottsMoneyInInventory(player, material) >= amount;
 	}
 
 	public double addGringottsMoneyToPlayer(Player player, double amount) {
@@ -66,10 +101,15 @@ public class GringottsItems implements Listener {
 	}
 
 	public double removeGringottsMoneyFromPlayer(Player player, double amount) {
+		LinkedHashMap<String, String> denominations = new LinkedHashMap<>();
+		denominations = plugin.getConfigManager().gringottsDenomination;
+		Map<String, String> result = denominations.entrySet().stream().sorted(Map.Entry.comparingByValue())
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
+						LinkedHashMap::new));
+		Iterator<Entry<String, String>> itr = result.entrySet().iterator();
 		double taken = 0;
 		double toBeTaken = Misc.round(amount);
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
-		while (itr.hasNext()) {
+		denomination: while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			Material material;
 			double value;
@@ -79,21 +119,63 @@ public class GringottsItems implements Listener {
 			} catch (Exception e) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
 						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
-				continue;
+				continue denomination;
+			}
+			while (taken >= 0) {
+				int i = player.getInventory().first(material);
+				plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s, value=%s, ToBetaken=%s, taken=%s, i=%s",
+						material, value, toBeTaken, taken, i);
+				if (i != -1) {
+					ItemStack is = player.getInventory().getItem(i);
+					toBeTaken = toBeTaken - value;
+					taken = taken + value;
+					if (is.getAmount() > 1) {
+						is.setAmount(is.getAmount() - 1);
+						player.getInventory().setItem(i, is);
+					} else {
+						player.getInventory().clear(i);
+					}
+				} else
+					continue denomination;
+			}
+			if (taken < 0)
+				addGringottsMoneyToPlayer(player, -taken);
+		}
+		return amount;
+	}
+
+	public double removeGringottsMoneyFromPlayerOld(Player player, double amount) {
+		double taken = 0;
+		double toBeTaken = Misc.round(amount);
+		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		denomination: while (itr.hasNext()) {
+			Entry<String, String> pair = itr.next();
+			Material material;
+			double value;
+			try {
+				material = Material.valueOf(pair.getKey());
+				value = Double.valueOf(pair.getValue());
+			} catch (Exception e) {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
+				continue denomination;
 			}
 			while (toBeTaken >= value) {
-				plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s, value=%s, ToBetaken=%s, taken=%s",
-						material, value, toBeTaken, taken);
 				int i = player.getInventory().first(material);
-				ItemStack is = player.getInventory().getItem(i);
-				toBeTaken = toBeTaken - value;
-				taken = taken + value;
-				if (is.getAmount() > 1) {
-					is.setAmount(is.getAmount() - 1);
-					player.getInventory().setItem(i, is);
-				} else {
-					player.getInventory().clear(i);
-				}
+				plugin.getMessages().debug("removeBagOfGoldPlayer, Material=%s, value=%s, ToBetaken=%s, taken=%s, i=%s",
+						material, value, toBeTaken, taken, i);
+				if (i != -1) {
+					ItemStack is = player.getInventory().getItem(i);
+					toBeTaken = toBeTaken - value;
+					taken = taken + value;
+					if (is.getAmount() > 1) {
+						is.setAmount(is.getAmount() - 1);
+						player.getInventory().setItem(i, is);
+					} else {
+						player.getInventory().clear(i);
+					}
+				} else
+					continue denomination;
 			}
 		}
 		return taken;
@@ -152,6 +234,29 @@ public class GringottsItems implements Listener {
 		return amountInInventory;
 	}
 
+	public double getAmountOfGringottsMoneyInInventory(Player player, Material material) {
+		double amountInInventory = 0;
+		double value = 0;
+		try {
+			value = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(material.toString()));
+		} catch (Exception e) {
+			Bukkit.getConsoleSender()
+					.sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + " Could not read denomonation ("
+							+ material.name() + ","
+							+ plugin.getConfigManager().gringottsDenomination.get(material.name()) + ")");
+		}
+		plugin.getMessages().debug("getAmountInInventory, Material=%s value=%s", material.toString(),
+				plugin.getConfigManager().gringottsDenomination.get(material.name()));
+		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot >= 36 && slot <= 40)
+				continue;
+			ItemStack is = player.getInventory().getItem(slot);
+			if (is != null && is.getType() == material)
+				amountInInventory = amountInInventory + is.getAmount() * value;
+		}
+		return amountInInventory;
+	}
+
 	public double getSpaceForGringottsMoney(Player player) {
 		double space = 0;
 		double maxValue = 0;
@@ -189,6 +294,24 @@ public class GringottsItems implements Listener {
 		}
 		plugin.getMessages().debug("%s has room for %s Gringotts money in the inventory", player.getName(), space);
 		return space;
+	}
+
+	public boolean isGringottsReward(Material material) {
+		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		while (itr.hasNext()) {
+			Entry<String, String> pair = itr.next();
+			Material mat;
+			try {
+				mat = Material.valueOf(pair.getKey());
+				if (mat == material)
+					return true;
+			} catch (Exception e) {
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+						+ " Could not read denomonation (" + pair.getKey() + "," + pair.getValue() + ")");
+				break;
+			}
+		}
+		return false;
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)

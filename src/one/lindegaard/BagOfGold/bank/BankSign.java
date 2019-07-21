@@ -56,9 +56,11 @@ public class BankSign implements Listener {
 				// deposit BankSign
 				// -----------------------------------------------------------------------
 				if (signType.equalsIgnoreCase(plugin.getMessages().getString("bagofgold.banksign.line2.deposit"))) {
+					// Normal BagOfGold Rewards
 					if (Reward.isReward(player.getItemInHand())
 							&& (Reward.getReward(player.getItemInHand()).isBagOfGoldReward()
 									|| Reward.getReward(player.getItemInHand()).isItemReward())) {
+
 						Reward reward = Reward.getReward(player.getItemInHand());
 
 						moneyInHand = reward.getMoney();
@@ -96,6 +98,49 @@ public class BankSign implements Listener {
 											plugin.getEconomyManager().format(money), "rewardname",
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 													+ reward.getDisplayname().trim()));
+						}
+						// Gringott items
+					} else if (plugin.getGringottsItems().isGringottsReward(player.getItemInHand().getType())) {
+						plugin.getMessages().debug("%s used %s %s on the sign", player.getName(),
+								player.getItemInHand().getAmount(), player.getName(),
+								player.getItemInHand().getType().name());
+						moneyInHand = plugin.getGringottsItems().getMoneyInHand(player);
+						plugin.getMessages().debug("%s has %s in his hand",player.getName(),moneyInHand);
+						money = moneyInHand;
+						if (moneyInHand == 0) {
+							plugin.getMessages().playerSendMessage(player,
+									plugin.getMessages().getString("bagofgold.banksign.item_has_no_value", "itemname",
+											player.getItemInHand().getType().name()));
+							return;
+						}
+
+						if (sign.getLine(2).isEmpty() || sign.getLine(2).equalsIgnoreCase(
+								plugin.getMessages().getString("bagofgold.banksign.line3.everything"))) {
+							money = moneyInHand;
+							moneyOnSign = moneyInHand;
+						} else {
+							try {
+								moneyOnSign = Double.valueOf(sign.getLine(2));
+								money = moneyInHand <= moneyOnSign ? moneyInHand : moneyOnSign;
+							} catch (NumberFormatException e) {
+								plugin.getMessages().playerSendMessage(player,
+										plugin.getMessages().getString("bagofgold.banksign.line3.not_a_number",
+												"number", sign.getLine(2), "everything",
+												plugin.getMessages().getString("bagofgold.banksign.line3.everything")));
+								return;
+							}
+						}
+
+						boolean res = plugin.getEconomyManager().withdrawPlayer(player, money);
+						if (res) {
+							plugin.getEconomyManager().bankAccountDeposit(player.getUniqueId().toString(), money);
+							plugin.getMessages().debug("%s deposit %s %s into Bank", player.getName(),
+									plugin.getEconomyManager().format(money), player.getItemInHand().getType());
+							plugin.getMessages().playerSendMessage(player,
+									plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
+											plugin.getEconomyManager().format(money), "rewardname",
+											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+													+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName));
 						}
 					} else {
 						plugin.getMessages().playerSendMessage(player,
@@ -151,8 +196,8 @@ public class BankSign implements Listener {
 
 						}
 					} else {
-						plugin.getMessages().debug("Space=%s, bankbal=%s",space, Misc
-								.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString())));
+						plugin.getMessages().debug("Space=%s, bankbal=%s", space,
+								Misc.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString())));
 						double bal = Misc
 								.round(plugin.getEconomyManager().bankBalance(player.getUniqueId().toString()));
 						if (space < bal)
