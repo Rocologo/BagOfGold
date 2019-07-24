@@ -18,16 +18,16 @@
 		<url>https://github.com/Rocologo/BagOfGold</url>
 	</scm>
 
-	<issueManagement>
-		<url>https://github.com/Rocologo/BagOfGold/issues</url>
-	</issueManagement>
-
 	<parent>
 		<groupId>one.lindegaard</groupId>
 		<artifactId>Main</artifactId>
 		<version>0.0.7</version>
 		<relativePath>../Main/pom.xml</relativePath>
 	</parent>
+
+	<issueManagement>
+		<url>https://github.com/Rocologo/BagOfGold/issues</url>
+	</issueManagement>
 
 	<!-- ********************************************************************** -->
 	<!-- ******************************** Build ******************************* -->
@@ -113,6 +113,21 @@
 	<!-- **************************** Dependencies **************************** -->
 	<!-- ********************************************************************** -->
 	<dependencies>
+
+		<!-- SpigotMC -->
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigotmc_1_14_R1.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>${craftbukkit_1_14_R1.version}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Rocologo Core -->
 		<dependency>
