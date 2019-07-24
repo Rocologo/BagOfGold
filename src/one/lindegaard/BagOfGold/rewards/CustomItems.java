@@ -36,7 +36,6 @@ import one.lindegaard.Core.skins.Skins_1_12_R1;
 import one.lindegaard.Core.skins.Skins_1_13_R1;
 import one.lindegaard.Core.skins.Skins_1_13_R2;
 import one.lindegaard.Core.skins.Skins_1_14_R1;
-import one.lindegaard.Core.skins.Skins_1_14_R2;
 import one.lindegaard.Core.skins.Skins_1_8_R1;
 import one.lindegaard.Core.skins.Skins_1_8_R2;
 import one.lindegaard.Core.skins.Skins_1_8_R3;
@@ -69,9 +68,8 @@ public class CustomItems {
 			whatVersionAreYouUsingException.printStackTrace();
 			return null;
 		}
-		if (version.equals("v1_14_R2")) {
-			sk = new Skins_1_14_R2();
-		} else if (version.equals("v1_14_R1")) {
+		//https://www.spigotmc.org/wiki/spigot-nms-and-minecraft-versions/
+		if (version.equals("v1_14_R1")) {
 			sk = new Skins_1_14_R1();
 		} else if (version.equals("v1_13_R2")) {
 			sk = new Skins_1_13_R2();

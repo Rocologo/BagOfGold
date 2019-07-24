@@ -68,6 +68,21 @@ public class RewardManager {
 		return ps.getBalance() + ps.getBalanceChanges();
 	}
 
+	public boolean setbalance(OfflinePlayer offlinePlayer, double amount) {
+		double bal = getBalance(offlinePlayer);
+		if (offlinePlayer.isOnline()) {
+			if (amount >= bal)
+				addMoneyToPlayer((Player) offlinePlayer, amount - bal);
+			else
+				removeMoneyFromPlayer((Player) offlinePlayer, bal - amount);
+		} else {
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
+			ps.setBalanceChanges(ps.getBalanceChanges() + (amount - bal));
+			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+		}
+		return true;
+	}
+
 	/**
 	 * depositPlayer : deposit the amount to the players balance and add the mount
 	 * to the players inventory. Do not deposit negative amounts!
@@ -272,6 +287,18 @@ public class RewardManager {
 			return ps.getBankBalance() + ps.getBankBalanceChanges();
 		} else
 			return 0;
+	}
+	
+	public boolean setBankBalance(String account, double amount) {
+		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
+				: Bukkit.getOfflinePlayer(account);
+		if (offlinePlayer != null) {
+			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
+			ps.setBankBalance(Misc.round(amount));
+			ps.setBankBalanceChanges(0);
+			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+		}
+		return true;
 	}
 
 	/**

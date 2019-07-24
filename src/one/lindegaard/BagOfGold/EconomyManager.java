@@ -140,6 +140,17 @@ public class EconomyManager {
 		}
 	}
 
+	public boolean setBalance(OfflinePlayer offlinePlayer, double amount) {
+		switch (Type) {
+		case RESERVE:
+			return reserveEconomy.setHoldings(offlinePlayer.getUniqueId(),new BigDecimal(amount));
+		case VAULT:
+			return setBalance(offlinePlayer,amount);
+		default:
+			return false;
+		}
+	}
+
 	public boolean hasMoney(OfflinePlayer offlinePlayer, double amount) {
 		switch (Type) {
 		case RESERVE:
@@ -197,6 +208,18 @@ public class EconomyManager {
 			return 0;
 		}
 	}
+
+	/**
+	public double setBankBalance(String account, double amount) {
+		switch (Type) {
+		case RESERVE:
+			return reserveEconomy.setBankHoldings(UUID.fromString(account),new BigDecimal(amount));
+		case VAULT:
+			return vaultEconomy.bankBalance(account).amount;
+		default:
+			return 0;
+		}
+	}**/
 
 	public boolean bankAccountHasAmount(String account, double amount) {
 		switch (Type) {
