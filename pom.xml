@@ -22,7 +22,7 @@
 		<groupId>one.lindegaard</groupId>
 		<artifactId>Main</artifactId>
 		<version>0.0.7</version>
-		<relativePath>../Main/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<issueManagement>
