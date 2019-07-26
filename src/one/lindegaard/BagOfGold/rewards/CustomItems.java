@@ -40,6 +40,7 @@ import one.lindegaard.Core.skins.Skins_1_8_R1;
 import one.lindegaard.Core.skins.Skins_1_8_R2;
 import one.lindegaard.Core.skins.Skins_1_8_R3;
 import one.lindegaard.Core.skins.Skins_1_9_R1;
+import one.lindegaard.MobHunting.rewards.Reward;
 
 public class CustomItems {
 
@@ -68,7 +69,7 @@ public class CustomItems {
 			whatVersionAreYouUsingException.printStackTrace();
 			return null;
 		}
-		//https://www.spigotmc.org/wiki/spigot-nms-and-minecraft-versions/
+		// https://www.spigotmc.org/wiki/spigot-nms-and-minecraft-versions/
 		if (version.equals("v1_14_R1")) {
 			sk = new Skins_1_14_R1();
 		} else if (version.equals("v1_13_R2")) {
@@ -364,19 +365,28 @@ public class CustomItems {
 		ItemStack skull;
 		switch (minecraftMob) {
 		case Skeleton:
-			skull = new ItemStack(Material.SKELETON_SKULL, amount);
+			if (Servers.isMC113OrNewer())
+				skull = new ItemStack(Material.SKELETON_SKULL, amount);
+			else
+				skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), amount, (short) 0);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
 		case WitherSkeleton:
-			skull = new ItemStack(Material.WITHER_SKELETON_SKULL, amount);
+			if (Servers.isMC113OrNewer())
+				skull = new ItemStack(Material.WITHER_SKELETON_SKULL, amount);
+			else
+				skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), amount, (short) 1);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
 		case Zombie:
-			skull = new ItemStack(Material.ZOMBIE_HEAD, amount);
+			if (Servers.isMC113OrNewer())
+				skull = new ItemStack(Material.matchMaterial("ZOMBIE_HEAD"), amount);
+			else
+				skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), amount, (short) 2);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
@@ -386,13 +396,19 @@ public class CustomItems {
 			break;
 
 		case Creeper:
-			skull = new ItemStack(Material.CREEPER_HEAD, amount);
+			if (Servers.isMC113OrNewer())
+				skull = new ItemStack(Material.CREEPER_HEAD, amount);
+			else
+				skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), amount, (short) 4);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
 		case EnderDragon:
-			skull = new ItemStack(Material.DRAGON_HEAD, amount);
+			if (Servers.isMC113OrNewer())
+				skull = new ItemStack(Material.DRAGON_HEAD, amount);
+			else
+				skull = new ItemStack(Material.matchMaterial("SKULL_ITEM"), amount, (short) 5);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;

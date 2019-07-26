@@ -1,6 +1,6 @@
 V2.7.3
-*
-V2.7.2
+* Fixed more MC 1.12 bugs where Material names was not recognized.
+V2.7.2 
 * Added Economy_API to bstats.org
 * BankSigns can now be used when Gringotts_Style is chosen.
 * Gringotts deposit/withdraw recoded
