@@ -36,6 +36,8 @@ public class Reward {
 	// Unique random generated UUID for KILLER head rewards
 	public final static String MH_REWARD_KILLER_UUID = "d81f1076-c91c-44c0-98c3-02a2ee88aa97";
 
+	// Reserved - not used
+	public final static String MH_REWARD_CHEST_UUID = "";
 	public final static String MH_REWARD_COINS_UUID = "cd05873a-b50e-4be2-9582-71770fab4034";
 	public final static String MH_REWARD_SACK_UUID = "a3cf92ff-af45-458a-a633-f71760adee6f";
 	public final static String MH_REWARD_DUST_UUID = "19e165cb-e47f-4f68-8e96-f13e28c07c08";
@@ -70,22 +72,26 @@ public class Reward {
 	}
 
 	public Reward(List<String> lore) {
-		this.displayname = lore.get(0).startsWith("Hidden:") ? lore.get(0).substring(7) : lore.get(0);
-		this.money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
-		this.uuid = (lore.get(2).startsWith("Hidden:")) ? UUID.fromString(lore.get(2).substring(7))
-				: UUID.fromString(lore.get(2));
-		if (this.money == 0)
-			this.uniqueId = UUID.randomUUID();
-		else
-			this.uniqueId = (lore.get(3).startsWith("Hidden:")) ? UUID.fromString(lore.get(3).substring(7))
-					: UUID.fromString(lore.get(3));
-		if (lore.size() >= 5 && !lore.get(4).equalsIgnoreCase("Hidden:")
-				&& !lore.get(4).equalsIgnoreCase("Hidden:null"))
-			this.skinUUID = (lore.get(4).startsWith("Hidden:")) ? UUID.fromString(lore.get(4).substring(7))
-					: UUID.fromString(lore.get(4));
-		else {
-			if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
-				this.skinUUID = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
+		int n = getFirstRewardLores(lore);
+		if (n != -1) {
+			this.displayname = lore.get(n).startsWith("Hidden:") ? lore.get(n).substring(7) : lore.get(n);
+			this.money = Double
+					.valueOf(lore.get(n + 1).startsWith("Hidden:") ? lore.get(n + 1).substring(7) : lore.get(n + 1));
+			this.uuid = (lore.get(n + 2).startsWith("Hidden:")) ? UUID.fromString(lore.get(n + 2).substring(7))
+					: UUID.fromString(lore.get(n + 2));
+			if (this.money == 0)
+				this.uniqueId = UUID.randomUUID();
+			else
+				this.uniqueId = (lore.get(n + 3).startsWith("Hidden:")) ? UUID.fromString(lore.get(n + 3).substring(7))
+						: UUID.fromString(lore.get(n + 3));
+			if (lore.size() >= n + 5 && !lore.get(n + 4).equalsIgnoreCase("Hidden:")
+					&& !lore.get(n + 4).equalsIgnoreCase("Hidden:null"))
+				this.skinUUID = (lore.get(n + 4).startsWith("Hidden:")) ? UUID.fromString(lore.get(n + 4).substring(7))
+						: UUID.fromString(lore.get(n + 4));
+			else {
+				if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
+					this.skinUUID = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
+			}
 		}
 	}
 
@@ -270,7 +276,15 @@ public class Reward {
 	}
 
 	public static boolean isReward(ItemStack itemStack) {
+		if (getFirstRewardLores(itemStack) >= 0)
+			return true;
+		else
+			return false;
+	}
+
+	private static int getFirstRewardLores(ItemStack itemStack) {
 		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
+			int n = 0;
 			Iterator<String> itr = itemStack.getItemMeta().getLore().iterator();
 			while (itr.hasNext()) {
 				String lore = itr.next();
@@ -278,11 +292,24 @@ public class Reward {
 						|| lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
-					return true;
+					return n;
 				}
+				n++;
 			}
 		}
-		return false;
+		return -1;
+	}
+
+	private static int getFirstRewardLores(List<String> lores) {
+		int n = 0;
+		for (String lore : lores) {
+			if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID) || lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
+					|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID) || lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
+				return n;
+			}
+			n++;
+		}
+		return -1;
 	}
 
 	public static Reward getReward(ItemStack itemStack) {
