@@ -40,7 +40,6 @@ import one.lindegaard.Core.skins.Skins_1_8_R1;
 import one.lindegaard.Core.skins.Skins_1_8_R2;
 import one.lindegaard.Core.skins.Skins_1_8_R3;
 import one.lindegaard.Core.skins.Skins_1_9_R1;
-import one.lindegaard.MobHunting.rewards.Reward;
 
 public class CustomItems {
 
