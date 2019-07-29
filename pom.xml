@@ -96,17 +96,17 @@
 							<include>one.lindegaard:Core:*</include>
 							<include>org.bstats:*</include>
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
-							<include>one.lindegaard:v1_14_R1:*</include>
-							<include>one.lindegaard:v1_13_R2:*</include>
-							<include>one.lindegaard:v1_13_R1:*</include>
-							<include>one.lindegaard:v1_12_R1:*</include>
-							<include>one.lindegaard:v1_11_R1:*</include>
-							<include>one.lindegaard:v1_10_R1:*</include>
-							<include>one.lindegaard:v1_9_R2:*</include>
-							<include>one.lindegaard:v1_9_R1:*</include>
-							<include>one.lindegaard:v1_8_R3:*</include>
-							<include>one.lindegaard:v1_8_R2:*</include>
-							<include>one.lindegaard:v1_8_R1:*</include>
+							<include>one.lindegaard:Core:v1_14_R1:*</include>
+							<include>one.lindegaard:Core:v1_13_R2:*</include>
+							<include>one.lindegaard:Core:v1_13_R1:*</include>
+							<include>one.lindegaard:Core:v1_12_R1:*</include>
+							<include>one.lindegaard:Core:v1_11_R1:*</include>
+							<include>one.lindegaard:Core:v1_10_R1:*</include>
+							<include>one.lindegaard:Core:v1_9_R2:*</include>
+							<include>one.lindegaard:Core:v1_9_R1:*</include>
+							<include>one.lindegaard:Core:v1_8_R3:*</include>
+							<include>one.lindegaard:Core:v1_8_R2:*</include>
+							<include>one.lindegaard:Core:v1_8_R1:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -131,6 +131,14 @@
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc_1_14_R1.version}</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>v1_14_R1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../Main/lib/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 
 		<!-- Rocologo Core -->
