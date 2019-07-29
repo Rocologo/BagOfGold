@@ -709,9 +709,8 @@ public class BagOfGoldItems implements Listener {
 
 		Player player = event.getPlayer();
 
-		if (canPickupMoney(player)) {
 			Iterator<Entity> entityList = ((Entity) player).getNearbyEntities(1, 1, 1).iterator();
-			while (entityList.hasNext() && canPickupMoney(player)) {
+			while (entityList.hasNext() ) {
 				Entity entity = entityList.next();
 				if (!(entity instanceof Item))
 					continue;
@@ -724,7 +723,7 @@ public class BagOfGoldItems implements Listener {
 					return;
 				}
 
-				if (Reward.isReward(item)) {
+				if (Reward.isReward(item) && canPickupMoney(player)) {
 					if (droppedMoney.containsKey(entity.getEntityId())) {
 						droppedMoney.remove(entity.getEntityId());
 						Reward reward = Reward.getReward(item);
@@ -738,7 +737,6 @@ public class BagOfGoldItems implements Listener {
 							item.remove();
 						}
 					}
-				}
 			}
 		}
 	}
