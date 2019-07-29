@@ -74,6 +74,7 @@ public class Reward {
 	public Reward(List<String> lore) {
 		int n = getFirstRewardLores(lore);
 		if (n != -1) {
+			BagOfGold.getAPI().getMessages().debug("Reward: n=%s", n);
 			this.displayname = lore.get(n).startsWith("Hidden:") ? lore.get(n).substring(7) : lore.get(n);
 			this.money = Double
 					.valueOf(lore.get(n + 1).startsWith("Hidden:") ? lore.get(n + 1).substring(7) : lore.get(n + 1));
@@ -288,11 +289,12 @@ public class Reward {
 			Iterator<String> itr = itemStack.getItemMeta().getLore().iterator();
 			while (itr.hasNext()) {
 				String lore = itr.next();
+				BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
 				if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
-					return n;
+					return n-2;
 				}
 				n++;
 			}
@@ -303,9 +305,10 @@ public class Reward {
 	private static int getFirstRewardLores(List<String> lores) {
 		int n = 0;
 		for (String lore : lores) {
+			BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
 			if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID) || lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
 					|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID) || lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
-				return n;
+				return n-2;
 			}
 			n++;
 		}
