@@ -133,12 +133,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Craftbukkit / Bukkit -->		
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>v1_14_R1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../Main/lib/craftbukkit-1.14.4-R0.1-SNAPSHOT.jar</systemPath>
+			<version>${craftbukkit_1_14_R1.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Rocologo Core -->
