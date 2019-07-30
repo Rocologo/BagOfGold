@@ -125,22 +125,6 @@
 	<!-- ********************************************************************** -->
 	<dependencies>
 
-		<!-- SpigotMC -->
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc_1_14_R1.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Craftbukkit / Bukkit -->		
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>${craftbukkit_1_14_R1.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- Rocologo Core -->
 		<dependency>
 			<groupId>one.lindegaard</groupId>
