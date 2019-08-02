@@ -15,7 +15,6 @@ import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
-import one.lindegaard.BagOfGold.compatibility.MobHuntingCompat;
 import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.Core.HttpTools;
@@ -74,7 +73,6 @@ public class MetricsManager {
 						Map<String, Integer> valueMap = new HashMap<>();
 						valueMap.put("Citizens", CitizensCompat.isSupported() ? 1 : 0);
 						valueMap.put("Essentials", EssentialsCompat.isSupported() ? 1 : 0);
-						valueMap.put("MobHunting", MobHuntingCompat.isSupported() ? 1 : 0);
 						return valueMap;
 					}
 

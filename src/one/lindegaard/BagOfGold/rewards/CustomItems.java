@@ -30,16 +30,17 @@ import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
 import one.lindegaard.Core.skins.Skins;
-import one.lindegaard.Core.skins.Skins_1_10_R1;
-import one.lindegaard.Core.skins.Skins_1_11_R1;
-import one.lindegaard.Core.skins.Skins_1_12_R1;
-import one.lindegaard.Core.skins.Skins_1_13_R1;
-import one.lindegaard.Core.skins.Skins_1_13_R2;
-import one.lindegaard.Core.skins.Skins_1_14_R1;
-import one.lindegaard.Core.skins.Skins_1_8_R1;
-import one.lindegaard.Core.skins.Skins_1_8_R2;
-import one.lindegaard.Core.skins.Skins_1_8_R3;
-import one.lindegaard.Core.skins.Skins_1_9_R1;
+import one.lindegaard.Core.v1_10_R1.Skins_1_10_R1;
+import one.lindegaard.Core.v1_10_R1.Skins_1_12_R1;
+import one.lindegaard.Core.v1_11_R1.Skins_1_11_R1;
+import one.lindegaard.Core.v1_13_R1.Skins_1_13_R1;
+import one.lindegaard.Core.v1_13_R2.Skins_1_13_R2;
+import one.lindegaard.Core.v1_14_R1.Skins_1_14_R1;
+import one.lindegaard.Core.v1_8_R1.Skins_1_8_R1;
+import one.lindegaard.Core.v1_8_R2.Skins_1_8_R2;
+import one.lindegaard.Core.v1_8_R3.Skins_1_8_R3;
+import one.lindegaard.Core.v1_9_R1.Skins_1_9_R1;
+import one.lindegaard.Core.v1_9_R2.Skins_1_9_R2;
 
 public class CustomItems {
 
@@ -82,7 +83,7 @@ public class CustomItems {
 		} else if (version.equals("v1_10_R1")) {
 			sk = new Skins_1_10_R1();
 		} else if (version.equals("v1_9_R2")) {
-			sk = new Skins_1_9_R1();
+			sk = new Skins_1_9_R2();
 		} else if (version.equals("v1_9_R1")) {
 			sk = new Skins_1_9_R1();
 		} else if (version.equals("v1_8_R3")) {

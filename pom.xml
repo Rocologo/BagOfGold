@@ -91,22 +91,13 @@
 				</executions>
 				<configuration>
 					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<createSourcesJar>false</createSourcesJar>
 					<artifactSet>
 						<includes>
-							<include>one.lindegaard:Core:*</include>
 							<include>org.bstats:*</include>
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
-							<include>one.lindegaard:Core:v1_14_R1:*</include>
-							<include>one.lindegaard:Core:v1_13_R2:*</include>
-							<include>one.lindegaard:Core:v1_13_R1:*</include>
-							<include>one.lindegaard:Core:v1_12_R1:*</include>
-							<include>one.lindegaard:Core:v1_11_R1:*</include>
-							<include>one.lindegaard:Core:v1_10_R1:*</include>
-							<include>one.lindegaard:Core:v1_9_R2:*</include>
-							<include>one.lindegaard:Core:v1_9_R1:*</include>
-							<include>one.lindegaard:Core:v1_8_R3:*</include>
-							<include>one.lindegaard:Core:v1_8_R2:*</include>
-							<include>one.lindegaard:Core:v1_8_R1:*</include>
+							<include>one.lindegaard:Core:*:*</include>
+							<include>one.lindegaard:Core:v1_*:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -133,14 +124,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Craftbukkit / Bukkit -->		
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>${craftbukkit_1_14_R1.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- Rocologo Core -->
 		<dependency>
 			<groupId>one.lindegaard</groupId>
@@ -148,15 +131,84 @@
 			<version>${core.version}</version>
 			<scope>compile</scope>
 		</dependency>
-
-		<!-- MobHunting / -->
 		<dependency>
 			<groupId>one.lindegaard</groupId>
-			<artifactId>MobHunting</artifactId>
-			<version>${mobhunting.version}</version>
-			<scope>compile</scope>
+			<artifactId>NMS_v1_14_R1</artifactId>
+			<version>v1_14_R1</version>
+			<type>jar</type>
+			<optional>true</optional>
 		</dependency>
-
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_13_R2</artifactId>
+			<version>v1_13_R2</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_13_R1</artifactId>
+			<version>v1_13_R1</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_12_R1</artifactId>
+			<version>v1_12_R1</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		 <dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_11_R1</artifactId>
+			<version>v1_11_R1</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_10_R1</artifactId>
+			<version>v1_10_R1</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_9_R2</artifactId>
+			<version>v1_9_R2</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_9_R1</artifactId>
+			<version>v1_9_R1</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_8_R3</artifactId>
+			<version>v1_8_R3</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_8_R2</artifactId>
+			<version>v1_8_R2</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>NMS_v1_8_R1</artifactId>
+			<version>v1_8_R1</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		 
 		<!-- PerWorldInventory -->
 		<dependency>
 			<groupId>me.ebonjaeger</groupId>
@@ -168,6 +220,133 @@
 			<groupId>me.gnat008</groupId>
 			<artifactId>perworldinventory</artifactId>
 			<version>1.8.3</version>
+		</dependency>
+		
+		<!-- Vault / -->
+		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>${vault.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Reserve / -->
+		<dependency>
+			<groupId>net.tnemc</groupId>
+			<artifactId>Reserve</artifactId>
+			<version>${reserve.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Citizens -->
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizensapi</artifactId>
+			<version>${citizensapi.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- BossBarAPI -->
+		<dependency>
+			<groupId>org.inventivetalent</groupId>
+			<artifactId>bossbarapi</artifactId>
+			<version>${bossbarapi.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>metrics-lite</artifactId>
+					<groupId>org.mcstats.bukkit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- BarAPI -->
+		<dependency>
+			<groupId>me.confuser</groupId>
+			<artifactId>BarAPI</artifactId>
+			<version>${barapi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- TitleManager -->
+		<dependency>
+			<groupId>io.puharesource.mc</groupId>
+			<artifactId>TitleManager</artifactId>
+			<version>${titlemanager.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- TitleAPI -->
+		<dependency>
+			<groupId>com.connorlinfoot</groupId>
+			<artifactId>TitleAPI</artifactId>
+			<version>${TitleAPI.version}</version>
+		</dependency>
+
+		<!-- Essentials -->
+		<dependency>
+			<groupId>net.ess3</groupId>
+			<artifactId>EssentialsX</artifactId>
+			<version>${EssentialsX.version}</version>
+		</dependency>
+
+		<!-- ActionBarAPI -->
+		<dependency>
+			<groupId>ActionBarAPI</groupId>
+			<artifactId>ActionBarAPI</artifactId>
+			<version>${ActionBarAPI.version}</version>
+		</dependency>
+
+		<!-- ActionAnnouncer -->
+		<dependency>
+			<groupId>me.clip.actionannouncer.ActionAnnouncer</groupId>
+			<artifactId>ActionAnnouncer</artifactId>
+			<version>${ActionAnnouncer.version}</version>
+		</dependency>
+
+		<!-- bStats.org -->
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-bukkit</artifactId>
+			<version>${bstats.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- PlacholdeAPI -->
+		<dependency>
+			<groupId>me.clip</groupId>
+			<artifactId>placeholderapi</artifactId>
+			<version>${placeholderapi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- BossShop -->
+		<dependency>
+			<groupId>org.black_ixx</groupId>
+			<artifactId>BossShop</artifactId>
+			<version>${bossshop.version}</version>
+		</dependency>
+
+		<!-- SpigetUpdate -->
+		<dependency>
+			<groupId>org.inventivetalent.spiget-update</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${spigetupdate.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 
 	</dependencies>
