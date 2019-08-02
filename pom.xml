@@ -96,8 +96,7 @@
 						<includes>
 							<include>org.bstats:*</include>
 							<include>org.inventivetalent.spiget-update:bukkit**</include>
-							<include>one.lindegaard:Core:*:*</include>
-							<include>one.lindegaard:Core:v1_*:*</include>
+							<include>one.lindegaard:Core:*</include>
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -133,82 +132,11 @@
 		</dependency>
 		<dependency>
 			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_14_R1</artifactId>
-			<version>v1_14_R1</version>
+			<artifactId>NMS_Shared</artifactId>
+			<version>NMS_Shared</version>
 			<type>jar</type>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_13_R2</artifactId>
-			<version>v1_13_R2</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_13_R1</artifactId>
-			<version>v1_13_R1</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_12_R1</artifactId>
-			<version>v1_12_R1</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		 <dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_11_R1</artifactId>
-			<version>v1_11_R1</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_10_R1</artifactId>
-			<version>v1_10_R1</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_9_R2</artifactId>
-			<version>v1_9_R2</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_9_R1</artifactId>
-			<version>v1_9_R1</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_8_R3</artifactId>
-			<version>v1_8_R3</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_8_R2</artifactId>
-			<version>v1_8_R2</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_v1_8_R1</artifactId>
-			<version>v1_8_R1</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
-		 
 		<!-- PerWorldInventory -->
 		<dependency>
 			<groupId>me.ebonjaeger</groupId>
@@ -221,7 +149,7 @@
 			<artifactId>perworldinventory</artifactId>
 			<version>1.8.3</version>
 		</dependency>
-		
+
 		<!-- Vault / -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>

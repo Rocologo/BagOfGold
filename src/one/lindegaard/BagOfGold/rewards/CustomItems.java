@@ -29,18 +29,8 @@ import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
-import one.lindegaard.Core.skins.Skins;
-import one.lindegaard.Core.v1_10_R1.Skins_1_10_R1;
-import one.lindegaard.Core.v1_10_R1.Skins_1_12_R1;
-import one.lindegaard.Core.v1_11_R1.Skins_1_11_R1;
-import one.lindegaard.Core.v1_13_R1.Skins_1_13_R1;
-import one.lindegaard.Core.v1_13_R2.Skins_1_13_R2;
-import one.lindegaard.Core.v1_14_R1.Skins_1_14_R1;
-import one.lindegaard.Core.v1_8_R1.Skins_1_8_R1;
-import one.lindegaard.Core.v1_8_R2.Skins_1_8_R2;
-import one.lindegaard.Core.v1_8_R3.Skins_1_8_R3;
-import one.lindegaard.Core.v1_9_R1.Skins_1_9_R1;
-import one.lindegaard.Core.v1_9_R2.Skins_1_9_R2;
+import one.lindegaard.Core.Shared.Skins;
+import one.lindegaard.Core.rewards.CoreCustomItems;
 
 public class CustomItems {
 
@@ -60,7 +50,7 @@ public class CustomItems {
 	 * @param money
 	 * @return
 	 */
-	private Skins getSkinsClass() {
+/**	private Skins getSkinsClass() {
 		String version;
 		Skins sk = null;
 		try {
@@ -95,7 +85,7 @@ public class CustomItems {
 		}
 		return sk;
 	}
-
+**/
 	/**
 	 * Return an ItemStack with the Players head texture.
 	 *
@@ -122,7 +112,7 @@ public class CustomItems {
 				|| ps.getSignature().isEmpty()) {
 			if (offlinePlayer.isOnline()) {
 				Player player = (Player) offlinePlayer;
-				Skins sk = getSkinsClass();
+				Skins sk = CoreCustomItems.getSkinsClass();
 				if (sk != null) {
 					plugin.getMessages().debug("Trying to fecth skin from Online Player Profile");
 					skinCache = sk.getSkin(player);
@@ -148,7 +138,7 @@ public class CustomItems {
 		} else {
 			if (offlinePlayer.isOnline()) {
 				Player player = (Player) offlinePlayer;
-				Skins sk = getSkinsClass();
+				Skins sk = CoreCustomItems.getSkinsClass();
 				if (sk != null) {
 					String[] skinOnline = sk.getSkin(player);
 					if (skinOnline != null && !skinOnline.equals(skinCache)) {
