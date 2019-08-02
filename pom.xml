@@ -133,10 +133,11 @@
 		<dependency>
 			<groupId>one.lindegaard</groupId>
 			<artifactId>NMS_Shared</artifactId>
-			<version>NMS_Shared</version>
+			<version>${NMS_Shared.version}</version>
 			<type>jar</type>
 			<optional>true</optional>
 		</dependency>
+		
 		<!-- PerWorldInventory -->
 		<dependency>
 			<groupId>me.ebonjaeger</groupId>
