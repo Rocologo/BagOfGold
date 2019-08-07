@@ -76,8 +76,8 @@ public class MoneyMergeEventListener implements Listener {
 								plugin.getEconomyManager().format(reward2.getMoney()));
 					}
 				}
-				if (plugin.getBagOfGoldItems().getDroppedMoney().containsKey(item1.getEntityId()))
-					plugin.getBagOfGoldItems().getDroppedMoney().remove(item1.getEntityId());
+				if (plugin.getRewardManager().getDroppedMoney().containsKey(item1.getEntityId()))
+					plugin.getRewardManager().getDroppedMoney().remove(item1.getEntityId());
 			}
 		}
 	}

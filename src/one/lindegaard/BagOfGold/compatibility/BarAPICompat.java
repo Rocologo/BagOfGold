@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import me.confuser.barapi.BarAPI;
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.compatibility.CompatPlugin;
 
 public class BarAPICompat {
 

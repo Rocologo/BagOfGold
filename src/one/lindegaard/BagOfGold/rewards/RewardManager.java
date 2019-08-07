@@ -1,20 +1,22 @@
 package one.lindegaard.BagOfGold.rewards;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-//import net.milkbowl.vault.economy.EconomyResponse;
-//import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
+import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
@@ -23,6 +25,10 @@ public class RewardManager {
 
 	private BagOfGold plugin;
 	private PickupRewards pickupRewards;
+	
+	private HashMap<Integer, Double> droppedMoney = new HashMap<Integer, Double>();
+	private HashMap<UUID, Reward> placedMoney_Reward = new HashMap<UUID, Reward>();
+	private HashMap<UUID, Location> placedMoney_Location = new HashMap<UUID, Location>();
 
 	public RewardManager(BagOfGold plugin) {
 		this.plugin = plugin;
@@ -37,6 +43,18 @@ public class RewardManager {
 		else
 			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
 
+	}
+
+	public HashMap<Integer, Double> getDroppedMoney() {
+		return droppedMoney;
+	}
+
+	public HashMap<UUID, Reward> getReward() {
+		return placedMoney_Reward;
+	}
+
+	public HashMap<UUID, Location> getLocations() {
+		return placedMoney_Location;
 	}
 
 	/**
@@ -212,6 +230,32 @@ public class RewardManager {
 							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
 		}
 	}
+	
+	/**
+	 * Dropes an Reward Item at the specified location  
+	 * @param location - where the Item is dropped.
+	 * @param reward - the reward to be dropped
+	 */
+	public void dropRewardOnGround(Location location, Reward reward) {
+		if (reward.isBagOfGoldReward()) {
+			dropMoneyOnGround(null, null, location, reward.getMoney());
+		} else if (reward.isItemReward()) {
+			ItemStack is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
+			Item item = location.getWorld().dropItemNaturally(location, is);
+			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+		} else if (reward.isKilledHeadReward()) {
+			MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getSkinUUID());
+			ItemStack is = new CustomItems().getCustomHead(mob, mob.getFriendlyName(), 1, reward.getMoney(), reward.getSkinUUID());
+			Item item = location.getWorld().dropItemNaturally(location, is);
+			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+		} else if (reward.isKillerHeadReward()) {
+			ItemStack is = new CustomItems().getPlayerHead(reward.getSkinUUID(), 1, reward.getMoney());
+			Item item = location.getWorld().dropItemNaturally(location, is);
+			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+		} else {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] "+ChatColor.RED+"Unhandled reward type in RewardManager (DropRewardOnGround).");
+		}
+	}
 
 	/**
 	 * bankDeposit: deposit the amount on the account.
@@ -342,17 +386,7 @@ public class RewardManager {
 	 * @return
 	 */
 	public String format(double money) {
-		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
-			return plugin.getBagOfGoldItems().format(money);
-		else if (plugin.getGringottsItems().isGringottsStyle())
-			return plugin.getGringottsItems().format(money);
-		else {
-			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
-							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
-							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
-			return String.valueOf(money);
-		}
+		return Tools.format(money);
 	}
 
 	/**
@@ -540,6 +574,23 @@ public class RewardManager {
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
 							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
 			return 0;
+		}
+	}
+
+	/**
+	 * Remove the Reward block from the world and clean up in saved rewards.
+	 * @param block
+	 */
+	public void removeReward(Block block) {
+		if (Reward.isReward(block)) {
+			Reward reward = Reward.getReward(block);
+			block.getDrops().clear();
+			block.setType(Material.AIR);
+			block.removeMetadata(Reward.MH_REWARD_DATA, plugin);
+			if (plugin.getRewardManager().getLocations().containsKey(reward.getUniqueUUID()))
+				plugin.getRewardManager().getLocations().remove(reward.getUniqueUUID());
+			if (plugin.getRewardManager().getReward().containsKey(reward.getUniqueUUID()))
+				plugin.getRewardManager().getReward().remove(reward.getUniqueUUID());
 		}
 	}
 

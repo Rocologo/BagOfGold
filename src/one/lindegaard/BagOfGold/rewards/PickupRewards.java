@@ -25,8 +25,8 @@ public class PickupRewards {
 				boolean succes = plugin.getEconomyManager().depositPlayer(player, reward.getMoney());
 				if (succes) {
 					item.remove();
-					if (plugin.getBagOfGoldItems().getDroppedMoney().containsKey(item.getEntityId()))
-						plugin.getBagOfGoldItems().getDroppedMoney().remove(item.getEntityId());
+					if (plugin.getRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
+						plugin.getRewardManager().getDroppedMoney().remove(item.getEntityId());
 					if (ProtocolLibCompat.isSupported())
 						ProtocolLibHelper.pickupMoney(player, item);
 
@@ -34,7 +34,7 @@ public class PickupRewards {
 						plugin.getMessages().debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
 								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
 										: reward.getDisplayname(),
-										plugin.getBagOfGoldItems().getDroppedMoney().size());
+										plugin.getRewardManager().getDroppedMoney().size());
 					} else {
 						plugin.getMessages().debug(
 								"%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)",
@@ -42,7 +42,7 @@ public class PickupRewards {
 								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
 										: reward.getDisplayname(),
 								plugin.getBagOfGoldItems().format(Misc.round(reward.getMoney())),
-								plugin.getBagOfGoldItems().getDroppedMoney().size());
+								plugin.getRewardManager().getDroppedMoney().size());
 						if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 							plugin.getMessages().playerActionBarMessageQueue(player,
 									plugin.getMessages().getString("bagofgold.moneypickup", "money",

@@ -9,6 +9,7 @@ import io.puharesource.mc.titlemanager.api.ActionbarTitleObject;
 import io.puharesource.mc.titlemanager.api.TitleObject;
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.compatibility.CompatPlugin;
 
 @SuppressWarnings("deprecation")
 public class TitleManagerCompat {

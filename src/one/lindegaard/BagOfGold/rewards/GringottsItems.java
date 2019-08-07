@@ -22,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.util.Misc;
-import one.lindegaard.Core.Tools;
 
 public class GringottsItems implements Listener {
 
@@ -36,10 +35,6 @@ public class GringottsItems implements Listener {
 
 	public boolean isGringottsStyle() {
 		return plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("GRINGOTTS_STYLE");
-	}
-
-	public String format(double money) {
-		return Tools.format(money);
 	}
 
 	public double getMoneyInHand(Player player) {

@@ -20,8 +20,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.mobs.MinecraftMob;
+//import one.lindegaard.BagOfGold.mobs.MinecraftMob;
+import one.lindegaard.BagOfGold.mobs.MinecraftMobNew;
 import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.mobs.MobType;
 
 public class Reward {
 
@@ -74,7 +76,7 @@ public class Reward {
 	public Reward(List<String> lore) {
 		int n = getFirstRewardLores(lore);
 		if (n != -1) {
-			BagOfGold.getAPI().getMessages().debug("Reward: n=%s", n);
+			//BagOfGold.getAPI().getMessages().debug("Reward: n=%s", n);
 			this.displayname = lore.get(n).startsWith("Hidden:") ? lore.get(n).substring(7) : lore.get(n);
 			this.money = Double
 					.valueOf(lore.get(n + 1).startsWith("Hidden:") ? lore.get(n + 1).substring(7) : lore.get(n + 1));
@@ -130,7 +132,7 @@ public class Reward {
 					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
 																				// id
 					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()),
-					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.name"))); // skin
+					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // skin
 
 	}
 
@@ -236,7 +238,7 @@ public class Reward {
 				if (offlinePlayer != null)
 					skinUUID = offlinePlayer.getUniqueId();
 			} else if (uuid.equals(UUID.fromString(MH_REWARD_KILLED_UUID))) {
-				MinecraftMob mob = MinecraftMob.getMinecraftMobType(displayname);
+				MobType mob = MinecraftMobNew.getMinecraftMobType(displayname);
 				if (mob != null) {
 					skinUUID = mob.getPlayerUUID();
 				} else
@@ -289,7 +291,7 @@ public class Reward {
 			Iterator<String> itr = itemStack.getItemMeta().getLore().iterator();
 			while (itr.hasNext()) {
 				String lore = itr.next();
-				BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
+				//BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
 				if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID)
@@ -305,7 +307,7 @@ public class Reward {
 	private static int getFirstRewardLores(List<String> lores) {
 		int n = 0;
 		for (String lore : lores) {
-			BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
+			//BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
 			if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID) || lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
 					|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID) || lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
 				return n-2;
@@ -319,7 +321,7 @@ public class Reward {
 		return new Reward(itemStack.getItemMeta().getLore());
 	}
 
-	public static boolean hasReward(Block block) {
+	public static boolean isReward(Block block) {
 		if (Servers.isMC113OrNewer())
 			return (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD)
 					&& block.hasMetadata(MH_REWARD_DATA);

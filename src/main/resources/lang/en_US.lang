@@ -99,7 +99,7 @@ bagofgold.commands.version.description=Show BagOfGold's version number.
 bagofgold.commands.version.currentversion=This server is running 'BagOfGold ${currentversion}'.
 bagofgold.commands.version.newversion=Version ${newversion} is available. Use '/bagofgold update' to update the plugin.
 
-mobhunting.reward.name=MobHunting Reward
+bagofgold.reward.lore=MobHunting Reward
 
 mobs.BonusMob.name=§9Bonus Mob
 mobs.Blaze.name=§9Blaze

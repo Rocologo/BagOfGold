@@ -2,10 +2,13 @@ package one.lindegaard.BagOfGold.rewards;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -49,14 +52,16 @@ public class RewardListeners implements Listener {
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
 			public void run() {
-				Player player = (Player) event.getPlayer();
+				Player player = event.getPlayer();
 				if (player.getGameMode() == GameMode.SURVIVAL) {
 					plugin.getMessages().debug(
-							"RewardListener: PlayerGameModeChange %s adjusting Player Balance to Amount of BagOfGold in Inventory",player.getName());
+							"RewardListener: PlayerGameModeChange %s adjusting Player Balance to Amount of BagOfGold in Inventory",
+							player.getName());
 					plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 				} else {
 					plugin.getMessages().debug(
-							"RewardListener: PlayerGameModeChange %s adjusting Amount of BagOfGold in Inventory To Balance",player.getName());
+							"RewardListener: PlayerGameModeChange %s adjusting Amount of BagOfGold in Inventory To Balance",
+							player.getName());
 					plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 				}
 			}
@@ -65,23 +70,53 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldChange(PlayerChangedWorldEvent event) {
-
+		
 		if (PerWorldInventoryCompat.isSupported())
 			return;
 
-		Player player = (Player) event.getPlayer();
+		Player player = event.getPlayer();
 		if (player.getGameMode() == GameMode.SURVIVAL) {
 			plugin.getMessages().debug(
-					"RewardListener: PlayerChangedWorld: %s adjusting Player Balance to Amount of BagOfGold in Inventory",player.getName());
+					"RewardListener: PlayerChangedWorld: %s adjusting Player Balance to Amount of BagOfGold in Inventory",
+					player.getName());
 			plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 		} else {
 			plugin.getMessages().debug(
-					"RewardListener: PlayerChangedWorld %s adjusting Amount of BagOfGold in Inventory To Balance",player.getName());
+					"RewardListener: PlayerChangedWorld %s adjusting Amount of BagOfGold in Inventory To Balance",
+					player.getName());
 			plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
 		plugin.getMessages().debug("RewardListernes: PlayerChangedWorld %s (from %s to %s) new balance is %s",
 				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
 				plugin.getRewardManager().getBalance(player));
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockPhysicsEvent(BlockPhysicsEvent event) {
+		if (event.isCancelled())
+			return;
+
+		Block block = event.getBlock();
+		if (Reward.isReward(block) && !Reward.isReward(event.getSourceBlock())) {
+			Reward reward = Reward.getReward(block);
+			plugin.getMessages().debug("RewardListeners: a %s changed a %s(%s)", event.getSourceBlock(),
+					block, reward.getMoney());
+			plugin.getRewardManager().removeReward(block);
+			plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onRewardBlockBreak(BlockBreakEvent event) {
+		if (event.isCancelled())
+			return;
+		
+		Block block = event.getBlock();
+		if (Reward.isReward(block)) {
+			Reward reward = Reward.getReward(block);
+			plugin.getRewardManager().removeReward(block);
+			plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
+		}
 	}
 
 }

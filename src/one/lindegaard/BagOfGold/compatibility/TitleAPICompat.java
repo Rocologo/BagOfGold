@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 import com.connorlinfoot.titleapi.TitleAPI;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.compatibility.CompatPlugin;
 
 public class TitleAPICompat {
 

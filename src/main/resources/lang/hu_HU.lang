@@ -97,7 +97,7 @@ bagofgold.commands.version.description=A BagOfGold verziószámának megjelenít
 bagofgold.commands.version.currentversion=Ez a kiszolgáló fut 'BagOfGold ${currentversion}'.
 bagofgold.commands.version.newversion=Verzió ${newversion} elérhető. Használd a '/bagofgold update' a plugin frissítéséhez.
 
-mobhunting.reward.name=MobHunting Jutalom
+bagofgold.reward.lore=MobHunting Jutalom
 
 mobs.BonusMob.name=§9Bónusz mob
 mobs.Blaze.name=§9Őrláng

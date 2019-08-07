@@ -97,7 +97,7 @@ bagofgold.moneygain.drop=${killed} 下降 ${prize} 在地上!
 bagofgold.moneylost=你丢失了 ${prize}!
 bagofgold.moneypickup=You found ${money}
 
-mobhunting.reward.name=MobHunting Reward
+bagofgold.reward.lore=MobHunting Reward
 
 mobs.Bat.name=§9蝙蝠
 mobs.Blacksmith.name=§9铁匠

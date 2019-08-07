@@ -22,6 +22,7 @@ import one.lindegaard.BagOfGold.rewards.CustomItems;
 import one.lindegaard.BagOfGold.rewards.Reward;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.rewards.CoreCustomItems;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Villager.Profession;
@@ -501,10 +502,6 @@ public enum MinecraftMob {
 		return UUID.fromString(mPlayerUUID);
 	}
 
-	public String getFriendlyName() {
-		return BagOfGold.getInstance().getMessages().getString("mobs." + name() + ".name");
-	}
-
 	public boolean matches(Entity entity) {
 		if (Servers.isMC114OrNewer())
 			if (this == Cat)
@@ -513,7 +510,7 @@ public enum MinecraftMob {
 				return entity instanceof org.bukkit.entity.Fox;
 			else if (this == Panda)
 				return entity instanceof org.bukkit.entity.Panda;
-			else if (this == MinecraftMob.Pillager)
+			else if (this == Pillager)
 				return entity instanceof org.bukkit.entity.Pillager;
 			else if (this == Ravager)
 				return entity instanceof org.bukkit.entity.Ravager;
@@ -675,33 +672,6 @@ public enum MinecraftMob {
 		return null;
 	}
 
-	public static MinecraftMob getMinecraftMobType(String name) {
-		String name1 = name.replace(" ", "_");
-		for (MinecraftMob type : values())
-			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name1)
-					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name1)
-					|| type.name().equalsIgnoreCase(name1))
-				return type;
-		return null;
-	}
-
-	/**
-	 * getCommandString. Only used for Minecraft 1.7
-	 * 
-	 * @return the command string which can be run in the console to give the player
-	 *         a head
-	 */
-	public String getCommandString() {
-		switch (this) {
-		case PvpPlayer:
-		case Blaze:
-		case Slime:
-			return "minecraft:give {player} skull {amount} 3 {SkullOwner:\"{playername}\",display:{Name:\"{displayname}\",Lore:[{lore}]}}";
-		default:
-			return "minecraft:give {player} skull {amount} 3 {SkullOwner:{Id:\"{playerid}\",Properties:{textures:[{Value:\"{texturevalue}\"}]}},display:{Name:\"{displayname}\",Lore:[{lore}]}}";
-		}
-	}
-
 	public String getTexture(String displayname) {
 		for (MinecraftMob mob : MinecraftMob.values()) {
 			if (mob.getDisplayName().equalsIgnoreCase(displayname)
@@ -726,46 +696,40 @@ public enum MinecraftMob {
 	// TODO: HEADS ??? and is this in CustomItems???
 	public ItemStack getCustomHead(String name, int amount, double money) {
 		ItemStack skull;
-		Material head = Servers.isMC113OrNewer() ? Material.PLAYER_HEAD : Material.matchMaterial("SKULL_ITEM");
 		switch (this) {
 		case Skeleton:
-			skull = Servers.isMC113OrNewer() ? new ItemStack(Material.SKELETON_SKULL)
-					: new ItemStack(head, amount, (short) 0);
+			skull = CoreCustomItems.getDefaultSkeletonHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
 			break;
 
 		case WitherSkeleton:
-			skull = Servers.isMC113OrNewer() ? new ItemStack(Material.WITHER_SKELETON_SKULL)
-					: new ItemStack(head, amount, (short) 1);
+			skull = CoreCustomItems.getDefaultWitherSkeletonHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
 			break;
 
 		case Zombie:
-			skull = Servers.isMC113OrNewer() ? new ItemStack(Material.ZOMBIE_HEAD)
-					: new ItemStack(head, amount, (short) 2);
+			skull = CoreCustomItems.getDefaultZombieHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
 			break;
 
 		case PvpPlayer:
-			skull = Servers.isMC113OrNewer() ? new ItemStack(Material.PLAYER_HEAD) : new ItemStack(head, 1, (short) 3);
+			skull = CoreCustomItems.getDefaultPlayerHead(amount);
 			SkullMeta sm = (SkullMeta) skull.getItemMeta();
 			sm.setOwner(name);
 			skull.setItemMeta(sm);
 			break;
 
 		case Creeper:
-			skull = Servers.isMC113OrNewer() ? new ItemStack(Material.CREEPER_HEAD)
-					: new ItemStack(head, amount, (short) 4);
+			skull = CoreCustomItems.getDefaultCreeperHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
 			break;
 
 		case EnderDragon:
-			skull = Servers.isMC113OrNewer() ? new ItemStack(Material.DRAGON_HEAD)
-					: new ItemStack(head, amount, (short) 5);
+			skull = CoreCustomItems.getDefaultEnderDragonHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
 			break;
@@ -800,7 +764,7 @@ public enum MinecraftMob {
 					"Hidden:" + reward.getMoney(), "Hidden:" + reward.getRewardType(),
 					reward.getMoney() == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(),
 					"Hidden:" + reward.getSkinUUID(),
-					BagOfGold.getInstance().getMessages().getString("bagofgold.reward.name"))));
+					BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundSkullRewardName)));
 
 		if (reward.getMoney() == 0)
 			skullMeta.setDisplayName(
@@ -814,6 +778,20 @@ public enum MinecraftMob {
 							: reward.getDisplayname() + " (" + Tools.format(reward.getMoney()) + ")"));
 		skull.setItemMeta(skullMeta);
 		return skull;
+	}
+
+	public static MinecraftMob getMinecraftMobType(String name) {
+		String name1 = name.replace(" ", "_");
+		for (MinecraftMob type : values())
+			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name1)
+					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name1)
+					|| type.name().equalsIgnoreCase(name1))
+				return type;
+		return null;
+	}
+
+	public String getFriendlyName() {
+		return BagOfGold.getInstance().getMessages().getString("mobs." + name() + ".name");
 	}
 
 }

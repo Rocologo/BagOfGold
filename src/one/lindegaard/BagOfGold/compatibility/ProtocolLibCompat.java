@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.compatibility.CompatPlugin;
 
 public class ProtocolLibCompat {
 

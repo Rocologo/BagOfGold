@@ -23,7 +23,7 @@ import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
 import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
-import one.lindegaard.BagOfGold.compatibility.CompatPlugin;
+import one.lindegaard.Core.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
@@ -76,7 +76,7 @@ public class BagOfGold extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		
+
 		instance = this;
 
 		mMessages = new Messages(this);
@@ -118,7 +118,7 @@ public class BagOfGold extends JavaPlugin {
 
 		mSpigetUpdater = new SpigetUpdater(this);
 		mSpigetUpdater.setCurrentJarFile(this.getFile().getName());
-		
+
 		// Register commands
 		mCommandDispatcher = new CommandDispatcher(this, "bagofgold",
 				instance.getMessages().getString("bagofgold.command.base.description") + getDescription().getVersion());
@@ -161,7 +161,7 @@ public class BagOfGold extends JavaPlugin {
 		mPlayerBalanceManager = new PlayerBalanceManager(this);
 
 		mRewardManager = new RewardManager(this);
-		
+
 		mCompatibilityManager = new CompatibilityManager(this);
 
 		mBankManager = new BankManager(this);
@@ -179,8 +179,7 @@ public class BagOfGold extends JavaPlugin {
 		mCompatibilityManager.registerPlugin(ActionbarCompat.class, CompatPlugin.Actionbar);
 		mCompatibilityManager.registerPlugin(BossBarAPICompat.class, CompatPlugin.BossBarApi);
 		mCompatibilityManager.registerPlugin(BarAPICompat.class, CompatPlugin.BarApi);
-		
-		
+
 		mCompatibilityManager.registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
 
 		if (!Servers.isGlowstoneServer()) {
@@ -196,10 +195,6 @@ public class BagOfGold extends JavaPlugin {
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
-
-		if (!Servers.isMC110OrNewer())
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
-					+ " version +2.0.0 is only for Minecraft 1.10 and newer! You should downgrade to 1.x");
 
 		// Get random UUI>>>D's
 		// for (int n = 0; n < 3; n++) {
@@ -240,7 +235,6 @@ public class BagOfGold extends JavaPlugin {
 		return config.getBoolean("enabled", true);
 	}
 
-	
 	// ************************************************************************************
 	// Managers and handlers
 	// ************************************************************************************
@@ -355,7 +349,7 @@ public class BagOfGold extends JavaPlugin {
 	public MessageManager getMessageManager() {
 		return mMessageManager;
 	}
-	
+
 	public EconomyManager getEconomyManager() {
 		return mEconomyManager;
 	}

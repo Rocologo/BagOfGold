@@ -246,7 +246,7 @@ public class Messages {
 			throw new MissingResourceException("", "", key);
 		}
 
-		return value;
+		return value.trim();
 	}
 
 	private static Pattern mPattern;
