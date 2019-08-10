@@ -254,7 +254,7 @@
 		<dependency>
 			<groupId>org.black_ixx.BossShop</groupId>
 			<artifactId>BossShopPro</artifactId>
-			<version>${bossshoppro.version}</version>
+			<version>${bossshop.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
