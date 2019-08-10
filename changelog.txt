@@ -1,3 +1,5 @@
+V2.7.6
+* Removed delay in playerchat if no ActionBar message handler is installed
 V2.7.5
 * Fixed: BagOfGold blocks / MobHunting Rewards blocks loses it value when hit by flowing water.
 V2.7.4
