@@ -255,6 +255,7 @@
 			<groupId>org.black_ixx.BossShop</groupId>
 			<artifactId>BossShopPro</artifactId>
 			<version>${bossshoppro.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- SpigetUpdate -->
