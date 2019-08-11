@@ -250,10 +250,10 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- BossShopPro -->
+		<!-- BossShop -->
 		<dependency>
-			<groupId>org.black_ixx.BossShop</groupId>
-			<artifactId>BossShopPro</artifactId>
+			<groupId>org.black_ixx</groupId>
+			<artifactId>BossShop</artifactId>
 			<version>${bossshop.version}</version>
 			<scope>provided</scope>
 		</dependency>
