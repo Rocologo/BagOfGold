@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold.rewards;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -70,7 +71,7 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldChange(PlayerChangedWorldEvent event) {
-		
+
 		if (PerWorldInventoryCompat.isSupported())
 			return;
 
@@ -97,12 +98,33 @@ public class RewardListeners implements Listener {
 			return;
 
 		Block block = event.getBlock();
-		if (Reward.isReward(block) && !Reward.isReward(event.getSourceBlock())) {
+		if (Reward.isReward(block)) {
 			Reward reward = Reward.getReward(block);
-			plugin.getMessages().debug("RewardListeners: a %s changed a %s(%s)", event.getSourceBlock(),
-					block, reward.getMoney());
-			plugin.getRewardManager().removeReward(block);
-			plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
+			switch (event.getSourceBlock().getType()) {
+			case DISPENSER:
+				if (!Reward.isReward(event.getSourceBlock())) {
+					plugin.getMessages().debug("RewardListeners: a %s changed a %s(%s)",
+							event.getSourceBlock().getType(), block.getType(), reward.getMoney());
+					plugin.getRewardManager().removeReward(block);
+					plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
+				}
+				break;
+
+			case PLAYER_HEAD:
+				break;
+				
+			case AIR:
+			case DROPPER:
+			case FURNACE:
+			case PISTON:
+			case PISTON_HEAD:
+			case MOVING_PISTON:
+			default:
+				plugin.getMessages().debug("RewardListeners: Event Cancelled - a %s tried to change a %s(%s)",
+						event.getSourceBlock().getType(), block.getType(), reward.getMoney());
+				event.setCancelled(true);
+				break;
+			}
 		}
 	}
 
@@ -110,7 +132,7 @@ public class RewardListeners implements Listener {
 	public void onRewardBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
-		
+
 		Block block = event.getBlock();
 		if (Reward.isReward(block)) {
 			Reward reward = Reward.getReward(block);

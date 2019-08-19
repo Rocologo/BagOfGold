@@ -708,8 +708,6 @@ public class BagOfGoldItems implements Listener {
 			ItemStack helmet = player.getEquipment().getHelmet();
 
 			if (isFakeReward(helmet)) {
-				player.sendMessage(
-						ChatColor.RED + "[BagOfGold] WARNING, you can't wear a reward on your head. It was removed.");
 				event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
 				return;
 			}
@@ -717,6 +715,8 @@ public class BagOfGoldItems implements Listener {
 			if (Reward.isReward(helmet)) {
 				Reward reward = Reward.getReward(helmet);
 				if (reward.isBagOfGoldReward()) {
+					player.sendMessage(
+							ChatColor.RED + "[BagOfGold] WARNING, you can't wear a reward on your head. It was removed.");
 					// plugin.getMessages().learn(player,
 					// plugin.getMessages().getString("mobhunting.learn.rewards.no-helmet"));
 					event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
