@@ -14,6 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.craftbukkit.libs.org.apache.commons.codec.binary.Base64;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -79,7 +80,7 @@ public class Reward {
 			//BagOfGold.getAPI().getMessages().debug("Reward: n=%s", n);
 			this.displayname = lore.get(n).startsWith("Hidden:") ? lore.get(n).substring(7) : lore.get(n);
 			this.money = Double
-					.valueOf(lore.get(n + 1).startsWith("Hidden:") ? lore.get(n + 1).substring(7) : lore.get(n + 1));
+					.valueOf(lore.get(n + 1).startsWith("Hidden:") ? new String(Base64.decodeBase64(lore.get(n + 1).substring(7))) : new String(Base64.decodeBase64(lore.get(n + 1))));
 			this.uuid = (lore.get(n + 2).startsWith("Hidden:")) ? UUID.fromString(lore.get(n + 2).substring(7))
 					: UUID.fromString(lore.get(n + 2));
 			if (this.money == 0)
@@ -100,7 +101,7 @@ public class Reward {
 
 	public void setReward(List<String> lore) {
 		this.displayname = lore.get(0).startsWith("Hidden:") ? lore.get(0).substring(7) : lore.get(0);
-		this.money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
+		this.money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? new String(Base64.decodeBase64(lore.get(1).substring(7))) : new String(Base64.decodeBase64(lore.get(1))));
 		this.uuid = (lore.get(2).startsWith("Hidden:")) ? UUID.fromString(lore.get(2).substring(7))
 				: UUID.fromString(lore.get(2));
 		if (this.money == 0)
@@ -120,14 +121,14 @@ public class Reward {
 	public ArrayList<String> getHiddenLore() {
 		if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
 			return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
-					"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
+					"Hidden:" + Base64.encodeBase64String(String.format(Locale.ENGLISH, "%.5f", money).getBytes()), // value
 					"Hidden:" + uuid.toString(), // type
 					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
 																				// id
 					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()))); // skin
 		else
 			return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
-					"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
+					"Hidden:" + Base64.encodeBase64String(String.format(Locale.ENGLISH, "%.5f", money).getBytes()), // value
 					"Hidden:" + uuid.toString(), // type
 					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
 																				// id
@@ -211,7 +212,7 @@ public class Reward {
 	}
 
 	public String toString() {
-		return "{Description=" + displayname + ", money=" + String.format(Locale.ENGLISH, "%.5f", money) + ", UUID="
+		return "{Description=" + displayname + ", money=" + Base64.decodeBase64(String.format(Locale.ENGLISH, "%.5f", money).getBytes()) + ", UUID="
 				+ uuid + ", UniqueID=" + uniqueId + ", Skin=" + skinUUID + "}";
 	}
 

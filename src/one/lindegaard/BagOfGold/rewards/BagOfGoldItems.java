@@ -809,23 +809,17 @@ public class BagOfGoldItems implements Listener {
 		}
 
 		if (isFakeReward(isCurrentSlot)) {
-			// player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE
-			// reward. It was removed.");
 			isCurrentSlot.setType(Material.AIR);
 			isCurrentSlot.setAmount(0);
 			player.getInventory().clear(event.getSlot());
 			return;
 		}
 		if (isFakeReward(isCursor)) {
-			// player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE
-			// reward. It was removed.");
 			isCursor.setType(Material.AIR);
 			isCursor.setAmount(0);
 			return;
 		}
 		if (isFakeReward(isKey)) {
-			// player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this is a FAKE
-			// reward. It was removed.");
 			isKey.setType(Material.AIR);
 			isKey.setAmount(0);
 			return;
@@ -842,13 +836,13 @@ public class BagOfGoldItems implements Listener {
 			clickedInventory = inventory;
 
 		if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor) || Reward.isReward(isKey)) {
-			plugin.getMessages().debug(
-					"action=%s, InventoryType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, clickedInv=%s, key=%s",
-					action, inventory.getType(), slotType, event.getSlot(),
-					isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
-					isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
-					clickedInventory == null ? "null" : clickedInventory.getType(),
-					isKey == null ? "null" : isKey.getType());
+			//plugin.getMessages().debug(
+			//		"action=%s, InventoryType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, clickedInv=%s, key=%s",
+			//		action, inventory.getType(), slotType, event.getSlot(),
+			//		isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
+			//		isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
+			//		clickedInventory == null ? "null" : clickedInventory.getType(),
+			//		isKey == null ? "null" : isKey.getType());
 		} else {
 			plugin.getMessages().debug("No BagOfGold reward");
 		}
@@ -862,11 +856,6 @@ public class BagOfGoldItems implements Listener {
 			Reward reward = Reward.getReward(isCursor);
 			plugin.getMessages().debug("RewardListerner: %s dropped %s BagOfGold outside the inventory",
 					player.getName(), reward.getMoney());
-			// if (player.getGameMode() == GameMode.CREATIVE)
-			// dropBagOfGoldMoneyOnGround(player, null, player.getLocation(),
-			// reward.getMoney());
-			// plugin.getEconomyManager().removeMoneyFromPlayerBalance(player,
-			// reward.getMoney());
 			plugin.getRewardManager().addMoneyToPlayerBalance(player, reward.getMoney());
 			return;
 		}
@@ -874,12 +863,6 @@ public class BagOfGoldItems implements Listener {
 		else if (!(slotType == SlotType.CONTAINER || slotType == SlotType.QUICKBAR || slotType == SlotType.RESULT
 				|| (slotType == SlotType.ARMOR && event.getSlot() == 39))) {
 			if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor)) {
-				// Reward reward = Reward.isReward(isCurrentSlot) ?
-				// Reward.getReward(isCurrentSlot)
-				// : Reward.getReward(isCursor);
-				// plugin.getMessages().learn(player,
-				// plugin.getMessages().getString("mobhunting.learn.rewards.no-use",
-				// "rewardname", reward.getDisplayname()));
 				plugin.getMessages().debug("RewardListerner: %s its not allowed to use BagOfGold here",
 						player.getName());
 				event.setCancelled(true);
@@ -889,12 +872,6 @@ public class BagOfGoldItems implements Listener {
 
 		if (action == InventoryAction.CLONE_STACK || action == InventoryAction.UNKNOWN) {
 			if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor)) {
-				// Reward reward = Reward.isReward(isCurrentSlot) ?
-				// Reward.getReward(isCurrentSlot)
-				// : Reward.getReward(isCursor);
-				// plugin.getMessages().learn(player,
-				// plugin.getMessages().getString("mobhunting.learn.rewards.no-clone",
-				// "rewardname", reward.getDisplayname()));
 				plugin.getMessages().debug("RewardListerner: %s its not allowed to clone BagOfGold", player.getName());
 				event.setCancelled(true);
 				return;

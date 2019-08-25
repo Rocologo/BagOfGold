@@ -1,5 +1,5 @@
 V2.7.7
-*
+* Fixed: Heads pop when a block updates beside them #553
 V2.7.6
 * Removed delay in playerchat if no ActionBar message handler is installed
 V2.7.5
