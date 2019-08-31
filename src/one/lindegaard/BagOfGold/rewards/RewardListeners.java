@@ -100,30 +100,20 @@ public class RewardListeners implements Listener {
 		Block block = event.getBlock();
 		if (Reward.isReward(block)) {
 			Reward reward = Reward.getReward(block);
-			switch (event.getSourceBlock().getType()) {
-			case DISPENSER:
+			
+			if (event.getSourceBlock().getType()==Material.matchMaterial("DISPENSER")) {
 				if (!Reward.isReward(event.getSourceBlock())) {
 					plugin.getMessages().debug("RewardListeners: a %s changed a %s(%s)",
 							event.getSourceBlock().getType(), block.getType(), reward.getMoney());
 					plugin.getRewardManager().removeReward(block);
 					plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
 				}
-				break;
-
-			case PLAYER_HEAD:
-				break;
-				
-			case AIR:
-			case DROPPER:
-			case FURNACE:
-			case PISTON:
-			case PISTON_HEAD:
-			case MOVING_PISTON:
-			default:
+			} else if (event.getSourceBlock().getType()==Material.matchMaterial("PLAYER_HEAD")) {
+				return;
+			} else {
 				plugin.getMessages().debug("RewardListeners: Event Cancelled - a %s tried to change a %s(%s)",
 						event.getSourceBlock().getType(), block.getType(), reward.getMoney());
 				event.setCancelled(true);
-				break;
 			}
 		}
 	}

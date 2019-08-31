@@ -1,5 +1,6 @@
 V2.7.7
 * Fixed: Heads pop when a block updates beside them #553
+* Fixed BlockPhysicsEvent on Spigot 1.12.2 servers (https://github.com/Rocologo/MobHunting/issues/561)
 V2.7.6
 * Removed delay in playerchat if no ActionBar message handler is installed
 V2.7.5
