@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -20,16 +21,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-//import one.lindegaard.BagOfGold.mobs.MinecraftMob;
-import one.lindegaard.BagOfGold.mobs.MinecraftMobNew;
+import one.lindegaard.BagOfGold.mobs.MinecraftMob;
+import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Server.Servers;
-import one.lindegaard.Core.mobs.MobType;
 
 public class Reward {
 
 	public final static String MH_REWARD_DATA = "MH:HiddenRewardData";
+	
 	// Unique random generated UUID for "Bag of gold" rewards
-
 	public final static String MH_REWARD_BAG_OF_GOLD_UUID = "b3f74fad-429f-4801-9e31-b8879cbae96f";
 	// Unique random generated UUID for MobHead/Playerhead rewards
 	public final static String MH_REWARD_KILLED_UUID = "2351844f-f400-4fa4-9642-35169c5b048a";
@@ -44,17 +44,19 @@ public class Reward {
 	public final static String MH_REWARD_SACK_UUID = "a3cf92ff-af45-458a-a633-f71760adee6f";
 	public final static String MH_REWARD_DUST_UUID = "19e165cb-e47f-4f68-8e96-f13e28c07c08";
 
-	private String displayname = "";;
-	private double money = 0;
-	private UUID uuid = null;
-	private UUID uniqueId;
-	private UUID skinUUID;
+	private String displayname = ""; // Hidden(0)
+	private double money = 0; // Hidden(1)
+	private UUID uuid = null; // Hidden(2)
+	private UUID uniqueId; // Hidden(3)
+	private UUID skinUUID; // Hidden(4)
+	private String encodedHash; // Hidden(5) -
 
 	public Reward() {
 		this.displayname = "Skull";
 		this.money = 0;
 		this.uuid = UUID.randomUUID();
 		this.uniqueId = UUID.randomUUID();
+		this.encodedHash = Strings.encode(makeDecodedHash());
 	}
 
 	public Reward(Reward reward) {
@@ -63,6 +65,7 @@ public class Reward {
 		this.uuid = reward.getRewardType();
 		this.skinUUID = reward.getSkinUUID();
 		this.uniqueId = reward.getUniqueUUID();
+		this.encodedHash = reward.getEncodedHash();
 	}
 
 	public Reward(String displayName, double money, UUID uuid, UUID uniqueId, UUID skinUUID) {
@@ -71,68 +74,102 @@ public class Reward {
 		this.uuid = uuid;
 		this.uniqueId = uniqueId;
 		this.skinUUID = skinUUID;
+		this.encodedHash = Strings.encode(makeDecodedHash());
 	}
 
 	public Reward(List<String> lore) {
-		int n = getFirstRewardLores(lore);
-		if (n != -1) {
-			//BagOfGold.getAPI().getMessages().debug("Reward: n=%s", n);
-			this.displayname = lore.get(n).startsWith("Hidden:") ? lore.get(n).substring(7) : lore.get(n);
-			this.money = Double
-					.valueOf(lore.get(n + 1).startsWith("Hidden:") ? lore.get(n + 1).substring(7) : lore.get(n + 1));
-			this.uuid = (lore.get(n + 2).startsWith("Hidden:")) ? UUID.fromString(lore.get(n + 2).substring(7))
-					: UUID.fromString(lore.get(n + 2));
-			if (this.money == 0)
-				this.uniqueId = UUID.randomUUID();
-			else
-				this.uniqueId = (lore.get(n + 3).startsWith("Hidden:")) ? UUID.fromString(lore.get(n + 3).substring(7))
-						: UUID.fromString(lore.get(n + 3));
-			if (lore.size() >= n + 5 && !lore.get(n + 4).equalsIgnoreCase("Hidden:")
-					&& !lore.get(n + 4).equalsIgnoreCase("Hidden:null"))
-				this.skinUUID = (lore.get(n + 4).startsWith("Hidden:")) ? UUID.fromString(lore.get(n + 4).substring(7))
-						: UUID.fromString(lore.get(n + 4));
-			else {
-				if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
-					this.skinUUID = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
-			}
-		}
+		setReward(lore);
+	}
+
+	private String makeDecodedHash() {
+		return String.format(Locale.ENGLISH, "%.5f", money) + uuid.toString();
+	}
+
+	public boolean checkHash() {
+		if (this.encodedHash != null)
+			return makeDecodedHash().equals(Strings.decode(this.encodedHash));
+		else
+			return true;
+	}
+
+	public void updateEncodedHash() {
+		this.encodedHash = Strings.encode(makeDecodedHash());
 	}
 
 	public void setReward(List<String> lore) {
-		this.displayname = lore.get(0).startsWith("Hidden:") ? lore.get(0).substring(7) : lore.get(0);
-		this.money = Double.valueOf(lore.get(1).startsWith("Hidden:") ? lore.get(1).substring(7) : lore.get(1));
-		this.uuid = (lore.get(2).startsWith("Hidden:")) ? UUID.fromString(lore.get(2).substring(7))
-				: UUID.fromString(lore.get(2));
-		if (this.money == 0)
-			this.uniqueId = UUID.randomUUID();
-		else
-			this.uniqueId = (lore.get(3).startsWith("Hidden:")) ? UUID.fromString(lore.get(3).substring(7))
-					: UUID.fromString(lore.get(3));
-		if (lore.size() >= 5 && !lore.get(4).equalsIgnoreCase("Hidden:"))
-			this.skinUUID = (lore.get(4).startsWith("Hidden:")) ? UUID.fromString(lore.get(4).substring(7))
-					: UUID.fromString(lore.get(4));
-		else {
-			if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
-				this.skinUUID = UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID);
+		String moneyStr = "", rewardTypeStr = "";
+		for (int n = 0; n < lore.size(); n++) {
+			String str = lore.get(n);
+
+			// DisplayName
+			if (str.startsWith("Hidden(0):"))
+				this.displayname = str.substring(10);
+			else if (n == 0 && str.startsWith("Hidden:"))
+				this.displayname = str.substring(7);
+
+			// Money
+			else if (str.startsWith("Hidden(1):")) {
+				moneyStr = str.substring(10);
+				this.money = Double.valueOf(moneyStr);
+			} else if (n == 1 && str.startsWith("Hidden:")) {
+				moneyStr = str.substring(7);
+				this.money = Double.valueOf(moneyStr);
+			}
+
+			// RewardType
+			else if (str.startsWith("Hidden(2):")) {
+				rewardTypeStr = str.substring(10);
+				this.uuid = UUID.fromString(rewardTypeStr);
+			} else if (n == 2 && str.startsWith("Hidden:")) {
+				rewardTypeStr = str.substring(7);
+				this.uuid = UUID.fromString(rewardTypeStr);
+			}
+
+			// Unique UUID
+			else if (str.startsWith("Hidden(3):"))
+				this.uniqueId = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(10));
+			else if (n == 3 && str.startsWith("Hidden:"))
+				this.uniqueId = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(7));
+
+			// Skin UUID
+			else if (str.startsWith("Hidden(4):"))
+				this.skinUUID = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(10));
+			else if (n == 4 && str.startsWith("Hidden:"))
+				this.skinUUID = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(7));
+
+			// MobHunting Reward
+			else if (str.equalsIgnoreCase(BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore")))
+				continue;
+
+			// Hash
+			else if (str.startsWith("Hidden(5):")) {
+				this.encodedHash = str.substring(10);
+				String compareHash = Strings.encode(moneyStr + rewardTypeStr);
+				if (!encodedHash.equalsIgnoreCase(compareHash)) {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
+							+ "[Warning] A player has tried to change the value of a BagOgGold Item. Value set to 0!");
+					// money=0;
+					// updateEncodedHash();
+				}
+			}
 		}
 	}
 
 	public ArrayList<String> getHiddenLore() {
 		if (uuid.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
-			return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
-					"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
-					"Hidden:" + uuid.toString(), // type
-					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
-																				// id
-					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()))); // skin
+			return new ArrayList<String>(Arrays.asList("Hidden(0):" + displayname, // displayname
+					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), // value
+					"Hidden(2):" + uuid.toString(), // type
+					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueid
+					"Hidden(4):" + (skinUUID == null ? "" : skinUUID.toString()), // SkinUUID
+					"Hidden(5):" + encodedHash)); // Hash
 		else
-			return new ArrayList<String>(Arrays.asList("Hidden:" + displayname, // displayname
-					"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), // value
-					"Hidden:" + uuid.toString(), // type
-					money == 0 ? "Hidden:" : "Hidden:" + uniqueId.toString(), // unique
-																				// id
-					"Hidden:" + (skinUUID == null ? "" : skinUUID.toString()),
-					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // skin
+			return new ArrayList<String>(Arrays.asList("Hidden(0):" + displayname, // displayname
+					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), // value
+					"Hidden(2):" + uuid.toString(), // type
+					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueId
+					"Hidden(4):" + (skinUUID == null ? "" : skinUUID.toString()), // SkinUUID
+					"Hidden(5):" + encodedHash, BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // skin
 
 	}
 
@@ -176,6 +213,7 @@ public class Reward {
 	 */
 	public void setMoney(double money) {
 		this.money = money;
+		updateEncodedHash();
 	}
 
 	/**
@@ -183,6 +221,7 @@ public class Reward {
 	 */
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
+		updateEncodedHash();
 	}
 
 	/**
@@ -210,6 +249,20 @@ public class Reward {
 		this.skinUUID = skinUUID;
 	}
 
+	/**
+	 * @return the hash
+	 */
+	public String getEncodedHash() {
+		return encodedHash;
+	}
+
+	/**
+	 * @param hash the hash to set
+	 */
+	public void setHash(String hash) {
+		this.encodedHash = hash;
+	}
+
 	public String toString() {
 		return "{Description=" + displayname + ", money=" + String.format(Locale.ENGLISH, "%.5f", money) + ", UUID="
 				+ uuid + ", UniqueID=" + uniqueId + ", Skin=" + skinUUID + "}";
@@ -221,6 +274,7 @@ public class Reward {
 		section.set("uuid", uuid.toString());
 		section.set("uniqueid", uniqueId.toString());
 		section.set("skinuuid", skinUUID == null ? "" : skinUUID.toString());
+		section.set("hash", encodedHash == null ? "" : Strings.decode(encodedHash));
 	}
 
 	public void read(ConfigurationSection section) throws InvalidConfigurationException {
@@ -238,7 +292,7 @@ public class Reward {
 				if (offlinePlayer != null)
 					skinUUID = offlinePlayer.getUniqueId();
 			} else if (uuid.equals(UUID.fromString(MH_REWARD_KILLED_UUID))) {
-				MobType mob = MinecraftMobNew.getMinecraftMobType(displayname);
+				MinecraftMob mob = MinecraftMob.getMinecraftMobType(displayname);
 				if (mob != null) {
 					skinUUID = mob.getPlayerUUID();
 				} else
@@ -247,6 +301,7 @@ public class Reward {
 				this.skinUUID = null;
 		} else
 			skinUUID = UUID.fromString(section.getString("skinuuid"));
+		encodedHash = Strings.encode(section.getString("hash", makeDecodedHash()));
 	}
 
 	public boolean isBagOfGoldReward() {
@@ -291,28 +346,19 @@ public class Reward {
 			Iterator<String> itr = itemStack.getItemMeta().getLore().iterator();
 			while (itr.hasNext()) {
 				String lore = itr.next();
-				//BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
-				if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
+				// BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
+				if (lore.equals("Hidden(2):" + MH_REWARD_BAG_OF_GOLD_UUID)
+						|| lore.equals("Hidden(2):" + MH_REWARD_KILLED_UUID)
+						|| lore.equals("Hidden(2):" + MH_REWARD_KILLER_UUID)
+						|| lore.equals("Hidden(2):" + MH_REWARD_ITEM_UUID)
+						|| lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID)
 						|| lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
-					return n-2;
+					return n - 2;
 				}
 				n++;
 			}
-		}
-		return -1;
-	}
-
-	private static int getFirstRewardLores(List<String> lores) {
-		int n = 0;
-		for (String lore : lores) {
-			//BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
-			if (lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID) || lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
-					|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID) || lore.equals("Hidden:" + MH_REWARD_ITEM_UUID)) {
-				return n-2;
-			}
-			n++;
 		}
 		return -1;
 	}

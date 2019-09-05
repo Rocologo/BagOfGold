@@ -26,6 +26,7 @@ import com.mojang.authlib.properties.Property;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
+import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
 import one.lindegaard.Core.Shared.Skins;
@@ -139,10 +140,13 @@ public class CustomItems {
 		ItemStack skull = CoreCustomItems.getDefaultPlayerHead(amount);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		String name = Bukkit.getOfflinePlayer(uuid).getName();
-		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + name,
-				"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + Reward.MH_REWARD_KILLER_UUID,
-				money == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(), "Hidden:" + uuid,
-						plugin.getMessages().getString("bagofgold.reward.lore"))));
+		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden(0):" + name,
+				"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money),
+				"Hidden(2):" + Reward.MH_REWARD_KILLER_UUID,
+				money == 0 ? "Hidden(3):" : "Hidden(3):" + UUID.randomUUID(), "Hidden(4):" + uuid,
+				"Hidden(5):"
+						+ Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + Reward.MH_REWARD_KILLER_UUID),
+				plugin.getMessages().getString("bagofgold.reward.lore"))));
 		skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 		if (money == 0) {
 			skullMeta.setDisplayName(name);
@@ -189,14 +193,16 @@ public class CustomItems {
 			e.printStackTrace();
 		}
 		if (mPlayerUUID.equals(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID)))
-			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + mDisplayName,
-					"Hidden:" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden:" + mPlayerUUID,
-					money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid, "Hidden:" + skinUuid)));
+			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden(0):" + mDisplayName,
+					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" + mPlayerUUID,
+					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueRewardUuid, "Hidden(4):" + skinUuid,
+					"Hidden(5):" + Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + mPlayerUUID))));
 		else
-			skullMeta.setLore(new ArrayList<String>(
-					Arrays.asList("Hidden:" + mDisplayName, "Hidden:" + String.format(Locale.ENGLISH, "%.5f", money),
-							"Hidden:" + mPlayerUUID, money == 0 ? "Hidden:" : "Hidden:" + uniqueRewardUuid,
-							"Hidden:" + skinUuid, plugin.getMessages().getString("bagofgold.reward.lore"))));
+			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden(0):" + mDisplayName,
+					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" + mPlayerUUID,
+					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueRewardUuid, "Hidden(4):" + skinUuid,
+					"Hidden(5):" + Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + mPlayerUUID),
+					plugin.getMessages().getString("bagofgold.reward.lore"))));
 		ChatColor color = ChatColor.GOLD;
 		try {
 			color = ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor.toUpperCase());
@@ -270,25 +276,13 @@ public class CustomItems {
 	 */
 	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
 		ItemMeta skullMeta = skull.getItemMeta();
-		if (reward.getRewardType().equals(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID)))
-			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + reward.getDisplayname(),
-					"Hidden:" + reward.getMoney(), "Hidden:" + reward.getRewardType(),
-					reward.getMoney() == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(),
-					"Hidden:" + reward.getSkinUUID())));
-		else
-			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden:" + reward.getDisplayname(),
-					"Hidden:" + reward.getMoney(), "Hidden:" + reward.getRewardType(),
-					reward.getMoney() == 0 ? "Hidden:" : "Hidden:" + UUID.randomUUID(),
-					"Hidden:" + reward.getSkinUUID(),
-					plugin.getMessages().getString("bagofgold.reward.lore"))));
+		skullMeta.setLore(reward.getHiddenLore());
 
 		if (reward.getMoney() == 0)
 			skullMeta.setDisplayName(
-					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-							+ reward.getDisplayname());
+					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + reward.getDisplayname());
 		else
-			skullMeta.setDisplayName(ChatColor
-					.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+			skullMeta.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 					+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 							? Tools.format(reward.getMoney())
 							: reward.getDisplayname() + " (" + Tools.format(reward.getMoney()) + ")"));
