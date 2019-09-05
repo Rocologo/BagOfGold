@@ -42,8 +42,9 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################" + "\nBank settings"
 						+ "\n########################################################################"
 						+ "\nThe Banker is dependend on Citizens2 plugin.");
-		
-		//setCategoryComment("banker.interest","Settings for the interest calculation");
+
+		// setCategoryComment("banker.interest","Settings for the interest
+		// calculation");
 
 		setCategoryComment("plugins",
 				"########################################################################"
@@ -299,6 +300,9 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "host", category = "database")
 	public String databaseHost = "localhost:3306";
+
+	@ConfigField(name = "useSSL", category = "database.mysql")
+	public String databaseUseSSL = "false";
 
 	@ConfigField(name = "database", category = "database")
 	public String databaseName = "bagofgold";
