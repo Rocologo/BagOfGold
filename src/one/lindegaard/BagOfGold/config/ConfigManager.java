@@ -63,6 +63,9 @@ public class ConfigManager extends AutoConfig {
 		setCategoryComment("plugins.barapi", "########################################################################"
 				+ "\nBarApi" + "\n########################################################################");
 
+		setCategoryComment("plugins.cmi", "########################################################################"
+				+ "\nCMI" + "\n########################################################################");
+
 		setCategoryComment("plugins.placeholderapi",
 				"########################################################################" + "\nPlaceholderApi"
 						+ "\n########################################################################");
@@ -258,6 +261,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "barapi.enable_integration_barapi", category = "plugins", comment = "Enable/Disable integration with BarAPI. If you want messages in player chat you can set this to true."
 			+ "\nhttps://dev.bukkit.org/projects/bar_api")
 	public boolean enableIntegrationBarAPI = true;
+	
+	@ConfigField(name = "cmi.enable_integration_cmi", category = "plugins", comment = "Enable/Disable integration with CMI."
+			+ "\nhttps://www.spigotmc.org/resources/cmi-270-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/")
+	public boolean enableIntegrationCMI = true;
 
 	@ConfigField(name = "protocollib.enable_integration_protocollib", category = "plugins", comment = "Enable/Disable integration with ProtocolLib."
 			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")

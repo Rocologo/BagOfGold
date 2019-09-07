@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
+import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 
@@ -353,7 +354,8 @@ public class Messages {
 
 		final String final_message = PlaceholderAPICompat.setPlaceholders(player, message);
 
-		if (isActionBarSupported()) {
+		if (TitleManagerCompat.isSupported() || ActionbarCompat.isSupported() || ActionAnnouncerCompat.isSupported()
+				|| ActionBarAPICompat.isSupported() || CMICompat.isSupported()) {
 			long last = 0L;
 			long time_between_messages = 80L;
 			long delay = 1L, now = System.currentTimeMillis();
@@ -380,11 +382,6 @@ public class Messages {
 		}
 	}
 
-	private boolean isActionBarSupported() {
-		return TitleManagerCompat.isSupported() || ActionbarCompat.isSupported() || ActionAnnouncerCompat.isSupported()
-				|| ActionBarAPICompat.isSupported();
-	}
-
 	/**
 	 * Show message to the player using the ActionBar
 	 * 
@@ -404,8 +401,10 @@ public class Messages {
 			ActionAnnouncerCompat.setMessage(player, message);
 		} else if (ActionBarAPICompat.isSupported()) {
 			ActionBarAPICompat.setMessage(player, message);
+		} else if (CMICompat.isSupported()) {
+			CMICompat.sendActionBarMessage(player, message);
 		} else {
-			if (!isEmpty(message) && !plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+			if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 				player.sendMessage(message);
 		}
 	}

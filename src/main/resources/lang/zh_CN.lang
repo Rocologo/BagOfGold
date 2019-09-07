@@ -91,11 +91,11 @@ bagofgold.commands.version.description=显示 BagOfGold插件 的版本号.
 bagofgold.commands.version.newversion= ${newversion} 版本是可用的 输入 '/bagofgold update' 来更新插件
 bagofgold.config.fail=加载 BagOfGold 插件时出现问题
 bagofgold.hook.econ=无法融入经济！确保你有一个可用的排行榜或金库。
-bagofgold.moneydrop=你损失了 ${money}
+bagofgold.moneydrop=你损失了 ${money} ${rewardname}
 bagofgold.moneygain=你获得了 ${prize}!
 bagofgold.moneygain.drop=${killed} 下降 ${prize} 在地上!
 bagofgold.moneylost=你丢失了 ${prize}!
-bagofgold.moneypickup=You found ${money}
+bagofgold.moneypickup=You found ${money} ${rewardname}
 
 bagofgold.reward.lore=MobHunting Reward
 

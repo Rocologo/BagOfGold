@@ -22,6 +22,7 @@ import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
 import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.Core.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
@@ -179,6 +180,7 @@ public class BagOfGold extends JavaPlugin {
 		mCompatibilityManager.registerPlugin(ActionbarCompat.class, CompatPlugin.Actionbar);
 		mCompatibilityManager.registerPlugin(BossBarAPICompat.class, CompatPlugin.BossBarApi);
 		mCompatibilityManager.registerPlugin(BarAPICompat.class, CompatPlugin.BarApi);
+		mCompatibilityManager.registerPlugin(CMICompat.class, CompatPlugin.CMI);
 
 		mCompatibilityManager.registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
 

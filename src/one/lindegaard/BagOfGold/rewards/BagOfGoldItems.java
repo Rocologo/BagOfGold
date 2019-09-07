@@ -773,7 +773,7 @@ public class BagOfGoldItems implements Listener {
 				Reward reward = Reward.getReward(helmet);
 				if (reward.checkHash()) {
 					if (reward.isBagOfGoldReward()) {
-						player.sendMessage(ChatColor.RED
+						plugin.getMessages().playerActionBarMessageQueue(player, ChatColor.RED
 								+ "[BagOfGold] WARNING, you can't wear a reward on your head. It was removed.");
 						// plugin.getMessages().learn(player,
 						// plugin.getMessages().getString("mobhunting.learn.rewards.no-helmet"));

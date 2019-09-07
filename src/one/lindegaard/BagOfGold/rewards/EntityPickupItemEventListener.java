@@ -20,7 +20,7 @@ public class EntityPickupItemEventListener implements Listener {
 	public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
 		// OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
 
-		// This event is NOT called when the inventory is full. IS THIS CORREECT????
+		// This event is NOT called when the inventory is full. 
 		if (event.isCancelled())
 			return;
 
