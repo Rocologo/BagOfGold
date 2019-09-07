@@ -529,49 +529,54 @@ public class BagOfGoldItems implements Listener {
 
 		if (Reward.isReward(item)) {
 			Reward reward = Reward.getReward(item);
+			plugin.getMessages().debug("BagOfGoldItems: rewardType=%s", reward.getRewardType());
 			if (!reward.checkHash()) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] "
 						+ player.getName() + " has tried to change the value of a BagOfGold Item. Value set to 0!(5)");
 				reward.setMoney(0);
 				setDisplayNameAndHiddenLores(item.getItemStack(), reward);
 			}
-			double money = reward.getMoney();
-			if (money == 0) {
-				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-						+ reward.getDisplayname());
-				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
-				plugin.getMessages().debug("%s dropped a %s (# of rewards left=%s)(1)", player.getName(),
-						reward.getDisplayname() != null ? reward.getDisplayname()
-								: plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-						plugin.getRewardManager().getDroppedMoney().size());
-			} else {
-				if (reward.isItemReward())
-					item.setCustomName(
-							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + format(money));
-				else
+			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
+				double money = reward.getMoney();
+				if (money == 0) {
 					item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-							+ reward.getDisplayname() + " (" + format(money) + ")");
-
-				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
-				plugin.getMessages().debug("%s dropped %s money. (# of rewards left=%s)(2)", player.getName(),
-						format(money), plugin.getRewardManager().getDroppedMoney().size());
-				if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
-					plugin.getMessages().playerActionBarMessageQueue(player, plugin.getMessages().getString(
-							"bagofgold.moneydrop", "money", format(money), "rewardname",
-							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-									+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-											? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
-											: reward.getDisplayname())));
-				if (Reward.isReward(player.getItemOnCursor())) {
-					plugin.getMessages().debug("BagOfGoldItems: dropped BagOfGold from the PlayerInventory");
+							+ reward.getDisplayname());
+					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
+					plugin.getMessages().debug("%s dropped a %s (# of rewards left=%s)(1)", player.getName(),
+							reward.getDisplayname() != null ? reward.getDisplayname()
+									: plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+							plugin.getRewardManager().getDroppedMoney().size());
 				} else {
-					// when dropping from the quickbar using Q key
-					plugin.getMessages().debug("BagOfGoldItems: dropped BagOfGold using Q key");
-					plugin.getRewardManager().removeMoneyFromPlayerBalance(player, money);
-				}
-			}
+					if (reward.isItemReward())
+						item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+								+ format(money));
+					else
+						item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+								+ reward.getDisplayname() + " (" + format(money) + ")");
 
-			item.setCustomNameVisible(true);
+					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
+					plugin.getMessages().debug("%s dropped %s %s. (# of rewards left=%s)(2)", player.getName(),
+							format(money), plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
+							plugin.getRewardManager().getDroppedMoney().size());
+					if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+						plugin.getMessages().playerActionBarMessageQueue(player, plugin.getMessages().getString(
+								"bagofgold.moneydrop", "money", format(money), "rewardname",
+								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+										+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
+												? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
+												: reward.getDisplayname())));
+					if (Reward.isReward(player.getItemOnCursor())) {
+						plugin.getMessages().debug("BagOfGoldItems: %s dropped %s from the PlayerInventory",
+								player.getName(), plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+					} else {
+						// when dropping from the quickbar using Q key
+						plugin.getMessages().debug("BagOfGoldItems: %s dropped %s using Q key", player.getName(),
+								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+						plugin.getRewardManager().removeMoneyFromPlayerBalance(player, money);
+					}
+				}
+				item.setCustomNameVisible(true);
+			}
 		}
 	}
 
