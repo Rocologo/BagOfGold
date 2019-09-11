@@ -1,3 +1,5 @@
+V2.7.9
+* Fixed situation where a BagOfGold could lose its value by placering the item as a block
 V2.7.8
 * CMI-ActionBar support added.
 V2.7.7

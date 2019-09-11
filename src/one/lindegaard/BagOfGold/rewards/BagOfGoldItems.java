@@ -602,8 +602,7 @@ public class BagOfGoldItems implements Listener {
 					// plugin.getMessages().learn(event.getPlayer(),
 					// plugin.getMessages().getString("mobhunting.learn.no-duplication"));
 				}
-				if (reward.getMoney() == 0)
-					reward.setUniqueId(UUID.randomUUID());
+				reward.setUniqueId(UUID.randomUUID());
 				plugin.getMessages().debug("%s placed a reward block: %s", player.getName(),
 						ChatColor.stripColor(reward.toString()));
 				block.setMetadata(Reward.MH_REWARD_DATA, new FixedMetadataValue(plugin, reward));
