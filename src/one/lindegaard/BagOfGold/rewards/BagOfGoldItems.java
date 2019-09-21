@@ -513,6 +513,10 @@ public class BagOfGoldItems implements Listener {
 			e.printStackTrace();
 		}
 	}
+	
+	//***********************************************************************************
+	// EVENTS
+	//***********************************************************************************
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void onPlayerDropReward(PlayerDropItemEvent event) {
@@ -927,14 +931,12 @@ public class BagOfGoldItems implements Listener {
 			clickedInventory = inventory;
 
 		if (Reward.isReward(isCurrentSlot) || Reward.isReward(isCursor) || Reward.isReward(isKey)) {
-			// plugin.getMessages().debug(
-			// "action=%s, InventoryType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s,
-			// view=%s, clickedInv=%s, key=%s",
-			// action, inventory.getType(), slotType, event.getSlot(),
-			// isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
-			// isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
-			// clickedInventory == null ? "null" : clickedInventory.getType(),
-			// isKey == null ? "null" : isKey.getType());
+			 plugin.getMessages().debug("action=%s, InventoryType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, clickedInv=%s, key=%s",
+			 action, inventory.getType(), slotType, event.getSlot(),
+			 isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
+			 isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
+			 clickedInventory == null ? "null" : clickedInventory.getType(),
+			 isKey == null ? "null" : isKey.getType());
 		} else {
 			plugin.getMessages().debug("No BagOfGold reward");
 		}
@@ -987,8 +989,8 @@ public class BagOfGoldItems implements Listener {
 						reward.getMoney());
 				plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 			}
-		} else if ((action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE
-				|| action == InventoryAction.PLACE_SOME) && Reward.isReward(isCursor)) {
+		} else if ((action == InventoryAction.PLACE_ALL 
+				) && Reward.isReward(isCursor)) {
 			if (event.getView().getTitle().equalsIgnoreCase("Inventory")) {
 				Reward reward = Reward.getReward(isCursor);
 				plugin.getMessages().debug("%s moved BagOfGold (%s) into Inventory", player.getName(),
@@ -997,7 +999,7 @@ public class BagOfGoldItems implements Listener {
 			}
 		}
 
-		else if (action == InventoryAction.SWAP_WITH_CURSOR) {
+		else if (action == InventoryAction.SWAP_WITH_CURSOR|| action == InventoryAction.PLACE_ONE|| action == InventoryAction.PLACE_SOME) {
 			if (Reward.isReward(isCurrentSlot) && Reward.isReward(isCursor)) {
 				event.setCancelled(true);
 				ItemMeta imCurrent = isCurrentSlot.getItemMeta();
