@@ -1,3 +1,5 @@
+V2.8.0
+* Fixed BagOfGold duplication problem. (https://www.spigotmc.org/threads/bagofgold.283572/page-17#post-3556765)
 V2.7.9
 * Fixed situation where a BagOfGold could lose its value by placering the item as a block
 V2.7.8
