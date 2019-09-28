@@ -101,7 +101,7 @@ public class RewardListeners implements Listener {
 		if (Reward.isReward(block)) {
 			Reward reward = Reward.getReward(block);
 			
-			if (event.getChangedType()==Material.matchMaterial("DISPENSER")) {
+			if (event.getChangedType()==Material.DISPENSER) {
 				if (!Reward.isReward(event.getSourceBlock())) {
 					plugin.getMessages().debug("RewardListeners: a %s changed a %s(%s)",
 							event.getChangedType(), block.getType(), reward.getMoney());

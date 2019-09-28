@@ -304,6 +304,10 @@ public class Reward {
 		encodedHash = Strings.encode(section.getString("hash", makeDecodedHash()));
 	}
 
+	public boolean isMoney() {
+		return isBagOfGoldReward()||isItemReward();
+	}
+
 	public boolean isBagOfGoldReward() {
 		return uuid.toString().equalsIgnoreCase(MH_REWARD_BAG_OF_GOLD_UUID);
 	}
