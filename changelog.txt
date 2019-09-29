@@ -1,3 +1,6 @@
+V2.8.1
+* IMPORTANT - Fixed bug which destroyed Rewards on server reload
+* Fixed bug in onBlockPhysicsEvent.
 V2.8.0
 * Fixed BagOfGold duplication problem. (https://www.spigotmc.org/threads/bagofgold.283572/page-17#post-3556765)
 * Fixed problem where BagOfGold could not be picked up with a full inventory.

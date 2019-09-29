@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -96,23 +97,30 @@ public class RewardListeners implements Listener {
 	public void onBlockPhysicsEvent(BlockPhysicsEvent event) {
 		if (event.isCancelled())
 			return;
+		
+		if (event.getChangedType()!=Material.matchMaterial("PLAYER_HEAD"))
+			return;
 
 		Block block = event.getBlock();
+		
 		if (Reward.isReward(block)) {
 			Reward reward = Reward.getReward(block);
 			
-			if (event.getChangedType()==Material.DISPENSER) {
+			plugin.getMessages().debug("RewardListernes: Changed:%s, Src=%s, blk=%s" , event.getChangedType(), event.getSourceBlock().getType(), event.getBlock().getType());
+			
+			if (event.getSourceBlock().getType()==Material.DISPENSER || event.getSourceBlock().getType()==Material.matchMaterial("WATER")) {
 				if (!Reward.isReward(event.getSourceBlock())) {
 					plugin.getMessages().debug("RewardListeners: a %s changed a %s(%s)",
-							event.getChangedType(), block.getType(), reward.getMoney());
+							event.getSourceBlock().getType(), block.getType(), reward.getMoney());
 					plugin.getRewardManager().removeReward(block);
 					plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
 				}
-			} else if (event.getChangedType()==Material.matchMaterial("PLAYER_HEAD")) {
+			} else if (event.getSourceBlock().getType()==Material.matchMaterial("PLAYER_HEAD")) {
+				plugin.getMessages().debug("PLAYER_HEAD changed PLAYER_HEAD");
 				return;
 			} else {
 				plugin.getMessages().debug("RewardListeners: Event Cancelled - a %s tried to change a %s(%s)",
-						event.getChangedType(), block.getType(), reward.getMoney());
+						event.getSourceBlock().getType(), block.getType(), reward.getMoney());
 				event.setCancelled(true);
 			}
 		}
