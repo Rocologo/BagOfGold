@@ -784,6 +784,9 @@ public class BagOfGoldItems implements Listener {
 						if (Misc.round(reward.getMoney()) != Misc
 								.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
 							dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), reward.getMoney());
+					} else {
+						event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
+						player.getWorld().dropItem(player.getLocation(), helmet);
 					}
 				} else {
 					Bukkit.getConsoleSender().sendMessage(
