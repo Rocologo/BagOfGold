@@ -68,7 +68,7 @@ public class BagOfGoldItems implements Listener {
 	public BagOfGoldItems(BagOfGold plugin) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), "rewards.yml");
-		//loadAllStoredRewardsFromMobHunting();
+		loadAllStoredRewardsFromMobHunting();
 		loadAllStoredRewards();
 		if (isBagOfGoldStyle()) {
 			Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -490,8 +490,8 @@ public class BagOfGoldItems implements Listener {
 					saveReward(UUID.fromString(key));
 					n++;
 				} else {
-					deleted++;
-					config.set(key, null);
+					//deleted++;
+					//config.set(key, null);
 				}
 			}
 		} catch (InvalidConfigurationException e) {
