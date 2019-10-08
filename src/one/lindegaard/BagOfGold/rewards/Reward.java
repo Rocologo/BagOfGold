@@ -372,12 +372,13 @@ public class Reward {
 	}
 
 	public static boolean isReward(Block block) {
-		if (Servers.isMC113OrNewer())
+		return block.hasMetadata(MH_REWARD_DATA);
+		/**if (Servers.isMC113OrNewer())
 			return (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD)
 					&& block.hasMetadata(MH_REWARD_DATA);
 		else
 			return (block.getType() == Material.matchMaterial("SKULL_ITEM")
-					|| block.getType() == Material.matchMaterial("SKULL")) && block.hasMetadata(MH_REWARD_DATA);
+					|| block.getType() == Material.matchMaterial("SKULL")) && block.hasMetadata(MH_REWARD_DATA);**/
 	}
 
 	public static Reward getReward(Block block) {
