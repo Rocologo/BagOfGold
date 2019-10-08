@@ -133,9 +133,9 @@ public class Reward {
 
 			// Skin UUID
 			else if (str.startsWith("Hidden(4):"))
-				this.skinUUID = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(10));
+				this.skinUUID = UUID.fromString(str.substring(10));
 			else if (n == 4 && str.startsWith("Hidden:"))
-				this.skinUUID = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(7));
+				this.skinUUID = UUID.fromString(str.substring(7));
 
 			// MobHunting Reward
 			else if (str.equalsIgnoreCase(BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore")))
