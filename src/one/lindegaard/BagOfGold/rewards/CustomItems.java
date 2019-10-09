@@ -219,25 +219,25 @@ public class CustomItems {
 		return skull;
 	}
 
-	public ItemStack getCustomHead(MinecraftMob minecraftMob, String name, int amount, double money, UUID skinUUID) {
+	public ItemStack getCustomHead(MinecraftMob minecraftMob, String name, int amount, double money, UUID uniqueId, UUID skinUUID) {
 		ItemStack skull;
 		switch (minecraftMob) {
 		case Skeleton:
 			skull = CoreCustomItems.getDefaultSkeletonHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
+					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), uniqueId, skinUUID));
 			break;
 
 		case WitherSkeleton:
 			skull = CoreCustomItems.getDefaultWitherSkeletonHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
+					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), uniqueId, skinUUID));
 			break;
 
 		case Zombie:
 			skull = CoreCustomItems.getDefaultZombieHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
+					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), uniqueId, skinUUID));
 			break;
 
 		case PvpPlayer:
@@ -247,13 +247,13 @@ public class CustomItems {
 		case Creeper:
 			skull = CoreCustomItems.getDefaultCreeperHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
+					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), uniqueId, skinUUID));
 			break;
 
 		case EnderDragon:
 			skull = CoreCustomItems.getDefaultEnderDragonHead(amount);
 			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
+					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), uniqueId, skinUUID));
 			break;
 
 		default:

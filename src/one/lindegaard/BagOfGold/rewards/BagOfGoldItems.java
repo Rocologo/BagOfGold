@@ -490,8 +490,8 @@ public class BagOfGoldItems implements Listener {
 					saveReward(UUID.fromString(key));
 					n++;
 				} else {
-					//deleted++;
-					//config.set(key, null);
+					// deleted++;
+					// config.set(key, null);
 				}
 			}
 		} catch (InvalidConfigurationException e) {
@@ -999,6 +999,9 @@ public class BagOfGoldItems implements Listener {
 										plugin.getRewardManager().removeMoneyFromPlayerBalance(player,
 												saldo - money_in_hand);
 								}
+							} else if (cursor.isKilledHeadReward()||cursor.isKillerHeadReward()) {
+								plugin.getMessages().debug("Collect to cursor on MobHunting heads is still not implemented");
+								//plugin.getMessages().debug("%s collected %s to the cursor", player.getName(), saldo);
 							}
 						}
 						break;
@@ -1151,8 +1154,7 @@ public class BagOfGoldItems implements Listener {
 							ItemMeta imCursor = isCursor.getItemMeta();
 							Reward reward1 = new Reward(imCurrent.getLore());
 							Reward reward2 = new Reward(imCursor.getLore());
-							if ((reward1.isMoney() || reward1.isItemReward())
-									&& reward1.getRewardType().equals(reward2.getRewardType())) {
+							if ((reward1.isMoney()) && reward1.getRewardType().equals(reward2.getRewardType())) {
 								event.setCancelled(true);
 								if (reward1.getMoney() + reward2.getMoney() <= plugin.getConfigManager().limitPerBag) {
 									double added_money = reward2.getMoney();
@@ -1205,27 +1207,39 @@ public class BagOfGoldItems implements Listener {
 										plugin.getRewardManager().addMoneyToPlayerBalance(player, added_money);
 									}
 								}
-							} else {
-								if (clickedInventory.getType() == InventoryType.PLAYER) {
-									double playerInv = Reward.isReward(isCurrentSlot)
-											? Reward.getReward(isCurrentSlot).getMoney()
-											: 0;
-									double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney()
-											: 0;
-									plugin.getMessages().debug("(1)slot=%s cursor=%s", playerInv, chestInv);
-									// plugin.getRewardManager().removeMoneyFromPlayer(player, playerInv -
-									// chestInv);
+							} else if ((reward1.isKilledHeadReward() || reward1.isKillerHeadReward())
+									&& reward1.getRewardType().equals(reward2.getRewardType())
+									&& Misc.round(reward1.getMoney()) == Misc.round(reward2.getMoney())) {
+								event.setCancelled(true);
+								if (isCursor.getAmount() + isCurrentSlot.getAmount() <= 64) {
+									isCurrentSlot.setAmount(isCursor.getAmount() + isCurrentSlot.getAmount());
+									isCursor.setAmount(0);
+									isCursor.setType(Material.AIR);
+									plugin.getMessages().debug("%s merged two rewards(3)", player.getName());
 								} else {
-									double playerInv = Reward.isReward(isCurrentSlot)
-											? Reward.getReward(isCurrentSlot).getMoney()
-											: 0;
-									double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney()
-											: 0;
-									plugin.getMessages().debug("(2)slot=%s cursor=%s", playerInv, chestInv);
-									// plugin.getRewardManager().addMoneyToPlayer(player, playerInv - chestInv);
+									isCurrentSlot.setAmount(64);
+									isCursor.setAmount(isCursor.getAmount() + isCurrentSlot.getAmount() - 64);
+									plugin.getMessages().debug("%s merged two rewards(4)", player.getName());
 								}
-							}
+							} 
+						} else if (clickedInventory.getType() == InventoryType.PLAYER) {
+							double playerInv = Reward.isReward(isCurrentSlot)
+									? Reward.getReward(isCurrentSlot).getMoney()
+									: 0;
+							double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
+							plugin.getMessages().debug("(1)slot=%s cursor=%s", playerInv, chestInv);
+							// plugin.getRewardManager().removeMoneyFromPlayer(player, playerInv -
+							// chestInv);
+						} else {
+							double playerInv = Reward.isReward(isCurrentSlot)
+									? Reward.getReward(isCurrentSlot).getMoney()
+									: 0;
+							double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
+							plugin.getMessages().debug("(2)slot=%s cursor=%s", playerInv, chestInv);
+							// plugin.getRewardManager().addMoneyToPlayer(player, playerInv - chestInv);
+
 						}
+
 						break;
 					default:
 						plugin.getMessages().debug("BagOfGoldItems: action=%s", action);

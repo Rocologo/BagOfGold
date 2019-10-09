@@ -245,7 +245,8 @@ public class RewardManager {
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
 			MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getSkinUUID());
-			ItemStack is = new CustomItems().getCustomHead(mob, mob.getFriendlyName(), 1, reward.getMoney(), reward.getSkinUUID());
+			//ItemStack is = new CustomItems().getCustomtexture(mob.getPlayerUUID(), mob.getDisplayName(), mob.getTextureValue(), mob.getTextureSignature(), reward.getMoney(), reward.getUniqueUUID(), reward.getSkinUUID());
+			ItemStack is = new CustomItems().getCustomHead(mob, mob.getFriendlyName(), 1, reward.getMoney(), reward.getUniqueUUID(), reward.getSkinUUID());
 			Item item = location.getWorld().dropItemNaturally(location, is);
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKillerHeadReward()) {

@@ -1,5 +1,5 @@
 V2.8.5
-*
+* Fixed bug where rewards placed as blocks lost its value.
 V2.8.4
 * Fixed bug which could destroy rewards/bags on server restart
 V2.8.1
