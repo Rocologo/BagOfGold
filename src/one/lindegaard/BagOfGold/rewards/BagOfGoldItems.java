@@ -854,9 +854,19 @@ public class BagOfGoldItems implements Listener {
 	}
 
 	private boolean isInventoryAllowed(Inventory inv) {
-		List<InventoryType> allowedInventories = Arrays.asList(InventoryType.PLAYER, InventoryType.BARREL,
-				InventoryType.ANVIL, InventoryType.CHEST, InventoryType.DISPENSER, InventoryType.DROPPER,
-				InventoryType.ENDER_CHEST, InventoryType.HOPPER, InventoryType.SHULKER_BOX, InventoryType.CRAFTING);
+		List<InventoryType> allowedInventories;
+		if (Servers.isMC114OrNewer())
+			allowedInventories = Arrays.asList(InventoryType.PLAYER, InventoryType.BARREL, InventoryType.ANVIL,
+					InventoryType.CHEST, InventoryType.DISPENSER, InventoryType.DROPPER, InventoryType.ENDER_CHEST,
+					InventoryType.HOPPER, InventoryType.SHULKER_BOX, InventoryType.CRAFTING);
+		else if (Servers.isMC19OrNewer())
+			allowedInventories = Arrays.asList(InventoryType.PLAYER, InventoryType.ANVIL, InventoryType.CHEST,
+					InventoryType.DISPENSER, InventoryType.DROPPER, InventoryType.ENDER_CHEST, InventoryType.HOPPER,
+					InventoryType.SHULKER_BOX, InventoryType.CRAFTING);
+		else // MC 1.8
+			allowedInventories = Arrays.asList(InventoryType.PLAYER, InventoryType.ANVIL, InventoryType.CHEST,
+					InventoryType.DISPENSER, InventoryType.DROPPER, InventoryType.ENDER_CHEST, InventoryType.HOPPER,
+					InventoryType.CRAFTING);
 		if (inv != null)
 			return allowedInventories.contains(inv.getType());
 		else
@@ -999,9 +1009,11 @@ public class BagOfGoldItems implements Listener {
 										plugin.getRewardManager().removeMoneyFromPlayerBalance(player,
 												saldo - money_in_hand);
 								}
-							} else if (cursor.isKilledHeadReward()||cursor.isKillerHeadReward()) {
-								plugin.getMessages().debug("Collect to cursor on MobHunting heads is still not implemented");
-								//plugin.getMessages().debug("%s collected %s to the cursor", player.getName(), saldo);
+							} else if (cursor.isKilledHeadReward() || cursor.isKillerHeadReward()) {
+								plugin.getMessages()
+										.debug("Collect to cursor on MobHunting heads is still not implemented");
+								// plugin.getMessages().debug("%s collected %s to the cursor", player.getName(),
+								// saldo);
 							}
 						}
 						break;
@@ -1221,7 +1233,7 @@ public class BagOfGoldItems implements Listener {
 									isCursor.setAmount(isCursor.getAmount() + isCurrentSlot.getAmount() - 64);
 									plugin.getMessages().debug("%s merged two rewards(4)", player.getName());
 								}
-							} 
+							}
 						} else if (clickedInventory.getType() == InventoryType.PLAYER) {
 							double playerInv = Reward.isReward(isCurrentSlot)
 									? Reward.getReward(isCurrentSlot).getMoney()
