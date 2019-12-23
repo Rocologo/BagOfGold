@@ -1,5 +1,5 @@
 V2.8.8
-* MC 1.15 release
+* Minecraft 1.15.1 release
 V2.8.6
 * Fixed BARREL issue on older MC servers. Ticket 578. (https://github.com/Rocologo/MobHunting/issues/578)
 V2.8.5
