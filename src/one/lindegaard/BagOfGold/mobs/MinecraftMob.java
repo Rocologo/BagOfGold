@@ -30,7 +30,14 @@ public enum MinecraftMob {
 	// https://mineskin.org/
 	// http://heads.freshcoal.com/index.php
 
+	// Minecraft 1.15
 	// ******************************************************************
+	// Bee
+	Bee("Bee", "Bee", "4e98e84d-46a2-43e6-bb64-8355bd79a98d", "Bee",
+			"eyJ0aW1lc3RhbXAiOjE1NzU3NDU5MTk5MTQsInByb2ZpbGVJZCI6IjgyYzYwNmM1YzY1MjRiNzk4YjkxYTEyZDNhNjE2OTc3IiwicHJvZmlsZU5hbWUiOiJOb3ROb3RvcmlvdXNOZW1vIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xNTI0ODIzZTg2YjYyNWZhNzYxY2E3ZjgwZDA4ODQzODE4MTM2ZWRjYzE3MmI2MjgwNDdiYWIzNTkyMDgzMDEwIn19fQ==",
+			"i22u9bDqUfReQtv4588sN46mZTdD8spGmuq1THcAgGUqP/fddxEdJgRGwYHMxgPIGLFfrWJFdR3JkK8JGXQTY2FZ8uY8DPylqXJ11Y4LW0e2YECxKVXylGvf3s0Nj6t5XJAviUfSYgPVmRNv8r9oWBobhd2o6WdVtJZriCQVuP0OmvOrjgfnptL/HSuggQPeeqr/2UctQIpvSThOTzgnlpwtjLSSezaVDGe+nMkGR8hPE6LrG6Dnn0WXY3pVNMk5Tek0JNGEiZcKL3krxtoPaCXwaPJsEN6iLDFiXItqZWbl7CKe3hBA0iQko8VBMUIriMcBDQ237YNUMsMbwMM8E35JFSb3koAhG6SzvsHXzjb6vWHaqDzGBNv/7aUFr/KMtPk9ZF4NA6wIzbQJLsXXmWU0Gddvw0I4m0hYuZPR6g28JzzPhQgA131bUh5VbEL6cDjs7vcDs+zt3cRIqsdMkyhPF1qjWpvsFS3UKqG2FdHPdt/kK8GVKdije70bSG12rJbIJwxbYcPwYWYVvdxoU4sYT5tiEipKbzsmKgGaLWBjpR+S3Cdpq49fDMDKE6LEHcTB0xi9vNiEOCLnxlq1DnqlOLdZ2AY9ir8AQuVVE4qnWXl1cXhZQDe83+ivb6Ls3OGm/rgSdRCLjXnI3U/HNKWbtpe4BpzBGMoRjqmxLAM="),
+
+// ******************************************************************
 	// Minecraft 1.14
 	// ******************************************************************
 	// Cat
@@ -501,6 +508,10 @@ public enum MinecraftMob {
 	}
 
 	public boolean matches(Entity entity) {
+		if (Servers.isMC115OrNewer())
+			if (this == Bee)
+				return entity instanceof org.bukkit.entity.Bee;
+			
 		if (Servers.isMC114OrNewer())
 			if (this == Cat)
 				return entity instanceof org.bukkit.entity.Cat;
