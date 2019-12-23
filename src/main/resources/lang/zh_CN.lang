@@ -100,6 +100,7 @@ bagofgold.moneypickup=You found ${money} ${rewardname}
 bagofgold.reward.lore=MobHunting Reward
 
 mobs.Bat.name=§9蝙蝠
+mobs.Bee.name=§9蜜蜂
 mobs.Blacksmith.name=§9铁匠
 mobs.Blaze.name=§9烈焰人
 mobs.BonusMob.name=§9WCZ

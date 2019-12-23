@@ -97,6 +97,7 @@ bagofgold.moneylost=Você perdeu ${prize}!
 bagofgold.moneypickup=Você encontrou ${money} ${rewardname}
 bagofgold.reward.lore=MobHunting Reward
 mobs.Bat.name=§9Bat
+mobs.Bee.name=§9Abelha
 mobs.Blacksmith.name=§9Blacksmith
 mobs.Blaze.name=§9Blaze
 mobs.BonusMob.name=§9Bonus Mob
