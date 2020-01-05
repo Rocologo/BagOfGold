@@ -1221,6 +1221,7 @@ public class BagOfGoldItems implements Listener {
 								}
 							} else if ((reward1.isKilledHeadReward() || reward1.isKillerHeadReward())
 									&& reward1.getRewardType().equals(reward2.getRewardType())
+									&& reward1.getSkinUUID().equals(reward2.getSkinUUID())
 									&& Misc.round(reward1.getMoney()) == Misc.round(reward2.getMoney())) {
 								event.setCancelled(true);
 								if (isCursor.getAmount() + isCurrentSlot.getAmount() <= 64) {
