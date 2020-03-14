@@ -1230,8 +1230,8 @@ public class BagOfGoldItems implements Listener {
 									isCursor.setType(Material.AIR);
 									plugin.getMessages().debug("%s merged two rewards(3)", player.getName());
 								} else {
-									isCurrentSlot.setAmount(64);
 									isCursor.setAmount(isCursor.getAmount() + isCurrentSlot.getAmount() - 64);
+									isCurrentSlot.setAmount(64);
 									plugin.getMessages().debug("%s merged two rewards(4)", player.getName());
 								}
 							}
