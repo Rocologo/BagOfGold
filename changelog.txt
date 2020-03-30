@@ -1,3 +1,5 @@
+V2.9.1
+* Fixed bug where you could copy heads and bags
 V2.9.0
 * Minecraft 1.15.2 release
 V2.8.9
