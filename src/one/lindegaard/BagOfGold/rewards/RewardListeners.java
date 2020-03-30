@@ -13,6 +13,8 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
@@ -135,6 +137,16 @@ public class RewardListeners implements Listener {
 			Reward reward = Reward.getReward(block);
 			plugin.getRewardManager().removeReward(block);
 			plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		Player player = (Player) event.getPlayer();
+		if (player.getOpenInventory()!=null) {
+			if (player.getOpenInventory().getCursor()==null) return;
+			if (!Reward.isReward(player.getOpenInventory().getCursor())) return;
+			player.getOpenInventory().setCursor(null);
 		}
 	}
 

@@ -1,5 +1,7 @@
+V2.9.2
+* Fixed bug where players you open inventory, hold a reward in the hand and quit, causing the money to be added twice to the playerbalance.
 V2.9.1
-* Fixed bug where you could copy heads and bags
+* Fixed bug where you could copy heads and bags (Ticket 87 - https://github.com/Rocologo/BagOfGold/issues/87)
 V2.9.0
 * Minecraft 1.15.2 release
 V2.8.9
@@ -19,7 +21,7 @@ V2.8.0
 * Fixed BagOfGold duplication problem. (https://www.spigotmc.org/threads/bagofgold.283572/page-17#post-3556765)
 * Fixed problem where BagOfGold could not be picked up with a full inventory.
 V2.7.9
-* Fixed situation where a BagOfGold could lose its value by placering the item as a block
+* Fixed situation where a BagOfGold could lose its value by placeing the item as a block
 V2.7.8
 * CMI-ActionBar support added.
 V2.7.7
