@@ -88,7 +88,7 @@ public class RewardManager {
 
 	public boolean setbalance(OfflinePlayer offlinePlayer, double amount) {
 		double bal = getBalance(offlinePlayer);
-		if (offlinePlayer.isOnline()) {
+		if (offlinePlayer.isOnline() && ((Player)offlinePlayer).getGameMode()!=GameMode.SPECTATOR) {
 			if (amount >= bal)
 				addMoneyToPlayer((Player) offlinePlayer, amount - bal);
 			else

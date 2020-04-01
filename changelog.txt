@@ -1,3 +1,5 @@
+V2.9.3
+* Spectator mode duplication bug. Ticket 83 (https://github.com/Rocologo/BagOfGold/issues/83)
 V2.9.2
 * Fixed bug where players you open inventory, hold a reward in the hand and quit, causing the money to be added twice to the playerbalance.
 V2.9.1

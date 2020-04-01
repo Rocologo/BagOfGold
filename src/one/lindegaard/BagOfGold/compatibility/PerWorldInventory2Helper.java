@@ -1,6 +1,7 @@
 package one.lindegaard.BagOfGold.compatibility;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,7 +18,8 @@ public class PerWorldInventory2Helper {
 				Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 					@Override
 					public void run() {
-						plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(event.getPlayer());
+						if (event.getPlayer().getGameMode() != GameMode.SPECTATOR)
+							plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(event.getPlayer());
 					}
 				}, 20);
 			}

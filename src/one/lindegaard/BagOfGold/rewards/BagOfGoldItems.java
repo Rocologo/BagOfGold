@@ -1258,6 +1258,8 @@ public class BagOfGoldItems implements Listener {
 						plugin.getMessages().debug("BagOfGoldItems: action=%s", action);
 						if (player.getGameMode() == GameMode.SURVIVAL)
 							plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
+						else if (player.getGameMode() == GameMode.SPECTATOR)
+							break;
 						else
 							plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 						break;

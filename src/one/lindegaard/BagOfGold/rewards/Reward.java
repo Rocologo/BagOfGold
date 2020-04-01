@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,7 +22,6 @@ import org.bukkit.metadata.MetadataValue;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Strings;
-import one.lindegaard.Core.Server.Servers;
 
 public class Reward {
 
