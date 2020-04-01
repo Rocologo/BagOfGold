@@ -239,6 +239,7 @@ public class BagOfGoldItems implements Listener {
 			} else { // ITEM
 				uuid = UUID.fromString(Reward.MH_REWARD_ITEM_UUID);
 				skinuuid = null;
+				//skinuuid=uuid;
 				is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
 			}
 
