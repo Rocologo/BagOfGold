@@ -63,7 +63,8 @@ public class MetricsManager {
 	}
 
 	public void startBStatsMetrics() {
-		bStatsMetrics = new Metrics(plugin);
+		// https://bstats.org/what-is-my-plugin-id
+		bStatsMetrics = new Metrics(plugin, 1783);
 		bStatsMetrics.addCustomChart(
 				new Metrics.SimplePie("database_used_for_bagofgold", () -> plugin.getConfigManager().databaseType));
 		bStatsMetrics

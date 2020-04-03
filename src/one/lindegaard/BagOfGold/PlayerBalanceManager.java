@@ -158,7 +158,6 @@ public class PlayerBalanceManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
-
 		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
 		ps.setLastKnownWorldGrp(plugin.getWorldGroupManager().getCurrentWorldGroup(player));
 		plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);

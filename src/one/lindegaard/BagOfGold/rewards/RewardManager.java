@@ -25,7 +25,7 @@ public class RewardManager {
 
 	private BagOfGold plugin;
 	private PickupRewards pickupRewards;
-	
+
 	private HashMap<Integer, Double> droppedMoney = new HashMap<Integer, Double>();
 	private HashMap<UUID, Reward> placedMoney_Reward = new HashMap<UUID, Reward>();
 	private HashMap<UUID, Location> placedMoney_Location = new HashMap<UUID, Location>();
@@ -88,7 +88,7 @@ public class RewardManager {
 
 	public boolean setbalance(OfflinePlayer offlinePlayer, double amount) {
 		double bal = getBalance(offlinePlayer);
-		if (offlinePlayer.isOnline() && ((Player)offlinePlayer).getGameMode()!=GameMode.SPECTATOR) {
+		if (offlinePlayer.isOnline() && ((Player) offlinePlayer).getGameMode() != GameMode.SPECTATOR) {
 			if (amount >= bal)
 				addMoneyToPlayer((Player) offlinePlayer, amount - bal);
 			else
@@ -230,11 +230,12 @@ public class RewardManager {
 							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
 		}
 	}
-	
+
 	/**
-	 * Dropes an Reward Item at the specified location  
+	 * Dropes an Reward Item at the specified location
+	 * 
 	 * @param location - where the Item is dropped.
-	 * @param reward - the reward to be dropped
+	 * @param reward   - the reward to be dropped
 	 */
 	public void dropRewardOnGround(Location location, Reward reward) {
 		if (reward.isBagOfGoldReward()) {
@@ -245,8 +246,11 @@ public class RewardManager {
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
 			MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getSkinUUID());
-			//ItemStack is = new CustomItems().getCustomtexture(mob.getPlayerUUID(), mob.getDisplayName(), mob.getTextureValue(), mob.getTextureSignature(), reward.getMoney(), reward.getUniqueUUID(), reward.getSkinUUID());
-			ItemStack is = new CustomItems().getCustomHead(mob, mob.getFriendlyName(), 1, reward.getMoney(), reward.getUniqueUUID(), reward.getSkinUUID());
+			// ItemStack is = new CustomItems().getCustomtexture(mob.getPlayerUUID(),
+			// mob.getDisplayName(), mob.getTextureValue(), mob.getTextureSignature(),
+			// reward.getMoney(), reward.getUniqueUUID(), reward.getSkinUUID());
+			ItemStack is = new CustomItems().getCustomHead(mob, mob.getFriendlyName(), 1, reward.getMoney(),
+					reward.getUniqueUUID(), reward.getSkinUUID());
 			Item item = location.getWorld().dropItemNaturally(location, is);
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKillerHeadReward()) {
@@ -254,7 +258,8 @@ public class RewardManager {
 			Item item = location.getWorld().dropItemNaturally(location, is);
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] "+ChatColor.RED+"Unhandled reward type in RewardManager (DropRewardOnGround).");
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+					+ "Unhandled reward type in RewardManager (DropRewardOnGround).");
 		}
 	}
 
@@ -333,7 +338,7 @@ public class RewardManager {
 		} else
 			return 0;
 	}
-	
+
 	public boolean setBankBalance(String account, double amount) {
 		OfflinePlayer offlinePlayer = Tools.isUUID(account) ? Bukkit.getOfflinePlayer(UUID.fromString(account))
 				: Bukkit.getOfflinePlayer(account);
@@ -500,8 +505,9 @@ public class RewardManager {
 	 * @param player
 	 */
 	public void adjustAmountOfMoneyInInventoryToPlayerBalance(Player player) {
-		double amountInInventory = getAmountInInventory(player);
+
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
+		double amountInInventory = getAmountInInventory(player);
 		if (ps != null) {
 			double diff = (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()))
 					- Misc.round(amountInInventory);
@@ -544,7 +550,7 @@ public class RewardManager {
 		if (ps != null) {
 			double diff = Misc.round(amountInInventory + inHand)
 					- (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()));
-			plugin.getMessages().debug("Adjusting Balance to amt: diff=%s", diff);
+			// plugin.getMessages().debug("Adjusting Balance to amt: diff=%s", diff);
 			if (Misc.round(diff) != 0)
 				plugin.getMessages().debug("Adjusting Balance to amt: amt=%s, inHand=%s, bal=%s(+%s)",
 						amountInInventory, inHand, ps.getBalance(), ps.getBalanceChanges());
@@ -580,6 +586,7 @@ public class RewardManager {
 
 	/**
 	 * Remove the Reward block from the world and clean up in saved rewards.
+	 * 
 	 * @param block
 	 */
 	public void removeReward(Block block) {

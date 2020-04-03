@@ -53,7 +53,7 @@ public class PerWorldInventoryCompat {
 				//	}, plugin);
 				//else
 				if (mPlugin.getDescription().getVersion().compareTo("2.0") >= 0)
-				PerWorldInventory2Helper.registerPWI2Events(plugin);
+				PerWorldInventoryHelper.registerPWIEvents(plugin);
 				
 				supported = true;
 

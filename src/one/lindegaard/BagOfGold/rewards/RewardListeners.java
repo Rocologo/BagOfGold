@@ -29,21 +29,22 @@ public class RewardListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
+
 		Player player = (Player) event.getPlayer();
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		if (player.isOnline() && player.isValid()) {
 			if (player.getGameMode() == GameMode.SURVIVAL) {
 				plugin.getMessages().debug(
-						"RewardListener: InventoryCloseEvent adjusting Player Balance to Amount of BagOfGold in Inventory: %s",
+						"Adjusting Player Balance to Amount of BagOfGold in Inventory: %s",
 						ps.toString());
 				plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 			} else if (player.getGameMode() == GameMode.SPECTATOR) {
 				plugin.getMessages().debug(
-						"RewardListener: InventoryCloseEvent: Player is in spectator mode. BagOfGold is not changed in Inventory: %s",
+						"Player is in spectator mode. BagOfGold is not changed in Inventory: %s",
 						ps.toString());
 			} else {
 				plugin.getMessages().debug(
-						"RewardListener: InventoryCloseEvent adjusting Amount of BagOfGold in Inventory To Balance: %s",
+						"Adjusting Amount of BagOfGold in Inventory to Balance: %s",
 						ps.toString());
 				plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 			}
@@ -59,19 +60,20 @@ public class RewardListeners implements Listener {
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
 			public void run() {
+
 				Player player = event.getPlayer();
 				if (player.getGameMode() == GameMode.SURVIVAL) {
 					plugin.getMessages().debug(
-							"RewardListener: PlayerGameModeChange %s adjusting Player Balance to Amount of BagOfGold in Inventory",
+							"PlayerGameModeChange %s adjusting Player Balance to Amount of BagOfGold in Inventory",
 							player.getName());
 					plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 				} else if (player.getGameMode() == GameMode.SPECTATOR) {
 					plugin.getMessages().debug(
-							"RewardListener: PlayerGameModeChange %s is in Spectator mode. BagOfGold is not changed.",
+							"PlayerGameModeChange %s is in Spectator mode. BagOfGold is not changed.",
 							player.getName());
 				} else {
 					plugin.getMessages().debug(
-							"RewardListener: PlayerGameModeChange %s adjusting Amount of BagOfGold in Inventory To Balance",
+							"PlayerGameModeChange %s adjusting Amount of BagOfGold in Inventory To Balance",
 							player.getName());
 					plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 				}
@@ -88,26 +90,27 @@ public class RewardListeners implements Listener {
 		Player player = event.getPlayer();
 		if (player.getGameMode() == GameMode.SURVIVAL) {
 			plugin.getMessages().debug(
-					"RewardListener: PlayerChangedWorld: %s adjusting Player Balance to Amount of BagOfGold in Inventory",
+					"Adjusting %s's balance to amount of BagOfGold in Inventory",
 					player.getName());
 			plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 		} else if (player.getGameMode() == GameMode.SPECTATOR) {
 			plugin.getMessages().debug(
-					"RewardListener: PlayerChangedWorld: %s is in spectator mode. BagOfGold is not changed.",
+					"%s is in spectator mode. BagOfGold is not changed.",
 					player.getName());
 		} else {
 			plugin.getMessages().debug(
-					"RewardListener: PlayerChangedWorld: %s adjusting Amount of BagOfGold in Inventory To Balance",
+					"Adjusting %s's amount of BagOfGold in Inventory to balance",
 					player.getName());
 			plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
-		plugin.getMessages().debug("RewardListernes: PlayerChangedWorld %s (from %s to %s) new balance is %s",
+		plugin.getMessages().debug("Adjusting %s's balance from %s to %s, new balance is %s",
 				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
 				plugin.getRewardManager().getBalance(player));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPhysicsEvent(BlockPhysicsEvent event) {
+
 		if (event.isCancelled())
 			return;
 

@@ -350,7 +350,7 @@ public class Reward {
 			Iterator<String> itr = itemStack.getItemMeta().getLore().iterator();
 			while (itr.hasNext()) {
 				String lore = itr.next();
-				// BagOfGold.getAPI().getMessages().debug("Reward: n=%s - %s", n, lore);
+				//BagOfGold.getAPI().getMessages().debug("Reward: Line n=%s - %s", n, lore);
 				if (lore.equals("Hidden(2):" + MH_REWARD_BAG_OF_GOLD_UUID)
 						|| lore.equals("Hidden(2):" + MH_REWARD_KILLED_UUID)
 						|| lore.equals("Hidden(2):" + MH_REWARD_KILLER_UUID)

@@ -1,5 +1,9 @@
 V2.9.3
 * Spectator mode duplication bug. Ticket 83 (https://github.com/Rocologo/BagOfGold/issues/83)
+* Updated to bStats 1.7
+* Fixed /bag money errors
+* Fixed ticket 90 Problems with money type ITEM (https://github.com/Rocologo/BagOfGold/issues/90)
+* Fixed ticket 81 Bank Duplication. (https://github.com/Rocologo/BagOfGold/issues/81) 
 V2.9.2
 * Fixed bug where players you open inventory, hold a reward in the hand and quit, causing the money to be added twice to the playerbalance.
 V2.9.1

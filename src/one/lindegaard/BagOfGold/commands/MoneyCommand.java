@@ -293,7 +293,7 @@ public class MoneyCommand implements ICommand {
 												+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 										"money", plugin.getEconomyManager().format(money)));
 					} else if (Bukkit.getServer().getOfflinePlayer(args[1]).isOnline()) {
-						if (args.length>2 && args[2].matches("\\d+(\\.\\d+)?")) {
+						if (args.length > 2 && args[2].matches("\\d+(\\.\\d+)?")) {
 							Player player = ((Player) Bukkit.getServer().getOfflinePlayer(args[1]));
 							Location location = Tools.getTargetBlock(player, 3).getLocation();
 							double money = Misc.floor(Double.valueOf(args[2]));
@@ -312,8 +312,13 @@ public class MoneyCommand implements ICommand {
 													+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 											"money", plugin.getEconomyManager().format(money)));
 						} else {
-							plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-									.getString("bagofgold.commands.base.not_a_number", "number", "{missing}"));
+							if (args.length > 2)
+								plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+										.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
+							else
+								plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+										.getString("bagofgold.commands.base.not_a_number", "number", "{missing}"));
+
 						}
 					} else {
 						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
@@ -343,7 +348,7 @@ public class MoneyCommand implements ICommand {
 					return true;
 				}
 
-				if (args[2].matches("\\d+(\\.\\d+)?")) {
+				if (args.length > 2 && args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
 					if (amount > plugin.getConfigManager().limitPerBag * 100) {
 						amount = plugin.getConfigManager().limitPerBag * 100;
@@ -353,8 +358,13 @@ public class MoneyCommand implements ICommand {
 					}
 					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
 				} else {
-					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
+					if (args.length > 2)
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
+					else
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.base.not_a_number", "number", "{missing}"));
+
 				}
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
@@ -417,8 +427,13 @@ public class MoneyCommand implements ICommand {
 					}
 
 				} else {
-					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
+					if (args.length > 2)
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
+					else
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.base.not_a_number", "number", "{missing}"));
+
 				}
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
@@ -458,9 +473,13 @@ public class MoneyCommand implements ICommand {
 							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
 				}
 			} else {
-				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
-								"bagofgold.money.take", "command", "money take"));
+				if (args.length > 2)
+					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
+				else
+					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+							.getString("bagofgold.commands.base.not_a_number", "number", "{missing}"));
+
 			}
 			return true;
 
@@ -505,6 +524,9 @@ public class MoneyCommand implements ICommand {
 								double to_be_removed = args[1].equalsIgnoreCase("all")
 										? ps.getBalance() + ps.getBalanceChanges()
 										: Double.valueOf(args[1]);
+								to_be_removed = to_be_removed > ps.getBalance() + ps.getBalanceChanges()
+										? ps.getBalance() + ps.getBalanceChanges()
+										: to_be_removed;
 								boolean res = plugin.getEconomyManager().withdrawPlayer(player, to_be_removed);
 								if (res) {
 									plugin.getEconomyManager().bankAccountDeposit(player.getUniqueId().toString(),

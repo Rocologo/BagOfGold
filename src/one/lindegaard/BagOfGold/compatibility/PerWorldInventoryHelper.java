@@ -9,16 +9,16 @@ import org.bukkit.event.Listener;
 import me.ebonjaeger.perworldinventory.event.InventoryLoadEvent;
 import one.lindegaard.BagOfGold.BagOfGold;
 
-public class PerWorldInventory2Helper {
+public class PerWorldInventoryHelper {
 
-	public static void registerPWI2Events(BagOfGold plugin) {
+	public static void registerPWIEvents(BagOfGold plugin) {
 		Bukkit.getPluginManager().registerEvents(new Listener() {
 			@EventHandler(priority = EventPriority.HIGHEST)
 			public void onInventoryLoad(InventoryLoadEvent event) {
 				Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 					@Override
 					public void run() {
-						if (event.getPlayer().getGameMode() != GameMode.SPECTATOR)
+						if (event.getPlayer().getGameMode() != GameMode.SPECTATOR )//&& event.getPlayer().getGameMode() != GameMode.CREATIVE)
 							plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(event.getPlayer());
 					}
 				}, 20);
