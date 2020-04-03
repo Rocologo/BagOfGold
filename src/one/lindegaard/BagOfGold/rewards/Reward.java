@@ -338,9 +338,21 @@ public class Reward {
 	}
 
 	public static boolean isReward(ItemStack itemStack) {
-		if (getFirstRewardLores(itemStack) >= 0)
-			return true;
-		else
+		//if (getFirstRewardLores(itemStack) >= 0)
+		//	return true;
+		//else
+		//	return false;
+		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore() && itemStack.getItemMeta().getLore().size()>2) {
+			String lore = itemStack.getItemMeta().getLore().get(2);
+			return lore.equals("Hidden(2):" + MH_REWARD_BAG_OF_GOLD_UUID)
+					|| lore.equals("Hidden(2):" + MH_REWARD_KILLED_UUID)
+					|| lore.equals("Hidden(2):" + MH_REWARD_KILLER_UUID)
+					|| lore.equals("Hidden(2):" + MH_REWARD_ITEM_UUID);
+					//|| lore.equals("Hidden:" + MH_REWARD_BAG_OF_GOLD_UUID)
+					//|| lore.equals("Hidden:" + MH_REWARD_KILLED_UUID)
+					//|| lore.equals("Hidden:" + MH_REWARD_KILLER_UUID)
+					//| lore.equals("Hidden:" + MH_REWARD_ITEM_UUID);
+		} else 
 			return false;
 	}
 
