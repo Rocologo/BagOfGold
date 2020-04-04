@@ -19,21 +19,6 @@ public class Economy_BagOfGold extends AbstractEconomy {
 
 		Bukkit.getServer().getPluginManager().registerEvents(new EconomyListener(plugin, this), plugin);
 
-		// Load Plugin in case it was not loaded before
-		/**if (vaultEconomy == null) {
-			BagOfGold bagofgold = (BagOfGold) plugin.getServer().getPluginManager().getPlugin("BagOfGold");
-			if (bagofgold != null && bagofgold.isEnabled()) {
-				vaultEconomy = new BagOfGoldEconomyVault((BagOfGold) plugin);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] " +ChatColor.RESET+"BagOfGold hooked into Vault2");
-			}
-		}
-		if (reserveEconomy == null) {
-			BagOfGold bagofgold = (BagOfGold) plugin.getServer().getPluginManager().getPlugin("BagOfGold");
-			if (bagofgold != null && bagofgold.isEnabled()) {
-				reserveEconomy = new BagOfGoldEconomyReserve();
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] " +ChatColor.RESET+"BagOfGold hooked into Reserve2");
-			}
-		}**/
 	}
 
 	@Override

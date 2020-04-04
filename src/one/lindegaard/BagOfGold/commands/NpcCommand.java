@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import one.lindegaard.BagOfGold.BagOfGold;

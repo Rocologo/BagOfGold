@@ -11,11 +11,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.ServicePriority;
 
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.Economy_BagOfGold;
 
 public class ConvertCommand implements ICommand {
 

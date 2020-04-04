@@ -44,7 +44,7 @@ public class Messages {
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
 	private static final String PREFIX = ChatColor.GOLD + "[BagOfGold]" + ChatColor.RESET;
-	private static String[] sources = new String[] { "en_US.lang", "hu_HU.lang", "pt_BR.lang", "zh_CN.lang", "fr_FR.lang" };
+	private static String[] sources = new String[] { "en_US.lang", "hu_HU.lang", "pt_BR.lang", "zh_CN.lang", "fr_FR.lang", "ru_RU.lang" };
 
 	public void exportDefaultLanguages(BagOfGold plugin) {
 		File folder = new File(plugin.getDataFolder(), "lang");

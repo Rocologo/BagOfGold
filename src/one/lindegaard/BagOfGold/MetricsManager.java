@@ -13,8 +13,12 @@ import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
 import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
+import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
+import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
+import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.Core.HttpTools;
@@ -74,11 +78,15 @@ public class MetricsManager {
 						Map<String, Integer> valueMap = new HashMap<>();
 						valueMap.put("Citizens", CitizensCompat.isSupported() ? 1 : 0);
 						valueMap.put("Essentials", EssentialsCompat.isSupported() ? 1 : 0);
+						valueMap.put("PerWorldInventory", PerWorldInventoryCompat.isSupported() ? 1 : 0);
+						valueMap.put("ProtocolLib", ProtocolLibCompat.isSupported() ? 1 : 0);
 						return valueMap;
 					}
 
 				}));
 		bStatsMetrics.addCustomChart(new Metrics.SimplePie("language", () -> plugin.getConfigManager().language));
+		
+		bStatsMetrics.addCustomChart(new Metrics.SimplePie("item_type", () -> plugin.getConfigManager().dropMoneyOnGroundItemtype));
 		
 		bStatsMetrics.addCustomChart(new Metrics.SimplePie("economy_api", () -> plugin.getEconomyManager().getEconomyAPI()));
 	
@@ -92,9 +100,12 @@ public class MetricsManager {
 				valueMap.put("ActionBar", ActionbarCompat.isSupported() ? 1 : 0);
 				valueMap.put("ActionBarAPI", ActionBarAPICompat.isSupported() ? 1 : 0);
 				valueMap.put("ActionAnnouncer", ActionAnnouncerCompat.isSupported() ? 1 : 0);
+				valueMap.put("CMI", CMICompat.isSupported() ? 1 : 0);
 				//bossbar
 				valueMap.put("BarAPI", BarAPICompat.isSupported() ? 1 : 0);
 				valueMap.put("BossBarAPI", BossBarAPICompat.isSupported() ? 1 : 0);
+				//Placeholder
+				valueMap.put("PlaceholderAPI", PlaceholderAPICompat.isSupported() ? 1 : 0);
 				return valueMap;
 			}
 		}));
