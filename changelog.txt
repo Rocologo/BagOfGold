@@ -1,5 +1,5 @@
 V2.9.4
-*
+* Optimized code. 
 V2.9.3
 * Spectator mode duplication bug. Ticket 83 (https://github.com/Rocologo/BagOfGold/issues/83)
 * Updated to bStats 1.7
