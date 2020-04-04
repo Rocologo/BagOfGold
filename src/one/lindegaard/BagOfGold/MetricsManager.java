@@ -88,7 +88,7 @@ public class MetricsManager {
 		
 		bStatsMetrics.addCustomChart(new Metrics.SimplePie("item_type", () -> plugin.getConfigManager().dropMoneyOnGroundItemtype));
 		
-		bStatsMetrics.addCustomChart(new Metrics.SimplePie("economy_api", () -> plugin.getEconomyManager().getEconomyAPI()));
+		bStatsMetrics.addCustomChart(new Metrics.SimplePie("economy_base", () -> plugin.getEconomyManager().getEconomyAPI()));
 	
 		bStatsMetrics.addCustomChart(new Metrics.AdvancedPie("titlemanagers", new Callable<Map<String, Integer>>() {
 			@Override
