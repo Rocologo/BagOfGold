@@ -49,7 +49,7 @@ public class PlayerBalanceManager implements Listener {
 	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer, String world) {
 		return null;
 	}
-	
+
 	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer) {
 		if (offlinePlayer.isOnline()) {
 			String worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer);
@@ -67,7 +67,7 @@ public class PlayerBalanceManager implements Listener {
 		String worldGroup = plugin.getWorldGroupManager().getWorldGroup(world);
 		return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 	}
-	
+
 	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer, String worldGroup, GameMode gamemode) {
 		if (mBalances.containsKey(offlinePlayer.getUniqueId()))
 			// offlinePlayer is in the Database
@@ -120,7 +120,7 @@ public class PlayerBalanceManager implements Listener {
 	}
 
 	/**
-	 * Remove PlayerSettings from Memory
+	 * Remove PlayerSettings from Memory minecraftMob.getFriendlyName()
 	 * 
 	 * @param offlinePlayer
 	 */
@@ -286,7 +286,8 @@ public class PlayerBalanceManager implements Listener {
 				int n = 0;
 				for (PlayerBalance playerBalance : playerBalances) {
 					addInventoryDetails(
-							customItems.getPlayerHead(playerBalance.getPlayer().getUniqueId(), 1,
+							customItems.getPlayerHead(playerBalance.getPlayer().getUniqueId(),
+									playerBalance.getPlayer().getName(), 1,
 									playerBalance.getBalance() + playerBalance.getBalanceChanges()
 											+ playerBalance.getBankBalance() + playerBalance.getBankBalanceChanges()),
 							inventory, n, ChatColor.GREEN + playerBalance.getPlayer().getName(),

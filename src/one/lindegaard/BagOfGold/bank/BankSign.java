@@ -67,7 +67,7 @@ public class BankSign implements Listener {
 						money = moneyInHand;
 						if (moneyInHand == 0) {
 							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
-									"bagofgold.banksign.item_has_no_value", "itemname", reward.getDisplayname()));
+									"bagofgold.banksign.item_has_no_value", "itemname", reward.getDisplayName()));
 							return;
 						}
 
@@ -92,12 +92,12 @@ public class BankSign implements Listener {
 						if (res) {
 							plugin.getEconomyManager().bankAccountDeposit(player.getUniqueId().toString(), money);
 							plugin.getMessages().debug("%s deposit %s %s into Bank", player.getName(),
-									plugin.getEconomyManager().format(money), reward.getDisplayname());
+									plugin.getEconomyManager().format(money), reward.getDisplayName());
 							plugin.getMessages().playerSendMessage(player,
 									plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
 											plugin.getEconomyManager().format(money), "rewardname",
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-													+ reward.getDisplayname().trim()));
+													+ reward.getDisplayName().trim()));
 						}
 						// Gringott items
 					} else if (plugin.getGringottsItems().isGringottsReward(player.getItemInHand().getType())) {

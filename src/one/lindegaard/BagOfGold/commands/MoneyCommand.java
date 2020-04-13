@@ -510,7 +510,7 @@ public class MoneyCommand implements ICommand {
 										plugin.getMessages().playerSendMessage(player,
 												plugin.getMessages().getString(
 														"bagofgold.money.you_cant_sell_and_buy_bagofgold", "itemname",
-														reward.getDisplayname()));
+														reward.getDisplayName()));
 										return true;
 									}
 									boolean res = plugin.getEconomyManager()

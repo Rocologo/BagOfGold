@@ -195,7 +195,7 @@ public class RewardManager {
 			return true;
 	}
 
-	/**
+	/**MobHunting
 	 * has : checks if the player has amount of mount on his balance.
 	 * 
 	 * @param offlinePlayer
@@ -246,15 +246,16 @@ public class RewardManager {
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
 			MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getSkinUUID());
-			// ItemStack is = new CustomItems().getCustomtexture(mob.getPlayerUUID(),
-			// mob.getDisplayName(), mob.getTextureValue(), mob.getTextureSignature(),
-			// reward.getMoney(), reward.getUniqueUUID(), reward.getSkinUUID());
-			ItemStack is = new CustomItems().getCustomHead(mob, mob.getFriendlyName(), 1, reward.getMoney(),
-					reward.getUniqueUUID(), reward.getSkinUUID());
-			Item item = location.getWorld().dropItemNaturally(location, is);
-			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+			BagOfGold.getAPI().getMessages().debug("mob=%s", mob);
+			if (mob != null) {
+				ItemStack is = new CustomItems().getCustomHead(mob, reward.getDisplayName(), 1, reward.getMoney(),
+						reward.getSkinUUID());
+				Item item = location.getWorld().dropItemNaturally(location, is);
+				getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+			}
 		} else if (reward.isKillerHeadReward()) {
-			ItemStack is = new CustomItems().getPlayerHead(reward.getSkinUUID(), 1, reward.getMoney());
+			ItemStack is = new CustomItems().getPlayerHead(reward.getSkinUUID(), reward.getDisplayName(), 1,
+					reward.getMoney());
 			Item item = location.getWorld().dropItemNaturally(location, is);
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else {

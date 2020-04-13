@@ -33,14 +33,14 @@ public class PickupRewards {
 					if (reward.getMoney() == 0) {
 						plugin.getMessages().debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
 								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
-										: reward.getDisplayname(),
+										: reward.getDisplayName(),
 										plugin.getRewardManager().getDroppedMoney().size());
 					} else {
 						plugin.getMessages().debug(
 								"%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)",
 								player.getName(),
 								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
-										: reward.getDisplayname(),
+										: reward.getDisplayName(),
 								plugin.getBagOfGoldItems().format(Misc.round(reward.getMoney())),
 								plugin.getRewardManager().getDroppedMoney().size());
 						if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
@@ -48,9 +48,9 @@ public class PickupRewards {
 									plugin.getMessages().getString("bagofgold.moneypickup", "money",
 											plugin.getBagOfGoldItems().format(reward.getMoney()), "rewardname",
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-													+ (reward.getDisplayname().isEmpty()
+													+ (reward.getDisplayName().isEmpty()
 															? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName
-															: reward.getDisplayname())));
+															: reward.getDisplayName())));
 					}
 				} else {
 					callBack.setCancelled(true);

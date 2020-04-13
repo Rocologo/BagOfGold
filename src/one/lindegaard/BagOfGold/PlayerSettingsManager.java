@@ -119,7 +119,7 @@ public class PlayerSettingsManager implements Listener {
 				
 				if (ps.getTexture() == null || ps.getTexture().equals("")) {
 					plugin.getMessages().debug("Store %s skin in BagOfGold Skin Cache", offlinePlayer.getName());
-					new CustomItems().getPlayerHead(offlinePlayer.getUniqueId(), 1, 0);
+					new CustomItems().getPlayerHead(offlinePlayer.getUniqueId(),offlinePlayer.getName(), 1, 0);
 				}
 
 			}

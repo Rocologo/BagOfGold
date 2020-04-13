@@ -57,7 +57,7 @@ public class Reward {
 	}
 
 	public Reward(Reward reward) {
-		this.displayname = reward.getDisplayname();
+		this.displayname = reward.getDisplayName();
 		this.money = reward.getMoney();
 		this.uuid = reward.getRewardType();
 		this.skinUUID = reward.getSkinUUID();
@@ -175,7 +175,7 @@ public class Reward {
 	/**
 	 * @return the displayname
 	 */
-	public String getDisplayname() {
+	public String getDisplayName() {
 		return displayname;
 	}
 

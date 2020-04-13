@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold.mobs;
 
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -511,7 +512,7 @@ public enum MinecraftMob {
 		if (Servers.isMC115OrNewer())
 			if (this == Bee)
 				return entity instanceof org.bukkit.entity.Bee;
-			
+
 		if (Servers.isMC114OrNewer())
 			if (this == Cat)
 				return entity instanceof org.bukkit.entity.Cat;
@@ -677,6 +678,9 @@ public enum MinecraftMob {
 			for (MinecraftMob mob : values())
 				if (uuid.equals(mob.getPlayerUUID()))
 					return mob;
+			if (Bukkit.getOfflinePlayer(uuid) != null)
+				return MinecraftMob.PvpPlayer;
+			
 		}
 		return null;
 	}
@@ -702,57 +706,6 @@ public enum MinecraftMob {
 
 	}
 
-	// TODO: HEADS ??? and is this in CustomItems???
-	public ItemStack getCustomHead(String name, int amount, double money) {
-		ItemStack skull;
-		switch (this) {
-		case Skeleton:
-			skull = CoreCustomItems.getDefaultSkeletonHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
-			break;
-
-		case WitherSkeleton:
-			skull = CoreCustomItems.getDefaultWitherSkeletonHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
-			break;
-
-		case Zombie:
-			skull = CoreCustomItems.getDefaultZombieHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
-			break;
-
-		case PvpPlayer:
-			skull = CoreCustomItems.getDefaultPlayerHead(amount);
-			SkullMeta sm = (SkullMeta) skull.getItemMeta();
-			sm.setOwner(name);
-			skull.setItemMeta(sm);
-			break;
-
-		case Creeper:
-			skull = CoreCustomItems.getDefaultCreeperHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
-			break;
-
-		case EnderDragon:
-			skull = CoreCustomItems.getDefaultEnderDragonHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(getFriendlyName(), money,
-					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), getPlayerUUID()));
-			break;
-
-		default:
-			ItemStack is = new ItemStack(
-					new CustomItems().getCustomtexture(UUID.fromString(Reward.MH_REWARD_KILLED_UUID), getFriendlyName(),
-							mTextureValue, mTextureSignature, money, UUID.randomUUID(), getPlayerUUID()));
-			is.setAmount(amount);
-			return is;
-		}
-		return skull;
-	}
-
 	/**
 	 * setDisplayNameAndHiddenLores: add the Display name and the (hidden) Lores.
 	 * The lores identifies the reward and contain secret information.
@@ -768,13 +721,13 @@ public enum MinecraftMob {
 		if (reward.getMoney() == 0)
 			skullMeta.setDisplayName(
 					ChatColor.valueOf(BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundTextColor)
-							+ reward.getDisplayname());
+							+ reward.getDisplayName());
 		else
 			skullMeta.setDisplayName(ChatColor
 					.valueOf(BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundTextColor)
 					+ (BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 							? Tools.format(reward.getMoney())
-							: reward.getDisplayname() + " (" + Tools.format(reward.getMoney()) + ")"));
+							: reward.getDisplayName() + " (" + Tools.format(reward.getMoney()) + ")"));
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}

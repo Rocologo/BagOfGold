@@ -101,8 +101,9 @@ public class BagOfGoldItems implements Listener {
 
 				if (rewardInSlot.isMoney()) {
 
-					//plugin.getMessages().debug("BagOfGoldItems: addBagOfGoldMoneyToPlayer, there is money in slot=%s",
-					//		slot);
+					// plugin.getMessages().debug("BagOfGoldItems: addBagOfGoldMoneyToPlayer, there
+					// is money in slot=%s",
+					// slot);
 
 					if (rewardInSlot.checkHash()) {
 						if (rewardInSlot.getMoney() < plugin.getConfigManager().limitPerBag) {
@@ -119,8 +120,8 @@ public class BagOfGoldItems implements Listener {
 							if (rewardInSlot.getMoney() == 0)
 								player.getInventory().clear(slot);
 							else {
-								//plugin.getMessages().debug(
-								//		"BagOfGoldItems: addBagOfGoldMoneyToPlayer change lores and displayname");
+								// plugin.getMessages().debug(
+								// "BagOfGoldItems: addBagOfGoldMoneyToPlayer change lores and displayname");
 								is = setDisplayNameAndHiddenLores(is, rewardInSlot);
 							}
 							plugin.getMessages().debug(
@@ -159,11 +160,12 @@ public class BagOfGoldItems implements Listener {
 					addedMoney = addedMoney + nextBag;
 					ItemStack is;
 					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
-						is = new CustomItems().getCustomtexture(UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
-								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+						is = new CustomItems().getCustomtexture(
+								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), Misc.round(nextBag),
+								UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID), UUID.randomUUID(),
+								UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID),
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, Misc.round(nextBag),
-								UUID.randomUUID(), UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID));
+								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature);
 					else {
 						is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
 						setDisplayNameAndHiddenLores(is,
@@ -239,11 +241,10 @@ public class BagOfGoldItems implements Listener {
 			if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 				uuid = UUID.fromString(Reward.MH_REWARD_BAG_OF_GOLD_UUID);
 				skinuuid = uuid;
-				is = new CustomItems().getCustomtexture(uuid,
-						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
-						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
-						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature, nextBag, UUID.randomUUID(),
-						skinuuid);
+				is = new CustomItems().getCustomtexture(
+						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), nextBag, uuid,
+						UUID.randomUUID(), skinuuid, plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature);
 			} else { // ITEM
 				uuid = UUID.fromString(Reward.MH_REWARD_ITEM_UUID);
 				skinuuid = null;
@@ -256,12 +257,12 @@ public class BagOfGoldItems implements Listener {
 				item.setMetadata(Reward.MH_REWARD_DATA,
 						new FixedMetadataValue(plugin, new Reward(
 								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? ""
-										: Reward.getReward(is).getDisplayname(),
+										: Reward.getReward(is).getDisplayName(),
 								nextBag, uuid, UUID.randomUUID(), skinuuid)));
 				item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 						+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 								? format(nextBag)
-								: Reward.getReward(is).getDisplayname() + " (" + format(nextBag) + ")"));
+								: Reward.getReward(is).getDisplayName() + " (" + format(nextBag) + ")"));
 				item.setCustomNameVisible(true);
 				if (player != null)
 					plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)(3)",
@@ -322,12 +323,12 @@ public class BagOfGoldItems implements Listener {
 
 		if (reward.getMoney() == 0)
 			skullMeta.setDisplayName(
-					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + reward.getDisplayname());
+					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + reward.getDisplayName());
 		else
 			skullMeta.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 					+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 							? format(reward.getMoney())
-							: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")"));
+							: reward.getDisplayName() + " (" + format(reward.getMoney()) + ")"));
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
@@ -560,10 +561,10 @@ public class BagOfGoldItems implements Listener {
 				double money = reward.getMoney();
 				if (money == 0) {
 					item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-							+ reward.getDisplayname());
+							+ reward.getDisplayName());
 					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped a %s (# of rewards left=%s)(1)", player.getName(),
-							reward.getDisplayname() != null ? reward.getDisplayname()
+							reward.getDisplayName() != null ? reward.getDisplayName()
 									: plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 							plugin.getRewardManager().getDroppedMoney().size());
 				} else {
@@ -572,7 +573,7 @@ public class BagOfGoldItems implements Listener {
 								+ format(money));
 					else
 						item.setCustomName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-								+ reward.getDisplayname() + " (" + format(money) + ")");
+								+ reward.getDisplayName() + " (" + format(money) + ")");
 
 					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped %s %s. (# of rewards left=%s)(2)", player.getName(),
@@ -584,14 +585,14 @@ public class BagOfGoldItems implements Listener {
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 										+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 												? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
-												: reward.getDisplayname())));
+												: reward.getDisplayName())));
 					if (Reward.isReward(player.getItemOnCursor())) {
-						plugin.getMessages().debug("%s dropped %s %s from the PlayerInventory",
-								player.getName(), money, plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+						plugin.getMessages().debug("%s dropped %s %s from the PlayerInventory", player.getName(), money,
+								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
 					} else {
 						// when dropping from the quickbar using Q key
-						plugin.getMessages().debug("%s dropped %s %s using Q key", player.getName(),
-								money, plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+						plugin.getMessages().debug("%s dropped %s %s using Q key", player.getName(), money,
+								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
 						plugin.getRewardManager().removeMoneyFromPlayerBalance(player, money);
 					}
 				}
@@ -660,7 +661,7 @@ public class BagOfGoldItems implements Listener {
 				if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 					plugin.getMessages().playerActionBarMessageQueue(player,
 							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-									+ reward.getDisplayname() + plugin.getMessages().getString("bagofgold.moneydrop",
+									+ reward.getDisplayName() + plugin.getMessages().getString("bagofgold.moneydrop",
 											"money", Misc.round(reward.getMoney())));
 			}
 		}
@@ -838,13 +839,13 @@ public class BagOfGoldItems implements Listener {
 				if (reward.getMoney() == 0)
 					plugin.getMessages().playerActionBarMessageQueue(player,
 							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-									+ reward.getDisplayname());
+									+ reward.getDisplayName());
 				else
 					plugin.getMessages().playerActionBarMessageQueue(player,
 							ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 									+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
 											? format(reward.getMoney())
-											: reward.getDisplayname() + " (" + format(reward.getMoney()) + ")"));
+											: reward.getDisplayName() + " (" + format(reward.getMoney()) + ")"));
 			}
 		} else if (Servers.isMC113OrNewer()) {
 			if (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD) {
@@ -1099,12 +1100,12 @@ public class BagOfGoldItems implements Listener {
 								if (slotType != SlotType.CONTAINER && slotType != SlotType.QUICKBAR)
 									if (clickedInventory.getType() == InventoryType.PLAYER) {
 										plugin.getMessages().debug("%s moved %s %s out of the Player Inventory",
-												player.getName(), reward.getMoney(), reward.getDisplayname());
+												player.getName(), reward.getMoney(), reward.getDisplayName());
 										plugin.getRewardManager().removeMoneyFromPlayerBalance(player,
 												reward.getMoney());
 									} else { // CHEST, DISPENSER, DROPPER, ......
 										plugin.getMessages().debug("%s moved %s %s into the Player Inventory",
-												player.getName(), reward.getMoney(), reward.getDisplayname());
+												player.getName(), reward.getMoney(), reward.getDisplayName());
 										plugin.getRewardManager().addMoneyToPlayerBalance(player, reward.getMoney());
 									}
 							}
@@ -1193,7 +1194,7 @@ public class BagOfGoldItems implements Listener {
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 													+ (plugin.getConfigManager().dropMoneyOnGroundItemtype
 															.equalsIgnoreCase("ITEM") ? format(reward2.getMoney())
-																	: reward2.getDisplayname() + " ("
+																	: reward2.getDisplayName() + " ("
 																			+ format(reward2.getMoney()) + ")"));
 									isCursor.setItemMeta(imCursor);
 									isCurrentSlot.setAmount(0);
@@ -1215,7 +1216,7 @@ public class BagOfGoldItems implements Listener {
 											+ (plugin.getConfigManager().dropMoneyOnGroundItemtype
 													.equalsIgnoreCase("ITEM")
 															? format(plugin.getConfigManager().limitPerBag)
-															: reward2.getDisplayname() + " ("
+															: reward2.getDisplayName() + " ("
 																	+ format(plugin.getConfigManager().limitPerBag)
 																	+ ")"));
 									isCursor.setItemMeta(imCursor);
@@ -1226,7 +1227,7 @@ public class BagOfGoldItems implements Listener {
 											.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 											+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase(
 													"ITEM") ? format(plugin.getConfigManager().limitPerBag)
-															: reward1.getDisplayname() + " ("
+															: reward1.getDisplayName() + " ("
 																	+ format(reward1.getMoney()) + ")"));
 									isCurrentSlot.setItemMeta(imCurrent);
 									event.setCurrentItem(isCursor);
@@ -1257,7 +1258,7 @@ public class BagOfGoldItems implements Listener {
 									? Reward.getReward(isCurrentSlot).getMoney()
 									: 0;
 							double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
-							//plugin.getMessages().debug("(1)slot=%s cursor=%s", playerInv, chestInv);
+							// plugin.getMessages().debug("(1)slot=%s cursor=%s", playerInv, chestInv);
 							// plugin.getRewardManager().removeMoneyFromPlayer(player, playerInv -
 							// chestInv);
 						} else {
@@ -1265,14 +1266,14 @@ public class BagOfGoldItems implements Listener {
 									? Reward.getReward(isCurrentSlot).getMoney()
 									: 0;
 							double chestInv = Reward.isReward(isCursor) ? Reward.getReward(isCursor).getMoney() : 0;
-							//plugin.getMessages().debug("(2)slot=%s cursor=%s", playerInv, chestInv);
+							// plugin.getMessages().debug("(2)slot=%s cursor=%s", playerInv, chestInv);
 							// plugin.getRewardManager().addMoneyToPlayer(player, playerInv - chestInv);
 
 						}
 
 						break;
 					default:
-						//plugin.getMessages().debug("BagOfGoldItems: action=%s", action);
+						// plugin.getMessages().debug("BagOfGoldItems: action=%s", action);
 						if (player.getGameMode() == GameMode.SURVIVAL)
 							plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 						else if (player.getGameMode() == GameMode.SPECTATOR)
