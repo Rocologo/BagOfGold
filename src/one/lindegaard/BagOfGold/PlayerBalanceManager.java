@@ -353,7 +353,7 @@ public class PlayerBalanceManager implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (ChatColor.stripColor(event.getView().getTitle()).startsWith("TOP wealth players")) {
+		if (!event.getView().getTitle().isEmpty() && ChatColor.stripColor(event.getView().getTitle()).startsWith("TOP wealth players")) {
 			event.setCancelled(true);
 			event.getWhoClicked().closeInventory();
 		}

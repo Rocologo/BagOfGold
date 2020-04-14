@@ -1,5 +1,7 @@
 package one.lindegaard.BagOfGold.rewards;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -10,10 +12,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
@@ -34,18 +38,14 @@ public class RewardListeners implements Listener {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		if (player.isOnline() && player.isValid()) {
 			if (player.getGameMode() == GameMode.SURVIVAL) {
-				plugin.getMessages().debug(
-						"Adjusting Player Balance to Amount of BagOfGold in Inventory: %s",
+				plugin.getMessages().debug("Adjusting Player Balance to Amount of BagOfGold in Inventory: %s",
 						ps.toString());
 				plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 			} else if (player.getGameMode() == GameMode.SPECTATOR) {
-				plugin.getMessages().debug(
-						"Player is in spectator mode. BagOfGold is not changed in Inventory: %s",
+				plugin.getMessages().debug("Player is in spectator mode. BagOfGold is not changed in Inventory: %s",
 						ps.toString());
 			} else {
-				plugin.getMessages().debug(
-						"Adjusting Amount of BagOfGold in Inventory to Balance: %s",
-						ps.toString());
+				plugin.getMessages().debug("Adjusting Amount of BagOfGold in Inventory to Balance: %s", ps.toString());
 				plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 			}
 		}
@@ -89,23 +89,16 @@ public class RewardListeners implements Listener {
 
 		Player player = event.getPlayer();
 		if (player.getGameMode() == GameMode.SURVIVAL) {
-			plugin.getMessages().debug(
-					"Adjusting %s's balance to amount of BagOfGold in Inventory",
-					player.getName());
+			plugin.getMessages().debug("Adjusting %s's balance to amount of BagOfGold in Inventory", player.getName());
 			plugin.getRewardManager().adjustPlayerBalanceToAmounOfMoneyInInventory(player);
 		} else if (player.getGameMode() == GameMode.SPECTATOR) {
-			plugin.getMessages().debug(
-					"%s is in spectator mode. BagOfGold is not changed.",
-					player.getName());
+			plugin.getMessages().debug("%s is in spectator mode. BagOfGold is not changed.", player.getName());
 		} else {
-			plugin.getMessages().debug(
-					"Adjusting %s's amount of BagOfGold in Inventory to balance",
-					player.getName());
+			plugin.getMessages().debug("Adjusting %s's amount of BagOfGold in Inventory to balance", player.getName());
 			plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 		}
-		plugin.getMessages().debug("Adjusting %s's balance from %s to %s, new balance is %s",
-				player.getName(), event.getFrom(), event.getPlayer().getWorld(),
-				plugin.getRewardManager().getBalance(player));
+		plugin.getMessages().debug("Adjusting %s's balance from %s to %s, new balance is %s", player.getName(),
+				event.getFrom(), event.getPlayer().getWorld(), plugin.getRewardManager().getBalance(player));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -144,6 +137,22 @@ public class RewardListeners implements Listener {
 				event.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockPistonExtendEvent(BlockPistonExtendEvent event) { 
+		if (event.isCancelled())
+			return;
+		@NotNull
+		List<Block> changedBlocks = event.getBlocks();
+		if (!changedBlocks.isEmpty())
+			for (Block b : changedBlocks) {
+				if (Reward.isReward(b)) {
+					plugin.getMessages().debug("Is not possible to move a Reward with a Piston");
+					event.setCancelled(true);
+					return;
+				}
+			}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
