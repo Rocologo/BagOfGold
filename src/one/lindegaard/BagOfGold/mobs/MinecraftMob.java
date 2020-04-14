@@ -130,6 +130,16 @@ public enum MinecraftMob {
 			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
 			"Hhd/lQs+FgwowZJuxWYd8WDD6TaSb7HTF56aA4S+qb7nNkX6Ogcx/BAUIxhBkPJaMk3/+U4LIqUzxQ1Er/kWyJbQcAsExG2S24eHQBDE8rEz8awks/MYdJ2Hg+aHlxUQ35Qzbxq0ff2BvRcd7TlQz+B2iz3gzyafMbB3JSg2LNu9UN3PCGG6r1/bC20z4BFCm6+2cUs9vLgFOiHucMkaQxh8IRkG2EIzC71bUNQyTWCNpqEGt7uRpbOIELUSFQl7H3EJhtIcSqYXZN+arjUwJ1fVEYdJIcgLJWNxxA+2AoDxe90B/sDt7DqCELyq3DQ9cEZJ8fUii87H0eAbKGimGDmDcVwQohTKqe8sgmZSGk2hy22WrmfG/NGNFsLyrZsLOyqBBLURwK3e3WCjPgf+f5hvMsgAkOgMsQPBFHcxkR71dj1gPJGzlbIAf0bi/0ZZQWFuE1nqWMsRVvdiR7pxmSkcPt7W4XcNUNKwnuDf+s+1o7hRgmGVQIjRbygPvSmzPUpWSi9AnVUoVQk02/8JMEDyPEHGkKPSX9Fw8WKoXhEgYNtTLzPaB5zazoQgrPkVUZVujAXP5tFpHImPiFhuNxHypyA0iOiXr5IpBpLrKTtAZVIEEcjLDNINpaL8oAp4pah94KRvPFFUL/rsIUhL4mS08fkF5Gj2HbqiNBNK8jM="),
 
+	// Trader Llama
+	TraderLlama("TraderLlama", "TraderLlama", "e9d9f844-f53c-4fc4-9cf4-0797e73e34e1", "Trader Llama",
+			"eyJ0aW1lc3RhbXAiOjE1NTc2MDA0NDkyNTYsInByb2ZpbGVJZCI6IjM4NjcwNTM3MmZjNDQwNDNiMGQwYTNjOWU1MWRlOWJiIiwicHJvZmlsZU5hbWUiOiJFbnRpdHlMbGFtYVNwaXQiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ5YmM0ODY4MWFjODA2M2ZjNjJkNDg0MzE5NDM1NjMzZTRjMDJlZGE1MzAwZTA3Zjg0MmYxNjVhY2FmM2FhOTIifX19",
+			"pXag7xn2y/79fGMkXBLNXiTWc7ucy1o7w6DTJ2b1FsQ4Ps/Iuv3j+Aar/LgR/+eZkOuzfnTw3xYStEzZTbltfFpdWdyOglJnkSq0JHuazE8gwyBt9PQk9TLTRTr2mWR4FtRypqf+p3OPakCeO+Qg8TzhZSuwPHR6m4QVvj2RvVCKk3+1mcD9GN+AazEhsHr9FRbK6Q4pQ/3SN9E7o/sVprVvWfbfL6Ot2QoxPqvquHc7DWY8OkCPE2xAlPknR/CF5K0pdr4fx2ZhscS0RIq8r8JGwfp5k2Z8+FIchAhUe10YkL7CwLhNeAboymbjnFc3MWucGqOGkTltLdn9hPNcTHBzP/nkY70Ub/GpfNZ4htC19WpvRhltz/5xXmddjgq4+l9YjcYW8bgUCS6MYHjHMMS45yz2x5e8CUcMB02qEIGg5u/FsMEhkka2BISuUUAer4ITIgVcNeohH+nhhdN41zstEh8VOBQTXpwVJHr5VwRmswOuvOglaM2kZkzRISKjx6fHdrHzSfrNSyiCgoQJzwWWY37APCBId9bsSnxPzgcJanp6CRs1FQ/IzSlfp69TSTaC/ihEHmVD3K1gRxqB3huBEvNv5WqQOzQrqnAk3VoJGKMR0576UTdfQ2vlEAn0yarap4Q0//NrowjW8cJBXk0hSQeQUGzkZpPRyBtQHTY="),
+
+	// Wandering Llama
+	WanderingTrader("WanderingTrader", "WanderingTrader", "ec86f377-3a1f-422d-b202-beaeeedee65c", "Wandering Trader",
+			"eyJ0aW1lc3RhbXAiOjE1Njg4MTc3OTQ1NDUsInByb2ZpbGVJZCI6IjE5MjUyMWI0ZWZkYjQyNWM4OTMxZjAyYTg0OTZlMTFiIiwicHJvZmlsZU5hbWUiOiJTZXJpYWxpemFibGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2FlYWRiMWFmNGFhYzE1OTNiOWI5OTMzY2M4MzMzZTZmZDZkN2U0MDBlOWIzYmNmZTNiZjAyODc3MWQwMzRmYzkifX19",
+			"LBOc8d0jZbylwOCsUonX2yn7l6e7obXnPNUbGc7TkKE3HlPD8DR+4ajnyAHPjx2v3DOv+h+ftQfxtH7TkmdG67axNWwOMize4R+b5nqJj5KHs5vSJxfONiy0iAszl4E/2NTaiB7sTm3D8+cS0E4jKfc6tr1k3Ovod/daWPSeoSq7cL+waKESAU+6rr+uMs/E6Hm2hYLwAcdAzbASL38ykCO7zhLOrjNj2AJrjDsnZ7HeiPRGQ3cBco/M5N+7NceB03IKJYGDFzeok1hXPHpIMS9cI7gMziQO5el9SZlVIvW21CbRItEt3849WiYC4RGbzx3ukId8KfDY1Ct3FUigQldRR3WRf+qGFFDNTi54YLR+YaKiThFzHC6YSVKfb53gY/LpTCs48QGynMUtMZ1hAx+zIzkXNiBpIV7DzOxcIu6b+RL7T1Ddr3P799ag/dYHYN5ifOWmvzh7/R0QH8B80Dx6QU0NLE5JnpggHYwjNVFGuARjLIPzSNynIKLjwRt9USDfKYGPP86vS4TcPzIR9a/4LltSnQ0VglSj8DUtLGdeta5XmWqmLmCZaCu8oMavP14t33a/TGF42Y/zI5fZTHPKJ8T27HvOQXx8Ao1zYMrxJm9ULan+omWh8kTeG0pIdOSo/H/jcI+6WMrVh639dGRuUQKjoqD0yklUvsF35YU="),
+
 	// Weaponsmith
 	Weaponsmith("Weaponsmith", "Weaponsmith", "df5a48eb-5d34-490a-bcbf-3cc75980a52c", "Weaponsmith",
 			"eyJ0aW1lc3RhbXAiOjE0NjczMTMzMDYzOTcsInByb2ZpbGVJZCI6IjY0MjQ4NTljNTk0NDQwNzdiZTllMzJiMTY0MjdjMTIwIiwicHJvZmlsZU5hbWUiOiIyMDkiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I3Yjg5YjVkZDgyZGQ1ZTBkZjYxYjlkMDVjNWQ1YTNhZWU5ZmMwZjQzMmY2MmJjNTJlNTJiZGJkNTliNDJmNiJ9fX0=",
@@ -518,14 +528,18 @@ public enum MinecraftMob {
 				return entity instanceof org.bukkit.entity.Cat;
 			else if (this == Fox)
 				return entity instanceof org.bukkit.entity.Fox;
+			else if (this == Husk)
+				return entity instanceof org.bukkit.entity.Husk;
 			else if (this == Panda)
 				return entity instanceof org.bukkit.entity.Panda;
 			else if (this == Pillager)
 				return entity instanceof org.bukkit.entity.Pillager;
 			else if (this == Ravager)
 				return entity instanceof org.bukkit.entity.Ravager;
-			else if (this == Husk)
-				return entity instanceof org.bukkit.entity.Husk;
+			else if (this == TraderLlama)
+				return entity instanceof org.bukkit.entity.TraderLlama;
+			else if (this == WanderingTrader)
+				return entity instanceof org.bukkit.entity.WanderingTrader;
 			else if (this == Armorer)
 				return (entity instanceof Villager && ((Villager) entity).getProfession() == Profession.ARMORER);
 			else if (this == Butcher)
@@ -680,7 +694,7 @@ public enum MinecraftMob {
 					return mob;
 			if (Bukkit.getOfflinePlayer(uuid) != null)
 				return MinecraftMob.PvpPlayer;
-			
+
 		}
 		return null;
 	}

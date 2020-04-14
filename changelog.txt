@@ -1,3 +1,6 @@
+V2.9.5
+* Trader Llama and Wandering Trader added to config.yml
+* Pistons cant push to BagOfGold items and MobHunting rewards and destroy the item this way
 V2.9.4
 * Optimized code when detecting rewards/bagofgold. 
 V2.9.3
