@@ -90,9 +90,8 @@ public class CustomItems {
 				Skins sk = CoreCustomItems.getSkinsClass();
 				if (sk != null) {
 					String[] skin = sk.getSkin(player);
-					if (skin != null && !skin[0].equals(ps.getTexture())) {
-						plugin.getMessages().debug(
-								"%s has changed skin, updating database with new skin. (%s,%s)",
+					if (skin != null && skin[0] != null && !skin[0].equals(ps.getTexture())) {
+						plugin.getMessages().debug("%s has changed skin, updating database with new skin. (%s,%s)",
 								player.getName(), ps.getTexture(), skin[0]);
 						ps.setTexture(skin[0]);
 						ps.setSignature(skin[1]);
@@ -146,12 +145,12 @@ public class CustomItems {
 				"Hidden(5):"
 						+ Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + Reward.MH_REWARD_KILLED_UUID),
 				plugin.getMessages().getString("bagofgold.reward.lore"))));
-		
+
 		if (Bukkit.getOfflinePlayer(uuid) != null)
 			skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
 		else
 			skullMeta.setOwner(name);
-		
+
 		if (money == 0) {
 			skullMeta.setDisplayName(name);
 			skull.setAmount(amount);
@@ -159,7 +158,7 @@ public class CustomItems {
 			skullMeta.setDisplayName(name + " (" + Tools.format(money) + ")");
 			skull.setAmount(1);
 		}
-		
+
 		skull.setItemMeta(skullMeta);
 		plugin.getMessages().debug("CustomItems: set the skin using OwningPlayer/Owner (%s)", name);
 		return skull;
