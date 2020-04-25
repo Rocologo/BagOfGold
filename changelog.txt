@@ -1,3 +1,5 @@
+V2.9.6
+* Updated CMI integration to CMI 8.6.23.3 (https://www.spigotmc.org/resources/cmi-270-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/updates)
 V2.9.5
 * Trader Llama and Wandering Trader added to config.yml
 * Pistons cant push to BagOfGold items and MobHunting rewards and destroy the item this way

@@ -2,10 +2,11 @@ package one.lindegaard.BagOfGold.compatibility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.Zrips.CMI.CMI;
+import com.Zrips.CMI.Containers.CMIUser;
+import com.Zrips.CMI.Modules.BossBar.BossBarInfo;
 import com.Zrips.CMI.Modules.Holograms.HologramManager;
 
 import one.lindegaard.BagOfGold.BagOfGold;
@@ -57,11 +58,17 @@ public class CMICompat {
 	}
 	
 	public static void sendActionBarMessage(Player player, String text) {
-		getCMIPlugin().getActionBar().send(player, text);
+		getCMIPlugin().getActionBarManager().send(player, text);
 	}
 	
 	public static void sendBossBarMessage(Player player, String text) {
-		getCMIPlugin().getBossBarManager().showBossBar(player, 20, 100.0, "", text, BarColor.BLUE);
+		CMIUser user = getCMIPlugin().getPlayerManager().getUser(player);
+	    BossBarInfo bossBar = new BossBarInfo(user, "...");
+	    bossBar.setSeconds(10);
+	    bossBar.setTitleOfBar(text);
+	    bossBar.setKeepForTicks(0);
+	    user.addBossBar(bossBar);
+		
 	}
 	
 }
