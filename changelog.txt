@@ -1,3 +1,5 @@
+V2.9.7
+* Loading rewards in a separate task to make the server load faster
 V2.9.6
 * Updated CMI integration to CMI 8.6.23.3 (https://www.spigotmc.org/resources/cmi-270-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/updates)
 V2.9.5

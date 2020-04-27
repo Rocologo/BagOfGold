@@ -68,8 +68,13 @@ public class BagOfGoldItems implements Listener {
 	public BagOfGoldItems(BagOfGold plugin) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), "rewards.yml");
-		loadAllStoredRewardsFromMobHunting();
-		loadAllStoredRewards();
+		Bukkit.getScheduler().runTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				loadAllStoredRewardsFromMobHunting();
+				loadAllStoredRewards();
+			}
+		});
 		if (isBagOfGoldStyle()) {
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 		}
@@ -715,6 +720,9 @@ public class BagOfGoldItems implements Listener {
 			return;
 
 		Player player = event.getPlayer();
+		
+		if (player.getInventory().firstEmpty() != -1)
+			return;
 
 		Iterator<Entity> entityList = ((Entity) player).getNearbyEntities(1, 1, 1).iterator();
 		while (entityList.hasNext()) {
