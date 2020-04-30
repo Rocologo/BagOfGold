@@ -20,12 +20,16 @@ public class EntityPickupItemEventListener implements Listener {
 	public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
 		// OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
 
-		// This event is NOT called when the inventory is full. 
-		if (event.isCancelled())
+		BagOfGold.getAPI().getMessages().debug("EntityPickupItemEvent called");
+		// This event is NOT called when the inventory is full.
+		if (event.isCancelled()) {
+			BagOfGold.getAPI().getMessages().debug("Event cancelled");
 			return;
+		}
 
-		if (!Reward.isReward(event.getItem()))
-			return;
+		if (!Reward.isReward(event.getItem())) {
+			BagOfGold.getAPI().getMessages().debug("Player didn't pickup a reward.");
+			return;}
 
 		Entity entity = event.getEntity();
 
@@ -34,16 +38,22 @@ public class EntityPickupItemEventListener implements Listener {
 			if (entity.getType().equals(EntityType.ZOMBIE) || entity.getType().equals(EntityType.SKELETON)
 					|| entity.getType().equals(EntityType.PIG_ZOMBIE)
 					|| entity.getType().equals(EntityType.WITHER_SKELETON)) {
+				BagOfGold.getAPI().getMessages().debug("A mob picked up the reward");
 				event.setCancelled(true);
 			}
 			return;
+		} else {
+			BagOfGold.getAPI().getMessages().debug("A player picked up the reward.");
 		}
 
 		Player player = (Player) entity;
-		if (BagOfGold.getAPI().getBagOfGoldItems().canPickupMoney(player))
+		if (BagOfGold.getAPI().getBagOfGoldItems().canPickupMoney(player)) {
 			pickupRewards.rewardPlayer((Player) entity, event.getItem(), event::setCancelled);
-		else
+			BagOfGold.getAPI().getMessages().debug("Call rewardPlayer");
+		} else {
 			event.setCancelled(true);
+			BagOfGold.getAPI().getMessages().debug("Set Event cancelled=true");
+		}
 	}
 
 }

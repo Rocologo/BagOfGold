@@ -38,11 +38,13 @@ public class RewardManager {
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
 		Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
 
-		if (Servers.isMC112OrNewer() && eventDoesExists())
+		if (Servers.isMC112OrNewer() && eventDoesExists()) {
 			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), plugin);
-		else
+			plugin.getMessages().debug("EntityPickupItemEventListener registered");
+		} else {
 			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
-
+			plugin.getMessages().debug("PlayerPickupItemEventListener registered");
+		}
 	}
 
 	public HashMap<Integer, Double> getDroppedMoney() {
@@ -195,8 +197,8 @@ public class RewardManager {
 			return true;
 	}
 
-	/**MobHunting
-	 * has : checks if the player has amount of mount on his balance.
+	/**
+	 * MobHunting has : checks if the player has amount of mount on his balance.
 	 * 
 	 * @param offlinePlayer
 	 * @param amount

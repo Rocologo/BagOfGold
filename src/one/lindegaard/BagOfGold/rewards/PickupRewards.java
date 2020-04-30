@@ -19,11 +19,14 @@ public class PickupRewards {
 
 	public void rewardPlayer(Player player, Item item, CallBack callBack) {
 		if (Reward.isReward(item)) {
+			BagOfGold.getAPI().getMessages().debug("PickupRewards: This is a reward.");
 			Reward reward = Reward.getReward(item);
 			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 				callBack.setCancelled(true);
 				boolean succes = plugin.getEconomyManager().depositPlayer(player, reward.getMoney());
+				BagOfGold.getAPI().getMessages().debug("PickupRewards succes=%s",succes);
 				if (succes) {
+					BagOfGold.getAPI().getMessages().debug("Remove item from ground");
 					item.remove();
 					if (plugin.getRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
 						plugin.getRewardManager().getDroppedMoney().remove(item.getEntityId());
