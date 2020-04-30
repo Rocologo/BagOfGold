@@ -14,6 +14,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
@@ -250,6 +252,7 @@ public class RewardManager {
 				ItemStack is = new CustomItems().getCustomHead(mob, reward.getDisplayName(), 1, reward.getMoney(),
 						reward.getSkinUUID());
 				Item item = location.getWorld().dropItemNaturally(location, is);
+				item.setMetadata(Reward.MH_REWARD_DATA, new FixedMetadataValue(plugin, new Reward(reward)));
 				getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 			}
 		} else if (reward.isKillerHeadReward()) {

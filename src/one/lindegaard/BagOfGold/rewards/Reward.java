@@ -168,7 +168,8 @@ public class Reward {
 					"Hidden(2):" + rewardType.toString(), // type
 					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueId
 					"Hidden(4):" + (skinUUID == null ? "" : skinUUID.toString()), // SkinUUID
-					"Hidden(5):" + encodedHash, BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // skin
+					"Hidden(5):" + encodedHash, //hash
+					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // lores text
 	}
 
 	/**

@@ -559,22 +559,21 @@ public class BagOfGoldItems implements Listener {
 
 					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped %s %s. (# of rewards left=%s)(2)", player.getName(),
-							format(money), plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
+							format(money), reward.getDisplayName(),
 							plugin.getRewardManager().getDroppedMoney().size());
 					if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
-						plugin.getMessages().playerActionBarMessageQueue(player, plugin.getMessages().getString(
-								"bagofgold.moneydrop", "money", format(money), "rewardname",
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-										+ (reward.isItemReward()
-												? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
-												: reward.getDisplayName())));
+						plugin.getMessages().playerActionBarMessageQueue(player,
+								plugin.getMessages().getString("bagofgold.moneydrop", "money", format(money),
+										"rewardname",
+										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor
+												+ reward.getDisplayName())));
 					if (Reward.isReward(player.getItemOnCursor())) {
 						plugin.getMessages().debug("%s dropped %s %s from the PlayerInventory", player.getName(), money,
-								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+								reward.getDisplayName());
 					} else {
 						// when dropping from the quickbar using Q key
 						plugin.getMessages().debug("%s dropped %s %s using Q key", player.getName(), money,
-								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+								reward.getDisplayName());
 						plugin.getRewardManager().removeMoneyFromPlayerBalance(player, money);
 					}
 				}
