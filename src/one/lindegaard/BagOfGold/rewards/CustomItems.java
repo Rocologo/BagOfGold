@@ -236,19 +236,19 @@ public class CustomItems {
 		switch (minecraftMob) {
 		case Skeleton:
 			skull = CoreCustomItems.getDefaultSkeletonHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
+			skull = Reward.setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
 		case WitherSkeleton:
 			skull = CoreCustomItems.getDefaultWitherSkeletonHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
+			skull = Reward.setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
 		case Zombie:
 			skull = CoreCustomItems.getDefaultZombieHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
+			skull = Reward.setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
@@ -264,13 +264,13 @@ public class CustomItems {
 
 		case Creeper:
 			skull = CoreCustomItems.getDefaultCreeperHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
+			skull = Reward.setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
 		case EnderDragon:
 			skull = CoreCustomItems.getDefaultEnderDragonHead(amount);
-			skull = setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
+			skull = Reward.setDisplayNameAndHiddenLores(skull, new Reward(minecraftMob.getFriendlyName(), money,
 					UUID.fromString(Reward.MH_REWARD_KILLED_UUID), UUID.randomUUID(), skinUUID));
 			break;
 
@@ -292,7 +292,7 @@ public class CustomItems {
 	 * @param reward - The reward information is added to the ItemStack
 	 * @return the updated ItemStack.
 	 */
-	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
+	/**public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
 		ItemMeta skullMeta = skull.getItemMeta();
 		skullMeta.setLore(reward.getHiddenLore());
 
@@ -306,6 +306,6 @@ public class CustomItems {
 							: reward.getDisplayName() + " (" + Tools.format(reward.getMoney()) + ")"));
 		skull.setItemMeta(skullMeta);
 		return skull;
-	}
+	}**/
 
 }

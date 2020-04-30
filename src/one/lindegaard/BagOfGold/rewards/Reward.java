@@ -16,11 +16,13 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Strings;
+import one.lindegaard.Core.Tools;
 
 public class Reward {
 
@@ -130,9 +132,7 @@ public class Reward {
 
 			// Skin UUID
 			else if (str.startsWith("Hidden(4):"))
-				this.skinUUID = (str.length() > 10) ?
-						UUID.fromString(str.substring(10)) :
-							null;
+				this.skinUUID = (str.length() > 10) ? UUID.fromString(str.substring(10)) : null;
 			else if (n == 4 && str.startsWith("Hidden:"))
 				this.skinUUID = UUID.fromString(str.substring(7));
 
@@ -147,7 +147,7 @@ public class Reward {
 				if (!encodedHash.equalsIgnoreCase(compareHash)) {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED
 							+ "[Warning] A player has tried to change the value of a BagOgGold Item. Value set to 0!");
-					money=0;
+					money = 0;
 					updateEncodedHash();
 				}
 			}
@@ -325,8 +325,8 @@ public class Reward {
 	public static boolean isReward(Item item) {
 		boolean t1 = item.hasMetadata(MH_REWARD_DATA);
 		boolean t2 = isReward(item.getItemStack());
-		BagOfGold.getAPI().getMessages().debug("MetaData T1=%s, Lores T2=%s" ,t1,t2);
-		return  t1||t2 ;
+		BagOfGold.getAPI().getMessages().debug("MetaData T1=%s, Lores T2=%s", t1, t2);
+		return t1 || t2;
 	}
 
 	public static Reward getReward(Item item) {
@@ -339,16 +339,17 @@ public class Reward {
 	}
 
 	public static boolean isReward(ItemStack itemStack) {
-		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore() && itemStack.getItemMeta().getLore().size()>2) {
+		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
+				&& itemStack.getItemMeta().getLore().size() > 2) {
 			String lore = itemStack.getItemMeta().getLore().get(2);
 
-			BagOfGold.getAPI().getMessages().debug("Lore(2)=%s",lore);
-			
+			BagOfGold.getAPI().getMessages().debug("Lore(2)=%s", lore);
+
 			return lore.equals("Hidden(2):" + MH_REWARD_BAG_OF_GOLD_UUID)
 					|| lore.equals("Hidden(2):" + MH_REWARD_KILLED_UUID)
 					|| lore.equals("Hidden(2):" + MH_REWARD_KILLER_UUID)
 					|| lore.equals("Hidden(2):" + MH_REWARD_ITEM_UUID);
-		} else 
+		} else
 			return false;
 	}
 
@@ -370,6 +371,27 @@ public class Reward {
 
 	public static Reward getReward(Entity entity) {
 		return (Reward) entity.getMetadata(MH_REWARD_DATA).get(0).value();
+	}
+
+	/**
+	 * setDisplayNameAndHiddenLores: add the Display name and the (hidden) Lores.
+	 * The lores identifies the reward and contain secret information.
+	 * 
+	 * @param skull  - The base itemStack without the information.
+	 * @param reward - The reward information is added to the ItemStack
+	 * @return the updated ItemStack.
+	 */
+	public static ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
+		ItemMeta skullMeta = skull.getItemMeta();
+		skullMeta.setLore(reward.getHiddenLore());
+
+		if (reward.getMoney() == 0)
+			skullMeta.setDisplayName(reward.getDisplayName());
+		else
+			skullMeta.setDisplayName(reward.isItemReward() ? Tools.format(reward.getMoney())
+					: reward.getDisplayName() + " (" + Tools.format(reward.getMoney()) + ")");
+		skull.setItemMeta(skullMeta);
+		return skull;
 	}
 
 }

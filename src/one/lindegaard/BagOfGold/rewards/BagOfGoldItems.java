@@ -127,7 +127,7 @@ public class BagOfGoldItems implements Listener {
 							else {
 								// plugin.getMessages().debug(
 								// "BagOfGoldItems: addBagOfGoldMoneyToPlayer change lores and displayname");
-								is = setDisplayNameAndHiddenLores(is, rewardInSlot);
+								is = Reward.setDisplayNameAndHiddenLores(is, rewardInSlot);
 							}
 							plugin.getMessages().debug(
 									"Added %s to %s's item in slot %s, new value is %s (addBagOfGoldPlayer_EconomyManager)",
@@ -144,7 +144,7 @@ public class BagOfGoldItems implements Listener {
 										+ player.getName()
 										+ " has tried to change the value of a BagOfGold Item. Value set to 0!(1)");
 						rewardInSlot.setMoney(0);
-						setDisplayNameAndHiddenLores(is, rewardInSlot);
+						is=Reward.setDisplayNameAndHiddenLores(is, rewardInSlot);
 					}
 				}
 			}
@@ -173,7 +173,7 @@ public class BagOfGoldItems implements Listener {
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature);
 					else {
 						is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
-						setDisplayNameAndHiddenLores(is,
+						is=Reward.setDisplayNameAndHiddenLores(is,
 								new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
 										Misc.round(nextBag), UUID.fromString(Reward.MH_REWARD_ITEM_UUID),
 										UUID.randomUUID(), null));
@@ -201,7 +201,7 @@ public class BagOfGoldItems implements Listener {
 						double saldo = Misc.round(reward.getMoney());
 						if (saldo > toBeTaken) {
 							reward.setMoney(Misc.round(saldo - toBeTaken));
-							is = setDisplayNameAndHiddenLores(is, reward);
+							is = Reward.setDisplayNameAndHiddenLores(is, reward);
 							player.getInventory().setItem(slot, is);
 							taken = taken + toBeTaken;
 							toBeTaken = 0;
@@ -220,7 +220,7 @@ public class BagOfGoldItems implements Listener {
 							ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] " + player.getName()
 									+ " has tried to change the value of a BagOfGold Item. Value set to 0!(2)");
 					reward.setMoney(0);
-					setDisplayNameAndHiddenLores(is, reward);
+					is=Reward.setDisplayNameAndHiddenLores(is, reward);
 				}
 			}
 
@@ -260,10 +260,10 @@ public class BagOfGoldItems implements Listener {
 					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 							+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
 					moneyLeftToDrop, uuid, UUID.randomUUID(), skinuuid);
-			setDisplayNameAndHiddenLores(is, reward);
+			is=Reward.setDisplayNameAndHiddenLores(is, reward);
 
 			item = location.getWorld().dropItemNaturally(location, is);
-			
+
 			if (item != null) {
 				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
 				item.setMetadata(Reward.MH_REWARD_DATA,
@@ -312,37 +312,13 @@ public class BagOfGoldItems implements Listener {
 							ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] " + player.getName()
 									+ " has tried to change the value of a BagOfGold Item. Value set to 0!(3)");
 					reward.setMoney(0);
-					setDisplayNameAndHiddenLores(is, reward);
+					is=Reward.setDisplayNameAndHiddenLores(is, reward);
 				}
 			}
 		}
 		// BagOfGold.getInstance().getMessages().debug("BagOfGoldItems:
 		// Amt=%s",amountInInventory);
 		return amountInInventory;
-	}
-
-	/**
-	 * setDisplayNameAndHiddenLores: add the Display name and the (hidden) Lores.
-	 * The lores identifies the reward and contain secret information.
-	 * 
-	 * @param skull  - The base itemStack without the information.
-	 * @param reward - The reward information is added to the ItemStack
-	 * @return the updated ItemStack.
-	 */
-	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
-		ItemMeta skullMeta = skull.getItemMeta();
-		skullMeta.setLore(reward.getHiddenLore());
-
-		if (reward.getMoney() == 0)
-			skullMeta.setDisplayName(
-					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + reward.getDisplayName());
-		else
-			skullMeta.setDisplayName(ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-					+ (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-							? format(reward.getMoney())
-							: reward.getDisplayName() + " (" + format(reward.getMoney()) + ")"));
-		skull.setItemMeta(skullMeta);
-		return skull;
 	}
 
 	public boolean canPickupMoney(Player player) {
@@ -382,7 +358,7 @@ public class BagOfGoldItems implements Listener {
 							ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] " + player.getName()
 									+ " has tried to change the value of a BagOfGold Item. Value set to 0!(4)");
 					rewardInSlot.setMoney(0);
-					setDisplayNameAndHiddenLores(is, rewardInSlot);
+					is=Reward.setDisplayNameAndHiddenLores(is, rewardInSlot);
 				}
 			} else if (is == null || is.getType() == Material.AIR) {
 				space = space + plugin.getConfigManager().limitPerBag;
@@ -567,7 +543,8 @@ public class BagOfGoldItems implements Listener {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] "
 						+ player.getName() + " has tried to change the value of a BagOfGold Item. Value set to 0!(5)");
 				reward.setMoney(0);
-				setDisplayNameAndHiddenLores(item.getItemStack(), reward);
+				ItemStack is=Reward.setDisplayNameAndHiddenLores(item.getItemStack(), reward);
+				item.setItemStack(is);
 			}
 			if (reward.isMoney()) {
 				double money = reward.getMoney();
@@ -648,7 +625,7 @@ public class BagOfGoldItems implements Listener {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] "
 						+ player.getName() + " has tried to change the value of a BagOfGold Item. Value set to 0!(6)");
 				reward.setMoney(0);
-				setDisplayNameAndHiddenLores(is, reward);
+				is=Reward.setDisplayNameAndHiddenLores(is, reward);
 			}
 		}
 	}
@@ -765,7 +742,8 @@ public class BagOfGoldItems implements Listener {
 										+ player.getName()
 										+ " has tried to change the value of a BagOfGold Item. Value set to 0!(7)");
 						reward.setMoney(0);
-						setDisplayNameAndHiddenLores(item.getItemStack(), reward);
+						ItemStack is = Reward.setDisplayNameAndHiddenLores(item.getItemStack(), reward);
+						item.setItemStack(is);
 					}
 					item.remove();
 				}
@@ -824,7 +802,7 @@ public class BagOfGoldItems implements Listener {
 							ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] " + player.getName()
 									+ " has tried to change the value of a BagOfGold Item. Value set to 0!(8)");
 					reward.setMoney(0);
-					setDisplayNameAndHiddenLores(helmet, reward);
+					helmet=Reward.setDisplayNameAndHiddenLores(helmet, reward);
 				}
 			}
 		}
@@ -956,7 +934,7 @@ public class BagOfGoldItems implements Listener {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] "
 						+ player.getName() + " has tried to change the value of a BagOfGold Item. Value set to 0!(9)");
 				reward.setMoney(0);
-				setDisplayNameAndHiddenLores(isCurrentSlot, reward);
+				isCurrentSlot=Reward.setDisplayNameAndHiddenLores(isCurrentSlot, reward);
 			}
 		}
 		if (Reward.isReward(isCursor)) {
@@ -965,7 +943,7 @@ public class BagOfGoldItems implements Listener {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] "
 						+ player.getName() + " has tried to change the value of a BagOfGold Item. Value set to 0!(10)");
 				reward.setMoney(0);
-				setDisplayNameAndHiddenLores(isCursor, reward);
+				isCursor=Reward.setDisplayNameAndHiddenLores(isCursor, reward);
 			}
 		}
 		if (Reward.isReward(isKey)) {
@@ -974,7 +952,7 @@ public class BagOfGoldItems implements Listener {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Warning] "
 						+ player.getName() + " has tried to change the value of a BagOfGold Item. Value set to 0!(11)");
 				reward.setMoney(0);
-				setDisplayNameAndHiddenLores(isKey, reward);
+				isKey=Reward.setDisplayNameAndHiddenLores(isKey, reward);
 			}
 		}
 
@@ -1024,7 +1002,7 @@ public class BagOfGoldItems implements Listener {
 												clickedInventory.clear(slot);
 											else {
 												reward.setMoney(plugin.getConfigManager().limitPerBag);
-												is = setDisplayNameAndHiddenLores(is.clone(), reward);
+												is = Reward.setDisplayNameAndHiddenLores(is.clone(), reward);
 												is.setAmount(1);
 												clickedInventory.clear(slot);
 												clickedInventory.addItem(is);
@@ -1034,7 +1012,7 @@ public class BagOfGoldItems implements Listener {
 									}
 								}
 								cursor.setMoney(saldo);
-								isCursor = setDisplayNameAndHiddenLores(isCursor.clone(), cursor);
+								isCursor = Reward.setDisplayNameAndHiddenLores(isCursor.clone(), cursor);
 								event.setCursor(isCursor);
 								plugin.getMessages().debug("%s collected %s to the cursor", player.getName(), saldo);
 								if (clickedInventory.getType() == InventoryType.PLAYER) {
@@ -1155,11 +1133,11 @@ public class BagOfGoldItems implements Listener {
 								if (cursorMoney >= plugin.getConfigManager().minimumReward) {
 									event.setCancelled(true);
 									reward.setMoney(currentSlotMoney);
-									isCurrentSlot = setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
+									isCurrentSlot = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 									event.setCurrentItem(isCurrentSlot);
 									reward.setMoney(cursorMoney);
 									reward.setUniqueId(UUID.randomUUID());
-									isCursor = setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
+									isCursor = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 									event.setCursor(isCursor);
 									plugin.getMessages().debug("%s halfed a reward in two (%s,%s)", player.getName(),
 											format(currentSlotMoney), format(cursorMoney));

@@ -3,7 +3,6 @@ package one.lindegaard.BagOfGold.mobs;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -12,16 +11,9 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.rewards.CustomItems;
-import one.lindegaard.BagOfGold.rewards.Reward;
-import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.Server.Servers;
-import one.lindegaard.Core.rewards.CoreCustomItems;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Villager.Profession;
@@ -728,7 +720,7 @@ public enum MinecraftMob {
 	 * @param reward - The reward information is added to the ItemStack
 	 * @return the updated ItemStack.
 	 */
-	public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
+	/**public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
 		ItemMeta skullMeta = skull.getItemMeta();
 		skullMeta.setLore(reward.getHiddenLore());
 
@@ -744,7 +736,7 @@ public enum MinecraftMob {
 							: reward.getDisplayName() + " (" + Tools.format(reward.getMoney()) + ")"));
 		skull.setItemMeta(skullMeta);
 		return skull;
-	}
+	}**/
 
 	public static MinecraftMob getMinecraftMobType(String name) {
 		String name1 = name.replace(" ", "_");
