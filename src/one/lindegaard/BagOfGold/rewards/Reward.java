@@ -323,7 +323,10 @@ public class Reward {
 	}
 
 	public static boolean isReward(Item item) {
-		return item.hasMetadata(MH_REWARD_DATA) || isReward(item.getItemStack());
+		boolean t1 = item.hasMetadata(MH_REWARD_DATA);
+		boolean t2 = isReward(item.getItemStack());
+		BagOfGold.getAPI().getMessages().debug("MetaData T1=%s, Lores T2=%s" ,t1,t2);
+		return  t1||t2 ;
 	}
 
 	public static Reward getReward(Item item) {
@@ -338,6 +341,9 @@ public class Reward {
 	public static boolean isReward(ItemStack itemStack) {
 		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore() && itemStack.getItemMeta().getLore().size()>2) {
 			String lore = itemStack.getItemMeta().getLore().get(2);
+
+			BagOfGold.getAPI().getMessages().debug("Lore(2)=%s",lore);
+			
 			return lore.equals("Hidden(2):" + MH_REWARD_BAG_OF_GOLD_UUID)
 					|| lore.equals("Hidden(2):" + MH_REWARD_KILLED_UUID)
 					|| lore.equals("Hidden(2):" + MH_REWARD_KILLER_UUID)

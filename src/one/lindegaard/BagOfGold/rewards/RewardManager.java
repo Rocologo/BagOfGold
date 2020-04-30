@@ -38,13 +38,10 @@ public class RewardManager {
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
 		Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
 
-		if (Servers.isMC112OrNewer() && eventDoesExists()) {
+		if (Servers.isMC112OrNewer() && eventDoesExists())
 			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), plugin);
-			plugin.getMessages().debug("EntityPickupItemEventListener registered");
-		} else {
+		else
 			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
-			plugin.getMessages().debug("PlayerPickupItemEventListener registered");
-		}
 	}
 
 	public HashMap<Integer, Double> getDroppedMoney() {

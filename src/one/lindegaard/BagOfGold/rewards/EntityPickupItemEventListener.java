@@ -20,16 +20,16 @@ public class EntityPickupItemEventListener implements Listener {
 	public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
 		// OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
 
-		BagOfGold.getAPI().getMessages().debug("EntityPickupItemEvent called");
 		// This event is NOT called when the inventory is full.
-		if (event.isCancelled()) {
-			BagOfGold.getAPI().getMessages().debug("Event cancelled");
+		if (event.isCancelled())
 			return;
-		}
 
+		BagOfGold.getAPI().getMessages().debug("Pickup item=%s", event.getItem().getItemStack().toString());
+		
 		if (!Reward.isReward(event.getItem())) {
 			BagOfGold.getAPI().getMessages().debug("Player didn't pickup a reward.");
-			return;}
+			return;
+		}
 
 		Entity entity = event.getEntity();
 

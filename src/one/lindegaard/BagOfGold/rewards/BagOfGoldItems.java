@@ -256,7 +256,14 @@ public class BagOfGoldItems implements Listener {
 				is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
 			}
 
+			Reward reward = new Reward(
+					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+							+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
+					moneyLeftToDrop, uuid, UUID.randomUUID(), skinuuid);
+			setDisplayNameAndHiddenLores(is, reward);
+
 			item = location.getWorld().dropItemNaturally(location, is);
+			
 			if (item != null) {
 				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
 				item.setMetadata(Reward.MH_REWARD_DATA,
@@ -720,7 +727,7 @@ public class BagOfGoldItems implements Listener {
 			return;
 
 		Player player = event.getPlayer();
-		
+
 		if (player.getInventory().firstEmpty() != -1)
 			return;
 
