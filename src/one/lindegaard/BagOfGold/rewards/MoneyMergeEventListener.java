@@ -17,7 +17,6 @@ public class MoneyMergeEventListener implements Listener {
 	private BagOfGold plugin;
 
 	public MoneyMergeEventListener(BagOfGold plugin) {
-		plugin.getMessages().debug("MoneyMergeEvent: Registered");
 		this.plugin = plugin;
 	}
 
@@ -42,10 +41,10 @@ public class MoneyMergeEventListener implements Listener {
 						is2.setItemMeta(im);
 						is2.setAmount(1);
 						item2.setItemStack(is2);
-						String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
-								.equalsIgnoreCase("ITEM") ? plugin.getEconomyManager().format(reward2.getMoney())
-										: reward2.getDisplayName() + " ("
-												+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
+						String displayName = reward2.isItemReward()
+								? plugin.getEconomyManager().format(reward2.getMoney())
+								: reward2.getDisplayName() + " ("
+										+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
 						item2.setCustomName(
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 						item2.setCustomNameVisible(true);
@@ -58,15 +57,13 @@ public class MoneyMergeEventListener implements Listener {
 					if (reward1.getMoney() == reward2.getMoney()) {
 						reward2.setMoney(reward1.getMoney());
 						ItemMeta im = is2.getItemMeta();
-						plugin.getMessages().debug("is1.amount=%s, is2.amount=%s", item1.getItemStack().getAmount(),
-								is2.getAmount());
 						is2.setItemMeta(im);
 						is2.setAmount(is2.getAmount());
 						item2.setItemStack(is2);
-						String displayName = plugin.getConfigManager().dropMoneyOnGroundItemtype
-								.equalsIgnoreCase("ITEM") ? plugin.getEconomyManager().format(reward2.getMoney())
-										: reward2.getDisplayName() + " ("
-												+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
+						String displayName = reward2.isItemReward()
+								? plugin.getEconomyManager().format(reward2.getMoney())
+								: reward2.getDisplayName() + " ("
+										+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
 						item2.setCustomName(
 								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
 						item2.setCustomNameVisible(true);

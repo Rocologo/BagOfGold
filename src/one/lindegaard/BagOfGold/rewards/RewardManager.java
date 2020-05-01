@@ -247,7 +247,6 @@ public class RewardManager {
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
 			MinecraftMob mob = MinecraftMob.getMinecraftMobType(reward.getSkinUUID());
-			BagOfGold.getAPI().getMessages().debug("mob=%s", mob);
 			if (mob != null) {
 				ItemStack is = new CustomItems().getCustomHead(mob, reward.getDisplayName(), 1, reward.getMoney(),
 						reward.getSkinUUID());

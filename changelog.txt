@@ -1,3 +1,5 @@
+V2.9.8
+* Fixed problem where picked up BagOfGold items lost its value.
 V2.9.7
 * Loading rewards in a separate task to make the server load faster
 * https://www.spigotmc.org/resources/lorinthsrpgmobs.53568/

@@ -24,12 +24,8 @@ public class EntityPickupItemEventListener implements Listener {
 		if (event.isCancelled())
 			return;
 
-		BagOfGold.getAPI().getMessages().debug("Pickup item=%s", event.getItem().getItemStack().toString());
-		
-		if (!Reward.isReward(event.getItem())) {
-			BagOfGold.getAPI().getMessages().debug("Player didn't pickup a reward.");
+		if (!Reward.isReward(event.getItem())) 
 			return;
-		}
 
 		Entity entity = event.getEntity();
 
@@ -42,17 +38,13 @@ public class EntityPickupItemEventListener implements Listener {
 				event.setCancelled(true);
 			}
 			return;
-		} else {
-			BagOfGold.getAPI().getMessages().debug("A player picked up the reward.");
-		}
+		} 
 
 		Player player = (Player) entity;
 		if (BagOfGold.getAPI().getBagOfGoldItems().canPickupMoney(player)) {
 			pickupRewards.rewardPlayer((Player) entity, event.getItem(), event::setCancelled);
-			BagOfGold.getAPI().getMessages().debug("Call rewardPlayer");
 		} else {
 			event.setCancelled(true);
-			BagOfGold.getAPI().getMessages().debug("Set Event cancelled=true");
 		}
 	}
 

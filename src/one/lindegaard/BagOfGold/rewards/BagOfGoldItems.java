@@ -799,7 +799,7 @@ public class BagOfGoldItems implements Listener {
 					helmet = Reward.setDisplayNameAndHiddenLores(helmet, reward);
 				}
 			}
-		}
+		} 
 	}
 
 	@EventHandler

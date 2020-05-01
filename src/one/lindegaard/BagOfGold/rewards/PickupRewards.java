@@ -19,14 +19,11 @@ public class PickupRewards {
 
 	public void rewardPlayer(Player player, Item item, CallBack callBack) {
 		if (Reward.isReward(item)) {
-			BagOfGold.getAPI().getMessages().debug("PickupRewards: This is a reward.");
 			Reward reward = Reward.getReward(item);
 			if (reward.isBagOfGoldReward() || reward.isItemReward()) {
 				callBack.setCancelled(true);
 				boolean succes = plugin.getEconomyManager().depositPlayer(player, reward.getMoney());
-				BagOfGold.getAPI().getMessages().debug("PickupRewards succes=%s",succes);
 				if (succes) {
-					BagOfGold.getAPI().getMessages().debug("Remove item from ground");
 					item.remove();
 					if (plugin.getRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
 						plugin.getRewardManager().getDroppedMoney().remove(item.getEntityId());
@@ -35,15 +32,12 @@ public class PickupRewards {
 
 					if (reward.getMoney() == 0) {
 						plugin.getMessages().debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
-								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
-										: reward.getDisplayName(),
-										plugin.getRewardManager().getDroppedMoney().size());
+								reward.isItemReward() ? "ITEM" : reward.getDisplayName(),
+								plugin.getRewardManager().getDroppedMoney().size());
 					} else {
 						plugin.getMessages().debug(
 								"%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)",
-								player.getName(),
-								plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM") ? "ITEM"
-										: reward.getDisplayName(),
+								player.getName(), reward.isItemReward() ? "ITEM" : reward.getDisplayName(),
 								plugin.getBagOfGoldItems().format(Misc.round(reward.getMoney())),
 								plugin.getRewardManager().getDroppedMoney().size());
 						if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())

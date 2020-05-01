@@ -168,7 +168,7 @@ public class Reward {
 					"Hidden(2):" + rewardType.toString(), // type
 					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueId
 					"Hidden(4):" + (skinUUID == null ? "" : skinUUID.toString()), // SkinUUID
-					"Hidden(5):" + encodedHash, //hash
+					"Hidden(5):" + encodedHash, // hash
 					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // lores text
 	}
 
@@ -324,10 +324,7 @@ public class Reward {
 	}
 
 	public static boolean isReward(Item item) {
-		boolean t1 = item.hasMetadata(MH_REWARD_DATA);
-		boolean t2 = isReward(item.getItemStack());
-		BagOfGold.getAPI().getMessages().debug("MetaData T1=%s, Lores T2=%s", t1, t2);
-		return t1 || t2;
+		return item.hasMetadata(MH_REWARD_DATA) || isReward(item.getItemStack());
 	}
 
 	public static Reward getReward(Item item) {
@@ -343,9 +340,6 @@ public class Reward {
 		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()
 				&& itemStack.getItemMeta().getLore().size() > 2) {
 			String lore = itemStack.getItemMeta().getLore().get(2);
-
-			BagOfGold.getAPI().getMessages().debug("Lore(2)=%s", lore);
-
 			return lore.equals("Hidden(2):" + MH_REWARD_BAG_OF_GOLD_UUID)
 					|| lore.equals("Hidden(2):" + MH_REWARD_KILLED_UUID)
 					|| lore.equals("Hidden(2):" + MH_REWARD_KILLER_UUID)
