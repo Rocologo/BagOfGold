@@ -577,6 +577,8 @@ public class BagOfGoldItems implements Listener {
 					}
 				}
 				item.setMetadata(Reward.MH_REWARD_DATA, new FixedMetadataValue(plugin, reward));
+				ItemStack is = Reward.setDisplayNameAndHiddenLores(item.getItemStack(), reward);
+				item.setItemStack(is);
 				item.setCustomNameVisible(true);
 			}
 		}

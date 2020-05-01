@@ -16,7 +16,7 @@ public class EntityPickupItemEventListener implements Listener {
 		this.pickupRewards = pickupRewards;
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onEntityPickupItemEvent(EntityPickupItemEvent event) {
 		// OBS: EntityPickupItemEvent does only exist in MC1.12 and newer
 
