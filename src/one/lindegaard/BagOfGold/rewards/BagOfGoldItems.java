@@ -559,14 +559,13 @@ public class BagOfGoldItems implements Listener {
 
 					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped %s %s. (# of rewards left=%s)(2)", player.getName(),
-							format(money), reward.getDisplayName(),
-							plugin.getRewardManager().getDroppedMoney().size());
+							format(money), reward.getDisplayName(), plugin.getRewardManager().getDroppedMoney().size());
 					if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 						plugin.getMessages().playerActionBarMessageQueue(player,
 								plugin.getMessages().getString("bagofgold.moneydrop", "money", format(money),
 										"rewardname",
-										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor
-												+ reward.getDisplayName())));
+										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+												+ reward.getDisplayName()));
 					if (Reward.isReward(player.getItemOnCursor())) {
 						plugin.getMessages().debug("%s dropped %s %s from the PlayerInventory", player.getName(), money,
 								reward.getDisplayName());
