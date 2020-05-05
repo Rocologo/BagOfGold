@@ -285,8 +285,7 @@ public class MoneyCommand implements ICommand {
 											+ plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 													"number", args[1], "maximum", money));
 						}
-						plugin.getMessages().debug("The BagOfGold was dropped at %s", location);
-						plugin.getRewardManager().dropMoneyOnGround(player, null, location, money);
+						plugin.getRewardManager().dropMoneyOnGround(player, null, location, money); 
 						plugin.getMessages().playerActionBarMessageQueue(player,
 								plugin.getMessages().getString("bagofgold.moneydrop", "rewardname",
 										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)

@@ -1,3 +1,5 @@
+V2.9.9
+* Fixed bugs which could cause a server crash on start up. (Concurrent.Locks)
 V2.9.8
 * Fixed problem where picked up BagOfGold items lost its value.
 V2.9.7

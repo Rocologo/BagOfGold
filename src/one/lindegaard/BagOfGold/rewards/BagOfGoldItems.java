@@ -68,13 +68,8 @@ public class BagOfGoldItems implements Listener {
 	public BagOfGoldItems(BagOfGold plugin) {
 		this.plugin = plugin;
 		file = new File(plugin.getDataFolder(), "rewards.yml");
-		Bukkit.getScheduler().runTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				loadAllStoredRewardsFromMobHunting();
-				loadAllStoredRewards();
-			}
-		});
+		loadAllStoredRewardsFromMobHunting();
+		loadAllStoredRewards();
 		if (isBagOfGoldStyle()) {
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 		}
@@ -259,7 +254,7 @@ public class BagOfGoldItems implements Listener {
 			Reward reward = new Reward(
 					ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 							+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
-					moneyLeftToDrop, uuid, UUID.randomUUID(), skinuuid);
+					nextBag, uuid, UUID.randomUUID(), skinuuid);
 			is = Reward.setDisplayNameAndHiddenLores(is, reward);
 
 			item = location.getWorld().dropItemNaturally(location, is);
@@ -396,7 +391,7 @@ public class BagOfGoldItems implements Listener {
 		}
 	}
 
-	public void loadAllStoredRewards() {
+	private void loadAllStoredRewards() {
 		int n = 0;
 		int deleted = 0;
 		try {
@@ -457,7 +452,7 @@ public class BagOfGoldItems implements Listener {
 		}
 	}
 
-	public void loadAllStoredRewardsFromMobHunting() {
+	private void loadAllStoredRewardsFromMobHunting() {
 		int n = 0;
 		int deleted = 0;
 		File file = new File(plugin.getDataFolder().getParentFile(), "MobHunting/rewards.yml");
@@ -799,7 +794,7 @@ public class BagOfGoldItems implements Listener {
 					helmet = Reward.setDisplayNameAndHiddenLores(helmet, reward);
 				}
 			}
-		} 
+		}
 	}
 
 	@EventHandler
@@ -1309,4 +1304,16 @@ public class BagOfGoldItems implements Listener {
 		// event.getCursor() == null ? "null" : event.getCursor().getType(),
 		// event.getInventory() == null ? "null" : event.getInventory().getType());
 	}
+
+	/**
+	 * @EventHandler(priority = EventPriority.HIGHEST) public void
+	 *                        onInventoryCreativeEvent(InventoryCreativeEvent event)
+	 *                        { Player player = (Player) event.getWhoClicked(); if
+	 *                        (event.getSlotType() == SlotType.ARMOR) { if
+	 *                        (Reward.isReward(event.getCursor())) {
+	 *                        event.setCancelled(true);
+	 *                        plugin.getMessages().debug("%s tried to place a
+	 *                        BagOfGold in ARMOR slot", player.getName()); } } }
+	 **/
+
 }
