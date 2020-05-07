@@ -1026,6 +1026,7 @@ public class BagOfGoldItems implements Listener {
 									double added_money = reward2.getMoney();
 									reward2.setMoney(reward1.getMoney() + reward2.getMoney());
 									imCursor.setLore(reward2.getHiddenLore());
+									//imCursor.setLore(imCursor.getLore().add("kkk"));
 									imCursor.setDisplayName(
 											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
 													+ (plugin.getConfigManager().dropMoneyOnGroundItemtype

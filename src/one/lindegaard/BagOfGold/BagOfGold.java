@@ -203,7 +203,7 @@ public class BagOfGold extends JavaPlugin {
 
 		mRewardManager.loadAllStoredRewards();
 		
-		setEnabled(mInitialized);
+		mInitialized=true;
 
 	}
 
