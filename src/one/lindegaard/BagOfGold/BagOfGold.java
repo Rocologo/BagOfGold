@@ -186,28 +186,24 @@ public class BagOfGold extends JavaPlugin {
 
 		if (!Servers.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);
-			// mMetricsManager.start();
 			mMetricsManager.startBStatsMetrics();
 		}
 
 		// Initialize BagOfGold Bank Signs
 		new BankSign(this);
+
 		// start the Economy Service Provider using Vault or Reserve
 		mEconomyManager = new EconomyManager(this);
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
 
-		// Get random UUI>>>D's
-		// for (int n = 0; n < 3; n++) {
-		// getMessages().debug("UUID=%s", UUID.randomUUID().toString());
-		// }
-
 		mGringottsItems = new GringottsItems(this);
 		mBagOfGoldItems = new BagOfGoldItems(this);
-		mInitialized = true;
 
-		// setEnabled(mInitialized);
+		mRewardManager.loadAllStoredRewards();
+		
+		setEnabled(mInitialized);
 
 	}
 
@@ -217,6 +213,9 @@ public class BagOfGold extends JavaPlugin {
 			return;
 
 		mBankManager.shutdown();
+		
+		getMessages().debug("Saving all Reward Blocks to disk");
+		mRewardManager.saveAllRewards();
 
 		try {
 			getMessages().debug("Shutdown StoreManager");

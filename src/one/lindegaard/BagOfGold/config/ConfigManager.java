@@ -154,7 +154,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "Here you can set of the color of the number above the dropped item. \nUse color names like WHITE, RED, BLUE, GOLD")
 	public String dropMoneyOnGroundTextColor = "GOLD";
 
-	@ConfigField(name = "drop-money-on-ground-skull-reward-name", category = "dropmoneyonground", comment = "This is the name of the reward")
+	@ConfigField(name = "drop-money-on-ground-skull-reward-name", category = "dropmoneyonground", comment = "This is the name of the reward. Warning do not use a name which is used as an Item Name \nin other plugins like f.ex SlimeFun. This would cause problems and \nitems disapear without a warning.")
 	public String dropMoneyOnGroundSkullRewardName = "BagOfGold";
 
 	@ConfigField(name = "drop-money-on-ground-skull-reward-name-plural", category = "dropmoneyonground", comment = "This is the name of the reward in plural")
@@ -261,7 +261,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "barapi.enable_integration_barapi", category = "plugins", comment = "Enable/Disable integration with BarAPI. If you want messages in player chat you can set this to true."
 			+ "\nhttps://dev.bukkit.org/projects/bar_api")
 	public boolean enableIntegrationBarAPI = true;
-	
+
 	@ConfigField(name = "cmi.enable_integration_cmi", category = "plugins", comment = "Enable/Disable integration with CMI."
 			+ "\nhttps://www.spigotmc.org/resources/cmi-270-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/")
 	public boolean enableIntegrationCMI = true;
