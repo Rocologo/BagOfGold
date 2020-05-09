@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
@@ -47,7 +48,7 @@ public class Messages {
 	private static String[] sources = new String[] { "en_US.lang", "hu_HU.lang", "pt_BR.lang", "zh_CN.lang",
 			"fr_FR.lang", "ru_RU.lang" };
 
-	public void exportDefaultLanguages(BagOfGold plugin) {
+	public void exportDefaultLanguages(Plugin plugin) {
 		File folder = new File(plugin.getDataFolder(), "lang");
 		if (!folder.exists())
 			folder.mkdirs();
@@ -55,7 +56,6 @@ public class Messages {
 		for (String source : sources) {
 			File dest = new File(folder, source);
 			if (!dest.exists()) {
-				// if (plugin.getResource("lang/" + source) != null) {
 				Bukkit.getConsoleSender().sendMessage(PREFIX + " Creating language file " + source + " from JAR.");
 				plugin.saveResource("lang/" + source, false);
 			} else {
@@ -296,7 +296,7 @@ public class Messages {
 
 			return ChatColor.translateAlternateColorCodes('&', output);
 		} catch (MissingResourceException e) {
-			Bukkit.getConsoleSender().sendMessage(PREFIX + " MobHunting could not find key: " + key.toString());
+			Bukkit.getConsoleSender().sendMessage(PREFIX + " BagOfGold could not find key: " + key.toString());
 			return key;
 		}
 	}

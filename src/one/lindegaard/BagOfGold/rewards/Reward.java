@@ -46,7 +46,7 @@ public class Reward {
 	private String displayname = ""; // Hidden(0)
 	private double money = 0; // Hidden(1) - the value of the reward
 	private UUID rewardType = null; // Hidden(2)
-	private UUID uniqueId; // Hidden(3) - all rewards must have a unique id if they have a value.
+	//private UUID uniqueId; // Hidden(3) - all rewards must have a unique id if they have a value.
 	private UUID skinUUID; // Hidden(4)
 	private String encodedHash; // Hidden(5) -
 
@@ -54,7 +54,7 @@ public class Reward {
 		this.displayname = "Skull";
 		this.money = 0;
 		this.rewardType = UUID.randomUUID();
-		this.uniqueId = UUID.randomUUID();
+		//this.uniqueId = UUID.randomUUID();
 		this.encodedHash = Strings.encode(makeDecodedHash());
 	}
 
@@ -63,7 +63,7 @@ public class Reward {
 		this.money = reward.getMoney();
 		this.rewardType = reward.getRewardType();
 		this.skinUUID = reward.getSkinUUID();
-		this.uniqueId = reward.getUniqueUUID();
+		//this.uniqueId = reward.getUniqueUUID();
 		this.encodedHash = reward.getEncodedHash();
 	}
 
@@ -71,7 +71,7 @@ public class Reward {
 		this.displayname = displayName;
 		this.money = money;
 		this.rewardType = rewardType;
-		this.uniqueId = uniqueId;
+		//this.uniqueId = uniqueId;
 		this.skinUUID = skinUUID;
 		this.encodedHash = Strings.encode(makeDecodedHash());
 	}
@@ -117,16 +117,16 @@ public class Reward {
 			}
 
 			// Unique UUID
-			else if (str.startsWith("Hidden(3):"))
-				this.uniqueId = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(10));
+			//else if (str.startsWith("Hidden(3):"))
+			//	this.uniqueId = money == 0 ? UUID.randomUUID() : UUID.fromString(str.substring(10));
 
 			// Skin UUID
 			else if (str.startsWith("Hidden(4):"))
 				this.skinUUID = (str.length() > 10) ? UUID.fromString(str.substring(10)) : null;
 
 			// MobHunting Reward
-			else if (str.equalsIgnoreCase(BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore")))
-				continue;
+			//else if (str.equalsIgnoreCase(BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore")))
+			//	continue;
 
 			// Hash
 			else if (str.startsWith("Hidden(5):")) {
@@ -143,21 +143,21 @@ public class Reward {
 	}
 
 	public ArrayList<String> getHiddenLore() {
-		if (rewardType.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
+		//if (rewardType.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))
 			return new ArrayList<String>(Arrays.asList("Hidden(0):" + displayname, // displayname
 					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), // value
 					"Hidden(2):" + rewardType.toString(), // type
-					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueid
+					//money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueid
 					"Hidden(4):" + (skinUUID == null ? "" : skinUUID.toString()), // SkinUUID
 					"Hidden(5):" + encodedHash)); // Hash
-		else
-			return new ArrayList<String>(Arrays.asList("Hidden(0):" + displayname, // displayname
-					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), // value
-					"Hidden(2):" + rewardType.toString(), // type
-					money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueId
-					"Hidden(4):" + (skinUUID == null ? "" : skinUUID.toString()), // SkinUUID
-					"Hidden(5):" + encodedHash, // hash
-					BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // lores text
+		//else
+		//	return new ArrayList<String>(Arrays.asList("Hidden(0):" + displayname, // displayname
+		//			"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), // value
+		//			"Hidden(2):" + rewardType.toString(), // type
+		//			//money == 0 ? "Hidden(3):" : "Hidden(3):" + uniqueId.toString(), // uniqueId
+		//			"Hidden(4):" + (skinUUID == null ? "" : skinUUID.toString()), // SkinUUID
+		//			"Hidden(5):" + encodedHash, // hash
+		//			BagOfGold.getAPI().getMessages().getString("bagofgold.reward.lore"))); // lores text
 	}
 
 	/**
@@ -184,9 +184,9 @@ public class Reward {
 	/**
 	 * @return the Unique
 	 */
-	public UUID getUniqueUUID() {
-		return uniqueId;
-	}
+	//public UUID getUniqueUUID() {
+	//	return uniqueId;
+	//}
 
 	/**
 	 * @param displayName the displayName to set
@@ -214,9 +214,9 @@ public class Reward {
 	/**
 	 * @param uniqueId the uniqueId to set
 	 */
-	public void setUniqueId(UUID uniqueId) {
-		this.uniqueId = uniqueId;
-	}
+	//public void setUniqueId(UUID uniqueId) {
+	//	this.uniqueId = uniqueId;
+	//}
 
 	/**
 	 * Get the skin UUID for the reward
@@ -252,14 +252,16 @@ public class Reward {
 
 	public String toString() {
 		return "{Description=" + displayname + ", money=" + String.format(Locale.ENGLISH, "%.5f", money) + ", type="
-				+ rewardType + ", UniqueID=" + uniqueId + ", Skin=" + skinUUID + "}";
+				+ rewardType  
+						//+"," + " UniqueID=" + uniqueId 
+						 + ", Skin=" + skinUUID + "}";
 	}
 
 	public void save(ConfigurationSection section) {
 		section.set("description", displayname);
 		section.set("money", String.format(Locale.ENGLISH, "%.5f", money));
 		section.set("uuid", rewardType.toString());
-		section.set("uniqueid", uniqueId.toString());
+		//section.set("uniqueid", uniqueId.toString());
 		section.set("skinuuid", skinUUID == null ? "" : skinUUID.toString());
 		section.set("hash", encodedHash == null ? "" : Strings.decode(encodedHash));
 	}
@@ -268,7 +270,7 @@ public class Reward {
 		displayname = section.getString("description");
 		money = Double.valueOf(section.getString("money").replace(",", "."));
 		rewardType = UUID.fromString(section.getString("uuid"));
-		uniqueId = UUID.fromString(section.getString("uniqueid"));
+		//uniqueId = UUID.fromString(section.getString("uniqueid"));
 		String str = section.getString("skinuuid", "");
 		if (str.equalsIgnoreCase("")) {
 			if (rewardType.equals(UUID.fromString(MH_REWARD_BAG_OF_GOLD_UUID)))

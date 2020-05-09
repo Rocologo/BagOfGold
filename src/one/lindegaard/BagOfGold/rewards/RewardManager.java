@@ -28,8 +28,8 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.Materials.Materials;
-import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.materials.Materials;
+import one.lindegaard.Core.server.Servers;
 
 public class RewardManager {
 
@@ -614,10 +614,10 @@ public class RewardManager {
 			block.getDrops().clear();
 			block.setType(Material.AIR);
 			block.removeMetadata(Reward.MH_REWARD_DATA, plugin);
-			if (plugin.getRewardManager().getLocations().containsKey(reward.getUniqueUUID()))
-				plugin.getRewardManager().getLocations().remove(reward.getUniqueUUID());
-			if (plugin.getRewardManager().getReward().containsKey(reward.getUniqueUUID()))
-				plugin.getRewardManager().getReward().remove(reward.getUniqueUUID());
+			//if (plugin.getRewardManager().getLocations().containsKey(reward.getUniqueUUID()))
+			//	plugin.getRewardManager().getLocations().remove(reward.getUniqueUUID());
+			//if (plugin.getRewardManager().getReward().containsKey(reward.getUniqueUUID()))
+			//	plugin.getRewardManager().getReward().remove(reward.getUniqueUUID());
 		}
 	}
 

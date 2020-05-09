@@ -42,9 +42,10 @@ import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
-import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.server.Servers;
 import one.lindegaard.Core.WorldGroupManager;
-import one.lindegaard.Core.Messages.MessageManager;
+import one.lindegaard.Core.messages.MessageManager;
+import one.lindegaard.Core.*;
 
 public class BagOfGold extends JavaPlugin {
 
@@ -69,6 +70,8 @@ public class BagOfGold extends JavaPlugin {
 	private BagOfGoldItems mBagOfGoldItems;
 	private MessageManager mMessageManager;
 
+	private Core mCore;
+	
 	private boolean mInitialized = false;
 
 	@Override
@@ -90,6 +93,8 @@ public class BagOfGold extends JavaPlugin {
 		} else
 			throw new RuntimeException(instance.getMessages().getString("bagofgold.config.fail"));
 
+		mCore = new Core(this);
+	    
 		if (isbStatsEnabled())
 			instance.getMessages().debug("bStat is enabled");
 		else {
@@ -353,6 +358,10 @@ public class BagOfGold extends JavaPlugin {
 
 	public EconomyManager getEconomyManager() {
 		return mEconomyManager;
+	}
+	
+	public Core getCore() {
+		return mCore;
 	}
 
 }

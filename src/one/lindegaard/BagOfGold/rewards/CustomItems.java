@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,8 +27,8 @@ import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.Server.Servers;
-import one.lindegaard.Core.Shared.Skins;
+import one.lindegaard.Core.server.Servers;
+import one.lindegaard.Core.shared.Skins;
 import one.lindegaard.Core.rewards.CoreCustomItems;
 
 public class CustomItems {

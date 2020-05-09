@@ -13,7 +13,7 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.server.Servers;
 
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Villager.Profession;
@@ -30,7 +30,7 @@ public enum MinecraftMob {
 			"eyJ0aW1lc3RhbXAiOjE1NzU3NDU5MTk5MTQsInByb2ZpbGVJZCI6IjgyYzYwNmM1YzY1MjRiNzk4YjkxYTEyZDNhNjE2OTc3IiwicHJvZmlsZU5hbWUiOiJOb3ROb3RvcmlvdXNOZW1vIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xNTI0ODIzZTg2YjYyNWZhNzYxY2E3ZjgwZDA4ODQzODE4MTM2ZWRjYzE3MmI2MjgwNDdiYWIzNTkyMDgzMDEwIn19fQ==",
 			"i22u9bDqUfReQtv4588sN46mZTdD8spGmuq1THcAgGUqP/fddxEdJgRGwYHMxgPIGLFfrWJFdR3JkK8JGXQTY2FZ8uY8DPylqXJ11Y4LW0e2YECxKVXylGvf3s0Nj6t5XJAviUfSYgPVmRNv8r9oWBobhd2o6WdVtJZriCQVuP0OmvOrjgfnptL/HSuggQPeeqr/2UctQIpvSThOTzgnlpwtjLSSezaVDGe+nMkGR8hPE6LrG6Dnn0WXY3pVNMk5Tek0JNGEiZcKL3krxtoPaCXwaPJsEN6iLDFiXItqZWbl7CKe3hBA0iQko8VBMUIriMcBDQ237YNUMsMbwMM8E35JFSb3koAhG6SzvsHXzjb6vWHaqDzGBNv/7aUFr/KMtPk9ZF4NA6wIzbQJLsXXmWU0Gddvw0I4m0hYuZPR6g28JzzPhQgA131bUh5VbEL6cDjs7vcDs+zt3cRIqsdMkyhPF1qjWpvsFS3UKqG2FdHPdt/kK8GVKdije70bSG12rJbIJwxbYcPwYWYVvdxoU4sYT5tiEipKbzsmKgGaLWBjpR+S3Cdpq49fDMDKE6LEHcTB0xi9vNiEOCLnxlq1DnqlOLdZ2AY9ir8AQuVVE4qnWXl1cXhZQDe83+ivb6Ls3OGm/rgSdRCLjXnI3U/HNKWbtpe4BpzBGMoRjqmxLAM="),
 
-// ******************************************************************
+	// ******************************************************************
 	// Minecraft 1.14
 	// ******************************************************************
 	// Cat
@@ -711,32 +711,6 @@ public enum MinecraftMob {
 		return "";
 
 	}
-
-	/**
-	 * setDisplayNameAndHiddenLores: add the Display name and the (hidden) Lores.
-	 * The lores identifies the reward and contain secret information.
-	 * 
-	 * @param skull  - The base itemStack without the information.
-	 * @param reward - The reward information is added to the ItemStack
-	 * @return the updated ItemStack.
-	 */
-	/**public ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
-		ItemMeta skullMeta = skull.getItemMeta();
-		skullMeta.setLore(reward.getHiddenLore());
-
-		if (reward.getMoney() == 0)
-			skullMeta.setDisplayName(
-					ChatColor.valueOf(BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundTextColor)
-							+ reward.getDisplayName());
-		else
-			skullMeta.setDisplayName(ChatColor
-					.valueOf(BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundTextColor)
-					+ (BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM")
-							? Tools.format(reward.getMoney())
-							: reward.getDisplayName() + " (" + Tools.format(reward.getMoney()) + ")"));
-		skull.setItemMeta(skullMeta);
-		return skull;
-	}**/
 
 	public static MinecraftMob getMinecraftMobType(String name) {
 		String name1 = name.replace(" ", "_");

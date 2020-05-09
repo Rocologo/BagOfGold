@@ -24,7 +24,7 @@ import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.server.Servers;
 
 public class BankManager {
 

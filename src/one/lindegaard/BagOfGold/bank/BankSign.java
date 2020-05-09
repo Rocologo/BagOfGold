@@ -17,8 +17,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.rewards.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
-import one.lindegaard.Core.Materials.Materials;
-import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.materials.Materials;
+import one.lindegaard.Core.server.Servers;
 
 public class BankSign implements Listener {
 

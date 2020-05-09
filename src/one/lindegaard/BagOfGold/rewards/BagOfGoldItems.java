@@ -49,7 +49,7 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.Server.Servers;
+import one.lindegaard.Core.server.Servers;
 
 public class BagOfGoldItems implements Listener {
 
@@ -454,12 +454,12 @@ public class BagOfGoldItems implements Listener {
 					// Duplication not allowed
 					reward.setMoney(0);
 				}
-				reward.setUniqueId(UUID.randomUUID());
+				//reward.setUniqueId(UUID.randomUUID());
 				plugin.getMessages().debug("%s placed a reward block: %s", player.getName(),
 						ChatColor.stripColor(reward.toString()));
 				block.setMetadata(Reward.MH_REWARD_DATA, new FixedMetadataValue(plugin, reward));
-				plugin.getRewardManager().getReward().put(reward.getUniqueUUID(), reward);
-				plugin.getRewardManager().getLocations().put(reward.getUniqueUUID(), block.getLocation());
+				//plugin.getRewardManager().getReward().put(reward.getUniqueUUID(), reward);
+				//plugin.getRewardManager().getLocations().put(reward.getUniqueUUID(), block.getLocation());
 				// saveReward(reward.getUniqueUUID());
 				if (reward.isMoney()) {
 					plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
@@ -979,7 +979,7 @@ public class BagOfGoldItems implements Listener {
 									isCurrentSlot = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 									event.setCurrentItem(isCurrentSlot);
 									reward.setMoney(cursorMoney);
-									reward.setUniqueId(UUID.randomUUID());
+									//reward.setUniqueId(UUID.randomUUID());
 									isCursor = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 									event.setCursor(isCursor);
 									plugin.getMessages().debug("%s halfed a reward in two (%s,%s)", player.getName(),
@@ -1159,16 +1159,5 @@ public class BagOfGoldItems implements Listener {
 		// event.getCursor() == null ? "null" : event.getCursor().getType(),
 		// event.getInventory() == null ? "null" : event.getInventory().getType());
 	}
-
-	/**
-	 * @EventHandler(priority = EventPriority.HIGHEST) public void
-	 *                        onInventoryCreativeEvent(InventoryCreativeEvent event)
-	 *                        { Player player = (Player) event.getWhoClicked(); if
-	 *                        (event.getSlotType() == SlotType.ARMOR) { if
-	 *                        (Reward.isReward(event.getCursor())) {
-	 *                        event.setCancelled(true);
-	 *                        plugin.getMessages().debug("%s tried to place a
-	 *                        BagOfGold in ARMOR slot", player.getName()); } } }
-	 **/
 
 }
