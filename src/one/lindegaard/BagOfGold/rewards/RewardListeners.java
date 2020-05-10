@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
+import one.lindegaard.Core.rewards.Reward;
 
 public class RewardListeners implements Listener {
 

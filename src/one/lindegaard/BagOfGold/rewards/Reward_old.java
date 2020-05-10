@@ -19,12 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
 
-import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Tools;
 
-public class Reward {
+public class Reward_old {
 
 	public final static String MH_REWARD_DATA = "MH:HiddenRewardData";
 
@@ -50,7 +49,7 @@ public class Reward {
 	private UUID skinUUID; // Hidden(4)
 	private String encodedHash; // Hidden(5) -
 
-	public Reward() {
+	public Reward_old() {
 		this.displayname = "Skull";
 		this.money = 0;
 		this.rewardType = UUID.randomUUID();
@@ -58,7 +57,7 @@ public class Reward {
 		this.encodedHash = Strings.encode(makeDecodedHash());
 	}
 
-	public Reward(Reward reward) {
+	public Reward_old(Reward_old reward) {
 		this.displayname = reward.getDisplayName();
 		this.money = reward.getMoney();
 		this.rewardType = reward.getRewardType();
@@ -67,7 +66,8 @@ public class Reward {
 		this.encodedHash = reward.getEncodedHash();
 	}
 
-	public Reward(String displayName, double money, UUID rewardType, UUID uniqueId, UUID skinUUID) {
+	//public Reward(String displayName, double money, UUID rewardType, UUID uniqueId, UUID skinUUID) {
+	public Reward_old(String displayName, double money, UUID rewardType, UUID skinUUID) {
 		this.displayname = displayName;
 		this.money = money;
 		this.rewardType = rewardType;
@@ -76,7 +76,7 @@ public class Reward {
 		this.encodedHash = Strings.encode(makeDecodedHash());
 	}
 
-	public Reward(List<String> lore) {
+	public Reward_old(List<String> lore) {
 		setReward(lore);
 	}
 
@@ -317,11 +317,11 @@ public class Reward {
 		return item.hasMetadata(MH_REWARD_DATA) || isReward(item.getItemStack());
 	}
 
-	public static Reward getReward(Item item) {
+	public static Reward_old getReward(Item item) {
 		if (item.hasMetadata(MH_REWARD_DATA))
 			for (MetadataValue mv : item.getMetadata(MH_REWARD_DATA)) {
-				if (mv.value() instanceof Reward)
-					return (Reward) item.getMetadata(MH_REWARD_DATA).get(0).value();
+				if (mv.value() instanceof Reward_old)
+					return (Reward_old) item.getMetadata(MH_REWARD_DATA).get(0).value();
 			}
 		return getReward(item.getItemStack());
 	}
@@ -338,24 +338,24 @@ public class Reward {
 			return false;
 	}
 
-	public static Reward getReward(ItemStack itemStack) {
-		return new Reward(itemStack.getItemMeta().getLore());
+	public static Reward_old getReward(ItemStack itemStack) {
+		return new Reward_old(itemStack.getItemMeta().getLore());
 	}
 
 	public static boolean isReward(Block block) {
 		return block.hasMetadata(MH_REWARD_DATA);
 	}
 
-	public static Reward getReward(Block block) {
-		return (Reward) block.getMetadata(MH_REWARD_DATA).get(0).value();
+	public static Reward_old getReward(Block block) {
+		return (Reward_old) block.getMetadata(MH_REWARD_DATA).get(0).value();
 	}
 
 	public static boolean isReward(Entity entity) {
 		return entity.hasMetadata(MH_REWARD_DATA);
 	}
 
-	public static Reward getReward(Entity entity) {
-		return (Reward) entity.getMetadata(MH_REWARD_DATA).get(0).value();
+	public static Reward_old getReward(Entity entity) {
+		return (Reward_old) entity.getMetadata(MH_REWARD_DATA).get(0).value();
 	}
 
 	/**
@@ -366,7 +366,7 @@ public class Reward {
 	 * @param reward - The reward information is added to the ItemStack
 	 * @return the updated ItemStack.
 	 */
-	public static ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward reward) {
+	public static ItemStack setDisplayNameAndHiddenLores(ItemStack skull, Reward_old reward) {
 		ItemMeta skullMeta = skull.getItemMeta();
 		skullMeta.setLore(reward.getHiddenLore());
 

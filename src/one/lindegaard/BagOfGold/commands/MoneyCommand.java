@@ -2,9 +2,9 @@ package one.lindegaard.BagOfGold.commands;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.BagOfGold.rewards.Reward;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.rewards.Reward;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
