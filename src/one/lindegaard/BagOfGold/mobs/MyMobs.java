@@ -1,12 +1,13 @@
 package one.lindegaard.BagOfGold.mobs;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.mobs.MobType;
 
 public class MyMobs {
 
-	MinecraftMob mob;
+	MobType mob;
 	
-	public MyMobs(MinecraftMob mob) {
+	public MyMobs(MobType mob) {
 		this.mob=mob;
 	}
 	
@@ -15,7 +16,7 @@ public class MyMobs {
 	}
 	
 	public String getTexture(String displayname) {
-		for (MinecraftMob mob : MinecraftMob.values()) {
+		for (MobType mob : MobType.values()) {
 			if (mob.getDisplayName().equalsIgnoreCase(displayname)
 					|| getFriendlyName().equalsIgnoreCase(displayname)) {
 				return String.valueOf(mob.getTextureValue());
@@ -25,7 +26,7 @@ public class MyMobs {
 	}
 
 	public String getSignature(String displayname) {
-		for (MinecraftMob mob : MinecraftMob.values()) {
+		for (MobType mob : MobType.values()) {
 			if (mob.getDisplayName().equalsIgnoreCase(displayname)
 					|| getFriendlyName().equalsIgnoreCase(displayname)) {
 				return String.valueOf(mob.getTextureSignature());
@@ -35,9 +36,9 @@ public class MyMobs {
 
 	}
 
-	public MinecraftMob getMinecraftMobType(String name) {
+	public MobType getMinecraftMobType(String name) {
 		String name1 = name.replace(" ", "_");
-		for (MinecraftMob type : MinecraftMob.values())
+		for (MobType type : MobType.values())
 			if (getFriendlyName().replace(" ", "_").equalsIgnoreCase(name1)
 					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name1)
 					|| type.name().equalsIgnoreCase(name1))

@@ -19,9 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
 
-import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.mobs.MobType;
 
 public class Reward_old {
 
@@ -281,7 +281,7 @@ public class Reward_old {
 				if (offlinePlayer != null)
 					skinUUID = offlinePlayer.getUniqueId();
 			} else if (rewardType.equals(UUID.fromString(MH_REWARD_KILLED_UUID))) {
-				MinecraftMob mob = MinecraftMob.getMinecraftMobType(displayname);
+				MobType mob = MobType.getMinecraftMobType(displayname);
 				if (mob != null) {
 					skinUUID = mob.getPlayerUUID();
 				} else

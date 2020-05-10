@@ -18,7 +18,7 @@ import one.lindegaard.Core.server.Servers;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Villager.Profession;
 
-public enum MinecraftMob {
+public enum MinecraftMob_old {
 	// PlayerName and texture can be found here:
 	// https://mineskin.org/
 	// http://heads.freshcoal.com/index.php
@@ -472,7 +472,7 @@ public enum MinecraftMob {
 	private String mTextureValue; // Texture value
 	private String mTextureSignature; // Texture Signature
 
-	private MinecraftMob(String type, String playerName, String playerId, String displayName, String texture,
+	private MinecraftMob_old(String type, String playerName, String playerId, String displayName, String texture,
 			String signature) {
 		mMinecraftMobType = type;
 		mPlayerProfileName = playerName;
@@ -672,27 +672,27 @@ public enum MinecraftMob {
 			return entity.getType().toString().equals(mMinecraftMobType);
 	}
 
-	public static MinecraftMob getMinecraftMobType(Entity entity) {
-		for (MinecraftMob type : values())
+	public static MinecraftMob_old getMinecraftMobType(Entity entity) {
+		for (MinecraftMob_old type : values())
 			if (type.matches(entity))
 				return type;
 		return null;
 	}
 
-	public static MinecraftMob getMinecraftMobType(UUID uuid) {
+	public static MinecraftMob_old getMinecraftMobType(UUID uuid) {
 		if (uuid != null) {
-			for (MinecraftMob mob : values())
+			for (MinecraftMob_old mob : values())
 				if (uuid.equals(mob.getPlayerUUID()))
 					return mob;
 			if (Bukkit.getOfflinePlayer(uuid) != null)
-				return MinecraftMob.PvpPlayer;
+				return MinecraftMob_old.PvpPlayer;
 
 		}
 		return null;
 	}
 
 	public String getTexture(String displayname) {
-		for (MinecraftMob mob : MinecraftMob.values()) {
+		for (MinecraftMob_old mob : MinecraftMob_old.values()) {
 			if (mob.getDisplayName().equalsIgnoreCase(displayname)
 					|| mob.getFriendlyName().equalsIgnoreCase(displayname)) {
 				return String.valueOf(mob.getTextureValue());
@@ -702,7 +702,7 @@ public enum MinecraftMob {
 	}
 
 	public String getSignature(String displayname) {
-		for (MinecraftMob mob : MinecraftMob.values()) {
+		for (MinecraftMob_old mob : MinecraftMob_old.values()) {
 			if (mob.getDisplayName().equalsIgnoreCase(displayname)
 					|| mob.getFriendlyName().equalsIgnoreCase(displayname)) {
 				return String.valueOf(mob.getTextureSignature());
@@ -712,9 +712,9 @@ public enum MinecraftMob {
 
 	}
 
-	public static MinecraftMob getMinecraftMobType(String name) {
+	public static MinecraftMob_old getMinecraftMobType(String name) {
 		String name1 = name.replace(" ", "_");
-		for (MinecraftMob type : values())
+		for (MinecraftMob_old type : values())
 			if (type.getFriendlyName().replace(" ", "_").equalsIgnoreCase(name1)
 					|| type.getDisplayName().replace(" ", "_").equalsIgnoreCase(name1)
 					|| type.name().equalsIgnoreCase(name1))

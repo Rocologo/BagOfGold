@@ -24,9 +24,9 @@ import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerSettings;
-import one.lindegaard.BagOfGold.mobs.MinecraftMob;
 import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.mobs.MobType;
 import one.lindegaard.Core.server.Servers;
 import one.lindegaard.Core.shared.Skins;
 import one.lindegaard.Core.rewards.CoreCustomItems;
@@ -230,7 +230,7 @@ public class CustomItems {
 		return skull;
 	}
 
-	public ItemStack getCustomHead(MinecraftMob minecraftMob, String name, int amount, double money, UUID skinUUID) {
+	public ItemStack getCustomHead(MobType minecraftMob, String name, int amount, double money, UUID skinUUID) {
 		ItemStack skull;
 		switch (minecraftMob) {
 		case Skeleton:
