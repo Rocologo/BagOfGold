@@ -261,13 +261,15 @@ public class RewardManager {
 			Item item = location.getWorld().dropItemNaturally(location, is);
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
-			MobType mob = MobType.getMinecraftMobType(reward.getSkinUUID());
+			MobType mob = MobType.getMobType(reward.getSkinUUID());
 			if (mob != null) {
 				ItemStack is = new CustomItems().getCustomHead(mob, reward.getDisplayName(), 1, reward.getMoney(),
 						reward.getSkinUUID());
 				Item item = location.getWorld().dropItemNaturally(location, is);
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
 				getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+			} else {
+				plugin.getMessages().debug("Reward Manager could not find a mob from reward=%s", reward.toString());
 			}
 		} else if (reward.isKillerHeadReward()) {
 			ItemStack is = new CustomItems().getPlayerHead(reward.getSkinUUID(), reward.getDisplayName(), 1,

@@ -89,6 +89,7 @@ public class Messages {
 				for (Entry<String, String> entry : newEntries.entrySet())
 					writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 				writer.close();
+				sortFileOnDisk(onDisk);
 				Bukkit.getConsoleSender()
 						.sendMessage(PREFIX + " Updated " + onDisk.getName() + " language file with missing keys");
 			}
@@ -110,33 +111,11 @@ public class Messages {
 				writer.append("\n" + entry.getKey() + "=" + entry.getValue());
 			}
 			writer.close();
-			// Bukkit.getLogger().info(PREFIX + " Sorted " + onDisk.getName() +
-			// " translation");
-
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
-	}
-
-	public void injectMissingMobNamesToLangFiles() {
-		File folder = new File(plugin.getDataFolder(), "lang");
-		if (!folder.exists())
-			folder.mkdirs();
-
-		boolean customLanguage = true;
-		for (String source : sources) {
-			if (source.equalsIgnoreCase(plugin.getConfigManager().language))
-				customLanguage = false;
-			new File(folder, source);
-		}
-
-		if (customLanguage) {
-			File dest = new File(folder, plugin.getConfigManager().language + ".lang");
-			sortFileOnDisk(dest);
-		}
-
 	}
 
 	private static Map<String, String> loadLang(InputStream stream, String encoding) throws IOException {
@@ -234,7 +213,6 @@ public class Messages {
 			InputStream resource = plugin.getResource("lang/en_US.lang");
 			injectChanges(resource, file);
 			mTranslationTable = loadLang(file);
-			sortFileOnDisk(file);
 		} else {
 			Bukkit.getConsoleSender().sendMessage(PREFIX + " Could not read the language file:" + file.getName());
 		}

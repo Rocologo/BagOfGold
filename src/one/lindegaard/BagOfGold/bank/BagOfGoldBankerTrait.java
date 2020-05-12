@@ -9,6 +9,7 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.server.Servers;
 
 public class BagOfGoldBankerTrait extends Trait implements Listener {
 	// http://wiki.citizensnpcs.co/API
@@ -68,8 +69,14 @@ public class BagOfGoldBankerTrait extends Trait implements Listener {
 			return;
 
 		Player player = event.getClicker();
-		plugin.getBankManager().sendBankerMessage(player);
-		
+		if (Servers.isSpigotServer()) {
+			plugin.getMessages().playerSendMessage(player,
+					" \n" + plugin.getMessages().getString("bagofgold.banker.introduction"));
+			plugin.getBankManager().sendBankerMessage(player);
+		} else {
+			player.sendMessage("The Banker only works on SpigotMC serverse");
+		}
+
 	}
 
 	// Called every tick

@@ -24,6 +24,7 @@ import com.mojang.authlib.properties.Property;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerSettings;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.mobs.MobType;
@@ -140,10 +141,10 @@ public class CustomItems {
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden(0):" + name,
 				"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" + RewardType.KILLED.getType(),
-				money == 0 ? "Hidden(3):" : "Hidden(3):" + UUID.randomUUID(), "Hidden(4):" + uuid,
+				"Hidden(4):" + uuid,
 				"Hidden(5):"
 						+ Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + RewardType.KILLED.getType()),
-				plugin.getMessages().getString("bagofgold.reward.lore"))));
+				Core.getMessages().getString("core.reward.lore"))));
 
 		if (Bukkit.getOfflinePlayer(uuid) != null)
 			skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
@@ -213,7 +214,7 @@ public class CustomItems {
 					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" + mRewardType,
 					"Hidden(4):" + skinUuid,
 					"Hidden(5):" + Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + mRewardType),
-					plugin.getMessages().getString("bagofgold.reward.lore"))));
+					Core.getMessages().getString("core.reward.lore"))));
 		ChatColor color = ChatColor.GOLD;
 		try {
 			color = ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor.toUpperCase());
@@ -274,8 +275,8 @@ public class CustomItems {
 			break;
 
 		default:
-			ItemStack is = new ItemStack(getCustomtexture(name, money, RewardType.KILLED, skinUUID,
-					minecraftMob.getTextureValue(), minecraftMob.getTextureSignature()));
+			ItemStack is = new ItemStack(getCustomtexture(minecraftMob.getFriendlyName(), money, RewardType.KILLED,
+					skinUUID, minecraftMob.getTextureValue(), minecraftMob.getTextureSignature()));
 			is.setAmount(amount);
 			return is;
 		}

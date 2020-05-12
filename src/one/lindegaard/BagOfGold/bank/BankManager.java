@@ -113,15 +113,14 @@ public class BankManager {
 	}
 
 	public void sendBankerMessage(Player player) {
-		if (Servers.isSpigotServer()) {
-			plugin.getMessages().playerSendMessage(player,
-					" \n" + plugin.getMessages().getString("bagofgold.banker.introduction"));
+		
 			PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 
 			player.spigot().sendMessage(new ComponentBuilder("Balance: "
 					+ plugin.getEconomyManager().format(ps.getBalance() + ps.getBalanceChanges()) + " BankBalance: "
 					+ plugin.getEconomyManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
 							.color(ChatColor.GREEN).bold(true).create());
+			
 			ComponentBuilder deposit = new ComponentBuilder("Deposit: ").color(ChatColor.GREEN).bold(true).append(" ");
 			Iterator<Entry<String, String>> itr1 = plugin.getConfigManager().actions.entrySet().iterator();
 			while (itr1.hasNext()) {
@@ -154,9 +153,6 @@ public class BankManager {
 				}
 			}
 			player.spigot().sendMessage(withdraw.create());
-		} else {
-			player.sendMessage("The Banker only works on SpigotMC serverse");
-		}
 
 	}
 
