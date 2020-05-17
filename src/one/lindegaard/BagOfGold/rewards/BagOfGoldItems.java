@@ -152,8 +152,9 @@ public class BagOfGoldItems implements Listener {
 					ItemStack is;
 					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
 						is = new CoreCustomItems().getCustomtexture(
-								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), Misc.round(nextBag),
-								RewardType.BAGOFGOLD, UUID.fromString(RewardType.BAGOFGOLD.getUUID()),
+								new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(),
+										Misc.round(nextBag), RewardType.BAGOFGOLD,
+										UUID.fromString(RewardType.BAGOFGOLD.getUUID())),
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature);
 					else {
@@ -233,8 +234,9 @@ public class BagOfGoldItems implements Listener {
 				rewardType = RewardType.BAGOFGOLD;
 				skinuuid = UUID.fromString(RewardType.BAGOFGOLD.getUUID());
 				is = new CoreCustomItems().getCustomtexture(
-						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), nextBag, rewardType,
-						skinuuid, plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
+						new Reward(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), nextBag,
+								rewardType, skinuuid),
+						plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature);
 			} else { // ITEM
 				rewardType = RewardType.ITEM;

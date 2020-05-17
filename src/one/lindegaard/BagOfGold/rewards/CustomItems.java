@@ -98,7 +98,8 @@ public class CustomItems {
 				plugin.getMessages().debug("%s using skin from skin Cache", offlinePlayer.getName());
 		}
 
-		skull = new ItemStack(new CoreCustomItems().getCustomtexture(offlinePlayer.getName(), money, RewardType.KILLED, uuid, ps.getTexture(),
+		skull = new ItemStack(new CoreCustomItems().getCustomtexture(
+				new Reward(offlinePlayer.getName(), money, RewardType.KILLED, uuid), ps.getTexture(),
 				ps.getSignature()));
 		skull.setAmount(amount);
 		return skull;
@@ -169,61 +170,50 @@ public class CustomItems {
 	 * @param mTextureSignature
 	 * @return ItemStack with custom texture.
 	 */
-	/**public ItemStack getCustomtexture(String mDisplayName, double money, RewardType mRewardType, UUID skinUuid,
-			String mTextureValue, String mTextureSignature) {
-		ItemStack skull = CoreCustomItems.getDefaultPlayerHead(1);
-		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
-			return skull;
-
-		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-
-		GameProfile profile = new GameProfile(skinUuid, mDisplayName);
-		if (mTextureSignature.isEmpty())
-			profile.getProperties().put("textures", new Property("textures", mTextureValue));
-		else
-			profile.getProperties().put("textures", new Property("textures", mTextureValue, mTextureSignature));
-		Field profileField = null;
-
-		try {
-			profileField = skullMeta.getClass().getDeclaredField("profile");
-		} catch (NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
-			return skull;
-		}
-
-		profileField.setAccessible(true);
-
-		try {
-			profileField.set(skullMeta, profile);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		if (mRewardType == RewardType.BAGOFGOLD)
-			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden(0):" + mDisplayName,
-					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" + mRewardType.getType(),
-					"Hidden(4):" + skinUuid, "Hidden(5):"
-							+ Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + mRewardType.getType()))));
-		else
-			skullMeta.setLore(new ArrayList<String>(Arrays.asList("Hidden(0):" + mDisplayName,
-					"Hidden(1):" + String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" + mRewardType,
-					"Hidden(4):" + skinUuid,
-					"Hidden(5):" + Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + mRewardType),
-					Core.getMessages().getString("core.reward.lore"))));
-		ChatColor color = ChatColor.GOLD;
-		try {
-			color = ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor.toUpperCase());
-		} catch (Exception e) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
-					+ "drop-money-on-ground-text-color in your config.yml cant be read.");
-		}
-		if (money == 0)
-			skullMeta.setDisplayName(color + mDisplayName);
-		else
-			skullMeta.setDisplayName(color + mDisplayName + " (" + Tools.format(money) + ")");
-
-		skull.setItemMeta(skullMeta);
-		return skull;
-	}**/
+	/**
+	 * public ItemStack getCustomtexture(String mDisplayName, double money,
+	 * RewardType mRewardType, UUID skinUuid, String mTextureValue, String
+	 * mTextureSignature) { ItemStack skull =
+	 * CoreCustomItems.getDefaultPlayerHead(1); if (mTextureSignature.isEmpty() ||
+	 * mTextureValue.isEmpty()) return skull;
+	 * 
+	 * SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+	 * 
+	 * GameProfile profile = new GameProfile(skinUuid, mDisplayName); if
+	 * (mTextureSignature.isEmpty()) profile.getProperties().put("textures", new
+	 * Property("textures", mTextureValue)); else
+	 * profile.getProperties().put("textures", new Property("textures",
+	 * mTextureValue, mTextureSignature)); Field profileField = null;
+	 * 
+	 * try { profileField = skullMeta.getClass().getDeclaredField("profile"); }
+	 * catch (NoSuchFieldException | SecurityException e) { e.printStackTrace();
+	 * return skull; }
+	 * 
+	 * profileField.setAccessible(true);
+	 * 
+	 * try { profileField.set(skullMeta, profile); } catch (IllegalArgumentException
+	 * | IllegalAccessException e) { e.printStackTrace(); } if (mRewardType ==
+	 * RewardType.BAGOFGOLD) skullMeta.setLore(new
+	 * ArrayList<String>(Arrays.asList("Hidden(0):" + mDisplayName, "Hidden(1):" +
+	 * String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" +
+	 * mRewardType.getType(), "Hidden(4):" + skinUuid, "Hidden(5):" +
+	 * Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) +
+	 * mRewardType.getType())))); else skullMeta.setLore(new
+	 * ArrayList<String>(Arrays.asList("Hidden(0):" + mDisplayName, "Hidden(1):" +
+	 * String.format(Locale.ENGLISH, "%.5f", money), "Hidden(2):" + mRewardType,
+	 * "Hidden(4):" + skinUuid, "Hidden(5):" +
+	 * Strings.encode(String.format(Locale.ENGLISH, "%.5f", money) + mRewardType),
+	 * Core.getMessages().getString("core.reward.lore")))); ChatColor color =
+	 * ChatColor.GOLD; try { color =
+	 * ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor.toUpperCase());
+	 * } catch (Exception e) { Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD
+	 * + "[BagOfGold] " + ChatColor.RED + "drop-money-on-ground-text-color in your
+	 * config.yml cant be read."); } if (money == 0) skullMeta.setDisplayName(color
+	 * + mDisplayName); else skullMeta.setDisplayName(color + mDisplayName + " (" +
+	 * Tools.format(money) + ")");
+	 * 
+	 * skull.setItemMeta(skullMeta); return skull; }
+	 **/
 
 	public ItemStack getCustomHead(MobType minecraftMob, String name, int amount, double money, UUID skinUUID) {
 		ItemStack skull;
@@ -263,8 +253,9 @@ public class CustomItems {
 			break;
 
 		default:
-			ItemStack is = new ItemStack(new CoreCustomItems().getCustomtexture(minecraftMob.getFriendlyName(), money, RewardType.KILLED,
-					skinUUID, minecraftMob.getTextureValue(), minecraftMob.getTextureSignature()));
+			ItemStack is = new ItemStack(new CoreCustomItems().getCustomtexture(
+					new Reward(minecraftMob.getFriendlyName(), money, RewardType.KILLED, skinUUID),
+					minecraftMob.getTextureValue(), minecraftMob.getTextureSignature()));
 			is.setAmount(amount);
 			return is;
 		}
