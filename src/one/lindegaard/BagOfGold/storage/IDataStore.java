@@ -9,7 +9,7 @@ import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
-import one.lindegaard.BagOfGold.PlayerSettings;
+import one.lindegaard.Core.PlayerSettings;
 
 public interface IDataStore {
 	/**

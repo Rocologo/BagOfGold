@@ -2,7 +2,6 @@ package one.lindegaard.BagOfGold.rewards;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,17 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.Core.Core;
+import one.lindegaard.Core.PlayerSettings;
 import one.lindegaard.Core.Strings;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.mobs.MobType;
@@ -104,7 +98,7 @@ public class CustomItems {
 				plugin.getMessages().debug("%s using skin from skin Cache", offlinePlayer.getName());
 		}
 
-		skull = new ItemStack(getCustomtexture(offlinePlayer.getName(), money, RewardType.KILLED, uuid, ps.getTexture(),
+		skull = new ItemStack(new CoreCustomItems().getCustomtexture(offlinePlayer.getName(), money, RewardType.KILLED, uuid, ps.getTexture(),
 				ps.getSignature()));
 		skull.setAmount(amount);
 		return skull;
@@ -175,7 +169,7 @@ public class CustomItems {
 	 * @param mTextureSignature
 	 * @return ItemStack with custom texture.
 	 */
-	public ItemStack getCustomtexture(String mDisplayName, double money, RewardType mRewardType, UUID skinUuid,
+	/**public ItemStack getCustomtexture(String mDisplayName, double money, RewardType mRewardType, UUID skinUuid,
 			String mTextureValue, String mTextureSignature) {
 		ItemStack skull = CoreCustomItems.getDefaultPlayerHead(1);
 		if (mTextureSignature.isEmpty() || mTextureValue.isEmpty())
@@ -229,7 +223,7 @@ public class CustomItems {
 
 		skull.setItemMeta(skullMeta);
 		return skull;
-	}
+	}**/
 
 	public ItemStack getCustomHead(MobType minecraftMob, String name, int amount, double money, UUID skinUUID) {
 		ItemStack skull;
@@ -256,12 +250,6 @@ public class CustomItems {
 			skull = getPlayerHead(skinUUID, name, amount, money);
 			break;
 
-		// skull = CoreCustomItems.getDefaultPlayerHead(amount);
-		// SkullMeta sm = (SkullMeta) skull.getItemMeta();
-		// sm.setOwner(name);
-		// skull.setItemMeta(sm);
-		// break;
-
 		case Creeper:
 			skull = CoreCustomItems.getDefaultCreeperHead(amount);
 			skull = Reward.setDisplayNameAndHiddenLores(skull,
@@ -275,7 +263,7 @@ public class CustomItems {
 			break;
 
 		default:
-			ItemStack is = new ItemStack(getCustomtexture(minecraftMob.getFriendlyName(), money, RewardType.KILLED,
+			ItemStack is = new ItemStack(new CoreCustomItems().getCustomtexture(minecraftMob.getFriendlyName(), money, RewardType.KILLED,
 					skinUUID, minecraftMob.getTextureValue(), minecraftMob.getTextureSignature()));
 			is.setAmount(amount);
 			return is;

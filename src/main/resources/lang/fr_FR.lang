@@ -5,6 +5,7 @@ bagofgold.hook.econ.reserve=Impossible de détecter une économie ! Vérifies qu
 bagofgold.moneypickup=Tu as ramassé ${money} ${rewardname} !
 bagofgold.moneydrop=Tu as lâché ${money} ${rewardname}
 bagofgold.moneylost=Tu as perdu ${prize}!
+bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
 bagofgold.banker.introduction=&aBonjour. Je suis le banquier, que souhaitez-vous ?
 

@@ -92,6 +92,7 @@ bagofgold.commands.version.description=Show BagOfGold's version number.
 bagofgold.commands.version.newversion=Version ${newversion} is available. Use '/bagofgold update' to update the plugin.
 bagofgold.config.fail=There was a problem loading the BagOfGold config
 bagofgold.hook.econ=Unable to hook into an economy! Make sure you have one available that Vault accepts.
+bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 bagofgold.moneydrop=Você dropou ${money} ${rewardname}
 bagofgold.moneylost=Você perdeu ${prize}!
 bagofgold.moneypickup=Você encontrou ${money} ${rewardname}

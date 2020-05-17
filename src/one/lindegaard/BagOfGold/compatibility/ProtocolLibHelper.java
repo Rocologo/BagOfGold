@@ -43,7 +43,7 @@ public class ProtocolLibHelper {
 								Iterator<String> itr = lore.iterator();
 								while (itr.hasNext()) {
 									String str = itr.next();
-									if (str.startsWith("Hidden:") || str.startsWith("Hidden("))
+									if (str.startsWith("Hidden("))
 										if (event.getPlayer().getGameMode() == GameMode.SURVIVAL || !BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM"))
 											itr.remove();
 								}
@@ -69,7 +69,7 @@ public class ProtocolLibHelper {
 									Iterator<String> itr = lore.iterator();
 									while (itr.hasNext()) {
 										String str = itr.next();
-										if (str.startsWith("Hidden:") || str.startsWith("Hidden("))
+										if (str.startsWith("Hidden("))
 											if (event.getPlayer().getGameMode() == GameMode.SURVIVAL || !BagOfGold.getInstance().getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("ITEM"))
 												itr.remove();
 									}

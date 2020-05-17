@@ -93,6 +93,7 @@ bagofgold.commands.version.newversion=&aДоступна новая версия
 bagofgold.config.fail=&cЧто-то сломалось... Проверьте настройки плагина.
 bagofgold.hook.econ=&cНе удалось найти плагин экономики совместимый с Vault.
 bagofgold.hook.econ.reserve=&cНе удалось найти плагин экономики совместимый с Reserve.
+bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 bagofgold.moneydrop=&eВы выбросили &6${money}⦿&e.
 bagofgold.moneylost=&eВы потеряли &6${prize}⦿&e.
 bagofgold.moneypickup=&eВы подобрали &6${money}⦿&e.

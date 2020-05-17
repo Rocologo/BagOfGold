@@ -28,6 +28,7 @@ import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.PlayerSettings;
 
 public class PlayerBalanceManager implements Listener {
 

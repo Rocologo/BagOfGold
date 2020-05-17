@@ -5,6 +5,7 @@ bagofgold.hook.econ.reserve=Unable to hook into an economy! Make sure you have o
 bagofgold.moneypickup=You found ${money} ${rewardname}
 bagofgold.moneydrop=You dropped ${money} ${rewardname}
 bagofgold.moneylost=You lost ${prize}!
+bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
 bagofgold.banker.introduction=&aHi, I am the &4BagOfGold&a Banker, please choose an action.. 
 

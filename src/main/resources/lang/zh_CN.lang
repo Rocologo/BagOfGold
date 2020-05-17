@@ -20,6 +20,7 @@ bagofgold.banksign.no_permission_to_use=&4You need permission to use this sign (
 bagofgold.banksign.line4.error_on_sign=&4Error line ${line}
 bagofgold.banksign.item_has_no_value=&4The ${itemname}&4 has no value, you can't deposit it
 bagofgold.banksign.only_survival=&4You can only use the bank in survival
+bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
 bagofgold.command.base.description=怪物猎人版本
 bagofgold.commands.base.error=执行该命令时发生内部错误.

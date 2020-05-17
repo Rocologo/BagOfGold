@@ -12,12 +12,12 @@ import org.bukkit.OfflinePlayer;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
-import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.asynch.IDataStoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerBalanceRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerSettingsRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.StoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.Top54BalanceRetrieverTask;
+import one.lindegaard.Core.PlayerSettings;
 
 public class DataStoreManager {
 

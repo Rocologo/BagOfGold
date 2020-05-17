@@ -49,6 +49,7 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.rewards.CoreCustomItems;
 import one.lindegaard.Core.rewards.Reward;
 import one.lindegaard.Core.rewards.RewardBlock;
 import one.lindegaard.Core.rewards.RewardType;
@@ -150,7 +151,7 @@ public class BagOfGoldItems implements Listener {
 					addedMoney = addedMoney + nextBag;
 					ItemStack is;
 					if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL"))
-						is = new CustomItems().getCustomtexture(
+						is = new CoreCustomItems().getCustomtexture(
 								plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), Misc.round(nextBag),
 								RewardType.BAGOFGOLD, UUID.fromString(RewardType.BAGOFGOLD.getUUID()),
 								plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
@@ -231,7 +232,7 @@ public class BagOfGoldItems implements Listener {
 			if (plugin.getConfigManager().dropMoneyOnGroundItemtype.equalsIgnoreCase("SKULL")) {
 				rewardType = RewardType.BAGOFGOLD;
 				skinuuid = UUID.fromString(RewardType.BAGOFGOLD.getUUID());
-				is = new CustomItems().getCustomtexture(
+				is = new CoreCustomItems().getCustomtexture(
 						plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim(), nextBag, rewardType,
 						skinuuid, plugin.getConfigManager().dropMoneyOnGroundSkullTextureValue,
 						plugin.getConfigManager().dropMoneyOnGroundSkullTextureSignature);
@@ -461,7 +462,8 @@ public class BagOfGoldItems implements Listener {
 						ChatColor.stripColor(reward.toString()));
 				reward.setUniqueID(plugin.getRewardManager().getNextID());
 				block.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, reward));
-				plugin.getRewardManager().getRewardBlocks().put(reward.getUniqueID(),new RewardBlock(block.getLocation(),reward));
+				plugin.getRewardManager().getRewardBlocks().put(reward.getUniqueID(),
+						new RewardBlock(block.getLocation(), reward));
 				if (reward.isMoney()) {
 					plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 				}
@@ -629,10 +631,8 @@ public class BagOfGoldItems implements Listener {
 				Reward reward = Reward.getReward(helmet);
 				if (reward.checkHash()) {
 					if (reward.isBagOfGoldReward()) {
-						plugin.getMessages().playerActionBarMessageQueue(player, ChatColor.RED
-								+ "[BagOfGold] WARNING, you can't wear a reward on your head. It was removed.");
-						// plugin.getMessages().learn(player,
-						// plugin.getMessages().getString("mobhunting.learn.rewards.no-helmet"));
+						plugin.getMessages().playerActionBarMessageQueue(player,
+								plugin.getMessages().getString("bagofgold.learn.rewards.no-helmet"));
 						event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
 						if (Misc.round(reward.getMoney()) != Misc
 								.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))

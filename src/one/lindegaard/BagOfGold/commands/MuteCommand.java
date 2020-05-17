@@ -8,8 +8,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
+import one.lindegaard.Core.PlayerSettings;
 
 public class MuteCommand implements ICommand {
 

@@ -4,6 +4,7 @@ bagofgold.hook.econ=Nem lehet beilleszkedni egy gazdaságba! Győződj meg róla
 bagofgold.moneypickup=Találtál ${money} ${rewardname}
 bagofgold.moneydrop=Leesett ${money} ${rewardname}
 bagofgold.moneylost=Veszítettél ${prize}!
+bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
 bagofgold.banker.introduction=&aSzia, én vagyok a &4BagOfGold&a Banker, kérlek, válassz egy intézkedést.. 
 

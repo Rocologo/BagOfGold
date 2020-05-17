@@ -2,7 +2,7 @@ package one.lindegaard.BagOfGold;
 
 import org.bukkit.OfflinePlayer;
 
-public class PlayerSettings {
+public class PlayerSettings_old {
 	private OfflinePlayer player;
 	private int playerId;
 	private boolean learning_mode = false;
@@ -13,14 +13,14 @@ public class PlayerSettings {
 	private long last_logon;
 	private long last_interest;
 
-	public PlayerSettings(OfflinePlayer player) {
+	public PlayerSettings_old(OfflinePlayer player) {
 		this.player = player;
 		this.setLastKnownWorldGrp("default");
 		this.setLearningMode(BagOfGold.getInstance().getConfigManager().learningMode);
 		this.setMuteMode(false);
 	}
 
-	public PlayerSettings(OfflinePlayer player, String lastKnownWorldGrp, boolean learning_mode, boolean mute, String texture, String signature, long last_logon, long last_interest) {
+	public PlayerSettings_old(OfflinePlayer player, String lastKnownWorldGrp, boolean learning_mode, boolean mute, String texture, String signature, long last_logon, long last_interest) {
 		this.player = player;
 		this.setLastKnownWorldGrp(lastKnownWorldGrp);
 		this.setLearningMode(learning_mode);
@@ -31,7 +31,7 @@ public class PlayerSettings {
 		this.setLast_interest(last_interest==0?System.currentTimeMillis():last_interest);
 	}
 	
-	public PlayerSettings(OfflinePlayer player, PlayerSettings ps) {
+	public PlayerSettings_old(OfflinePlayer player, PlayerSettings_old ps) {
 		this.player = ps.getPlayer();
 		this.setLearningMode(ps.isLearningMode());
 		this.setMuteMode(ps.isMuted());

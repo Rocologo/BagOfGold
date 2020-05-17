@@ -20,9 +20,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
-import one.lindegaard.BagOfGold.PlayerSettings;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.PlayerSettings;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.server.Servers;
 
@@ -54,7 +54,7 @@ public class BankManager {
 				break;
 
 			case "YEAR":
-				period = 8766000; // 1 minecraft year = 121.75 hours
+				period = 8766000; // 1 minecraaddTaskft year = 121.75 hours
 				break;
 
 			default:
