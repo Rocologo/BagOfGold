@@ -19,6 +19,10 @@
 		<relativePath>../Main/pom.xml</relativePath>
 	</parent>
 
+	<properties>
+		<bagofgold-core.version>0.2.7-SNAPSHOT</bagofgold-core.version>
+	</properties>
+
 	<scm>
 		<connection>scm:svn:https://github.com/Rocologo/BagOfGold.git</connection>
 		<developerConnection>scm:git:git://github.com/Rocologo</developerConnection>
@@ -127,7 +131,7 @@
 		<dependency>
 			<groupId>one.lindegaard</groupId>
 			<artifactId>Core</artifactId>
-			<version>${core.version}</version>
+			<version>${bagofgold-core.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
