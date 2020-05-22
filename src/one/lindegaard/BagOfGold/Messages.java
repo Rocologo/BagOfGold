@@ -32,6 +32,7 @@ import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
 import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
+import one.lindegaard.Core.Core;
 
 public class Messages {
 
@@ -310,7 +311,7 @@ public class Messages {
 			return;
 		if (sender instanceof Player) {
 			Player player = ((Player) sender);
-			if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+			if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 				player.sendMessage(PlaceholderAPICompat.setPlaceholders((Player) sender, message));
 		} else
 			sender.sendMessage(message);
@@ -388,7 +389,7 @@ public class Messages {
 		} else if (CMICompat.isSupported()) {
 			CMICompat.sendActionBarMessage(player, message);
 		} else {
-			if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+			if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 				player.sendMessage(message);
 		}
 	}

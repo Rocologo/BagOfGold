@@ -50,7 +50,7 @@ public class CustomItems {
 		ItemStack skull = CoreCustomItems.getDefaultPlayerHead(amount);
 		skull.setAmount(amount);
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+		PlayerSettings ps = Core.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
 		if (ps.getTexture() == null || ps.getSignature() == null || ps.getTexture().isEmpty()
 				|| ps.getSignature().isEmpty()) {
 			plugin.getMessages().debug("No skin found i database");
@@ -75,7 +75,7 @@ public class CustomItems {
 					&& !onlineSkin[1].isEmpty()) {
 				ps.setTexture(onlineSkin[0]);
 				ps.setSignature(onlineSkin[1]);
-				plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+				Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 			} else {
 				plugin.getMessages().debug("Empty skin");
 				return skull;
@@ -91,7 +91,7 @@ public class CustomItems {
 								player.getName(), ps.getTexture(), skin[0]);
 						ps.setTexture(skin[0]);
 						ps.setSignature(skin[1]);
-						plugin.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+						Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 					}
 				}
 			} else

@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
 
 public class GringottsItems implements Listener {
 
@@ -34,13 +35,13 @@ public class GringottsItems implements Listener {
 	}
 
 	public boolean isGringottsStyle() {
-		return plugin.getConfigManager().dropMoneyOnGroundItemtype.equals("GRINGOTTS_STYLE");
+		return Core.getConfigManager().rewardItemtype.equals("GRINGOTTS_STYLE");
 	}
 
 	public double getMoneyInHand(Player player) {
 		double money = 0;
 		ItemStack moneyInHand = player.getItemInHand();
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		Iterator<Entry<String, String>> itr = Core.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			try {
@@ -71,7 +72,7 @@ public class GringottsItems implements Listener {
 	public double addGringottsMoneyToPlayer(Player player, double amount) {
 		double moneyLeftToGive = amount;
 		double addedMoney = 0;
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		Iterator<Entry<String, String>> itr = Core.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			Material material;
@@ -95,7 +96,7 @@ public class GringottsItems implements Listener {
 
 	public double removeGringottsMoneyFromPlayer(Player player, double amount) {
 		LinkedHashMap<String, String> denominations = new LinkedHashMap<>();
-		denominations = plugin.getConfigManager().gringottsDenomination;
+		denominations = Core.getConfigManager().gringottsDenomination;
 		Map<String, String> result = denominations.entrySet().stream().sorted(Map.Entry.comparingByValue())
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));
@@ -138,7 +139,7 @@ public class GringottsItems implements Listener {
 	public void dropGringottsMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
 		double moneyLeftToDrop = Misc.ceil(money);
 		double droppedMoney = 0;
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		Iterator<Entry<String, String>> itr = Core.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			Material material;
@@ -163,7 +164,7 @@ public class GringottsItems implements Listener {
 
 	public double getAmountOfGringottsMoneyInInventory(Player player) {
 		double amountInInventory = 0;
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		Iterator<Entry<String, String>> itr = Core.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			Material material;
@@ -191,12 +192,12 @@ public class GringottsItems implements Listener {
 		double amountInInventory = 0;
 		double value = 0;
 		try {
-			value = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(material.toString()));
+			value = Double.valueOf(Core.getConfigManager().gringottsDenomination.get(material.toString()));
 		} catch (Exception e) {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + " Could not read denomonation ("
 							+ material.name() + ","
-							+ plugin.getConfigManager().gringottsDenomination.get(material.name()) + ")");
+							+ Core.getConfigManager().gringottsDenomination.get(material.name()) + ")");
 		}
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			if (slot >= 36 && slot <= 40)
@@ -211,7 +212,7 @@ public class GringottsItems implements Listener {
 	public double getSpaceForGringottsMoney(Player player) {
 		double space = 0;
 		double maxValue = 0;
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		Iterator<Entry<String, String>> itr = Core.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			Material material;
@@ -247,7 +248,7 @@ public class GringottsItems implements Listener {
 	}
 
 	public boolean isGringottsReward(Material material) {
-		Iterator<Entry<String, String>> itr = plugin.getConfigManager().gringottsDenomination.entrySet().iterator();
+		Iterator<Entry<String, String>> itr = Core.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			Material mat;
@@ -270,9 +271,9 @@ public class GringottsItems implements Listener {
 			return;
 
 		ItemStack is = event.getItemDrop().getItemStack();
-		if (plugin.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
+		if (Core.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
 			Player player = event.getPlayer();
-			double amount = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()))
+			double amount = Double.valueOf(Core.getConfigManager().gringottsDenomination.get(is.getType().toString()))
 					* is.getAmount();
 			plugin.getMessages().debug("%s dropped a %s with a value of %s", player.getName(), is.getType().toString(),
 					amount);
@@ -288,12 +289,12 @@ public class GringottsItems implements Listener {
 		Player player = event.getPlayer();
 		ItemStack is = event.getItemInHand();
 
-		if (plugin.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
+		if (Core.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
 			plugin.getMessages().debug("%s placed a %s with a value of %s", player.getName(), is.getType().toString(),
-					plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
+					Core.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 
 			double amount = Double
-					.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
+					.valueOf(Core.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 			plugin.getRewardManager().removeMoneyFromPlayerBalance(player, amount);
 		}
 	}
@@ -310,11 +311,11 @@ public class GringottsItems implements Listener {
 
 		Player player = (Player) event.getEntity();
 		ItemStack is = event.getItem().getItemStack();
-		if (plugin.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
+		if (Core.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
 			plugin.getMessages().debug("%s picked up a %s with a value of %s", player.getName(),
 					is.getType().toString(),
-					plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()));
-			double amount = Double.valueOf(plugin.getConfigManager().gringottsDenomination.get(is.getType().toString()))
+					Core.getConfigManager().gringottsDenomination.get(is.getType().toString()));
+			double amount = Double.valueOf(Core.getConfigManager().gringottsDenomination.get(is.getType().toString()))
 					* is.getAmount();
 			plugin.getRewardManager().addMoneyToPlayerBalance(player, amount);
 		}

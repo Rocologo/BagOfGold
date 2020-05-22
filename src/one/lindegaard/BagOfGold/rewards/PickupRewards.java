@@ -4,6 +4,7 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibHelper;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.rewards.Reward;
 
 import org.bukkit.ChatColor;
@@ -41,13 +42,13 @@ public class PickupRewards {
 								player.getName(), reward.isItemReward() ? "ITEM" : reward.getDisplayName(),
 								plugin.getBagOfGoldItems().format(Misc.round(reward.getMoney())),
 								plugin.getRewardManager().getDroppedMoney().size());
-						if (!plugin.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
+						if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 							plugin.getMessages().playerActionBarMessageQueue(player,
 									plugin.getMessages().getString("bagofgold.moneypickup", "money",
 											plugin.getBagOfGoldItems().format(reward.getMoney()), "rewardname",
-											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+											ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
 													+ (reward.getDisplayName().isEmpty()
-															? plugin.getConfigManager().dropMoneyOnGroundSkullRewardName
+															? Core.getConfigManager().bagOfGoldName
 															: reward.getDisplayName())));
 					}
 				} else {

@@ -21,6 +21,7 @@ import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.HttpTools;
 import one.lindegaard.Core.HttpTools.httpCallback;
 
@@ -86,7 +87,7 @@ public class MetricsManager {
 				}));
 		bStatsMetrics.addCustomChart(new Metrics.SimplePie("language", () -> plugin.getConfigManager().language));
 		
-		bStatsMetrics.addCustomChart(new Metrics.SimplePie("item_type", () -> plugin.getConfigManager().dropMoneyOnGroundItemtype));
+		bStatsMetrics.addCustomChart(new Metrics.SimplePie("item_type", () -> Core.getConfigManager().rewardItemtype));
 		
 		bStatsMetrics.addCustomChart(new Metrics.SimplePie("economy_base", () -> plugin.getEconomyManager().getEconomyAPI()));
 	

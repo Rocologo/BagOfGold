@@ -22,9 +22,9 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
 import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.server.Servers;
 
 public class BankManager {
 
@@ -86,7 +86,7 @@ public class BankManager {
 			plugin.getMessages().debug(ChatColor.BLUE + "Start bank interest calculation.");
 			Collection<Player> onlinePlayers = Tools.getOnlinePlayers();
 			for (Player p : onlinePlayers) {
-				PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(p);
+				PlayerSettings ps = Core.getPlayerSettingsManager().getPlayerSettings(p);
 				if (ps.getLast_interest() == 0)
 					ps.setLast_interest(System.currentTimeMillis() - period);
 				PlayerBalances pbs = plugin.getPlayerBalanceManager().getBalances().get(p.getUniqueId());

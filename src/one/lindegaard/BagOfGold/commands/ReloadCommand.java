@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.Messages;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
 
 public class ReloadCommand implements ICommand {
@@ -68,16 +69,16 @@ public class ReloadCommand implements ICommand {
 		plugin.setMessages(new Messages(plugin));
 
 		if (plugin.getConfigManager().loadConfig()) {
-			plugin.getWorldGroupManager().load();
-			
+			Core.getWorldGroupManager().load();
+
 			plugin.getBankManager().shutdown();
 			plugin.getBankManager().start();
-			
+
 			int n = Tools.getOnlinePlayersAmount();
 			if (n > 0) {
 				plugin.getMessages().debug("Reloading %s PlayerSettings & PlayerBalancees from the database", n);
-				for (Player player : Tools.getOnlinePlayers()){
-					plugin.getPlayerSettingsManager().load(player);
+				for (Player player : Tools.getOnlinePlayers()) {
+					Core.getPlayerSettingsManager().load(player);
 					plugin.getPlayerBalanceManager().load(player);
 				}
 			}

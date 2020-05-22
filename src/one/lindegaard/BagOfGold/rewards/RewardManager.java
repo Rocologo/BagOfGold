@@ -26,6 +26,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.materials.Materials;
 import one.lindegaard.Core.mobs.MobType;
@@ -221,8 +222,7 @@ public class RewardManager {
 	public boolean hasMoney(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance pb = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
 		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
-				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName,
-				format(pb.getBalance() + pb.getBalanceChanges()));
+				Core.getConfigManager().bagOfGoldName, format(pb.getBalance() + pb.getBalanceChanges()));
 		return Misc.round(pb.getBalance()) + Misc.round(pb.getBalanceChanges()) >= Misc.round(amount);
 	}
 
@@ -243,7 +243,7 @@ public class RewardManager {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
-							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
+							+ Core.getConfigManager().rewardItemtype + "'");
 		}
 	}
 
@@ -257,7 +257,7 @@ public class RewardManager {
 		if (reward.isBagOfGoldReward()) {
 			dropMoneyOnGround(null, null, location, reward.getMoney());
 		} else if (reward.isItemReward()) {
-			ItemStack is = new ItemStack(Material.valueOf(plugin.getConfigManager().dropMoneyOnGroundItem), 1);
+			ItemStack is = new ItemStack(Material.valueOf(Core.getConfigManager().rewardItem), 1);
 			Item item = location.getWorld().dropItemNaturally(location, is);
 			plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
@@ -430,7 +430,7 @@ public class RewardManager {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
-							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
+							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
 		}
 	}
@@ -451,7 +451,7 @@ public class RewardManager {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
-							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
+							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
 		}
 	}
@@ -473,7 +473,7 @@ public class RewardManager {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
-							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
+							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
 		}
 	}
@@ -599,7 +599,7 @@ public class RewardManager {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
-							+ plugin.getConfigManager().dropMoneyOnGroundItemtype + "'");
+							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
 		}
 	}

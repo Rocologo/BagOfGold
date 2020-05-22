@@ -14,6 +14,7 @@ import org.bukkit.plugin.ServicePriority;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
 
 public class BagOfGoldEconomyVault implements Economy, Listener {
@@ -273,7 +274,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public String currencyNamePlural() {
 		if (isEnabled())
-			return plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
+			return Core.getConfigManager().bagOfGoldName;
 		else
 			return mEconomy.currencyNamePlural();
 	}
@@ -287,7 +288,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 	@Override
 	public String currencyNameSingular() {
 		if (isEnabled())
-			return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
+			return Core.getConfigManager().bagOfGoldName;
 		else
 			return mEconomy.currencyNameSingular();
 	}

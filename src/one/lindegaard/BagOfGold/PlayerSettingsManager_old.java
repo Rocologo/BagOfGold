@@ -17,9 +17,10 @@ import one.lindegaard.BagOfGold.rewards.CustomItems;
 import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
 
-public class PlayerSettingsManager implements Listener {
+public class PlayerSettingsManager_old implements Listener {
 
 	private HashMap<UUID, PlayerSettings> mPlayerSettings = new HashMap<UUID, PlayerSettings>();
 
@@ -28,7 +29,7 @@ public class PlayerSettingsManager implements Listener {
 	/**
 	 * Constructor for the PlayerSettingsmanager
 	 */
-	PlayerSettingsManager(BagOfGold plugin) {
+	PlayerSettingsManager_old(BagOfGold plugin) {
 		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
@@ -39,7 +40,7 @@ public class PlayerSettingsManager implements Listener {
 	 * @param offlinePlayer
 	 * @return PlayerSettings
 	 */
-	public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) {
+	/**public PlayerSettings getPlayerSettings(OfflinePlayer offlinePlayer) {
 		if (mPlayerSettings.containsKey(offlinePlayer.getUniqueId()))
 			return mPlayerSettings.get(offlinePlayer.getUniqueId());
 		else {
@@ -47,10 +48,12 @@ public class PlayerSettingsManager implements Listener {
 			try {
 				ps = plugin.getStoreManager().loadPlayerSettings(offlinePlayer);
 			} catch (UserNotFoundException e) {
-				String worldgroup = offlinePlayer.isOnline()?plugin.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer):plugin.getWorldGroupManager().getDefaultWorldgroup();
+				String worldgroup = offlinePlayer.isOnline()
+						? Core.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer)
+						: Core.getWorldGroupManager().getDefaultWorldgroup();
 				plugin.getMessages().debug("Insert new PlayerSettings for %s to database.", offlinePlayer.getName());
-				ps = new PlayerSettings(offlinePlayer,worldgroup, plugin.getConfigManager().learningMode, false, null, null, System.currentTimeMillis(),
-						System.currentTimeMillis());
+				ps = new PlayerSettings(offlinePlayer, worldgroup, plugin.getConfigManager().learningMode, false, null,
+						null, System.currentTimeMillis(), System.currentTimeMillis());
 				setPlayerSettings(offlinePlayer, ps);
 				return ps;
 			} catch (DataStoreException e) {
@@ -62,17 +65,17 @@ public class PlayerSettingsManager implements Listener {
 			return ps;
 		}
 
-	}
+	}**/
 
 	/**
 	 * Store playerSettings in memory
 	 * 
 	 * @param playerSettings
 	 */
-	public void setPlayerSettings(OfflinePlayer player, PlayerSettings playerSettings) {
+	/**public void setPlayerSettings(OfflinePlayer player, PlayerSettings playerSettings) {
 		mPlayerSettings.put(player.getUniqueId(), playerSettings);
 		plugin.getDataStoreManager().updatePlayerSettings(player, playerSettings);
-	}
+	}**/
 
 	/**
 	 * Remove PlayerSettings from Memory
@@ -89,38 +92,39 @@ public class PlayerSettingsManager implements Listener {
 	 * 
 	 * @param event
 	 */
-	@EventHandler(priority = EventPriority.NORMAL)
+	/**@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		if (!containsKey(player))
 			load(player);
-	}
+	}**/
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	/**@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 		PlayerSettings ps = mPlayerSettings.get(player.getUniqueId());
-		ps.setLastKnownWorldGrp(plugin.getWorldGroupManager().getCurrentWorldGroup(player));
+		ps.setLastKnownWorldGrp(Core.getWorldGroupManager().getCurrentWorldGroup(player));
 		setPlayerSettings(player, ps);
-		plugin.getMessages().debug("Saving lastKnownWorldGroup: %s",plugin.getWorldGroupManager().getCurrentWorldGroup(player));
-	}
+		plugin.getMessages().debug("Saving lastKnownWorldGroup: %s",
+				Core.getWorldGroupManager().getCurrentWorldGroup(player));
+	}**/
 
 	/**
 	 * Load PlayerSettings asynchronously from Database
 	 * 
 	 * @param offlinePlayer
 	 */
-	public void load(final OfflinePlayer offlinePlayer) {
+	/**public void load(final OfflinePlayer offlinePlayer) {
 		plugin.getDataStoreManager().requestPlayerSettings(offlinePlayer, new IDataCallback<PlayerSettings>() {
 
 			@Override
 			public void onCompleted(PlayerSettings ps) {
 				ps.setLast_logon(System.currentTimeMillis());
 				mPlayerSettings.put(offlinePlayer.getUniqueId(), ps);
-				
+
 				if (ps.getTexture() == null || ps.getTexture().equals("")) {
 					plugin.getMessages().debug("Store %s skin in BagOfGold Skin Cache", offlinePlayer.getName());
-					new CustomItems().getPlayerHead(offlinePlayer.getUniqueId(),offlinePlayer.getName(), 1, 0);
+					new CustomItems().getPlayerHead(offlinePlayer.getUniqueId(), offlinePlayer.getName(), 1, 0);
 				}
 
 			}
@@ -132,7 +136,7 @@ public class PlayerSettingsManager implements Listener {
 				mPlayerSettings.put(offlinePlayer.getUniqueId(), new PlayerSettings(offlinePlayer));
 			}
 		});
-	}
+	}**/
 
 	/**
 	 * Test if PlayerSettings contains data for Player

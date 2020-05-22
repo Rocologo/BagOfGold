@@ -14,10 +14,8 @@ import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.storage.asynch.IDataStoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerBalanceRetrieverTask;
-import one.lindegaard.BagOfGold.storage.asynch.PlayerSettingsRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.StoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.Top54BalanceRetrieverTask;
-import one.lindegaard.Core.PlayerSettings;
 
 public class DataStoreManager {
 
@@ -58,9 +56,9 @@ public class DataStoreManager {
 	// *****************************************************************************
 	// PlayerSettings
 	// *****************************************************************************
-	public void requestPlayerSettings(OfflinePlayer player, IDataCallback<PlayerSettings> callback) {
-		mTaskThread.addTask(new PlayerSettingsRetrieverTask(player, mWaiting), callback);
-	}
+	//public void requestPlayerSettings(OfflinePlayer player, IDataCallback<PlayerSettings> callback) {
+	//	mTaskThread.addTask(new PlayerSettingsRetrieverTask(player, mWaiting), callback);
+	//}
 
 	/**
 	 * Update the playerSettings in the Database
@@ -68,17 +66,17 @@ public class DataStoreManager {
 	 * @param offlinePlayer
 	 * @param playerSetting
 	 */
-	public void updatePlayerSettings(OfflinePlayer offlinePlayer, PlayerSettings ps) {
-		synchronized (mWaiting) {
-			mWaiting.add(new PlayerSettings(offlinePlayer, ps));
-		}
-	}
+	//public void updatePlayerSettings(OfflinePlayer offlinePlayer, PlayerSettings ps) {
+	//	synchronized (mWaiting) {
+	//		mWaiting.add(new PlayerSettings(offlinePlayer, ps));
+	//	}
+	//}
 
 	/**
 	 * Gets an offline player using the last known name. WARNING: This does a
 	 * database lookup directly. This will block waiting for a reply
 	 */
-	public OfflinePlayer getPlayerByName(String name) {
+	/**public OfflinePlayer getPlayerByName(String name) {
 		try {
 			return mStore.getPlayerByName(name);
 		} catch (UserNotFoundException e) {
@@ -87,7 +85,7 @@ public class DataStoreManager {
 			e.printStackTrace();
 			return null;
 		}
-	}
+	}**/
 
 
 	// *****************************************************************************

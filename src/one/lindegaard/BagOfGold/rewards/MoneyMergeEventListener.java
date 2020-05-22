@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.rewards.Reward;
 
 public class MoneyMergeEventListener implements Listener {
@@ -47,7 +48,7 @@ public class MoneyMergeEventListener implements Listener {
 								: reward2.getDisplayName() + " ("
 										+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
 						item2.setCustomName(
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
+								ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + displayName);
 						item2.setCustomNameVisible(true);
 						item2.setMetadata(Reward.MH_REWARD_DATA_NEW,
 								new FixedMetadataValue(BagOfGold.getInstance(), new Reward(reward2)));
@@ -66,7 +67,7 @@ public class MoneyMergeEventListener implements Listener {
 								: reward2.getDisplayName() + " ("
 										+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
 						item2.setCustomName(
-								ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor) + displayName);
+								ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + displayName);
 						item2.setCustomNameVisible(true);
 						item2.setMetadata(Reward.MH_REWARD_DATA_NEW,
 								new FixedMetadataValue(BagOfGold.getInstance(), new Reward(reward2)));

@@ -28,6 +28,7 @@ import one.lindegaard.BagOfGold.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
 import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
 
 public class PlayerBalanceManager implements Listener {
@@ -53,19 +54,18 @@ public class PlayerBalanceManager implements Listener {
 
 	public PlayerBalance getPlayerBalance(OfflinePlayer offlinePlayer) {
 		if (offlinePlayer.isOnline()) {
-			String worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer);
-			GameMode gamemode = plugin.getWorldGroupManager().getCurrentGameMode(offlinePlayer);
+			String worldGroup = Core.getWorldGroupManager().getCurrentWorldGroup(offlinePlayer);
+			GameMode gamemode = Core.getWorldGroupManager().getCurrentGameMode(offlinePlayer);
 			return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 		} else {
-			String worldGroup = plugin.getPlayerSettingsManager().getPlayerSettings(offlinePlayer)
-					.getLastKnownWorldGrp();
-			GameMode gamemode = plugin.getWorldGroupManager().getDefaultGameMode();
+			String worldGroup = Core.getPlayerSettingsManager().getPlayerSettings(offlinePlayer).getLastKnownWorldGrp();
+			GameMode gamemode = Core.getWorldGroupManager().getDefaultGameMode();
 			return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 		}
 	}
 
 	public PlayerBalance getPlayerBalanceInWorld(OfflinePlayer offlinePlayer, String world, GameMode gamemode) {
-		String worldGroup = plugin.getWorldGroupManager().getWorldGroup(world);
+		String worldGroup = Core.getWorldGroupManager().getWorldGroup(world);
 		return getPlayerBalance(offlinePlayer, worldGroup, gamemode);
 	}
 
@@ -159,9 +159,9 @@ public class PlayerBalanceManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	private void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
-		ps.setLastKnownWorldGrp(plugin.getWorldGroupManager().getCurrentWorldGroup(player));
-		plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
+		PlayerSettings ps = Core.getPlayerSettingsManager().getPlayerSettings(player);
+		ps.setLastKnownWorldGrp(Core.getWorldGroupManager().getCurrentWorldGroup(player));
+		Core.getPlayerSettingsManager().setPlayerSettings(player, ps);
 
 		// update Essentials balance
 		if (EssentialsCompat.isSupported()) {
@@ -189,13 +189,13 @@ public class PlayerBalanceManager implements Listener {
 				GameMode gamemode;
 				if (offlinePlayer.isOnline()) {
 					Player player = (Player) offlinePlayer;
-					worldGroup = plugin.getWorldGroupManager().getCurrentWorldGroup(player);
+					worldGroup = Core.getWorldGroupManager().getCurrentWorldGroup(player);
 					gamemode = player.getGameMode();
 					// Next line is important, to adjust the AmountInInventory to Balance
 					plugin.getRewardManager().getAmountInInventory(player);
 				} else {
-					worldGroup = plugin.getWorldGroupManager().getDefaultWorldgroup();
-					gamemode = plugin.getWorldGroupManager().getDefaultGameMode();
+					worldGroup = Core.getWorldGroupManager().getDefaultWorldgroup();
+					gamemode = Core.getWorldGroupManager().getDefaultGameMode();
 				}
 				if (!ps.has(worldGroup, gamemode)) {
 					PlayerBalance pb = new PlayerBalance(offlinePlayer, worldGroup, gamemode);
@@ -295,17 +295,16 @@ public class PlayerBalanceManager implements Listener {
 
 							// Lores
 							new String[] { ChatColor.GRAY + "" + ChatColor.ITALIC,
-									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
 											+ plugin.getMessages().getString("bagofgold.commands.money.top", "total",
 													playerBalance.getBalance() + playerBalance.getBalanceChanges()
 															+ playerBalance.getBankBalance()
 															+ playerBalance.getBankBalanceChanges(),
-													"rewardname",
-													plugin.getConfigManager().dropMoneyOnGroundSkullRewardName)
+													"rewardname", Core.getConfigManager().bagOfGoldName.trim())
 
 									,
 									ChatColor.DARK_PURPLE + "WorldGrp:" + ChatColor.GREEN
-											+ plugin.getWorldGroupManager().getCurrentWorldGroup(player) + " ",
+											+ Core.getWorldGroupManager().getCurrentWorldGroup(player) + " ",
 
 									ChatColor.DARK_PURPLE + "Mode:" + ChatColor.GREEN + player.getGameMode().toString()
 
@@ -354,7 +353,8 @@ public class PlayerBalanceManager implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (!event.getView().getTitle().isEmpty() && ChatColor.stripColor(event.getView().getTitle()).startsWith("TOP wealth players")) {
+		if (!event.getView().getTitle().isEmpty()
+				&& ChatColor.stripColor(event.getView().getTitle()).startsWith("TOP wealth players")) {
 			event.setCancelled(true);
 			event.getWhoClicked().closeInventory();
 		}

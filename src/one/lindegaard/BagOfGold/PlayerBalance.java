@@ -3,6 +3,8 @@ package one.lindegaard.BagOfGold;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 
+import one.lindegaard.Core.Core;
+
 public class PlayerBalance {
 
 	private OfflinePlayer player;
@@ -15,9 +17,9 @@ public class PlayerBalance {
 
 	public PlayerBalance(OfflinePlayer player) {
 		this.player = player;
-		this.worldGroup = BagOfGold.getInstance().getWorldGroupManager().getDefaultWorldgroup();
-		this.gamemode = BagOfGold.getInstance().getWorldGroupManager().getDefaultGameMode();
-		this.setBalance(BagOfGold.getInstance().getWorldGroupManager().getDefaultStartingBalance());
+		this.worldGroup = Core.getWorldGroupManager().getDefaultWorldgroup();
+		this.gamemode = Core.getWorldGroupManager().getDefaultGameMode();
+		this.setBalance(Core.getWorldGroupManager().getDefaultStartingBalance());
 		this.setBalanceChanges(0);
 		this.setBankBalance(0);
 		this.setBankBalanceChanges(0);
@@ -25,8 +27,8 @@ public class PlayerBalance {
 
 	public PlayerBalance(OfflinePlayer player, double balance) {
 		this.player = player;
-		this.worldGroup = BagOfGold.getInstance().getWorldGroupManager().getDefaultWorldgroup();
-		this.gamemode = BagOfGold.getInstance().getWorldGroupManager().getDefaultGameMode();
+		this.worldGroup = Core.getWorldGroupManager().getDefaultWorldgroup();
+		this.gamemode = Core.getWorldGroupManager().getDefaultGameMode();
 		this.setBalance(balance);
 		this.setBalanceChanges(0);
 		this.setBankBalance(0);
@@ -37,7 +39,7 @@ public class PlayerBalance {
 		this.player = player;
 		this.worldGroup = worldgroup;
 		this.gamemode = gamemode;
-		this.setBalance(BagOfGold.getInstance().getWorldGroupManager().getCurrentStartingBalance(worldgroup));
+		this.setBalance(Core.getWorldGroupManager().getCurrentStartingBalance(worldgroup));
 		this.setBalanceChanges(0);
 		this.setBankBalance(0);
 		this.setBankBalanceChanges(0);
@@ -82,8 +84,7 @@ public class PlayerBalance {
 	}
 
 	/**
-	 * @param worldGroup
-	 *            the worldGroup to set
+	 * @param worldGroup the worldGroup to set
 	 */
 	public void setWorldGroup(String worldGroup) {
 		this.worldGroup = worldGroup;
@@ -97,8 +98,7 @@ public class PlayerBalance {
 	}
 
 	/**
-	 * @param gamemode
-	 *            the gamemode to set
+	 * @param gamemode the gamemode to set
 	 */
 	public void setGamemode(GameMode gamemode) {
 		this.gamemode = gamemode;
@@ -112,8 +112,7 @@ public class PlayerBalance {
 	}
 
 	/**
-	 * @param player
-	 *            the player to set
+	 * @param player the player to set
 	 */
 	public void setPlayer(OfflinePlayer player) {
 		this.player = player;
@@ -182,13 +181,12 @@ public class PlayerBalance {
 	}
 
 	/**
-	 * Get the players total wealth 
+	 * Get the players total wealth
 	 * 
 	 * @return
 	 */
 	public double getTotalWealth() {
-		return balance+balanceChanges+bankBalance+bankBalanceChanges;
+		return balance + balanceChanges + bankBalance + bankBalanceChanges;
 	}
 
-	
 }

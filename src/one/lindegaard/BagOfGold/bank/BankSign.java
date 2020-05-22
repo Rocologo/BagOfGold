@@ -16,6 +16,7 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.materials.Materials;
 import one.lindegaard.Core.rewards.Reward;
 import one.lindegaard.Core.server.Servers;
@@ -96,7 +97,7 @@ public class BankSign implements Listener {
 							plugin.getMessages().playerSendMessage(player,
 									plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
 											plugin.getEconomyManager().format(money), "rewardname",
-											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
+											ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
 													+ reward.getDisplayName().trim()));
 						}
 						// Gringott items
@@ -139,14 +140,14 @@ public class BankSign implements Listener {
 							plugin.getMessages().playerSendMessage(player,
 									plugin.getMessages().getString("bagofgold.banksign.deposit", "money",
 											plugin.getEconomyManager().format(money), "rewardname",
-											ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-													+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName));
+											ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+													+ Core.getConfigManager().bagOfGoldName));
 						}
 					} else {
 						plugin.getMessages().playerSendMessage(player,
 								plugin.getMessages().getString("bagofgold.banksign.hold_bag_in_hand", "rewardname",
-										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-												+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+										ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+												+ Core.getConfigManager().bagOfGoldName.trim()));
 					}
 
 					// Withdraw BankSign
@@ -183,16 +184,16 @@ public class BankSign implements Listener {
 
 							plugin.getMessages().debug("%s withdraw %s %s from Bank", player.getName(),
 									plugin.getEconomyManager().format(Misc.round(moneyOnSign)),
-									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
+									Core.getConfigManager().bagOfGoldName.trim());
 							plugin.getMessages().playerSendMessage(player, plugin.getMessages().getString(
 									"bagofgold.banksign.withdraw", "money",
 									plugin.getEconomyManager().format(moneyOnSign), "rewardname",
-									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+											+ Core.getConfigManager().bagOfGoldName.trim()));
 						} else {
 							plugin.getMessages().debug("%s could not withdraw %s %s from Bank", player.getName(),
 									plugin.getEconomyManager().format(moneyOnSign),
-									plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
+									Core.getConfigManager().bagOfGoldName.trim());
 
 						}
 					} else {
@@ -207,8 +208,8 @@ public class BankSign implements Listener {
 						plugin.getMessages().playerSendMessage(player,
 								plugin.getMessages().getString("bagofgold.banksign.withdraw", "money", bal,
 										"rewardname",
-										ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-												+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+										ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+												+ Core.getConfigManager().bagOfGoldName.trim()));
 						// plugin.getMessages().playerSendMessage(player,
 						// plugin.getMessages().getString("bagofgold.banksign.not_enough_money"));
 					}
@@ -221,8 +222,8 @@ public class BankSign implements Listener {
 					plugin.getMessages().playerSendMessage(player,
 							plugin.getMessages().getString("bagofgold.banksign.balance", "money",
 									plugin.getEconomyManager().format(bal), "rewardname",
-									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+											+ Core.getConfigManager().bagOfGoldName.trim()));
 				}
 			} else {
 				plugin.getMessages().playerSendMessage(player, plugin.getMessages()

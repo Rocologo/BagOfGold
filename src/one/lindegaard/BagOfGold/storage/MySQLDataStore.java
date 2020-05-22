@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
@@ -64,17 +65,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 	protected void openPreparedStatements(Connection connection, PreparedConnectionType preparedConnectionType)
 			throws SQLException {
 		switch (preparedConnectionType) {
-		case GET_PLAYER_UUID:
-			mGetPlayerUUID = connection.prepareStatement("SELECT UUID FROM mh_PlayerSettings WHERE NAME=?;");
-			break;
-		case GET_PLAYER_SETTINGS:
-			mGetPlayerSettings = connection.prepareStatement("SELECT * FROM mh_PlayerSettings WHERE UUID=?;");
-			break;
-		case INSERT_PLAYER_SETTINGS:
-			mInsertPlayerSettings = connection.prepareStatement(
-					"REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE,TEXTURE,SIGNATURE,LAST_LOGON,LAST_INTEREST) "
-							+ "VALUES(?,?,?,?,?,?,?,?,?);");
-			break;
 		case GET_PLAYER_BALANCE:
 			mGetPlayerBalance = connection.prepareStatement("SELECT * FROM mh_Balance WHERE UUID=?;");
 			break;

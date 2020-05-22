@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -15,7 +14,6 @@ import org.bukkit.OfflinePlayer;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
-import one.lindegaard.Core.PlayerSettings;
 
 public abstract class DatabaseDataStore implements IDataStore {
 
@@ -38,12 +36,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement mGetPlayerSettings;
+	//protected PreparedStatement mGetPlayerSettings;
 
 	/**
 	 * Args: player uuid
 	 */
-	protected PreparedStatement mInsertPlayerSettings;
+	//protected PreparedStatement mInsertPlayerSettings;
 
 	/**
 	 * Args n Top of records.
@@ -91,7 +89,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		GET_PLAYER_UUID, GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE,
+		//GET_PLAYER_UUID, 
+		//GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, 
+		GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE,
 		GET_TOP25_BALANCE
 	};
 
@@ -220,7 +220,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * @throws SQLException
 	 * 
 	 */
-	@Override
+	/**@Override
 	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer)
 			throws UserNotFoundException, DataStoreException {
 		Connection mConnection;
@@ -245,12 +245,12 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throw new DataStoreException(e);
 		}
 		throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
-	}
+	}**/
 
 	/**
 	 * insertPlayerSettings to database
 	 */
-	@Override
+	/**@Override
 	public void insertPlayerSettings(PlayerSettings playerSettings) throws DataStoreException {
 		Connection mConnection;
 		try {
@@ -280,9 +280,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-	}
+	}**/
 
-	@Override
+	/**@Override
 	public void savePlayerSettings(Set<PlayerSettings> playerDataSet, boolean removeFromCache) throws DataStoreException {
 		Connection mConnection;
 		try {
@@ -311,9 +311,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 				if (removeFromCache)
 					for (PlayerSettings playerData : playerDataSet) {
-						if (plugin.getPlayerSettingsManager().containsKey(playerData.getPlayer())
+						if (Core.getPlayerSettingsManager().containsKey(playerData.getPlayer())
 								&& !playerData.getPlayer().isOnline() && playerData.getPlayer().hasPlayedBefore())
-							plugin.getPlayerSettingsManager().removePlayerSettings(playerData.getPlayer());
+							Core.getPlayerSettingsManager().removePlayerSettings(playerData.getPlayer());
 					}
 
 			} catch (SQLException e) {
@@ -324,7 +324,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} catch (SQLException e1) {
 			throw new DataStoreException(e1);
 		}
-	}
+	}**/
 
 	/**
 	 * getPlayerByName - get the player
@@ -332,7 +332,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 	 * @param name : String
 	 * @return player
 	 */
-	@Override
+	/**@Override
 	public OfflinePlayer getPlayerByName(String name) throws DataStoreException {
 		if (name.equals("Random Bounty"))
 			return null; // used for Random Bounties
@@ -356,7 +356,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} catch (SQLException e) {
 			throw new DataStoreException(e);
 		}
-	}
+	}**/
 
 	// ******************************************************************
 	// PlayerBalances

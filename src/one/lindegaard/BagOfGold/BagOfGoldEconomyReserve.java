@@ -15,6 +15,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.tnemc.core.Reserve;
 import net.tnemc.core.economy.EconomyAPI;
+import one.lindegaard.Core.Core;
 
 public class BagOfGoldEconomyReserve implements EconomyAPI {
 
@@ -74,7 +75,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String currencyDefaultPlural() {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
+		return Core.getConfigManager().bagOfGoldName;
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String currencyDefaultSingular() {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
+		return Core.getConfigManager().bagOfGoldName;
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String currencyDefaultPlural(String world) {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural;
+		return Core.getConfigManager().bagOfGoldName;
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String currencyDefaultSingular(String world) {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName;
+		return Core.getConfigManager().bagOfGoldName;
 	}
 
 	/**
@@ -117,8 +118,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean hasCurrency(String name) {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.equalsIgnoreCase(name)
-				|| plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural.equalsIgnoreCase(name);
+		return Core.getConfigManager().bagOfGoldName.equalsIgnoreCase(name)
+				|| currencyDefaultPlural().equalsIgnoreCase(name);
 	}
 
 	/**
@@ -131,8 +132,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public boolean hasCurrency(String name, String world) {
-		return plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.equalsIgnoreCase(name)
-				|| plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural.equalsIgnoreCase(name);
+		return Core.getConfigManager().bagOfGoldName.equalsIgnoreCase(name)
+				|| currencyDefaultPlural().equalsIgnoreCase(name);
 	}
 
 	/**
@@ -145,8 +146,8 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public CompletableFuture<Boolean> asyncHasCurrency(String name) {
 		// TODO Auto-generated method stub
 		CompletableFuture<Boolean> completableFuture = new CompletableFuture<Boolean>();
-		Boolean b = plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.equalsIgnoreCase(name)
-				|| plugin.getConfigManager().dropMoneyOnGroundSkullRewardNamePlural.equalsIgnoreCase(name);
+		Boolean b = Core.getConfigManager().bagOfGoldName.equalsIgnoreCase(name)
+				|| currencyDefaultPlural().equalsIgnoreCase(name);
 		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
 		return null;// completableFuture.complete(b);
 	}
@@ -2321,7 +2322,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public List<String> acceptedBankCurrencies() {
 		ArrayList<String> list = new ArrayList<>();
-		list.add(plugin.getConfigManager().dropMoneyOnGroundSkullRewardName);
+		list.add(Core.getConfigManager().bagOfGoldName);
 		return list;
 	}
 

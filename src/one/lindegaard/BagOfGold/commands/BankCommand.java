@@ -2,6 +2,7 @@ package one.lindegaard.BagOfGold.commands;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,27 +53,24 @@ public class BankCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] {
-				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
-						+ " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
-						+ " - to give the player a " + plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
-						+ " in his inventory.",
+		return new String[] { ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias
+				+ ChatColor.GREEN + " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+				+ " - to give the player a " + Core.getConfigManager().bagOfGoldName.trim() + " in his inventory.",
 
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " take <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
-						+ " - to take <amount> gold from the "
-						+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()
+						+ " - to take <amount> gold from the " + Core.getConfigManager().bagOfGoldName.trim()
 						+ " in the players inventory",
 
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " balance [optional playername]" + ChatColor.WHITE + " - to get your bankbalance of "
-						+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim() };
+						+ Core.getConfigManager().bagOfGoldName.trim() };
 	}
 
 	@Override
 	public String getDescription() {
 		return plugin.getMessages().getString("bagofgold.commands.bank.description", "rewardname",
-				plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim());
+				Core.getConfigManager().bagOfGoldName.trim());
 	}
 
 	@Override
@@ -135,15 +133,15 @@ public class BankCommand implements ICommand {
 							ChatColor.GREEN + plugin.getMessages().getString(
 									"bagofgold.commands.money.bankbalance.other", "playername", offlinePlayer.getName(),
 									"money", plugin.getEconomyManager().format(balance), "rewardname",
-									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+											+ Core.getConfigManager().bagOfGoldName.trim()));
 				else
 					plugin.getMessages().senderSendMessage(sender,
 							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.bankbalance",
 									"playername", "You", "money", plugin.getEconomyManager().format(balance),
 									"rewardname",
-									ChatColor.valueOf(plugin.getConfigManager().dropMoneyOnGroundTextColor)
-											+ plugin.getConfigManager().dropMoneyOnGroundSkullRewardName.trim()));
+									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+											+ Core.getConfigManager().bagOfGoldName.trim()));
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
 						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
@@ -174,8 +172,8 @@ public class BankCommand implements ICommand {
 
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
-					if (amount > plugin.getConfigManager().limitPerBag * 100) {
-						amount = plugin.getConfigManager().limitPerBag * 100;
+					if (amount > Core.getConfigManager().limitPerBag * 100) {
+						amount = Core.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 										"number", args[2], "maximum", amount));
@@ -209,8 +207,8 @@ public class BankCommand implements ICommand {
 				}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
-					if (amount > plugin.getConfigManager().limitPerBag * 100) {
-						amount = plugin.getConfigManager().limitPerBag * 100;
+					if (amount > Core.getConfigManager().limitPerBag * 100) {
+						amount = Core.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 										"number", args[2], "maximum", amount));

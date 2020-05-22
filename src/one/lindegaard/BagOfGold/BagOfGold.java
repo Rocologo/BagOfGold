@@ -43,7 +43,6 @@ import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
 import one.lindegaard.Core.server.Servers;
-import one.lindegaard.Core.WorldGroupManager;
 import one.lindegaard.Core.messages.MessageManager;
 import one.lindegaard.Core.*;
 
@@ -57,11 +56,11 @@ public class BagOfGold extends JavaPlugin {
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
-	private PlayerSettingsManager mPlayerSettingsManager;
+	//private PlayerSettingsManager mPlayerSettingsManager;
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private RewardManager mRewardManager;
-	private WorldGroupManager mWorldGroupManager;
+	//private WorldGroupManager mWorldGroupManager;
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
@@ -119,8 +118,8 @@ public class BagOfGold extends JavaPlugin {
 			}
 		}
 
-		mWorldGroupManager = new WorldGroupManager(this);
-		mWorldGroupManager.load();
+		//mWorldGroupManager = new WorldGroupManager(this);
+		//mWorldGroupManager.load();
 
 		mSpigetUpdater = new SpigetUpdater(this);
 		mSpigetUpdater.setCurrentJarFile(this.getFile().getName());
@@ -163,7 +162,7 @@ public class BagOfGold extends JavaPlugin {
 
 		mStoreManager = new DataStoreManager(this, mStore);
 
-		mPlayerSettingsManager = new PlayerSettingsManager(this);
+		//mPlayerSettingsManager = new PlayerSettingsManager(this);
 		mPlayerBalanceManager = new PlayerBalanceManager(this);
 
 		mRewardManager = new RewardManager(this);
@@ -306,9 +305,9 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public PlayerSettingsManager getPlayerSettingsManager() {
-		return mPlayerSettingsManager;
-	}
+	//public PlayerSettingsManager getPlayerSettingsManager() {
+	//	return mPlayerSettingsManager;
+	//}
 
 	/**
 	 * Get the EconomyManager
@@ -336,9 +335,9 @@ public class BagOfGold extends JavaPlugin {
 	 * 
 	 * @return
 	 */
-	public WorldGroupManager getWorldGroupManager() {
-		return mWorldGroupManager;
-	}
+	//public WorldGroupManager getWorldGroupManagerOLD() {
+	//	return mWorldGroupManager;
+	//}
 
 	public PlayerBalanceManager getPlayerBalanceManager() {
 		return mPlayerBalanceManager;

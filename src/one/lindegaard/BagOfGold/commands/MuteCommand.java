@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
+import one.lindegaard.Core.storage.DataStoreException;
 
 public class MuteCommand implements ICommand {
 
@@ -72,27 +74,34 @@ public class MuteCommand implements ICommand {
 			return true;
 		} else if (args.length == 1) {
 			DataStoreManager ds = plugin.getDataStoreManager();
-			Player player = (Player) ds.getPlayerByName(args[0]);
-			if (player != null) {
-				if (sender.hasPermission("bagofgold.mute.other") || sender instanceof ConsoleCommandSender) {
-					togglePlayerMuteMode(player);
+			Player player;
+			try {
+				player = (Player) Core.getStoreManager().getPlayerByName(args[0]);
+				if (player != null) {
+					if (sender.hasPermission("bagofgold.mute.other") || sender instanceof ConsoleCommandSender) {
+						togglePlayerMuteMode(player);
+					} else {
+						plugin.getMessages().senderSendMessage(sender,
+								ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'bagofgold.mute.other'");
+					}
+					return true;
 				} else {
-					plugin.getMessages().senderSendMessage(sender,
-							ChatColor.RED + "You dont have permission " + ChatColor.AQUA + "'bagofgold.mute.other'");
+					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + "Player " + args[0] + " is not online.");
+					return false;
 				}
-				return true;
-			} else {
-				plugin.getMessages().senderSendMessage(sender, ChatColor.RED + "Player " + args[0] + " is not online.");
-				return false;
+			} catch (DataStoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
 		}
 		return false;
 	}
 
 	private void togglePlayerMuteMode(Player player) {
-		PlayerSettings ps = plugin.getPlayerSettingsManager().getPlayerSettings(player);
+		PlayerSettings ps = Core.getPlayerSettingsManager().getPlayerSettings(player);
 		ps.setMuteMode(!ps.isMuted());
-		plugin.getPlayerSettingsManager().setPlayerSettings(player, ps);
+		Core.getPlayerSettingsManager().setPlayerSettings(player, ps);
 		if (ps.isMuted())
 			plugin.getMessages().playerActionBarMessageQueue(player, 
 					plugin.getMessages().getString("bagofgold.commands.mute.muted", "player", player.getName()));
