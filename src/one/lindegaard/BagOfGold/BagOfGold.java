@@ -36,7 +36,7 @@ import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
 import one.lindegaard.BagOfGold.rewards.RewardManager;
 import one.lindegaard.BagOfGold.rewards.GringottsItems;
-import one.lindegaard.BagOfGold.storage.DataStoreException;
+import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;

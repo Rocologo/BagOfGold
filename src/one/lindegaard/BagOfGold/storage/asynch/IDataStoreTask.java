@@ -1,6 +1,6 @@
 package one.lindegaard.BagOfGold.storage.asynch;
 
-import one.lindegaard.BagOfGold.storage.DataStoreException;
+import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 
 public interface IDataStoreTask<T>

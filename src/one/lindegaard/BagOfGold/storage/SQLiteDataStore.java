@@ -14,6 +14,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.storage.DataStoreException;
 
 public class SQLiteDataStore extends DatabaseDataStore {
 

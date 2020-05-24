@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
-import one.lindegaard.BagOfGold.storage.DataStoreException;
+import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
-import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
+import one.lindegaard.Core.storage.UserNotFoundException;
 
 public class PlayerBalanceRetrieverTask implements IDataStoreTask<PlayerBalances> {
 

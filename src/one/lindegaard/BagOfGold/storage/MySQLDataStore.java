@@ -17,6 +17,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.storage.DataStoreException;
 
 public class MySQLDataStore extends DatabaseDataStore {
 

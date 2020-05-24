@@ -5,9 +5,8 @@ import java.util.HashSet;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.storage.DataStoreException;
+import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
-import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
 

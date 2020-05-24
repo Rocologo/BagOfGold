@@ -14,9 +14,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import one.lindegaard.BagOfGold.rewards.CustomItems;
-import one.lindegaard.BagOfGold.storage.DataStoreException;
+import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataCallback;
-import one.lindegaard.BagOfGold.storage.UserNotFoundException;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
 

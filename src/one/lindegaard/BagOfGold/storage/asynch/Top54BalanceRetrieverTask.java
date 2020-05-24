@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.BagOfGold.storage.DataStoreException;
+import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 
 public class Top54BalanceRetrieverTask implements IDataStoreTask<List<PlayerBalance>> {
