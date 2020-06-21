@@ -76,33 +76,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 	}
 
 	// *******************************************************************************
-	// V1 DATABASE SETUP
-	// *******************************************************************************
-
-	@Override
-	protected void setupV1Tables(Connection connection) throws SQLException {
-		Statement create = connection.createStatement();
-
-		// Create new empty tables if they do not exist
-		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_PlayerSettings" //
-				+ "(UUID TEXT," //
-				+ " NAME TEXT, " //
-				+ " PLAYER_ID INTEGER NOT NULL DEFAULT 1," //
-				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + "," //
-				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0," //
-				+ " BALANCE REAL DEFAULT 0," //
-				+ " BALANCE_CHANGES REAL DEFAULT 0," //
-				+ " BANK_BALANCE REAL DEFAULT 0," //
-				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
-				+ " PRIMARY KEY(PLAYER_ID))");
-
-		create.close();
-		connection.commit();
-
-	}
-
-	// *******************************************************************************
 	// V2 DATABASE SETUP
 	// *******************************************************************************
 
@@ -134,21 +107,6 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		create.close();
 		connection.commit();
 
-	}
-
-	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
-		Statement statement = connection.createStatement();
-		statement.executeUpdate(
-				"INSERT OR REPLACE INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
-						+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
-		statement.executeUpdate(
-				"INSERT OR REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-						+ " SELECT DISTINCT UUID,'default',0,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
-						+ "from mh_Players GROUP BY UUID ");
-		statement.executeUpdate("DROP TABLE mh_Players;");
-		statement.close();
-		connection.commit();
-		plugin.getMessages().debug("BagOfGold databse was converted to V2");
 	}
 
 	// *******************************************************************************

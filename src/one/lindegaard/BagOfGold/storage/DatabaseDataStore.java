@@ -66,11 +66,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract Connection setupConnection() throws SQLException, DataStoreException;
 
 	/**
-	 * Setup / Create database version 1 tables for BagOfGold
-	 */
-	protected abstract void setupV1Tables(Connection connection) throws SQLException;
-
-	/**
 	 * Setup / Create database version 2 tables for BagOfGold
 	 */
 	protected abstract void setupV2Tables(Connection connection) throws SQLException;
@@ -142,14 +137,14 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 
 			switch (plugin.getConfigManager().databaseVersion) {
-			case 1:
-				setupV2Tables(mConnection);
-				migrateDatabaseLayoutFromV1ToV2(mConnection);
-				plugin.getConfigManager().databaseVersion = 2;
-				plugin.getConfigManager().saveConfig();
-				migrateDatabaseLayoutFromV2ToV3(mConnection);
-				plugin.getConfigManager().databaseVersion = 3;
-				plugin.getConfigManager().saveConfig();
+		    case 1:
+			//	setupV2Tables(mConnection);
+			//	migrateDatabaseLayoutFromV1ToV2(mConnection);
+			//	plugin.getConfigManager().databaseVersion = 2;
+			//	plugin.getConfigManager().saveConfig();
+			//	migrateDatabaseLayoutFromV2ToV3(mConnection);
+			//	plugin.getConfigManager().databaseVersion = 3;
+			//	plugin.getConfigManager().saveConfig();
 
 			case 2:
 				setupV2Tables(mConnection);

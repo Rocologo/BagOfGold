@@ -1,6 +1,6 @@
 package one.lindegaard.BagOfGold.storage;
 
-public interface IDataCallback<T>
+public interface IDataCallback_old2<T>
 {
 	void onCompleted(T data);
 	

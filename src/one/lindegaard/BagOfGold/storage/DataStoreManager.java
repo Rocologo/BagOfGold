@@ -17,6 +17,7 @@ import one.lindegaard.BagOfGold.storage.asynch.PlayerBalanceRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.StoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.Top54BalanceRetrieverTask;
 import one.lindegaard.Core.storage.DataStoreException;
+import one.lindegaard.Core.storage.IDataCallback;
 
 public class DataStoreManager {
 

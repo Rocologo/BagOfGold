@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
-import one.lindegaard.Core.PlayerSettings;
 import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.Core.storage.UserNotFoundException;
 
@@ -97,8 +96,6 @@ public interface IDataStore {
 	 */
 	void databaseConvertToUtf8(String database_name) throws DataStoreException;
 
-	void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException;
-	
 	void migrateDatabaseLayoutFromV2ToV3(Connection connection) throws SQLException;
 	
 	List<PlayerBalance> loadTop54(int i, String worldGroup, int gamemode);

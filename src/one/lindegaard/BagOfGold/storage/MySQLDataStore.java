@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
@@ -105,7 +104,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 
 			create.executeUpdate(
 					"ALTER DATABASE " + database_name + " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-			create.executeUpdate("ALTER TABLE mh_Players CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+			create.executeUpdate("ALTER TABLE mh_PlayerSettings CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			create.executeUpdate("ALTER TABLE mh_Balance CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 			console.sendMessage(ChatColor.GREEN + "[BagOfGold] Done.");
 
@@ -116,29 +115,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 		}
 
 	}
-
-	// *******************************************************************************
-	// V1 DATABASE SETUP
-	// *******************************************************************************
-
-	@Override
-	protected void setupV1Tables(Connection connection) throws SQLException {
-		Statement create = connection.createStatement();
-
-		// Create new empty tables if they do not exist
-		String lm = plugin.getConfigManager().learningMode ? "1" : "0";
-		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Players "//
-				+ "(UUID CHAR(40) ,"//
-				+ " NAME VARCHAR(20),"//
-				+ " LEARNING_MODE INTEGER NOT NULL DEFAULT " + lm + ","//
-				+ " MUTE_MODE INTEGER NOT NULL DEFAULT 0,"//
-				+ " PRIMARY KEY (PLAYER_ID))");
-
-		create.close();
-		connection.commit();
-
-	}
-
 	// *******************************************************************************
 	// V2 DATABASE SETUP
 	// *******************************************************************************
@@ -198,25 +174,6 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " CONSTRAINT mh_PlayerSettings_UUID_V2 FOREIGN KEY(UUID) REFERENCES mh_PlayerSettings(UUID) ON DELETE CASCADE) ");
 
 		create.close();
-		connection.commit();
-	}
-
-	public void migrateDatabaseLayoutFromV1ToV2(Connection connection) throws SQLException {
-		Statement statement = connection.createStatement();
-		plugin.getMessages().debug("MySQLDatastore: insert old player settings into mh_PlayerSettings");
-		statement.executeUpdate("INSERT INTO mh_PlayerSettings (UUID,NAME,LAST_WORLDGRP,LEARNING_MODE,MUTE_MODE)"
-				+ " SELECT DISTINCT UUID,NAME,'default',LEARNING_MODE,MUTE_MODE from mh_Players");
-		connection.commit();
-
-		plugin.getMessages().debug("MySQLDatastore: insert old balance data into mh_Balance");
-		statement.executeUpdate(
-				"REPLACE INTO mh_Balance (UUID,WORLDGRP,GAMEMODE,BALANCE,BALANCE_CHANGES,BANK_BALANCE,BANK_BALANCE_CHANGES)"
-						+ " SELECT DISTINCT UUID,'default' A,0 B,MAX(BALANCE),MAX(BALANCE_CHANGES),MAX(BANK_BALANCE),MAX(BANK_BALANCE_CHANGES)"
-						+ "from mh_Players GROUP BY UUID,A,B ");
-		statement.executeUpdate("DROP TABLE mh_Players;");
-		statement.close();
-		Bukkit.getConsoleSender()
-				.sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.GREEN + "Database was converted to version 2");
 		connection.commit();
 	}
 
