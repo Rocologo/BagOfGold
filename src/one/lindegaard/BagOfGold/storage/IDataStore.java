@@ -29,40 +29,6 @@ public interface IDataStore {
 	void shutdown() throws DataStoreException;
 
 	/**
-	 * Get the players Settings from the Database
-	 * 
-	 * @param player
-	 * @return
-	 * @throws DataStoreException
-	 * @throws SQLException
-	 */
-	//PlayerSettings loadPlayerSettings(OfflinePlayer player) throws UserNotFoundException, DataStoreException;
-
-	/**
-	 * Update the players Settings in the Database
-	 * 
-	 * @param playerDataSet
-	 * @throws DataStoreException
-	 */
-	//void savePlayerSettings(Set<PlayerSettings> ps, boolean cleanCache) throws DataStoreException;
-
-	/**
-	 * Insert all PlayerData for one player into the Database
-	 * 
-	 * @param ps
-	 * @throws DataStoreException
-	 */
-	//void insertPlayerSettings(PlayerSettings ps) throws DataStoreException;
-
-	/**
-	 * Get the player by his name from the Database. ings @param name
-	 * 
-	 * @return
-	 * @throws DataStoreException
-	 */
-	//OfflinePlayer getPlayerByName(String name) throws DataStoreException;
-
-	/**
 	 * Get the players Balances from the Database
 	 * 
 	 * @param player

@@ -6,14 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.util.Misc;
+import one.lindegaard.Core.Core;
+import one.lindegaard.Core.PlayerSettings;
 import one.lindegaard.Core.storage.DataStoreException;
 
 public class SQLiteDataStore extends DatabaseDataStore {
@@ -66,6 +70,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 							+ "ORDER BY TOTAL DESC "//
 							+ "LIMIT ?");//
 			break;
+
 		}
 	}
 
@@ -147,6 +152,30 @@ public class SQLiteDataStore extends DatabaseDataStore {
 
 	}
 
+	// *******************************************************************************
+	// V4 DATABASE SETUP
+	// *******************************************************************************
+
+	@Override
+	protected void setupV4Tables(Connection connection) throws SQLException {
+		Statement create = connection.createStatement();
+
+		// Create new empty tables if they do not exist
+		create.executeUpdate("CREATE TABLE IF NOT EXISTS mh_Balance" //
+				+ "(UUID TEXT," //
+				+ " WORLDGRP TEXT DEFAULT 'default'," //
+				+ " GAMEMODE INT DEFAULT 0," //
+				+ " BALANCE REAL DEFAULT 0," //
+				+ " BALANCE_CHANGES REAL DEFAULT 0," //
+				+ " BANK_BALANCE REAL DEFAULT 0," //
+				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
+				+ " UNIQUE(UUID, WORLDGRP, GAMEMODE)");
+
+		create.close();
+		connection.commit();
+
+	}
+
 	public void migrateDatabaseLayoutFromV2ToV3(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
 		try {
@@ -163,6 +192,36 @@ public class SQLiteDataStore extends DatabaseDataStore {
 			connection.commit();
 			Bukkit.getConsoleSender().sendMessage(
 					ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN + "Database was converted to version 3");
+		}
+	}
+
+	protected void migrateDatabaseLayoutFromV3ToV4(Connection mConnection) throws DataStoreException {
+		Statement statement;
+		try {
+			statement = mConnection.createStatement();
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.GREEN
+					+ "Copying players from BagOfGold til BagOfGoldCore");
+			ResultSet result = statement.executeQuery("select * from mh_PlayerSettings");
+			while (result.next()) {
+				String uuid = result.getString("UUID");
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+				PlayerSettings ps;
+				if (offlinePlayer.hasPlayedBefore()) {
+					ps = Core.getPlayerSettingsManager().getPlayerSettings(offlinePlayer);
+					ps.setLastKnownWorldGrp(result.getString("LAST_WORLDGRP"));
+					ps.setLearningMode(result.getBoolean("LEARNING_MODE"));
+					ps.setMuteMode(result.getBoolean("MUTE_MODE"));
+					ps.setTexture(result.getString("TEXTURE"));
+					ps.setSignature(result.getString("SIGNATURE"));
+					ps.setLast_logon(result.getLong("LAST_LOGON"));
+					ps.setLast_interest(result.getLong("LAST_INTEREST"));
+					Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+				}
+			}
+			statement.close();
+			mConnection.commit();
+		} catch (SQLException e) {
+			throw new DataStoreException(e);
 		}
 	}
 

@@ -26,24 +26,9 @@ public abstract class DatabaseDataStore implements IDataStore {
 	}
 
 	/**
-	 * Connection to the Database
-	 */
-	// protected Connection mConnection;
-
-	/**
 	 * Args: player name
 	 */
 	protected PreparedStatement mGetPlayerUUID;
-
-	/**
-	 * Args: player uuid
-	 */
-	//protected PreparedStatement mGetPlayerSettings;
-
-	/**
-	 * Args: player uuid
-	 */
-	//protected PreparedStatement mInsertPlayerSettings;
 
 	/**
 	 * Args n Top of records.
@@ -76,6 +61,18 @@ public abstract class DatabaseDataStore implements IDataStore {
 	protected abstract void setupV3Tables(Connection connection) throws SQLException;
 
 	/**
+	 * Setup / Create database version 4 tables for BagOfGold
+	 */
+	protected abstract void setupV4Tables(Connection connection) throws SQLException;
+
+	/**
+	 * Setup / Migrate from database version 6 to version 7 tables for MobHunting
+	 * 
+	 * @throws DataStoreException
+	 */
+	protected abstract void migrateDatabaseLayoutFromV3ToV4(Connection connection) throws DataStoreException;
+
+	/**
 	 * Open a connection to the Database and prepare a statement for executing.
 	 * 
 	 * @param connection
@@ -86,10 +83,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		//GET_PLAYER_UUID, 
-		//GET_PLAYER_SETTINGS, INSERT_PLAYER_SETTINGS, 
-		GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE,
-		GET_TOP25_BALANCE
+		GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE, GET_TOP25_BALANCE, //GET_OLD_PLAYERSETTINGS,
 	};
 
 	/**
@@ -105,7 +99,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			Connection mConnection = setupConnection();
 
 			// Find current database version
-			if (plugin.getConfigManager().databaseVersion < 3) {
+			if (plugin.getConfigManager().databaseVersion < 4) {
 				Statement statement = mConnection.createStatement();
 				try {
 					ResultSet rs = statement.executeQuery("SELECT TEXTURE FROM mh_PlayerSettings LIMIT 0");
@@ -137,27 +131,25 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 
 			switch (plugin.getConfigManager().databaseVersion) {
-		    case 1:
-			//	setupV2Tables(mConnection);
-			//	migrateDatabaseLayoutFromV1ToV2(mConnection);
-			//	plugin.getConfigManager().databaseVersion = 2;
-			//	plugin.getConfigManager().saveConfig();
-			//	migrateDatabaseLayoutFromV2ToV3(mConnection);
-			//	plugin.getConfigManager().databaseVersion = 3;
-			//	plugin.getConfigManager().saveConfig();
-
+			case 1:
 			case 2:
 				setupV2Tables(mConnection);
 				migrateDatabaseLayoutFromV2ToV3(mConnection);
 				plugin.getConfigManager().databaseVersion = 3;
 				plugin.getConfigManager().saveConfig();
 
-			default:
+			case 3:
 				setupV3Tables(mConnection);
+				migrateDatabaseLayoutFromV3ToV4(mConnection);
+				plugin.getConfigManager().databaseVersion = 4;
+				plugin.getConfigManager().saveConfig();
 
+			case 4:
+				setupV4Tables(mConnection);
+				
 			}
 
-			plugin.getConfigManager().databaseVersion = 2;
+			plugin.getConfigManager().databaseVersion = 4;
 			plugin.getConfigManager().saveConfig();
 
 			// Enable FOREIGN KEY for Sqlite database
@@ -203,157 +195,6 @@ public abstract class DatabaseDataStore implements IDataStore {
 		} while (plugin.getDataStoreManager().isRunning() && n < 40);
 		System.out.println("[BagOfGold] Closing database connection.");
 	}
-
-	// ******************************************************************
-	// Player Settings
-	// ******************************************************************
-
-	/**
-	 * getPlayerSettings
-	 * 
-	 * @param offlinePlayer :OfflinePlayer
-	 * @return PlayerData
-	 * @throws DataStoreException
-	 * @throws SQLException
-	 * 
-	 */
-	/**@Override
-	public PlayerSettings loadPlayerSettings(OfflinePlayer offlinePlayer)
-			throws UserNotFoundException, DataStoreException {
-		Connection mConnection;
-		try {
-			mConnection = setupConnection();
-			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_SETTINGS);
-			mGetPlayerSettings.setString(1, offlinePlayer.getUniqueId().toString());
-			ResultSet result;
-			result = mGetPlayerSettings.executeQuery();
-			if (result.next()) {
-				PlayerSettings ps = new PlayerSettings(offlinePlayer, result.getString("LAST_WORLDGRP"),
-						result.getBoolean("LEARNING_MODE"), result.getBoolean("MUTE_MODE"), result.getString("TEXTURE"),
-						result.getString("SIGNATURE"), result.getLong("LAST_LOGON"), result.getLong("LAST_INTEREST"));
-				result.close();
-				mGetPlayerSettings.close();
-				mConnection.close();
-				return ps;
-			}
-			mGetPlayerSettings.close();
-			mConnection.close();
-		} catch (SQLException e) {
-			throw new DataStoreException(e);
-		}
-		throw new UserNotFoundException("User " + offlinePlayer.toString() + " is not present in database");
-	}**/
-
-	/**
-	 * insertPlayerSettings to database
-	 */
-	/**@Override
-	public void insertPlayerSettings(PlayerSettings playerSettings) throws DataStoreException {
-		Connection mConnection;
-		try {
-			mConnection = setupConnection();
-			try {
-				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_SETTINGS);
-				mInsertPlayerSettings.setString(1, playerSettings.getPlayer().getUniqueId().toString());
-				mInsertPlayerSettings.setString(2, playerSettings.getPlayer().getName());
-				mInsertPlayerSettings.setString(3, playerSettings.getLastKnownWorldGrp());
-				mInsertPlayerSettings.setInt(4, playerSettings.isLearningMode() ? 1 : 0);
-				mInsertPlayerSettings.setInt(5, playerSettings.isMuted() ? 1 : 0);
-				mInsertPlayerSettings.setString(6, playerSettings.getTexture());
-				mInsertPlayerSettings.setString(7, playerSettings.getSignature());
-				mInsertPlayerSettings.setLong(8, playerSettings.getLast_logon());
-				mInsertPlayerSettings.setLong(9, playerSettings.getLast_interest());
-				
-				mInsertPlayerSettings.addBatch();
-				mInsertPlayerSettings.executeBatch();
-				mInsertPlayerSettings.close();
-				mConnection.commit();
-				mConnection.close();
-			} catch (SQLException e) {
-				rollback(mConnection);
-				mConnection.close();
-				throw new DataStoreException(e);
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	}**/
-
-	/**@Override
-	public void savePlayerSettings(Set<PlayerSettings> playerDataSet, boolean removeFromCache) throws DataStoreException {
-		Connection mConnection;
-		try {
-			mConnection = setupConnection();
-			try {
-				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_SETTINGS);
-				for (PlayerSettings playerSettings : playerDataSet) {
-					mInsertPlayerSettings.setString(1, playerSettings.getPlayer().getUniqueId().toString());
-					mInsertPlayerSettings.setString(2, playerSettings.getPlayer().getName());
-					mInsertPlayerSettings.setString(3, playerSettings.getLastKnownWorldGrp());
-					mInsertPlayerSettings.setInt(4, playerSettings.isLearningMode() ? 1 : 0);
-					mInsertPlayerSettings.setInt(5, playerSettings.isMuted() ? 1 : 0);
-					mInsertPlayerSettings.setString(6, playerSettings.getTexture());
-					mInsertPlayerSettings.setString(7, playerSettings.getSignature());
-					mInsertPlayerSettings.setLong(8, playerSettings.getLast_logon());
-					mInsertPlayerSettings.setLong(9, playerSettings.getLast_interest());
-					
-					mInsertPlayerSettings.addBatch();
-				}
-				mInsertPlayerSettings.executeBatch();
-				mInsertPlayerSettings.close();
-				mConnection.commit();
-				mConnection.close();
-
-				plugin.getMessages().debug("PlayerSettings saved.");
-
-				if (removeFromCache)
-					for (PlayerSettings playerData : playerDataSet) {
-						if (Core.getPlayerSettingsManager().containsKey(playerData.getPlayer())
-								&& !playerData.getPlayer().isOnline() && playerData.getPlayer().hasPlayedBefore())
-							Core.getPlayerSettingsManager().removePlayerSettings(playerData.getPlayer());
-					}
-
-			} catch (SQLException e) {
-				rollback(mConnection);
-				mConnection.close();
-				throw new DataStoreException(e);
-			}
-		} catch (SQLException e1) {
-			throw new DataStoreException(e1);
-		}
-	}**/
-
-	/**
-	 * getPlayerByName - get the player
-	 * 
-	 * @param name : String
-	 * @return player
-	 */
-	/**@Override
-	public OfflinePlayer getPlayerByName(String name) throws DataStoreException {
-		if (name.equals("Random Bounty"))
-			return null; // used for Random Bounties
-		try {
-			Connection mConnection = setupConnection();
-
-			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_UUID);
-			mGetPlayerUUID.setString(1, name);
-			ResultSet set = mGetPlayerUUID.executeQuery();
-
-			if (set.next()) {
-				UUID uid = UUID.fromString(set.getString(1));
-				set.close();
-				mGetPlayerUUID.close();
-				mConnection.close();
-				return Bukkit.getOfflinePlayer(uid);
-			}
-			mGetPlayerUUID.close();
-			mConnection.close();
-			throw new UserNotFoundException("[MobHunting] User " + name + " is not present in database");
-		} catch (SQLException e) {
-			throw new DataStoreException(e);
-		}
-	}**/
 
 	// ******************************************************************
 	// PlayerBalances
