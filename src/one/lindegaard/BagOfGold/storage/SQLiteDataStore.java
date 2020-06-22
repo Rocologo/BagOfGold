@@ -169,7 +169,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 				+ " BALANCE_CHANGES REAL DEFAULT 0," //
 				+ " BANK_BALANCE REAL DEFAULT 0," //
 				+ " BANK_BALANCE_CHANGES REAL DEFAULT 0," //
-				+ " UNIQUE(UUID, WORLDGRP, GAMEMODE)");
+				+ " UNIQUE(UUID, WORLDGRP, GAMEMODE))");
 
 		create.close();
 		connection.commit();
@@ -218,6 +218,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 				}
 			}
+			Core.getDataStoreManager().flush();
 			statement.close();
 			mConnection.commit();
 		} catch (SQLException e) {

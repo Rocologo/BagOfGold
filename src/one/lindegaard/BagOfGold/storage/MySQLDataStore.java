@@ -235,7 +235,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 				+ " BALANCE_CHANGES REAL NOT NULL DEFAULT 0,"//
 				+ " BANK_BALANCE REAL NOT NULL DEFAULT 0,"//
 				+ " BANK_BALANCE_CHANGES REAL NOT NULL DEFAULT 0,"//
-				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE)");
+				+ " PRIMARY KEY (UUID,WORLDGRP,GAMEMODE))");
 
 		create.close();
 		connection.commit();
@@ -283,6 +283,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 					Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
 				}
 			}
+			Core.getDataStoreManager().flush();
 			statement.close();
 			mConnection.commit();
 		} catch (SQLException e) {
