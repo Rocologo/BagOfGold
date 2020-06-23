@@ -20,7 +20,7 @@
 	</parent>
 
 	<properties>
-		<bagofgold-core.version>0.3.3-SNAPSHOT</bagofgold-core.version>
+		<bagofgold-core.version>0.3.4-SNAPSHOT</bagofgold-core.version>
 	</properties>
 
 	<scm>
