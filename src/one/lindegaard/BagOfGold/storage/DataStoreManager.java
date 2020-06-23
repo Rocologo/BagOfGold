@@ -55,40 +55,6 @@ public class DataStoreManager {
 				&& mStoreThread.getState() != Thread.State.TERMINATED;
 	}
 
-	// *****************************************************************************
-	// PlayerSettings
-	// *****************************************************************************
-	//public void requestPlayerSettings(OfflinePlayer player, IDataCallback<PlayerSettings> callback) {
-	//	mTaskThread.addTask(new PlayerSettingsRetrieverTask(player, mWaiting), callback);
-	//}
-
-	/**
-	 * Update the playerSettings in the Database
-	 * 
-	 * @param offlinePlayer
-	 * @param playerSetting
-	 */
-	//public void updatePlayerSettings(OfflinePlayer offlinePlayer, PlayerSettings ps) {
-	//	synchronized (mWaiting) {
-	//		mWaiting.add(new PlayerSettings(offlinePlayer, ps));
-	//	}
-	//}
-
-	/**
-	 * Gets an offline player using the last known name. WARNING: This does a
-	 * database lookup directly. This will block waiting for a reply
-	 */
-	/**public OfflinePlayer getPlayerByName(String name) {
-		try {
-			return mStore.getPlayerByName(name);
-		} catch (UserNotFoundException e) {
-			return null;
-		} catch (DataStoreException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}**/
-
 
 	// *****************************************************************************
 	// PlayerBalances
@@ -113,7 +79,6 @@ public class DataStoreManager {
 		mTaskThread.addTask(new Top54BalanceRetrieverTask
 				(n,worldGroup,gamemode, mWaiting), callback);
 	}
-
 	
 
 	// *****************************************************************************
