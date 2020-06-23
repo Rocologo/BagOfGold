@@ -200,7 +200,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 		try {
 			statement = mConnection.createStatement();
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.GREEN
-					+ "Copying players from BagOfGold til BagOfGoldCore");
+					+ "Copying players from BagOfGold til BagOfGoldCore database");
 			ResultSet result = statement.executeQuery("select * from mh_PlayerSettings");
 			while (result.next()) {
 				String uuid = result.getString("UUID");

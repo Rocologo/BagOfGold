@@ -123,15 +123,15 @@ public class ConfigManager extends AutoConfig {
 			+ "\nExample: gold,bag,silver,coin,???? ")
 	public String dropMoneyOnGroundMoneyCommandAlias = "money";
 
-	@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the settings in the BagOfGoldCore."
-			+ "\nfolder. The setting is only keept so it can be copied to the BagOfGoldCore folder. ")
+	@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "This settings is deprecated."
+			+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder. ")
 	public String dropMoneyOnGroundItemtypeOld = "SKULL";
 
-	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the settings in the BagOfGoldCore "
-			+ "\nfolder. The setting is only keept so it can be copied to the BagOfGoldCore folder. ")
+	@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "This settings is deprecated."
+			+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder. ")
 	public String dropMoneyOnGroundItemOld = "GOLD_INGOT";
 
-	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the new Reward Format settings in BagOfGOldCore.")
+	@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the new Reward Format settings in the BagOfGold folder.")
 	public String dropMoneyOnGroundTextColorOld = "GOLD";
 
 	@ConfigField(name = "drop-money-on-ground-skull-reward-name", category = "dropmoneyonground", comment = "This is the name of the reward. Warning do not use a name which is used as an Item Name \nin other plugins like f.ex SlimeFun. This would cause problems and \nitems disapear without a warning.")
@@ -140,22 +140,22 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "drop_money_on_ground_skull_reward_name_plural", category = "dropmoneyonground", comment = "This is deprecated.")
 	public String dropMoneyOnGroundSkullRewardNamePluralOld = "Bag of gold";
 
-	@ConfigField(name = "drop_money_on_ground_skull_texture_value", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the settings in the BagOfGoldCore "
-			+ "\nfolder. The setting is only keept so it can be copied to the BagOfGoldCore folder.")
+	@ConfigField(name = "drop_money_on_ground_skull_texture_value", category = "dropmoneyonground", comment = "This settings is deprecated."
+			+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder.")
 	public String dropMoneyOnGroundSkullTextureValueOld = "eyJ0aW1lc3RhbXAiOjE0ODU5MTIwNjk3OTgsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM5NmNlMTNmZjYxNTVmZGYzMjM1ZDhkMjIxNzRjNWRlNGJmNTUxMmYxYWRlZGExYWZhM2ZjMjgxODBmM2Y3In19fQ==";
 
-	@ConfigField(name = "drop_money_on_ground_skull_texture_signature", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the settings in the BagOfGoldCore "
-			+ "\nfolder. The setting is only keept so it can be copied to the BagOfGoldCore folder.")
+	@ConfigField(name = "drop_money_on_ground_skull_texture_signature", category = "dropmoneyonground", comment = "This settings is deprecated."
+			+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder.")
 	public String dropMoneyOnGroundSkullTextureSignatureOld = "m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=";
 
-	@ConfigField(name = "deny_hoppers_to_pickup_money_on_ground", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the settings in the BagOfGoldCore "
-			+ "\nfolder. The setting is only keept so it can be copied to the BagOfGoldCore folder.")
+	@ConfigField(name = "deny_hoppers_to_pickup_money_on_ground", category = "dropmoneyonground", comment = "This settings is deprecated."
+			+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder.")
 	public boolean denyHoppersToPickUpMoneyOld = true;
 
 	// #####################################################################################
 	// Gringotts style
 	// #####################################################################################
-	@ConfigField(name = "denomination", category = "gringotts", comment = "This is deprecated. Please use BagOfGoldCore settings instead.")
+	@ConfigField(name = "denomination", category = "gringotts", comment = "This is deprecated. Please use bagofgoldcore.yml settings in BagOfGold folder instead.")
 	public LinkedHashMap<String, String> gringottsDenominationOld = new LinkedHashMap<String, String>();
 	{
 		gringottsDenominationOld.put("EMERALD_BLOCK", "9");
