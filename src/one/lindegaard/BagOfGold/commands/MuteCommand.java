@@ -101,7 +101,7 @@ public class MuteCommand implements ICommand {
 	private void togglePlayerMuteMode(Player player) {
 		PlayerSettings ps = Core.getPlayerSettingsManager().getPlayerSettings(player);
 		ps.setMuteMode(!ps.isMuted());
-		Core.getPlayerSettingsManager().setPlayerSettings(player, ps);
+		Core.getPlayerSettingsManager().setPlayerSettings(ps);
 		if (ps.isMuted())
 			plugin.getMessages().playerActionBarMessageQueue(player, 
 					plugin.getMessages().getString("bagofgold.commands.mute.muted", "player", player.getName()));

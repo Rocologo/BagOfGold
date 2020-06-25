@@ -215,7 +215,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 					ps.setSignature(result.getString("SIGNATURE"));
 					ps.setLast_logon(result.getLong("LAST_LOGON"));
 					ps.setLast_interest(result.getLong("LAST_INTEREST"));
-					Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+					Core.getPlayerSettingsManager().setPlayerSettings(ps);
 				}
 			}
 			Core.getDataStoreManager().flush();

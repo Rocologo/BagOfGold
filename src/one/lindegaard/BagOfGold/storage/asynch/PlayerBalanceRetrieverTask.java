@@ -54,7 +54,7 @@ public class PlayerBalanceRetrieverTask implements IDataStoreTask<PlayerBalances
 							.getPlayerSettings(mPlayer);
 					if (!playersettings.getLastKnownWorldGrp().equals(worldGroup)) {
 						playersettings.setLastKnownWorldGrp(worldGroup);
-						Core.getDataStoreManager().updatePlayerSettings(mPlayer, playersettings);
+						Core.getDataStoreManager().insertPlayerSettings(playersettings);
 					}
 				}
 			}

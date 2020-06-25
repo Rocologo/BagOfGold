@@ -162,7 +162,7 @@ public class PlayerBalanceManager implements Listener {
 		final Player player = event.getPlayer();
 		PlayerSettings ps = Core.getPlayerSettingsManager().getPlayerSettings(player);
 		ps.setLastKnownWorldGrp(Core.getWorldGroupManager().getCurrentWorldGroup(player));
-		Core.getPlayerSettingsManager().setPlayerSettings(player, ps);
+		Core.getPlayerSettingsManager().setPlayerSettings(ps);
 
 		// update Essentials balance
 		if (EssentialsCompat.isSupported()) {

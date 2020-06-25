@@ -75,7 +75,7 @@ public class CustomItems {
 					&& !onlineSkin[1].isEmpty()) {
 				ps.setTexture(onlineSkin[0]);
 				ps.setSignature(onlineSkin[1]);
-				Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+				Core.getPlayerSettingsManager().setPlayerSettings(ps);
 			} else {
 				plugin.getMessages().debug("Empty skin");
 				return skull;
@@ -91,7 +91,7 @@ public class CustomItems {
 								player.getName(), ps.getTexture(), skin[0]);
 						ps.setTexture(skin[0]);
 						ps.setSignature(skin[1]);
-						Core.getPlayerSettingsManager().setPlayerSettings(offlinePlayer, ps);
+						Core.getPlayerSettingsManager().setPlayerSettings(ps);
 					}
 				}
 			} else
