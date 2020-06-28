@@ -1,5 +1,12 @@
 
 bagofgold.banker.introduction=&6[Банк] Пожалуйста, выберите действие...
+bagofgold.banker.balance=Balance
+bagofgold.banker.bankbalance=BankBalance
+bagofgold.banker.deposit=Deposit
+bagofgold.banker.withdraw=Withdraw
+bagofgold.banker.click2deposit=§cClick to deposit
+bagofgold.banker.click2withdraw=§cClick to withdraw
+
 bagofgold.banksign.balance=&aНа вашем балансе в банке: &e${money}⦿&a.
 bagofgold.banksign.deposit=aВы положили &e${money}⦿ &aна свой баланс в банке.
 bagofgold.banksign.hold_bag_in_hand=&cВы должны держать мешок золота в руке!

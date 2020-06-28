@@ -1029,15 +1029,7 @@ public class BagOfGoldItems implements Listener {
 								if (reward1.getMoney() + reward2.getMoney() <= Core.getConfigManager().limitPerBag) {
 									double added_money = reward2.getMoney();
 									reward2.setMoney(reward1.getMoney() + reward2.getMoney());
-									imCursor.setLore(reward2.getHiddenLore());
-									// imCursor.setLore(imCursor.getLore().add("kkk"));
-									imCursor.setDisplayName(
-											ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
-													+ (Core.getConfigManager().rewardItemtype
-															.equalsIgnoreCase("ITEM") ? format(reward2.getMoney())
-																	: reward2.getDisplayName() + " ("
-																			+ format(reward2.getMoney()) + ")"));
-									isCursor.setItemMeta(imCursor);
+									isCursor = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward2);
 									isCurrentSlot.setAmount(0);
 									isCurrentSlot.setType(Material.AIR);
 									event.setCurrentItem(isCursor);
@@ -1051,26 +1043,9 @@ public class BagOfGoldItems implements Listener {
 											- Core.getConfigManager().limitPerBag;
 									double added_money = Core.getConfigManager().limitPerBag - reward1.getMoney();
 									reward2.setMoney(Core.getConfigManager().limitPerBag);
-									imCursor.setLore(reward2.getHiddenLore());
-									imCursor.setDisplayName(ChatColor
-											.valueOf(Core.getConfigManager().rewardTextColor)
-											+ (Core.getConfigManager().rewardItemtype
-													.equalsIgnoreCase("ITEM")
-															? format(Core.getConfigManager().limitPerBag)
-															: reward2.getDisplayName() + " ("
-																	+ format(Core.getConfigManager().limitPerBag)
-																	+ ")"));
-									isCursor.setItemMeta(imCursor);
-
+									isCursor = Reward.setDisplayNameAndHiddenLores(isCursor.clone(), reward2);
 									reward1.setMoney(rest);
-									imCurrent.setLore(reward1.getHiddenLore());
-									imCurrent.setDisplayName(ChatColor
-											.valueOf(Core.getConfigManager().rewardTextColor)
-											+ (Core.getConfigManager().rewardItemtype.equalsIgnoreCase(
-													"ITEM") ? format(Core.getConfigManager().limitPerBag)
-															: reward1.getDisplayName() + " ("
-																	+ format(reward1.getMoney()) + ")"));
-									isCurrentSlot.setItemMeta(imCurrent);
+									isCurrentSlot = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward1);
 									event.setCurrentItem(isCursor);
 									event.setCursor(isCurrentSlot);
 									plugin.getMessages().debug("%s merged two rewards(2)", player.getName());

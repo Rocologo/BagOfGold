@@ -7,6 +7,12 @@ bagofgold.moneylost=Veszítettél ${prize}!
 bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
 bagofgold.banker.introduction=&aSzia, én vagyok a &4BagOfGold&a Banker, kérlek, válassz egy intézkedést.. 
+bagofgold.banker.balance=Balance
+bagofgold.banker.bankbalance=BankBalance
+bagofgold.banker.deposit=Deposit
+bagofgold.banker.withdraw=Withdraw
+bagofgold.banker.click2deposit=§cClick to deposit
+bagofgold.banker.click2withdraw=§cClick to withdraw
 
 bagofgold.banksign.line1=&a[${bankname}]
 bagofgold.banksign.line2.deposit=Deposit

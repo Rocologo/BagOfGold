@@ -1,5 +1,12 @@
 
 bagofgold.banker.introduction=&aOlá, Eu sou o banqueiro do &4BagOfGold&a Banker, escolha uma opção..
+bagofgold.banker.balance=Balance
+bagofgold.banker.bankbalance=BankBalance
+bagofgold.banker.deposit=Deposit
+bagofgold.banker.withdraw=Withdraw
+bagofgold.banker.click2deposit=§cClick to deposit
+bagofgold.banker.click2withdraw=§cClick to withdraw
+
 bagofgold.banksign.balance=&aVocê tem ${money} ${rewardname} &ano banco
 bagofgold.banksign.deposit=&aVocê depositou ${money} ${rewardname}
 bagofgold.banksign.hold_bag_in_hand=&4Você pecisa estar segurando ${rewardname} &4na mão.
