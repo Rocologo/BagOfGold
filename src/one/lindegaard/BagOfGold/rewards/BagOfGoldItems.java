@@ -282,9 +282,6 @@ public class BagOfGoldItems implements Listener {
 
 			if (Reward.isReward(is)) {
 				Reward reward = Reward.getReward(is);
-				// BagOfGold.getInstance().getMessages().debug("BagOfGoldItems: slot=%s,
-				// value=%s, is=%s", slot,
-				// reward.getMoney(), is.toString());
 				if (reward.checkHash()) {
 					if (reward.isMoney())
 						amountInInventory = amountInInventory + reward.getMoney();
@@ -298,8 +295,6 @@ public class BagOfGoldItems implements Listener {
 				}
 			}
 		}
-		// BagOfGold.getInstance().getMessages().debug("BagOfGoldItems:
-		// Amt=%s",amountInInventory);
 		return amountInInventory;
 	}
 
@@ -397,22 +392,13 @@ public class BagOfGoldItems implements Listener {
 			}
 			if (reward.isMoney()) {
 				double money = reward.getMoney();
+				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 				if (money == 0) {
-					//item.setCustomName(reward.getDisplayName());
-					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped a %s (# of rewards left=%s)(1)", player.getName(),
 							reward.getDisplayName() != null ? reward.getDisplayName()
 									: Core.getConfigManager().bagOfGoldName,
 							plugin.getRewardManager().getDroppedMoney().size());
 				} else {
-					//if (reward.isItemReward())
-					//	item.setCustomName(ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
-					//			+ format(money));
-					//else
-					//	item.setCustomName(ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
-					//			+ reward.getDisplayName() + " (" + format(money) + ")");
-
-					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped %s %s. (# of rewards left=%s)(2)", player.getName(),
 							format(money), reward.getDisplayName(), plugin.getRewardManager().getDroppedMoney().size());
 					if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
@@ -870,8 +856,6 @@ public class BagOfGoldItems implements Listener {
 							} else if (cursor.isKilledHeadReward() || cursor.isKillerHeadReward()) {
 								plugin.getMessages()
 										.debug("Collect to cursor on MobHunting heads is still not implemented");
-								// plugin.getMessages().debug("%s collected %s to the cursor", player.getName(),
-								// saldo);
 							}
 						}
 						break;
@@ -983,7 +967,6 @@ public class BagOfGoldItems implements Listener {
 									isCurrentSlot = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 									event.setCurrentItem(isCurrentSlot);
 									reward.setMoney(cursorMoney);
-									// reward.setUniqueId(UUID.randomUUID());
 									isCursor = Reward.setDisplayNameAndHiddenLores(isCurrentSlot.clone(), reward);
 									event.setCursor(isCursor);
 									plugin.getMessages().debug("%s halfed a reward in two (%s,%s)", player.getName(),
