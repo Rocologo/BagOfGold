@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.rewards.Reward;
+import one.lindegaard.Core.server.Servers;
 
 public class EntityPickupItemEventListener implements Listener {
 
@@ -25,7 +26,7 @@ public class EntityPickupItemEventListener implements Listener {
 		if (event.isCancelled())
 			return;
 
-		if (!Reward.isReward(event.getItem())) 
+		if (!Reward.isReward(event.getItem()))
 			return;
 
 		Entity entity = event.getEntity();
@@ -33,13 +34,13 @@ public class EntityPickupItemEventListener implements Listener {
 		if (event.getEntity().getType() != EntityType.PLAYER) {
 			// Entity is not a Player
 			if (entity.getType().equals(EntityType.ZOMBIE) || entity.getType().equals(EntityType.SKELETON)
-					|| entity.getType().equals(EntityType.PIG_ZOMBIE)
-					|| entity.getType().equals(EntityType.WITHER_SKELETON)) {
+					|| entity.getType().equals(EntityType.WITHER_SKELETON)
+					|| (Servers.isMC116OrNewer()) && entity.getType().equals(EntityType.ZOMBIFIED_PIGLIN)) {
 				BagOfGold.getAPI().getMessages().debug("A mob picked up the reward");
 				event.setCancelled(true);
 			}
 			return;
-		} 
+		}
 
 		Player player = (Player) entity;
 		if (BagOfGold.getAPI().getBagOfGoldItems().canPickupMoney(player)) {

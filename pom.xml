@@ -20,7 +20,7 @@
 	</parent>
 
 	<properties>
-		<bagofgold-core.version>0.3.6-SNAPSHOT</bagofgold-core.version>
+		<bagofgold-core.version>0.3.7-SNAPSHOT</bagofgold-core.version>
 	</properties>
 
 	<scm>
@@ -123,7 +123,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc_1_15_R1.version}</version>
+			<version>${spigotmc_1_16_R1.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
