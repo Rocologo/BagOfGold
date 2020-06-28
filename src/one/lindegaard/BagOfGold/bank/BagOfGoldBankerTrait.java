@@ -74,7 +74,7 @@ public class BagOfGoldBankerTrait extends Trait implements Listener {
 					" \n" + plugin.getMessages().getString("bagofgold.banker.introduction"));
 			plugin.getBankManager().sendBankerMessage(player);
 		} else {
-			player.sendMessage("The Banker only works on SpigotMC serverse");
+			player.sendMessage("The Banker only works on SpigotMC servers");
 		}
 
 	}
