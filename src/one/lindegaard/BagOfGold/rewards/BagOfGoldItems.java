@@ -256,9 +256,9 @@ public class BagOfGoldItems implements Listener {
 			if (item != null) {
 				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
-				item.setCustomName(reward.isItemReward() ? format(nextBag)
-						: Reward.getReward(is).getDisplayName() + " (" + format(nextBag) + ")");
-				item.setCustomNameVisible(true);
+				//item.setCustomName(reward.isItemReward() ? format(nextBag)
+				//		: Reward.getReward(is).getDisplayName() + " (" + format(nextBag) + ")");
+				//item.setCustomNameVisible(true);
 				if (player != null)
 					plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)(3)",
 							player.getName(), format(nextBag), Core.getConfigManager().rewardItemtype,
@@ -399,19 +399,19 @@ public class BagOfGoldItems implements Listener {
 			if (reward.isMoney()) {
 				double money = reward.getMoney();
 				if (money == 0) {
-					item.setCustomName(reward.getDisplayName());
+					//item.setCustomName(reward.getDisplayName());
 					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped a %s (# of rewards left=%s)(1)", player.getName(),
 							reward.getDisplayName() != null ? reward.getDisplayName()
 									: Core.getConfigManager().bagOfGoldName,
 							plugin.getRewardManager().getDroppedMoney().size());
 				} else {
-					if (reward.isItemReward())
-						item.setCustomName(ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
-								+ format(money));
-					else
-						item.setCustomName(ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
-								+ reward.getDisplayName() + " (" + format(money) + ")");
+					//if (reward.isItemReward())
+					//	item.setCustomName(ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+					//			+ format(money));
+					//else
+					//	item.setCustomName(ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+					//			+ reward.getDisplayName() + " (" + format(money) + ")");
 
 					plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 					plugin.getMessages().debug("%s dropped %s %s. (# of rewards left=%s)(2)", player.getName(),
@@ -435,7 +435,7 @@ public class BagOfGoldItems implements Listener {
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, reward));
 				ItemStack is = Reward.setDisplayNameAndHiddenLores(item.getItemStack(), reward);
 				item.setItemStack(is);
-				item.setCustomNameVisible(true);
+				//item.setCustomNameVisible(true);
 			}
 		}
 	}

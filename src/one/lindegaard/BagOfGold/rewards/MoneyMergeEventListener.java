@@ -42,14 +42,15 @@ public class MoneyMergeEventListener implements Listener {
 						ItemMeta im = is2.getItemMeta();
 						is2.setItemMeta(im);
 						is2.setAmount(1);
+						is2=Reward.setDisplayNameAndHiddenLores(is2.clone(), reward2);
 						item2.setItemStack(is2);
-						String displayName = reward2.isItemReward()
-								? plugin.getEconomyManager().format(reward2.getMoney())
-								: reward2.getDisplayName() + " ("
-										+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
-						item2.setCustomName(
-								ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + displayName);
-						item2.setCustomNameVisible(true);
+						//String displayName = reward2.isItemReward()
+						//		? plugin.getEconomyManager().format(reward2.getMoney())
+						//		: reward2.getDisplayName() + " ("
+						//				+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
+						//item2.setCustomName(
+						//		ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + displayName);
+						//item2.setCustomNameVisible(true);
 						item2.setMetadata(Reward.MH_REWARD_DATA_NEW,
 								new FixedMetadataValue(BagOfGold.getInstance(), new Reward(reward2)));
 						plugin.getMessages().debug("Money merged - new value=%s",
@@ -58,17 +59,18 @@ public class MoneyMergeEventListener implements Listener {
 				} else if (reward1.isKilledHeadReward() || reward1.isKillerHeadReward()) {
 					if (reward1.getMoney() == reward2.getMoney()) {
 						reward2.setMoney(reward1.getMoney());
-						ItemMeta im = is2.getItemMeta();
-						is2.setItemMeta(im);
-						is2.setAmount(is2.getAmount());
+						//ItemMeta im = is2.getItemMeta();
+						//is2.setItemMeta(im);
+						//is2.setAmount(is2.getAmount());
+						is2 = Reward.setDisplayNameAndHiddenLores(is2, reward2);
 						item2.setItemStack(is2);
-						String displayName = reward2.isItemReward()
-								? plugin.getEconomyManager().format(reward2.getMoney())
-								: reward2.getDisplayName() + " ("
-										+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
-						item2.setCustomName(
-								ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + displayName);
-						item2.setCustomNameVisible(true);
+						//String displayName = reward2.isItemReward()
+						//		? plugin.getEconomyManager().format(reward2.getMoney())
+						//		: reward2.getDisplayName() + " ("
+						//				+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
+						//item2.setCustomName(
+						//		ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + displayName);
+						//item2.setCustomNameVisible(true);
 						item2.setMetadata(Reward.MH_REWARD_DATA_NEW,
 								new FixedMetadataValue(BagOfGold.getInstance(), new Reward(reward2)));
 						plugin.getMessages().debug("Heads merged - value=%s each head",
