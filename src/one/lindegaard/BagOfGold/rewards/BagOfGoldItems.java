@@ -256,9 +256,8 @@ public class BagOfGoldItems implements Listener {
 			if (item != null) {
 				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
-				//item.setCustomName(reward.isItemReward() ? format(nextBag)
-				//		: Reward.getReward(is).getDisplayName() + " (" + format(nextBag) + ")");
-				//item.setCustomNameVisible(true);
+				item.setCustomName(is.getItemMeta().getDisplayName());
+				item.setCustomNameVisible(true);
 				if (player != null)
 					plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)(3)",
 							player.getName(), format(nextBag), Core.getConfigManager().rewardItemtype,
@@ -435,7 +434,8 @@ public class BagOfGoldItems implements Listener {
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, reward));
 				ItemStack is = Reward.setDisplayNameAndHiddenLores(item.getItemStack(), reward);
 				item.setItemStack(is);
-				//item.setCustomNameVisible(true);
+				item.setCustomName(is.getItemMeta().getDisplayName());
+				item.setCustomNameVisible(true);
 			}
 		}
 	}
