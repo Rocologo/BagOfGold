@@ -68,7 +68,7 @@ public class ReloadCommand implements ICommand {
 
 		plugin.setMessages(new Messages(plugin));
 
-		if (plugin.getConfigManager().loadConfig()) {
+		if (Core.getConfigManager().loadConfig() ||plugin.getConfigManager().loadConfig()) {
 			Core.getWorldGroupManager().load();
 
 			plugin.getBankManager().shutdown();
