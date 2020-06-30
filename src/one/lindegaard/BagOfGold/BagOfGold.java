@@ -48,7 +48,7 @@ import one.lindegaard.Core.*;
 
 public class BagOfGold extends JavaPlugin {
 
-	private static BagOfGold instance;
+	private static BagOfGold plugin;
 	private File mFile = new File(getDataFolder(), "config.yml");
 
 	private Messages mMessages;
@@ -56,11 +56,9 @@ public class BagOfGold extends JavaPlugin {
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
-	//private PlayerSettingsManager mPlayerSettingsManager;
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private RewardManager mRewardManager;
-	//private WorldGroupManager mWorldGroupManager;
 	private CompatibilityManager mCompatibilityManager;
 	private BankManager mBankManager;
 	private SpigetUpdater mSpigetUpdater;
@@ -81,7 +79,8 @@ public class BagOfGold extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
-		instance = this;
+		disabling = false;
+		plugin = this;
 
 		mMessages = new Messages(this);
 		mConfig = new ConfigManager(this, mFile);
@@ -91,12 +90,12 @@ public class BagOfGold extends JavaPlugin {
 				mConfig.backupConfig(mFile);
 			mConfig.saveConfig();
 		} else
-			throw new RuntimeException(instance.getMessages().getString("bagofgold.config.fail"));
+			throw new RuntimeException(plugin.getMessages().getString("bagofgold.config.fail"));
 
 		mCore = new Core(this);
 	    
 		if (isbStatsEnabled())
-			instance.getMessages().debug("bStat is enabled");
+			plugin.getMessages().debug("bStat is enabled");
 		else {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 					+ "=====================WARNING=============================");
@@ -119,15 +118,12 @@ public class BagOfGold extends JavaPlugin {
 			}
 		}
 
-		//mWorldGroupManager = new WorldGroupManager(this);
-		//mWorldGroupManager.load();
-
 		mSpigetUpdater = new SpigetUpdater(this);
 		mSpigetUpdater.setCurrentJarFile(this.getFile().getName());
 
 		// Register commands
 		mCommandDispatcher = new CommandDispatcher(this, "bagofgold",
-				instance.getMessages().getString("bagofgold.command.base.description") + getDescription().getVersion());
+				plugin.getMessages().getString("bagofgold.command.base.description") + getDescription().getVersion());
 		getCommand("bagofgold").setExecutor(mCommandDispatcher);
 		getCommand("bagofgold").setTabCompleter(mCommandDispatcher);
 		mCommandDispatcher.registerCommand(new ReloadCommand(this));
@@ -205,8 +201,6 @@ public class BagOfGold extends JavaPlugin {
 		mGringottsItems = new GringottsItems(this);
 		mBagOfGoldItems = new BagOfGoldItems(this);
 
-		mRewardManager.loadAllStoredRewards();
-		
 		mInitialized=true;
 
 	}
@@ -220,9 +214,6 @@ public class BagOfGold extends JavaPlugin {
 
 		mBankManager.shutdown();
 		
-		getMessages().debug("Shutdown RewardManager: Saving all Reward Blocks to disk");
-		mRewardManager.saveAllRewards();
-
 		try {
 			getMessages().debug("Shutdown StoreManager");
 			mStoreManager.shutdown();
@@ -232,11 +223,11 @@ public class BagOfGold extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		instance.getMessages().debug("BagOfGold disabled.");
+		plugin.getMessages().debug("BagOfGold disabled.");
 	}
 
 	private boolean isbStatsEnabled() {
-		File bStatsFolder = new File(instance.getDataFolder().getParentFile(), "bStats");
+		File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
 		File configFile = new File(bStatsFolder, "config.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 		return config.getBoolean("enabled", true);
@@ -246,16 +237,16 @@ public class BagOfGold extends JavaPlugin {
 	// Managers and handlers
 	// ************************************************************************************
 	public static BagOfGold getInstance() {
-		return instance;
+		return plugin;
 	}
 
 	public static BagOfGold getAPI() {
-		return instance;
+		return plugin;
 	}
 
 	@Deprecated
 	public static BagOfGold getApi() {
-		return instance;
+		return plugin;
 	}
 
 	public ConfigManager getConfigManager() {
@@ -301,15 +292,6 @@ public class BagOfGold extends JavaPlugin {
 	public DataStoreManager getDataStoreManager() {
 		return mStoreManager;
 	}
-
-	/**
-	 * Get the PlayerSettingsManager
-	 * 
-	 * @return
-	 */
-	//public PlayerSettingsManager getPlayerSettingsManager() {
-	//	return mPlayerSettingsManager;
-	//}
 
 	/**
 	 * Get the EconomyManager
@@ -361,8 +343,4 @@ public class BagOfGold extends JavaPlugin {
 		return mEconomyManager;
 	}
 	
-	public Core getCore() {
-		return mCore;
-	}
-
 }

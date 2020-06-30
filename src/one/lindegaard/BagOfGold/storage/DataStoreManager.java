@@ -16,6 +16,7 @@ import one.lindegaard.BagOfGold.storage.asynch.IDataStoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.PlayerBalanceRetrieverTask;
 import one.lindegaard.BagOfGold.storage.asynch.StoreTask;
 import one.lindegaard.BagOfGold.storage.asynch.Top54BalanceRetrieverTask;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.Core.storage.IDataCallback;
 
@@ -40,7 +41,7 @@ public class DataStoreManager {
 		this.plugin = plugin;
 		mStore = store;
 		mTaskThread = new TaskThread();
-		int savePeriod = plugin.getConfigManager().savePeriod;
+		int savePeriod = Core.getConfigManager().savePeriod;
 		if (savePeriod < 1200) {
 			savePeriod = 1200;
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
@@ -163,15 +164,15 @@ public class DataStoreManager {
 					}
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
 					
-					if (plugin.disabling) {
-						plugin.getRewardManager().saveAllRewards();
-					} else
-						Bukkit.getScheduler().runTask(plugin, new Runnable() {
-							@Override
-							public void run() {
-								plugin.getRewardManager().saveAllRewards();
-							}
-						});
+					//if (plugin.disabling) {
+					//	plugin.getRewardManager().saveAllRewards();
+					//} else
+					//	Bukkit.getScheduler().runTask(plugin, new Runnable() {
+					//		@Override
+					//		public void run() {
+					//			plugin.getRewardManager().saveAllRewards();
+					//		}
+					//	});
 
 					Thread.sleep(mSaveInterval * 50);
 				}

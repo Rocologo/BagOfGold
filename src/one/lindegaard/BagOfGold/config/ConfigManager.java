@@ -252,9 +252,9 @@ public class ConfigManager extends AutoConfig {
 			+ "\n(eg. en_US, fr_FR, hu_HU, pt_BR, zh_CN, ru_RU ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
 
-	@ConfigField(name = "save-period", category = "general", comment = "Time between saves in ticks (20 ticks ~ 1 sec) This number must be higher that 1200 ticks = 2 minutes,"
-			+ "\nbut I recommend to save every 5th minute = 6000 ticks")
-	public int savePeriod = 6000;
+	//@ConfigField(name = "save-period", category = "general", comment = "Time between saves in ticks (20 ticks ~ 1 sec) This number must be higher that 1200 ticks = 2 minutes,"
+	//		+ "\nbut I recommend to save every 5th minute = 6000 ticks")
+	//public int savePeriod_old = 6000;
 
 	@ConfigField(name = "debug", category = "general", comment = "If kills are not being registered in mob hunting. Enable this to see why they arent")
 	public boolean debug = false;

@@ -152,7 +152,7 @@ public class BagOfGoldItems implements Listener {
 					addedMoney = addedMoney + nextBag;
 					ItemStack is;
 					if (Core.getConfigManager().rewardItemtype.equalsIgnoreCase("SKULL"))
-						is = new CoreCustomItems().getCustomtexture(
+						is = new CoreCustomItems(plugin).getCustomtexture(
 								new Reward(Core.getConfigManager().bagOfGoldName,
 										Misc.round(nextBag), RewardType.BAGOFGOLD,
 										UUID.fromString(RewardType.BAGOFGOLD.getUUID())),
@@ -234,7 +234,7 @@ public class BagOfGoldItems implements Listener {
 			if (Core.getConfigManager().rewardItemtype.equalsIgnoreCase("SKULL")) {
 				rewardType = RewardType.BAGOFGOLD;
 				skinuuid = UUID.fromString(RewardType.BAGOFGOLD.getUUID());
-				is = new CoreCustomItems().getCustomtexture(
+				is = new CoreCustomItems(plugin).getCustomtexture(
 						new Reward(Core.getConfigManager().bagOfGoldName, nextBag,
 								rewardType, skinuuid),
 						Core.getConfigManager().skullTextureValue,
@@ -449,10 +449,11 @@ public class BagOfGoldItems implements Listener {
 				}
 				plugin.getMessages().debug("%s placed a reward block: %s", player.getName(),
 						ChatColor.stripColor(reward.toString()));
-				reward.setUniqueID(plugin.getRewardManager().getNextID());
-				block.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, reward));
-				plugin.getRewardManager().getRewardBlocks().put(reward.getUniqueID(),
-						new RewardBlock(block.getLocation(), reward));
+				reward.setUniqueID(Core.getRewardBlockManager().getNextID());
+				Core.getRewardBlockManager().addReward(block, reward);
+				//block.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, reward));
+				//Core.getRewardBlockManager().getRewardBlocks().put(reward.getUniqueID(),
+				//		new RewardBlock(block.getLocation(), reward));
 				if (reward.isMoney()) {
 					plugin.getRewardManager().removeMoneyFromPlayerBalance(player, reward.getMoney());
 				}

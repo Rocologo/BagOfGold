@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.rewards.Reward;
 
 public class RewardListeners implements Listener {
@@ -125,7 +126,7 @@ public class RewardListeners implements Listener {
 				if (!Reward.isReward(event.getSourceBlock())) {
 					// plugin.getMessages().debug("RewardListeners: a %s changed a %s(%s)",
 					// event.getSourceBlock().getType(), block.getType(), reward.getMoney());
-					plugin.getRewardManager().removeReward(block);
+					Core.getRewardBlockManager().removeReward(block);
 					plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
 				}
 			} else if (event.getSourceBlock().getType() == Material.matchMaterial("PLAYER_HEAD")) {
@@ -164,7 +165,7 @@ public class RewardListeners implements Listener {
 		Block block = event.getBlock();
 		if (Reward.isReward(block)) {
 			Reward reward = Reward.getReward(block);
-			plugin.getRewardManager().removeReward(block);
+			Core.getRewardBlockManager().removeReward(block);
 			plugin.getRewardManager().dropRewardOnGround(block.getLocation(), reward);
 		}
 	}
