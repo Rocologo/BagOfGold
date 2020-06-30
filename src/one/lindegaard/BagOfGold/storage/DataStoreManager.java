@@ -162,6 +162,16 @@ public class DataStoreManager {
 						}
 					}
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
+					
+					if (plugin.disabling) {
+						plugin.getRewardManager().saveAllRewards();
+					} else
+						Bukkit.getScheduler().runTask(plugin, new Runnable() {
+							@Override
+							public void run() {
+								plugin.getRewardManager().saveAllRewards();
+							}
+						});
 
 					Thread.sleep(mSaveInterval * 50);
 				}

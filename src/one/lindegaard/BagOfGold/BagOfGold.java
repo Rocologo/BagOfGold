@@ -72,6 +72,7 @@ public class BagOfGold extends JavaPlugin {
 	private Core mCore;
 	
 	private boolean mInitialized = false;
+	public boolean disabling = false;
 
 	@Override
 	public void onLoad() {
@@ -162,7 +163,6 @@ public class BagOfGold extends JavaPlugin {
 
 		mStoreManager = new DataStoreManager(this, mStore);
 
-		//mPlayerSettingsManager = new PlayerSettingsManager(this);
 		mPlayerBalanceManager = new PlayerBalanceManager(this);
 
 		mRewardManager = new RewardManager(this);
@@ -213,12 +213,14 @@ public class BagOfGold extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		disabling = true;
+		
 		if (!mInitialized)
 			return;
 
 		mBankManager.shutdown();
 		
-		getMessages().debug("Saving all Reward Blocks to disk");
+		getMessages().debug("Shutdown RewardManager: Saving all Reward Blocks to disk");
 		mRewardManager.saveAllRewards();
 
 		try {
