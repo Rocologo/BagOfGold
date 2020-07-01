@@ -223,6 +223,8 @@ public class BagOfGold extends JavaPlugin {
 			e.printStackTrace();
 		}
 
+		mCore.shutdown();
+		
 		plugin.getMessages().debug("BagOfGold disabled.");
 	}
 

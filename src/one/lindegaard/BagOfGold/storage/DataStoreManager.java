@@ -56,7 +56,6 @@ public class DataStoreManager {
 				&& mStoreThread.getState() != Thread.State.TERMINATED;
 	}
 
-
 	// *****************************************************************************
 	// PlayerBalances
 	// *****************************************************************************
@@ -75,12 +74,11 @@ public class DataStoreManager {
 			mWaiting.add(new PlayerBalance(offlinePlayer, ps));
 		}
 	}
-	
-	public void requestTop54PlayerBalances(int n, String worldGroup, int gamemode, IDataCallback<List<PlayerBalance>> callback) {
-		mTaskThread.addTask(new Top54BalanceRetrieverTask
-				(n,worldGroup,gamemode, mWaiting), callback);
+
+	public void requestTop54PlayerBalances(int n, String worldGroup, int gamemode,
+			IDataCallback<List<PlayerBalance>> callback) {
+		mTaskThread.addTask(new Top54BalanceRetrieverTask(n, worldGroup, gamemode, mWaiting), callback);
 	}
-	
 
 	// *****************************************************************************
 	// Common
@@ -148,7 +146,7 @@ public class DataStoreManager {
 		private int mSaveInterval;
 
 		public StoreThread(int interval) {
-			super("MH StoreThread");
+			super("BG StoreThread");
 			start();
 			mSaveInterval = interval;
 		}
@@ -163,16 +161,6 @@ public class DataStoreManager {
 						}
 					}
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
-					
-					//if (plugin.disabling) {
-					//	plugin.getRewardManager().saveAllRewards();
-					//} else
-					//	Bukkit.getScheduler().runTask(plugin, new Runnable() {
-					//		@Override
-					//		public void run() {
-					//			plugin.getRewardManager().saveAllRewards();
-					//		}
-					//	});
 
 					Thread.sleep(mSaveInterval * 50);
 				}
@@ -221,7 +209,7 @@ public class DataStoreManager {
 		private Object mSignal = new Object();
 
 		public TaskThread() {
-			super("MH TaskThread");
+			super("BG TaskThread");
 
 			mQueue = new LinkedBlockingQueue<Task>();
 
