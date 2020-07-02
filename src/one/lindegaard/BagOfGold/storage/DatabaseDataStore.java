@@ -193,7 +193,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			n++;
 		} while (plugin.getDataStoreManager().isRunning() && n < 40);
-		System.out.println("[BagOfGold] Closing database connection.");
+		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] "+ChatColor.RESET+"Closing database connection.");
 	}
 
 	// ******************************************************************
