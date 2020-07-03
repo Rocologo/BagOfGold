@@ -1,4 +1,7 @@
+V3.0.1
+* Added support for RGB colours in lang file
 V3.0.0
+* Support for MC 1.16 mobs: Huglin, Piglin, Strider, Zoglin. 
 * Rewards is only saved to disk when the plugin is disabled. Saving to disk immediately could cause lag.
 V2.9.9
 * Fixed bugs which could cause a server crash on start up. (Concurrent.Locks)

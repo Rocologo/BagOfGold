@@ -33,6 +33,7 @@ import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.Core.Core;
+import one.lindegaard.Core.Strings;
 
 public class Messages {
 
@@ -273,7 +274,7 @@ public class Messages {
 					output = output.replaceAll("\\$\\{" + name + "\\}", Matcher.quoteReplacement(replace.toString()));
 			}
 
-			return ChatColor.translateAlternateColorCodes('&', output);
+			return Strings.convertColors(ChatColor.translateAlternateColorCodes('&', output));
 		} catch (MissingResourceException e) {
 			Bukkit.getConsoleSender().sendMessage(PREFIX + " BagOfGold could not find key: " + key.toString());
 			return key;
@@ -282,7 +283,7 @@ public class Messages {
 
 	public String getString(String key) {
 		try {
-			return ChatColor.translateAlternateColorCodes('&', getStringInternal(key));
+			return Strings.convertColors(ChatColor.translateAlternateColorCodes('&', getStringInternal(key)));
 		} catch (MissingResourceException e) {
 			return key;
 		}
@@ -377,7 +378,7 @@ public class Messages {
 		if (isEmpty(message))
 			return;
 
-		message = PlaceholderAPICompat.setPlaceholders(player, message);
+		message = Strings.convertColors(PlaceholderAPICompat.setPlaceholders(player, message));
 		if (TitleManagerCompat.isSupported()) {
 			TitleManagerCompat.setActionBar(player, message);
 		} else if (ActionbarCompat.isSupported()) {
