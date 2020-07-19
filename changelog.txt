@@ -1,6 +1,9 @@
+V3.0.2
+*
 V3.0.1
 * Fixed bug which caused balance to be corrupted 
 * Added support for RGB colours in lang file
+* Fixed bug where BagOfGold could be placed as a playerhead
 V3.0.0
 * Support for MC 1.16 mobs: Huglin, Piglin, Strider, Zoglin. 
 * Rewards is only saved to disk when the plugin is disabled. Saving to disk immediately could cause lag.
