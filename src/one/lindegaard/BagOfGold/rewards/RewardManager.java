@@ -539,8 +539,9 @@ public class RewardManager {
 		double inHand = 0;
 		if (Reward.isReward(is)) {
 			Reward reward = Reward.getReward(is);
+			int amount=is.getAmount();
 			if (reward.isBagOfGoldReward() || reward.isItemReward())
-				inHand = reward.getMoney();
+				inHand = reward.getMoney()*amount;
 		}
 		if (ps != null) {
 			double diff = Misc.round(amountInInventory + inHand)
