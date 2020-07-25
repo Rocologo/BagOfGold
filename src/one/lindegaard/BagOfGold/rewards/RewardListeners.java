@@ -33,7 +33,7 @@ public class RewardListeners implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
 
 		Player player = (Player) event.getPlayer();
@@ -53,7 +53,7 @@ public class RewardListeners implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGameModeChange(PlayerGameModeChangeEvent event) {
 
 		if (event.isCancelled() || PerWorldInventoryCompat.isSupported())
@@ -83,7 +83,7 @@ public class RewardListeners implements Listener {
 		}, 3);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onWorldChange(PlayerChangedWorldEvent event) {
 
 		if (PerWorldInventoryCompat.isSupported())

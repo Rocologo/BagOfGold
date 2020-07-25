@@ -303,8 +303,9 @@ public class BagOfGoldItems implements Listener {
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);
+				int amount = is.getAmount();
 				if (rewardInSlot.isMoney()) {
-					if (rewardInSlot.getMoney() < Core.getConfigManager().limitPerBag)
+					if (rewardInSlot.getMoney()*amount < Core.getConfigManager().limitPerBag)
 						return true;
 				}
 			}
@@ -320,9 +321,10 @@ public class BagOfGoldItems implements Listener {
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);
+				int amount=is.getAmount();
 				if (rewardInSlot.checkHash()) {
 					if (rewardInSlot.isMoney())
-						space = space + Core.getConfigManager().limitPerBag - rewardInSlot.getMoney();
+						space = space + Core.getConfigManager().limitPerBag - rewardInSlot.getMoney()*amount;
 
 				} else {
 					Bukkit.getConsoleSender().sendMessage(
@@ -599,7 +601,7 @@ public class BagOfGoldItems implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
-		plugin.getMessages().debug("InventoryCloseEvent was called");
+		plugin.getMessages().debug("Check if BagOfGold is used as a Helmet");
 		Player player = (Player) event.getPlayer();
 		Inventory inventory = event.getInventory();
 		if (inventory.getType() == InventoryType.CRAFTING) {
@@ -613,13 +615,12 @@ public class BagOfGoldItems implements Listener {
 			if (Reward.isReward(helmet)) {
 				Reward reward = Reward.getReward(helmet);
 				if (reward.checkHash()) {
-					int amount = helmet.getAmount();
 					if (reward.isBagOfGoldReward()) {
 						plugin.getMessages().playerActionBarMessageQueue(player,
 								plugin.getMessages().getString("bagofgold.learn.rewards.no-helmet"));
 						event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
-						if (Misc.round(reward.getMoney()*amount) != Misc
-								.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney()*amount)))
+						if (Misc.round(reward.getMoney()) != Misc
+								.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
 							dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), reward.getMoney());
 					} else {
 						event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
@@ -632,12 +633,8 @@ public class BagOfGoldItems implements Listener {
 					reward.setMoney(0);
 					helmet = Reward.setDisplayNameAndHiddenLores(helmet, reward);
 				}
-			} else {
-				plugin.getMessages().debug("helmet is not a reward");
-			}
-		} else {
-			plugin.getMessages().debug("BagOfGoldItems: InventoryType=%s", inventory.getType());
-		}
+			} 
+		} 
 	}
 
 	@EventHandler
