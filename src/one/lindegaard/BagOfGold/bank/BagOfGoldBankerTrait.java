@@ -69,7 +69,7 @@ public class BagOfGoldBankerTrait extends Trait implements Listener {
 			return;
 
 		Player player = event.getClicker();
-		if (Servers.isSpigotServer()) {
+		if (Servers.isSpigotServer() || Servers.isPaperServer()) {
 			plugin.getMessages().playerSendMessage(player,
 					" \n" + plugin.getMessages().getString("bagofgold.banker.introduction"));
 			plugin.getBankManager().sendBankerMessage(player);
