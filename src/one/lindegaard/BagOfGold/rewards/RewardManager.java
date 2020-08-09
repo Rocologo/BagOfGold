@@ -235,21 +235,21 @@ public class RewardManager {
 			dropMoneyOnGround(null, null, location, reward.getMoney());
 		} else if (reward.isItemReward()) {
 			ItemStack is = new ItemStack(Material.valueOf(Core.getConfigManager().rewardItem), 1);
-			Item item = location.getWorld().dropItemNaturally(location, is);
+			Item item = location.getWorld().dropItem(location, is);
 			getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
 			MobType mob = MobType.getMobType(reward.getSkinUUID());
 			if (mob != null) {
 				ItemStack is = new CoreCustomItems(plugin).getCustomHead(mob, reward.getDisplayName(), 1, reward.getMoney(),
 						reward.getSkinUUID());
-				Item item = location.getWorld().dropItemNaturally(location, is);
+				Item item = location.getWorld().dropItem(location, is);
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
 				getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 			} 
 		} else if (reward.isKillerHeadReward()) {
 			ItemStack is = new CoreCustomItems(plugin).getPlayerHead(reward.getSkinUUID(), reward.getDisplayName(), 1,
 					reward.getMoney());
-			Item item = location.getWorld().dropItemNaturally(location, is);
+			Item item = location.getWorld().dropItem(location, is);
 			item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
 			getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else {

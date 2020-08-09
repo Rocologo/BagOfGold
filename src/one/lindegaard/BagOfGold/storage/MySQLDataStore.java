@@ -343,8 +343,8 @@ public class MySQLDataStore extends DatabaseDataStore {
 			try {
 				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
 				for (PlayerBalance playerBalance : playerBalanceSet) {
-					BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: savedata: %s",
-							playerBalance.toString());
+					//BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: savedata: %s",
+					//		playerBalance.toString());
 					mInsertPlayerBalance.setString(1, playerBalance.getPlayer().getUniqueId().toString());
 					mInsertPlayerBalance.setString(2, playerBalance.getWorldGroup());
 					mInsertPlayerBalance.setInt(3, playerBalance.getGamemode().getValue());

@@ -105,16 +105,16 @@ public class DataStoreManager {
 			while (mTaskThread.getState() != Thread.State.WAITING && mTaskThread.getState() != Thread.State.TERMINATED
 					&& n < 40) {
 				Thread.sleep(500);
-				plugin.getMessages().debug("Waiting %s", n);
+				//plugin.getMessages().debug("Waiting %s", n);
 				n++;
 			}
-			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
+			//plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() == Thread.State.RUNNABLE) {
-				plugin.getMessages().debug("Interupting mTaskThread");
+				//plugin.getMessages().debug("Interupting mTaskThread");
 				mTaskThread.interrupt();
 			}
-			plugin.getMessages().debug("mStoreThread.state=%s", mStoreThread.getState());
-			plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
+			//plugin.getMessages().debug("mStoreThread.state=%s", mStoreThread.getState());
+			//plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() != Thread.State.WAITING) {
 				mTaskThread.waitForEmptyQueue();
 			}

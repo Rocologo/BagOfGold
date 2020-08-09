@@ -245,7 +245,7 @@ public class BagOfGoldItems implements Listener {
 					nextBag, rewardType, skinuuid);
 			is = Reward.setDisplayNameAndHiddenLores(is, reward);
 
-			item = location.getWorld().dropItemNaturally(location, is);
+			item = location.getWorld().dropItem(location, is);
 
 			if (item != null) {
 				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
@@ -806,12 +806,12 @@ public class BagOfGoldItems implements Listener {
 		else
 			clickedInventory = inventory;
 
-		plugin.getMessages().debug(
-				"action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, key=%s",
-				action, inventory.getType(), clickedInventory == null ? "null" : clickedInventory.getType(), slotType,
-				event.getSlot(), isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
-				isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
-				isKey == null ? "null" : isKey.getType());
+		//plugin.getMessages().debug(
+		//		"action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, key=%s",
+		//		action, inventory.getType(), clickedInventory == null ? "null" : clickedInventory.getType(), slotType,
+		//		event.getSlot(), isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
+		//		isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
+		//		isKey == null ? "null" : isKey.getType());
 
 		if (slotType == SlotType.ARMOR) {
 			if (Reward.isReward(isCursor)) {
