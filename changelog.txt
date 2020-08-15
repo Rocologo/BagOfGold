@@ -1,3 +1,5 @@
+V3.0.4
+* Support for Minecraft 1.16.2 added
 V3.0.3
 * Implemented InventoryDragEvent - fixed alot of balance problems
 V3.0.1

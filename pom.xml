@@ -6,8 +6,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0.4</version>
-	<!-- <version>3.0.4-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>3.0.4</version> -->
+	<version>3.0.4-SNAPSHOT-B${build.number}</version>
 	<name>BagOfGold</name>
 	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
 	<description>BagOfGold is an Item based eConomy plugin, which can replace Essentials Economy, CraftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. </description>
