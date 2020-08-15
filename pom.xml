@@ -123,7 +123,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc_1_16_R1.version}</version>
+			<version>${spigotmc_1_16_R2.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
