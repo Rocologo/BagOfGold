@@ -28,9 +28,6 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -1188,7 +1185,7 @@ public class BagOfGoldItems implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	/**@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		plugin.getMessages().debug("BagOfGoldItems: onInventoryMoveItemEvent called");
 		ItemStack is = event.getItem();
@@ -1223,6 +1220,6 @@ public class BagOfGoldItems implements Listener {
 				event.setCancelled(true);
 			}
 		}
-	}
+	}**/
 
 }

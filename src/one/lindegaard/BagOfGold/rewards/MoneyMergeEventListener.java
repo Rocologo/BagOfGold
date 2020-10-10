@@ -1,6 +1,5 @@
 package one.lindegaard.BagOfGold.rewards;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Core;
 import one.lindegaard.Core.rewards.Reward;
 
 public class MoneyMergeEventListener implements Listener {
