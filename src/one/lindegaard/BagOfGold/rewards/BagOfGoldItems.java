@@ -244,18 +244,18 @@ public class BagOfGoldItems implements Listener {
 			item = location.getWorld().dropItem(location, is);
 
 			if (item != null) {
-				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
+				Core.getCoreRewardManager().getDroppedMoney().put(item.getEntityId(), nextBag);
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
 				item.setCustomName(is.getItemMeta().getDisplayName());
 				item.setCustomNameVisible(true);
 				if (player != null)
 					plugin.getMessages().debug("%s dropped %s on the ground as item %s (# of rewards=%s)(3)",
 							player.getName(), format(nextBag), Core.getConfigManager().rewardItemtype,
-							plugin.getRewardManager().getDroppedMoney().size());
+							Core.getCoreRewardManager().getDroppedMoney().size());
 				else
 					plugin.getMessages().debug("A %s(%s) was dropped on the ground as item %s (# of rewards=%s)(3)",
 							Core.getConfigManager().rewardItemtype, format(nextBag),
-							Core.getConfigManager().rewardItemtype, plugin.getRewardManager().getDroppedMoney().size());
+							Core.getConfigManager().rewardItemtype, Core.getCoreRewardManager().getDroppedMoney().size());
 
 			}
 		}
@@ -366,15 +366,15 @@ public class BagOfGoldItems implements Listener {
 			if (reward.isMoney()) {
 				int amount = item.getItemStack().getAmount();
 				double money = reward.getMoney() * amount;
-				plugin.getRewardManager().getDroppedMoney().put(item.getEntityId(), money);
+				Core.getCoreRewardManager().getDroppedMoney().put(item.getEntityId(), money);
 				if (money == 0) {
 					plugin.getMessages().debug("%s dropped a %s (# of rewards left=%s)(1)", player.getName(),
 							reward.getDisplayName() != null ? reward.getDisplayName()
 									: Core.getConfigManager().bagOfGoldName,
-							plugin.getRewardManager().getDroppedMoney().size());
+							Core.getCoreRewardManager().getDroppedMoney().size());
 				} else {
 					plugin.getMessages().debug("%s dropped %s %s. (# of rewards left=%s)(2)", player.getName(),
-							format(money), reward.getDisplayName(), plugin.getRewardManager().getDroppedMoney().size());
+							format(money), reward.getDisplayName(), Core.getCoreRewardManager().getDroppedMoney().size());
 					if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 						plugin.getMessages().playerActionBarMessageQueue(player, plugin.getMessages().getString(
 								"bagofgold.moneydrop", "money", format(money), "rewardname",
@@ -482,8 +482,8 @@ public class BagOfGoldItems implements Listener {
 		} else {
 			// plugin.getMessages().debug("The reward was picked up by %s",
 			// event.getInventory().getType());
-			if (plugin.getRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
-				plugin.getRewardManager().getDroppedMoney().remove(item.getEntityId());
+			if (Core.getCoreRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
+				Core.getCoreRewardManager().getDroppedMoney().remove(item.getEntityId());
 		}
 	}
 
@@ -512,8 +512,8 @@ public class BagOfGoldItems implements Listener {
 			}
 
 			if (Reward.isReward(item) && canPickupMoney(player)) {
-				if (plugin.getRewardManager().getDroppedMoney().containsKey(entity.getEntityId())) {
-					plugin.getRewardManager().getDroppedMoney().remove(entity.getEntityId());
+				if (Core.getCoreRewardManager().getDroppedMoney().containsKey(entity.getEntityId())) {
+					Core.getCoreRewardManager().getDroppedMoney().remove(entity.getEntityId());
 					Reward reward = Reward.getReward(item);
 					if (reward.checkHash()) {
 						if (reward.isMoney()) {
@@ -549,11 +549,11 @@ public class BagOfGoldItems implements Listener {
 			targetEntity = nearby.next();
 
 			if (Reward.isReward(targetEntity)) {
-				if (plugin.getRewardManager().getDroppedMoney().containsKey(targetEntity.getEntityId()))
-					plugin.getRewardManager().getDroppedMoney().remove(targetEntity.getEntityId());
+				if (Core.getCoreRewardManager().getDroppedMoney().containsKey(targetEntity.getEntityId()))
+					Core.getCoreRewardManager().getDroppedMoney().remove(targetEntity.getEntityId());
 				targetEntity.remove();
 				plugin.getMessages().debug("The reward was hit by %s and removed. (# of rewards left=%s)",
-						projectile.getType(), plugin.getRewardManager().getDroppedMoney().size());
+						projectile.getType(), Core.getCoreRewardManager().getDroppedMoney().size());
 			}
 		}
 	}

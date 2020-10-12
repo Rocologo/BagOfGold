@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.rewards.Reward;
 
 public class MoneyMergeEventListener implements Listener {
@@ -45,7 +46,7 @@ public class MoneyMergeEventListener implements Listener {
 						//String displayName = reward2.isItemReward()
 						//		? plugin.getEconomyManager().format(reward2.getMoney())
 						//		: reward2.getDisplayName() + " ("
-						//				+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
+						//		plugin.getRewardManager().		+ plugin.getEconomyManager().format(reward2.getMoney()) + ")";
 						//item2.setCustomName(
 						//		ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + displayName);
 						//item2.setCustomNameVisible(true);
@@ -75,8 +76,8 @@ public class MoneyMergeEventListener implements Listener {
 								plugin.getEconomyManager().format(reward2.getMoney()));
 					}
 				}
-				if (plugin.getRewardManager().getDroppedMoney().containsKey(item1.getEntityId()))
-					plugin.getRewardManager().getDroppedMoney().remove(item1.getEntityId());
+				if (Core.getCoreRewardManager().getDroppedMoney().containsKey(item1.getEntityId()))
+					Core.getCoreRewardManager().getDroppedMoney().remove(item1.getEntityId());
 			}
 		}
 	}

@@ -27,29 +27,28 @@ public class PickupRewards {
 				boolean succes = plugin.getEconomyManager().depositPlayer(player, reward.getMoney());
 				if (succes) {
 					item.remove();
-					if (plugin.getRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
-						plugin.getRewardManager().getDroppedMoney().remove(item.getEntityId());
+					if (Core.getCoreRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
+						Core.getCoreRewardManager().getDroppedMoney().remove(item.getEntityId());
 					if (ProtocolLibCompat.isSupported())
 						ProtocolLibHelper.pickupMoney(player, item);
 
 					if (reward.getMoney() == 0) {
 						plugin.getMessages().debug("%s picked up a %s (# of rewards left=%s)", player.getName(),
 								reward.isItemReward() ? "ITEM" : reward.getDisplayName(),
-								plugin.getRewardManager().getDroppedMoney().size());
+								Core.getCoreRewardManager().getDroppedMoney().size());
 					} else {
 						plugin.getMessages().debug(
 								"%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)",
 								player.getName(), reward.isItemReward() ? "ITEM" : reward.getDisplayName(),
 								plugin.getBagOfGoldItems().format(Misc.round(reward.getMoney())),
-								plugin.getRewardManager().getDroppedMoney().size());
+								Core.getCoreRewardManager().getDroppedMoney().size());
 						if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
-							plugin.getMessages().playerActionBarMessageQueue(player,
-									plugin.getMessages().getString("bagofgold.moneypickup", "money",
-											plugin.getBagOfGoldItems().format(reward.getMoney()), "rewardname",
-											ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
-													+ (reward.getDisplayName().isEmpty()
-															? Core.getConfigManager().bagOfGoldName
-															: reward.getDisplayName())));
+							plugin.getMessages().playerActionBarMessageQueue(player, plugin.getMessages().getString(
+									"bagofgold.moneypickup", "money",
+									plugin.getBagOfGoldItems().format(reward.getMoney()), "rewardname",
+									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+											+ (reward.getDisplayName().isEmpty() ? Core.getConfigManager().bagOfGoldName
+													: reward.getDisplayName())));
 					}
 				} else {
 					callBack.setCancelled(true);

@@ -1,6 +1,5 @@
 package one.lindegaard.BagOfGold.rewards;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -31,8 +30,6 @@ public class RewardManager {
 
 	private PickupRewards pickupRewards;
 
-	private HashMap<Integer, Double> droppedMoney = new HashMap<Integer, Double>();
-
 	public RewardManager(BagOfGold plugin) {
 		this.plugin = plugin;
 
@@ -45,10 +42,6 @@ public class RewardManager {
 			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), plugin);
 		else
 			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
-	}
-
-	public HashMap<Integer, Double> getDroppedMoney() {
-		return droppedMoney;
 	}
 
 	/**
@@ -236,22 +229,22 @@ public class RewardManager {
 		} else if (reward.isItemReward()) {
 			ItemStack is = new ItemStack(Material.valueOf(Core.getConfigManager().rewardItem), 1);
 			Item item = location.getWorld().dropItem(location, is);
-			getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+			Core.getCoreRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else if (reward.isKilledHeadReward()) {
 			MobType mob = MobType.getMobType(reward.getSkinUUID());
 			if (mob != null) {
-				ItemStack is = new CoreCustomItems(plugin).getCustomHead(mob, reward.getDisplayName(), 1, reward.getMoney(),
-						reward.getSkinUUID());
+				ItemStack is = new CoreCustomItems(plugin).getCustomHead(mob, reward.getDisplayName(), 1,
+						reward.getMoney(), reward.getSkinUUID());
 				Item item = location.getWorld().dropItem(location, is);
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
-				getDroppedMoney().put(item.getEntityId(), reward.getMoney());
-			} 
+				Core.getCoreRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+			}
 		} else if (reward.isKillerHeadReward()) {
 			ItemStack is = new CoreCustomItems(plugin).getPlayerHead(reward.getSkinUUID(), reward.getDisplayName(), 1,
 					reward.getMoney());
 			Item item = location.getWorld().dropItem(location, is);
 			item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
-			getDroppedMoney().put(item.getEntityId(), reward.getMoney());
+			Core.getCoreRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 					+ "Unhandled reward type in RewardManager (DropRewardOnGround).");
@@ -539,9 +532,9 @@ public class RewardManager {
 		double inHand = 0;
 		if (Reward.isReward(is)) {
 			Reward reward = Reward.getReward(is);
-			int amount=is.getAmount();
+			int amount = is.getAmount();
 			if (reward.isBagOfGoldReward() || reward.isItemReward())
-				inHand = reward.getMoney()*amount;
+				inHand = reward.getMoney() * amount;
 		}
 		if (ps != null) {
 			double diff = Misc.round(amountInInventory + inHand)
