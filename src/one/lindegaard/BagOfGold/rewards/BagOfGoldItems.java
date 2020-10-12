@@ -23,7 +23,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -338,21 +337,6 @@ public class BagOfGoldItems implements Listener {
 		return space;
 	}
 
-	private boolean isFakeReward(Item item) {
-		ItemStack itemStack = item.getItemStack();
-		return isFakeReward(itemStack);
-	}
-
-	private boolean isFakeReward(ItemStack itemStack) {
-		if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()
-				&& itemStack.getItemMeta().getDisplayName().contains(Core.getConfigManager().bagOfGoldName)) {
-			if (!itemStack.getItemMeta().hasLore()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	// ***********************************************************************************
 	// EVENTS
 	// ***********************************************************************************
@@ -365,7 +349,7 @@ public class BagOfGoldItems implements Listener {
 		Item item = event.getItemDrop();
 		Player player = event.getPlayer();
 
-		if (isFakeReward(item)) {
+		if (Reward.isFakeReward(item)) {
 			player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward with no value");
 			return;
 		}
@@ -425,7 +409,7 @@ public class BagOfGoldItems implements Listener {
 		ItemStack is = event.getItemInHand();
 		Block block = event.getBlockPlaced();
 
-		if (isFakeReward(is)) {
+		if (Reward.isFakeReward(is)) {
 			player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward with no value");
 			return;
 		}
@@ -479,24 +463,6 @@ public class BagOfGoldItems implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onDespawnRewardEvent(ItemDespawnEvent event) {
-		if (event.isCancelled())
-			return;
-
-		if (Reward.isReward(event.getEntity())) {
-			if (plugin.getRewardManager().getDroppedMoney().containsKey(event.getEntity().getEntityId())) {
-				plugin.getRewardManager().getDroppedMoney().remove(event.getEntity().getEntityId());
-				if (event.getEntity().getLastDamageCause() != null)
-					plugin.getMessages().debug("The reward was destroyed by %s",
-							event.getEntity().getLastDamageCause().getCause());
-				else
-					plugin.getMessages().debug("The reward despawned (# of rewards left=%s)",
-							plugin.getRewardManager().getDroppedMoney().size());
-			}
-		}
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryPickupRewardEvent(InventoryPickupItemEvent event) {
 		if (event.isCancelled())
@@ -539,7 +505,7 @@ public class BagOfGoldItems implements Listener {
 
 			Item item = (Item) entity;
 
-			if (isFakeReward(item)) {
+			if (Reward.isFakeReward(item)) {
 				player.sendMessage(ChatColor.RED + "[BagOfGold] WARNING, this was a FAKE reward and it was removed");
 				item.remove();
 				return;
@@ -600,7 +566,7 @@ public class BagOfGoldItems implements Listener {
 		if (inventory.getType() == InventoryType.CRAFTING) {
 			ItemStack helmet = player.getEquipment().getHelmet();
 
-			if (isFakeReward(helmet)) {
+			if (Reward.isFakeReward(helmet)) {
 				event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
 				return;
 			}
@@ -731,18 +697,18 @@ public class BagOfGoldItems implements Listener {
 			return;
 		}
 
-		if (isFakeReward(isCurrentSlot)) {
+		if (Reward.isFakeReward(isCurrentSlot)) {
 			isCurrentSlot.setType(Material.AIR);
 			isCurrentSlot.setAmount(0);
 			player.getInventory().clear(event.getSlot());
 			return;
 		}
-		if (isFakeReward(isCursor)) {
+		if (Reward.isFakeReward(isCursor)) {
 			isCursor.setType(Material.AIR);
 			isCursor.setAmount(0);
 			return;
 		}
-		if (isFakeReward(isKey)) {
+		if (Reward.isFakeReward(isKey)) {
 			isKey.setType(Material.AIR);
 			isKey.setAmount(0);
 			return;
