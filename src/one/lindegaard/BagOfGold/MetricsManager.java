@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 
 import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
@@ -24,8 +27,6 @@ import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.HttpTools;
 import one.lindegaard.Core.HttpTools.httpCallback;
-
-import org.bstats.bukkit.Metrics;
 
 public class MetricsManager {
 
@@ -71,9 +72,9 @@ public class MetricsManager {
 		// https://bstats.org/what-is-my-plugin-id
 		bStatsMetrics = new Metrics(plugin, 1783);
 		bStatsMetrics.addCustomChart(
-				new Metrics.SimplePie("database_used_for_bagofgold", () -> plugin.getConfigManager().databaseType));
+				new SimplePie("database_used_for_bagofgold", () -> plugin.getConfigManager().databaseType));
 		bStatsMetrics
-				.addCustomChart(new Metrics.AdvancedPie("other_integrations", new Callable<Map<String, Integer>>() {
+				.addCustomChart(new AdvancedPie("other_integrations", new Callable<Map<String, Integer>>() {
 					@Override
 					public Map<String, Integer> call() throws Exception {
 						Map<String, Integer> valueMap = new HashMap<>();
@@ -85,13 +86,13 @@ public class MetricsManager {
 					}
 
 				}));
-		bStatsMetrics.addCustomChart(new Metrics.SimplePie("language", () -> plugin.getConfigManager().language));
+		bStatsMetrics.addCustomChart(new SimplePie("language", () -> plugin.getConfigManager().language));
 		
-		bStatsMetrics.addCustomChart(new Metrics.SimplePie("item_type", () -> Core.getConfigManager().rewardItemtype));
+		bStatsMetrics.addCustomChart(new SimplePie("item_type", () -> Core.getConfigManager().rewardItemtype));
 		
-		bStatsMetrics.addCustomChart(new Metrics.SimplePie("economy_base", () -> plugin.getEconomyManager().getEconomyAPI()));
+		bStatsMetrics.addCustomChart(new SimplePie("economy_base", () -> plugin.getEconomyManager().getEconomyAPI()));
 	
-		bStatsMetrics.addCustomChart(new Metrics.AdvancedPie("titlemanagers", new Callable<Map<String, Integer>>() {
+		bStatsMetrics.addCustomChart(new AdvancedPie("titlemanagers", new Callable<Map<String, Integer>>() {
 			@Override
 			public Map<String, Integer> call() throws Exception {
 				Map<String, Integer> valueMap = new HashMap<>();

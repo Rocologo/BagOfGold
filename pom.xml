@@ -61,8 +61,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${mavenCompilerPlugin.version}</version>
 				<configuration>
-					<source>${javacompiler.version}</source>
-					<target>${javacompiler.version}</target>
+					<source>${javaCompilerSource.version}</source>
+					<target>${javaCompilerTarget.version}</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -123,7 +123,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc_1_16_R2.version}</version>
+			<version>${spigotmc_1_17_R1.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
