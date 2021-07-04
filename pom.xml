@@ -21,6 +21,8 @@
 
 	<properties>
 		<bagofgold-core.version>0.5.2-SNAPSHOT</bagofgold-core.version>
+		<java.version>1.16</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<scm>
@@ -81,7 +83,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>${mavenShadePlugin.version}</version>
@@ -110,7 +112,7 @@
 						</relocation>
 					</relocations>
 				</configuration>
-			</plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 
@@ -291,20 +293,5 @@
 		</dependency>
 
 	</dependencies>
-
-	<!-- Added to make maven shade plugin support java 16 -->
-	<pluginRepositories>
-		<pluginRepository>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>Maven Plugin Repository</name>
-			<url>http://repo1.maven.org/maven2</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 </project>
