@@ -1,3 +1,7 @@
+V4.0.5
+* Added support for CMI 9.0.1.0 and CMILib 1.0.12.1
+V4.0.4
+* Support for MC 1.17.X
 V3.0.4
 * Support for Minecraft 1.16.2 added
 V3.0.3
