@@ -18,6 +18,10 @@ public class BankCommand implements ICommand {
 
 	public BankCommand(BagOfGold plugin) {
 		this.plugin = plugin;
+		if (Core.getConfigManager().bagOfGoldName.isEmpty()) {
+			Core.getConfigManager().bagOfGoldName = "BagOfGold";
+			Core.getConfigManager().saveConfig();
+		}
 	}
 
 	// Admin command
@@ -139,8 +143,7 @@ public class BankCommand implements ICommand {
 					plugin.getMessages().senderSendMessage(sender,
 							ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.money.bankbalance",
 									"playername", "You", "money", plugin.getEconomyManager().format(balance),
-									"rewardname",
-									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
+									"rewardname", ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
 											+ Core.getConfigManager().bagOfGoldName.trim()));
 			} else {
 				plugin.getMessages().senderSendMessage(sender,

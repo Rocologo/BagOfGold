@@ -6,8 +6,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>4.0.5</version>
-	<!-- <version>4.0.5-SNAPSHOT-B${build.number}</version> -->
+	<!-- <version>4.0.6</version> -->
+	<!-- <version>4.0.6-SNAPSHOT-B${build.number}</version> -->
+	<version>4.0.6-SNAPSHOT</version>
 	<name>BagOfGold</name>
 	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
 	<description>BagOfGold is an Item based eConomy plugin, which can replace Essentials Economy, CraftConomy, Gringotts and similar plugins. Your money is in the Bag so be careful that you not loose the bag when you die. You can save some of your money the BagOfGold bank or in a protected chest. </description>
@@ -21,8 +22,6 @@
 
 	<properties>
 		<bagofgold-core.version>0.5.2-SNAPSHOT</bagofgold-core.version>
-		<java.version>1.16</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<scm>
@@ -58,31 +57,6 @@
 		</resources>
 		<directory>${basedir}/target</directory>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${mavenCompilerPlugin.version}</version>
-				<configuration>
-					<source>${javaCompilerSource.version}</source>
-					<target>${javaCompilerTarget.version}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.Maven.plugins</groupId>
-				<artifactId>Maven-jar-plugin</artifactId>
-				<version>${mavenJarPlugin.version}</version>
-				<configuration>
-					<archive>
-						<index>true</index>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-						<manifestEntries>
-							<Implementation-Version>B${build.number}</Implementation-Version>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -126,7 +100,6 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>${spigotmc_1_17_R1.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Rocologo Core -->
@@ -136,20 +109,12 @@
 			<version>${bagofgold-core.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>one.lindegaard</groupId>
-			<artifactId>NMS_Shared</artifactId>
-			<version>${NMS_Shared.version}</version>
-			<type>jar</type>
-			<optional>true</optional>
-		</dependency>
 
 		<!-- PerWorldInventory -->
 		<dependency>
 			<groupId>me.ebonjaeger</groupId>
 			<artifactId>perworldinventory</artifactId>
 			<version>${PerWorldInventory.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>me.gnat008</groupId>
@@ -162,7 +127,6 @@
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
 			<version>${vault.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Reserve / -->
@@ -170,7 +134,6 @@
 			<groupId>net.tnemc</groupId>
 			<artifactId>Reserve</artifactId>
 			<version>${reserve.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Citizens -->
@@ -187,7 +150,6 @@
 			<groupId>org.inventivetalent</groupId>
 			<artifactId>bossbarapi</artifactId>
 			<version>${bossbarapi.version}</version>
-			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>metrics-lite</artifactId>
@@ -201,7 +163,6 @@
 			<groupId>me.confuser</groupId>
 			<artifactId>BarAPI</artifactId>
 			<version>${barapi.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- TitleManager -->
@@ -209,7 +170,6 @@
 			<groupId>io.puharesource.mc</groupId>
 			<artifactId>TitleManager</artifactId>
 			<version>${titlemanager.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- TitleAPI -->
@@ -265,7 +225,6 @@
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
 			<version>${placeholderapi.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- BossShop -->
@@ -273,7 +232,6 @@
 			<groupId>org.black_ixx</groupId>
 			<artifactId>BossShop</artifactId>
 			<version>${bossshop.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- SpigetUpdate -->
@@ -282,19 +240,6 @@
 			<artifactId>bukkit</artifactId>
 			<version>${spigetupdate.version}</version>
 			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 
 	</dependencies>
