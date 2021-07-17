@@ -19,7 +19,6 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Core;
 
 public class ProtocolLibHelper {
 
@@ -45,7 +44,9 @@ public class ProtocolLibHelper {
 								while (itr.hasNext()) {
 									String str = itr.next();
 									if (str.startsWith("Hidden("))
-										if (event.getPlayer().getGameMode() == GameMode.SURVIVAL || !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
+										// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
+										// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
+										if (event.getPlayer().getGameMode() == GameMode.SURVIVAL)
 											itr.remove();
 								}
 								itemMeta.setLore(lore);
@@ -71,7 +72,9 @@ public class ProtocolLibHelper {
 									while (itr.hasNext()) {
 										String str = itr.next();
 										if (str.startsWith("Hidden("))
-											if (event.getPlayer().getGameMode() == GameMode.SURVIVAL || !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
+											// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
+											// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
+											if (event.getPlayer().getGameMode() == GameMode.SURVIVAL)
 												itr.remove();
 									}
 									itemMeta.setLore(lore);

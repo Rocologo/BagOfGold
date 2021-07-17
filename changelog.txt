@@ -1,3 +1,7 @@
+V4.0.6
+* BagOfGold items works a lot better in Creative mode. At the moment Im not able to remove the "strange" Lores on BagOfGold items in Creative mode, because of how Creative mode handle the items.  
+* ActionBar messages using CMILib re-added.
+Its very time consuming to test BagOfGold movements in different gamemodes and plugins like MultiverseInventories and PerWorldInventories, and with or without both MobHuntin and BagOfGOld. Let me know if someone wants to help me with the testing!
 V4.0.5
 * Added support for CMI 9.0.1.0 and CMILib 1.0.12.1
 V4.0.4

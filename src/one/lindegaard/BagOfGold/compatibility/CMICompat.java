@@ -6,10 +6,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.Zrips.CMI.CMI;
-import com.Zrips.CMI.Containers.CMIUser;
 import com.Zrips.CMI.Modules.Holograms.HologramManager;
 
 import net.Zrips.CMILib.CMILib;
+import net.Zrips.CMILib.ActionBar.CMIActionBar;
 import net.Zrips.CMILib.BossBar.BossBarInfo;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.compatibility.CompatPlugin;
@@ -61,15 +61,15 @@ public class CMICompat {
 	}
 
 	public static void sendActionBarMessage(Player player, String text) {
-		// getCMIPlugin().getActionBarManager().send(player, text);
+		CMIActionBar.send(player, text);
 	}
 
 	public static void sendBossBarMessage(Player player, String text) {
-	    BossBarInfo bossBar = new BossBarInfo(player, "..."); 
-	    bossBar.setSeconds(10);
-	    bossBar.setTitleOfBar(text);
-	    bossBar.setKeepForTicks(0);
-	    CMILib.getInstance().getBossBarManager().addBossBar(player, bossBar);
+		BossBarInfo bossBar = new BossBarInfo(player, "...");
+		bossBar.setSeconds(10);
+		bossBar.setTitleOfBar(text);
+		bossBar.setKeepForTicks(0);
+		CMILib.getInstance().getBossBarManager().addBossBar(player, bossBar);
 	}
 
 }

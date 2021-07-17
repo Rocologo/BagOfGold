@@ -496,10 +496,11 @@ public class RewardManager {
 
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		double amountInInventory = getAmountInInventory(player);
+		plugin.getMessages().debug("amountInInventory = %s",amountInInventory);
 		if (ps != null) {
 			double diff = (Misc.round(ps.getBalance()) + Misc.round(ps.getBalanceChanges()))
 					- Misc.round(amountInInventory);
-			double space = getSpaceForMoney(player);
+			double space = getSpaceForMoney(player); // writes Playername has room for nnnn money
 			if (diff > space) {
 				plugin.getMessages().debug("Not enough space for the money. Space=%s", space);
 				diff = space;
