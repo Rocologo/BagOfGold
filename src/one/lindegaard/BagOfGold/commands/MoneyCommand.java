@@ -78,12 +78,12 @@ public class MoneyCommand implements ICommand {
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
 						+ " - to give the player a " + Core.getConfigManager().bagOfGoldName.trim()
-						+ " in his inventory.",
+						+ " in his inventory. * = all online players.",
 
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " take <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
 						+ " - to take <amount> gold from the " + Core.getConfigManager().bagOfGoldName.trim()
-						+ " in the players inventory",
+						+ " in the players inventory. * = all online players.",
 
 				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
 						+ " balance [optional playername]" + ChatColor.WHITE + " - to get your balance of "
@@ -331,6 +331,7 @@ public class MoneyCommand implements ICommand {
 
 		} else if (args.length >= 2 && args[0].equalsIgnoreCase("give")) {
 			// /bag money give <player> <amount>
+			// /bag money give * <amount>
 			if (sender.hasPermission("bagofgold.money.give") || sender.hasPermission("bagofgold.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
@@ -339,11 +340,15 @@ public class MoneyCommand implements ICommand {
 				}
 
 				OfflinePlayer offlinePlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
-				if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
-					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-							.getString("bagofgold.commands.base.playername-missing", "player", args[1]));
-					return true;
-				}
+
+				boolean allPlayers = args[1].equals("*");
+
+				if (!allPlayers)
+					if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.base.playername-missing", "player", args[1]));
+						return true;
+					}
 
 				if (args.length > 2 && args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
@@ -353,7 +358,11 @@ public class MoneyCommand implements ICommand {
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 										"number", args[2], "maximum", amount));
 					}
-					plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
+					if (allPlayers) {
+						for (Player player : Tools.getOnlinePlayers())
+							plugin.getEconomyManager().depositPlayer(player, amount);
+					} else
+						plugin.getEconomyManager().depositPlayer(offlinePlayer, amount);
 				} else {
 					if (args.length > 2)
 						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
@@ -443,18 +452,24 @@ public class MoneyCommand implements ICommand {
 
 		{
 			// /bag money take <player> <amount>
+			// /bag money take * <amount>
 			if (sender.hasPermission("bagofgold.money.take") || sender.hasPermission("bagofgold.money.*")) {
 				if (args.length == 2 && !(sender instanceof Player)) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 							.getString("bagofgold.commands.base.playername-missing", "player", args[1]));
 					return true;
 				}
+
 				OfflinePlayer offlinePlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
-				if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
-					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-							.getString("bagofgold.commands.base.playername-missing", "player", args[1]));
-					return true;
-				}
+
+				boolean allPlayers = args[1].equals("*");
+
+				if (!allPlayers)
+					if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
+						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
+								.getString("bagofgold.commands.base.playername-missing", "player", args[1]));
+						return true;
+					}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
 					double amount = Misc.round(Double.valueOf(args[2]));
 					if (amount > Core.getConfigManager().limitPerBag * 100) {
@@ -463,7 +478,11 @@ public class MoneyCommand implements ICommand {
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.money.to_big_number",
 										"number", args[2], "maximum", amount));
 					}
-					plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
+					if (allPlayers) {
+						for (Player player : Tools.getOnlinePlayers())
+							plugin.getEconomyManager().withdrawPlayer(player, amount);
+					} else
+						plugin.getEconomyManager().withdrawPlayer(offlinePlayer, amount);
 				} else {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
 							.getString("bagofgold.commands.base.not_a_number", "number", args[2]));
@@ -616,9 +635,11 @@ public class MoneyCommand implements ICommand {
 			items.add("bankbalance");
 			items.add("pay");
 			items.add("Top");
-		} else if (args.length == 2)
+		} else if (args.length == 2) {
 			for (Player player : Bukkit.getOnlinePlayers())
 				items.add(player.getName());
+			items.add("*");
+		}
 
 		if (!args[args.length - 1].trim().isEmpty()) {
 			String match = args[args.length - 1].trim().toLowerCase();
