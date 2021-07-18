@@ -80,17 +80,11 @@ public class BagOfGoldItems implements Listener {
 		double addedMoney = 0;
 
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			// if (slot >= 36 && slot <= 40)
-			// continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);
 
 				if (rewardInSlot.isMoney()) {
-
-					// plugin.getMessages().debug("BagOfGoldItems: addBagOfGoldMoneyToPlayer, there
-					// is money in slot=%s",
-					// slot);
 
 					if (rewardInSlot.checkHash()) {
 						if (rewardInSlot.getMoney() < Core.getConfigManager().limitPerBag) {
@@ -107,8 +101,6 @@ public class BagOfGoldItems implements Listener {
 							if (rewardInSlot.getMoney() == 0)
 								player.getInventory().clear(slot);
 							else {
-								// plugin.getMessages().debug(
-								// "BagOfGoldItems: addBagOfGoldMoneyToPlayer change lores and displayname");
 								is = Reward.setDisplayNameAndHiddenLores(is, rewardInSlot);
 							}
 							plugin.getMessages().debug(
@@ -170,8 +162,6 @@ public class BagOfGoldItems implements Listener {
 		double taken = 0;
 		double toBeTaken = Misc.round(amount);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			// if (slot >= 36 && slot <= 40)
-			// continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward reward = Reward.getReward(is);
@@ -211,7 +201,6 @@ public class BagOfGoldItems implements Listener {
 		Item item = null;
 		double moneyLeftToDrop = Misc.ceil(money);
 		ItemStack is;
-		// UUID uuid = null, skinuuid = null;
 		UUID skinuuid = null;
 		RewardType rewardType;
 		double nextBag = 0;
@@ -263,19 +252,14 @@ public class BagOfGoldItems implements Listener {
 	}
 
 	public double getAmountOfBagOfGoldMoneyInInventory(Player player) {
-		plugin.getMessages().debug("Start getAmountOfBagOfGoldMoneyInInventory");
 		double amountInInventory = 0;
 
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			// if (slot >= 36 && slot <= 40)
-			// continue;
 			ItemStack is = player.getInventory().getItem(slot);
 
 			if (Reward.isReward(is)) {
 				Reward reward = Reward.getReward(is);
 				int amount = is.getAmount();
-				if (reward.isMoney())
-					plugin.getMessages().debug("Found money bag in slot = %s", slot);
 
 				if (reward.checkHash()) {
 					if (reward.isMoney())
@@ -299,8 +283,6 @@ public class BagOfGoldItems implements Listener {
 		else if (player.getInventory().firstEmpty() != -1)
 			return true;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			// if (slot >= 36 && slot <= 40)
-			// continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);
@@ -315,11 +297,8 @@ public class BagOfGoldItems implements Listener {
 	}
 
 	public double getSpaceForBagOfGoldMoney(Player player) {
-		plugin.getMessages().debug("Start getSpaceForBagOfGoldMoney");
 		double space = 0;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			// if (slot >= 36 && slot <= 40)
-			// continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);
@@ -487,8 +466,6 @@ public class BagOfGoldItems implements Listener {
 			// event.getInventory().getType());
 			event.setCancelled(true);
 		} else {
-			// plugin.getMessages().debug("The reward was picked up by %s",
-			// event.getInventory().getType());
 			if (Core.getCoreRewardManager().getDroppedMoney().containsKey(item.getEntityId()))
 				Core.getCoreRewardManager().getDroppedMoney().remove(item.getEntityId());
 		}
@@ -776,12 +753,12 @@ public class BagOfGoldItems implements Listener {
 		else
 			clickedInventory = inventory;
 
-		plugin.getMessages().debug(
-				"action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, key=%s",
-				action, inventory.getType(), clickedInventory == null ? "null" : clickedInventory.getType(), slotType,
-				event.getSlot(), isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
-				isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
-				isKey == null ? "null" : isKey.getType());
+		//plugin.getMessages().debug(
+		//		"action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, key=%s",
+		//		action, inventory.getType(), clickedInventory == null ? "null" : clickedInventory.getType(), slotType,
+		//		event.getSlot(), isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
+		//		isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
+		//		isKey == null ? "null" : isKey.getType());
 
 		if (slotType == SlotType.ARMOR) {
 			if (Reward.isReward(isCursor)) {

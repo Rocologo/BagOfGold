@@ -1,3 +1,5 @@
+V4.0.7
+*
 V4.0.6
 * BagOfGold items works a lot better in Creative mode. At the moment Im not able to remove the "strange" Lores on BagOfGold items in Creative mode, because of how Creative mode handle the items.  
 * ActionBar messages using CMILib re-added.
