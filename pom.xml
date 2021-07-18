@@ -116,11 +116,6 @@
 			<artifactId>PerWorldInventory</artifactId>
 			<version>${PerWorldInventory.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>me.gnat008</groupId>
-			<artifactId>perworldinventory</artifactId>
-			<version>1.8.3</version>
-		</dependency>
 
 		<!-- Vault / -->
 		<dependency>
