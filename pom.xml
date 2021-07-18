@@ -113,7 +113,7 @@
 		<!-- PerWorldInventory -->
 		<dependency>
 			<groupId>me.ebonjaeger</groupId>
-			<artifactId>perworldinventory</artifactId>
+			<artifactId>PerWorldInventory</artifactId>
 			<version>${PerWorldInventory.version}</version>
 		</dependency>
 		<dependency>
