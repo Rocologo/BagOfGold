@@ -20,6 +20,7 @@ public class CMICompat {
 	private static boolean supported = false;
 
 	// https://www.spigotmc.org/resources/cmi-ranks-kits-portals-essentials-mysql-sqlite-bungeecord.3742/
+	// https://www.spigotmc.org/resources/cmilib.87610/
 
 	public CMICompat() {
 		if (!isEnabledInConfig()) {
@@ -27,15 +28,25 @@ public class CMICompat {
 					+ "Compatibility with CMI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.CMI.getName());
-			mPlugin2 = Bukkit.getPluginManager().getPlugin(CompatPlugin.CMI.getName());
-			if (mPlugin.getDescription().getVersion().compareTo("7.6") >= 0) {
+
+			if (mPlugin.getDescription().getVersion().compareTo("9.0") >= 0) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 						+ "Enabling compatibility with CMI (" + mPlugin.getDescription().getVersion() + ").");
-				supported = true;
+
+				mPlugin2 = Bukkit.getPluginManager().getPlugin(CompatPlugin.CMILib.getName());
+				if (mPlugin2.getDescription().getVersion().compareTo("1.0") >= 0) {
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
+							+ "Enabling compatibility with CMILib (" + mPlugin2.getDescription().getVersion() + ").");
+					supported = true;
+				} else
+					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+							+ "Your current version of CMILib (" + mPlugin2.getDescription().getVersion()
+							+ ") is not supported by MobHunting. Mobhunting does only support version 1.0 or newer.");
+
 			} else
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 						+ "Your current version of CMI (" + mPlugin.getDescription().getVersion()
-						+ ") is not supported by MobHunting. Mobhunting does only support version 7.6 or newer.");
+						+ ") is not supported by MobHunting. Mobhunting does only support version 9.0 or newer.");
 
 		}
 	}

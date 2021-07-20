@@ -544,7 +544,6 @@ public class BagOfGoldItems implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
-		plugin.getMessages().debug("Check if BagOfGold is used as a Helmet");
 		Player player = (Player) event.getPlayer();
 		Inventory inventory = event.getInventory();
 		if (inventory.getType() == InventoryType.CRAFTING) {
