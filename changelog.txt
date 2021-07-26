@@ -1,5 +1,6 @@
 V4.0.8
-* 
+* Minor fixes
+* Fixed Money-Merge-Bug
 V4.0.7
 * Added support for LevelledMobs
 * Added 2 new commands on request (https://github.com/Rocologo/BagOfGold/issues/115)
