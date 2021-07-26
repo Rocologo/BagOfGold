@@ -21,7 +21,6 @@ import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.mobs.MobType;
 import one.lindegaard.Core.rewards.CoreCustomItems;
-import one.lindegaard.Core.rewards.MoneyMergeEventListener;
 import one.lindegaard.Core.rewards.Reward;
 import one.lindegaard.Core.server.Servers;
 

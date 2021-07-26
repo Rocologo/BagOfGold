@@ -13,11 +13,11 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.rewards.Reward;
 
-public class MoneyMergeEventListener_deleted implements Listener {
+public class MoneyMergeEventListener implements Listener {
 
 	private BagOfGold plugin;
 
-	public MoneyMergeEventListener_deleted(BagOfGold plugin) {
+	public MoneyMergeEventListener(BagOfGold plugin) {
 		this.plugin = plugin;
 	}
 
