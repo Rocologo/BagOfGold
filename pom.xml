@@ -21,7 +21,7 @@
 	</parent>
 
 	<properties>
-		<bagofgold-core.version>0.5.2-SNAPSHOT</bagofgold-core.version>
+		<bagofgold-core.version>0.5.3-SNAPSHOT</bagofgold-core.version>
 	</properties>
 
 	<scm>
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc_1_17_R1.version}</version>
+			<version>${spigotmc_1_18_R1.version}</version>
 		</dependency>
 
 		<!-- Rocologo Core -->
