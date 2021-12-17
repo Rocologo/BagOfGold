@@ -1,12 +1,9 @@
 package one.lindegaard.BagOfGold.storage;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -355,7 +352,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 					mInsertPlayerBalance.setDouble(5, Misc.round(playerBalance.getBalanceChanges()));
 					mInsertPlayerBalance.setDouble(6, Misc.round(playerBalance.getBankBalance()));
 					mInsertPlayerBalance.setDouble(7, Misc.round(playerBalance.getBankBalanceChanges()));
-					// ON DUBLICATE KEY
+					// ON DUPLICATE KEY
 					mInsertPlayerBalance.setDouble(8, Misc.round(playerBalance.getBalance()));
 					mInsertPlayerBalance.setDouble(9, Misc.round(playerBalance.getBalanceChanges()));
 					mInsertPlayerBalance.setDouble(10, Misc.round(playerBalance.getBankBalance()));
