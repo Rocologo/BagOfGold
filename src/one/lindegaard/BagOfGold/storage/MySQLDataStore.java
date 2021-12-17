@@ -13,7 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.mysql.cj.jdbc.MysqlXADataSource;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
@@ -40,7 +40,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		try {
 			Locale.setDefault(new Locale("us", "US"));
 			Class.forName("com.mysql.jdbc.Driver");
-			MysqlDataSource dataSource = new MysqlDataSource();
+			MysqlXADataSource dataSource = new MysqlXADataSource();
 			dataSource.setUser(plugin.getConfigManager().databaseUsername);
 			dataSource.setPassword(plugin.getConfigManager().databasePassword);
 			if (plugin.getConfigManager().databaseHost.contains(":")) {
