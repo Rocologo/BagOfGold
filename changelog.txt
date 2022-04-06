@@ -1,5 +1,6 @@
-V4.0.8
-* 
+V4.1.1
+* Updated to Reserve 0.1.5.4
+* Updated to TittleManager 2.2.0
 V4.0.7
 * Added support for LevelledMobs
 * Added 2 new commands on request (https://github.com/Rocologo/BagOfGold/issues/115)

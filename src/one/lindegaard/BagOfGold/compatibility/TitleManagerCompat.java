@@ -5,8 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import io.puharesource.mc.titlemanager.api.ActionbarTitleObject;
-import io.puharesource.mc.titlemanager.api.TitleObject;
+import io.puharesource.mc.titlemanager.api.v2.animation.*;
+//import io.puharesource.mc.titlemanager.api.TitleObject;
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.compatibility.CompatPlugin;
@@ -29,7 +29,7 @@ public class TitleManagerCompat {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Enabling compatibility with TitleManager ("
 					+ mPlugin.getDescription().getVersion() + ")");
-			if (mPlugin.getDescription().getVersion().compareTo("2.0") >= 0)
+			if (mPlugin.getDescription().getVersion().compareTo("2.2") >= 0)
 				api = getTitleManagerAPI();
 			else {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
@@ -60,10 +60,12 @@ public class TitleManagerCompat {
 
 			if (api != null) {
 				api.sendActionbar(player, message);
-			} else {
-				ActionbarTitleObject actionbar = new ActionbarTitleObject(message);
-				actionbar.send(player);
-			}
+			} 
+			
+			//else {
+			//	ActionbarTitleObject actionbar = new ActionbarTitleObject(message);
+			//	actionbar.send(player);
+			//}
 		}
 	}
 
@@ -73,10 +75,12 @@ public class TitleManagerCompat {
 			if (api != null) {
 				api.sendTitles(player, title, subtitle, fadein, stay, fadeout);
 
-			} else {
-				TitleObject titleObject = new TitleObject(title, subtitle);
-				titleObject.send(player);
-			}
+			} 
+			
+			//else {
+			//	TitleObject titleObject = new TitleObject(title, subtitle);
+			//	titleObject.send(player);
+			//}
 		}
 	}
 
