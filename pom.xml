@@ -206,7 +206,7 @@
 
 		<!-- ActionAnnouncer -->
 		<dependency>
-			<groupId>me.clip.actionannouncer.ActionAnnouncer</groupId>
+			<groupId>me.clip.actionannouncer</groupId>
 			<artifactId>ActionAnnouncer</artifactId>
 			<version>${ActionAnnouncer.version}</version>
 		</dependency>
