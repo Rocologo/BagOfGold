@@ -192,7 +192,7 @@
 
 		<!-- Essentials -->
 		<dependency>
-			<groupId>net.ess3</groupId>
+			<groupId>net.essentialsx</groupId>
 			<artifactId>EssentialsX</artifactId>
 			<version>${EssentialsX.version}</version>
 		</dependency>
