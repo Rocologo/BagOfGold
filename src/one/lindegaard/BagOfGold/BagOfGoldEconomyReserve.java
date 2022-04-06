@@ -15,6 +15,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.tnemc.core.Reserve;
 import net.tnemc.core.economy.EconomyAPI;
+import net.tnemc.core.economy.response.EconomyResponse;
 import one.lindegaard.Core.Core;
 
 public class BagOfGoldEconomyReserve implements EconomyAPI {
@@ -448,78 +449,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	}
 
 	/**
-	 * Determines whether or not a player is able to withdraw holdings from this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to withdraw holdings from this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(String identifier, String accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Determines whether or not a player is able to withdraw holdings from this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to withdraw holdings from this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(String identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Determines whether or not a player is able to withdraw holdings from this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to withdraw holdings from this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(UUID identifier, String accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Determines whether or not a player is able to withdraw holdings from this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to withdraw holdings from this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanWithdraw(UUID identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
 	 * Determines whether or not a player is able to deposit holdings into this
 	 * account.
 	 * 
@@ -581,78 +510,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public boolean canDeposit(UUID identifier, UUID accessor) {
 		return identifier.equals(accessor);
-	}
-
-	/**
-	 * Determines whether or not a player is able to deposit holdings into this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to deposit holdings into this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(String identifier, String accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Determines whether or not a player is able to deposit holdings into this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to deposit holdings into this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(String identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Determines whether or not a player is able to deposit holdings into this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to deposit holdings into this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(UUID identifier, String accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Determines whether or not a player is able to deposit holdings into this
-	 * account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param accessor   The identifier of the user attempting to access this
-	 *                   account.
-	 * @return Whether or not the player is able to deposit holdings into this
-	 *         account.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncCanDeposit(UUID identifier, UUID accessor) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
 	}
 
 	/**
@@ -731,96 +588,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public BigDecimal getHoldings(UUID identifier, String world, String currency) {
 		return getHoldings(Bukkit.getOfflinePlayer(identifier).getUniqueId());
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param world      The name of the {@link World} associated with the balance.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param world      The name of the {@link World} associated with the balance.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param world      The name of the {@link World} associated with the balance.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(String identifier, String world, String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to get the balance of an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param world      The name of the {@link World} associated with the balance.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return The balance of the account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetHoldings(UUID identifier, String world, String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
 	}
 
 	/**
@@ -911,110 +678,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public boolean hasHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
 		return getHoldings(identifier).compareTo(amount) >= 1;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(String identifier, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to determine if an account has at least an amount of funds.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to use for this check.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the account has at least the specified amount of funds,
-	 *         otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncHasHoldings(UUID identifier, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
 	}
 
 	/**
@@ -1132,104 +795,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	}
 
 	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(String identifier, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to set the funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to set this accounts's funds to.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the funds were set for the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncSetHoldings(UUID identifier, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
 	 * Used to add funds to an account.
 	 * 
 	 * @param identifier The identifier of the account that is associated with this
@@ -1311,104 +876,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public boolean addHoldings(UUID identifier, BigDecimal amount, String world, String currency) {
 		return addHoldings(identifier, amount);
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(String identifier, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * Used to add funds to an account.
-	 * 
-	 * @param identifier The identifier of the account that is associated with this
-	 *                   call.
-	 * @param amount     The amount you wish to add to this account.
-	 * @param world      The name of the {@link World} associated with the amount.
-	 * @param currency   The {@link Currency} associated with the balance.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncAddHoldings(UUID identifier, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
 	}
 
 	/**
@@ -2747,57 +2214,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 
 	/**
 	 * @param account The UUID of the bank account to use for this call.
-	 * @return The balance of the bank account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
-	 * @param world   The name of the {@link World} to use for this call.
-	 * @return The balance of the bank account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @return The balance of the bank account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world, String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @param bank     The name of the bank to use for this call.
-	 * @return The balance of the bank account.
-	 */
-	@Override
-	public CompletableFuture<BigDecimal> asyncGetBankHoldings(UUID account, String world, String currency,
-			String bank) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
 	 * @param player  The UUID of the player adding the funds to the account, null
 	 *                if console.
 	 * @param amount  The amount of funds to add to the account.
@@ -2849,70 +2265,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	public boolean bankAddHoldings(UUID account, UUID player, BigDecimal amount, String world, String currency,
 			String bank) {
 		return bankAddHoldings(account, player, amount);
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
-	 * @param player  The UUID of the player adding the funds to the account, null
-	 *                if console.
-	 * @param amount  The amount of funds to add to the account.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
-	 * @param player  The UUID of the player adding the funds to the account, null
-	 *                if not associated with a player action.
-	 * @param amount  The amount of funds to add to the account.
-	 * @param world   The name of the {@link World} to use for this call.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param player   The UUID of the player adding the funds to the account, null
-	 *                 if not associated with a player action.
-	 * @param amount   The amount of funds to add to the account.
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param player   The UUID of the player adding the funds to the account, null
-	 *                 if not associated with a player action.
-	 * @param amount   The amount of funds to add to the account.
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @param bank     The name of the bank to use for this call.
-	 * @return True if the funds were added to the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankAddHoldings(UUID account, UUID player, BigDecimal amount, String world,
-			String currency, String bank) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
 	}
 
 	/**
@@ -2972,71 +2324,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 
 	/**
 	 * @param account The UUID of the bank account to use for this call.
-	 * @param player  The UUID of the player adding the funds to the account, null
-	 *                if console.
-	 * @param amount  The amount of funds to remove from the account.
-	 * @return True if the funds were removed from the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
-	 * @param player  The UUID of the player adding the funds to the account, null
-	 *                if console.
-	 * @param amount  The amount of funds to remove from the account.
-	 * @param world   The name of the {@link World} to use for this call.
-	 * @return True if the funds were removed from the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
-			String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param player   The UUID of the player adding the funds to the account, null
-	 *                 if console.
-	 * @param amount   The amount of funds to remove from the account.
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @return True if the funds were removed from the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
-			String world, String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param player   The UUID of the player adding the funds to the account, null
-	 *                 if console.
-	 * @param amount   The amount of funds to remove from the account.
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @param bank     The name of the bank to use for this call.
-	 * @return True if the funds were removed from the account, otherwise false.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankRemoveHoldings(UUID account, UUID player, BigDecimal amount,
-			String world, String currency, String bank) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
 	 * @param amount  The amount to set the account's funds to
 	 * @return True if the account's funds were set to the specified amount.
 	 */
@@ -3083,62 +2370,6 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	@Override
 	public boolean bankSetHoldings(UUID account, BigDecimal amount, String world, String currency, String bank) {
 		return bankSetHoldings(account, amount);
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
-	 * @param amount  The amount to set the account's funds to
-	 * @return True if the account's funds were set to the specified amount.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account The UUID of the bank account to use for this call.
-	 * @param amount  The amount to set the account's funds to
-	 * @param world   The name of the {@link World} to use for this call.
-	 * @return True if the account's funds were set to the specified amount.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param amount   The amount to set the account's funds to
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @return True if the account's funds were set to the specified amount.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world,
-			String currency) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
-	}
-
-	/**
-	 * @param account  The UUID of the bank account to use for this call.
-	 * @param amount   The amount to set the account's funds to
-	 * @param world    The name of the {@link World} to use for this call.
-	 * @param currency The name of the currency to use for this call.
-	 * @param bank     The name of the bank to use for this call.
-	 * @return True if the account's funds were set to the specified amount.
-	 */
-	@Override
-	public CompletableFuture<Boolean> asyncBankSetHoldings(UUID account, BigDecimal amount, String world,
-			String currency, String bank) {
-		// TODO Auto-generated method stub
-		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
-		return null;
 	}
 
 	/**
@@ -3235,6 +2466,314 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	public boolean supportTransactions() {
 		return false;
+	}
+
+	@Override
+	public EconomyResponse addHoldingsDetail(String arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse addHoldingsDetail(UUID arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse addHoldingsDetail(String arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse addHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse addHoldingsDetail(String arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse addHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canAddHoldingsDetail(String arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canAddHoldingsDetail(UUID arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canAddHoldingsDetail(String arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canAddHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canAddHoldingsDetail(String arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canAddHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canDepositDetail(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canDepositDetail(String arg0, UUID arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canDepositDetail(UUID arg0, String arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canDepositDetail(UUID arg0, UUID arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canRemoveHoldingsDetail(String arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canRemoveHoldingsDetail(UUID arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canRemoveHoldingsDetail(String arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canRemoveHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canRemoveHoldingsDetail(String arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canRemoveHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canWithdrawDetail(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canWithdrawDetail(String arg0, UUID arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canWithdrawDetail(UUID arg0, String arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse canWithdrawDetail(UUID arg0, UUID arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse createAccountDetail(String arg0) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse createAccountDetail(UUID arg0) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse deleteAccountDetail(String arg0) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse deleteAccountDetail(UUID arg0) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse hasAccountDetail(String arg0) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse hasAccountDetail(UUID arg0) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse removeHoldingsDetail(String arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse removeHoldingsDetail(UUID arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse removeHoldingsDetail(String arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse removeHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse removeHoldingsDetail(String arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse removeHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse setHoldingsDetail(String arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse setHoldingsDetail(UUID arg0, BigDecimal arg1) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse setHoldingsDetail(String arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse setHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse setHoldingsDetail(String arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
+	}
+
+	@Override
+	public EconomyResponse setHoldingsDetail(UUID arg0, BigDecimal arg1, String arg2, String arg3) {
+		// TODO Auto-generated method stub
+		plugin.getMessages().debug("This method is not implemented in BagOfGold yet");
+		return null;
 	}
 
 }
