@@ -173,7 +173,7 @@
 
 		<!-- TitleAPI -->
 		<dependency>
-			<groupId>com.connorlinfoot</groupId>
+			<groupId>com.github.ConnorLinfoot</groupId>
 			<artifactId>TitleAPI</artifactId>
 			<version>${TitleAPI.version}</version>
 		</dependency>
