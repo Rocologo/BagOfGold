@@ -30,7 +30,7 @@ public class PlaceholderAPICompat {
 					+ "Compatibility with PlaceholderAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.PlaceholderAPI.getName());
-			if (mPlugin.getDescription().getVersion().compareTo("2.0.6") >= 0) {
+			if (mPlugin.getDescription().getVersion().compareTo("2.11.1") >= 0) {
 				Bukkit.getConsoleSender()
 						.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 								+ "Enabling compatibility with PlaceholderAPI (" + mPlugin.getDescription().getVersion()
@@ -42,7 +42,7 @@ public class PlaceholderAPICompat {
 				Bukkit.getConsoleSender()
 						.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 								+ "Your current version of PlaceholderAPI (" + mPlugin.getDescription().getVersion()
-								+ ") is not supported by BagOfGold, please upgrade to 2.0.6 or newer.");
+								+ ") is not supported by BagOfGold, please upgrade to 2.11.1 or newer.");
 			}
 		}
 	}
@@ -50,10 +50,6 @@ public class PlaceholderAPICompat {
 	// **************************************************************************
 	// OTHER
 	// **************************************************************************
-
-	public PlaceholderAPI getPlaceholderAPI() {
-		return (PlaceholderAPI) mPlugin;
-	}
 
 	public static boolean isSupported() {
 		return supported;
