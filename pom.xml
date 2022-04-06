@@ -171,7 +171,7 @@
 			<version>${titlemanager.version}</version>
 		</dependency>
 
-		<!-- TitleAPI -->
+		<!-- TitleAPI, ActionBarAPI -->
 		<dependency>
 			<groupId>com.github.ConnorLinfoot</groupId>
 			<artifactId>TitleAPI</artifactId>
@@ -199,7 +199,7 @@
 
 		<!-- ActionBarAPI -->
 		<dependency>
-			<groupId>ActionBarAPI</groupId>
+			<groupId>com.github.ConnorLinfoot</groupId>
 			<artifactId>ActionBarAPI</artifactId>
 			<version>${ActionBarAPI.version}</version>
 		</dependency>
