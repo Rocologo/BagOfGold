@@ -124,7 +124,7 @@
 		<!-- Vault / -->
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>Vault</artifactId>
+			<artifactId>VaultAPI</artifactId>
 			<version>${vault.version}</version>
 		</dependency>
 
