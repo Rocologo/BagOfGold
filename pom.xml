@@ -20,6 +20,9 @@
 
 	<properties>
 		<bagofgold-core.version>0.5.5-SNAPSHOT</bagofgold-core.version>		
+
+		<!--COPY!!! -->
+		<bossshop.version>1.9.8</bossshop.version>
 	</properties>
 
 	<scm>
