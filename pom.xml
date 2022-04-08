@@ -244,4 +244,12 @@
 
 	</dependencies>
 
+  	<!-- Add imported jar files to mobhunting project-->
+	<repositories>
+		<repository>
+    		<id>mobhunting-local-repo</id>
+    		<url>file://${project.basedir}/lib</url>
+  		</repository>
+	</repositories>
+
 </project>
