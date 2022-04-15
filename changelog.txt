@@ -1,7 +1,8 @@
-V4.1.1
+V4.1.2
 * Updated to Reserve 0.1.5.4
-* Updated to TittleManager 2.2.0
+* Updated to TitleManager 2.2.0
 * Updated to PlaceholderAPI 2.11.1
+* Updated to EssentialsX 2.19.4
 V4.0.7
 * Added support for LevelledMobs
 * Added 2 new commands on request (https://github.com/Rocologo/BagOfGold/issues/115)
