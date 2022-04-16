@@ -12,11 +12,10 @@ import org.bukkit.scheduler.BukkitTask;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
@@ -121,20 +120,24 @@ public class BankManager {
 						+ plugin.getEconomyManager().format(ps.getBalance() + ps.getBalanceChanges()) + " "
 						+ plugin.getMessages().getString("bagofgold.banker.bankbalance") + ": "
 						+ plugin.getEconomyManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
-								.color(ChatColor.GREEN).bold(true).create());
+						.color(ChatColor.GREEN).bold(true).create());
 
 		ComponentBuilder deposit = new ComponentBuilder(
 				plugin.getMessages().getString("bagofgold.banker.deposit") + ": ").color(ChatColor.GREEN).bold(true)
-						.append(" ");
+				.append(" ");
+		plugin.getMessages()
+				.debug("BankManager actions(" + plugin.getMessages().getString("bagofgold.banker.deposit") + "/"
+						+ plugin.getMessages().getString("bagofgold.banker.withdraw") + ")="
+						+ plugin.getConfigManager().actions.entrySet().toString());
 		Iterator<Entry<String, String>> itr1 = plugin.getConfigManager().actions.entrySet().iterator();
 		while (itr1.hasNext()) {
 			Entry<String, String> set = itr1.next();
-			if (set.getKey().startsWith(plugin.getMessages().getString("bagofgold.banker.deposit"))) {
-				deposit.append("[" + set.getValue() + "]").color(ChatColor.RED).bold(true).event(new HoverEvent(
-						HoverEvent.Action.SHOW_TEXT,
-						new BaseComponent[] {
-								new TextComponent(plugin.getMessages().getString("bagofgold.banker.click2deposit") + " "
-										+ set.getValue() + ".") }))
+			if (set.getKey().toLowerCase()
+					.startsWith(plugin.getMessages().getString("bagofgold.banker.deposit").toLowerCase())) {
+				Text clickToDeposit = new Text(
+						plugin.getMessages().getString("bagofgold.banker.click2deposit") + " " + set.getValue() + ".");
+				deposit.append("[" + set.getValue() + "]").color(ChatColor.RED).bold(true)
+						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, clickToDeposit))
 						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
 								"/bagofgold money deposit " + set.getValue()))
 						.append(" ");
@@ -144,16 +147,16 @@ public class BankManager {
 
 		ComponentBuilder withdraw = new ComponentBuilder(
 				plugin.getMessages().getString("bagofgold.banker.withdraw") + ": ").color(ChatColor.GREEN).bold(true)
-						.append(" ");
+				.append(" ");
 		Iterator<Entry<String, String>> itr2 = plugin.getConfigManager().actions.entrySet().iterator();
 		while (itr2.hasNext()) {
 			Entry<String, String> set = itr2.next();
-			if (set.getKey().startsWith(plugin.getMessages().getString("bagofgold.banker.withdraw"))) {
-				withdraw.append("[" + set.getValue() + "]").color(ChatColor.RED).bold(true).event(new HoverEvent(
-						HoverEvent.Action.SHOW_TEXT,
-						new BaseComponent[] {
-								new TextComponent(plugin.getMessages().getString("bagofgold.banker.click2withdraw")
-										+ " " + set.getValue() + ".") }))
+			if (set.getKey().toLowerCase()
+					.startsWith(plugin.getMessages().getString("bagofgold.banker.withdraw").toLowerCase())) {
+				Text clickToWithdraw = new Text(
+						plugin.getMessages().getString("bagofgold.banker.click2withdraw") + " " + set.getValue() + ".");
+				withdraw.append("[" + set.getValue() + "]").color(ChatColor.RED).bold(true)
+						.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, clickToWithdraw))
 						.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
 								"/bagofgold money withdraw " + set.getValue()))
 						.append(" ");
