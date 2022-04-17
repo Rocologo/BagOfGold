@@ -104,9 +104,9 @@ public class MuteCommand implements ICommand {
 		Core.getPlayerSettingsManager().setPlayerSettings(ps);
 		if (ps.isMuted())
 			plugin.getMessages().playerActionBarMessageQueue(player, 
-					plugin.getMessages().getString("bagofgold.commands.mute.muted", "player", player.getName()));
+					plugin.getMessages().getString("bagofgold.commands.mute.muted", Core.PH_PLAYERNAME, player.getName()));
 		else
 			plugin.getMessages().playerActionBarMessageQueue(player, 
-					plugin.getMessages().getString("bagofgold.commands.mute.unmuted", "player", player.getName()));
+					plugin.getMessages().getString("bagofgold.commands.mute.unmuted", Core.PH_PLAYERNAME, player.getName()));
 	}
 }

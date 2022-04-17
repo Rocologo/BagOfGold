@@ -227,7 +227,7 @@ public class BankSign implements Listener {
 				}
 			} else {
 				plugin.getMessages().playerSendMessage(player, plugin.getMessages()
-						.getString("bagofgold.banksign.no_permission_to_use", "perm", "bagofgold.banksign.use"));
+						.getString("bagofgold.banksign.no_permission_to_use", Core.PH_PERMISSION, "bagofgold.banksign.use"));
 			}
 		}
 	}
@@ -291,7 +291,7 @@ public class BankSign implements Listener {
 
 			} else {
 				plugin.getMessages().playerSendMessage(player, plugin.getMessages()
-						.getString("bagofgold.banksign.no_permission", "perm", "bagofgold.banksign.create"));
+						.getString("bagofgold.banksign.no_permission", Core.PH_PERMISSION, "bagofgold.banksign.create"));
 				event.setCancelled(true);
 			}
 		}
@@ -309,7 +309,7 @@ public class BankSign implements Listener {
 			} else {
 				plugin.getMessages().debug("%s tried to destroy a BagOfGold Bank Sign without permission",
 						event.getPlayer().getName());
-				event.getPlayer().sendMessage(plugin.getMessages().getString("bagofgold.banksign.no_permission", "perm",
+				event.getPlayer().sendMessage(plugin.getMessages().getString("bagofgold.banksign.no_permission", Core.PH_PERMISSION,
 						"bagofgold.banksign.destroy"));
 				event.setCancelled(true);
 			}

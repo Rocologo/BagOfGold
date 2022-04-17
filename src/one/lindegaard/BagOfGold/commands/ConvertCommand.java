@@ -14,6 +14,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.Core.Core;
 
 public class ConvertCommand implements ICommand {
 
@@ -135,7 +136,7 @@ public class ConvertCommand implements ICommand {
 
 		} else {
 			plugin.getMessages().senderSendMessage(sender,
-					ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
+					ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", Core.PH_PERMISSION,
 							"bagofgold.convert", "command", "convert"));
 		}
 

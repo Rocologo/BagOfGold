@@ -112,7 +112,7 @@ public class BankCommand implements ICommand {
 				if (args.length <= 1) {
 					if (!(sender instanceof Player)) {
 						plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-								.getString("bagofgold.commands.base.noconsole", "command", "'bank balance'"));
+								.getString("bagofgold.commands.base.noconsole", Core.PH_COMMAND, "'bank balance'"));
 						return true;
 					} else
 						offlinePlayer = (Player) sender;
@@ -125,7 +125,7 @@ public class BankCommand implements ICommand {
 					} else {
 						plugin.getMessages().senderSendMessage(sender,
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission",
-										"perm", "bagofgold.bank.balance.other", "command", "bank <playername>"));
+										Core.PH_PERMISSION, "bagofgold.bank.balance.other", Core.PH_COMMAND, "bank <playername>"));
 						return true;
 					}
 				}
@@ -147,8 +147,8 @@ public class BankCommand implements ICommand {
 											+ Core.getConfigManager().bagOfGoldName.trim()));
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
-								"bagofgold.bank.balance", "command", "bank"));
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", Core.PH_PERMISSION,
+								"bagofgold.bank.balance", Core.PH_COMMAND, "bank"));
 			}
 			return true;
 
@@ -169,7 +169,7 @@ public class BankCommand implements ICommand {
 				OfflinePlayer offlinePlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
 				if (offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
 					plugin.getMessages().senderSendMessage(sender, ChatColor.RED + plugin.getMessages()
-							.getString("bagofgold.commands.base.playername-missing", "player", args[1]));
+							.getString("bagofgold.commands.base.playername-missing", Core.PH_PLAYERNAME, args[1]));
 					return true;
 				}
 
@@ -188,8 +188,8 @@ public class BankCommand implements ICommand {
 				}
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
-								"bagofgold.bank.give", "command", "bank give"));
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", Core.PH_PERMISSION,
+								"bagofgold.bank.give", Core.PH_COMMAND, "bank give"));
 			}
 			return true;
 		} else if (args.length >= 2 && args[0].equalsIgnoreCase("take"))
@@ -223,8 +223,8 @@ public class BankCommand implements ICommand {
 				}
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", "perm",
-								"bagofgold.bank.take", "command", "bank take"));
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", Core.PH_PERMISSION,
+								"bagofgold.bank.take", Core.PH_COMMAND, "bank take"));
 			}
 			return true;
 

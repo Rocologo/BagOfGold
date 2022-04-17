@@ -66,7 +66,7 @@ public class Messages {
 					plugin.saveResource("lang/" + source, true);
 				}
 			}
-			mTranslationTable = loadLang(dest);
+			//mTranslationTable = loadLang(dest);
 		}
 	}
 

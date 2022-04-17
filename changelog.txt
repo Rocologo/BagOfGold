@@ -1,3 +1,9 @@
+V4.1.4
+* placeholders in the lang files is updated. You will need to delete the lang folder and restart the server to get the new files.
+* Fixed "/bag money drop playname amount"
+* You can now hide the BagOfGold/MobHunting item displayname. Change "show_displayname: false" in BagOfGoldCore.yml 
+* Fixed wrong value when BagOfGold/MobHunting items merged 
+* Fixed wrong language after /bag reload
 V4.1.3
 * BankManager fixed
 V4.1.2
