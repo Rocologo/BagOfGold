@@ -67,7 +67,7 @@ public class BagOfGold extends JavaPlugin {
 	private BagOfGoldItems mBagOfGoldItems;
 	private MessageManager mMessageManager;
 
-	private Core mCore;
+	private static Core mCore;
 	
 	private boolean mInitialized = false;
 	public boolean disabling = false;
@@ -336,7 +336,7 @@ public class BagOfGold extends JavaPlugin {
 		return mEconomyManager;
 	}
 	
-	public Core getCore(){
+	public static Core getCore(){
 		return mCore;
 	}
 
