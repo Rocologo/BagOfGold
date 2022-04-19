@@ -62,7 +62,7 @@ public class VersionCommand implements ICommand {
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.version.newversion",
 							"newversion", plugin.getSpigetUpdater().getNewDownloadVersion()));
 		else if (sender.hasPermission("bagofgold.update"))
-			plugin.getSpigetUpdater().checkForUpdate(sender, true);
+			plugin.getSpigetUpdater().checkForUpdate(sender, true, false);
 		return true;
 	}
 

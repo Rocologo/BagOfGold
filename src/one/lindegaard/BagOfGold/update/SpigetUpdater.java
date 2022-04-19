@@ -1,6 +1,12 @@
 package one.lindegaard.BagOfGold.update;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -65,118 +71,130 @@ public class SpigetUpdater {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					checkForUpdate(sender, false);
+					checkForUpdate(sender, false, false);
 				}
 			}.runTaskTimer(BagOfGold.getInstance(), 20000L, seconds * 20L);
 		}
 	}
 
-	/**
-	 * Download a new version, add version number to the downloaded filename
-	 * (filename-n.n.n) , and the rename the old version to ???.jar.oldnnn
-	 * 
-	 * @param sender
-	 * @return
-	 */
-	public boolean downloadAndUpdateJar(CommandSender sender) {
-		final String OS = System.getProperty("os.name");
-		boolean succes = spigetUpdate.downloadUpdate();
-		new BukkitRunnable() {
-			int count = 0;
-
-			@Override
-			public void run() {
-				if (count++ > 20) {
-					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
-							+ " No updates found. (No response from server after 20s)");
-					plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN
-							+ plugin.getMessages().getString("bagofgold.commands.update.could-not-update"));
-					plugin.getMessages().debug("Update error: %s", spigetUpdate.getFailReason().toString());
-					this.cancel();
-				} else {
-					// Wait for the response
-					if (succes) {
-						if (OS.indexOf("Win") >= 0) {
-							File downloadedJar = new File("plugins/update/" + currentJarFile);
-							File newJar = new File("plugins/update/BagOfGold-" + newDownloadVersion + ".jar");
-							if (newJar.exists())
-								newJar.delete();
-							downloadedJar.renameTo(newJar);
-							plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN
-									+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
-						} else {
-							if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
-								File currentJar = new File("plugins/" + currentJarFile);
-								File disabledJar = new File("plugins/" + currentJarFile + ".old");
-								int count = 0;
-								while (disabledJar.exists() && count++ < 100) {
-									disabledJar = new File("plugins/" + currentJarFile + ".old" + count);
-								}
-								if (!disabledJar.exists()) {
-									currentJar.renameTo(disabledJar);
-									File downloadedJar = new File("plugins/update/" + currentJarFile);
-									File newJar = new File("plugins/BagOfGold-" + newDownloadVersion + ".jar");
-									downloadedJar.renameTo(newJar);
-									plugin.getMessages().debug("Moved plugins/update/" + currentJarFile
-											+ " to plugins/BagOfGold-" + newDownloadVersion + ".jar");
-									updateAvailable = UpdateStatus.RESTART_NEEDED;
-									plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN
-											+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
-								}
-							}
-						}
-						this.cancel();
-					}
-				}
-			}
-
-		}.runTaskTimer(plugin, 20L, 20L);
-		return true;
-	}
-
-	public void checkForUpdate(final CommandSender sender, final boolean silent) {
+	public void checkForUpdate(final CommandSender sender, final boolean silent, boolean forceDownload) {
 		if (!silent)
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ plugin.getMessages().getString("bagofgold.commands.update.check"));
-		if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
-			spigetUpdate = new SpigetUpdate(plugin, 49332);
-			spigetUpdate.setVersionComparator(VersionComparator.EQUAL);
-			spigetUpdate.setUserAgent("BagOfGold-" + plugin.getDescription().getVersion());
+		if (updateAvailable == UpdateStatus.RESTART_NEEDED)
+			sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+					+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 
-			spigetUpdate.checkForUpdate(new UpdateCallback() {
+		spigetUpdate = new SpigetUpdate(plugin, 49332);
+		spigetUpdate.setVersionComparator(VersionComparator.EQUAL);
+		spigetUpdate.setUserAgent("BagOfGold-" + plugin.getDescription().getVersion());
 
-				@Override
-				public void updateAvailable(String newVersion, String downloadUrl, boolean hasDirectDownload) {
-					//// VersionComparator.EQUAL handles all updates as new, so I have to check the
-					//// version number manually
-					updateAvailable = isUpdateNewerVersion(newVersion);
-					if (updateAvailable == UpdateStatus.AVAILABLE) {
-						newDownloadVersion = newVersion;
-						sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN + plugin.getMessages()
-								.getString("bagofgold.commands.update.version-found", "newversion", newVersion));
-						if (plugin.getConfigManager().autoupdate) {
-							downloadAndUpdateJar(sender);
+		spigetUpdate.checkForUpdate(new UpdateCallback() {
+
+			@Override
+			public void updateAvailable(String newVersion, String downloadUrl, boolean hasDirectDownload) {
+				//// VersionComparator.EQUAL handles all updates as new, so I have to check the
+				//// version number manually
+				updateAvailable = isUpdateNewerVersion(newVersion);
+				if (updateAvailable == UpdateStatus.AVAILABLE) {
+					newDownloadVersion = newVersion;
+					sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN + plugin.getMessages()
+							.getString("bagofgold.commands.update.version-found", "newversion", newVersion));
+					if (plugin.getConfigManager().autoupdate|| forceDownload) {
+						if (hasDirectDownload) {
+							try {
+								InputStream in = new URL("https://api.spiget.org/v2/resources/49332/download")
+										.openStream();
+								Files.copy(in, Paths.get("plugins/BagOfGold-" + newDownloadVersion + ".jar"),
+										StandardCopyOption.REPLACE_EXISTING);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							
+							new BukkitRunnable() {
+								int count = 0;
+
+								@Override
+								public void run() {
+									// Wait for the response
+									if (count++ > 20) {
+										Bukkit.getConsoleSender()
+												.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+														+ "No updates found. (No response from server after 20s)");
+										plugin.getMessages().senderSendMessage(sender,
+												ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+														+ plugin.getMessages().getString(
+																"bagofgold.commands.update.could-not-update"));
+										plugin.getMessages().debug("Update error: %s",
+												spigetUpdate.getFailReason().toString());
+										sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+												+ "If download fail, you can download newest version here: "
+												+ downloadUrl);
+										this.cancel();
+									} else {
+
+										final String OS = System.getProperty("os.name");
+										if (OS.indexOf("Win") >= 0) {
+											File downloadedJar = new File("plugins/" + currentJarFile);
+											File newJar = new File("plugins/BagOfGold-" + newDownloadVersion + ".jar");
+											if (newJar.exists())
+												newJar.delete();
+											downloadedJar.renameTo(newJar);
+											plugin.getMessages().senderSendMessage(sender,
+													ChatColor.GOLD + "[BagOfGold]" + ChatColor.GREEN
+															+ plugin.getMessages()
+																	.getString("bagofgold.commands.update.complete"));
+										} else {
+											if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
+												File currentJar = new File("plugins/" + currentJarFile);
+												File disabledJar = new File("plugins/" + currentJarFile + ".old");
+												int count = 0;
+												while (disabledJar.exists() && count++ < 100) {
+													disabledJar = new File(
+															"plugins/" + currentJarFile + ".old" + count);
+												}
+												if (!disabledJar.exists()) {
+													currentJar.renameTo(disabledJar);
+													File downloadedJar = new File("plugins/update/" + currentJarFile);
+													File newJar = new File(
+															"plugins/BagOfGold-" + newDownloadVersion + ".jar");
+													downloadedJar.renameTo(newJar);
+													plugin.getMessages().debug("Moved plugins/update/" + currentJarFile
+															+ " to plugins/BagOfGold-" + newDownloadVersion + ".jar");
+													updateAvailable = UpdateStatus.RESTART_NEEDED;
+													plugin.getMessages().senderSendMessage(sender,
+															ChatColor.GOLD + "[BagOfGold]" + ChatColor.GREEN
+																	+ plugin.getMessages().getString(
+																			"bagofgold.commands.update.complete"));
+												}
+											}
+										}
+										this.cancel();
+									}
+								}
+							}.runTaskTimer(plugin, 20L, 20L);
 							sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
 									+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
-						} else
-							sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
-									+ plugin.getMessages().getString("bagofgold.commands.update.help"));
-					} else {
-						sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-								+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
-					}
+						}
+					} else
+						sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+								+ plugin.getMessages().getString("bagofgold.commands.update.help"));
+				} else {
+					sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
+							+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
 				}
-				
+			}
+							
 
-				@Override
-				public void upToDate() {
-					//// Plugin is up-to-date
-					if (!silent)
-						sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-								+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
-				}
-			});
-		}
+			@Override
+			public void upToDate() {
+				//// Plugin is up-to-date
+				if (!silent)
+					sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
+							+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
+			}
+		});
+
 	}
 
 	/**
