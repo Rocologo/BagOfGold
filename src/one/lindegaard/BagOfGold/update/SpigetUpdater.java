@@ -166,6 +166,7 @@ public class SpigetUpdater {
 								+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
 					}
 				}
+				
 
 				@Override
 				public void upToDate() {
