@@ -1159,35 +1159,4 @@ public class BagOfGoldItems implements Listener {
 		}
 	}
 
-	/**
-	 * @EventHandler(priority = EventPriority.HIGHEST) public void
-	 *                        onInventoryMoveItemEvent(InventoryMoveItemEvent event)
-	 *                        { plugin.getMessages().debug("BagOfGoldItems:
-	 *                        onInventoryMoveItemEvent called"); ItemStack is =
-	 *                        event.getItem(); if (Reward.isReward(is)) {
-	 *                        plugin.getMessages().debug("You cant move a reward
-	 *                        like that"); event.setCancelled(true); } }
-	 * 
-	 * @EventHandler(priority = EventPriority.HIGHEST) public void
-	 *                        onInventoryInteractEvent(InventoryInteractEvent event)
-	 *                        { plugin.getMessages().debug("BagOfGoldItems:
-	 *                        onInventoryInteractEvent called"); //
-	 *                        plugin.getMessages().debug("BagOfGoldItems: %s clicked
-	 *                        an inventory %s", // event.getWhoClicked().getName(),
-	 *                        // event.getInventory().getType()); }
-	 * 
-	 * @EventHandler(priority = EventPriority.HIGHEST) public void
-	 *                        onInventoryDragEvent(InventoryDragEvent event) {
-	 *                        plugin.getMessages().debug("BagOfGoldItems:
-	 *                        onInventoryDragEvent called"); ItemStack isCursor =
-	 *                        event.getCursor(); if (Reward.isReward(isCursor)) {
-	 *                        Reward reward = Reward.getReward(isCursor); if
-	 *                        (reward.isMoney()) { plugin.getMessages().debug("You
-	 *                        can't drag money"); event.setCancelled(true); } } else
-	 *                        if (Reward.isReward(event.getOldCursor())) { Reward
-	 *                        reward = Reward.getReward(event.getOldCursor()); if
-	 *                        (reward.isMoney()) { plugin.getMessages().debug("You
-	 *                        can't drag money(2)"); event.setCancelled(true); } } }
-	 **/
-
 }
