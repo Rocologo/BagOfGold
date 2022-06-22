@@ -195,3 +195,8 @@ mobs.Squid.name=§9Squid
 mobs.Wolf.name=§9Wolf
 mobs.Illusioner.name=§9Illusioner
 mobs.Parrot.name=§9Parrot
+
+mobs.Allay.name=§9Allay
+mobs.Frog.name=§9Frog
+mobs.Tadpole.name=§9Tadpole
+mobs.Warden.name=§9Warden

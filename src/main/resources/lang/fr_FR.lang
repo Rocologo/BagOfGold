@@ -194,3 +194,7 @@ mobs.Zombie.name=§9Zombie
 mobs.ZombieHorse.name=§9Cheval-Zombie
 mobs.ZombiePigman.name=§9Cochon-Zombie
 mobs.ZombieVillager.name=§9Zombie-Villageois
+mobs.Allay.name=§9Allay
+mobs.Frog.name=§9Frog
+mobs.Tadpole.name=§9Tadpole
+mobs.Warden.name=§9Warden

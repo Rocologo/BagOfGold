@@ -191,3 +191,8 @@ mobs.Squid.name=§9Tintahal
 mobs.Wolf.name=§9Farkas
 mobs.Illusioner.name=§9Illúziókeltő
 mobs.Parrot.name=§9Papagáj
+
+mobs.Allay.name=§9Allay
+mobs.Frog.name=§9Frog
+mobs.Tadpole.name=§9Tadpole
+mobs.Warden.name=§9Warden

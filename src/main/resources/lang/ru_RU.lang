@@ -189,3 +189,7 @@ mobs.Zombie.name=§9Зомби
 mobs.ZombieHorse.name=§9Лошадь-зомби
 mobs.ZombiePigman.name=§9Свинозомби
 mobs.ZombieVillager.name=§9Зомби-житель
+mobs.Allay.name=§9Allay
+mobs.Frog.name=§9Frog
+mobs.Tadpole.name=§9Tadpole
+mobs.Warden.name=§9Warden
