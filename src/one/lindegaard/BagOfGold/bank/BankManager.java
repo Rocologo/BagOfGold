@@ -121,14 +121,14 @@ public class BankManager {
 						+ plugin.getMessages().getString("bagofgold.banker.bankbalance") + ": "
 						+ plugin.getEconomyManager().format(ps.getBankBalance() + ps.getBankBalanceChanges()))
 						.color(ChatColor.GREEN).bold(true).create());
+		
+		plugin.getMessages().debug("BankManager actions(" + plugin.getMessages().getString("bagofgold.banker.deposit") + "/"
+				+ plugin.getMessages().getString("bagofgold.banker.withdraw") + ")="
+				+ plugin.getConfigManager().actions.entrySet().toString());
 
 		ComponentBuilder deposit = new ComponentBuilder(
 				plugin.getMessages().getString("bagofgold.banker.deposit") + ": ").color(ChatColor.GREEN).bold(true)
 				.append(" ");
-		plugin.getMessages()
-				.debug("BankManager actions(" + plugin.getMessages().getString("bagofgold.banker.deposit") + "/"
-						+ plugin.getMessages().getString("bagofgold.banker.withdraw") + ")="
-						+ plugin.getConfigManager().actions.entrySet().toString());
 		Iterator<Entry<String, String>> itr1 = plugin.getConfigManager().actions.entrySet().iterator();
 		while (itr1.hasNext()) {
 			Entry<String, String> set = itr1.next();

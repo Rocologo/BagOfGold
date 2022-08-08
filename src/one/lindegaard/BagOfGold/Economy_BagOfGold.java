@@ -7,7 +7,6 @@ import org.bukkit.plugin.Plugin;
 
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import one.lindegaard.BagOfGold.BagOfGoldEconomyVault;
 
 public class Economy_BagOfGold extends AbstractEconomy {
 

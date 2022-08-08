@@ -3,14 +3,24 @@ package one.lindegaard.BagOfGold.commands;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
+import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Equipment;
+import net.citizensnpcs.api.trait.trait.Equipment.EquipmentSlot;
+import net.citizensnpcs.trait.LookClose;
+import net.citizensnpcs.trait.SkinTrait;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
+import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
+import one.lindegaard.Core.rewards.CoreCustomItems;
+import one.lindegaard.Core.rewards.Reward;
+import one.lindegaard.Core.rewards.RewardType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +30,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 
 public class NpcCommand implements ICommand, Listener {
 
@@ -172,9 +183,18 @@ public class NpcCommand implements ICommand, Listener {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("create")) {
 				NPCRegistry registry = CitizensAPI.getNPCRegistry();
 				npc = registry.createNPC(EntityType.PLAYER, "BagOfGoldBanker");
-				npc.setBukkitEntityType(EntityType.VILLAGER);
 				npc.addTrait(BagOfGoldBankerTrait.class);
+				npc.getOrAddTrait(LookClose.class).setRange(6);
+				npc.getOrAddTrait(LookClose.class).setRealisticLooking(true);
+				npc.getOrAddTrait(LookClose.class).toggle();
+				npc.getOrAddTrait(SkinTrait.class).setSkinPersistent(plugin.getConfigManager().bankerName,
+						plugin.getConfigManager().bankerSignature, plugin.getConfigManager().bankerTexture);
+				ItemStack is = new CoreCustomItems(plugin).getCustomtexture(new Reward(),
+						Core.getConfigManager().skullTextureValue, Core.getConfigManager().skullTextureSignature);
+				npc.getOrAddTrait(Equipment.class).set(EquipmentSlot.OFF_HAND, is);
+				npc.setName(plugin.getConfigManager().bankerName);
 				npc.spawn(p.getLocation());
+				npc.setProtected(true);
 				plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN
 						+ plugin.getMessages().getString("bagofgold.commands.npc.created", "npcid", npc.getId()));
 				plugin.getMessages().debug("Creating BagOfGoldBanker: id=%s", npc.getId());

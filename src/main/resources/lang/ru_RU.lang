@@ -1,5 +1,5 @@
 
-bagofgold.banker.introduction=&6[Банк] Пожалуйста, выберите действие...
+bagofgold.banker.introduction=&aHi, I am the &4${bankername}&a, please choose an action:
 bagofgold.banker.balance=Balance
 bagofgold.banker.bankbalance=BankBalance
 bagofgold.banker.deposit=Deposit

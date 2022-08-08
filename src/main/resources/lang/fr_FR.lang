@@ -7,7 +7,7 @@ bagofgold.moneydrop=Tu as lâché ${money} ${rewardname}
 bagofgold.moneylost=Tu as perdu ${prize}!
 bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
-bagofgold.banker.introduction=&aBonjour. Je suis le banquier, que souhaitez-vous ?
+bagofgold.banker.introduction=&aBonjour. Je suis &4${bankername}&a, que souhaitez-vous ?
 bagofgold.banker.balance=Balance
 bagofgold.banker.bankbalance=BankBalance
 bagofgold.banker.deposit=Deposit

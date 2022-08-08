@@ -1,5 +1,5 @@
 
-bagofgold.banker.introduction=&aOlá, Eu sou o banqueiro do &4BagOfGold&a Banker, escolha uma opção..
+bagofgold.banker.introduction=&aOlá, Eu sou o banqueiro do &4${bankername}&a, escolha uma opção..
 bagofgold.banker.balance=Balance
 bagofgold.banker.bankbalance=BankBalance
 bagofgold.banker.deposit=Deposit

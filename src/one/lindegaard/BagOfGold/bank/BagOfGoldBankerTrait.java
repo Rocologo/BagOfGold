@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
+import net.citizensnpcs.trait.SkinTrait;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.server.Servers;
 
@@ -71,10 +72,10 @@ public class BagOfGoldBankerTrait extends Trait implements Listener {
 		Player player = event.getClicker();
 		if (Servers.isSpigotServer() || Servers.isPaperServer()) {
 			plugin.getMessages().playerSendMessage(player,
-					" \n" + plugin.getMessages().getString("bagofgold.banker.introduction"));
+					" \n" + plugin.getMessages().getString("bagofgold.banker.introduction","bankername",plugin.getConfigManager().bankerName));
 			plugin.getBankManager().sendBankerMessage(player);
 		} else {
-			player.sendMessage("The Banker only works on SpigotMC servers");
+			player.sendMessage("The Banker only works on SpigotMC/Paper servers");
 		}
 
 	}
@@ -90,6 +91,8 @@ public class BagOfGoldBankerTrait extends Trait implements Listener {
 	@Override
 	public void onAttach() {
 		// load(new net.citizensnpcs.api.util.MemoryDataKey());
+		npc.getOrAddTrait(SkinTrait.class).setSkinPersistent(plugin.getConfigManager().bankerName,
+				plugin.getConfigManager().bankerSignature, plugin.getConfigManager().bankerTexture);
 	}
 
 	// Run code when the NPC is despawned. This is called before the entity

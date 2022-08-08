@@ -1,6 +1,6 @@
 translator: #汉化 - 海绵 修改 - WCZ
 
-bagofgold.banker.introduction=&aHi, I am the &4BagOfGold&a Banker, please choose an action.. 
+bagofgold.banker.introduction=&aHi, I am the &4${bankername}&a, please choose an action.. 
 bagofgold.banker.balance=Balance
 bagofgold.banker.bankbalance=BankBalance
 bagofgold.banker.deposit=Deposit

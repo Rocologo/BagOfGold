@@ -6,7 +6,7 @@ bagofgold.moneydrop=Leesett ${money} ${rewardname}
 bagofgold.moneylost=Veszítettél ${prize}!
 bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
-bagofgold.banker.introduction=&aSzia, én vagyok a &4BagOfGold&a Banker, kérlek, válassz egy intézkedést.. 
+bagofgold.banker.introduction=&aSzia, én vagyok a &4${bankername}&a, kérlek, válassz egy intézkedést.. 
 bagofgold.banker.balance=Balance
 bagofgold.banker.bankbalance=BankBalance
 bagofgold.banker.deposit=Deposit
