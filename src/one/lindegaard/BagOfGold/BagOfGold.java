@@ -30,6 +30,7 @@ import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
+import one.lindegaard.BagOfGold.compatibility.ShopkeepersCompat;
 import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
@@ -183,6 +184,8 @@ public class BagOfGold extends JavaPlugin {
 		mCompatibilityManager.registerPlugin(CMICompat.class, CompatPlugin.CMI);
 
 		mCompatibilityManager.registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
+		
+		mCompatibilityManager.registerPlugin(ShopkeepersCompat.class, CompatPlugin.Shopkeepers);
 
 		if (!Servers.isGlowstoneServer()) {
 			mMetricsManager = new MetricsManager(this);

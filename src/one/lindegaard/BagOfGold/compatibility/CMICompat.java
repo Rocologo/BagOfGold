@@ -41,12 +41,12 @@ public class CMICompat {
 				} else
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 							+ "Your current version of CMILib (" + mPlugin2.getDescription().getVersion()
-							+ ") is not supported by MobHunting. Mobhunting does only support version 1.0 or newer.");
+							+ ") is not supported by BagOfGold. BagOfGold does only support version 1.0 or newer.");
 
 			} else
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 						+ "Your current version of CMI (" + mPlugin.getDescription().getVersion()
-						+ ") is not supported by MobHunting. Mobhunting does only support version 9.0 or newer.");
+						+ ") is not supported by BagOfGold. BagOfGold does only support version 9.0 or newer.");
 
 		}
 	}

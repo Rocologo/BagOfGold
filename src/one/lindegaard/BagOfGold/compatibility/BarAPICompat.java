@@ -25,7 +25,7 @@ public class BarAPICompat {
 			if (mPlugin.getDescription().getVersion().compareTo("3.0") < 0) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 						+ "Your current version of BarAPI (" + mPlugin.getDescription().getVersion()
-						+ ") is not supported by MobHunting. Mobhunting does only support version 3.0 or newer.");
+						+ ") is not supported by BagOfGold. BagOfGold does only support version 3.0 or newer.");
 			} else {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 						+ "Enabling compatibility with BarAPI (" + getBarAPI().getDescription().getVersion() + ")");

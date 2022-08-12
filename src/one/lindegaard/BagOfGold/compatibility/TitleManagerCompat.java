@@ -5,13 +5,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import io.puharesource.mc.titlemanager.api.v2.animation.*;
-//import io.puharesource.mc.titlemanager.api.TitleObject;
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.Core.compatibility.CompatPlugin;
 
-@SuppressWarnings("deprecation")
 public class TitleManagerCompat {
 
 	private static Plugin mPlugin;

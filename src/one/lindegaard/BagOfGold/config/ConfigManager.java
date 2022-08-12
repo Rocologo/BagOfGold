@@ -55,6 +55,11 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################"
 						+ "\nCitizens / MasterMobHunter settings."
 						+ "\n########################################################################");
+		
+		setCategoryComment("plugins.shopkeepers",
+				"########################################################################"
+						+ "\nShopkeepers settings."
+						+ "\n########################################################################");
 
 		setCategoryComment("plugins.bossbarapi",
 				"########################################################################" + "\nBossBarAPI"
@@ -207,6 +212,9 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	@ConfigField(name = "enable-integration-citizens", category = "plugins", comment = "Enable integration with Citizens2")
 	public boolean enableIntegrationCitizens = true;
+
+	@ConfigField(name = "enable-integration-shopkeepers", category = "plugins", comment = "Enable integration with Shopkeepers")
+	public boolean enableIntegrationShopkeepers = true;
 
 	@ConfigField(name = "enable-integration-essentials", category = "plugins", comment = "Enable integration with Essentials"
 			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
