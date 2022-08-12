@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
-	<version>4.1.8</version>
-	<!-- <version>4.1.8-SNAPSHOT</version>  -->
+	<!-- <version>4.1.9</version>  -->
+	<version>4.1.9-SNAPSHOT</version>
 	<!-- <version>4.1.8-SNAPSHOT-B${build.number}</version> -->
 	<name>BagOfGold</name>
 	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
@@ -19,7 +19,7 @@
 	</parent>
 
 	<properties>
-		<bagofgold-core.version>0.5.8-SNAPSHOT</bagofgold-core.version>		
+		<bagofgold-core.version>0.5.8-SNAPSHOT</bagofgold-core.version>
 
 		<!--COPY!!! -->
 		<bossshop.version>1.9.8</bossshop.version>
@@ -245,14 +245,30 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- Shopkeepers-->
+		<dependency>
+			<groupId>com.nisovin.shopkeepers</groupId>
+			<artifactId>ShopkeepersAPI</artifactId>
+			<!-- Replace this with the latest Shopkeepers version -->
+			<version>2.16.1</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
-  	<!-- Add imported jar files to mobhunting project-->
+	<!-- Add imported jar files to mobhunting project-->
 	<repositories>
 		<repository>
-    		<id>mobhunting-local-repo</id>
-    		<url>file://${project.basedir}/lib</url>
-  		</repository>
+			<id>mobhunting-local-repo</id>
+			<url>file://${project.basedir}/lib</url>
+		</repository>
+
+		<!-- Shopkeepers -->
+		<repository>
+			<id>shopkeepers-repo</id>
+			<url>https://nexus.lichtspiele.org/repository/releases/</url>
+		</repository>
+
 	</repositories>
 
 </project>
