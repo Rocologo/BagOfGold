@@ -286,7 +286,7 @@ public class BankSign implements Listener {
 				}
 
 				event.setLine(0, plugin.getMessages().getString("bagofgold.banksign.line1", "bankname",
-						plugin.getConfigManager().bankname.trim()));
+						plugin.getConfigManager().bankname));
 				event.setLine(3, plugin.getMessages().getString("bagofgold.banksign.line4.ok"));
 
 			} else {

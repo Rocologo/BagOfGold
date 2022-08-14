@@ -33,7 +33,7 @@ public class EssentialsCompat {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
 					+ "Enabling compatibility with Essentials (" + getEssentials().getDescription().getVersion() + ")");
 			if (mPlugin.getDescription().getVersion().compareTo("2.17.0") <= 0
-					&& BagOfGold.getAPI().getEconomyManager().getEconomyAPI().endsWith("Reserve"))
+					&& BagOfGold.getInstance().getEconomyManager().getEconomyAPI().endsWith("Reserve"))
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
 						+ "This version of Essentials is not compatible with Reserve. You have 2 economy providers: Essentials and BagOfGold.");
 			supported = true;
@@ -114,8 +114,8 @@ public class EssentialsCompat {
 						config.load(configfile);
 						config.set("money", String.valueOf(amount));
 						config.save(configfile);
-						BagOfGold.getAPI().getMessages().debug("Updated %s essentials balance to %s",
-								offlinePlayer.getName(), BagOfGold.getAPI().getEconomyManager().format(amount));
+						BagOfGold.getInstance().getMessages().debug("Updated %s essentials balance to %s",
+								offlinePlayer.getName(), BagOfGold.getInstance().getEconomyManager().format(amount));
 					} catch (IOException | InvalidConfigurationException e) {
 						e.printStackTrace();
 						return;

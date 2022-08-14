@@ -36,7 +36,7 @@ public class PlaceholderAPICompat {
 								+ "Enabling compatibility with PlaceholderAPI (" + mPlugin.getDescription().getVersion()
 								+ ").");
 				new BagOfGoldPlaceholderExpansion().register();
-				mPlaceHolderManager = new PlaceHolderManager(BagOfGold.getAPI());
+				mPlaceHolderManager = new PlaceHolderManager(BagOfGold.getInstance());
 				supported = true;
 			} else {
 				Bukkit.getConsoleSender()
@@ -56,7 +56,7 @@ public class PlaceholderAPICompat {
 	}
 
 	public static boolean isEnabledInConfig() {
-		return BagOfGold.getAPI().getConfigManager().enableIntegrationPlaceholderAPI;
+		return BagOfGold.getInstance().getConfigManager().enableIntegrationPlaceholderAPI;
 	}
 
 	public static HashMap<UUID, PlaceHolderData> getPlaceHolders() {

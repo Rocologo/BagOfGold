@@ -58,7 +58,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String version() {
-		return BagOfGold.getAPI().getDescription().getVersion();
+		return BagOfGold.getInstance().getDescription().getVersion();
 	}
 
 	/**

@@ -36,14 +36,14 @@ public class EntityPickupItemEventListener implements Listener {
 			if (entity.getType().equals(EntityType.ZOMBIE) || entity.getType().equals(EntityType.SKELETON)
 					|| entity.getType().equals(EntityType.WITHER_SKELETON)
 					|| (Servers.isMC116OrNewer()) && entity.getType().equals(EntityType.ZOMBIFIED_PIGLIN)) {
-				BagOfGold.getAPI().getMessages().debug("A mob picked up the reward");
+				BagOfGold.getInstance().getMessages().debug("A mob picked up the reward");
 				event.setCancelled(true);
 			}
 			return;
 		}
 
 		Player player = (Player) entity;
-		if (BagOfGold.getAPI().getBagOfGoldItems().canPickupMoney(player)) {
+		if (BagOfGold.getInstance().getBagOfGoldItems().canPickupMoney(player)) {
 			pickupRewards.rewardPlayer((Player) entity, event.getItem(), event::setCancelled);
 		} else {
 			event.setCancelled(true);

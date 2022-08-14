@@ -43,6 +43,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
+import one.lindegaard.BagOfGold.compatibility.ShopkeepersCompat;
 import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
@@ -752,12 +753,14 @@ public class BagOfGoldItems implements Listener {
 		else
 			clickedInventory = inventory;
 
-		//plugin.getMessages().debug(
-		//		"action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, key=%s",
-		//		action, inventory.getType(), clickedInventory == null ? "null" : clickedInventory.getType(), slotType,
-		//		event.getSlot(), isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
-		//		isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
-		//		isKey == null ? "null" : isKey.getType());
+		// plugin.getMessages().debug(
+		// "action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s,
+		// current=%s, cursor=%s, view=%s, key=%s",
+		// action, inventory.getType(), clickedInventory == null ? "null" :
+		// clickedInventory.getType(), slotType,
+		// event.getSlot(), isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
+		// isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
+		// isKey == null ? "null" : isKey.getType());
 
 		if (slotType == SlotType.ARMOR) {
 			if (Reward.isReward(isCursor)) {
@@ -769,6 +772,17 @@ public class BagOfGoldItems implements Listener {
 					event.setCancelled(true);
 					return;
 				}
+			}
+		}
+
+		if (clickedInventory.getType()==InventoryType.MERCHANT) { //  && slotType == SlotType.CRAFTING) {
+			if (ShopkeepersCompat.isSupported()) {
+				plugin.getMessages().debug(
+						"action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, key=%s",
+						action, inventory.getType(), clickedInventory == null ? "null" : clickedInventory.getType(),
+						slotType, event.getSlot(), isCurrentSlot == null ? "null" : isCurrentSlot.getType(),
+						isCursor == null ? "null" : isCursor.getType(), event.getView().getType(),
+						isKey == null ? "null" : isKey.getType());
 			}
 		}
 

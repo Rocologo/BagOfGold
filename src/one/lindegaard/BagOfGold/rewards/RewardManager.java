@@ -74,6 +74,13 @@ public class RewardManager {
 		return ps.getBalance() + ps.getBalanceChanges();
 	}
 
+	/**
+	 * set the player balance to the amount of money in both the player inventory and in the balance stored in memory.
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 * @return
+	 */
 	public boolean setbalance(OfflinePlayer offlinePlayer, double amount) {
 		double bal = getBalance(offlinePlayer);
 		if (offlinePlayer.isOnline() && ((Player) offlinePlayer).getGameMode() != GameMode.SPECTATOR) {
@@ -341,6 +348,47 @@ public class RewardManager {
 	}
 
 	/**
+	 * Remove the amount from the player balance in memory/databse without removing
+	 * amount from the player inventory
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 */
+	public void removeMoneyFromPlayerBalance(OfflinePlayer offlinePlayer, double amount) {
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
+		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
+				format(ps.getBalance() + ps.getBalanceChanges()));
+		if (offlinePlayer.isOnline()) {
+			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
+			ps.setBalanceChanges(0);
+		} else {
+			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
+		}
+		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+	}
+
+	/**
+	 * Add amount to player balance in memory/database but NOT on in the players
+	 * inventory
+	 * 
+	 * @param offlinePlayer
+	 * @param amount
+	 */
+	public void addMoneyToPlayerBalance(OfflinePlayer offlinePlayer, double amount) {
+		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
+		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
+				format(ps.getBalance() + ps.getBalanceChanges()));
+		if (offlinePlayer.isOnline()) {
+			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+			ps.setBalanceChanges(0);
+		} else {
+			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
+		}
+		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+	}
+
+
+	/**
 	 * deleteBank: Reset the account and set the bank balance to 0.
 	 * 
 	 * @param account - this is the player UUID.
@@ -445,46 +493,6 @@ public class RewardManager {
 							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
 		}
-	}
-
-	/**
-	 * Remove the amount from the player balance in memory/databse without removing
-	 * amount from the player inventory
-	 * 
-	 * @param offlinePlayer
-	 * @param amount
-	 */
-	public void removeMoneyFromPlayerBalance(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
-		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
-				format(ps.getBalance() + ps.getBalanceChanges()));
-		if (offlinePlayer.isOnline()) {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() - amount));
-			ps.setBalanceChanges(0);
-		} else {
-			ps.setBalanceChanges(Misc.round(ps.getBalanceChanges() - amount));
-		}
-		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
-	}
-
-	/**
-	 * Add amount to player balance in memory/database but NOT on in the players
-	 * inventory
-	 * 
-	 * @param offlinePlayer
-	 * @param amount
-	 */
-	public void addMoneyToPlayerBalance(OfflinePlayer offlinePlayer, double amount) {
-		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
-		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
-				format(ps.getBalance() + ps.getBalanceChanges()));
-		if (offlinePlayer.isOnline()) {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
-			ps.setBalanceChanges(0);
-		} else {
-			ps.setBalance(Misc.round(ps.getBalance() + ps.getBalanceChanges() + amount));
-		}
-		plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 	}
 
 	/**

@@ -23,7 +23,7 @@ public class PlayerPickupItemEventListener implements Listener {
 		if (event.isCancelled())
 			return;
 
-		if (BagOfGold.getAPI().getBagOfGoldItems().canPickupMoney(event.getPlayer()))
+		if (BagOfGold.getInstance().getBagOfGoldItems().canPickupMoney(event.getPlayer()))
 			pickupRewards.rewardPlayer(event.getPlayer(), event.getItem(), event::setCancelled);
 		else
 			event.setCancelled(true);

@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import one.lindegaard.BagOfGold.api.BagOfGoldAPI;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.BankCommand;
@@ -245,13 +247,8 @@ public class BagOfGold extends JavaPlugin {
 		return plugin;
 	}
 
-	public static BagOfGold getAPI() {
-		return plugin;
-	}
-
-	@Deprecated
-	public static BagOfGold getApi() {
-		return plugin;
+	public static BagOfGoldAPI getAPI() {
+		return BagOfGold.getAPI();
 	}
 
 	public ConfigManager getConfigManager() {
