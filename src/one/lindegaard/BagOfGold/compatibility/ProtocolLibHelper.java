@@ -27,66 +27,73 @@ public class ProtocolLibHelper {
 	public static void enableProtocolLib() {
 		protocolManager = ProtocolLibrary.getProtocolManager();
 
-		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(BagOfGold.getInstance(),
-				ListenerPriority.HIGHEST, PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS) {
-			@Override
-			public void onPacketSending(PacketEvent event) {
-				if (event.getPacketType() == PacketType.Play.Server.SET_SLOT) {
-					PacketContainer packet = event.getPacket().deepClone();
-					StructureModifier<ItemStack> sm = packet.getItemModifier();
-					for (int i = 0; i < sm.size(); i++) {
-						ItemStack is = sm.getValues().get(i);
-						if (is.hasItemMeta()) {
-							ItemMeta itemMeta = is.getItemMeta();
-							if (itemMeta.hasLore()) {
-								List<String> lore = itemMeta.getLore();
-								Iterator<String> itr = lore.iterator();
-								while (itr.hasNext()) {
-									String str = itr.next();
-									if (str.startsWith("Hidden("))
-										// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
-										// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
-										if (event.getPlayer().getGameMode() == GameMode.SURVIVAL)
-											itr.remove();
+		ProtocolLibrary.getProtocolManager()
+				.addPacketListener(new PacketAdapter(BagOfGold.getInstance(), ListenerPriority.HIGHEST,
+						PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS,
+						PacketType.Play.Server.RECIPES, PacketType.Play.Server.RECIPE_UPDATE) {
+					@Override
+					public void onPacketSending(PacketEvent event) {
+						if (event.getPacketType() == PacketType.Play.Server.SET_SLOT) {
+							PacketContainer packet = event.getPacket().deepClone();
+							StructureModifier<ItemStack> sm = packet.getItemModifier();
+							for (int i = 0; i < sm.size(); i++) {
+								ItemStack is = sm.getValues().get(i);
+								if (is.hasItemMeta()) {
+									ItemMeta itemMeta = is.getItemMeta();
+									if (itemMeta.hasLore()) {
+										List<String> lore = itemMeta.getLore();
+										Iterator<String> itr = lore.iterator();
+										while (itr.hasNext()) {
+											String str = itr.next();
+											if (str.startsWith("Hidden("))
+												// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
+												// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
+												if (event.getPlayer().getGameMode() == GameMode.SURVIVAL)
+													itr.remove();
+										}
+										itemMeta.setLore(lore);
+										is.setItemMeta(itemMeta);
+									}
 								}
-								itemMeta.setLore(lore);
-								is.setItemMeta(itemMeta);
 							}
+							event.setPacket(packet);
 						}
-					}
-					event.setPacket(packet);
-				}
 
 				else if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
-					PacketContainer packet = event.getPacket().deepClone();
-					StructureModifier<List<ItemStack>> modifiers = packet.getItemListModifier();
-					for (int j = 0; j < modifiers.size(); j++) {
-						List<ItemStack> itemStackList = modifiers.getValues().get(j);
-						for (int i = 0; i < itemStackList.size(); i++) {
-							ItemStack is = itemStackList.get(i);
-							if (is.hasItemMeta()) {
-								ItemMeta itemMeta = is.getItemMeta();
-								if (itemMeta.hasLore()) {
-									List<String> lore = itemMeta.getLore();
-									Iterator<String> itr = lore.iterator();
-									while (itr.hasNext()) {
-										String str = itr.next();
-										if (str.startsWith("Hidden("))
-											// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
-											// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
-											if (event.getPlayer().getGameMode() == GameMode.SURVIVAL)
-												itr.remove();
+							PacketContainer packet = event.getPacket().deepClone();
+							StructureModifier<List<ItemStack>> modifiers = packet.getItemListModifier();
+							for (int j = 0; j < modifiers.size(); j++) {
+								List<ItemStack> itemStackList = modifiers.getValues().get(j);
+								for (int i = 0; i < itemStackList.size(); i++) {
+									ItemStack is = itemStackList.get(i);
+									if (is.hasItemMeta()) {
+										ItemMeta itemMeta = is.getItemMeta();
+										if (itemMeta.hasLore()) {
+											List<String> lore = itemMeta.getLore();
+											Iterator<String> itr = lore.iterator();
+											while (itr.hasNext()) {
+												String str = itr.next();
+												if (str.startsWith("Hidden("))
+													// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
+													// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
+													
+													if (event.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+														BagOfGold.getInstance().getMessages().debug("ProtocolLibHelper:ItemSlots=%s", event.getPacket().getItemSlots().toString());
+														itr.remove();
+													}
+											}
+											itemMeta.setLore(lore);
+											is.setItemMeta(itemMeta);
+										}
 									}
-									itemMeta.setLore(lore);
-									is.setItemMeta(itemMeta);
 								}
 							}
+							event.setPacket(packet);
 						}
 					}
-					event.setPacket(packet);
-				}
-			}
-		});
+
+					
+				});
 	}
 
 	public static ProtocolManager getProtocolmanager() {

@@ -37,6 +37,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantInventory;
+import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -638,7 +640,7 @@ public class BagOfGoldItems implements Listener {
 		if (Servers.isMC114OrNewer())
 			allowedInventories = Arrays.asList(InventoryType.PLAYER, InventoryType.BARREL, InventoryType.ANVIL,
 					InventoryType.CHEST, InventoryType.DISPENSER, InventoryType.DROPPER, InventoryType.ENDER_CHEST,
-					InventoryType.HOPPER, InventoryType.SHULKER_BOX, InventoryType.CRAFTING);
+					InventoryType.HOPPER, InventoryType.SHULKER_BOX, InventoryType.CRAFTING, InventoryType.MERCHANT);
 		else if (Servers.isMC19OrNewer())
 			allowedInventories = Arrays.asList(InventoryType.PLAYER, InventoryType.ANVIL, InventoryType.CHEST,
 					InventoryType.DISPENSER, InventoryType.DROPPER, InventoryType.ENDER_CHEST, InventoryType.HOPPER,
@@ -775,7 +777,7 @@ public class BagOfGoldItems implements Listener {
 			}
 		}
 
-		if (clickedInventory.getType()==InventoryType.MERCHANT) { //  && slotType == SlotType.CRAFTING) {
+		if (inventory.getType() == InventoryType.MERCHANT) { // && slotType == SlotType.CRAFTING) {
 			if (ShopkeepersCompat.isSupported()) {
 				plugin.getMessages().debug(
 						"action=%s, InvType=%s, clickedInvType=%s, slottype=%s, slotno=%s, current=%s, cursor=%s, view=%s, key=%s",
@@ -786,8 +788,12 @@ public class BagOfGoldItems implements Listener {
 			}
 		}
 
-		List<SlotType> allowedSlots = Arrays.asList(SlotType.CONTAINER, SlotType.QUICKBAR, SlotType.OUTSIDE,
-				SlotType.ARMOR);
+		List<SlotType> allowedSlots;
+		if (ShopkeepersCompat.isSupported())
+			allowedSlots = Arrays.asList(SlotType.CONTAINER, SlotType.QUICKBAR, SlotType.OUTSIDE, SlotType.ARMOR,
+					SlotType.CRAFTING, SlotType.RESULT);
+		else
+			allowedSlots = Arrays.asList(SlotType.CONTAINER, SlotType.QUICKBAR, SlotType.OUTSIDE, SlotType.ARMOR);
 
 		if (allowedSlots.contains(slotType)) {
 			if (isInventoryAllowed(clickedInventory)) {
@@ -1011,6 +1017,7 @@ public class BagOfGoldItems implements Listener {
 							Reward reward = Reward.getReward(isCursor);
 							if (reward.isMoney()) {
 								event.setCancelled(true);
+								double added_money = reward.getMoney()*amount_of_cursor;
 								reward.setMoney(reward.getMoney() * (amount_of_cursor + amount_of_currentslot));
 
 								isCurrentSlot = Reward.setDisplayNameAndHiddenLores(isCursor.clone(), reward);
@@ -1019,9 +1026,13 @@ public class BagOfGoldItems implements Listener {
 								isCursor.setType(Material.AIR);
 								isCursor.setAmount(0);
 								event.setCursor(isCursor);
+								if (clickedInventory.getType()==InventoryType.PLAYER) {
+									plugin.getRewardManager().addMoneyToPlayerBalance(player, added_money);
+								}
+								plugin.getMessages().debug("(2a)%s moved %s (%s) into Inventory:%s", player.getName(),
+										reward.getDisplayName(), added_money, clickedInventory.getType());
 							}
-							plugin.getMessages().debug("%s moved %s (%s) into Inventory", player.getName(),
-									reward.getDisplayName(), reward.getMoney());
+							
 						}
 
 					} else { // GameMode!=Survival
@@ -1103,6 +1114,8 @@ public class BagOfGoldItems implements Listener {
 								event.setCursor(isCurrentSlot);
 								plugin.getMessages().debug("%s merged two rewards(1)", player.getName());
 								if (clickedInventory.getType() == InventoryType.PLAYER) {
+									//plugin.getRewardManager().removeMoneyFromPlayerBalance(player, )
+									//plugin.getRewardManager().addMoneyToPlayerBalance(player, reward2.getMoney() * amount_reward2- reward1.getMoney() * amount_reward1);
 									plugin.getRewardManager().addMoneyToPlayerBalance(player, added_money);
 								}
 							} else {
@@ -1172,5 +1185,35 @@ public class BagOfGoldItems implements Listener {
 			return;
 		}
 	}
+	
+	@EventHandler
+    public void onVillagerTradeEvent(InventoryClickEvent event) {
+        if (event.getClickedInventory() instanceof MerchantInventory inventory) {
+            Integer slotClick = event.getSlot();
+            //plugin.getMessages().debug("onVillagetTradeEvent: slot=%s",slotClick.toString());
+            MerchantInventory villagerMerchantInventory = inventory;
+            ItemStack slotItem = villagerMerchantInventory.getItem(slotClick);
+            //plugin.getMessages().debug("onVillagetTradeEvent: slotItem=%s",slotItem.toString());
+            MerchantRecipe villagerMerchantRecipe = villagerMerchantInventory.getSelectedRecipe();
+            //plugin.getMessages().debug("onVillagetTradeEvent: Ingredients=%s", villagerMerchantRecipe.getIngredients().toString());
+            if (slotClick != 2){return;}
+            //if (slotItem != null || slotItem.getType() != Material.AIR){
+            //    Merchant entity = villagerMerchantInventory.getMerchant();
+                //TradeEvent villagerTradeEvent = new TradeEvent(
+                //        (Player) entity.getTrader(),
+                //        entity,
+                //        villagerMerchantInventory,
+                //        villagerMerchantRecipe,
+                //        slotItem,
+                //        slotClick,
+                //        villagerMerchantRecipe.getAdjustedIngredient1(),
+                //        villagerMerchantRecipe.getMaxUses(),
+                //        villagerMerchantRecipe.getVillagerExperience()
+                //);
+                //Bukkit.getServer().getPluginManager().callEvent(villagerTradeEvent);
+                //if (villagerTradeEvent.isCancelled()){ event.setCancelled(true); }
+            //}
+        }
+    }
 
 }
