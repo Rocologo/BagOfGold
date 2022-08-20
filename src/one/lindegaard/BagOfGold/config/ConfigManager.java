@@ -55,10 +55,18 @@ public class ConfigManager extends AutoConfig {
 				"########################################################################"
 						+ "\nCitizens / MasterMobHunter settings."
 						+ "\n########################################################################");
-		
+
 		setCategoryComment("plugins.shopkeepers",
+				"########################################################################" + "\nShopkeepers settings."
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.essentials",
+				"########################################################################" + "\nEssentials settings."
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.perworldinventory",
 				"########################################################################"
-						+ "\nShopkeepers settings."
+						+ "\nPerWorldInventory settings."
 						+ "\n########################################################################");
 
 		setCategoryComment("plugins.bossbarapi",
@@ -67,6 +75,26 @@ public class ConfigManager extends AutoConfig {
 
 		setCategoryComment("plugins.barapi", "########################################################################"
 				+ "\nBarApi" + "\n########################################################################");
+
+		setCategoryComment("plugins.titlemanager",
+				"########################################################################" + "\nTitleManager"
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.titleapi",
+				"########################################################################" + "\nTitleApi"
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.actionbar",
+				"########################################################################" + "\nActionbar"
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.actionbarapi",
+				"########################################################################" + "\nActionbarAPI"
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.actionannouncer",
+				"########################################################################" + "\nActionAnnouncer"
+						+ "\n########################################################################");
 
 		setCategoryComment("plugins.cmi", "########################################################################"
 				+ "\nCMI" + "\n########################################################################");
@@ -178,7 +206,7 @@ public class ConfigManager extends AutoConfig {
 
 	@ConfigField(name = "banker-signature", category = "banker", comment = "This is the skin signature. Make sure that the signature matches the texture from https://mineskin.org/")
 	public String bankerSignature = "dVWdZ9OaO0PySSQO3TyfTh0sB6faiXvuMAGFALNw48lWehuZsCpIIGjxaGHr+i/VR+xXW5lrKIB82TedbfGy8wyhYXmfbo9b8BtXMlRye0duwyMim2Bug1H62BB3VD/Z/4n8wF+Y3r8dfrSCCX8b3B6Rr2C3Y1i086mVD7a4g42Cj/1e+nlXosNenqkm0vKtvUfb0vBVIAx4xuOjexRyCwGEpcDW30n70lLzuljtDE0nrhfuyvhKif7HDyLrh+22nunkVv5KjdK5UqABcEXz8SB0mdEVhxzwNOPZYzylVMYuwOXFhG6Q3EavqRnpNP6E8VLvuJ9qqmnStE1ajRLwphDdbOnoh3EogBkhKwh0ayy0s/ZM8IxPvQAUXKDUlf71j/IeArS8nBfTO7U8pNPGbC/9NnRxa9vvqiEECxzqFwrDigEstZFENUqzlWby6MZFN08xqySaSahPi7FACmVCn9wkcImtWs+N7y2N7Mk4spX3uv5lwhC5taj+/WqZVxKLGreCs3pnIKnX8+wmEEYT2FIZHXJAWGrqizEp6/gpCkwl9X2pgrj89yG4NpaYiNAyjMu9tXgfoBOfbaRriSomk5jJLu5C93Grvd98LKmXWpOj1KunwmST4JdtF/BTk/sSCnr9RXDf9iMbnSM/ZC4PFgKQyzzJ1PC8yC9FuUhk4WM=";
-	
+
 	@ConfigField(name = "banker-actions", category = "banker", comment = "Change the numbers or add new lines if you like.")
 	public LinkedHashMap<String, String> actions = new LinkedHashMap<String, String>();
 	{
@@ -210,54 +238,54 @@ public class ConfigManager extends AutoConfig {
 	// #####################################################################################
 	// Plugin integration
 	// #####################################################################################
-	@ConfigField(name = "enable-integration-citizens", category = "plugins", comment = "Enable integration with Citizens2")
+	@ConfigField(name = "enable-integration-citizens", category = "plugins.citizens", comment = "Enable integration with Citizens2")
 	public boolean enableIntegrationCitizens = true;
 
-	@ConfigField(name = "enable-integration-shopkeepers", category = "plugins", comment = "Enable integration with Shopkeepers. This is still in BETA TEST and you should not use the Shopkeeper integration.")
+	@ConfigField(name = "enable-integration-shopkeepers", category = "plugins.shopkeepers", comment = "Enable integration with Shopkeepers. This is still in BETA TEST and you should not use the Shopkeeper integration.")
 	public boolean enableIntegrationShopkeepers = false;
 
-	@ConfigField(name = "enable-integration-essentials", category = "plugins", comment = "Enable integration with Essentials"
+	@ConfigField(name = "enable-integration-essentials", category = "plugins.essentials", comment = "Enable integration with Essentials"
 			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
 	public boolean enableIntegrationEssentials = true;
 
-	@ConfigField(name = "enable-integration-perworldinventory", category = "plugins", comment = "Enable integration with PerWorldInventory"
+	@ConfigField(name = "enable-integration-perworldinventory", category = "plugins.perworldinventory", comment = "Enable integration with PerWorldInventory"
 			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")
 	public boolean enableIntegrationPerWorldInventory = true;
 
-	@ConfigField(name = "placeholderapi.enable_integration_placeholderapi", category = "plugins", comment = "Enable/Disable integration with PlaceholderAPI."
+	@ConfigField(name = "enable_integration_placeholderapi", category = "plugins.placeholderapi", comment = "Enable/Disable integration with PlaceholderAPI."
 			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")
 	public boolean enableIntegrationPlaceholderAPI = true;
 
-	@ConfigField(name = "titleapi.enable_integration_titleapi", category = "plugins", comment = "Enable/Disable integration with TitleAPI")
+	@ConfigField(name = "enable_integration_titleapi", category = "plugins.titleapi", comment = "Enable/Disable integration with TitleAPI")
 	public boolean enableIntegrationTitleAPI = true;
 
-	@ConfigField(name = "titlemanager.enable_integration_titlemanager", category = "plugins", comment = "Enable/Disable integration with TitleManger. If you want messages in player chat you can set this to true."
+	@ConfigField(name = "enable_integration_titlemanager", category = "plugins.titlemanager", comment = "Enable/Disable integration with TitleManger. If you want messages in player chat you can set this to true."
 			+ "\nhttps://www.spigotmc.org/resources/titlemanager.1049/")
 	public boolean enableIntegrationTitleManager = true;
 
-	@ConfigField(name = "actionbar.enable_integration_actionbar", category = "plugins", comment = "Enable/Disable integration with Actionbar. If you want messages in player chat you can set this to true.")
+	@ConfigField(name = "enable_integration_actionbar", category = "plugins.actionbar", comment = "Enable/Disable integration with Actionbar. If you want messages in player chat you can set this to true.")
 	public boolean enableIntegrationActionbar = true;
 
-	@ConfigField(name = "actionbarapi.enable_integration_actionbarapi", category = "plugins", comment = "Enable/Disable integration with ActionBarAPI. If you want messages in player chat you can set this to true."
+	@ConfigField(name = "enable_integration_actionbarapi", category = "plugins.actionbarapi", comment = "Enable/Disable integration with ActionBarAPI. If you want messages in player chat you can set this to true."
 			+ "\nhttps://www.spigotmc.org/resources/actionbarapi_1_8_1_9_1_10.1315/")
 	public boolean enableIntegrationActionBarAPI = true;
 
-	@ConfigField(name = "actionannouncer.enable_integration_actionannouncer", category = "plugins", comment = "Enable/Disable integration with ActionAnnouncer. If you want messages in player chat you can set this to true."
+	@ConfigField(name = "enable_integration_actionannouncer", category = "plugins.actionannouncer", comment = "Enable/Disable integration with ActionAnnouncer. If you want messages in player chat you can set this to true."
 			+ "\nhttps://www.spigotmc.org/resources/actionannouncer.1320/")
 	public boolean enableIntegrationActionAnnouncer = true;
 
-	@ConfigField(name = "bossbarapi.enable_integration_bossbarapi", category = "plugins", comment = "Enable/Disable integration with BossBarAPI. If you want messages in player chat you can set this to true.")
+	@ConfigField(name = "enable_integration_bossbarapi", category = "plugins.bossbarapi", comment = "Enable/Disable integration with BossBarAPI. If you want messages in player chat you can set this to true.")
 	public boolean enableIntegrationBossBarAPI = true;
 
-	@ConfigField(name = "barapi.enable_integration_barapi", category = "plugins", comment = "Enable/Disable integration with BarAPI. If you want messages in player chat you can set this to true."
+	@ConfigField(name = "enable_integration_barapi", category = "plugins.barapi", comment = "Enable/Disable integration with BarAPI. If you want messages in player chat you can set this to true."
 			+ "\nhttps://dev.bukkit.org/projects/bar_api")
 	public boolean enableIntegrationBarAPI = true;
 
-	@ConfigField(name = "cmi.enable_integration_cmi", category = "plugins", comment = "Enable/Disable integration with CMI."
+	@ConfigField(name = "enable_integration_cmi", category = "plugins.cmi", comment = "Enable/Disable integration with CMI."
 			+ "\nhttps://www.spigotmc.org/resources/cmi-270-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/")
 	public boolean enableIntegrationCMI = true;
 
-	@ConfigField(name = "protocollib.enable_integration_protocollib", category = "plugins", comment = "Enable/Disable integration with ProtocolLib."
+	@ConfigField(name = "enable_integration_protocollib", category = "plugins.protocollib", comment = "Enable/Disable integration with ProtocolLib."
 			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
 	public boolean enableIntegrationProtocolLib = true;
 
@@ -269,9 +297,11 @@ public class ConfigManager extends AutoConfig {
 			+ "\n(eg. en_US, fr_FR, hu_HU, pt_BR, zh_CN, ru_RU ect.) or you can specify the name of a custom file without the .lang\nPlease check the lang/ folder for a list of all available translations.")
 	public String language = "en_US";
 
-	//@ConfigField(name = "save-period", category = "general", comment = "Time between saves in ticks (20 ticks ~ 1 sec) This number must be higher that 1200 ticks = 2 minutes,"
-	//		+ "\nbut I recommend to save every 5th minute = 6000 ticks")
-	//public int savePeriod_old = 6000;
+	// @ConfigField(name = "save-period", category = "general", comment = "Time
+	// between saves in ticks (20 ticks ~ 1 sec) This number must be higher that
+	// 1200 ticks = 2 minutes,"
+	// + "\nbut I recommend to save every 5th minute = 6000 ticks")
+	// public int savePeriod_old = 6000;
 
 	@ConfigField(name = "debug", category = "general", comment = "If kills are not being registered in mob hunting. Enable this to see why they arent")
 	public boolean debug = false;

@@ -46,8 +46,6 @@ public class ProtocolLibHelper {
 										while (itr.hasNext()) {
 											String str = itr.next();
 											if (str.startsWith("Hidden("))
-												// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
-												// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
 												if (event.getPlayer().getGameMode() == GameMode.SURVIVAL)
 													itr.remove();
 										}
@@ -74,11 +72,8 @@ public class ProtocolLibHelper {
 											while (itr.hasNext()) {
 												String str = itr.next();
 												if (str.startsWith("Hidden("))
-													// if (event.getPlayer().getGameMode() == GameMode.SURVIVAL ||
-													// !Core.getConfigManager().rewardItemtype.equalsIgnoreCase("ITEM"))
-													
 													if (event.getPlayer().getGameMode() == GameMode.SURVIVAL) {
-														BagOfGold.getInstance().getMessages().debug("ProtocolLibHelper:ItemSlots=%s", event.getPacket().getItemSlots().toString());
+//														BagOfGold.getInstance().getMessages().debug("ProtocolLibHelper:ItemSlots=%s", event.getPacket().getItemSlots().toString());
 														itr.remove();
 													}
 											}

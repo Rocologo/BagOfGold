@@ -29,7 +29,10 @@ import org.bukkit.plugin.Plugin;
 import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
 import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
+import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
+import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.CMICompat;
+import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.Core.Core;
@@ -392,6 +395,45 @@ public class Messages {
 		} else {
 			if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 				player.sendMessage(message);
+		}
+	}
+	
+	/**
+	 * Show learning messages to the player
+	 * 
+	 * @param player
+	 * @param text
+	 * @param args
+	 */
+	public void learn(Player player, String text, Object... args) {
+		if (player != null && !CitizensCompat.isNPC(player)
+				&& Core.getPlayerSettingsManager().getPlayerSettings(player).isLearningMode() && !isEmpty(text))
+			playerBossbarMessage(player, text, args);
+	}
+	
+	/**
+	 * Show message to the player using the BossBar. If no BossBar plugin is
+	 * available the player chat will be used.
+	 * 
+	 * @param player
+	 * @param message
+	 * @param args
+	 */
+	public void playerBossbarMessage(Player player, String message, Object... args) {
+		if (isEmpty(message))
+			return;
+
+		message = Strings.convertColors(PlaceholderAPICompat.setPlaceholders(player, message));
+
+		if (BossBarAPICompat.isSupported()) {
+			BossBarAPICompat.addBar(player, String.format(message, args));
+		} else if (BarAPICompat.isSupported()) {
+			BarAPICompat.setMessageTime(player, String.format(message, args), 5);
+		} else if (CMICompat.isSupported()) {
+			CMICompat.sendBossBarMessage(player, String.format(message, args));
+		} else {
+			player.sendMessage(
+					ChatColor.AQUA + getString("bagofgold.learn.prefix") + " " + String.format(message, args));
 		}
 	}
 
