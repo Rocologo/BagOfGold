@@ -1,3 +1,5 @@
+V4.2.0
+* Fixed error when reward_name is null or empty in the bagofgoldcore.yml file
 V4.1.9
 * Fixed bug which could make the server hang, when shutting down. (Ticket 747 - https://github.com/Rocologo/MobHunting/issues/747)
 V4.1.8
