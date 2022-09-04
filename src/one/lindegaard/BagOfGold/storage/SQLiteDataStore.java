@@ -66,7 +66,7 @@ public class SQLiteDataStore extends DatabaseDataStore {
 							+ "sum(BALANCE + BALANCE_CHANGES + BANK_BALANCE + BANK_BALANCE_CHANGES) AS 'TOTAL'"
 							+ "FROM mh_Balance "//
 							+ "WHERE (WORLDGRP=? OR ?='') AND (GAMEMODE=? OR ?=-1) "//
-							+ "GROUP BY UUID "//
+							+ "GROUP BY UUID, WORLDGRP, GAMEMODE "//
 							+ "ORDER BY TOTAL DESC "//
 							+ "LIMIT ?");//
 			break;
