@@ -1,3 +1,5 @@
+V4.2.1
+*
 V4.2.0
 * Fixed error when reward_name is null or empty in the bagofgoldcore.yml file
 * Fixed /bag bag top
