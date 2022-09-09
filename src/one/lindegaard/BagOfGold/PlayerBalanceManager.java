@@ -26,9 +26,9 @@ import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.Core.storage.DataStoreException;
 import one.lindegaard.Core.storage.IDataCallback;
 //import one.lindegaard.BagOfGold.storage.IDataCallback;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
+import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.rewards.CoreCustomItems;
 import one.lindegaard.Core.storage.UserNotFoundException;
 
@@ -212,8 +212,8 @@ public class PlayerBalanceManager implements Listener {
 							double amountInInventory = plugin.getRewardManager()
 									.getAmountInInventory((Player) offlinePlayer);
 							PlayerBalance pb = getPlayerBalance(offlinePlayer);
-							if (Misc.round(amountInInventory) != Misc.round(pb.getBalance())
-									+ Misc.round(pb.getBalanceChanges())) {
+							if (Tools.round(amountInInventory) != Tools.round(pb.getBalance())
+									+ Tools.round(pb.getBalanceChanges())) {
 								double change = pb.getBalanceChanges();
 								plugin.getMessages().debug(
 										"Balance was changed while %s was offline. New balance is %s.",

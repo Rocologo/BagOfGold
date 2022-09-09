@@ -12,6 +12,7 @@ import one.lindegaard.BagOfGold.bank.BankSign;
 import one.lindegaard.BagOfGold.commands.BankCommand;
 import one.lindegaard.BagOfGold.commands.CommandDispatcher;
 import one.lindegaard.BagOfGold.commands.ConvertCommand;
+import one.lindegaard.BagOfGold.commands.DatabaseCommand;
 import one.lindegaard.BagOfGold.commands.DebugCommand;
 import one.lindegaard.BagOfGold.commands.MoneyCommand;
 import one.lindegaard.BagOfGold.commands.MuteCommand;
@@ -138,6 +139,7 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new MoneyCommand(this));
 		mCommandDispatcher.registerCommand(new BankCommand(this));
 		mCommandDispatcher.registerCommand(new MuteCommand(this));
+		mCommandDispatcher.registerCommand(new DatabaseCommand(this));
 
 		// Check for new BagOfGold updates
 		mSpigetUpdater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);

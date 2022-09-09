@@ -46,7 +46,6 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.ShopkeepersCompat;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.Tools;
 import one.lindegaard.Core.rewards.CoreCustomItems;
@@ -127,7 +126,7 @@ public class BagOfGoldItems implements Listener {
 			}
 		}
 		if (!found) {
-			while (Misc.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
+			while (Tools.round(moneyLeftToGive) > 0 && canPickupMoney(player)) {
 				double nextBag = 0;
 				if (moneyLeftToGive > Core.getConfigManager().limitPerBag) {
 					nextBag = Core.getConfigManager().limitPerBag;
@@ -137,20 +136,20 @@ public class BagOfGoldItems implements Listener {
 					moneyLeftToGive = 0;
 				}
 				if (player.getInventory().firstEmpty() == -1)
-					dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), Misc.round(nextBag));
+					dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), Tools.round(nextBag));
 				else {
 					addedMoney = addedMoney + nextBag;
 					ItemStack is;
 					if (Core.getConfigManager().rewardItemtype.equalsIgnoreCase("SKULL"))
 						is = new CoreCustomItems(plugin).getCustomtexture(
-								new Reward(Core.getConfigManager().bagOfGoldName, Misc.round(nextBag),
+								new Reward(Core.getConfigManager().bagOfGoldName, Tools.round(nextBag),
 										RewardType.BAGOFGOLD, UUID.fromString(RewardType.BAGOFGOLD.getUUID())),
 								Core.getConfigManager().skullTextureValue,
 								Core.getConfigManager().skullTextureSignature);
 					else {
 						is = new ItemStack(Material.valueOf(Core.getConfigManager().rewardItem), 1);
 						is = Reward.setDisplayNameAndHiddenLores(is, new Reward(Core.getConfigManager().bagOfGoldName,
-								Misc.round(nextBag), RewardType.ITEM, null));
+								Tools.round(nextBag), RewardType.ITEM, null));
 					}
 					player.getInventory().addItem(is);
 				}
@@ -163,21 +162,21 @@ public class BagOfGoldItems implements Listener {
 
 	public double removeBagOfGoldFromPlayer(Player player, double amount) {
 		double taken = 0;
-		double toBeTaken = Misc.round(amount);
+		double toBeTaken = Tools.round(amount);
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward reward = Reward.getReward(is);
 				if (reward.checkHash()) {
 					if (reward.isMoney()) {
-						double saldo = Misc.round(reward.getMoney());
+						double saldo = Tools.round(reward.getMoney());
 						if (saldo > toBeTaken) {
-							reward.setMoney(Misc.round(saldo - toBeTaken));
+							reward.setMoney(Tools.round(saldo - toBeTaken));
 							is = Reward.setDisplayNameAndHiddenLores(is, reward);
 							player.getInventory().setItem(slot, is);
 							taken = taken + toBeTaken;
 							toBeTaken = 0;
-							return Misc.round(taken);
+							return Tools.round(taken);
 						} else {
 							player.getInventory().clear(slot);
 							taken = taken + saldo;
@@ -202,7 +201,7 @@ public class BagOfGoldItems implements Listener {
 
 	public void dropBagOfGoldMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
-		double moneyLeftToDrop = Misc.ceil(money);
+		double moneyLeftToDrop = Tools.ceil(money);
 		ItemStack is;
 		UUID skinuuid = null;
 		RewardType rewardType;
@@ -210,9 +209,9 @@ public class BagOfGoldItems implements Listener {
 		while (moneyLeftToDrop > 0) {
 			if (moneyLeftToDrop > Core.getConfigManager().limitPerBag) {
 				nextBag = Core.getConfigManager().limitPerBag;
-				moneyLeftToDrop = Misc.round(moneyLeftToDrop - nextBag);
+				moneyLeftToDrop = Tools.round(moneyLeftToDrop - nextBag);
 			} else {
-				nextBag = Misc.round(moneyLeftToDrop);
+				nextBag = Tools.round(moneyLeftToDrop);
 				moneyLeftToDrop = 0;
 			}
 
@@ -447,7 +446,7 @@ public class BagOfGoldItems implements Listener {
 					plugin.getMessages().playerActionBarMessageQueue(player,
 							ChatColor.valueOf(Core.getConfigManager().rewardTextColor) + reward.getDisplayName()
 									+ plugin.getMessages().getString("bagofgold.moneydrop", "money",
-											Misc.round(reward.getMoney())));
+											Tools.round(reward.getMoney())));
 			}
 		}
 	}
@@ -507,7 +506,7 @@ public class BagOfGoldItems implements Listener {
 							double addedMoney = addBagOfGoldMoneyToPlayer(player, reward.getMoney());
 							if (addedMoney > 0) {
 								PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
-								ps.setBalance(Misc.round(ps.getBalance() + addedMoney));
+								ps.setBalance(Tools.round(ps.getBalance() + addedMoney));
 								plugin.getPlayerBalanceManager().setPlayerBalance(player, ps);
 							}
 
@@ -564,7 +563,7 @@ public class BagOfGoldItems implements Listener {
 						plugin.getMessages().playerActionBarMessageQueue(player,
 								plugin.getMessages().getString("bagofgold.learn.rewards.no-helmet"));
 						event.getPlayer().getEquipment().setHelmet(new ItemStack(Material.AIR));
-						if (Misc.round(reward.getMoney()) != Misc
+						if (Tools.round(reward.getMoney()) != Tools
 								.round(addBagOfGoldMoneyToPlayer(player, reward.getMoney())))
 							dropBagOfGoldMoneyOnGround(player, null, player.getLocation(), reward.getMoney());
 					} else {
@@ -815,7 +814,7 @@ public class BagOfGoldItems implements Listener {
 						if (cursor.isMoney()) {
 							event.setCancelled(true);
 							double money_in_hand = cursor.getMoney() * isCursor.getAmount();
-							double saldo = Misc.floor(money_in_hand);
+							double saldo = Tools.floor(money_in_hand);
 							for (int slot = 0; slot < clickedInventory.getSize(); slot++) {
 								ItemStack is = clickedInventory.getItem(slot);
 								if (Reward.isReward(is)) {
@@ -962,10 +961,10 @@ public class BagOfGoldItems implements Listener {
 						if (reward.isMoney()) {
 							int amount_of_currentslot = isCurrentSlot.getAmount();
 							// int amount_of_cursor = isCursor.getAmount();
-							double currentSlotMoney = Misc.round(reward.getMoney() * amount_of_currentslot / 2);
-							double cursorMoney = Misc
+							double currentSlotMoney = Tools.round(reward.getMoney() * amount_of_currentslot / 2);
+							double cursorMoney = Tools
 									.round((reward.getMoney() * amount_of_currentslot - currentSlotMoney));
-							if (cursorMoney >= plugin.getConfigManager().minimumReward) {
+							if (cursorMoney >= Core.getConfigManager().minimumReward) {
 
 								event.setCancelled(true);
 
@@ -1017,7 +1016,7 @@ public class BagOfGoldItems implements Listener {
 							Reward reward = Reward.getReward(isCursor);
 							if (reward.isMoney()) {
 								event.setCancelled(true);
-								double added_money = reward.getMoney()*amount_of_cursor;
+								double added_money = reward.getMoney() * amount_of_cursor;
 								reward.setMoney(reward.getMoney() * (amount_of_cursor + amount_of_currentslot));
 
 								isCurrentSlot = Reward.setDisplayNameAndHiddenLores(isCursor.clone(), reward);
@@ -1026,13 +1025,13 @@ public class BagOfGoldItems implements Listener {
 								isCursor.setType(Material.AIR);
 								isCursor.setAmount(0);
 								event.setCursor(isCursor);
-								if (clickedInventory.getType()==InventoryType.PLAYER) {
+								if (clickedInventory.getType() == InventoryType.PLAYER) {
 									plugin.getRewardManager().addMoneyToPlayerBalance(player, added_money);
 								}
 								plugin.getMessages().debug("(2a)%s moved %s (%s) into Inventory:%s", player.getName(),
 										reward.getDisplayName(), added_money, clickedInventory.getType());
 							}
-							
+
 						}
 
 					} else { // GameMode!=Survival
@@ -1114,8 +1113,9 @@ public class BagOfGoldItems implements Listener {
 								event.setCursor(isCurrentSlot);
 								plugin.getMessages().debug("%s merged two rewards(1)", player.getName());
 								if (clickedInventory.getType() == InventoryType.PLAYER) {
-									//plugin.getRewardManager().removeMoneyFromPlayerBalance(player, )
-									//plugin.getRewardManager().addMoneyToPlayerBalance(player, reward2.getMoney() * amount_reward2- reward1.getMoney() * amount_reward1);
+									// plugin.getRewardManager().removeMoneyFromPlayerBalance(player, )
+									// plugin.getRewardManager().addMoneyToPlayerBalance(player, reward2.getMoney()
+									// * amount_reward2- reward1.getMoney() * amount_reward1);
 									plugin.getRewardManager().addMoneyToPlayerBalance(player, added_money);
 								}
 							} else {
@@ -1139,7 +1139,7 @@ public class BagOfGoldItems implements Listener {
 						} else if ((reward1.isKilledHeadReward() || reward1.isKillerHeadReward())
 								&& reward1.getRewardType().equals(reward2.getRewardType())
 								&& reward1.getSkinUUID().equals(reward2.getSkinUUID())
-								&& Misc.round(reward1.getMoney()) == Misc.round(reward2.getMoney())) {
+								&& Tools.round(reward1.getMoney()) == Tools.round(reward2.getMoney())) {
 							event.setCancelled(true);
 							if (isCursor.getAmount() + isCurrentSlot.getAmount() <= 64) {
 								isCurrentSlot.setAmount(isCursor.getAmount() + isCurrentSlot.getAmount());
@@ -1185,35 +1185,40 @@ public class BagOfGoldItems implements Listener {
 			return;
 		}
 	}
-	
+
 	@EventHandler
-    public void onVillagerTradeEvent(InventoryClickEvent event) {
-        if (event.getClickedInventory() instanceof MerchantInventory inventory) {
-            Integer slotClick = event.getSlot();
-            //plugin.getMessages().debug("onVillagetTradeEvent: slot=%s",slotClick.toString());
-            MerchantInventory villagerMerchantInventory = inventory;
-            ItemStack slotItem = villagerMerchantInventory.getItem(slotClick);
-            //plugin.getMessages().debug("onVillagetTradeEvent: slotItem=%s",slotItem.toString());
-            MerchantRecipe villagerMerchantRecipe = villagerMerchantInventory.getSelectedRecipe();
-            //plugin.getMessages().debug("onVillagetTradeEvent: Ingredients=%s", villagerMerchantRecipe.getIngredients().toString());
-            if (slotClick != 2){return;}
-            //if (slotItem != null || slotItem.getType() != Material.AIR){
-            //    Merchant entity = villagerMerchantInventory.getMerchant();
-                //TradeEvent villagerTradeEvent = new TradeEvent(
-                //        (Player) entity.getTrader(),
-                //        entity,
-                //        villagerMerchantInventory,
-                //        villagerMerchantRecipe,
-                //        slotItem,
-                //        slotClick,
-                //        villagerMerchantRecipe.getAdjustedIngredient1(),
-                //        villagerMerchantRecipe.getMaxUses(),
-                //        villagerMerchantRecipe.getVillagerExperience()
-                //);
-                //Bukkit.getServer().getPluginManager().callEvent(villagerTradeEvent);
-                //if (villagerTradeEvent.isCancelled()){ event.setCancelled(true); }
-            //}
-        }
-    }
+	public void onVillagerTradeEvent(InventoryClickEvent event) {
+		if (event.getClickedInventory() instanceof MerchantInventory inventory) {
+			Integer slotClick = event.getSlot();
+			// plugin.getMessages().debug("onVillagetTradeEvent:
+			// slot=%s",slotClick.toString());
+			MerchantInventory villagerMerchantInventory = inventory;
+			ItemStack slotItem = villagerMerchantInventory.getItem(slotClick);
+			// plugin.getMessages().debug("onVillagetTradeEvent:
+			// slotItem=%s",slotItem.toString());
+			MerchantRecipe villagerMerchantRecipe = villagerMerchantInventory.getSelectedRecipe();
+			// plugin.getMessages().debug("onVillagetTradeEvent: Ingredients=%s",
+			// villagerMerchantRecipe.getIngredients().toString());
+			if (slotClick != 2) {
+				return;
+			}
+			// if (slotItem != null || slotItem.getType() != Material.AIR){
+			// Merchant entity = villagerMerchantInventory.getMerchant();
+			// TradeEvent villagerTradeEvent = new TradeEvent(
+			// (Player) entity.getTrader(),
+			// entity,
+			// villagerMerchantInventory,
+			// villagerMerchantRecipe,
+			// slotItem,
+			// slotClick,
+			// villagerMerchantRecipe.getAdjustedIngredient1(),
+			// villagerMerchantRecipe.getMaxUses(),
+			// villagerMerchantRecipe.getVillagerExperience()
+			// );
+			// Bukkit.getServer().getPluginManager().callEvent(villagerTradeEvent);
+			// if (villagerTradeEvent.isCancelled()){ event.setCancelled(true); }
+			// }
+		}
+	}
 
 }

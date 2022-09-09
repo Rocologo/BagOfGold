@@ -1,8 +1,8 @@
 package one.lindegaard.BagOfGold.commands;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Core;
+import one.lindegaard.Core.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,9 +18,9 @@ public class BankCommand implements ICommand {
 
 	public BankCommand(BagOfGold plugin) {
 		this.plugin = plugin;
-		if (Core.getConfigManager().bagOfGoldName==null || Core.getConfigManager().bagOfGoldName.isEmpty()) {
+		if (Core.getConfigManager().bagOfGoldName == null || Core.getConfigManager().bagOfGoldName.isEmpty()) {
 			Bukkit.getConsoleSender()
-			.sendMessage(ChatColor.RED + "The reward_name in bagofgoldcore.yml can't be empty");
+					.sendMessage(ChatColor.RED + "The reward_name in bagofgoldcore.yml can't be empty");
 			Core.getConfigManager().bagOfGoldName = "Bag of gold";
 			Core.getConfigManager().saveConfig();
 		}
@@ -59,16 +59,16 @@ public class BankCommand implements ICommand {
 
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
-		return new String[] { ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias
-				+ ChatColor.GREEN + " give <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
-				+ " - to give the player a " + Core.getConfigManager().bagOfGoldName.trim() + " in his inventory.",
+		return new String[] {
+				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " give <player>"
+						+ ChatColor.YELLOW + " <amount>" + ChatColor.WHITE + " - to give the player a "
+						+ Core.getConfigManager().bagOfGoldName.trim() + " in his inventory.",
 
-				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
-						+ " take <player>" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
-						+ " - to take <amount> gold from the " + Core.getConfigManager().bagOfGoldName.trim()
-						+ " in the players inventory",
+				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " take <player>"
+						+ ChatColor.YELLOW + " <amount>" + ChatColor.WHITE + " - to take <amount> gold from the "
+						+ Core.getConfigManager().bagOfGoldName.trim() + " in the players inventory",
 
-				ChatColor.GOLD + plugin.getConfigManager().dropMoneyOnGroundMoneyCommandAlias + ChatColor.GREEN
+				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN
 						+ " balance [optional playername]" + ChatColor.WHITE + " - to get your bankbalance of "
 						+ Core.getConfigManager().bagOfGoldName.trim() };
 	}
@@ -127,7 +127,8 @@ public class BankCommand implements ICommand {
 					} else {
 						plugin.getMessages().senderSendMessage(sender,
 								ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission",
-										Core.PH_PERMISSION, "bagofgold.bank.balance.other", Core.PH_COMMAND, "bank <playername>"));
+										Core.PH_PERMISSION, "bagofgold.bank.balance.other", Core.PH_COMMAND,
+										"bank <playername>"));
 						return true;
 					}
 				}
@@ -149,8 +150,8 @@ public class BankCommand implements ICommand {
 											+ Core.getConfigManager().bagOfGoldName.trim()));
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", Core.PH_PERMISSION,
-								"bagofgold.bank.balance", Core.PH_COMMAND, "bank"));
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission",
+								Core.PH_PERMISSION, "bagofgold.bank.balance", Core.PH_COMMAND, "bank"));
 			}
 			return true;
 
@@ -176,7 +177,7 @@ public class BankCommand implements ICommand {
 				}
 
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Misc.round(Double.valueOf(args[2]));
+					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > Core.getConfigManager().limitPerBag * 100) {
 						amount = Core.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
@@ -190,8 +191,8 @@ public class BankCommand implements ICommand {
 				}
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", Core.PH_PERMISSION,
-								"bagofgold.bank.give", Core.PH_COMMAND, "bank give"));
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission",
+								Core.PH_PERMISSION, "bagofgold.bank.give", Core.PH_COMMAND, "bank give"));
 			}
 			return true;
 		} else if (args.length >= 2 && args[0].equalsIgnoreCase("take"))
@@ -211,7 +212,7 @@ public class BankCommand implements ICommand {
 					return true;
 				}
 				if (args[2].matches("\\d+(\\.\\d+)?")) {
-					double amount = Misc.round(Double.valueOf(args[2]));
+					double amount = Tools.round(Double.valueOf(args[2]));
 					if (amount > Core.getConfigManager().limitPerBag * 100) {
 						amount = Core.getConfigManager().limitPerBag * 100;
 						plugin.getMessages().senderSendMessage(sender,
@@ -225,8 +226,8 @@ public class BankCommand implements ICommand {
 				}
 			} else {
 				plugin.getMessages().senderSendMessage(sender,
-						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission", Core.PH_PERMISSION,
-								"bagofgold.bank.take", Core.PH_COMMAND, "bank take"));
+						ChatColor.RED + plugin.getMessages().getString("bagofgold.commands.base.nopermission",
+								Core.PH_PERMISSION, "bagofgold.bank.take", Core.PH_COMMAND, "bank take"));
 			}
 			return true;
 

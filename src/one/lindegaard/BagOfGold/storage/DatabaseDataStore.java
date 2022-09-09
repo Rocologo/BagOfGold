@@ -83,7 +83,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 			throws SQLException;
 
 	public enum PreparedConnectionType {
-		GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE, GET_TOP25_BALANCE, //GET_OLD_PLAYERSETTINGS,
+		GET_PLAYER_BALANCE, INSERT_PLAYER_BALANCE, GET_TOP25_BALANCE, // GET_OLD_PLAYERSETTINGS,
 	};
 
 	/**
@@ -146,7 +146,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			case 4:
 				setupV4Tables(mConnection);
-				
+
 			}
 
 			plugin.getConfigManager().databaseVersion = 4;
@@ -193,7 +193,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			}
 			n++;
 		} while (plugin.getDataStoreManager().isRunning() && n < 40);
-		Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD+"[BagOfGold] "+ChatColor.RESET+"Closing database connection.");
+		Bukkit.getConsoleSender()
+				.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + "Closing database connection.");
 	}
 
 	// ******************************************************************
@@ -247,10 +248,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			mConnection = setupConnection();
 			openPreparedStatements(mConnection, PreparedConnectionType.GET_TOP25_BALANCE);
 			mTop25Balances.setString(1, worldgroup);
-			mTop25Balances.setString(2, worldgroup);
-			mTop25Balances.setInt(3, gamemode);
-			mTop25Balances.setInt(4, gamemode);
-			mTop25Balances.setInt(5, n);
+			mTop25Balances.setInt(2, gamemode);
+			mTop25Balances.setInt(3, n);
 
 			ResultSet result = mTop25Balances.executeQuery();
 			while (result.next()) {
@@ -279,5 +278,31 @@ public abstract class DatabaseDataStore implements IDataStore {
 		return playerBalances;
 	}
 
-		
+	@Override
+	public void databaseDeleteOldPlayers() {
+		plugin.getMessages().debug("Deleting players not known on this server.");
+		int n = 0;
+		try {
+			Connection mConnection = setupConnection();
+			Statement statement = mConnection.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT UUID FROM mh_Balance");
+			while (rs.next()) {
+				String uuid = rs.getString("UUID");
+				if (!Bukkit.getOfflinePlayer(UUID.fromString(uuid)).hasPlayedBefore()) {
+					plugin.getMessages().debug("Deleting player:%s from mh_Balance mh_Balance.", uuid);
+					statement.executeUpdate("DELETE FROM mh_Balance WHERE UUID='" + uuid + "'");
+					n++;
+				}
+			}
+			rs.close();
+			statement.close();
+			mConnection.close();
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.WHITE + n
+					+ " players was deleted from the BagOfGold database.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 }

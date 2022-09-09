@@ -21,8 +21,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Core;
+import one.lindegaard.Core.Tools;
 
 public class GringottsItems implements Listener {
 
@@ -102,7 +102,7 @@ public class GringottsItems implements Listener {
 						LinkedHashMap::new));
 		Iterator<Entry<String, String>> itr = result.entrySet().iterator();
 		double taken = 0;
-		double toBeTaken = Misc.round(amount);
+		double toBeTaken = Tools.round(amount);
 		denomination: while (itr.hasNext()) {
 			Entry<String, String> pair = itr.next();
 			Material material;
@@ -137,7 +137,7 @@ public class GringottsItems implements Listener {
 	}
 
 	public void dropGringottsMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
-		double moneyLeftToDrop = Misc.ceil(money);
+		double moneyLeftToDrop = Tools.ceil(money);
 		double droppedMoney = 0;
 		Iterator<Entry<String, String>> itr = Core.getConfigManager().gringottsDenomination.entrySet().iterator();
 		while (itr.hasNext()) {
@@ -178,8 +178,8 @@ public class GringottsItems implements Listener {
 				break;
 			}
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-				//if (slot >= 36 && slot <= 40)
-				//	continue;
+				// if (slot >= 36 && slot <= 40)
+				// continue;
 				ItemStack is = player.getInventory().getItem(slot);
 				if (is != null && is.getType() == material)
 					amountInInventory = amountInInventory + is.getAmount() * value;
@@ -196,12 +196,12 @@ public class GringottsItems implements Listener {
 		} catch (Exception e) {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + " Could not read denomonation ("
-							+ material.name() + ","
-							+ Core.getConfigManager().gringottsDenomination.get(material.name()) + ")");
+							+ material.name() + "," + Core.getConfigManager().gringottsDenomination.get(material.name())
+							+ ")");
 		}
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			//if (slot >= 36 && slot <= 40)
-			//	continue;
+			// if (slot >= 36 && slot <= 40)
+			// continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (is != null && is.getType() == material)
 				amountInInventory = amountInInventory + is.getAmount() * value;
@@ -228,16 +228,16 @@ public class GringottsItems implements Listener {
 				break;
 			}
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-				//if (slot >= 36 && slot <= 40)
-				//	continue;
+				// if (slot >= 36 && slot <= 40)
+				// continue;
 				ItemStack is = player.getInventory().getItem(slot);
 				if (is != null && is.getType() == material)
 					space = space + (64 - is.getAmount()) * value;
 			}
 		}
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			//if (slot >= 36 && slot <= 40)
-			//	continue;
+			// if (slot >= 36 && slot <= 40)
+			// continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (is == null || is.getType() == Material.AIR) {
 				space = space + 64 * maxValue;
@@ -293,8 +293,7 @@ public class GringottsItems implements Listener {
 			plugin.getMessages().debug("%s placed a %s with a value of %s", player.getName(), is.getType().toString(),
 					Core.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 
-			double amount = Double
-					.valueOf(Core.getConfigManager().gringottsDenomination.get(is.getType().toString()));
+			double amount = Double.valueOf(Core.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 			plugin.getRewardManager().removeMoneyFromPlayerBalance(player, amount);
 		}
 	}

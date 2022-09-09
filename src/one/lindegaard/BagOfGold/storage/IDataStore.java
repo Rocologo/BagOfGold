@@ -65,5 +65,10 @@ public interface IDataStore {
 	void migrateDatabaseLayoutFromV2ToV3(Connection connection) throws SQLException;
 	
 	List<PlayerBalance> loadTop54(int i, String worldGroup, int gamemode);
+
+	/**
+	 * Delete all players which is not known on the server.
+	 */
+	void databaseDeleteOldPlayers() throws DataStoreException;
 	
 }

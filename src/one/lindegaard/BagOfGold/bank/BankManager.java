@@ -20,7 +20,6 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
-import one.lindegaard.BagOfGold.util.Misc;
 import one.lindegaard.Core.Core;
 import one.lindegaard.Core.PlayerSettings;
 import one.lindegaard.Core.Tools;
@@ -94,8 +93,8 @@ public class BankManager {
 							.debug(ChatColor.BLUE
 									+ "Calculating Bank interest for %s in worldGroup:%s (Balance=%s, new balance=%s",
 									p.getName(), pb.getWorldGroup(), pb.getBankBalance(),
-									Misc.round(pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100)));
-					pb.setBankBalance(Misc.round(pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100)));
+									Tools.round(pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100)));
+					pb.setBankBalance(Tools.round(pb.getBankBalance() * (1 + plugin.getConfigManager().interest / 100)));
 					plugin.getPlayerBalanceManager().setPlayerBalance(p, pb);
 				}
 				ps.setLast_interest(ps.getLast_interest() + period);
