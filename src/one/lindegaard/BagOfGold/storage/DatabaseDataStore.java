@@ -288,6 +288,8 @@ public abstract class DatabaseDataStore implements IDataStore {
 			ResultSet rs = statement.executeQuery("SELECT UUID FROM mh_Balance");
 			while (rs.next()) {
 				String uuid = rs.getString("UUID");
+				plugin.getMessages().debug("Player:%s - hasplayedbefore:%s", uuid,
+						Bukkit.getOfflinePlayer(UUID.fromString(uuid)).hasPlayedBefore());
 				if (!Bukkit.getOfflinePlayer(UUID.fromString(uuid)).hasPlayedBefore()) {
 					plugin.getMessages().debug("Deleting player:%s from mh_Balance mh_Balance.", uuid);
 					statement.executeUpdate("DELETE FROM mh_Balance WHERE UUID='" + uuid + "'");
