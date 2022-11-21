@@ -18,10 +18,10 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.PlayerSettings;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.storage.DataStoreException;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.PlayerSettings;
+import one.lindegaard.CustomItemsLib.Tools;
+import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 
 public class MySQLDataStore extends DatabaseDataStore {
 

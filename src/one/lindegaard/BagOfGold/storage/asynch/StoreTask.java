@@ -4,7 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.Core.storage.DataStoreException;
+import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 
 public class StoreTask implements IDataStoreTask<Void> {

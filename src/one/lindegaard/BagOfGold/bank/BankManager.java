@@ -20,9 +20,9 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.PlayerSettings;
-import one.lindegaard.Core.Tools;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.PlayerSettings;
+import one.lindegaard.CustomItemsLib.Tools;
 
 public class BankManager {
 

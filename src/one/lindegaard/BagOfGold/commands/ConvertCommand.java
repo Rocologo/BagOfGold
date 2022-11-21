@@ -14,7 +14,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Core;
+import one.lindegaard.CustomItemsLib.Core;
 
 public class ConvertCommand implements ICommand {
 

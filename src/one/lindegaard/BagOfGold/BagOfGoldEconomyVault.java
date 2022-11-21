@@ -14,8 +14,8 @@ import org.bukkit.plugin.ServicePriority;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.Tools;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.Tools;
 
 public class BagOfGoldEconomyVault implements Economy, Listener {
 

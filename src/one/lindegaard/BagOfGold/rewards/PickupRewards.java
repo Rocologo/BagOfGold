@@ -3,9 +3,9 @@ package one.lindegaard.BagOfGold.rewards;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibHelper;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.rewards.Reward;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.Tools;
+import one.lindegaard.CustomItemsLib.rewards.Reward;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
@@ -40,12 +40,12 @@ public class PickupRewards {
 						plugin.getMessages().debug(
 								"%s picked up a %s with a value:%s (# of rewards left=%s)(PickupRewards)",
 								player.getName(), reward.isItemReward() ? "ITEM" : reward.getDisplayName(),
-								plugin.getBagOfGoldItems().format(Tools.round(reward.getMoney())),
+								Tools.format(Tools.round(reward.getMoney())),
 								Core.getCoreRewardManager().getDroppedMoney().size());
 						if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 							plugin.getMessages().playerActionBarMessageQueue(player, plugin.getMessages().getString(
 									"bagofgold.moneypickup", "money",
-									plugin.getBagOfGoldItems().format(reward.getMoney()), "rewardname",
+									Tools.format(reward.getMoney()), "rewardname",
 									ChatColor.valueOf(Core.getConfigManager().rewardTextColor)
 											+ (reward.getDisplayName().isEmpty() ? Core.getConfigManager().bagOfGoldName
 													: reward.getDisplayName())));

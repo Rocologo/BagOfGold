@@ -17,7 +17,7 @@ import org.inventivetalent.update.spiget.UpdateCallback;
 import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.update.UpdateStatus;
+import one.lindegaard.CustomItemsLib.update.UpdateStatus;
 
 public class SpigetUpdater {
 

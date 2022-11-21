@@ -9,8 +9,8 @@ import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
-import one.lindegaard.Core.storage.DataStoreException;
-import one.lindegaard.Core.storage.UserNotFoundException;
+import one.lindegaard.CustomItemsLib.storage.DataStoreException;
+import one.lindegaard.CustomItemsLib.storage.UserNotFoundException;
 
 public interface IDataStore {
 	/**

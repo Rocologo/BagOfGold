@@ -27,7 +27,6 @@ import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
 import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
-import one.lindegaard.Core.compatibility.CompatPlugin;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
@@ -40,15 +39,15 @@ import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
 import one.lindegaard.BagOfGold.rewards.RewardManager;
 import one.lindegaard.BagOfGold.rewards.GringottsItems;
-import one.lindegaard.Core.storage.DataStoreException;
+import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
+import one.lindegaard.CustomItemsLib.messages.MessageManager;
+import one.lindegaard.CustomItemsLib.server.Servers;
+import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
 import one.lindegaard.BagOfGold.storage.IDataStore;
 import one.lindegaard.BagOfGold.storage.MySQLDataStore;
 import one.lindegaard.BagOfGold.storage.SQLiteDataStore;
 import one.lindegaard.BagOfGold.update.SpigetUpdater;
-import one.lindegaard.Core.server.Servers;
-import one.lindegaard.Core.messages.MessageManager;
-import one.lindegaard.Core.*;
 
 public class BagOfGold extends JavaPlugin {
 
@@ -71,10 +70,13 @@ public class BagOfGold extends JavaPlugin {
 	private BagOfGoldItems mBagOfGoldItems;
 	private MessageManager mMessageManager;
 
-	private static Core mCore;
-	
 	private boolean mInitialized = false;
 	public boolean disabling = false;
+	
+	public static final String PREFIX = ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET;
+	public static final String PREFIX_DEBUG = ChatColor.GOLD + "[BagOfGold][Debug] " + ChatColor.RESET;
+	public static final String PREFIX_WARNING = ChatColor.GOLD + "[BagOfGold][Warning] " + ChatColor.RED;
+	public static final String PREFIX_ERROR = ChatColor.GOLD + "[BagOfGold][Error] " + ChatColor.RED;
 
 	@Override
 	public void onLoad() {
@@ -96,8 +98,6 @@ public class BagOfGold extends JavaPlugin {
 		} else
 			throw new RuntimeException(plugin.getMessages().getString("bagofgold.config.fail"));
 
-		mCore = new Core(this);
-	    
 		if (isbStatsEnabled())
 			plugin.getMessages().debug("bStat is enabled");
 		else {
@@ -230,8 +230,6 @@ public class BagOfGold extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		Core.shutdown();
-		
 		plugin.getMessages().debug("BagOfGold disabled.");
 	}
 
@@ -338,8 +336,8 @@ public class BagOfGold extends JavaPlugin {
 		return mEconomyManager;
 	}
 	
-	public static Core getCore(){
-		return mCore;
-	}
+//	public static Core getCore(){
+//		return mCore;
+//	}
 
 }

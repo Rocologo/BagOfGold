@@ -23,14 +23,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
-import one.lindegaard.Core.storage.DataStoreException;
-import one.lindegaard.Core.storage.IDataCallback;
-//import one.lindegaard.BagOfGold.storage.IDataCallback;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.PlayerSettings;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.rewards.CoreCustomItems;
-import one.lindegaard.Core.storage.UserNotFoundException;
+import one.lindegaard.CustomItemsLib.storage.DataStoreException;
+import one.lindegaard.CustomItemsLib.storage.IDataCallback;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.PlayerSettings;
+import one.lindegaard.CustomItemsLib.Tools;
+import one.lindegaard.CustomItemsLib.rewards.CoreCustomItems;
+import one.lindegaard.CustomItemsLib.storage.UserNotFoundException;
 
 public class PlayerBalanceManager implements Listener {
 

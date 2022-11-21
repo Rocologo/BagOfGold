@@ -3,7 +3,7 @@ package one.lindegaard.BagOfGold;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 
-import one.lindegaard.Core.Core;
+import one.lindegaard.CustomItemsLib.Core;
 
 public class PlayerBalance {
 

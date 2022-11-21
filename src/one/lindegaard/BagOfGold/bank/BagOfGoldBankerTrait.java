@@ -10,7 +10,7 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.trait.SkinTrait;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.server.Servers;
+import one.lindegaard.CustomItemsLib.server.Servers;
 
 public class BagOfGoldBankerTrait extends Trait implements Listener {
 	// http://wiki.citizensnpcs.co/API

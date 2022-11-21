@@ -13,7 +13,10 @@ import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.placeholder.BagOfGoldPlaceholderExpansion;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderData;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderManager;
-import one.lindegaard.Core.compatibility.CompatPlugin;
+import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
+//import one.lindegaard.CustomItemsLib.placeholder.BagOfGoldPlaceholderExpansion;
+//import one.lindegaard.CustomItemsLib.placeholder.PlaceHolderData;
+//import one.lindegaard.CustomItemsLib.placeholder.PlaceHolderManager;
 
 public class PlaceholderAPICompat {
 

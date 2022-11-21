@@ -2,10 +2,6 @@ bagofgold.command.base.description=BagOfGold Version
 bagofgold.config.fail=There was a problem loading the BagOfGold config
 bagofgold.hook.econ=Unable to hook into an economy! Make sure you have one available that Vault accepts.
 bagofgold.hook.econ.reserve=Unable to hook into an economy! Make sure you have one available that Reserve accepts.
-bagofgold.moneypickup=You found ${money} ${rewardname}
-bagofgold.moneydrop=You dropped ${money} ${rewardname}
-bagofgold.moneylost=You lost ${prize}!
-bagofgold.learn.rewards.no-helmet=§bYou are not allowed to wear a reward as a helmet
 
 bagofgold.banker.introduction=&aHi, I am the &4${bankername}&a, please choose an action: 
 bagofgold.banker.balance=Balance
@@ -14,7 +10,6 @@ bagofgold.banker.deposit=Deposit
 bagofgold.banker.withdraw=Withdraw
 bagofgold.banker.click2deposit=§cClick to deposit
 bagofgold.banker.click2withdraw=§cClick to withdraw
-
 
 bagofgold.banksign.line1=&a[${bankname}]
 bagofgold.banksign.line2.deposit=Deposit

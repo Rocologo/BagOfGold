@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.PlayerSettings;
-import one.lindegaard.Core.storage.DataStoreException;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.PlayerSettings;
+import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 
 public class MuteCommand implements ICommand {
 

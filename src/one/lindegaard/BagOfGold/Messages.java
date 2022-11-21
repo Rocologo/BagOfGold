@@ -35,8 +35,8 @@ import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.Strings;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.Strings;
 
 public class Messages {
 

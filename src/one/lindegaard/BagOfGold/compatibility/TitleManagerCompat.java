@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.compatibility.CompatPlugin;
+import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
 
 public class TitleManagerCompat {
 

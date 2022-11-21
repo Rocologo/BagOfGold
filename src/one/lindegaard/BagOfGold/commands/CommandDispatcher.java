@@ -16,7 +16,7 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Core;
+import one.lindegaard.CustomItemsLib.Core;
 
 /**
  * This allows sub commands to be handled in a clean easily expandable way. Just

@@ -16,7 +16,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import net.tnemc.core.Reserve;
 import net.tnemc.core.economy.EconomyAPI;
 import net.tnemc.core.economy.response.EconomyResponse;
-import one.lindegaard.Core.Core;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.Tools;
 
 public class BagOfGoldEconomyReserve implements EconomyAPI {
 
@@ -2380,7 +2381,7 @@ public class BagOfGoldEconomyReserve implements EconomyAPI {
 	 */
 	@Override
 	public String format(BigDecimal amount) {
-		return plugin.getRewardManager().format(amount.doubleValue());
+		return Tools.format(amount.doubleValue());
 	}
 
 	/**

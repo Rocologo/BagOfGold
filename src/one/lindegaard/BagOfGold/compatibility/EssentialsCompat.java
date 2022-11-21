@@ -14,7 +14,7 @@ import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.compatibility.CompatPlugin;
+import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
 
 public class EssentialsCompat {
 

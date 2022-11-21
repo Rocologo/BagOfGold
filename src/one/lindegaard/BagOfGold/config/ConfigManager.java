@@ -12,8 +12,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.config.AutoConfig;
-import one.lindegaard.Core.config.ConfigField;
+import one.lindegaard.CustomItemsLib.config.AutoConfig;
+import one.lindegaard.CustomItemsLib.config.ConfigField;
 
 public class ConfigManager extends AutoConfig {
 
@@ -121,66 +121,43 @@ public class ConfigManager extends AutoConfig {
 			+ "\nset this to false")
 	public boolean useBagOfGoldAsAnEconomyPlugin = true;
 
-	//@ConfigField(name = "number-format", category = "economy", comment = "Here you can change the way the numbers is formatted when you use BagOfGold as an EconomyPlugin.")
-	//public String numberFormat = "#.#####";
+	// @ConfigField(name = "number-format", category = "economy", comment = "Here
+	// you can change the way the numbers is formatted when you use BagOfGold as an
+	// EconomyPlugin.")
+	// public String numberFormat = "#.#####";
 
-	//@ConfigField(name = "reward_rounding", category = "economy", comment = "Rounding of rewards when you uses a range or %. (ex creeperPrize=10:30) the reward."
-	//		+ "\nAll numbers except 0 can be used. "
-	//		+ "\nSet rounding_reward=1 if you want integers. IE. 10,11,12,13,14..."
-	//		+ "\nSet rounding_reward=0.01 if you want 2 decimals 10.00, 10.01, 10.02... integers."
-	//		+ "\nSet rounding_reward=5 if you want multipla of 5 IE. 10,15,20,25..."
-	//		+ "\nSet rounding_reward=2 if you want multipla of 2 IE. 10,12,14,16...")
-	//public double rewardRounding = 1;
+	// @ConfigField(name = "reward_rounding", category = "economy", comment =
+	// "Rounding of rewards when you uses a range or %. (ex creeperPrize=10:30) the
+	// reward."
+	// + "\nAll numbers except 0 can be used. "
+	// + "\nSet rounding_reward=1 if you want integers. IE. 10,11,12,13,14..."
+	// + "\nSet rounding_reward=0.01 if you want 2 decimals 10.00, 10.01, 10.02...
+	// integers."
+	// + "\nSet rounding_reward=5 if you want multipla of 5 IE. 10,15,20,25..."
+	// + "\nSet rounding_reward=2 if you want multipla of 2 IE. 10,12,14,16...")
+	// public double rewardRounding = 1;
 
-	//@ConfigField(name = "minimum_reward", category = "economy", comment = "This is the minimum reward which will which will be paid to the player 0.01 will be fine"
-	//		+ "\nin most installation, but Gringott users who want very low rewards (like 0.001  for killing"
-	//		+ "\na mob) will have to lower the minimum reward. Remember that some multipliers are less than 1"
-	//		+ "\n and grinding detection and penalties. The minimum_reward should therefor be less than 10%"
-	//		+ "\n of smallest reward. In the Gringotts example minimum_reward should be 0.0001 or 0.00005.")
-	//public double minimumReward = 0.01;
+	// @ConfigField(name = "minimum_reward", category = "economy", comment = "This
+	// is the minimum reward which will which will be paid to the player 0.01 will
+	// be fine"
+	// + "\nin most installation, but Gringott users who want very low rewards (like
+	// 0.001 for killing"
+	// + "\na mob) will have to lower the minimum reward. Remember that some
+	// multipliers are less than 1"
+	// + "\n and grinding detection and penalties. The minimum_reward should
+	// therefor be less than 10%"
+	// + "\n of smallest reward. In the Gringotts example minimum_reward should be
+	// 0.0001 or 0.00005.")
+	// public double minimumReward = 0.01;
 
-	//@ConfigField(name = "limit_per_bag", category = "economy", comment = "If you only want the bags to be able to contain a "
-	//		+ "\ncertain amount of gold you can set the limit here. Set limit_per_bag: 9999999999 to disable the limit.")
-	//public double limitPerBagOld = 10000;
+	// @ConfigField(name = "limit_per_bag", category = "economy", comment = "If you
+	// only want the bags to be able to contain a "
+	// + "\ncertain amount of gold you can set the limit here. Set limit_per_bag:
+	// 9999999999 to disable the limit.")
+	// public double limitPerBagOld = 10000;
 
 	@ConfigField(name = "bank_name_on_sign", category = "economy", comment = "Here you can change then name of your sign banks.")
 	public String bankname = "BagOfGold Bank";
-
-	// #####################################################################################
-	// Drop Money on Ground Settings
-	// #####################################################################################
-	//@ConfigField(name = "drop_money_command_alias", category = "dropmoneyonground", comment = "Here you can chance the command /bag money ... to /mh <alias> ..."
-	//		+ "\nExample: gold,bag,silver,coin,???? ")
-	//public String dropMoneyOnGroundMoneyCommandAlias = "money";
-
-	//@ConfigField(name = "drop-money-on-ground-itemtype", category = "dropmoneyonground", comment = "This settings is deprecated."
-	//		+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder. ")
-	//public String dropMoneyOnGroundItemtypeOld = "SKULL";
-
-	//@ConfigField(name = "drop-money-on-ground-item", category = "dropmoneyonground", comment = "This settings is deprecated."
-	//		+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder. ")
-	//public String dropMoneyOnGroundItemOld = "GOLD_INGOT";
-
-	//@ConfigField(name = "drop-money-on-ground-text-color", category = "dropmoneyonground", comment = "This settings is deprecated. Please use the new Reward Format settings in the BagOfGold folder.")
-	//public String dropMoneyOnGroundTextColorOld = "GOLD";
-
-	//@ConfigField(name = "drop-money-on-ground-skull-reward-name", category = "dropmoneyonground", comment = "This is the name of the reward. Warning do not use a name which is used as an Item Name \nin other plugins like f.ex SlimeFun. This would cause problems and \nitems disapear without a warning.")
-	//public String dropMoneyOnGroundSkullRewardNameOld = "BagOfGold";
-
-	//@ConfigField(name = "drop_money_on_ground_skull_reward_name_plural", category = "dropmoneyonground", comment = "This is deprecated.")
-	//public String dropMoneyOnGroundSkullRewardNamePluralOld = "Bag of gold";
-
-	//@ConfigField(name = "drop_money_on_ground_skull_texture_value", category = "dropmoneyonground", comment = "This settings is deprecated."
-	//		+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder.")
-	//public String dropMoneyOnGroundSkullTextureValueOld = "eyJ0aW1lc3RhbXAiOjE0ODU5MTIwNjk3OTgsInByb2ZpbGVJZCI6IjdkYTJhYjNhOTNjYTQ4ZWU4MzA0OGFmYzNiODBlNjhlIiwicHJvZmlsZU5hbWUiOiJHb2xkYXBmZWwiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzM5NmNlMTNmZjYxNTVmZGYzMjM1ZDhkMjIxNzRjNWRlNGJmNTUxMmYxYWRlZGExYWZhM2ZjMjgxODBmM2Y3In19fQ==";
-
-	//@ConfigField(name = "drop_money_on_ground_skull_texture_signature", category = "dropmoneyonground", comment = "This settings is deprecated."
-	//		+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder.")
-	//public String dropMoneyOnGroundSkullTextureSignatureOld = "m8u2ChI43ySVica7pcY0CsCuMCGgAdN7c9f/ZOxDZsPzJY8eiDrwxLIh6oPY1rvE1ja/rmftPSmdnbeHYrzLQ18QBzehFp8ZVegPsd9iNHc4FuD7nr1is2FD8M8AWAZOViiwlUKnfd8avb3SKfvFmhmVhQtE+atJYQrXhJwiqR4S+KTccA6pjIESM3AWlbCOmykg31ey7MQWB4YgtRp8NyFD3HNTLZ8alcEXBuG3t58wYBEME1UaOFah45tHuV1FW+iGBHHFWLu1UsAbg0Uw87Pp+KSTUGrhdwSc/55czILulI8IUnUfxmkaThRjd7g6VpH/w+9jLvm+7tOwfMQZlXp9104t9XMVnTAchzQr6mB3U6drCsGnuZycQzEgretQsUh3hweN7Jzz5knl6qc1n3Sn8t1yOvaIQLWG1f3l6irPdl28bwEd4Z7VDrGqYgXsd2GsOK/gCQ7rChNqbJ2p+jCja3F3ZohfmTYOU8W7DJ8Ne+xaofSuPnWODnZN9x+Y+3RE3nzH9tzP+NBMsV3YQXpvUD7Pepg7ScO+k9Fj3/F+KfBje0k6xfl+75s7kR3pNWQI5EVrO6iuky6dMuFPUBfNfq33fZV6Tqr/7o24aKpfA4WwJf91G9mC18z8NCgFR6iK4cPGmkTMvNtxUQ3MoB0LCOkRcbP0i7qxHupt8xE=";
-
-	//@ConfigField(name = "deny_hoppers_to_pickup_money_on_ground", category = "dropmoneyonground", comment = "This settings is deprecated."
-	//		+ "\nThe setting is only keept so it can be copied to the bagofgoldcore.yml file in the BagOfGold folder.")
-	//public boolean denyHoppersToPickUpMoneyOld = true;
 
 	// #####################################################################################
 	// Gringotts style

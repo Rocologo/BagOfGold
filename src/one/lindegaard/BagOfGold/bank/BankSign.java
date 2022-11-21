@@ -15,11 +15,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.materials.Materials;
-import one.lindegaard.Core.rewards.Reward;
-import one.lindegaard.Core.server.Servers;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.Tools;
+import one.lindegaard.CustomItemsLib.materials.Materials;
+import one.lindegaard.CustomItemsLib.rewards.Reward;
+import one.lindegaard.CustomItemsLib.server.Servers;
 
 public class BankSign implements Listener {
 

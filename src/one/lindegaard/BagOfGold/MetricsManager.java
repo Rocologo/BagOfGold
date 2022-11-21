@@ -24,9 +24,9 @@ import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
 import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.HttpTools;
-import one.lindegaard.Core.HttpTools.httpCallback;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.HttpTools;
+import one.lindegaard.CustomItemsLib.HttpTools.httpCallback;
 
 public class MetricsManager {
 

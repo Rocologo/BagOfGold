@@ -3,7 +3,6 @@ package one.lindegaard.BagOfGold.rewards;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,13 +15,13 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.Tools;
-import one.lindegaard.Core.mobs.MobType;
-import one.lindegaard.Core.rewards.CoreCustomItems;
-import one.lindegaard.Core.rewards.MoneyMergeEventListener;
-import one.lindegaard.Core.rewards.Reward;
-import one.lindegaard.Core.server.Servers;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.Tools;
+import one.lindegaard.CustomItemsLib.mobs.MobType;
+import one.lindegaard.CustomItemsLib.rewards.CoreCustomItems;
+import one.lindegaard.CustomItemsLib.rewards.MoneyMergeEventListener;
+import one.lindegaard.CustomItemsLib.rewards.Reward;
+import one.lindegaard.CustomItemsLib.server.Servers;
 
 public class RewardManager {
 
@@ -125,13 +124,13 @@ public class RewardManager {
 			} else {
 				ps.setBalanceChanges(Tools.round(ps.getBalanceChanges() + give));
 			}
-			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", format(give),
-					offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
+			plugin.getMessages().debug("Deposit %s to %s's account, new balance is %s", Tools.format(give),
+					offlinePlayer.getName(), Tools.format(ps.getBalance() + ps.getBalanceChanges()));
 			plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 			return true;
 		} else {
 			plugin.getMessages().debug("Could not deposit %s to %s's account, because the number is negative",
-					format(amount), offlinePlayer.getName());
+					Tools.format(amount), offlinePlayer.getName());
 			return false;
 		}
 	}
@@ -155,8 +154,8 @@ public class RewardManager {
 					ps.setBalanceChanges(0);
 				} else
 					ps.setBalanceChanges(Tools.round(ps.getBalanceChanges() - amount));
-				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", format(amount),
-						offlinePlayer.getName(), format(ps.getBalance() + ps.getBalanceChanges()));
+				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", Tools.format(amount),
+						offlinePlayer.getName(), Tools.format(ps.getBalance() + ps.getBalanceChanges()));
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
 				if (offlinePlayer.isOnline() && ((Player) offlinePlayer).isValid()) {
 					Player player = (Player) offlinePlayer;
@@ -176,7 +175,7 @@ public class RewardManager {
 			} else {
 				double remove = Tools.round(ps.getBalance() + ps.getBalanceChanges());
 				plugin.getMessages().debug("%s has not enough bagofgold, Withdrawing only %s , new balance is %s",
-						offlinePlayer.getName(), format(remove), format(0));
+						offlinePlayer.getName(), Tools.format(remove), Tools.format(0));
 				if (remove > 0) {
 					removeMoneyFromPlayer((Player) offlinePlayer, remove);
 					ps.setBalance(0);
@@ -199,8 +198,8 @@ public class RewardManager {
 	 */
 	public boolean hasMoney(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance pb = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
-		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), format(amount),
-				Core.getConfigManager().bagOfGoldName, format(pb.getBalance() + pb.getBalanceChanges()));
+		plugin.getMessages().debug("Check if %s has %s %s on the balance=%s)", offlinePlayer.getName(), Tools.format(amount),
+				Core.getConfigManager().bagOfGoldName, Tools.format(pb.getBalance() + pb.getBalanceChanges()));
 		return Tools.round(pb.getBalance()) + Tools.round(pb.getBalanceChanges()) >= Tools.round(amount);
 	}
 
@@ -219,7 +218,7 @@ public class RewardManager {
 			plugin.getGringottsItems().dropGringottsMoneyOnGround(player, killedEntity, location, amount);
 		else {
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
+					.sendMessage(BagOfGold.PREFIX_WARNING
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
 							+ Core.getConfigManager().rewardItemtype + "'");
 		}
@@ -254,7 +253,7 @@ public class RewardManager {
 			item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
 			Core.getCoreRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 		} else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_WARNING
 					+ "Unhandled reward type in RewardManager (DropRewardOnGround).");
 		}
 	}
@@ -356,8 +355,8 @@ public class RewardManager {
 	 */
 	public void removeMoneyFromPlayerBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
-		plugin.getMessages().debug("Removing %s from %s's balance %s", format(amount), offlinePlayer.getName(),
-				format(ps.getBalance() + ps.getBalanceChanges()));
+		plugin.getMessages().debug("Removing %s from %s's balance %s", Tools.format(amount), offlinePlayer.getName(),
+				Tools.format(ps.getBalance() + ps.getBalanceChanges()));
 		if (offlinePlayer.isOnline()) {
 			ps.setBalance(Tools.round(ps.getBalance() + ps.getBalanceChanges() - amount));
 			ps.setBalanceChanges(0);
@@ -376,8 +375,8 @@ public class RewardManager {
 	 */
 	public void addMoneyToPlayerBalance(OfflinePlayer offlinePlayer, double amount) {
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(offlinePlayer);
-		plugin.getMessages().debug("Adding %s to %s's balance %s", format(amount), offlinePlayer.getName(),
-				format(ps.getBalance() + ps.getBalanceChanges()));
+		plugin.getMessages().debug("Adding %s to %s's balance %s", Tools.format(amount), offlinePlayer.getName(),
+				Tools.format(ps.getBalance() + ps.getBalanceChanges()));
 		if (offlinePlayer.isOnline()) {
 			ps.setBalance(Tools.round(ps.getBalance() + ps.getBalanceChanges() + amount));
 			ps.setBalanceChanges(0);
@@ -422,16 +421,6 @@ public class RewardManager {
 	}
 
 	/**
-	 * Format the number
-	 * 
-	 * @param money
-	 * @return
-	 */
-	public String format(double money) {
-		return Tools.format(money);
-	}
-
-	/**
 	 * Calculate the total amount of money in the player inventory.
 	 * 
 	 * @param player
@@ -444,7 +433,7 @@ public class RewardManager {
 			return plugin.getGringottsItems().getAmountOfGringottsMoneyInInventory(player);
 		else {
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
+					.sendMessage(BagOfGold.PREFIX_WARNING
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
 							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
@@ -460,12 +449,12 @@ public class RewardManager {
 	 */
 	public double addMoneyToPlayer(Player player, double amount) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
-			return plugin.getBagOfGoldItems().addBagOfGoldMoneyToPlayer(player, amount);
+			return Core.getCoreRewardManager().addBagOfGoldMoneyToPlayer(player, amount);
 		else if (plugin.getGringottsItems().isGringottsStyle())
 			return plugin.getGringottsItems().addGringottsMoneyToPlayer(player, amount);
 		else {
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
+					.sendMessage(BagOfGold.PREFIX_WARNING
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
 							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
@@ -482,12 +471,12 @@ public class RewardManager {
 	 */
 	public double removeMoneyFromPlayer(Player player, double amount) {
 		if (plugin.getBagOfGoldItems().isBagOfGoldStyle())
-			return plugin.getBagOfGoldItems().removeBagOfGoldFromPlayer(player, amount);
+			return Core.getCoreRewardManager().removeBagOfGoldFromPlayer(player, amount);
 		else if (plugin.getGringottsItems().isGringottsStyle())
 			return plugin.getGringottsItems().removeGringottsMoneyFromPlayer(player, amount);
 		else {
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
+					.sendMessage(BagOfGold.PREFIX_WARNING
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
 							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;
@@ -575,7 +564,7 @@ public class RewardManager {
 			return plugin.getGringottsItems().getSpaceForGringottsMoney(player);
 		} else {
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGOld] " + ChatColor.RED
+					.sendMessage(BagOfGold.PREFIX_WARNING
 							+ "Error in config.sys: unknown 'drop-money-on-ground-itemtype: "
 							+ Core.getConfigManager().rewardItemtype + "'");
 			return 0;

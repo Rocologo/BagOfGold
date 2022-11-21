@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Tools;
+import one.lindegaard.CustomItemsLib.Tools;
 
 public class BagOfGoldPlaceholderExpansion extends PlaceholderExpansion implements Listener {
 	

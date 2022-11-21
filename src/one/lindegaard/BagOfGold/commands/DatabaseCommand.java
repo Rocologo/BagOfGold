@@ -8,8 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.Core;
-import one.lindegaard.Core.storage.DataStoreException;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 
 public class DatabaseCommand implements ICommand, Listener {
 

@@ -5,7 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.CustomItemsLib.Core;
 
 
 @SuppressWarnings("deprecation")
@@ -23,7 +23,7 @@ public class PlayerPickupItemEventListener implements Listener {
 		if (event.isCancelled())
 			return;
 
-		if (BagOfGold.getInstance().getBagOfGoldItems().canPickupMoney(event.getPlayer()))
+		if (Core.getCoreRewardManager().canPickupMoney(event.getPlayer()))
 			pickupRewards.rewardPlayer(event.getPlayer(), event.getItem(), event::setCancelled);
 		else
 			event.setCancelled(true);

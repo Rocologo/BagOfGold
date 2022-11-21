@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.compatibility.CompatPlugin;
+import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
 
 public class CompatibilityManager implements Listener {
 

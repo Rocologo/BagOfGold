@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.rewards.Reward;
+import one.lindegaard.CustomItemsLib.rewards.Reward;
 
 public class BagOfGoldImplementAPI implements BagOfGoldAPI {
 

@@ -7,8 +7,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.Core.rewards.Reward;
-import one.lindegaard.Core.server.Servers;
+import one.lindegaard.CustomItemsLib.Core;
+import one.lindegaard.CustomItemsLib.rewards.Reward;
+import one.lindegaard.CustomItemsLib.server.Servers;
 
 public class EntityPickupItemEventListener implements Listener {
 
@@ -43,7 +44,7 @@ public class EntityPickupItemEventListener implements Listener {
 		}
 
 		Player player = (Player) entity;
-		if (BagOfGold.getInstance().getBagOfGoldItems().canPickupMoney(player)) {
+		if (Core.getCoreRewardManager().canPickupMoney(player)) {
 			pickupRewards.rewardPlayer((Player) entity, event.getItem(), event::setCancelled);
 		} else {
 			event.setCancelled(true);
