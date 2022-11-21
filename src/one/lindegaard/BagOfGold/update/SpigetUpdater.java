@@ -63,8 +63,8 @@ public class SpigetUpdater {
 	public void hourlyUpdateCheck(final CommandSender sender, boolean updateCheck, final boolean silent) {
 		long seconds = plugin.getConfigManager().checkEvery;
 		if (seconds < 900) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
-					+ "[Warning] check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_WARNING
+					+ "check_every in your config.yml is too low. A low number can cause server crashes. The number is raised to 900 seconds = 15 minutes.");
 			seconds = 900;
 		}
 		if (updateCheck) {
@@ -79,10 +79,10 @@ public class SpigetUpdater {
 
 	public void checkForUpdate(final CommandSender sender, final boolean silent, boolean forceDownload) {
 		if (!silent)
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-					+ plugin.getMessages().getString("bagofgold.commands.update.check"));
+			Bukkit.getConsoleSender()
+					.sendMessage(BagOfGold.PREFIX + plugin.getMessages().getString("bagofgold.commands.update.check"));
 		if (updateAvailable == UpdateStatus.RESTART_NEEDED)
-			sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+			sender.sendMessage(BagOfGold.PREFIX + ChatColor.GREEN
 					+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 
 		spigetUpdate = new SpigetUpdate(plugin, 49332);
@@ -98,9 +98,9 @@ public class SpigetUpdater {
 				updateAvailable = isUpdateNewerVersion(newVersion);
 				if (updateAvailable == UpdateStatus.AVAILABLE) {
 					newDownloadVersion = newVersion;
-					sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN + plugin.getMessages()
+					sender.sendMessage(BagOfGold.PREFIX + ChatColor.GREEN + plugin.getMessages()
 							.getString("bagofgold.commands.update.version-found", "newversion", newVersion));
-					if (plugin.getConfigManager().autoupdate|| forceDownload) {
+					if (plugin.getConfigManager().autoupdate || forceDownload) {
 						if (hasDirectDownload) {
 							try {
 								InputStream in = new URL("https://api.spiget.org/v2/resources/49332/download")
@@ -110,7 +110,7 @@ public class SpigetUpdater {
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-							
+
 							new BukkitRunnable() {
 								int count = 0;
 
@@ -118,16 +118,14 @@ public class SpigetUpdater {
 								public void run() {
 									// Wait for the response
 									if (count++ > 20) {
-										Bukkit.getConsoleSender()
-												.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
-														+ "No updates found. (No response from server after 20s)");
+										Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_WARNING
+												+ "No updates found. (No response from server after 20s)");
 										plugin.getMessages().senderSendMessage(sender,
-												ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
-														+ plugin.getMessages().getString(
-																"bagofgold.commands.update.could-not-update"));
+												BagOfGold.PREFIX + ChatColor.GREEN + plugin.getMessages()
+														.getString("bagofgold.commands.update.could-not-update"));
 										plugin.getMessages().debug("Update error: %s",
 												spigetUpdate.getFailReason().toString());
-										sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+										sender.sendMessage(BagOfGold.PREFIX + ChatColor.GREEN
 												+ "If download fail, you can download newest version here: "
 												+ downloadUrl);
 										this.cancel();
@@ -141,9 +139,8 @@ public class SpigetUpdater {
 												newJar.delete();
 											downloadedJar.renameTo(newJar);
 											plugin.getMessages().senderSendMessage(sender,
-													ChatColor.GOLD + "[BagOfGold]" + ChatColor.GREEN
-															+ plugin.getMessages()
-																	.getString("bagofgold.commands.update.complete"));
+													BagOfGold.PREFIX + ChatColor.GREEN + plugin.getMessages()
+															.getString("bagofgold.commands.update.complete"));
 										} else {
 											if (updateAvailable != UpdateStatus.RESTART_NEEDED) {
 												File currentJar = new File("plugins/" + currentJarFile);
@@ -163,9 +160,8 @@ public class SpigetUpdater {
 															+ " to plugins/BagOfGold-" + newDownloadVersion + ".jar");
 													updateAvailable = UpdateStatus.RESTART_NEEDED;
 													plugin.getMessages().senderSendMessage(sender,
-															ChatColor.GOLD + "[BagOfGold]" + ChatColor.GREEN
-																	+ plugin.getMessages().getString(
-																			"bagofgold.commands.update.complete"));
+															BagOfGold.PREFIX + ChatColor.GREEN + plugin.getMessages()
+																	.getString("bagofgold.commands.update.complete"));
 												}
 											}
 										}
@@ -173,25 +169,24 @@ public class SpigetUpdater {
 									}
 								}
 							}.runTaskTimer(plugin, 20L, 20L);
-							sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
+							sender.sendMessage(BagOfGold.PREFIX + ChatColor.GREEN
 									+ plugin.getMessages().getString("bagofgold.commands.update.complete"));
 						}
 					} else
-						sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.GREEN
-								+ plugin.getMessages().getString("bagofgold.commands.update.help"));
+						sender.sendMessage(
+								BagOfGold.PREFIX + plugin.getMessages().getString("bagofgold.commands.update.help"));
 				} else {
-					sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-							+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
+					sender.sendMessage(
+							BagOfGold.PREFIX + plugin.getMessages().getString("bagofgold.commands.update.no-update"));
 				}
 			}
-							
 
 			@Override
 			public void upToDate() {
 				//// Plugin is up-to-date
 				if (!silent)
-					sender.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-							+ plugin.getMessages().getString("bagofgold.commands.update.no-update"));
+					sender.sendMessage(
+							BagOfGold.PREFIX + plugin.getMessages().getString("bagofgold.commands.update.no-update"));
 			}
 		});
 

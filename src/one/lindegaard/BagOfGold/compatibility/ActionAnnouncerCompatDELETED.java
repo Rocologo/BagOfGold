@@ -9,14 +9,14 @@ import me.clip.actionannouncer.ActionAPI;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
 
-public class ActionAnnouncerCompat {
+public class ActionAnnouncerCompatDELETED {
 
 	private static Plugin mPlugin;
 	private static boolean supported = false;
 
 	// https://www.spigotmc.org/resources/actionannouncer.1320/
 
-	public ActionAnnouncerCompat() {
+	public ActionAnnouncerCompatDELETED() {
 		if (!isEnabledInConfig()) {
 			Bukkit.getConsoleSender()
 					.sendMessage(ChatColor.GOLD+"[BagOfGold]"+ChatColor.RESET+" Compatibility with ActionAnnouncer is disabled in config.yml");

@@ -49,7 +49,6 @@ public class Messages {
 
 	private static Map<String, String> mTranslationTable;
 	private static String[] mValidEncodings = new String[] { "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-8", "ISO646-US" };
-	private static final String PREFIX = ChatColor.GOLD + "[BagOfGold]" + ChatColor.RESET;
 	private static String[] sources = new String[] { "en_US.lang", "hu_HU.lang", "pt_BR.lang", "zh_CN.lang",
 			"fr_FR.lang", "ru_RU.lang" };
 
@@ -61,7 +60,7 @@ public class Messages {
 		for (String source : sources) {
 			File dest = new File(folder, source);
 			if (!dest.exists()) {
-				Bukkit.getConsoleSender().sendMessage(PREFIX + " Creating language file " + source + " from JAR.");
+				Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "Creating language file " + source + " from JAR.");
 				plugin.saveResource("lang/" + source, false);
 			} else {
 				if (!injectChanges(plugin.getResource("lang/" + source),
@@ -96,7 +95,7 @@ public class Messages {
 				writer.close();
 				sortFileOnDisk(onDisk);
 				Bukkit.getConsoleSender()
-						.sendMessage(PREFIX + " Updated " + onDisk.getName() + " language file with missing keys");
+						.sendMessage(BagOfGold.PREFIX + "Updated " + onDisk.getName() + " language file with missing keys");
 			}
 
 			return true;
@@ -144,7 +143,7 @@ public class Messages {
 			reader.close();
 		} catch (Exception e) {
 			Bukkit.getServer().getConsoleSender()
-					.sendMessage(PREFIX + " Error reading the language file. Please check the format.");
+					.sendMessage(BagOfGold.PREFIX + "Error reading the language file. Please check the format.");
 		}
 
 		return map;
@@ -185,7 +184,7 @@ public class Messages {
 			if (encoding == null) {
 				FileInputStream input = new FileInputStream(file);
 				Bukkit.getConsoleSender()
-						.sendMessage(PREFIX + " Could not detect encoding of lang file. Defaulting to UTF-8");
+						.sendMessage(BagOfGold.PREFIX + "Could not detect encoding of lang file. Defaulting to UTF-8");
 				map = loadLang(input, "UTF-8");
 				input.close();
 			}
@@ -204,8 +203,8 @@ public class Messages {
 	public void setLanguage(String lang) {
 		File file = new File(plugin.getDataFolder(), "lang/" + lang);
 		if (!file.exists()) {
-			Bukkit.getConsoleSender().sendMessage(PREFIX
-					+ " Language file does not exist. Creating a new file based on en_US. You need to translate the file yourself.");
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX
+					+ "Language file does not exist. Creating a new file based on en_US. You need to translate the file yourself.");
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
@@ -219,12 +218,12 @@ public class Messages {
 			injectChanges(resource, file);
 			mTranslationTable = loadLang(file);
 		} else {
-			Bukkit.getConsoleSender().sendMessage(PREFIX + " Could not read the language file:" + file.getName());
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "Could not read the language file:" + file.getName());
 		}
 
 		if (mTranslationTable == null) {
 			mTranslationTable = new HashMap<String, String>();
-			Bukkit.getConsoleSender().sendMessage(PREFIX + " Creating new translation table.");
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "Creating new translation table.");
 		}
 	}
 
@@ -232,7 +231,7 @@ public class Messages {
 		String value = mTranslationTable.get(key);
 
 		if (value == null) {
-			Bukkit.getConsoleSender().sendMessage(PREFIX + " mTranslationTable has not key: " + key.toString());
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "mTranslationTable has not key: " + key.toString());
 			throw new MissingResourceException("", "", key);
 		}
 
@@ -279,7 +278,7 @@ public class Messages {
 
 			return Strings.convertColors(ChatColor.translateAlternateColorCodes('&', output));
 		} catch (MissingResourceException e) {
-			Bukkit.getConsoleSender().sendMessage(PREFIX + " BagOfGold could not find key: " + key.toString());
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "BagOfGold could not find key: " + key.toString());
 			return key;
 		}
 	}
@@ -300,7 +299,7 @@ public class Messages {
 	 */
 	public void debug(String message, Object... args) {
 		if (plugin.getConfigManager().debug) {
-			Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + " [Debug] " + String.format(message, args));
+			Bukkit.getServer().getConsoleSender().sendMessage(BagOfGold.PREFIX_DEBUG + String.format(message, args));
 		}
 	}
 

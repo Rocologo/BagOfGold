@@ -1,4 +1,3 @@
-bagofgold.command.base.description=BagOfGold Verzió 
 bagofgold.config.fail=Hiba történt a BagOfGold konfiguráció betöltése során
 bagofgold.hook.econ=Nem lehet beilleszkedni egy gazdaságba! Győződj meg róla, hogy van olyan elérhető, amelyet a Vault elfogad.
 bagofgold.moneypickup=Találtál ${money} ${rewardname}
@@ -33,6 +32,7 @@ bagofgold.banksign.line4.error_on_sign=&4Hiba sor ${line}
 bagofgold.banksign.item_has_no_value=&4A(z) ${itemname}&4 nincs értéke, nem tudod letétbe helyezni
 bagofgold.banksign.only_survival=&4Csak a túléléshez használhatod a bankot
 
+bagofgold.command.base.description=BagOfGold Verzió
 bagofgold.commands.base.help.commands=Parancsok:
 bagofgold.commands.base.help.description=Megjeleníti ezt a képernyőt.
 bagofgold.commands.base.nocommand=Nincs megadva parancs: ${command}

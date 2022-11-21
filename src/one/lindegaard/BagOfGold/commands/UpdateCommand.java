@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import one.lindegaard.BagOfGold.BagOfGold;
+import one.lindegaard.CustomItemsLib.Core;
 import one.lindegaard.CustomItemsLib.update.UpdateStatus;
 
 public class UpdateCommand implements ICommand {
@@ -53,9 +54,10 @@ public class UpdateCommand implements ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
-		if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.AVAILABLE)
+		if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.AVAILABLE) {
 			plugin.getSpigetUpdater().checkForUpdate(sender, false, true);
-		else if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.RESTART_NEEDED)
+			//TODO: Core.getInstance().getSpigetUpdater().checkForUpdate(sender, false, true);
+		} else if (plugin.getSpigetUpdater().getUpdateAvailable() == UpdateStatus.RESTART_NEEDED)
 			plugin.getMessages().senderSendMessage(sender,
 					ChatColor.GREEN + plugin.getMessages().getString("bagofgold.commands.update.complete"));
 		else

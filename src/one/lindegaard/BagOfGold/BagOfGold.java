@@ -40,7 +40,6 @@ import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
 import one.lindegaard.BagOfGold.rewards.RewardManager;
 import one.lindegaard.BagOfGold.rewards.GringottsItems;
 import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
-import one.lindegaard.CustomItemsLib.messages.MessageManager;
 import one.lindegaard.CustomItemsLib.server.Servers;
 import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.DataStoreManager;
@@ -68,7 +67,6 @@ public class BagOfGold extends JavaPlugin {
 	private PlayerBalanceManager mPlayerBalanceManager;
 	private GringottsItems mGringottsItems;
 	private BagOfGoldItems mBagOfGoldItems;
-	private MessageManager mMessageManager;
 
 	private boolean mInitialized = false;
 	public boolean disabling = false;
@@ -328,16 +326,8 @@ public class BagOfGold extends JavaPlugin {
 		return mBagOfGoldItems;
 	}
 
-	public MessageManager getMessageManager() {
-		return mMessageManager;
-	}
-
 	public EconomyManager getEconomyManager() {
 		return mEconomyManager;
 	}
 	
-//	public static Core getCore(){
-//		return mCore;
-//	}
-
 }
