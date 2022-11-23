@@ -215,8 +215,10 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "enable-integration-citizens", category = "plugins.citizens", comment = "Enable integration with Citizens2")
 	public boolean enableIntegrationCitizens = true;
 
-	@ConfigField(name = "enable-integration-shopkeepers", category = "plugins.shopkeepers", comment = "Enable integration with Shopkeepers. This is still in BETA TEST and you should not use the Shopkeeper integration.")
-	public boolean enableIntegrationShopkeepers = false;
+	@ConfigField(name = "enable-integration-shopkeepers-beta", category = "plugins.shopkeepers", comment = "Enable integration with Shopkeepers. This is still in BETA TEST and "
+			+ "\nyou should not use the Shopkeeper integration. "
+			+ "\nYou can only SELL items and get BagOfGold at the moment!!!")
+	public boolean enableIntegrationShopkeepersBETA = false;
 
 	@ConfigField(name = "enable-integration-essentials", category = "plugins.essentials", comment = "Enable integration with Essentials"
 			+ "\nhttp://dev.bukkit.org/bukkit-plugins/essentialsx/")

@@ -1,3 +1,10 @@
+V4.5.0
+* CustomItemsLib mandatory (https://www.spigotmc.org/resources/customitemslib.106375/)
+* All methods drop, pickup, moving rewards has been rewritten and moved to CustomItemsLib to fix duplication bugs and other bugs.
+* Worldgroups.yml moved from the BagOfGold folder to the CustomItemsLib folder
+* rewards.yml was moved from the BagOfGold folder to the CustomItemsLib folder
+* BETA Shopkeeper support. You can sell Items and get BagOfGold
+*  
 V4.2.1
 * Fixed Mysql bug 
 V4.2.0

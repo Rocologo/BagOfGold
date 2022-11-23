@@ -19,23 +19,27 @@ public class BankCommand implements ICommand {
 	public BankCommand(BagOfGold plugin) {
 		this.plugin = plugin;
 		if (Core.getConfigManager().bagOfGoldName == null || Core.getConfigManager().bagOfGoldName.isEmpty()) {
-			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.RED + "The reward_name in bagofgoldcore.yml can't be empty");
+			Bukkit.getConsoleSender().sendMessage(
+					Core.PREFIX_WARNING + "The reward_name in config.yml can't be empty. Changed to 'Bag Of Gold'");
 			Core.getConfigManager().bagOfGoldName = "Bag of gold";
 			Core.getConfigManager().saveConfig();
 		}
 	}
 
-	// Admin command
+	// Admin commands
 	// /bag bank give <player> <amount> - to give the player an amount of bag of
-	// gold.
+	// gold on his bank account.
 	// Permission needed bagofgold.bank.give
 
 	// /bag bank take <player> <amount> - to take an amount of money from the
-	// player.
+	// players bank account.
 	// have in your hand.
 	// Permission needed bagofgold.bank.take
 
+	// /bag bank define <name-of-bank>
+	// /bag bank create <name-of-bank>
+
+	// Player commands
 	// /bag bank balance - to get your own bank balance
 	// Permission needed bagofgold.bank.balance
 
@@ -241,9 +245,10 @@ public class BankCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, String label, String[] args) {
 		ArrayList<String> items = new ArrayList<String>();
 		if (args.length == 1) {
+			items.add("balance");
+			// admin commands
 			items.add("give");
 			items.add("take");
-			items.add("balance");
 		} else if (args.length == 2)
 			for (Player player : Bukkit.getOnlinePlayers())
 				items.add(player.getName());

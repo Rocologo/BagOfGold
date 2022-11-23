@@ -49,7 +49,7 @@ public class ShopkeepersCompat {
 	}
 
 	public static boolean isEnabledInConfig() {
-		return BagOfGold.getInstance().getConfigManager().enableIntegrationShopkeepers;
+		return BagOfGold.getInstance().getConfigManager().enableIntegrationShopkeepersBETA;
 	}
 
 	// **************************************************************************
