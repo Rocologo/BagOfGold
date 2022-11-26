@@ -155,14 +155,16 @@ public class RewardManager {
 				} else
 					ps.setBalanceChanges(Tools.round(ps.getBalanceChanges() - amount));
 				plugin.getMessages().debug("Withdraw %s from %s's account, new balance is %s", Tools.format(amount),
-						offlinePlayer.getName(), Tools.format(ps.getBalance() + ps.getBalanceChanges()));
+						offlinePlayer.getName(), Tools.format(ps.getBalance() + ps.getBalanceChanges())); //OK
 				plugin.getPlayerBalanceManager().setPlayerBalance(offlinePlayer, ps);
+	/**			
 				if (offlinePlayer.isOnline() && ((Player) offlinePlayer).isValid()) {
 					Player player = (Player) offlinePlayer;
 					if (player.getGameMode() == GameMode.SURVIVAL) {
 						plugin.getMessages().debug(
 								"EconomyManager: withdrawPlayer adjusting Player Balance to Amount of BagOfGold in Inventory",
 								player.getName());
+						//plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 						plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 					} else {
 						plugin.getMessages().debug(
@@ -171,6 +173,7 @@ public class RewardManager {
 						plugin.getRewardManager().adjustAmountOfMoneyInInventoryToPlayerBalance(player);
 					}
 				}
+		**/		
 				return true;
 			} else {
 				double remove = Tools.round(ps.getBalance() + ps.getBalanceChanges());

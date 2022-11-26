@@ -21,7 +21,7 @@ public class RewardListeners implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
 
 		Player player = (Player) event.getPlayer();

@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.TradeSelectEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -119,94 +120,143 @@ public class ShopkeepersCompat implements Listener {
 					event.getClick().isKeyboardClick(), isNumberKey == null ? "null" : isNumberKey.getType(),
 					isSwapOffhand == null ? "null" : isSwapOffhand.getType());
 
-			MerchantInventory inv = (MerchantInventory) event.getInventory();
-
-			// for (ItemStack itemStack : inv.getSelectedRecipe().getIngredients()) {
-
-			// if (Reward.isReward(itemStack)) {
-			// Reward reward = Reward.getReward(itemStack);
-			// Core.getMessages().debug("A bagofgold was traded to something");
-
-			// }
-
-			// }
 		}
 
 	}
+
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onTradeSelectEvent(TradeSelectEvent event) {
+		if (event.isCancelled())
+			return;
+
+		MerchantInventory inv = event.getInventory();
+		Player buyer = (Player) event.getWhoClicked();
+		MerchantRecipe recipe = inv.getMerchant().getRecipe(event.getIndex());
+		ItemStack is0 = recipe.getIngredients().get(0);
+		ItemStack is1 = recipe.getIngredients().get(1);
+		ItemStack isResult = recipe.getResult();
+
+		Core.getMessages().debug("TradeSelectEvent: Player=%s, index=%s (%sx%s,%sx%s,%sx%s) - inv=(%s,%s,%s), uses=%s, maxuses=%s, SpecialPrice=%s, PriceMultiplier=%s, demand=%s ",
+				buyer.getName(), event.getIndex(), is0.getAmount(), is0.getType(), is1.getAmount(), is1.getType(),
+				isResult.getAmount(), isResult.getType(),
+				inv.getItem(0) != null ? inv.getItem(0).getType() : "null",
+				inv.getItem(1) != null ? inv.getItem(1).getType() : "null",
+				inv.getItem(2) != null ? inv.getItem(2).getType() : "null", recipe.getUses(), recipe.getMaxUses(),
+						recipe.getSpecialPrice(),recipe.getPriceMultiplier(),recipe.getDemand());
+
+		// Ingrediens0
+		boolean found0=false;
+		if (Reward.isReward(is0)) {
+			double isMoney0 = (Reward.isReward(is0) ? Reward.getReward(is0).getMoney() * is0.getAmount() : 0);
+			if (inv.getItem(0)==null) {
+				Core.getMessages().debug("TradeSelectEvent: setItem0");
+				inv.setItem(0,is0);
+				BagOfGold.getInstance().getEconomyManager().withdrawPlayer(buyer, isMoney0*is0.getAmount());
+				found0=true;
+			}
+		}
+		
+		// Ingrediens1		
+		boolean found1=false;
+		if (Reward.isReward(is1)) {
+			double isMoney1 = (Reward.isReward(is1) ? Reward.getReward(is1).getMoney() * is1.getAmount() : 0);
+			if (inv.getItem(1)==null) {
+				Core.getMessages().debug("TradeSelectEvent: setItem1");
+				inv.setItem(1,is1);
+				BagOfGold.getInstance().getEconomyManager().withdrawPlayer(buyer, isMoney1*is1.getAmount());
+				found1=true;
+			}
+		}
+		
+		// RESULT
+		if (Reward.isReward(isResult)) {
+			double isResultMoney = (Reward.isReward(isResult) ? Reward.getReward(isResult).getMoney() * isResult.getAmount() : 0);
+			if (inv.getItem(2)==null) {
+				
+				
+			}
+		} else {
+			if ((found0||found1) && inv.getItem(2)==null) {
+				inv.setItem(2, isResult);
+				//event.getWhoClicked().getInventory().first(isResult);
+			}
+		}
+		//buyer.updateInventory();
+			
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onInventoryCloseEvent(InventoryCloseEvent event) {
+		Player player = (Player) event.getPlayer();
+		
+		if (event.getInventory().getType() == InventoryType.MERCHANT) {
+			MerchantInventory inventory = (MerchantInventory) event.getInventory();
+			ItemStack is0 = inventory.getItem(0);
+			if (Reward.isReward(is0)) {
+				Reward reward0 =Reward.getReward(is0);
+				if (reward0.isMoney()) {
+					BagOfGold.getInstance().getRewardManager().addMoneyToPlayerBalance(player, reward0.getMoney()*is0.getAmount());
+				}
+			}
+		}
+	}
+	
+/**
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onTradeSelectEvent(TradeSelectEvent event) {
 		if (event.isCancelled())
 			return;
-		HumanEntity trader = event.getMerchant().getTrader();
+
 		MerchantInventory inv = event.getInventory();
 		Player buyer = (Player) event.getWhoClicked();
 		MerchantRecipe recipe = inv.getMerchant().getRecipe(event.getIndex());
-		List<ItemStack> ingredients = recipe.getIngredients();
+		ItemStack is0 = recipe.getIngredients().get(0);
+		ItemStack is1 = recipe.getIngredients().get(1);
+		ItemStack isResult = recipe.getResult();
 
-		Core.getMessages().debug("TradeSelectEvent: Trader=%s, Player=%s, index=%s, result=%s", trader.getName(),
-				buyer.getName(), event.getIndex(), event.getResult().toString());
-		Core.getMessages().debug("TradeSelectEvent: RecipeInventorySize=%s, TraderInventorySize=%s", inv.getSize(),
-				event.getMerchant().getTrader().getInventory().getSize());
-
-		double cost = 0;
-		int antal = ingredients.size();
-		for (int n = 0; n < antal; n++) {
-			ItemStack is = ingredients.get(n);
-			if (Reward.isReward(is)) {
-				Reward reward = Reward.getReward(is);
-				Core.getMessages().debug(
-						"TradeSelectEvent: %s recipe contains a reward with value %s (amount=%s) in slot=%s",
-						buyer.getName(), reward.getMoney(), is.getAmount(), n);
-
-				boolean found=false;
-				for (int n2 = 0; n2 < event.getWhoClicked().getInventory().getSize(); n2++) {
-					if (Reward.isReward(event.getWhoClicked().getInventory().getItem(n2))) {
-						Reward bag = Reward.getReward(event.getWhoClicked().getInventory().getItem(n2));
-						if (bag.getMoney() >= reward.getMoney()) {
-							Core.getMessages().debug("Found reward in slot=%s (value=%s)", n2, bag.getMoney());
-							
-							bag.setMoney(bag.getMoney() - reward.getMoney());
-							if (bag.getMoney() > 0) {
-								ItemStack isBag = Reward.setDisplayNameAndHiddenLores(is, bag);
-								event.getWhoClicked().getInventory().setItem(n2, isBag);
-							} else {
-								event.getWhoClicked().getInventory().clear(n2);
-							}
-
-							Core.getMessages().debug("New value = %s (recipe.result=%s)", bag.getMoney(),recipe.getResult().getType());
-							found=true;
-							inv.setItem(0, recipe.getIngredients().get(0));
-							//inv.setItem(1, recipe.getIngredients().get(1));
-							inv.setItem(2, recipe.getResult());
-							//BagOfGold.getInstance().getRewardManager().removeMoneyFromPlayer(buyer, bag.getMoney());
-							break;
-						}
-
+		if (Reward.isReward(is0) || Reward.isReward(is1) || Reward.isReward(isResult)) {
+			
+			event.setCancelled(true);
+			
+			Core.getMessages().debug("TradeSelectEvent: Player=%s, index=%s (%sx%s,%sx%s,%sx%s) - inv=(%s,%s,%s), uses=%s, maxuses=%s ",
+					buyer.getName(), event.getIndex(), is0.getAmount(), is0.getType(), is1.getAmount(), is1.getType(),
+					isResult.getAmount(), isResult.getType(),
+					inv.getItem(0) != null ? inv.getItem(0).getType() : "null",
+					inv.getItem(1) != null ? inv.getItem(1).getType() : "null",
+					inv.getItem(2) != null ? inv.getItem(2).getType() : "null", recipe.getUses(), recipe.getMaxUses());
+			
+			double isMoney01 = (Reward.isReward(is0) ? Reward.getReward(is0).getMoney() * is0.getAmount() : 0)
+					+ (Reward.isReward(is1) ? Reward.getReward(is1).getMoney() * is1.getAmount() : 0);
+			
+			if (BagOfGold.getInstance().getEconomyManager().hasMoney(buyer, isMoney01)) {
+				if (is0 != null) {
+					if (inv.getItem(0) == null)
+						inv.setItem(0, is0);
+					else if (Reward.isReward(is0) && Reward.getReward(is0).isMoney()) {
+						BagOfGold.getInstance().getEconomyManager().depositPlayer(buyer,
+								Reward.getReward(is0).getMoney());
+					} else {
+						buyer.getInventory().addItem(is0);
+						
 					}
 				}
-				if (!found) {
-					Core.getMessages().debug("No money found");
-					event.setCancelled(true);
+				if (is1 != null) {
+					if (inv.getItem(1) == null)
+						inv.setItem(1, is1);
+					else if (Reward.isReward(is1) && Reward.getReward(is1).isMoney()) {
+						BagOfGold.getInstance().getEconomyManager().depositPlayer(buyer,
+								Reward.getReward(is1).getMoney());
+					} else {
+						buyer.getInventory().addItem(is1);
+					}
 				}
-				//double taken = Core.getCoreRewardManager().removeBagOfGoldFromPlayer((Player) event.getWhoClicked(),
-				//		cost);
-				//Core.getMessages().debug("taken=%s", taken);
-				cost = cost + reward.getMoney();
+				BagOfGold.getInstance().getEconomyManager().withdrawPlayer(buyer, isMoney01);
 			}
+			if (isResult != null)
+				inv.setItem(2, isResult);
 		}
-
-		if (Reward.isReward(recipe.getResult())) {
-			Reward reward = Reward.getReward(recipe.getResult());
-			recipe.setPriceMultiplier((float) reward.getMoney());
-			Core.getMessages().debug(
-					"TradeSelectEvent: the trade is resulting in BagOfGold with value: %s, uses=%s, PriceMultiplier=%s",
-					reward.getMoney(), recipe.getUses(), recipe.getPriceMultiplier());
-		} else if (recipe.getResult() != null && cost != 0) {
-			Core.getMessages().debug("%s choose a recipe containing bagofgold (value=%s)a to get  %s", buyer.getName(),
-					cost, recipe.getResult().getType());
-		}
-
 	}
-
+**/
 }
