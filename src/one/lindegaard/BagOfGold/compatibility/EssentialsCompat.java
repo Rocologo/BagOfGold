@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,17 +23,17 @@ public class EssentialsCompat {
 
 	public EssentialsCompat() {
 		if (!isEnabledInConfig()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-					+ "Compatibility with Essentials is disabled in config.yml");
+			Bukkit.getConsoleSender()
+					.sendMessage(BagOfGold.PREFIX + "Compatibility with Essentials is disabled in config.yml");
 			this.plugin = BagOfGold.getInstance();
 		} else {
 			mPlugin = (Essentials) Bukkit.getPluginManager().getPlugin(CompatPlugin.Essentials.getName());
 
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-					+ "Enabling compatibility with Essentials (" + getEssentials().getDescription().getVersion() + ")");
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "Enabling compatibility with Essentials ("
+					+ getEssentials().getDescription().getVersion() + ")");
 			if (mPlugin.getDescription().getVersion().compareTo("2.17.0") <= 0
 					&& BagOfGold.getInstance().getEconomyManager().getEconomyAPI().endsWith("Reserve"))
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+				Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_WARNING
 						+ "This version of Essentials is not compatible with Reserve. You have 2 economy providers: Essentials and BagOfGold.");
 			supported = true;
 		}

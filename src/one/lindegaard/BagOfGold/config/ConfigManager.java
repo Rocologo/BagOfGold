@@ -232,39 +232,6 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")
 	public boolean enableIntegrationPlaceholderAPI = true;
 
-	@ConfigField(name = "enable_integration_titleapi", category = "plugins.titleapi", comment = "Enable/Disable integration with TitleAPI")
-	public boolean enableIntegrationTitleAPI = true;
-
-	@ConfigField(name = "enable_integration_titlemanager", category = "plugins.titlemanager", comment = "Enable/Disable integration with TitleManger. If you want messages in player chat you can set this to true."
-			+ "\nhttps://www.spigotmc.org/resources/titlemanager.1049/")
-	public boolean enableIntegrationTitleManager = true;
-
-	@ConfigField(name = "enable_integration_actionbar", category = "plugins.actionbar", comment = "Enable/Disable integration with Actionbar. If you want messages in player chat you can set this to true.")
-	public boolean enableIntegrationActionbar = true;
-
-	@ConfigField(name = "enable_integration_actionbarapi", category = "plugins.actionbarapi", comment = "Enable/Disable integration with ActionBarAPI. If you want messages in player chat you can set this to true."
-			+ "\nhttps://www.spigotmc.org/resources/actionbarapi_1_8_1_9_1_10.1315/")
-	public boolean enableIntegrationActionBarAPI = true;
-
-	@ConfigField(name = "enable_integration_actionannouncer", category = "plugins.actionannouncer", comment = "Enable/Disable integration with ActionAnnouncer. If you want messages in player chat you can set this to true."
-			+ "\nhttps://www.spigotmc.org/resources/actionannouncer.1320/")
-	public boolean enableIntegrationActionAnnouncer = true;
-
-	@ConfigField(name = "enable_integration_bossbarapi", category = "plugins.bossbarapi", comment = "Enable/Disable integration with BossBarAPI. If you want messages in player chat you can set this to true.")
-	public boolean enableIntegrationBossBarAPI = true;
-
-	@ConfigField(name = "enable_integration_barapi", category = "plugins.barapi", comment = "Enable/Disable integration with BarAPI. If you want messages in player chat you can set this to true."
-			+ "\nhttps://dev.bukkit.org/projects/bar_api")
-	public boolean enableIntegrationBarAPI = true;
-
-	@ConfigField(name = "enable_integration_cmi", category = "plugins.cmi", comment = "Enable/Disable integration with CMI."
-			+ "\nhttps://www.spigotmc.org/resources/cmi-270-commands-insane-kits-portals-essentials-economy-mysql-sqlite-much-more.3742/")
-	public boolean enableIntegrationCMI = true;
-
-	@ConfigField(name = "enable_integration_protocollib", category = "plugins.protocollib", comment = "Enable/Disable integration with ProtocolLib."
-			+ "\nhttps://www.spigotmc.org/resources/protocollib.1997/")
-	public boolean enableIntegrationProtocolLib = true;
-
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################

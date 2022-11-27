@@ -11,7 +11,6 @@ import one.lindegaard.BagOfGold.bank.BagOfGoldBankerTrait;
 import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -28,8 +27,8 @@ public class CitizensCompat implements Listener {
 	public CitizensCompat() {
 		this.plugin = BagOfGold.getInstance();
 		if (!isEnabledInConfig()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-					+ "Compatibility with Citizens2 is disabled in config.yml");
+			Bukkit.getConsoleSender()
+					.sendMessage(BagOfGold.PREFIX + "Compatibility with Citizens2 is disabled in config.yml");
 		} else {
 			citizensAPI = (CitizensPlugin) Bukkit.getPluginManager().getPlugin(CompatPlugin.Citizens.getName());
 			if (citizensAPI == null)
@@ -37,10 +36,8 @@ public class CitizensCompat implements Listener {
 
 			TraitInfo trait = TraitInfo.create(BagOfGoldBankerTrait.class).withName("BagOfGoldBanker");
 			citizensAPI.getTraitFactory().registerTrait(trait);
-			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-							+ "Enabling compatibility with Citizens2 ("
-							+ getCitizensPlugin().getDescription().getVersion() + ")");
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "Enabling compatibility with Citizens2 ("
+					+ getCitizensPlugin().getDescription().getVersion() + ")");
 
 			Bukkit.getPluginManager().registerEvents(this, plugin);
 
@@ -54,7 +51,7 @@ public class CitizensCompat implements Listener {
 	public void setVillagerSkin(Entity entity) {
 		getNPC(entity).setBukkitEntityType(EntityType.VILLAGER);
 	}
-	
+
 	public void shutdown() {
 		if (supported) {
 			TraitInfo trait = TraitInfo.create(BagOfGoldBankerTrait.class).withName("BagOfGoldBanker");

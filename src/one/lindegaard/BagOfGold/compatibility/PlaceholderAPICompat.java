@@ -14,9 +14,6 @@ import one.lindegaard.BagOfGold.placeholder.BagOfGoldPlaceholderExpansion;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderData;
 import one.lindegaard.BagOfGold.placeholder.PlaceHolderManager;
 import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
-//import one.lindegaard.CustomItemsLib.placeholder.BagOfGoldPlaceholderExpansion;
-//import one.lindegaard.CustomItemsLib.placeholder.PlaceHolderData;
-//import one.lindegaard.CustomItemsLib.placeholder.PlaceHolderManager;
 
 public class PlaceholderAPICompat {
 
@@ -29,22 +26,20 @@ public class PlaceholderAPICompat {
 
 	public PlaceholderAPICompat() {
 		if (!isEnabledInConfig()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-					+ "Compatibility with PlaceholderAPI is disabled in config.yml");
+			Bukkit.getConsoleSender().sendMessage(
+					BagOfGold.PREFIX_WARNING + "Compatibility with PlaceholderAPI is disabled in config.yml");
 		} else {
 			mPlugin = Bukkit.getPluginManager().getPlugin(CompatPlugin.PlaceholderAPI.getName());
 			if (mPlugin.getDescription().getVersion().compareTo("2.11.1") >= 0) {
-				Bukkit.getConsoleSender()
-						.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET
-								+ "Enabling compatibility with PlaceholderAPI (" + mPlugin.getDescription().getVersion()
-								+ ").");
+				Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "Enabling compatibility with PlaceholderAPI ("
+						+ mPlugin.getDescription().getVersion() + ").");
 				new BagOfGoldPlaceholderExpansion().register();
 				mPlaceHolderManager = new PlaceHolderManager(BagOfGold.getInstance());
 				supported = true;
 			} else {
 				Bukkit.getConsoleSender()
-						.sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
-								+ "Your current version of PlaceholderAPI (" + mPlugin.getDescription().getVersion()
+						.sendMessage(BagOfGold.PREFIX_WARNING + "Your current version of PlaceholderAPI ("
+								+ mPlugin.getDescription().getVersion()
 								+ ") is not supported by BagOfGold, please upgrade to 2.11.1 or newer.");
 			}
 		}

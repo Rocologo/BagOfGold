@@ -19,8 +19,8 @@ public class BankCommand implements ICommand {
 	public BankCommand(BagOfGold plugin) {
 		this.plugin = plugin;
 		if (Core.getConfigManager().bagOfGoldName == null || Core.getConfigManager().bagOfGoldName.isEmpty()) {
-			Bukkit.getConsoleSender().sendMessage(
-					Core.PREFIX_WARNING + "The reward_name in config.yml can't be empty. Changed to 'Bag Of Gold'");
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_WARNING
+					+ "The reward_name in config.yml can't be empty. Changed to 'Bag Of Gold'");
 			Core.getConfigManager().bagOfGoldName = "Bag of gold";
 			Core.getConfigManager().saveConfig();
 		}

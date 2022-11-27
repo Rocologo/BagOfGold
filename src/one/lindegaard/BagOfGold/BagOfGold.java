@@ -20,21 +20,12 @@ import one.lindegaard.BagOfGold.commands.NpcCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
 import one.lindegaard.BagOfGold.commands.VersionCommand;
-import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
-import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
-import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
-import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
-import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
-import one.lindegaard.BagOfGold.compatibility.CMICompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
-import one.lindegaard.BagOfGold.compatibility.ProtocolLibCompat;
 import one.lindegaard.BagOfGold.compatibility.ShopkeepersCompat;
-import one.lindegaard.BagOfGold.compatibility.TitleAPICompat;
-import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
 import one.lindegaard.BagOfGold.rewards.RewardManager;
@@ -99,17 +90,17 @@ public class BagOfGold extends JavaPlugin {
 		if (isbStatsEnabled())
 			plugin.getMessages().debug("bStat is enabled");
 		else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING
 					+ "=====================WARNING=============================");
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.RED + "The statistics collection is disabled. As developer I need the");
+					.sendMessage(PREFIX_WARNING + "The statistics collection is disabled. As developer I need the");
 			Bukkit.getConsoleSender()
-					.sendMessage(ChatColor.RED + "statistics from bStats.org. The statistics is 100% anonymous.");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "https://bstats.org/plugin/bukkit/bagofgold");
+					.sendMessage(PREFIX_WARNING + "statistics from bStats.org. The statistics is 100% anonymous.");
+			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING + "https://bstats.org/plugin/bukkit/bagofgold");
 			Bukkit.getConsoleSender().sendMessage(
-					ChatColor.RED + "Please enable this in /plugins/bStats/config.yml and get rid of this");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "message. Loading will continue in 15 sec.");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RED
+					PREFIX_WARNING + "Please enable this in /plugins/bStats/config.yml and get rid of this");
+			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING + "message. Loading will continue in 15 sec.");
+			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING
 					+ "=========================================================");
 			long now = System.currentTimeMillis();
 			while (System.currentTimeMillis() < now + 15000L) {
@@ -170,20 +161,10 @@ public class BagOfGold extends JavaPlugin {
 
 		mBankManager = new BankManager(this);
 
-		mCompatibilityManager.registerPlugin(ProtocolLibCompat.class, CompatPlugin.ProtocolLib);
 		mCompatibilityManager.registerPlugin(PerWorldInventoryCompat.class, CompatPlugin.PerWorldInventory);
 		if (Servers.isSpigotServer() || Servers.isPaperServer())
 			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
-
-		mCompatibilityManager.registerPlugin(TitleManagerCompat.class, CompatPlugin.TitleManager);
-		mCompatibilityManager.registerPlugin(TitleAPICompat.class, CompatPlugin.TitleAPI);
-		mCompatibilityManager.registerPlugin(ActionAnnouncerCompat.class, CompatPlugin.ActionAnnouncer);
-		mCompatibilityManager.registerPlugin(ActionBarAPICompat.class, CompatPlugin.ActionBarApi);
-		mCompatibilityManager.registerPlugin(ActionbarCompat.class, CompatPlugin.Actionbar);
-		mCompatibilityManager.registerPlugin(BossBarAPICompat.class, CompatPlugin.BossBarApi);
-		mCompatibilityManager.registerPlugin(BarAPICompat.class, CompatPlugin.BarApi);
-		mCompatibilityManager.registerPlugin(CMICompat.class, CompatPlugin.CMI);
 
 		mCompatibilityManager.registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
 		
@@ -228,7 +209,7 @@ public class BagOfGold extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		plugin.getMessages().debug("BagOfGold disabled.");
+		Bukkit.getConsoleSender().sendMessage(PREFIX+"BagOfGold was disabled.");
 	}
 
 	private boolean isbStatsEnabled() {

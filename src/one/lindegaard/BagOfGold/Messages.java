@@ -26,15 +26,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import one.lindegaard.BagOfGold.compatibility.ActionAnnouncerCompat;
-import one.lindegaard.BagOfGold.compatibility.ActionBarAPICompat;
-import one.lindegaard.BagOfGold.compatibility.ActionbarCompat;
-import one.lindegaard.BagOfGold.compatibility.BarAPICompat;
-import one.lindegaard.BagOfGold.compatibility.BossBarAPICompat;
-import one.lindegaard.BagOfGold.compatibility.CMICompat;
+import one.lindegaard.CustomItemsLib.compatibility.ActionAnnouncerCompat;
+import one.lindegaard.CustomItemsLib.compatibility.ActionBarAPICompat;
+import one.lindegaard.CustomItemsLib.compatibility.ActionbarCompat;
+import one.lindegaard.CustomItemsLib.compatibility.BarAPICompat;
+import one.lindegaard.CustomItemsLib.compatibility.BossBarAPICompat;
+import one.lindegaard.CustomItemsLib.compatibility.CMICompat;
+import one.lindegaard.CustomItemsLib.compatibility.TitleManagerCompat;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
-import one.lindegaard.BagOfGold.compatibility.TitleManagerCompat;
 import one.lindegaard.CustomItemsLib.Core;
 import one.lindegaard.CustomItemsLib.Strings;
 

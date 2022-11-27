@@ -1,5 +1,7 @@
 V4.5.2
-
+* Shopkeepers integration BETA 3 released. I need some more testers to find the last bugs. Currently I have no bugs on my to do list. 
+* Fixed buy when a player was trading using Shopkeepers with having enough money.
+* Fixed integration with ProtocolLib and all Actionbar/Bossbar/Titlemanager plugings and moved the code from MobHunting+BagOfGold to CustomItemsLib to make development easier.
 V4.5.1
 * BETA 2 Shopkeeper support. Buying items for BagOfGold and Selling items to get BagOfGold, but it is not bug free yet. 
 * Fixed bug which caused losing money when the BagOfGold was placed in slot 0

@@ -18,6 +18,7 @@ import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.CustomItemsLib.update.UpdateStatus;
+import one.lindegaard.MobHunting.MobHunting;
 
 public class SpigetUpdater {
 
@@ -228,9 +229,12 @@ public class SpigetUpdater {
 				} else if (updateCheck < pluginCheck)
 					return UpdateStatus.NOT_AVAILABLE;
 			} catch (Exception e) {
-				plugin.getLogger().warning("Could not determine update's version # ");
-				plugin.getLogger().warning("Installed plugin version: " + plugin.getDescription().getVersion());
-				plugin.getLogger().warning("Newest version on Spiget.org: " + newVersion);
+				Bukkit.getConsoleSender()
+						.sendMessage(BagOfGold.PREFIX_WARNING + "Could not determine update's version # ");
+				Bukkit.getConsoleSender().sendMessage(
+						BagOfGold.PREFIX_WARNING + "Installed plugin version: " + plugin.getDescription().getVersion());
+				Bukkit.getConsoleSender()
+						.sendMessage(BagOfGold.PREFIX_WARNING + "Newest version on Spiget.org: " + newVersion);
 				return UpdateStatus.UNKNOWN;
 			}
 		}
