@@ -1,3 +1,5 @@
+V4.5.2
+
 V4.5.1
 * BETA 2 Shopkeeper support. Buying items for BagOfGold and Selling items to get BagOfGold, but it is not bug free yet. 
 * Fixed bug which caused losing money when the BagOfGold was placed in slot 0

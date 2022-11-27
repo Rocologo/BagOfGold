@@ -1,11 +1,7 @@
 package one.lindegaard.BagOfGold.compatibility;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,10 +20,8 @@ import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.plugin.Plugin;
 
-import net.sf.antcontrib.logic.ForEach;
 import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.CustomItemsLib.Core;
-import one.lindegaard.CustomItemsLib.Tools;
 import one.lindegaard.CustomItemsLib.compatibility.BagOfGoldCompat;
 import one.lindegaard.CustomItemsLib.compatibility.CompatPlugin;
 import one.lindegaard.CustomItemsLib.rewards.Reward;
@@ -145,15 +139,35 @@ public class ShopkeepersCompat implements Listener {
 				inv.getItem(2) != null ? inv.getItem(2).getType() : "null", recipe.getUses(), recipe.getMaxUses(),
 						recipe.getSpecialPrice(),recipe.getPriceMultiplier(),recipe.getDemand());
 
+		// Check if the player has the money
+		Core.getMessages().debug("TradeSelectEvent: Check is player has the money");
+		double moneyNeeded = (Reward.isReward(is0) ? Reward.getReward(is0).getMoney() * is0.getAmount() : 0)
+				+ (Reward.isReward(is1) ? Reward.getReward(is1).getMoney() * is1.getAmount() : 0);
+		if (!BagOfGold.getInstance().getEconomyManager().hasMoney(buyer, moneyNeeded)) {
+				Core.getMessages().debug("Player do not have enough money, tell him");
+				event.setCancelled(true);
+				return;
+		}
+		
 		// Ingrediens0
 		boolean found0=false;
 		if (Reward.isReward(is0)) {
 			double isMoney0 = (Reward.isReward(is0) ? Reward.getReward(is0).getMoney() * is0.getAmount() : 0);
 			if (inv.getItem(0)==null) {
 				Core.getMessages().debug("TradeSelectEvent: setItem0");
+				if (BagOfGold.getInstance().getEconomyManager().hasMoney(buyer, isMoney0)) {
 				inv.setItem(0,is0);
 				BagOfGold.getInstance().getEconomyManager().withdrawPlayer(buyer, isMoney0*is0.getAmount());
 				found0=true;
+				} 
+			} else {
+				if (Reward.isReward(inv.getItem(0))) {
+					Reward slot0Reward = Reward.getReward(inv.getItem(0));
+					if (slot0Reward.isMoney()) {
+						BagOfGold.getInstance().getEconomyManager().depositPlayer(buyer, slot0Reward.getMoney());
+						inv.clear(0);
+					}
+				}
 			}
 		}
 		
@@ -163,9 +177,19 @@ public class ShopkeepersCompat implements Listener {
 			double isMoney1 = (Reward.isReward(is1) ? Reward.getReward(is1).getMoney() * is1.getAmount() : 0);
 			if (inv.getItem(1)==null) {
 				Core.getMessages().debug("TradeSelectEvent: setItem1");
+				if (BagOfGold.getInstance().getEconomyManager().hasMoney(buyer, isMoney1)) {
 				inv.setItem(1,is1);
 				BagOfGold.getInstance().getEconomyManager().withdrawPlayer(buyer, isMoney1*is1.getAmount());
 				found1=true;
+				} 
+			} else {
+				if (Reward.isReward(inv.getItem(1))) {
+					Reward slot1Reward = Reward.getReward(inv.getItem(0));
+					if (slot1Reward.isMoney()) {
+						BagOfGold.getInstance().getEconomyManager().depositPlayer(buyer, slot1Reward.getMoney());
+						inv.clear(1);
+					}
+				}
 			}
 		}
 		
@@ -182,7 +206,7 @@ public class ShopkeepersCompat implements Listener {
 				//event.getWhoClicked().getInventory().first(isResult);
 			}
 		}
-		//buyer.updateInventory();
+		buyer.updateInventory();
 			
 	}
 	
@@ -196,7 +220,7 @@ public class ShopkeepersCompat implements Listener {
 			if (Reward.isReward(is0)) {
 				Reward reward0 =Reward.getReward(is0);
 				if (reward0.isMoney()) {
-					BagOfGold.getInstance().getRewardManager().addMoneyToPlayerBalance(player, reward0.getMoney()*is0.getAmount());
+					//BagOfGold.getInstance().getRewardManager().addMoneyToPlayerBalance(player, reward0.getMoney()*is0.getAmount());
 				}
 			}
 		}
