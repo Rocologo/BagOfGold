@@ -284,7 +284,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 					Core.getPlayerSettingsManager().setPlayerSettings(ps);
 				}
 			}
-			Core.getDataStoreManager().flush();
+			plugin.getDataStoreManager().flush();
 			statement.close();
 			mConnection.commit();
 		} catch (SQLException e) {
@@ -342,6 +342,7 @@ public class MySQLDataStore extends DatabaseDataStore {
 		try {
 			mConnection = setupConnection();
 			try {
+				plugin.getMessages().debug("Saving PlayerBalances to Database.");
 				openPreparedStatements(mConnection, PreparedConnectionType.INSERT_PLAYER_BALANCE);
 				for (PlayerBalance playerBalance : playerBalanceSet) {
 					//BagOfGold.getInstance().getMessages().debug("DatabaseDataStore: savedata: %s",

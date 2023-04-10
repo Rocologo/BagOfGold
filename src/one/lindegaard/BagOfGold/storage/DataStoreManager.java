@@ -6,7 +6,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import one.lindegaard.BagOfGold.BagOfGold;
@@ -25,7 +24,7 @@ public class DataStoreManager {
 	private BagOfGold plugin;
 
 	// Accessed on multiple threads
-	private final LinkedHashSet<Object> mWaiting = new LinkedHashSet<Object>();
+	private final LinkedHashSet<Object> mWaiting = new LinkedHashSet<>();
 
 	// Accessed only from these threads
 	private IDataStore mStore;
@@ -44,8 +43,8 @@ public class DataStoreManager {
 		int savePeriod = Core.getConfigManager().savePeriod;
 		if (savePeriod < 1200) {
 			savePeriod = 1200;
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED
-					+ "[BagOfGold][Warning] save-period in your config.yml is too low. Please raise it to 1200 or higher");
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_WARNING
+					+ "save-period in your config.yml is too low. Please raise it to 1200 or higher");
 		}
 		mStoreThread = new StoreThread(savePeriod);
 	}
@@ -87,7 +86,7 @@ public class DataStoreManager {
 	 * Flush all waiting data to the database
 	 */
 	public void flush() {
-		if (mWaiting.size() != 0) {
+		if (mWaiting.isEmpty()) {
 			plugin.getMessages().debug("Force saving waiting %s data to database...", mWaiting.size());
 			mTaskThread.addTask(new StoreTask(mWaiting), null);
 		}
@@ -105,16 +104,11 @@ public class DataStoreManager {
 			while (mTaskThread.getState() != Thread.State.WAITING && mTaskThread.getState() != Thread.State.TERMINATED
 					&& n < 40) {
 				Thread.sleep(500);
-				//plugin.getMessages().debug("Waiting %s", n);
 				n++;
 			}
-			//plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() == Thread.State.RUNNABLE) {
-				//plugin.getMessages().debug("Interupting mTaskThread");
 				mTaskThread.interrupt();
 			}
-			//plugin.getMessages().debug("mStoreThread.state=%s", mStoreThread.getState());
-			//plugin.getMessages().debug("mTaskThread.state=%s", mTaskThread.getState());
 			if (mTaskThread.getState() != Thread.State.WAITING) {
 				mTaskThread.waitForEmptyQueue();
 			}
@@ -148,21 +142,23 @@ public class DataStoreManager {
 		public StoreThread(int interval) {
 			super("BG StoreThread");
 			start();
+			
 			mSaveInterval = interval;
 		}
 
 		@Override
 		public void run() {
+			
 			try {
 				while (true) {
 					synchronized (this) {
-						if (mExit && mWaiting.size() == 0) {
+						if (mExit && mWaiting.isEmpty()) {
 							break;
 						}
 					}
 					mTaskThread.addTask(new StoreTask(mWaiting), null);
-
-					Thread.sleep(mSaveInterval * 50);
+					
+					Thread.sleep((long) mSaveInterval * 50);
 				}
 			} catch (InterruptedException e) {
 				plugin.getMessages().debug("StoreThread was interrupted");
@@ -212,7 +208,6 @@ public class DataStoreManager {
 			super("BG TaskThread");
 
 			mQueue = new LinkedBlockingQueue<Task>();
-
 			start();
 		}
 
@@ -257,6 +252,7 @@ public class DataStoreManager {
 					if (mWritesOnly && task.task.readOnly())
 						continue;
 
+					
 					try {
 
 						Object result = task.task.run(mStore);

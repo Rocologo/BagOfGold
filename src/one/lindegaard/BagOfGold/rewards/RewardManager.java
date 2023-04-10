@@ -19,47 +19,22 @@ import one.lindegaard.CustomItemsLib.Core;
 import one.lindegaard.CustomItemsLib.Tools;
 import one.lindegaard.CustomItemsLib.mobs.MobType;
 import one.lindegaard.CustomItemsLib.rewards.CoreCustomItems;
-import one.lindegaard.CustomItemsLib.rewards.MoneyMergeEventListener;
 import one.lindegaard.CustomItemsLib.rewards.Reward;
-import one.lindegaard.CustomItemsLib.server.Servers;
 
 public class RewardManager {
 
 	private BagOfGold plugin;
 
-	private PickupRewards pickupRewards;
+	
 
 	public RewardManager(BagOfGold plugin) {
 		this.plugin = plugin;
 
-		pickupRewards = new PickupRewards(plugin);
-
 		Bukkit.getPluginManager().registerEvents(new RewardListeners(plugin), plugin);
-		Bukkit.getPluginManager().registerEvents(new MoneyMergeEventListener(plugin), plugin);
-
-		if (Servers.isMC112OrNewer() && eventDoesExists())
-			Bukkit.getPluginManager().registerEvents(new EntityPickupItemEventListener(pickupRewards), plugin);
-		else
-			Bukkit.getPluginManager().registerEvents(new PlayerPickupItemEventListener(pickupRewards), plugin);
-	}
-
-	/**
-	 * Check if EntityPickupItemEvent exists. EntityPickupItemEvent was introduced
-	 * in after MC 1.12 was released. The result is that some MC 1.12 server know
-	 * the event, others dont.
-	 * 
-	 * @return
-	 */
-	private boolean eventDoesExists() {
-		try {
-			@SuppressWarnings({ "rawtypes", "unused" })
-			Class cls = Class.forName("org.bukkit.event.entity.EntityPickupItemEvent");
-			return true;
-		} catch (ClassNotFoundException e) {
-			return false;
-		}
 
 	}
+
+
 
 	/**
 	 * getBalance : calculate the player balance
@@ -243,14 +218,14 @@ public class RewardManager {
 		} else if (reward.isKilledHeadReward()) {
 			MobType mob = MobType.getMobType(reward.getSkinUUID());
 			if (mob != null) {
-				ItemStack is = new CoreCustomItems(plugin).getCustomHead(mob, reward.getDisplayName(), 1,
+				ItemStack is = CoreCustomItems.getCustomHead(mob, reward.getDisplayName(), 1,
 						reward.getMoney(), reward.getSkinUUID());
 				Item item = location.getWorld().dropItem(location, is);
 				item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));
 				Core.getCoreRewardManager().getDroppedMoney().put(item.getEntityId(), reward.getMoney());
 			}
 		} else if (reward.isKillerHeadReward()) {
-			ItemStack is = new CoreCustomItems(plugin).getPlayerHead(reward.getSkinUUID(), reward.getDisplayName(), 1,
+			ItemStack is = CoreCustomItems.getPlayerHead(reward.getSkinUUID(), reward.getDisplayName(), 1,
 					reward.getMoney());
 			Item item = location.getWorld().dropItem(location, is);
 			item.setMetadata(Reward.MH_REWARD_DATA_NEW, new FixedMetadataValue(plugin, new Reward(reward)));

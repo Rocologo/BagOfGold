@@ -281,13 +281,12 @@ public class PlayerBalanceManager implements Listener {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (!playerBalances.isEmpty()) {
-				CoreCustomItems customItems = new CoreCustomItems(plugin);
 				Inventory inventory = Bukkit.createInventory(null, 54,
 						ChatColor.BLUE + "" + ChatColor.BOLD + "TOP wealth players");
 				int n = 0;
 				for (PlayerBalance playerBalance : playerBalances) {
 					addInventoryDetails(
-							customItems.getPlayerHead(playerBalance.getPlayer().getUniqueId(),
+							CoreCustomItems.getPlayerHead(playerBalance.getPlayer().getUniqueId(),
 									playerBalance.getPlayer().getName(), 1,
 									playerBalance.getBalance() + playerBalance.getBalanceChanges()
 											+ playerBalance.getBankBalance() + playerBalance.getBankBalanceChanges()),

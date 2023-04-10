@@ -26,6 +26,8 @@ import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
 import one.lindegaard.BagOfGold.compatibility.PerWorldInventoryCompat;
 import one.lindegaard.BagOfGold.compatibility.PlaceholderAPICompat;
 import one.lindegaard.BagOfGold.compatibility.ShopkeepersCompat;
+import one.lindegaard.BagOfGold.compatibility.WorldEditCompat;
+import one.lindegaard.BagOfGold.compatibility.WorldGuardCompat;
 import one.lindegaard.BagOfGold.config.ConfigManager;
 import one.lindegaard.BagOfGold.rewards.BagOfGoldItems;
 import one.lindegaard.BagOfGold.rewards.RewardManager;
@@ -61,7 +63,7 @@ public class BagOfGold extends JavaPlugin {
 
 	private boolean mInitialized = false;
 	public boolean disabling = false;
-	
+
 	public static final String PREFIX = ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET;
 	public static final String PREFIX_DEBUG = ChatColor.GOLD + "[BagOfGold][Debug] " + ChatColor.RESET;
 	public static final String PREFIX_WARNING = ChatColor.GOLD + "[BagOfGold][Warning] " + ChatColor.RED;
@@ -90,8 +92,8 @@ public class BagOfGold extends JavaPlugin {
 		if (isbStatsEnabled())
 			plugin.getMessages().debug("bStat is enabled");
 		else {
-			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING
-					+ "=====================WARNING=============================");
+			Bukkit.getConsoleSender()
+					.sendMessage(PREFIX_WARNING + "=====================WARNING=============================");
 			Bukkit.getConsoleSender()
 					.sendMessage(PREFIX_WARNING + "The statistics collection is disabled. As developer I need the");
 			Bukkit.getConsoleSender()
@@ -100,8 +102,8 @@ public class BagOfGold extends JavaPlugin {
 			Bukkit.getConsoleSender().sendMessage(
 					PREFIX_WARNING + "Please enable this in /plugins/bStats/config.yml and get rid of this");
 			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING + "message. Loading will continue in 15 sec.");
-			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING
-					+ "=========================================================");
+			Bukkit.getConsoleSender()
+					.sendMessage(PREFIX_WARNING + "=========================================================");
 			long now = System.currentTimeMillis();
 			while (System.currentTimeMillis() < now + 15000L) {
 				try {
@@ -151,6 +153,8 @@ public class BagOfGold extends JavaPlugin {
 			return;
 		}
 
+		mBankManager = new BankManager(this);
+
 		mStoreManager = new DataStoreManager(this, mStore);
 
 		mPlayerBalanceManager = new PlayerBalanceManager(this);
@@ -159,15 +163,18 @@ public class BagOfGold extends JavaPlugin {
 
 		mCompatibilityManager = new CompatibilityManager(this);
 
-		mBankManager = new BankManager(this);
-
 		mCompatibilityManager.registerPlugin(PerWorldInventoryCompat.class, CompatPlugin.PerWorldInventory);
-		if (Servers.isSpigotServer() || Servers.isPaperServer())
-			mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
+		if (!Servers.isSpigotServer() && !Servers.isPaperServer() && !Servers.isPurpurServer())
+			Bukkit.getConsoleSender().sendMessage(PREFIX_WARNING + "This is server (" + Bukkit.getServer().getName()
+					+ ") is not tested with the BagOfGold-Citizens integration");
+		mCompatibilityManager.registerPlugin(CitizensCompat.class, CompatPlugin.Citizens);
 		mCompatibilityManager.registerPlugin(EssentialsCompat.class, CompatPlugin.Essentials);
 
+		mCompatibilityManager.registerPlugin(WorldEditCompat.class, CompatPlugin.WorldEdit);
+		mCompatibilityManager.registerPlugin(WorldGuardCompat.class, CompatPlugin.WorldGuard);
+
 		mCompatibilityManager.registerPlugin(PlaceholderAPICompat.class, CompatPlugin.PlaceholderAPI);
-		
+
 		mCompatibilityManager.registerPlugin(ShopkeepersCompat.class, CompatPlugin.Shopkeepers);
 
 		if (!Servers.isGlowstoneServer()) {
@@ -187,19 +194,19 @@ public class BagOfGold extends JavaPlugin {
 		mGringottsItems = new GringottsItems(this);
 		mBagOfGoldItems = new BagOfGoldItems(this);
 
-		mInitialized=true;
+		mInitialized = true;
 
 	}
 
 	@Override
 	public void onDisable() {
 		disabling = true;
-		
+
 		if (!mInitialized)
 			return;
 
 		mBankManager.shutdown();
-		
+
 		try {
 			getMessages().debug("Shutdown StoreManager");
 			mStoreManager.shutdown();
@@ -209,7 +216,7 @@ public class BagOfGold extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		Bukkit.getConsoleSender().sendMessage(PREFIX+"BagOfGold was disabled.");
+		Bukkit.getConsoleSender().sendMessage(PREFIX + "BagOfGold was disabled.");
 	}
 
 	private boolean isbStatsEnabled() {
@@ -310,5 +317,5 @@ public class BagOfGold extends JavaPlugin {
 	public EconomyManager getEconomyManager() {
 		return mEconomyManager;
 	}
-	
+
 }

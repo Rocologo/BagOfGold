@@ -1,3 +1,5 @@
+V4.5.3
+*
 V4.5.2
 * Shopkeepers integration BETA 3 released. I need some more testers to find the last bugs. Currently I have no bugs on my to do list. 
 * Fixed buy when a player was trading using Shopkeepers with having enough money.

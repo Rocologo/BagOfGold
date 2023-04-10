@@ -66,6 +66,14 @@ public class ConfigManager extends AutoConfig {
 						+ "\nPerWorldInventory settings."
 						+ "\n########################################################################");
 
+		setCategoryComment("plugins.worldguard",
+				"########################################################################" + "\nWorldguard"
+						+ "\n########################################################################");
+
+		setCategoryComment("plugins.worldedit",
+				"########################################################################" + "\nWorldedit"
+						+ "\n########################################################################");
+
 		setCategoryComment("plugins.bossbarapi",
 				"########################################################################" + "\nBossBarAPI"
 						+ "\n########################################################################");
@@ -232,6 +240,12 @@ public class ConfigManager extends AutoConfig {
 			+ "\nhttps://www.spigotmc.org/resources/placeholderapi.6245/")
 	public boolean enableIntegrationPlaceholderAPI = true;
 
+	@ConfigField(name = "worldguard.enable_integration_worldguard", category = "plugins", comment = "Enable/Disable integration with WorldGuard")
+	public boolean enableIntegrationWorldGuard = true;
+
+	@ConfigField(name = "worldedit.enable_integration_worldedit", category = "plugins", comment = "Enable/Disable integration with WorldEdit")
+	public boolean enableIntegrationWorldEdit = true;
+
 	// #####################################################################################
 	// Generel settings
 	// #####################################################################################
@@ -252,7 +266,7 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "newplayer_learning_mode", category = "general", comment = "When a new playerjoins the server he will by default start"
 			+ "\nin 'LEARNING MODE' and get extra information about when he get rewards and not,"
 			+ "\nwhen killing Mobs. The player can disable this InGame by using the command '/mobhunt learn'")
-	public boolean learningMode = false;
+	public boolean learningMode = true;
 
 	@ConfigField(name = "backup", category = "general", comment = "Backup config on each server start / reload")
 	public boolean backup = true;

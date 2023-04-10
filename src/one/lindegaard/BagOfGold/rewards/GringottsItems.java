@@ -228,16 +228,16 @@ public class GringottsItems implements Listener {
 				break;
 			}
 			for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-				// if (slot >= 36 && slot <= 40)
-				// continue;
+				if (slot > 35)
+					continue;
 				ItemStack is = player.getInventory().getItem(slot);
 				if (is != null && is.getType() == material)
 					space = space + (64 - is.getAmount()) * value;
 			}
 		}
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			// if (slot >= 36 && slot <= 40)
-			// continue;
+			if (slot > 35)
+				continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (is == null || is.getType() == Material.AIR) {
 				space = space + 64 * maxValue;
@@ -311,7 +311,7 @@ public class GringottsItems implements Listener {
 		Player player = (Player) event.getEntity();
 		ItemStack is = event.getItem().getItemStack();
 		if (Core.getConfigManager().gringottsDenomination.containsKey(is.getType().toString())) {
-			plugin.getMessages().debug("%s picked up a %s with a value of %s", player.getName(),
+			plugin.getMessages().debug("%s picked up a %s" + ChatColor.RESET + " with a value of %s", player.getName(),
 					is.getType().toString(),
 					Core.getConfigManager().gringottsDenomination.get(is.getType().toString()));
 			double amount = Double.valueOf(Core.getConfigManager().gringottsDenomination.get(is.getType().toString()))

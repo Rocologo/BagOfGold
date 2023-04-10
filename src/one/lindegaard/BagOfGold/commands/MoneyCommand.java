@@ -69,38 +69,34 @@ public class MoneyCommand implements ICommand {
 	@Override
 	public String[] getUsageString(String label, CommandSender sender) {
 		final String NUMBER = "<amount>";
-		return new String[] {
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " drop <amount>"
+		return new String[] { ChatColor.GOLD + label + ChatColor.GREEN + " drop <amount>" + ChatColor.WHITE
+				+ " - to drop <amount> of " + Core.getConfigManager().bagOfGoldName.trim() + ", where you look.",
+
+				ChatColor.GOLD + label + ChatColor.GREEN + " drop <playername> " + ChatColor.YELLOW + NUMBER
 						+ ChatColor.WHITE + " - to drop <amount> of " + Core.getConfigManager().bagOfGoldName.trim()
-						+ ", where you look.",
+						+ " 3 block in front of the <player>.",
 
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " drop <playername> "
-						+ ChatColor.YELLOW + NUMBER + ChatColor.WHITE + " - to drop <amount> of "
-						+ Core.getConfigManager().bagOfGoldName.trim() + " 3 block in front of the <player>.",
+				ChatColor.GOLD + label + ChatColor.GREEN + " give <player> " + ChatColor.YELLOW + NUMBER
+						+ ChatColor.WHITE + " - to give the player a " + Core.getConfigManager().bagOfGoldName.trim()
+						+ " in his inventory. * = all online players.",
 
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " give <player> "
-						+ ChatColor.YELLOW + NUMBER + ChatColor.WHITE + " - to give the player a "
-						+ Core.getConfigManager().bagOfGoldName.trim() + " in his inventory. * = all online players.",
-
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " take <player> "
-						+ ChatColor.YELLOW + NUMBER + ChatColor.WHITE + " - to take <amount> gold from the "
+				ChatColor.GOLD + label + ChatColor.GREEN + " take <player> " + ChatColor.YELLOW + NUMBER
+						+ ChatColor.WHITE + " - to take <amount> gold from the "
 						+ Core.getConfigManager().bagOfGoldName.trim()
 						+ " in the players inventory. * = all online players.",
 
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN
-						+ " balance [optional playername]" + ChatColor.WHITE + " - to get your balance of "
-						+ Core.getConfigManager().bagOfGoldName.trim(),
+				ChatColor.GOLD + label + ChatColor.GREEN + " balance [optional playername]" + ChatColor.WHITE
+						+ " - to get your balance of " + Core.getConfigManager().bagOfGoldName.trim(),
 
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN
-						+ " bankbalance [optional playername]" + ChatColor.WHITE + " - to get your bankbalance of "
-						+ Core.getConfigManager().bagOfGoldName.trim(),
+				ChatColor.GOLD + label + ChatColor.GREEN + " bankbalance [optional playername]" + ChatColor.WHITE
+						+ " - to get your bankbalance of " + Core.getConfigManager().bagOfGoldName.trim(),
 
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " pay <player> "
-						+ ChatColor.YELLOW + "<amount>" + ChatColor.WHITE + " - to give the player a "
-						+ Core.getConfigManager().bagOfGoldName.trim() + " ein his inventory.",
+				ChatColor.GOLD + label + ChatColor.GREEN + " pay <player> " + ChatColor.YELLOW + "<amount>"
+						+ ChatColor.WHITE + " - to give the player a " + Core.getConfigManager().bagOfGoldName.trim()
+						+ " ein his inventory.",
 
-				ChatColor.GOLD + Core.getConfigManager().commandAlias + ChatColor.GREEN + " top" + ChatColor.YELLOW
-						+ " <amount>" + ChatColor.WHITE + " - to show top 25 players." };
+				ChatColor.GOLD + label + ChatColor.GREEN + " top" + ChatColor.YELLOW + " <amount>" + ChatColor.WHITE
+						+ " - to show top 25 players." };
 	}
 
 	@Override

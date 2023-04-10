@@ -72,7 +72,7 @@ public class BagOfGoldItems implements Listener {
 			if (Core.getConfigManager().rewardItemtype.equalsIgnoreCase("SKULL")) {
 				rewardType = RewardType.BAGOFGOLD;
 				skinuuid = UUID.fromString(RewardType.BAGOFGOLD.getUUID());
-				is = new CoreCustomItems(plugin).getCustomtexture(
+				is = CoreCustomItems.getCustomtexture(
 						new Reward(Core.getConfigManager().bagOfGoldName, nextBag, rewardType, skinuuid),
 						Core.getConfigManager().skullTextureValue, Core.getConfigManager().skullTextureSignature);
 			} else { // ITEM
@@ -136,6 +136,7 @@ public class BagOfGoldItems implements Listener {
 	public double getSpaceForBagOfGoldMoney(Player player) {
 		double space = 0;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+			if (slot>35) continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);

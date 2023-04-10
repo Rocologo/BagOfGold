@@ -31,6 +31,21 @@ bagofgold.banksign.line4.error_on_sign=&4Error line ${line}
 bagofgold.banksign.item_has_no_value=&4The ${itemname}&4 has no value, you can't deposit it
 bagofgold.banksign.only_survival=&4You can only use the bank in survival
 
+bagofgold.commands.bank.no_bankvault_block=No bankvault block could be found.
+bagofgold.commands.bank.registered=The bank was registered in ${region}.
+bagofgold.commands.bank.vault_added=Vault number ${number} was registered in ${bankname}.
+bagofgold.commands.bank.no_region=The region was not found ${region}
+bagofgold.commands.bank.no_bank=There is no bank registered in region ${region}
+bagofGold.commands.bank.noWorldguardSupport=You need to install Worldguard to do this.
+bagofgold.commands.bank.region_has_bank=A bank has already been registered in this region:&e${region}   
+bagofgold.commands.bank.vault_already_registered=&cVault number &e${number}&c has already been registered
+bagofgold.commands.bank.vault_deregistered=Vault number &e${number}&a was deregistered in ${bankname}
+bagofgold.commands.bank.info.name=Bank name: ${bankname}
+bagofgold.commands.bank.info.region=Region: ${region}
+bagofgold.commands.bank.info.owner=Owner: ${owner}
+bagofgold.commands.bank.info.balance=Balance : ${balance}
+bagofgold.commands.bank.info.number_vaults=Number of vaults: ${number}
+   
 bagofgold.commands.base.help.commands=Commands:
 bagofgold.commands.base.help.description=Displays this screen.
 bagofgold.commands.base.nocommand=No command specified: ${command}

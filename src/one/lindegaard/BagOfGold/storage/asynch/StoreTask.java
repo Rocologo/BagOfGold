@@ -3,6 +3,7 @@ package one.lindegaard.BagOfGold.storage.asynch;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import one.lindegaard.BagOfGold.BagOfGold;
 import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
@@ -27,7 +28,11 @@ public class StoreTask implements IDataStoreTask<Void> {
 	public Void run(IDataStore store) throws DataStoreException {
 		if (!mWaitingPlayerBalances.isEmpty())
 			store.savePlayerBalances(mWaitingPlayerBalances, true);
-
+		
+		BagOfGold.getInstance().getMessages().debug("Saving BagOfGold data");
+		
+		BagOfGold.getInstance().getBankManager().save();
+		
 		return null;
 	}
 

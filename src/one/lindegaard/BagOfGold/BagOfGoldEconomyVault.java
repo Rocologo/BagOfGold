@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -30,7 +29,7 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager()
 					.getRegistration(Economy.class);
 			if (economyProvider == null) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold]" + ChatColor.RED + "[Vault]"
+				Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "[Vault]"
 						+ plugin.getMessages().getString(plugin.getName().toLowerCase() + ".hook.econ"));
 				return;
 			}
@@ -61,11 +60,11 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 				if (vaultPlugin != null)
 					Bukkit.getServicesManager().register(Economy.class, vaultEconomy, vaultPlugin,
 							ServicePriority.Normal);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
-						"[BagOfGold][Economy] Vault found: %s", vaultEconomy.isEnabled() ? "Loaded" : "Waiting"));
+				Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + String.format(
+						"[Economy] Vault found: %s", vaultEconomy.isEnabled() ? "Loaded" : "Waiting"));
 			}
 		} catch (Exception e) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "[BagOfGold] " + ChatColor.RESET + String.format(
+			Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_ERROR + String.format(
 					"[Economy] There was an error hooking into Vault - check to make sure you're using a compatible version!"));
 		}
 	}
