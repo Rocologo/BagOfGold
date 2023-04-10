@@ -277,20 +277,20 @@ public class ConfigManager extends AutoConfig {
 	@ConfigField(name = "type", category = "database", comment = "Type of database to use. Valid values are: sqlite, mysql")
 	public String databaseType = "sqlite";
 
-	@ConfigField(name = "username", category = "database")
+	@ConfigField(name = "database_name", category = "database")
+	public String databaseName = "bagofgold";
+
+	@ConfigField(name = "username", category = "database.mysql")
 	public String databaseUsername = "user";
 
-	@ConfigField(name = "password", category = "database")
+	@ConfigField(name = "password", category = "database.mysql")
 	public String databasePassword = "password";
 
-	@ConfigField(name = "host", category = "database")
+	@ConfigField(name = "host", category = "database.mysql")
 	public String databaseHost = "localhost:3306";
 
 	@ConfigField(name = "useSSL", category = "database.mysql")
 	public String databaseUseSSL = "false";
-
-	@ConfigField(name = "database", category = "database")
-	public String databaseName = "bagofgold";
 
 	@ConfigField(name = "database_version", category = "database", comment = "This is the database layout version. Mostly for internal use and you should not need"
 			+ "\nto change this value. In case you decide to delete your database and let it recreate"
