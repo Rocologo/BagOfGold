@@ -1,5 +1,8 @@
+V4.5.5
+* Fixed Sqlite databse bug where the database version was detedted as version 3 instead of version 4.  
 V4.5.4
 * Changed database settings. Please review your config.yml and enter the correct database_name, username and password
+* Updated MySQLCOnnector to V8.0.32
 V4.5.3
 * Added support for Minecraft 1.19.3 and 1.19.4
 V4.5.2

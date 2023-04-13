@@ -97,9 +97,11 @@ public abstract class DatabaseDataStore implements IDataStore {
 		try {
 
 			Connection mConnection = setupConnection();
+			
+			int newest_db_version = 4;
 
 			// Find current database version
-			if (plugin.getConfigManager().databaseVersion < 4) {
+			if (plugin.getConfigManager().databaseVersion < newest_db_version) {
 				Statement statement = mConnection.createStatement();
 				try {
 					ResultSet rs = statement.executeQuery("SELECT TEXTURE FROM mh_PlayerSettings LIMIT 0");
@@ -118,7 +120,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 							plugin.getConfigManager().databaseVersion = 1;
 						} catch (SQLException e3) {
 							// Database v1,v2 does not exist. Create V3
-							plugin.getConfigManager().databaseVersion = 3;
+							plugin.getConfigManager().databaseVersion = newest_db_version;
 						}
 
 					}
@@ -149,7 +151,7 @@ public abstract class DatabaseDataStore implements IDataStore {
 
 			}
 
-			plugin.getConfigManager().databaseVersion = 4;
+			plugin.getConfigManager().databaseVersion = newest_db_version;
 			plugin.getConfigManager().saveConfig();
 
 			// Enable FOREIGN KEY for Sqlite database
