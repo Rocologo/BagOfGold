@@ -8,6 +8,6 @@ Websites - more info
 - [SpigotMC](https://www.spigotmc.org/resources/mobhunting.3582/)
 
 ## Features
-* [Supports Minecraft 1.8 - 1.17.1]
+* [Supports Minecraft 1.8 - 1.19.4]
 * Tested on SpigotMC, PaperSpigot and Craftbukkit 
 * Language support (EN, FR, HU, PT, RU, ZH) 
