@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>one.lindegaard</groupId>
 		<artifactId>Main</artifactId>
-		<version>0.1.4-SNAPSHOT</version>
+		<version>0.1.5-SNAPSHOT</version>
 		<relativePath>../Main/pom.xml</relativePath>
 	</parent>
 
