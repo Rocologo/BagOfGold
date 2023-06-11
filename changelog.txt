@@ -1,5 +1,7 @@
 V4.5.5
-* Fixed Sqlite databse bug where the database version was detedted as version 3 instead of version 4.  
+* Added support for Minecraft 1.2.0 (Camel+Sniffer added)
+* Fixed Sqlite databse bug where the database version was detedted as version 3 instead of version 4.
+* If using MySQL you need to be on v 8.0.32 because a security issue was found in 8.0.31   
 V4.5.4
 * Changed database settings. Please review your config.yml and enter the correct database_name, username and password
 * Updated MySQLCOnnector to V8.0.32
