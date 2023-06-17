@@ -52,7 +52,6 @@ public class BagOfGoldItems implements Listener {
 				|| Core.getConfigManager().rewardItemtype.equalsIgnoreCase("KILLER");
 	}
 
-
 	public void dropBagOfGoldMoneyOnGround(Player player, Entity killedEntity, Location location, double money) {
 		Item item = null;
 		double moneyLeftToDrop = Tools.ceil(money);
@@ -61,6 +60,13 @@ public class BagOfGoldItems implements Listener {
 		RewardType rewardType;
 		double nextBag = 0;
 		while (moneyLeftToDrop > 0) {
+			if (moneyLeftToDrop / Core.getConfigManager().limitPerBag > 100) {
+				moneyLeftToDrop = 100 * Core.getConfigManager().limitPerBag;
+				plugin.getMessages().debug(
+						"To many Bags is going to be dropped. The number of Bags are limited to 100, not to crash the server. MoneyToBeDropped=%s (number of bags = %s",
+						moneyLeftToDrop, moneyLeftToDrop / Core.getConfigManager().limitPerBag);
+			}
+
 			if (moneyLeftToDrop > Core.getConfigManager().limitPerBag) {
 				nextBag = Core.getConfigManager().limitPerBag;
 				moneyLeftToDrop = Tools.round(moneyLeftToDrop - nextBag);
@@ -136,7 +142,8 @@ public class BagOfGoldItems implements Listener {
 	public double getSpaceForBagOfGoldMoney(Player player) {
 		double space = 0;
 		for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-			if (slot>35) continue;
+			if (slot > 35)
+				continue;
 			ItemStack is = player.getInventory().getItem(slot);
 			if (Reward.isReward(is)) {
 				Reward rewardInSlot = Reward.getReward(is);
@@ -147,7 +154,7 @@ public class BagOfGoldItems implements Listener {
 
 				} else {
 					Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX_WARNING + player.getName()
-									+ " has tried to change the value of a BagOfGold Item. Value set to 0!(4)");
+							+ " has tried to change the value of a BagOfGold Item. Value set to 0!(4)");
 					rewardInSlot.setMoney(0);
 					is = Reward.setDisplayNameAndHiddenLores(is, rewardInSlot);
 				}
@@ -162,7 +169,7 @@ public class BagOfGoldItems implements Listener {
 	// ***********************************************************************************
 	// EVENTS
 	// ***********************************************************************************
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 
@@ -178,7 +185,8 @@ public class BagOfGoldItems implements Listener {
 				&& Reward.isReward(player.getInventory().getItemInMainHand())) {
 			Reward reward = Reward.getReward(player.getInventory().getItemInMainHand());
 			if (reward.getMoney() != 0) {
-				plugin.getMessages().debug("onPlayerInteractEntityEvent: %s placed a BagOfGod in an ItemFrame", player.getName());
+				plugin.getMessages().debug("onPlayerInteractEntityEvent: %s placed a BagOfGod in an ItemFrame",
+						player.getName());
 				plugin.getRewardManager().removeMoneyFromPlayer(player, reward.getMoney());
 				if (!Core.getPlayerSettingsManager().getPlayerSettings(player).isMuted())
 					plugin.getMessages().playerActionBarMessageQueue(player,
@@ -188,7 +196,7 @@ public class BagOfGoldItems implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		if (event.isCancelled())
@@ -241,7 +249,7 @@ public class BagOfGoldItems implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onVillagerTradeEvent(InventoryClickEvent event) {
 		if (event.getClickedInventory() instanceof MerchantInventory inventory) {
