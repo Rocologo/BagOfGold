@@ -85,10 +85,10 @@ public class ShopkeepersCompat implements Listener {
 		ItemStack isCurrentSlot = event.getCurrentItem() != null ? event.getCurrentItem().clone() : null;
 		ItemStack isCursor = event.getCursor() != null ? event.getCursor().clone() : null;
 		ItemStack isNumberKey = clickType == ClickType.NUMBER_KEY
-				? event.getWhoClicked().getInventory().getItem(event.getHotbarButton())
+				? player.getInventory().getItem(event.getHotbarButton())
 				: event.getCurrentItem();
 		ItemStack isSwapOffhand = clickType == ClickType.SWAP_OFFHAND
-				? event.getWhoClicked().getInventory().getItem(EquipmentSlot.OFF_HAND)
+				? player.getInventory().getItem(EquipmentSlot.OFF_HAND)
 				: event.getCurrentItem();
 
 		SlotType slotType = event.getSlotType();
