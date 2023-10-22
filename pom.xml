@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>${spigotmc_1_20_R1.version}</version>
+			<version>${spigotmc_1_20_R2.version}</version>
 		</dependency>
 
 		<!-- Rocologo CustomItemsLib -->
