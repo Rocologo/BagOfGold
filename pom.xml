@@ -15,7 +15,7 @@
 		<groupId>one.lindegaard</groupId>
 		<artifactId>Main</artifactId>
 		<version>0.1.6-SNAPSHOT</version>
-		<relativePath>../Main/pom.xml</relativePath>
+<!--		<relativePath>../Main/pom.xml</relativePath>-->
 	</parent>
 
 	<properties>
