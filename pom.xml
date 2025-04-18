@@ -198,11 +198,12 @@
 			<version>${CMILib.version}</version>
 		</dependency>
 
-		<!-- Essentials -->
+		<!-- EssentialsX -->
 		<dependency>
 			<groupId>net.essentialsx</groupId>
 			<artifactId>EssentialsX</artifactId>
 			<version>${EssentialsX.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ActionBarAPI -->
@@ -253,9 +254,8 @@
 		<!-- Shopkeepers-->
 		<dependency>
 			<groupId>com.nisovin.shopkeepers</groupId>
-			<artifactId>ShopkeepersAPI</artifactId>
-			<!-- Replace this with the latest Shopkeepers version -->
-			<version>2.16.1</version>
+			<artifactId>Shopkeepers</artifactId>
+			<version>${Shopkeeper.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
