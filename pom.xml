@@ -268,11 +268,11 @@
 			<url>file://${project.basedir}/lib</url>
 		</repository>
 
-		<!-- Shopkeepers -->
+		<!-- Shopkeepers BROKEN
 		<repository>
 			<id>shopkeepers-repo</id>
 			<url>https://nexus.lichtspiele.org/repository/releases/</url>
-		</repository>
+		</repository>-->
 
 	</repositories>
 
