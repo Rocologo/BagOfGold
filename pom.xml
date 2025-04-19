@@ -174,7 +174,7 @@
 
 		<!-- TitleManager 		-->
 		<dependency>
-			<groupId>io.puharesource.mc</groupId>
+			<groupId>io.puharesource.mc.titlemanager</groupId>
 			<artifactId>TitleManager</artifactId>
 			<version>${titlemanager.version}</version>
 		</dependency>
@@ -188,12 +188,12 @@
 
 		<!-- CMI -->
 		<dependency>
-			<groupId>com.Zrips</groupId>
+			<groupId>com.Zrips.CMI</groupId>
 			<artifactId>CMI</artifactId>
 			<version>${CMI.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>net.Zrips</groupId>
+			<groupId>net.Zrips.CMILib</groupId>
 			<artifactId>CMILib</artifactId>
 			<version>${CMILib.version}</version>
 		</dependency>
