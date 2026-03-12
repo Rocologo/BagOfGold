@@ -19,7 +19,8 @@ public class WorldEditCompat {
 		} else {
 			mPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin(CompatPlugin.WorldEdit.getName());
 			if (Servers.isMC113OrNewer()) {
-				if (mPlugin.getDescription().getVersion().compareTo("7.0.0") >= 0) {
+				if (mPlugin.getDescription().getVersion().compareTo("7.0.0") >= 0
+					|| mPlugin.getDescription().getVersion().startsWith("2.")) {
 					Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + "Enabling compatibility with WorldEdit ("
 							+ mPlugin.getDescription().getVersion() + ")");
 					supported = true;

@@ -251,6 +251,28 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- Vault -->
+		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>${vault.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- MobHunting (used by SpigetUpdater) -->
+		<dependency>
+			<groupId>one.lindegaard</groupId>
+			<artifactId>MobHunting</artifactId>
+			<version>8.5.5-SNAPSHOT</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<!-- Shopkeepers-->
 		<dependency>
 			<groupId>com.nisovin.shopkeepers</groupId>

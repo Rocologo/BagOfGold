@@ -2,7 +2,6 @@ package one.lindegaard.BagOfGold.compatibility;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.CitizensPlugin;
-import net.citizensnpcs.api.event.CitizensDisableEvent;
 import net.citizensnpcs.api.event.CitizensEnableEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -16,6 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
 
 public class CitizensCompat implements Listener {
 
@@ -131,10 +131,12 @@ public class CitizensCompat implements Listener {
 		supported = true;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	private void onCitizensDisableEvent(CitizensDisableEvent event) {
-		plugin.getMessages().debug("Citizens2 was disabled");
-		supported = false;
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void onPluginDisableEvent(PluginDisableEvent event) {
+		if (event.getPlugin().getName().equals(CompatPlugin.Citizens.getName())) {
+			plugin.getMessages().debug("Citizens2 was disabled");
+			supported = false;
+		}
 	}
 
 }
