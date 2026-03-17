@@ -7,7 +7,7 @@ author: Rocologo
 depend: [CustomItemsLib]
 loadbefore: [MobHunting]
 softdepend: [Reserve, PerWorldInventory, Citizens, Essentials, ProtocolLib, ItemFrameShops, Multiverse-Core, Shopkeepers, TitleManager]
-api-version: 1.13
+api-version: 1.21
 
 commands:
   bagofgold:
