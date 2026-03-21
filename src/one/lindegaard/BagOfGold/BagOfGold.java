@@ -4,8 +4,10 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.api.BagOfGoldAPI;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
@@ -187,6 +189,16 @@ public class BagOfGold extends JavaPlugin {
 
 		// start the Economy Service Provider using Vault or Reserve
 		mEconomyManager = new EconomyManager(this);
+		try {
+			RegisteredServiceProvider<Economy> provider = Bukkit.getServicesManager().getRegistration(Economy.class);
+			if (provider != null && provider.getProvider() != null) {
+				Bukkit.getConsoleSender().sendMessage(PREFIX + String.format(
+						"[Economy] Active Vault provider: %s (priority: %s)",
+						provider.getProvider().getName(),
+						provider.getPriority().name()));
+			}
+		} catch (NoClassDefFoundError ex) {
+		}
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();

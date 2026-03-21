@@ -5,7 +5,7 @@ description: BagOfGold is an Item based eConomy plugin, which replace Essentials
 dev-url: https://www.spigotmc.org/resources/bagofgold.49332/
 author: Rocologo
 depend: [CustomItemsLib]
-loadbefore: [MobHunting]
+loadbefore: [Towny, MobHunting]
 softdepend: [Reserve, PerWorldInventory, Citizens, Essentials, ProtocolLib, ItemFrameShops, Multiverse-Core, Shopkeepers, TitleManager]
 api-version: 1.21
 
