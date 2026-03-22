@@ -3,10 +3,12 @@ package one.lindegaard.BagOfGold;
 import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.citizensnpcs.api.npc.NPC;
 import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.api.BagOfGoldAPI;
 import one.lindegaard.BagOfGold.bank.BankManager;
@@ -53,6 +55,7 @@ public class BagOfGold extends JavaPlugin {
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
+	private NpcCommand mNpcCommand;
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private RewardManager mRewardManager;
@@ -124,7 +127,8 @@ public class BagOfGold extends JavaPlugin {
 		getCommand("bagofgold").setExecutor(mCommandDispatcher);
 		getCommand("bagofgold").setTabCompleter(mCommandDispatcher);
 		mCommandDispatcher.registerCommand(new ReloadCommand(this));
-		mCommandDispatcher.registerCommand(new NpcCommand(this));
+		mNpcCommand = new NpcCommand(this);
+		mCommandDispatcher.registerCommand(mNpcCommand);
 		mCommandDispatcher.registerCommand(new UpdateCommand(this));
 		mCommandDispatcher.registerCommand(new VersionCommand(this));
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
@@ -273,6 +277,14 @@ public class BagOfGold extends JavaPlugin {
 
 	public CommandDispatcher getCommandDispatcher() {
 		return mCommandDispatcher;
+	}
+
+	public NPC createBagOfGoldBankerNpc(Location spawnLocation) {
+		return mNpcCommand == null ? null : mNpcCommand.createBagOfGoldBanker(spawnLocation);
+	}
+
+	public boolean isBagOfGoldBankerNpc(NPC npc) {
+		return mNpcCommand != null && mNpcCommand.isBagOfGoldBanker(npc);
 	}
 
 	/**

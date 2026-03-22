@@ -511,6 +511,9 @@ public class MoneyCommand implements ICommand {
 				for (Iterator<NPC> npcList = CitizensAPI.getNPCRegistry().iterator(); npcList.hasNext();) {
 					NPC npc = npcList.next();
 					if (plugin.getBankManager().isBagOfGoldBanker(npc.getEntity())) {
+						if (!npc.getEntity().getWorld().equals(player.getWorld())) {
+							continue;
+						}
 						if (npc.getEntity().getLocation().distance(player.getLocation()) < 3) {
 							if (args.length == 1) {
 								ItemStack is = player.getItemInHand();
@@ -574,6 +577,9 @@ public class MoneyCommand implements ICommand {
 					for (Iterator<NPC> npcList = CitizensAPI.getNPCRegistry().iterator(); npcList.hasNext();) {
 						NPC npc = npcList.next();
 						if (plugin.getBankManager().isBagOfGoldBanker(npc.getEntity())) {
+							if (!npc.getEntity().getWorld().equals(player.getWorld())) {
+								continue;
+							}
 							if (npc.getEntity().getLocation().distance(player.getLocation()) < 3) {
 								if (ps.getBankBalance() + ps.getBankBalanceChanges() >= amount) {
 
