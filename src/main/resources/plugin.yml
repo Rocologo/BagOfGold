@@ -50,4 +50,9 @@ permissions:
     default: op
     children:
       bagofgold.cmd: true
+  bagofgold.token:
+    description: Allows token audit, migration, verification and revocation commands.
+    default: op
+    children:
+      bagofgold.cmd: true
       

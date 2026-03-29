@@ -5,7 +5,7 @@
 	<artifactId>BagOfGold</artifactId>
 	<packaging>jar</packaging>
 	<!-- <version>4.5.6</version>  -->
-	<version>4.5.6-JL.4</version>
+	<version>4.5.6-JL.5</version>
 	<!-- <version>4.2.1-SNAPSHOT-B${build.number}</version> -->
 	<name>BagOfGold</name>
 	<url>https://www.spigotmc.org/resources/bagofgold.49332/</url>
@@ -19,7 +19,7 @@
 	</parent>
 
 	<properties>
-		<customitemslib.version>1.1.0</customitemslib.version>
+		<customitemslib.version>1.1.0-JL.10</customitemslib.version>
 		<!--COPY!!! -->
 		<bossshop.version>1.9.8</bossshop.version>
 	</properties>

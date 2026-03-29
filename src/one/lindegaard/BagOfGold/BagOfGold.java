@@ -24,6 +24,7 @@ import one.lindegaard.BagOfGold.commands.NpcCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
 import one.lindegaard.BagOfGold.commands.VersionCommand;
+import one.lindegaard.BagOfGold.commands.TokenCommand;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
@@ -137,6 +138,7 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new BankCommand(this));
 		mCommandDispatcher.registerCommand(new MuteCommand(this));
 		mCommandDispatcher.registerCommand(new DatabaseCommand(this));
+		mCommandDispatcher.registerCommand(new TokenCommand(this));
 
 		// Check for new BagOfGold updates
 		mSpigetUpdater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
