@@ -2,12 +2,10 @@ package one.lindegaard.BagOfGold.storage.asynch;
 
 import java.util.HashSet;
 
-import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import one.lindegaard.BagOfGold.BagOfGold;
-import one.lindegaard.BagOfGold.PlayerBalance;
 import one.lindegaard.BagOfGold.PlayerBalances;
 import one.lindegaard.CustomItemsLib.storage.DataStoreException;
 import one.lindegaard.BagOfGold.storage.IDataStore;
@@ -32,23 +30,14 @@ public class PlayerBalanceRetrieverTask implements IDataStoreTask<PlayerBalances
 				ps = store.loadPlayerBalances(mPlayer);
 			} catch (UserNotFoundException e) {
 				String worldGroup;
-				GameMode gamemode;
 				if (mPlayer.isOnline()) {
 					Player player = (Player) mPlayer;
 					worldGroup = Core.getWorldGroupManager().getCurrentWorldGroup(player);
-					gamemode = player.getGameMode();
 				} else {
 					worldGroup = Core.getWorldGroupManager().getDefaultWorldgroup();
-					gamemode = Core.getWorldGroupManager().getDefaultGameMode();
 				}
-				if (!ps.has(worldGroup, gamemode)) {
-					BagOfGold.getInstance().getMessages().debug("PlayerBalanceRetriver - %s%s does not exist -creating",
-							worldGroup, gamemode);
-					PlayerBalance pb = new PlayerBalance(mPlayer, worldGroup, gamemode);
-					ps.putPlayerBalance(pb);
-					BagOfGold.getInstance().getPlayerBalanceManager().setPlayerBalance(mPlayer, pb);
-					BagOfGold.getInstance().getDataStoreManager().updatePlayerBalance(mPlayer, pb);
-				}
+				BagOfGold.getInstance().getMessages().debug("PlayerBalanceRetriever: UserNotFound player=%s worldGrp=%s",
+						mPlayer.getName(), worldGroup);
 				if (mPlayer.isOnline()) {
 					PlayerSettings playersettings = Core.getPlayerSettingsManager()
 							.getPlayerSettings(mPlayer);
