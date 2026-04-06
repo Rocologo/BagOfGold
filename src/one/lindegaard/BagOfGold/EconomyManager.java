@@ -32,7 +32,7 @@ public class EconomyManager {
 
 			Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
 			if (vaultPlugin != null)
-				BagOfGoldEconomyVault.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Normal,
+				BagOfGoldEconomyVault.hookVaultEconomy(Economy_BagOfGold.class, ServicePriority.Highest,
 						"net.milkbowl.vault.economy.Economy");
 
 			Plugin reservePlugin = Bukkit.getPluginManager().getPlugin("Reserve");

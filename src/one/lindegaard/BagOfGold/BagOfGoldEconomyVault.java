@@ -56,10 +56,9 @@ public class BagOfGoldEconomyVault implements Economy, Listener {
 		try {
 			if (packagesExists(packages)) {
 				Economy vaultEconomy = hookClass.getConstructor(Plugin.class).newInstance(BagOfGold.getInstance());
-				Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
-				if (vaultPlugin != null)
-					Bukkit.getServicesManager().register(Economy.class, vaultEconomy, vaultPlugin,
-							ServicePriority.Normal);
+				Plugin ownerPlugin = BagOfGold.getInstance();
+				if (ownerPlugin != null)
+					Bukkit.getServicesManager().register(Economy.class, vaultEconomy, ownerPlugin, priority);
 				Bukkit.getConsoleSender().sendMessage(BagOfGold.PREFIX + String.format(
 						"[Economy] Vault found: %s", vaultEconomy.isEnabled() ? "Loaded" : "Waiting"));
 			}

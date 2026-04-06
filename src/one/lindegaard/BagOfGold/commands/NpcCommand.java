@@ -19,6 +19,7 @@ import one.lindegaard.CustomItemsLib.rewards.CoreCustomItems;
 import one.lindegaard.CustomItemsLib.rewards.Reward;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -26,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class NpcCommand implements ICommand, Listener {
 
@@ -133,7 +135,7 @@ public class NpcCommand implements ICommand, Listener {
 		Player p = (Player) sender;
 		NPC npc;
 		if (plugin.getCompatibilityManager().isPluginLoaded(CitizensCompat.class)) {
-			npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
+			npc = getSelectedBagOfGoldBanker(sender);
 			if (npc == null && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete")
 					|| args[0].equalsIgnoreCase("spawn") || args[0].equalsIgnoreCase("despawn")
 					|| args[0].equalsIgnoreCase("tphere") || args[0].equalsIgnoreCase("sethome"))) {
@@ -155,10 +157,9 @@ public class NpcCommand implements ICommand, Listener {
 				return true;
 
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("tphere")) {
-				npc.teleport(((Player) sender).getLocation(), TeleportCause.PLUGIN);
-				Block b = Tools.getTargetBlock((Player) sender, 200);
-				if (b != null)
-					npc.faceLocation(b.getLocation());
+				Location target = ((Player) sender).getLocation().clone();
+				target.setPitch(0F);
+				npc.teleport(target, TeleportCause.PLUGIN);
 				return true;
 
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("sethome")) {
@@ -166,30 +167,35 @@ public class NpcCommand implements ICommand, Listener {
 						plugin.getMessages().getString("bagofgold.commands.npc.home_set"));
 				return true;
 
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("select")) {
-				if (npc != null)
+			} else if ((args.length == 1 || args.length == 2) && args[0].equalsIgnoreCase("select")) {
+				NPC selectedNpc = null;
+				if (args.length == 2) {
+					try {
+						int id = Integer.parseInt(args[1]);
+						selectedNpc = getBagOfGoldBankerById(id);
+					} catch (NumberFormatException ex) {
+						selectedNpc = null;
+					}
+				} else {
+					selectedNpc = findLookingAtBagOfGoldBanker(p, 20);
+					if (selectedNpc == null) {
+						selectedNpc = getSelectedBagOfGoldBanker(sender);
+					}
+				}
+
+				if (selectedNpc != null) {
+					CitizensAPI.getDefaultNPCSelector().select(sender, selectedNpc);
 					plugin.getMessages().senderSendMessage(sender, plugin.getMessages().getString(
-							"bagofgold.commands.npc.selected", "npcname", npc.getName(), "npcid", npc.getId()));
-				else
+							"bagofgold.commands.npc.selected", "npcname", selectedNpc.getName(), "npcid", selectedNpc.getId()));
+				} else {
 					plugin.getMessages().senderSendMessage(sender,
 							plugin.getMessages().getString("bagofgold.commands.npc.not_selected"));
+				}
 				return true;
 
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("create")) {
-				NPCRegistry registry = CitizensAPI.getNPCRegistry();
-				npc = registry.createNPC(EntityType.PLAYER, "BagOfGoldBanker");
-				npc.addTrait(BagOfGoldBankerTrait.class);
-				npc.getOrAddTrait(LookClose.class).setRange(6);
-				npc.getOrAddTrait(LookClose.class).setRealisticLooking(true);
-				npc.getOrAddTrait(LookClose.class).toggle();
-				npc.getOrAddTrait(SkinTrait.class).setSkinPersistent(plugin.getConfigManager().bankerName,
-						plugin.getConfigManager().bankerSignature, plugin.getConfigManager().bankerTexture);
-				ItemStack is = CoreCustomItems.getCustomtexture(new Reward(),
-						Core.getConfigManager().skullTextureValue, Core.getConfigManager().skullTextureSignature);
-				npc.getOrAddTrait(Equipment.class).set(EquipmentSlot.OFF_HAND, is);
-				npc.setName(plugin.getConfigManager().bankerName);
-				npc.spawn(p.getLocation());
-				npc.setProtected(true);
+				npc = createBagOfGoldBanker(p.getLocation());
+				CitizensAPI.getDefaultNPCSelector().select(sender, npc);
 				plugin.getMessages().senderSendMessage(sender, ChatColor.GREEN
 						+ plugin.getMessages().getString("bagofgold.commands.npc.created", "npcid", npc.getId()));
 				plugin.getMessages().debug("Creating BagOfGoldBanker: id=%s", npc.getId());
@@ -198,5 +204,87 @@ public class NpcCommand implements ICommand, Listener {
 
 		}
 		return false;
+	}
+
+	public NPC createBagOfGoldBanker(Location spawnLocation) {
+		NPCRegistry registry = CitizensAPI.getNPCRegistry();
+		NPC npc = registry.createNPC(EntityType.PLAYER, "BagOfGoldBanker");
+		npc.addTrait(BagOfGoldBankerTrait.class);
+		npc.getOrAddTrait(LookClose.class).setRange(6);
+		npc.getOrAddTrait(LookClose.class).setRealisticLooking(true);
+		npc.getOrAddTrait(LookClose.class).toggle();
+		npc.getOrAddTrait(SkinTrait.class).setSkinPersistent(plugin.getConfigManager().bankerName,
+				plugin.getConfigManager().bankerSignature, plugin.getConfigManager().bankerTexture);
+		ItemStack is = CoreCustomItems.getCustomtexture(new Reward(),
+				Core.getConfigManager().skullTextureValue, Core.getConfigManager().skullTextureSignature);
+		npc.getOrAddTrait(Equipment.class).set(EquipmentSlot.OFF_HAND, is);
+		npc.setName(plugin.getConfigManager().bankerName);
+		npc.spawn(spawnLocation);
+		npc.setProtected(true);
+		return npc;
+	}
+
+	public boolean isBagOfGoldBanker(NPC npc) {
+		return npc != null && npc.hasTrait(BagOfGoldBankerTrait.class);
+	}
+
+	private NPC getSelectedBagOfGoldBanker(CommandSender sender) {
+		NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(sender);
+		return isBagOfGoldBanker(npc) ? npc : null;
+	}
+
+	private NPC getBagOfGoldBankerById(int id) {
+		NPC npc = CitizensAPI.getNPCRegistry().getById(id);
+		return isBagOfGoldBanker(npc) ? npc : null;
+	}
+
+	private NPC findLookingAtBagOfGoldBanker(Player player, int maxDistance) {
+		Block target = Tools.getTargetBlock(player, maxDistance);
+		Location targetLoc = target == null ? null : target.getLocation().add(0.5, 0.5, 0.5);
+		Location eye = player.getEyeLocation();
+		Vector direction = eye.getDirection().normalize();
+
+		NPC best = null;
+		double bestDistance = Double.MAX_VALUE;
+		double bestDot = -1D;
+		for (NPC npc : CitizensAPI.getNPCRegistry().sorted()) {
+			if (!isBagOfGoldBanker(npc) || !npc.isSpawned()) {
+				continue;
+			}
+			Location npcLoc = npc.getEntity().getLocation();
+			if (npcLoc.getWorld() == null || !npcLoc.getWorld().equals(player.getWorld())) {
+				continue;
+			}
+
+			double distanceToPlayer = npcLoc.distance(player.getLocation());
+			if (distanceToPlayer > maxDistance) {
+				continue;
+			}
+
+			if (targetLoc != null) {
+				double distanceToTarget = npcLoc.distance(targetLoc);
+				if (distanceToTarget <= 2.5 && distanceToPlayer < bestDistance) {
+					bestDistance = distanceToPlayer;
+					best = npc;
+				}
+			}
+
+			Vector toNpc = npcLoc.clone().add(0, 1.62, 0).toVector().subtract(eye.toVector());
+			double length = toNpc.length();
+			if (length <= 0.0001D) {
+				continue;
+			}
+			double dot = direction.dot(toNpc.normalize());
+			if (dot < 0.985D) {
+				continue;
+			}
+
+			if (dot > bestDot || (dot == bestDot && distanceToPlayer < bestDistance)) {
+				bestDot = dot;
+				bestDistance = distanceToPlayer;
+				best = npc;
+			}
+		}
+		return best;
 	}
 }

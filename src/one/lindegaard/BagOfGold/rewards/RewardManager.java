@@ -468,6 +468,11 @@ public class RewardManager {
 	 * @param player
 	 */
 	public void adjustAmountOfMoneyInInventoryToPlayerBalance(Player player) {
+		if (!plugin.getPlayerBalanceManager().isBalanceReady(player)) {
+			plugin.getMessages().debug("SYNC_SKIPPED_NOT_READY player=%s uuid=%s", player.getName(),
+					player.getUniqueId());
+			return;
+		}
 
 		PlayerBalance ps = plugin.getPlayerBalanceManager().getPlayerBalance(player);
 		double amountInInventory = getAmountInInventory(player);

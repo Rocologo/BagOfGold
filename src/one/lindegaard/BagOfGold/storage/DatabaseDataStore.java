@@ -215,26 +215,23 @@ public abstract class DatabaseDataStore implements IDataStore {
 	@Override
 	public PlayerBalances loadPlayerBalances(OfflinePlayer offlinePlayer)
 			throws UserNotFoundException, DataStoreException {
-		Connection mConnection;
 		PlayerBalances playerBalances = new PlayerBalances();
-		try {
-			mConnection = setupConnection();
-			openPreparedStatements(mConnection, PreparedConnectionType.GET_PLAYER_BALANCE);
-			mGetPlayerBalance.setString(1, offlinePlayer.getUniqueId().toString());
-			ResultSet result = mGetPlayerBalance.executeQuery();
-			while (result.next()) {
-				PlayerBalance ps = new PlayerBalance(offlinePlayer, result.getString("WORLDGRP"),
-						GameMode.getByValue(result.getInt("GAMEMODE")), result.getDouble("BALANCE"),
-						result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"),
-						result.getDouble("BANK_BALANCE_CHANGES"));
-				playerBalances.putPlayerBalance(ps);
+		String sql = "SELECT WORLDGRP, GAMEMODE, BALANCE, BALANCE_CHANGES, BANK_BALANCE, BANK_BALANCE_CHANGES "
+				+ "FROM mh_Balance WHERE UUID=?";
+		try (Connection mConnection = setupConnection();
+				PreparedStatement statement = mConnection.prepareStatement(sql)) {
+			statement.setString(1, offlinePlayer.getUniqueId().toString());
+			try (ResultSet result = statement.executeQuery()) {
+				while (result.next()) {
+					PlayerBalance ps = new PlayerBalance(offlinePlayer, result.getString("WORLDGRP"),
+							GameMode.getByValue(result.getInt("GAMEMODE")), result.getDouble("BALANCE"),
+							result.getDouble("BALANCE_CHANGES"), result.getDouble("BANK_BALANCE"),
+							result.getDouble("BANK_BALANCE_CHANGES"));
+					playerBalances.putPlayerBalance(ps);
+				}
 			}
-			result.close();
-			mGetPlayerBalance.close();
-			mConnection.close();
-
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataStoreException(e);
 		}
 		if (!playerBalances.getPlayerBalances().isEmpty())
 			return playerBalances;

@@ -3,9 +3,13 @@ package one.lindegaard.BagOfGold;
 import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.citizensnpcs.api.npc.NPC;
+import net.milkbowl.vault.economy.Economy;
 import one.lindegaard.BagOfGold.api.BagOfGoldAPI;
 import one.lindegaard.BagOfGold.bank.BankManager;
 import one.lindegaard.BagOfGold.bank.BankSign;
@@ -20,6 +24,7 @@ import one.lindegaard.BagOfGold.commands.NpcCommand;
 import one.lindegaard.BagOfGold.commands.ReloadCommand;
 import one.lindegaard.BagOfGold.commands.UpdateCommand;
 import one.lindegaard.BagOfGold.commands.VersionCommand;
+import one.lindegaard.BagOfGold.commands.TokenCommand;
 import one.lindegaard.BagOfGold.compatibility.CitizensCompat;
 import one.lindegaard.BagOfGold.compatibility.CompatibilityManager;
 import one.lindegaard.BagOfGold.compatibility.EssentialsCompat;
@@ -51,6 +56,7 @@ public class BagOfGold extends JavaPlugin {
 	private MetricsManager mMetricsManager;
 	private ConfigManager mConfig;
 	private CommandDispatcher mCommandDispatcher;
+	private NpcCommand mNpcCommand;
 	private IDataStore mStore;
 	private DataStoreManager mStoreManager;
 	private RewardManager mRewardManager;
@@ -122,7 +128,8 @@ public class BagOfGold extends JavaPlugin {
 		getCommand("bagofgold").setExecutor(mCommandDispatcher);
 		getCommand("bagofgold").setTabCompleter(mCommandDispatcher);
 		mCommandDispatcher.registerCommand(new ReloadCommand(this));
-		mCommandDispatcher.registerCommand(new NpcCommand(this));
+		mNpcCommand = new NpcCommand(this);
+		mCommandDispatcher.registerCommand(mNpcCommand);
 		mCommandDispatcher.registerCommand(new UpdateCommand(this));
 		mCommandDispatcher.registerCommand(new VersionCommand(this));
 		mCommandDispatcher.registerCommand(new DebugCommand(this));
@@ -131,6 +138,7 @@ public class BagOfGold extends JavaPlugin {
 		mCommandDispatcher.registerCommand(new BankCommand(this));
 		mCommandDispatcher.registerCommand(new MuteCommand(this));
 		mCommandDispatcher.registerCommand(new DatabaseCommand(this));
+		mCommandDispatcher.registerCommand(new TokenCommand(this));
 
 		// Check for new BagOfGold updates
 		mSpigetUpdater.hourlyUpdateCheck(getServer().getConsoleSender(), mConfig.updateCheck, false);
@@ -187,6 +195,16 @@ public class BagOfGold extends JavaPlugin {
 
 		// start the Economy Service Provider using Vault or Reserve
 		mEconomyManager = new EconomyManager(this);
+		try {
+			RegisteredServiceProvider<Economy> provider = Bukkit.getServicesManager().getRegistration(Economy.class);
+			if (provider != null && provider.getProvider() != null) {
+				Bukkit.getConsoleSender().sendMessage(PREFIX + String.format(
+						"[Economy] Active Vault provider: %s (priority: %s)",
+						provider.getProvider().getName(),
+						provider.getPriority().name()));
+			}
+		} catch (NoClassDefFoundError ex) {
+		}
 
 		if (PerWorldInventoryCompat.isSupported() && PerWorldInventoryCompat.pwi_sync_economy())
 			PerWorldInventoryCompat.pwi_sync_economy_warning();
@@ -261,6 +279,14 @@ public class BagOfGold extends JavaPlugin {
 
 	public CommandDispatcher getCommandDispatcher() {
 		return mCommandDispatcher;
+	}
+
+	public NPC createBagOfGoldBankerNpc(Location spawnLocation) {
+		return mNpcCommand == null ? null : mNpcCommand.createBagOfGoldBanker(spawnLocation);
+	}
+
+	public boolean isBagOfGoldBankerNpc(NPC npc) {
+		return mNpcCommand != null && mNpcCommand.isBagOfGoldBanker(npc);
 	}
 
 	/**
